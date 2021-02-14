@@ -23,7 +23,7 @@ export const audioPlayer = new NodeMpv(
 
 function Player(): ReactElement {
   const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
-  const [volume, setVolume] = useState(55);
+  const [volume, setVolume] = useState<number>(parseFloat(localStorage.getItem("volume") ?? "55"));
   const [totalDuration, setTotalDuration] = useState(0);
   const [shuffle, setShuffle] = useState<boolean>(false);
   const [realPlaylist, setRealPlaylist] = useState<CurrentPlaylist["tracks"]>([]);
@@ -34,6 +34,9 @@ function Player(): ReactElement {
       sliderMoved: (value) => {
         setVolume(value);
       },
+      sliderReleased: () => {
+        localStorage.setItem("volume", volume.toString());
+      }
     },
     []
   );
@@ -47,10 +50,8 @@ function Player(): ReactElement {
         if (!playerRunning) {
           await audioPlayer.start();
         }
-        await audioPlayer.volume(55);
       } catch (error) {
-        console.error("Failed to start audio player");
-        console.error(error);
+        console.error("Failed to start audio player", error);
       }
     })();
 
@@ -157,9 +158,9 @@ function Player(): ReactElement {
     }
   }
 
-  const artistsNames = currentTrack?.artists.map((x) => x.name);
+  const artistsNames = currentTrack?.artists?.map((x) => x.name);
   return (
-    <GridView style="flex: 1; max-height: 100px;">
+    <GridView enabled={!!currentTrack} style="flex: 1; max-height: 100px;">
       <GridRow>
         <GridColumn width={2}>
           <Text ref={titleRef} wordWrap>

@@ -1,11 +1,14 @@
 import React, { FC, useContext, useEffect, useState } from "react";
-import { BoxView, Button, ScrollArea, Text, View } from "@nodegui/react-nodegui";
+import { BoxView, Button, GridView, ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import BackButton from "./BackButton";
 import { useLocation, useParams } from "react-router";
-import { Direction, QAbstractButtonSignals } from "@nodegui/nodegui";
+import { Direction, QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
 import { WidgetEventListeners } from "@nodegui/react-nodegui/dist/components/View/RNView";
 import authContext from "../context/authContext";
 import playerContext from "../context/playerContext";
+import IconButton from "./shared/IconButton";
+import { heartRegular, play, stop } from "../icons";
+import { audioPlayer } from "./Player";
 
 export interface PlaylistTrackRes {
   name: string;
@@ -21,19 +24,8 @@ const PlaylistView: FC<PlaylistViewProps> = () => {
   const { isLoggedIn, access_token } = useContext(authContext);
   const { spotifyApi, setCurrentTrack, currentPlaylist, currentTrack, setCurrentPlaylist } = useContext(playerContext);
   const params = useParams<{ id: string }>();
-  const location = useLocation<{ name: string, thumbnail: string }>();
+  const location = useLocation<{ name: string; thumbnail: string }>();
   const [tracks, setTracks] = useState<SpotifyApi.PlaylistTrackObject[]>([]);
-
-  const trackClickHandler = async (track: SpotifyApi.TrackObjectFull) => {
-    try {
-      setCurrentTrack(track);
-      if (currentPlaylist?.id !== params.id) {
-        setCurrentPlaylist({...params, ...location.state, tracks});
-      }
-    } catch (error) {
-      console.error("Failed to resolve track's youtube url: ", error);
-    }
-  };
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -49,9 +41,34 @@ const PlaylistView: FC<PlaylistViewProps> = () => {
     }
   }, []);
 
+  const handlePlaylistPlayPause = () => {
+    if (currentPlaylist?.id !== params.id) {
+      setCurrentPlaylist({ ...params, ...location.state, tracks });
+      setCurrentTrack(tracks[0].track);
+    } else {
+      audioPlayer.stop().catch((error) => console.error("Failed to stop audio player: ", error));
+      setCurrentTrack(undefined);
+      setCurrentPlaylist(undefined);
+    }
+  };
+
+  const trackClickHandler = async (track: SpotifyApi.TrackObjectFull) => {
+    try {
+      setCurrentTrack(track);
+    } catch (error) {
+      console.error("Failed to resolve track's youtube url: ", error);
+    }
+  };
+
   return (
-    <BoxView direction={Direction.TopToBottom}>
-      <BackButton />
+    <View style={`flex-direction: 'column'; flex-grow: 1;`}>
+      <View style={`justify-content: 'space-between'; padding-bottom: 10px; padding-left: 10px;`}>
+        <BackButton />
+        <View style={`height: 50px; justify-content: 'space-between'; width: 100px; padding-right: 20px;`}>
+          <IconButton icon={new QIcon(heartRegular)} />
+          <IconButton style={`background-color: #00be5f; color: white;`} on={{ clicked: handlePlaylistPlayPause }} icon={new QIcon(currentPlaylist?.id === params.id ? stop : play)} />
+        </View>
+      </View>
       <Text>{`<center><h2>${location.state.name[0].toUpperCase()}${location.state.name.slice(1)}</h2></center>`}</Text>
       <ScrollArea style={`flex-grow: 1; border: none;`}>
         <View style={`flex-direction:column;`}>
@@ -70,7 +87,7 @@ const PlaylistView: FC<PlaylistViewProps> = () => {
             })}
         </View>
       </ScrollArea>
-    </BoxView>
+    </View>
   );
 };
 

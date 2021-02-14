@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Text, View, ScrollArea } from "@nodegui/react-nodegui";
+import { Button, View, ScrollArea } from "@nodegui/react-nodegui";
 import playerContext from "../context/playerContext";
 import authContext from "../context/authContext";
 import { useHistory } from "react-router";
@@ -7,7 +7,7 @@ import CachedImage from "./shared/CachedImage";
 import { CursorShape } from "@nodegui/nodegui";
 
 function Home() {
-  const { spotifyApi, currentPlaylist, currentTrack } = useContext(playerContext);
+  const { spotifyApi } = useContext(playerContext);
   const { isLoggedIn, access_token } = useContext(authContext);
   const [categories, setCategories] = useState<SpotifyApi.CategoryObject[]>([]);
 
@@ -26,8 +26,8 @@ function Home() {
   }, [access_token]);
 
   return (
-    <ScrollArea style={`flex-grow: 1; border: none;`}>
-      <View style={`flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch';`}>
+    <ScrollArea style={`flex-grow: 1; border: none; flex: 1;`}>
+      <View style={`flex-direction: 'column'; justify-content: 'center'; flex: 1;`}>
         <CategoryCard key={((Math.random() * Date.now()) / Math.random()) * 100} id="current" name="Currently Playing" />
         {isLoggedIn &&
           categories.map(({ id, name }, index) => {
@@ -75,6 +75,7 @@ function CategoryCard({ id, name }: CategoryCardProps) {
 
   const categoryStylesheet = `
      #container{
+       flex: 1;
        flex-direction: column;
        justify-content: 'center';
        margin-bottom: 20px;
@@ -94,7 +95,10 @@ function CategoryCard({ id, name }: CategoryCardProps) {
        text-decoration: underline;
      }
      #child-view{
+       flex: 1;
        justify-content: 'space-evenly';
+       align-items: 'center';
+       flex-wrap: 'wrap';
      }
   `;
 

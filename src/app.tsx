@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Window, hot, BoxView, View } from "@nodegui/react-nodegui";
-import { Direction, QIcon, QMainWindow, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
+import { Window, hot, View } from "@nodegui/react-nodegui";
+import { QIcon, QMainWindow, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
 import nodeguiIcon from "../assets/nodegui.jpg";
 import { MemoryRouter } from "react-router";
 import Routes from "./routes";
@@ -19,7 +19,7 @@ export interface Credentials {
   clientSecret: string;
 }
 
-const minSize = { width: 700, height: 520 };
+const minSize = { width: 700, height: 750 };
 const winIcon = new QIcon(nodeguiIcon);
 global.localStorage = new LocalStorage("./local");
 
@@ -35,13 +35,21 @@ function RootApp() {
   const credentialStr = localStorage.getItem(CredentialKeys.credentials);
 
   useEffect(() => {
-    windowRef.current?.addEventListener(WidgetEventTypes.Close, () => {
+    setIsLoggedIn(!!credentialStr);
+  }, []);
+
+  useEffect(() => {
+    const onWindowClose = () => {
       if (audioPlayer.isRunning()) {
         audioPlayer.stop().catch((e) => console.error("Failed to quit MPV player: ", e));
       }
-    });
-    setIsLoggedIn(!!credentialStr);
-  }, []);
+    };
+
+    windowRef.current?.addEventListener(WidgetEventTypes.Close, onWindowClose);
+    return () => {
+      windowRef.current?.removeEventListener(WidgetEventTypes.Close, onWindowClose);
+    };
+  });
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -67,10 +75,10 @@ function RootApp() {
       <MemoryRouter>
         <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token }}>
           <playerContext.Provider value={{ spotifyApi, currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
-            <BoxView direction={Direction.TopToBottom}>
+            <View style={`flex: 1; flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch'; height: '100%';`}>
               <Routes />
               {isLoggedIn && <Player />}
-            </BoxView>
+            </View>
           </playerContext.Provider>
         </authContext.Provider>
       </MemoryRouter>
