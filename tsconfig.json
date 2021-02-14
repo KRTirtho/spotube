@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "jsx": "react",
+    "strict": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*"],
+  "exclude": ["**/node_modules/*"]
+}
