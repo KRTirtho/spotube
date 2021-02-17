@@ -8,6 +8,7 @@ import { getYoutubeTrack } from "../helpers/getYoutubeTrack";
 import PlayerProgressBar from "./PlayerProgressBar";
 import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular } from "../icons";
 import IconButton from "./shared/IconButton";
+import authContext from "../context/authContext";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -22,8 +23,10 @@ export const audioPlayer = new NodeMpv(
 );
 
 function Player(): ReactElement {
-  const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
-  const [volume, setVolume] = useState<number>(parseFloat(localStorage.getItem("volume") ?? "55"));
+  const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist, spotifyApi } = useContext(playerContext);
+  const { access_token } = useContext(authContext);
+  const initVolume = parseFloat(localStorage.getItem("volume") ?? "55");
+  const [volume, setVolume] = useState<number>(initVolume);
   const [totalDuration, setTotalDuration] = useState(0);
   const [shuffle, setShuffle] = useState<boolean>(false);
   const [realPlaylist, setRealPlaylist] = useState<CurrentPlaylist["tracks"]>([]);
@@ -36,7 +39,7 @@ function Player(): ReactElement {
       },
       sliderReleased: () => {
         localStorage.setItem("volume", volume.toString());
-      }
+      },
     },
     []
   );
@@ -49,6 +52,7 @@ function Player(): ReactElement {
       try {
         if (!playerRunning) {
           await audioPlayer.start();
+          await audioPlayer.volume(initVolume);
         }
       } catch (error) {
         console.error("Failed to start audio player", error);
@@ -62,9 +66,22 @@ function Player(): ReactElement {
     };
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        if (access_token) {
+          spotifyApi.setAccessToken(access_token);
+          const userSavedTrack = await spotifyApi.getMySavedTracks();
+          console.log("userSavedTrack:", userSavedTrack);
+        }
+      } catch (error) {
+        console.error("Failed to get spotify user saved tracks: ", error);
+      }
+    })();
+  }, [access_token]);
+
   // track change effect
   useEffect(() => {
-    // titleRef.current?.setAlignment(AlignmentFlag.AlignLeft);
     (async () => {
       try {
         if (currentTrack && playerRunning) {

@@ -1,5 +1,4 @@
-import { Direction } from "@nodegui/nodegui";
-import { BoxView, ScrollArea, Text, View } from "@nodegui/react-nodegui";
+import { ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router";
 import authContext from "../context/authContext";
@@ -29,10 +28,15 @@ function PlaylistGenreView() {
   }, [access_token]);
 
   const playlistGenreViewStylesheet = `
+    #genre-container{
+      flex-direction: column;
+      flex: 1;
+    }
     #heading {
       padding: 10px;
     }
     #scroll-view{
+      flex: 1;
       flex-grow: 1;
       border: none;
     }
@@ -46,7 +50,7 @@ function PlaylistGenreView() {
   `;
 
   return (
-    <BoxView direction={Direction.TopToBottom} styleSheet={playlistGenreViewStylesheet}>
+    <View id="genre-container" styleSheet={playlistGenreViewStylesheet}>
       <BackButton />
       <Text id="heading">{`<h2>${location.state.name}</h2>`}</Text>
       <ScrollArea id="scroll-view">
@@ -57,7 +61,7 @@ function PlaylistGenreView() {
             })}
         </View>
       </ScrollArea>
-    </BoxView>
+    </View>
   );
 }
 

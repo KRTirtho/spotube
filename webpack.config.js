@@ -8,9 +8,6 @@ module.exports = (env, argv) => {
     mode: "production",
     entry: ["./src/index.tsx"],
     target: "node",
-    externals: {
-      'sharp': 'commonjs sharp',
-    },
     output: {
       path: path.resolve(__dirname, "dist"),
       filename: "index.js",

@@ -7,7 +7,7 @@ import CachedImage from "./shared/CachedImage";
 import { CursorShape } from "@nodegui/nodegui";
 
 function Home() {
-  const { spotifyApi } = useContext(playerContext);
+  const { spotifyApi, currentPlaylist } = useContext(playerContext);
   const { isLoggedIn, access_token } = useContext(authContext);
   const [categories, setCategories] = useState<SpotifyApi.CategoryObject[]>([]);
 
@@ -28,7 +28,7 @@ function Home() {
   return (
     <ScrollArea style={`flex-grow: 1; border: none; flex: 1;`}>
       <View style={`flex-direction: 'column'; justify-content: 'center'; flex: 1;`}>
-        <CategoryCard key={((Math.random() * Date.now()) / Math.random()) * 100} id="current" name="Currently Playing" />
+        {currentPlaylist && <CategoryCard key={((Math.random() * Date.now()) / Math.random()) * 100} id="current" name="Currently Playing" />}
         {isLoggedIn &&
           categories.map(({ id, name }, index) => {
             return <CategoryCard key={((index * Date.now()) / Math.random()) * 100} id={id} name={name} />;
@@ -54,20 +54,16 @@ function CategoryCard({ id, name }: CategoryCardProps) {
   useEffect(() => {
     (async () => {
       try {
-        if (access_token) {
-          if (id === "current") {
-          } else {
-            spotifyApi.setAccessToken(access_token);
-
-            const playlistsRes = await spotifyApi.getPlaylistsForCategory(id, { limit: 5 });
-            setPlaylists(playlistsRes.body.playlists.items);
-          }
+        if (id !== "current") {
+          spotifyApi.setAccessToken(access_token);
+          const playlistsRes = await spotifyApi.getPlaylistsForCategory(id, { limit: 4 });
+          setPlaylists(playlistsRes.body.playlists.items);
         }
       } catch (error) {
         console.error(`Failed to get playlists of category ${name} for: `, error);
       }
     })();
-  }, [access_token]);
+  }, []);
 
   function goToGenre() {
     history.push(`/genre/playlists/${id}`, { name });
@@ -102,30 +98,18 @@ function CategoryCard({ id, name }: CategoryCardProps) {
      }
   `;
 
-  if (playlists.length > 0 && id!=="current") {
-    return (
-      <View id="container" styleSheet={categoryStylesheet}>
-        <Button id="anchor-heading" cursor={CursorShape.PointingHandCursor} on={{ MouseButtonRelease: goToGenre }} text={name} />
-        <View id="child-view">
-          {isLoggedIn &&
-            playlists.map((playlist, index) => {
-              return <PlaylistCard key={((index * Date.now()) / Math.random()) * 100} id={playlist.id} name={playlist.name} thumbnail={playlist.images[0].url} />;
-            })}
-        </View>
+  return (
+    <View id="container" styleSheet={categoryStylesheet}>
+      {(playlists.length > 0 || id === "current") && <Button id="anchor-heading" cursor={CursorShape.PointingHandCursor} on={{ MouseButtonRelease: goToGenre }} text={name} />}
+      <View id="child-view">
+        {id === "current" && currentPlaylist && <PlaylistCard key={(Date.now() / Math.random()) * 100} {...currentPlaylist} />}
+        {isLoggedIn &&
+          playlists.map((playlist, index) => {
+            return <PlaylistCard key={((index * Date.now()) / Math.random()) * 100} id={playlist.id} name={playlist.name} thumbnail={playlist.images[0].url} />;
+          })}
       </View>
-    );
-  }
-  if (id === "current" && currentPlaylist) {
-    return (
-      <View id="container" styleSheet={categoryStylesheet}>
-        <Button id="anchor-heading" cursor={CursorShape.PointingHandCursor} on={{ MouseButtonRelease: goToGenre }} text={name} />
-        <View id="child-view">
-          <PlaylistCard key={(Date.now() / Math.random()) * 100} {...currentPlaylist} />
-        </View>
-      </View>
-    );
-  }
-  return <></>;
+    </View>
+  );
 }
 
 interface PlaylistCardProps {

@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
-import { LineEdit, Text, Button, BoxView } from "@nodegui/react-nodegui";
+import { LineEdit, Text, Button, View } from "@nodegui/react-nodegui";
 import authContext from "../context/authContext";
 import { CredentialKeys, Credentials } from "../app";
-import { Direction } from "@nodegui/nodegui";
 
 function Login() {
   const { setIsLoggedIn } = useContext(authContext);
@@ -29,7 +28,7 @@ function Login() {
   }
 
   return (
-    <BoxView direction={Direction.TopToBottom}>
+    <View style={`flex: 1; flex-direction: 'column';`}>
       <Text>{`<center><h1>Add Spotify & Youtube credentials to get started</h1></center>`}</Text>
       <Text>{`<center><p>Don't worry any of the credentials won't be collected or used for abuses</p></center>`}</Text>
       <LineEdit
@@ -67,7 +66,7 @@ function Login() {
         }}
         text="Add"
       />
-    </BoxView>
+    </View>
   );
 }
 

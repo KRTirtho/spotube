@@ -9,9 +9,11 @@ import { LocalStorage } from "node-localstorage";
 import authContext from "./context/authContext";
 import playerContext, { CurrentPlaylist, CurrentTrack } from "./context/playerContext";
 import Player, { audioPlayer } from "./components/Player";
+import { redirectURI } from "./conf";
 
 export enum CredentialKeys {
   credentials = "credentials",
+  refresh_token = "refresh_token"
 }
 
 export interface Credentials {
@@ -26,16 +28,16 @@ global.localStorage = new LocalStorage("./local");
 function RootApp() {
   const windowRef = useRef<QMainWindow>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [spotifyAuth, setSpotifyAuth] = useState({ clientId: "", clientSecret: "" });
+  const [credentials, setCredentials] = useState<Credentials>({ clientId: "", clientSecret: "" });
   const [access_token, setAccess_token] = useState<string>("");
   const [currentPlaylist, setCurrentPlaylist] = useState<CurrentPlaylist>();
   const [currentTrack, setCurrentTrack] = useState<CurrentTrack>();
 
-  const spotifyApi = new SpotifyWebApi({ ...spotifyAuth });
-  const credentialStr = localStorage.getItem(CredentialKeys.credentials);
+  const spotifyApi = new SpotifyWebApi({ redirectUri: redirectURI, ...credentials });
+  const cachedCredentials = localStorage.getItem(CredentialKeys.credentials);
 
   useEffect(() => {
-    setIsLoggedIn(!!credentialStr);
+    setIsLoggedIn(!!cachedCredentials);
   }, []);
 
   useEffect(() => {
@@ -62,12 +64,9 @@ function RootApp() {
           console.error("Spotify Client Credential not granted for: ", error);
         });
     }
-
-    if (!credentialStr) {
-      return;
+    if (cachedCredentials) {
+      setCredentials(JSON.parse(cachedCredentials));
     }
-    const credentials = JSON.parse(credentialStr) as Credentials;
-    setSpotifyAuth(credentials);
   }, [isLoggedIn]);
 
   return (

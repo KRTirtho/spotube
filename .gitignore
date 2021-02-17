@@ -1,5 +1,10 @@
 node_modules
 dist/
 *.log
+# user specific
 cache/
 local/
+# deply build binaries
+deploy/linux/build
+deploy/win32/build
+deploy/darwin/build

@@ -4,8 +4,9 @@ import * as fs from "fs"
 import axios from "axios";
 import { Stream } from "stream";
 import { streamToBuffer } from "./streamToBuffer";
-import sharp from "sharp";
+import Jimp from "jimp";
 import du from "du";
+
 
 interface ImageDimensions {
   height: number;
@@ -28,7 +29,7 @@ export async function getCachedImageBuffer(name: string, dims?: ImageDimensions)
         fs.rmSync(cacheFolder, { recursive: true, force: true });
       }
       const cachedImg = await fsm.readFile(cachePath);
-      const cachedImgMeta = await sharp(cachedImg).metadata();
+      const cachedImgMeta = (await Jimp.read(cachedImg)).bitmap;
 
       // if the dimensions are changed then the previously cached
       // images are removed and replaced with a new one
@@ -59,7 +60,8 @@ export async function getCachedImageBuffer(name: string, dims?: ImageDimensions)
 async function imageResizeAndWrite(img: Buffer, { cacheFolder, cacheName, dims }: { dims: ImageDimensions; cacheFolder: string; cacheName: string }): Promise<Buffer> {
   // caching the images by resizing if the max/fixed (Width/Height)
   // is available in the args
-  const resizedImg = await sharp(img).resize(dims.width, dims.height).toBuffer();
-  await fsm.writeFile(path.join(cacheFolder, cacheName), resizedImg);
-  return resizedImg;
+  const resizedImg = (await Jimp.read(img)).resize(dims.width, dims.height)
+  const resizedImgBuffer = await resizedImg.getBufferAsync(resizedImg._originalMime);
+  await fsm.writeFile(path.join(cacheFolder, cacheName), resizedImgBuffer);
+  return resizedImgBuffer;
 }
