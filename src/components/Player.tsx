@@ -26,6 +26,7 @@ function Player(): ReactElement {
   const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist, spotifyApi } = useContext(playerContext);
   const { access_token } = useContext(authContext);
   const initVolume = parseFloat(localStorage.getItem("volume") ?? "55");
+  const [isPaused, setIsPaused] = useState(true);
   const [volume, setVolume] = useState<number>(initVolume);
   const [totalDuration, setTotalDuration] = useState(0);
   const [shuffle, setShuffle] = useState<boolean>(false);
@@ -88,11 +89,13 @@ function Player(): ReactElement {
           const youtubeTrack = await getYoutubeTrack(currentTrack);
           await audioPlayer.load(youtubeTrack.youtube_uri, "replace");
           await audioPlayer.play();
+          setIsPaused(false);
         }
         setIsStopped(false);
       } catch (error) {
         if (error.errcode !== 5) {
           setIsStopped(true);
+          setIsPaused(true);
         }
         console.error(error);
       }
@@ -128,17 +131,28 @@ function Player(): ReactElement {
       };
       const stopListener = () => {
         setIsStopped(true);
+        setIsPaused(true);
         // go to next track
         if (currentTrack && playlistTracksIds && currentPlaylist?.tracks.length !== 0) {
           const index = playlistTracksIds?.indexOf(currentTrack.id) + 1;
           setCurrentTrack(currentPlaylist?.tracks[index > playlistTracksIds.length - 1 ? 0 : index].track);
         }
       };
+      const pauseListener = () => {
+        setIsPaused(true);
+      }
+      const resumeListener = () => {
+        setIsPaused(false);
+      };
       audioPlayer.on("status", statusListener);
       audioPlayer.on("stopped", stopListener);
+      audioPlayer.on("paused", pauseListener)
+      audioPlayer.on("resumed", resumeListener)
       return () => {
         audioPlayer.off("status", statusListener);
         audioPlayer.off("stopped", stopListener);
+        audioPlayer.off("paused", pauseListener);
+        audioPlayer.off("resumed", resumeListener);
       };
     }
   });
@@ -148,9 +162,11 @@ function Player(): ReactElement {
       if ((await audioPlayer.isPaused()) && playerRunning) {
         await audioPlayer.play();
         setIsStopped(false);
+        setIsPaused(false);
       } else {
         await audioPlayer.pause();
         setIsStopped(true);
+        setIsPaused(true);
       }
     } catch (error) {
       console.error(error);
@@ -195,7 +211,7 @@ function Player(): ReactElement {
             <BoxView direction={Direction.LeftToRight}>
               <IconButton style={`background-color: ${shuffle ? "orange" : "rgba(255, 255, 255, 0.055)"}`} on={{ clicked: () => setShuffle(!shuffle) }} icon={new QIcon(shuffleIcon)} />
               <IconButton on={{ clicked: () => prevOrNext(-1) }} icon={new QIcon(backward)} />
-              <IconButton on={{ clicked: handlePlayPause }} icon={new QIcon(isStopped || !currentTrack ? play : pause)} />
+              <IconButton on={{ clicked: handlePlayPause }} icon={new QIcon(isStopped || isPaused || !currentTrack ? play : pause)} />
               <IconButton on={{ clicked: () => prevOrNext(1) }} icon={new QIcon(forward)} />
               <IconButton icon={new QIcon(stop)} on={{ clicked: stopPlayback }} />
             </BoxView>

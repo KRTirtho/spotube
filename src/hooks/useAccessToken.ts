@@ -2,14 +2,14 @@ import { DependencyList, useContext, useEffect } from "react";
 import authContext from "../context/authContext";
 import { CredentialKeys } from "../app";
 import playerContext from "../context/playerContext";
+import SpotifyWebApi from "spotify-web-api-node";
 
-interface UseAuthResult {
+interface UseAccessTokenResult {
   access_token: string;
 }
 
-export default (deps: DependencyList = []): UseAuthResult => {
-  const { access_token, expires_in, isLoggedIn, setExpiresIn, setAccess_token } = useContext(authContext);
-  const { spotifyApi } = useContext(playerContext);
+export default (spotifyApi: SpotifyWebApi, deps: DependencyList = []): UseAccessTokenResult => {
+  const { access_token, expires_in, isLoggedIn, setExpires_in, setAccess_token } = useContext(authContext);
   const refreshToken = localStorage.getItem(CredentialKeys.refresh_token);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default (deps: DependencyList = []): UseAuthResult => {
         .refreshAccessToken()
         .then(({ body: { access_token, expires_in } }) => {
           setAccess_token(access_token);
-          setExpiresIn(Date.now() + expires_in);
+          setExpires_in(expires_in);
         })
         .catch();
     }

@@ -3,6 +3,8 @@ import React, { Dispatch, SetStateAction } from "react";
 export interface AuthContext {
   isLoggedIn: boolean;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+  clientId: string;
+  clientSecret: string;
   access_token: string;
   /**
    * the time when the current access token will expire \
@@ -13,7 +15,7 @@ export interface AuthContext {
    * sets the time when the current access token will expire \
    * always update this with `Date.now() + expires_in`
    */
-  setExpiresIn: Dispatch<SetStateAction<number>>;
+  setExpires_in: (arg: number)=>void;
   setAccess_token: Dispatch<SetStateAction<string>>;
 }
 
@@ -22,7 +24,9 @@ const authContext = React.createContext<AuthContext>({
   setIsLoggedIn() {},
   access_token: "",
   expires_in: 0,
-  setExpiresIn() {},
+  clientId: "",
+  clientSecret: "",
+  setExpires_in() {},
   setAccess_token() {},
 });
 
