@@ -1,14 +1,15 @@
 import React, { FC, useContext, useEffect, useState } from "react";
-import { BoxView, Button, GridView, ScrollArea, Text, View } from "@nodegui/react-nodegui";
+import { Button, ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import BackButton from "./BackButton";
 import { useLocation, useParams } from "react-router";
-import { Direction, QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
+import { QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
 import { WidgetEventListeners } from "@nodegui/react-nodegui/dist/components/View/RNView";
 import authContext from "../context/authContext";
 import playerContext from "../context/playerContext";
 import IconButton from "./shared/IconButton";
 import { heartRegular, play, stop } from "../icons";
 import { audioPlayer } from "./Player";
+import useSpotifyApi from "../hooks/useSpotifyApi";
 
 export interface PlaylistTrackRes {
   name: string;
@@ -16,13 +17,10 @@ export interface PlaylistTrackRes {
   url: string;
 }
 
-interface PlaylistViewProps {
-  // audioPlayer: any;
-}
-
-const PlaylistView: FC<PlaylistViewProps> = () => {
-  const { isLoggedIn, access_token } = useContext(authContext);
-  const { spotifyApi, setCurrentTrack, currentPlaylist, currentTrack, setCurrentPlaylist } = useContext(playerContext);
+const PlaylistView: FC = () => {
+  const { isLoggedIn } = useContext(authContext);
+  const { setCurrentTrack, currentPlaylist, currentTrack, setCurrentPlaylist } = useContext(playerContext);
+  const spotifyApi = useSpotifyApi();
   const params = useParams<{ id: string }>();
   const location = useLocation<{ name: string; thumbnail: string }>();
   const [tracks, setTracks] = useState<SpotifyApi.PlaylistTrackObject[]>([]);
@@ -31,7 +29,6 @@ const PlaylistView: FC<PlaylistViewProps> = () => {
     if (isLoggedIn) {
       (async () => {
         try {
-          spotifyApi.setAccessToken(access_token);
           const tracks = await spotifyApi.getPlaylistTracks(params.id);
           setTracks(tracks.body.items);
         } catch (error) {

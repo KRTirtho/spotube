@@ -5,34 +5,34 @@ import authContext from "../context/authContext";
 import { useHistory } from "react-router";
 import CachedImage from "./shared/CachedImage";
 import { CursorShape } from "@nodegui/nodegui";
+import useSpotifyApi from "../hooks/useSpotifyApi";
 
 function Home() {
-  const { spotifyApi, currentPlaylist } = useContext(playerContext);
-  const { isLoggedIn, access_token } = useContext(authContext);
+  const { currentPlaylist } = useContext(playerContext);
+  const spotifyApi = useSpotifyApi();
+  const { access_token } = useContext(authContext);
   const [categories, setCategories] = useState<SpotifyApi.CategoryObject[]>([]);
 
   useEffect(() => {
-    (async () => {
-      try {
-        if (access_token) {
-          spotifyApi.setAccessToken(access_token);
+    if (access_token) {
+      (async () => {
+        try {
           const categoriesReceived = await spotifyApi.getCategories({ country: "US" });
           setCategories(categoriesReceived.body.categories.items);
+        } catch (error) {
+          console.error("Spotify featured playlist loading failed: ", error);
         }
-      } catch (error) {
-        console.error("Spotify featured playlist loading failed: ", error);
-      }
-    })();
+      })();
+    }
   }, [access_token]);
 
   return (
     <ScrollArea style={`flex-grow: 1; border: none; flex: 1;`}>
       <View style={`flex-direction: 'column'; justify-content: 'center'; flex: 1;`}>
         {currentPlaylist && <CategoryCard key={((Math.random() * Date.now()) / Math.random()) * 100} id="current" name="Currently Playing" />}
-        {isLoggedIn &&
-          categories.map(({ id, name }, index) => {
-            return <CategoryCard key={((index * Date.now()) / Math.random()) * 100} id={id} name={name} />;
-          })}
+        {categories.map((category, index) => {
+          return <CategoryCard key={((index * Date.now()) / Math.random()) * 100} {...category} />;
+        })}
       </View>
     </ScrollArea>
   );
@@ -48,21 +48,25 @@ interface CategoryCardProps {
 function CategoryCard({ id, name }: CategoryCardProps) {
   const history = useHistory();
   const [playlists, setPlaylists] = useState<SpotifyApi.PlaylistObjectSimplified[]>([]);
-  const { access_token, isLoggedIn } = useContext(authContext);
-  const { spotifyApi, currentPlaylist } = useContext(playerContext);
+  const { currentPlaylist } = useContext(playerContext);
+  const spotifyApi = useSpotifyApi();
 
   useEffect(() => {
+    let mounted = true;
+
     (async () => {
       try {
         if (id !== "current") {
-          spotifyApi.setAccessToken(access_token);
           const playlistsRes = await spotifyApi.getPlaylistsForCategory(id, { limit: 4 });
-          setPlaylists(playlistsRes.body.playlists.items);
+          mounted && setPlaylists(playlistsRes.body.playlists.items);
         }
       } catch (error) {
         console.error(`Failed to get playlists of category ${name} for: `, error);
       }
     })();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   function goToGenre() {
@@ -103,10 +107,9 @@ function CategoryCard({ id, name }: CategoryCardProps) {
       {(playlists.length > 0 || id === "current") && <Button id="anchor-heading" cursor={CursorShape.PointingHandCursor} on={{ MouseButtonRelease: goToGenre }} text={name} />}
       <View id="child-view">
         {id === "current" && currentPlaylist && <PlaylistCard key={(Date.now() / Math.random()) * 100} {...currentPlaylist} />}
-        {isLoggedIn &&
-          playlists.map((playlist, index) => {
-            return <PlaylistCard key={((index * Date.now()) / Math.random()) * 100} id={playlist.id} name={playlist.name} thumbnail={playlist.images[0].url} />;
-          })}
+        {playlists.map((playlist, index) => {
+          return <PlaylistCard key={((index * Date.now()) / Math.random()) * 100} id={playlist.id} name={playlist.name} thumbnail={playlist.images[0].url} />;
+        })}
       </View>
     </View>
   );

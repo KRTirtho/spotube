@@ -9,6 +9,7 @@ import PlayerProgressBar from "./PlayerProgressBar";
 import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular } from "../icons";
 import IconButton from "./shared/IconButton";
 import authContext from "../context/authContext";
+import useSpotifyApi from "../hooks/useSpotifyApi";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -16,14 +17,15 @@ export const audioPlayer = new NodeMpv(
     auto_restart: true,
     time_update: 1,
     binary: process.env.MPV_EXECUTABLE ?? "/usr/bin/mpv",
-    debug: true,
-    verbose: true,
+    // debug: true,
+    // verbose: true,
   },
   ["--ytdl-raw-options-set=format=140,http-chunk-size=300000"]
 );
 
 function Player(): ReactElement {
-  const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist, spotifyApi } = useContext(playerContext);
+  const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
+  const spotifyApi = useSpotifyApi();
   const { access_token } = useContext(authContext);
   const initVolume = parseFloat(localStorage.getItem("volume") ?? "55");
   const [isPaused, setIsPaused] = useState(true);
@@ -67,19 +69,18 @@ function Player(): ReactElement {
     };
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        if (access_token) {
-          spotifyApi.setAccessToken(access_token);
-          const userSavedTrack = await spotifyApi.getMySavedTracks();
-          console.log("userSavedTrack:", userSavedTrack);
-        }
-      } catch (error) {
-        console.error("Failed to get spotify user saved tracks: ", error);
-      }
-    })();
-  }, [access_token]);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       if (access_token) {
+  //         const userSavedTrack = await spotifyApi.getMySavedTracks();
+  //         console.log("userSavedTrack:", userSavedTrack);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to get spotify user saved tracks: ", error);
+  //     }
+  //   })();
+  // }, [access_token]);
 
   // track change effect
   useEffect(() => {

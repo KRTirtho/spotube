@@ -15,16 +15,18 @@ function CachedImage({ src, alt, ...props }: CachedImageProps) {
   const [imageProcessError, setImageProcessError] = useState<boolean>(false);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
       try {
-        setImageBuffer(await getCachedImageBuffer(src, props.maxSize ?? props.size));
+        mounted && setImageBuffer(await getCachedImageBuffer(src, props.maxSize ?? props.size));
       } catch (error) {
-        setImageProcessError(false);
+        mounted && setImageProcessError(false);
         console.log("Cached Image Error:", error);
       }
     })();
     return () => {
       imgRef.current?.close();
+      mounted = false;
     };
   }, []);
   return !imageProcessError && imageBuffer ? (

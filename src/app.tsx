@@ -4,12 +4,13 @@ import { QIcon, QKeyEvent, QMainWindow, QMainWindowSignals, WidgetEventTypes, Wi
 import nodeguiIcon from "../assets/nodegui.jpg";
 import { MemoryRouter } from "react-router";
 import Routes from "./routes";
-import SpotifyWebApi from "spotify-web-api-node";
 import { LocalStorage } from "node-localstorage";
 import authContext from "./context/authContext";
 import playerContext, { CurrentPlaylist, CurrentTrack } from "./context/playerContext";
 import Player, { audioPlayer } from "./components/Player";
-import { redirectURI } from "./conf";
+import express from "express";
+import open from "open";
+import spotifyApi from "./initializations/spotifyApi";
 
 export enum CredentialKeys {
   credentials = "credentials",
@@ -31,32 +32,30 @@ function RootApp() {
 
   const windowEvents = useEventHandler<QMainWindowSignals>(
     {
-     async KeyRelease(nativeEv) {
-       try {
-         
-        if (nativeEv) {
-          const event = new QKeyEvent(nativeEv);
-          const eventKey = event.key();
-          console.log('eventKey:', eventKey)
-          if(audioPlayer.isRunning() && currentTrack)
-          switch (eventKey) {
-            case 32: //space
-              await audioPlayer.isPaused() ?
-                await audioPlayer.play() : await audioPlayer.pause();
-              break;
-            case 16777236: //arrow-right
-              await audioPlayer.isSeekable() && await audioPlayer.seek(+5);
-              break;
-            case 16777234: //arrow-left
-              await audioPlayer.isSeekable() && await audioPlayer.seek(-5);
-              break;
-            default:
-              break;
+      async KeyRelease(nativeEv) {
+        try {
+          if (nativeEv) {
+            const event = new QKeyEvent(nativeEv);
+            const eventKey = event.key();
+            console.log("eventKey:", eventKey);
+            if (audioPlayer.isRunning() && currentTrack)
+              switch (eventKey) {
+                case 32: //space
+                  (await audioPlayer.isPaused()) ? await audioPlayer.play() : await audioPlayer.pause();
+                  break;
+                case 16777236: //arrow-right
+                  (await audioPlayer.isSeekable()) && (await audioPlayer.seek(+5));
+                  break;
+                case 16777234: //arrow-left
+                  (await audioPlayer.isSeekable()) && (await audioPlayer.seek(-5));
+                  break;
+                default:
+                  break;
+              }
           }
+        } catch (error) {
+          console.error("Error in window events: ", error);
         }
-       } catch (error) {
-         console.error("Error in window events: ", error)
-       }
       },
     },
     [currentTrack]
@@ -68,7 +67,6 @@ function RootApp() {
   const [access_token, setAccess_token] = useState<string>("");
   const [currentPlaylist, setCurrentPlaylist] = useState<CurrentPlaylist>();
 
-  const spotifyApi = new SpotifyWebApi({ redirectUri: redirectURI, ...credentials });
   const cachedCredentials = localStorage.getItem(CredentialKeys.credentials);
 
   const setExpireTime = (expirationDuration: number) => setExpires_in(Date.now() + expirationDuration);
@@ -89,18 +87,37 @@ function RootApp() {
       windowRef.current?.removeEventListener(WidgetEventTypes.Close, onWindowClose);
     };
   });
+  // for user code login
+  useEffect(() => {
+    if (isLoggedIn && credentials && !localStorage.getItem(CredentialKeys.refresh_token)) {
+      const app = express();
+      app.use(express.json());
+
+      app.get<null, null, null, { code: string }>("/auth/spotify/callback", async (req, res) => {
+        try {
+          spotifyApi.setClientId(credentials.clientId);
+          spotifyApi.setClientSecret(credentials.clientSecret);
+          const { body: authRes } = await spotifyApi.authorizationCodeGrant(req.query.code);
+          setAccess_token(authRes.access_token);
+          setExpireTime(authRes.expires_in);
+          localStorage.setItem(CredentialKeys.refresh_token, authRes.refresh_token);
+          return res.end();
+        } catch (error) {
+          console.error("Failed to fullfil code grant flow: ", error);
+        }
+      });
+
+      const server = app.listen(4304, () => {
+        console.log("Server is running");
+        open(spotifyApi.createAuthorizeURL(["user-library-read", "user-library-modify"], "xxxyyysssddd")).catch((e) => console.error("Opening IPC connection with browser failed: ", e));
+      });
+      return () => {
+        server.close(() => console.log("Closed server"));
+      };
+    }
+  }, [isLoggedIn, credentials]);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      spotifyApi
-        .clientCredentialsGrant()
-        .then(({ body: { access_token } }) => {
-          setAccess_token(access_token);
-        })
-        .catch((error) => {
-          console.error("Spotify Client Credential not granted for: ", error);
-        });
-    }
     if (cachedCredentials) {
       setCredentials(JSON.parse(cachedCredentials));
     }
@@ -110,7 +127,7 @@ function RootApp() {
     <Window ref={windowRef} on={windowEvents} windowState={WindowState.WindowMaximized} windowIcon={winIcon} windowTitle="Spotube" minSize={minSize}>
       <MemoryRouter>
         <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, expires_in, setAccess_token, setExpires_in: setExpireTime, ...credentials }}>
-          <playerContext.Provider value={{ spotifyApi, currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
+          <playerContext.Provider value={{ currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
             <View style={`flex: 1; flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch'; height: '100%';`}>
               <Routes />
               {isLoggedIn && <Player />}

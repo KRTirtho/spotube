@@ -1,7 +1,6 @@
 import { DependencyList, useContext, useEffect } from "react";
 import authContext from "../context/authContext";
 import { CredentialKeys } from "../app";
-import playerContext from "../context/playerContext";
 import SpotifyWebApi from "spotify-web-api-node";
 
 interface UseAccessTokenResult {
