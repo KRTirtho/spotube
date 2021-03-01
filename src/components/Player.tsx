@@ -10,6 +10,7 @@ import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegul
 import IconButton from "./shared/IconButton";
 import authContext from "../context/authContext";
 import useSpotifyApi from "../hooks/useSpotifyApi";
+import showError from "../helpers/showError";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -59,6 +60,7 @@ function Player(): ReactElement {
         }
       } catch (error) {
         console.error("Failed to start audio player", error);
+        showError(error, "[Failed starting audio player]: ")
       }
     })();
 
@@ -98,7 +100,7 @@ function Player(): ReactElement {
           setIsStopped(true);
           setIsPaused(true);
         }
-        console.error(error);
+        showError(error, "[Failure at track change]: ");
       }
     })();
   }, [currentTrack]);
@@ -170,14 +172,13 @@ function Player(): ReactElement {
         setIsPaused(true);
       }
     } catch (error) {
-      console.error(error);
+      showError(error, "[Track control failed]: ");
     }
   };
 
   const prevOrNext = (constant: number) => {
     if (currentTrack && playlistTracksIds && currentPlaylist) {
       const index = playlistTracksIds.indexOf(currentTrack.id) + constant;
-      console.log("index:", index);
       setCurrentTrack(currentPlaylist.tracks[index > playlistTracksIds?.length - 1 ? 0 : index < 0 ? playlistTracksIds.length - 1 : index].track);
     }
   };
@@ -188,7 +189,7 @@ function Player(): ReactElement {
         await audioPlayer.stop();
       }
     } catch (error) {
-      console.error("Failed to stop the audio player: ", error);
+      showError(error, "[Failed at audio-player stop]: ")
     }
   }
 

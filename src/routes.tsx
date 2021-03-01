@@ -15,8 +15,8 @@ function Routes() {
       <Route exact path="/">
         {isLoggedIn ? <Home /> : <Login />}
       </Route>
-      <Route path="/playlist/:id"><PlaylistView/></Route>
-      <Route path="/genre/playlists/:id"><PlaylistGenreView/></Route>
+      <Route exact path="/playlist/:id"><PlaylistView/></Route>
+      <Route exact path="/genre/playlists/:id"><PlaylistGenreView/></Route>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Window, hot, View, useEventHandler } from "@nodegui/react-nodegui";
-import { QIcon, QKeyEvent, QMainWindow, QMainWindowSignals, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
+import { Window, hot, View, useEventHandler, BoxView } from "@nodegui/react-nodegui";
+import { Direction, QIcon, QKeyEvent, QMainWindow, QMainWindowSignals, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
 import nodeguiIcon from "../assets/nodegui.jpg";
 import { MemoryRouter } from "react-router";
 import Routes from "./routes";
@@ -8,9 +8,11 @@ import { LocalStorage } from "node-localstorage";
 import authContext from "./context/authContext";
 import playerContext, { CurrentPlaylist, CurrentTrack } from "./context/playerContext";
 import Player, { audioPlayer } from "./components/Player";
+import { QueryClient, QueryClientProvider } from "react-query";
 import express from "express";
 import open from "open";
 import spotifyApi from "./initializations/spotifyApi";
+import showError from "./helpers/showError";
 
 export enum CredentialKeys {
   credentials = "credentials",
@@ -25,6 +27,15 @@ export interface Credentials {
 const minSize = { width: 700, height: 750 };
 const winIcon = new QIcon(nodeguiIcon);
 global.localStorage = new LocalStorage("./local");
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      onError(error) {
+        showError(error);
+      },
+    },
+  },
+});
 
 function RootApp() {
   const windowRef = useRef<QMainWindow>();
@@ -66,10 +77,9 @@ function RootApp() {
   const [expires_in, setExpires_in] = useState<number>(0);
   const [access_token, setAccess_token] = useState<string>("");
   const [currentPlaylist, setCurrentPlaylist] = useState<CurrentPlaylist>();
-
   const cachedCredentials = localStorage.getItem(CredentialKeys.credentials);
 
-  const setExpireTime = (expirationDuration: number) => setExpires_in(Date.now() + expirationDuration);
+  const setExpireTime = (expirationDuration: number) => setExpires_in(Date.now() + expirationDuration * 1000 /* 1s = 1000 ms */);
 
   useEffect(() => {
     setIsLoggedIn(!!cachedCredentials);
@@ -128,10 +138,14 @@ function RootApp() {
       <MemoryRouter>
         <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, expires_in, setAccess_token, setExpires_in: setExpireTime, ...credentials }}>
           <playerContext.Provider value={{ currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
-            <View style={`flex: 1; flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch'; height: '100%';`}>
-              <Routes />
-              {isLoggedIn && <Player />}
-            </View>
+            <QueryClientProvider client={queryClient}>
+              {/* <View style={`flex: 1; flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch'; height: '100%';`}> */}
+              <BoxView direction={Direction.TopToBottom}>
+                <Routes />
+                {isLoggedIn && <Player />}
+              </BoxView>
+              {/* </View> */}
+            </QueryClientProvider>
           </playerContext.Provider>
         </authContext.Provider>
       </MemoryRouter>

@@ -1,15 +1,15 @@
-import React, { FC, useContext, useEffect, useState } from "react";
-import { Button, ScrollArea, Text, View } from "@nodegui/react-nodegui";
+import React, { FC, useContext } from "react";
+import { BoxView, Button, ScrollArea, Text } from "@nodegui/react-nodegui";
 import BackButton from "./BackButton";
 import { useLocation, useParams } from "react-router";
-import { QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
+import { Direction, QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
 import { WidgetEventListeners } from "@nodegui/react-nodegui/dist/components/View/RNView";
-import authContext from "../context/authContext";
 import playerContext from "../context/playerContext";
 import IconButton from "./shared/IconButton";
 import { heartRegular, play, stop } from "../icons";
 import { audioPlayer } from "./Player";
-import useSpotifyApi from "../hooks/useSpotifyApi";
+import { QueryCacheKeys } from "../conf";
+import useSpotifyQuery from "../hooks/useSpotifyQuery";
 
 export interface PlaylistTrackRes {
   name: string;
@@ -18,28 +18,18 @@ export interface PlaylistTrackRes {
 }
 
 const PlaylistView: FC = () => {
-  const { isLoggedIn } = useContext(authContext);
   const { setCurrentTrack, currentPlaylist, currentTrack, setCurrentPlaylist } = useContext(playerContext);
-  const spotifyApi = useSpotifyApi();
   const params = useParams<{ id: string }>();
   const location = useLocation<{ name: string; thumbnail: string }>();
-  const [tracks, setTracks] = useState<SpotifyApi.PlaylistTrackObject[]>([]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      (async () => {
-        try {
-          const tracks = await spotifyApi.getPlaylistTracks(params.id);
-          setTracks(tracks.body.items);
-        } catch (error) {
-          console.error(`Failed to get tracks from ${params.id}: `, error);
-        }
-      })();
-    }
-  }, []);
+  const { data: tracks, isSuccess, isError, isLoading, refetch } = useSpotifyQuery<SpotifyApi.PlaylistTrackObject[]>(
+    [QueryCacheKeys.playlistTracks, params.id],
+    (spotifyApi) => spotifyApi.getPlaylistTracks(params.id).then((track) => track.body.items),
+    { initialData: [] }
+  );
 
   const handlePlaylistPlayPause = () => {
-    if (currentPlaylist?.id !== params.id) {
+    if (currentPlaylist?.id !== params.id && isSuccess && tracks) {
       setCurrentPlaylist({ ...params, ...location.state, tracks });
       setCurrentTrack(tracks[0].track);
     } else {
@@ -49,42 +39,48 @@ const PlaylistView: FC = () => {
     }
   };
 
-  const trackClickHandler = async (track: SpotifyApi.TrackObjectFull) => {
-    try {
-      setCurrentTrack(track);
-    } catch (error) {
-      console.error("Failed to resolve track's youtube url: ", error);
-    }
+  const trackClickHandler = (track: SpotifyApi.TrackObjectFull) => {
+    setCurrentTrack(track);
   };
 
   return (
-    <View style={`flex-direction: 'column'; flex-grow: 1;`}>
-      <View style={`justify-content: 'space-between'; padding-bottom: 10px; padding-left: 10px;`}>
+    <BoxView direction={Direction.TopToBottom}>
+      <BoxView style={`max-width: 150px;`}>
         <BackButton />
-        <View style={`height: 50px; justify-content: 'space-between'; width: 100px; padding-right: 20px;`}>
-          <IconButton icon={new QIcon(heartRegular)} />
-          <IconButton style={`background-color: #00be5f; color: white;`} on={{ clicked: handlePlaylistPlayPause }} icon={new QIcon(currentPlaylist?.id === params.id ? stop : play)} />
-        </View>
-      </View>
+        <IconButton icon={new QIcon(heartRegular)} />
+        <IconButton style={`background-color: #00be5f; color: white;`} on={{ clicked: handlePlaylistPlayPause }} icon={new QIcon(currentPlaylist?.id === params.id ? stop : play)} />
+      </BoxView>
       <Text>{`<center><h2>${location.state.name[0].toUpperCase()}${location.state.name.slice(1)}</h2></center>`}</Text>
       <ScrollArea style={`flex-grow: 1; border: none;`}>
-        <View style={`flex-direction:column;`}>
-          {isLoggedIn &&
-            tracks.length > 0 &&
-            tracks.map(({ track }, index) => {
-              return (
-                <TrackButton
-                  key={index * ((Date.now() / Math.random()) * 100)}
-                  active={currentTrack?.id === track.id && currentPlaylist?.id === params.id}
-                  artist={track.artists.map((x) => x.name).join(", ")}
-                  name={track.name}
-                  on={{ clicked: () => trackClickHandler(track) }}
-                />
-              );
-            })}
-        </View>
+        <BoxView /* style={`flex-direction:column;`} */ direction={Direction.TopToBottom}>
+          {isLoading && <Text>{`Loading Tracks...`}</Text>}
+          {isError && (
+            <>
+              <Text>{`Failed to load ${location.state.name} tracks`}</Text>
+              <Button
+                on={{
+                  clicked() {
+                    refetch();
+                  },
+                }}
+                text="Retry"
+              />
+            </>
+          )}
+          {tracks?.map(({ track }, index) => {
+            return (
+              <TrackButton
+                key={index+track.id}
+                active={currentTrack?.id === track.id && currentPlaylist?.id === params.id}
+                artist={track.artists.map((x) => x.name).join(", ")}
+                name={track.name}
+                on={{ clicked: () => trackClickHandler(track) }}
+              />
+            );
+          })}
+        </BoxView>
       </ScrollArea>
-    </View>
+    </BoxView>
   );
 };
 

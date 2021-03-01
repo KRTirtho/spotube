@@ -9,6 +9,7 @@
     "build": "webpack --mode=production",
     "dev": "TSC_WATCHFILE=UseFsEvents webpack --mode=development",
     "start": "qode ./dist/index.js",
+    "start:trace": "qode ./dist/index.js --trace",
     "debug": "qode --inspect ./dist/index.js"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "@nodegui/react-nodegui": "^0.10.0",
     "axios": "^0.21.1",
     "base64url": "^3.0.1",
+    "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
     "du": "^1.0.0",
     "express": "^4.17.1",
@@ -25,9 +27,12 @@
     "node-mpv": "^2.0.0-beta.1",
     "open": "^7.4.1",
     "react": "^16.14.0",
+    "react-dom": "^17.0.1",
+    "react-query": "^3.12.0",
     "react-router": "^5.2.0",
     "scrape-yt": "^1.4.7",
-    "spotify-web-api-node": "^5.0.2"
+    "spotify-web-api-node": "^5.0.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -43,6 +48,7 @@
     "@types/react": "^16.9.49",
     "@types/react-router": "^5.1.11",
     "@types/spotify-web-api-node": "^5.0.0",
+    "@types/uuid": "^8.3.0",
     "@types/webpack-env": "^1.15.3",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
