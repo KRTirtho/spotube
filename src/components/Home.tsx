@@ -1,38 +1,43 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Button, ScrollArea, BoxView } from "@nodegui/react-nodegui";
+import React from "react";
+import { Button, ScrollArea, BoxView, View } from "@nodegui/react-nodegui";
 import { useHistory } from "react-router";
 import CachedImage from "./shared/CachedImage";
 import { CursorShape, Direction } from "@nodegui/nodegui";
-import useSpotifyApi from "../hooks/useSpotifyApi";
-import showError from "../helpers/showError";
-import authContext from "../context/authContext";
-import useSpotifyApiError from "../hooks/useSpotifyApiError";
+import { QueryCacheKeys } from "../conf";
+import useSpotifyQuery from "../hooks/useSpotifyQuery";
+import ErrorApplet from "./shared/ErrorApplet";
 
 function Home() {
-  const spotifyApi = useSpotifyApi();
-  const { access_token } = useContext(authContext);
-  const [categories, setCategories] = useState<SpotifyApi.CategoryObject[]>([]);
-  const handleSpotifyError = useSpotifyApiError(spotifyApi);
-
-  useEffect(() => {
-    if (categories.length === 0) {
+  const {
+    data: categories,
+    isError,
+    isRefetchError,
+    refetch,
+  } = useSpotifyQuery<SpotifyApi.CategoryObject[]>(
+    QueryCacheKeys.categories,
+    (spotifyApi) =>
       spotifyApi
         .getCategories({ country: "US" })
-        .then((categoriesReceived) => setCategories(categoriesReceived.body.categories.items))
-        .catch((error) => {
-          showError(error, "[Spotify genre loading failed]: ");
-          handleSpotifyError(error);
-        });
-    }
-  }, [access_token]);
+        .then((categoriesReceived) => categoriesReceived.body.categories.items),
+    { initialData: [] }
+  );
 
   return (
     <ScrollArea style={`flex-grow: 1; border: none;`}>
-      <BoxView direction={Direction.TopToBottom}>
-        {categories.map((category, index) => {
-          return <CategoryCard key={index+category.id} id={category.id} name={category.name} />;
+      <View style={`flex-direction: 'column'; justify-content: 'center'; flex: 1;`}>
+        {(isError || isRefetchError) && (
+          <ErrorApplet message="Failed to query genres" reload={refetch} helps />
+        )}
+        {categories?.map((category, index) => {
+          return (
+            <CategoryCard
+              key={index + category.id}
+              id={category.id}
+              name={category.name}
+            />
+          );
         })}
-      </BoxView>
+      </View>
     </ScrollArea>
   );
 }
@@ -46,40 +51,52 @@ interface CategoryCardProps {
 
 const CategoryCard = ({ id, name }: CategoryCardProps) => {
   const history = useHistory();
-  const [playlists, setPlaylists] = useState<SpotifyApi.PlaylistObjectSimplified[]>([]);
-  const spotifyApi = useSpotifyApi();
-  const handleSpotifyError = useSpotifyApiError(spotifyApi);
-
-  useEffect(() => {
-    if (playlists.length === 0) {
+  const { data: playlists, isError } = useSpotifyQuery<
+    SpotifyApi.PlaylistObjectSimplified[]
+  >(
+    [QueryCacheKeys.categoryPlaylists, id],
+    (spotifyApi) =>
       spotifyApi
         .getPlaylistsForCategory(id, { limit: 4 })
-        .then((playlistsRes) => setPlaylists(playlistsRes.body.playlists.items))
-        .catch((error) => {
-          showError(error, `[Failed to get playlists of category ${name}]: `);
-          handleSpotifyError(error);
-        });
-    }
-  }, []);
+        .then((playlistsRes) => playlistsRes.body.playlists.items),
+    { initialData: [] }
+  );
 
   function goToGenre() {
     history.push(`/genre/playlists/${id}`, { name });
   }
-
+  if (isError) {
+    return <></ >;
+  }
   return (
-    <BoxView id="container" styleSheet={categoryStylesheet} direction={Direction.TopToBottom}>
-      <Button id="anchor-heading" cursor={CursorShape.PointingHandCursor} on={{ MouseButtonRelease: goToGenre }} text={name} />
-      <BoxView direction={Direction.LeftToRight}>
-        {playlists.map((playlist, index) => {
-          return <PlaylistCard key={index+playlist.id} id={playlist.id} name={playlist.name} thumbnail={playlist.images[0].url} />;
+    <View id="container" styleSheet={categoryStylesheet}>
+      <Button
+        id="anchor-heading"
+        cursor={CursorShape.PointingHandCursor}
+        on={{ MouseButtonRelease: goToGenre }}
+        text={name}
+      />
+      <View id="child-view">
+        {playlists?.map((playlist, index) => {
+          return (
+            <PlaylistCard
+              key={index + playlist.id}
+              id={playlist.id}
+              name={playlist.name}
+              thumbnail={playlist.images[0].url}
+            />
+          );
         })}
-      </BoxView>
-    </BoxView>
+      </View>
+    </View>
   );
 };
 
 const categoryStylesheet = `
      #container{
+       flex: 1;
+       flex-direction: column;
+       justify-content: 'center';
        margin-bottom: 20px;
      }
      #anchor-heading{
@@ -89,8 +106,13 @@ const categoryStylesheet = `
        outline: none;
        font-size: 20px;
        font-weight: bold;
-       text-align: left;
+       align-self: flex-start;
      }
+     #child-view{
+        flex: 1;
+        justify-content: 'space-around';
+        align-items: 'center';
+      }
      #anchor-heading:hover{
        border: none;
        outline: none;
@@ -104,18 +126,19 @@ interface PlaylistCardProps {
   id: string;
 }
 
-export const PlaylistCard = React.memo(({ id, name, thumbnail }: PlaylistCardProps) => {
-  const history = useHistory();
+export const PlaylistCard = React.memo(
+  ({ id, name, thumbnail }: PlaylistCardProps) => {
+    const history = useHistory();
 
-  function gotoPlaylist() {
-    history.push(`/playlist/${id}`, { name, thumbnail });
-  }
+    function gotoPlaylist() {
+      history.push(`/playlist/${id}`, { name, thumbnail });
+    }
 
-  const playlistStyleSheet = `
+    const playlistStyleSheet = `
     #playlist-container{
-      max-width: 150px;
-      max-height: 150px;
-      min-height: 150px;
+      max-width: 250px;
+      flex-direction: column;
+      padding: 2px;
     }
     #playlist-container:hover{
       border: 1px solid green;
@@ -125,9 +148,20 @@ export const PlaylistCard = React.memo(({ id, name, thumbnail }: PlaylistCardPro
     }
   `;
 
-  return (
-    <BoxView size={{height: 150, width: 150, fixed: true}} direction={Direction.TopToBottom} id="playlist-container" cursor={CursorShape.PointingHandCursor} styleSheet={playlistStyleSheet} on={{ MouseButtonRelease: gotoPlaylist }}>
-      <CachedImage src={thumbnail} maxSize={{ height: 150, width: 150 }} scaledContents alt={name} />
-    </BoxView>
-  );
-});
+    return (
+      <View
+        id="playlist-container"
+        cursor={CursorShape.PointingHandCursor}
+        styleSheet={playlistStyleSheet}
+        on={{ MouseButtonRelease: gotoPlaylist }}
+      >
+        <CachedImage
+          src={thumbnail}
+          maxSize={{ height: 150, width: 150 }}
+          scaledContents
+          alt={name}
+        />
+      </View>
+    );
+  }
+);

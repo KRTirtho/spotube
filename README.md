@@ -1,63 +1,44 @@
-# react-nodegui-starter
+# Spotube
+Spotube is a [qt](https://qt.io) based lightweight spotify client which uses [nodegui/react-nodegui](https://github.com/nodegui/react-nodegui) as frontend & nodejs as backend. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
 
-**Clone and run for a quick way to see React NodeGui in action.**
+## Features
+Following are the features that currently spotube offers:
+- Open Source
+- No telementry, diagnostics or user data collection
+- Lightweight & resource friendly
+- Near native performance & seemless with default desktop themes (Win10, Win7, OSX, QT-default)
+- Playback control is on user's machine instead of server based
+- Small size & less data hungry
+- No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
 
-<img alt="logo" src="https://github.com/nodegui/react-nodegui-starter/raw/master/assets/demo.png" height="500" />
+## Installation
+I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
 
-## To Use
+Windows: [.exe]()
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+OSX: **I hate apple** (Just kidding, actually don't have a mac)
 
-```bash
-# Clone this repository
-git clone https://github.com/nodegui/react-nodegui-starter
-# Install CMake
-brew install cmake
-# Go into the repository
-cd react-nodegui-starter
-# Install dependencies
-npm install
-# Run the dev server
-npm run dev
-# Open andother terminal and run the app
-npm start
-```
+Linux: [.appimage]()
 
-## Installation & Resources for learning React NodeGui
 
-- [Documentation](https://react.nodegui.org) - all of React NodeGui's documentation.
-- [NodeGui](https://nodegui.org) - all of NodeGui's documentation.
+**I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat stores or software centers or repositories**
 
-## Packaging app as a distributable
+## Configuration
+There are some configurations that needs to be done to start using this software
 
-In order to distribute your finished app, you can use [@nodegui/packer](https://github.com/nodegui/packer)
+You need a spotify account & a web app  for
 
-### Step 1: (_**Run this command only once**_)
+- clientId
+- clientSecret
 
-```sh
-npx nodegui-packer --init MyAppName
-```
+See these screenshots:
 
-This will produce the deploy directory containing the template. You can modify this to suite your needs. Like add icons, change the name, description and add other native features or dependencies. Make sure you commit this directory.
+[1]()
 
-### Step 2: (_**Run this command every time you want to build a new distributable**_)
+[2]()
 
-Next you can run the pack command:
+[3]()
 
-```sh
-npm run build
-```
+[4]()
 
-This will produce the js bundle along with assets inside the `./dist` directory
-
-```sh
-npx nodegui-packer --pack ./dist
-```
-
-This will build the distributable using @nodegui/packer based on your template. The output of the command is found under the build directory. You should gitignore the build directory.
-
-More details about packer can be found here: https://github.com/nodegui/packer
-
-## License
-
-MIT
+**[Important]!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself

@@ -9,5 +9,6 @@ export const redirectURI = "http://localhost:4304/auth/spotify/callback"
 export enum QueryCacheKeys{
   categories="categories",
   categoryPlaylists = "categoryPlaylists",
-  playlistTracks="playlistTracks"
+  genrePlaylists="genrePlaylists",
+  playlistTracks="playlistTracks",
 }

@@ -1,5 +1,5 @@
 import React, { FC, useContext } from "react";
-import { BoxView, Button, ScrollArea, Text } from "@nodegui/react-nodegui";
+import { BoxView, View, Button, ScrollArea, Text } from "@nodegui/react-nodegui";
 import BackButton from "./BackButton";
 import { useLocation, useParams } from "react-router";
 import { Direction, QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
@@ -44,15 +44,15 @@ const PlaylistView: FC = () => {
   };
 
   return (
-    <BoxView direction={Direction.TopToBottom}>
-      <BoxView style={`max-width: 150px;`}>
+    <View style={`flex: 1; flex-direction: 'column'; flex-grow: 1;`}>
+      <View style={`justify-content: 'space-evenly'; max-width: 150px; padding: 10px;`}>
         <BackButton />
         <IconButton icon={new QIcon(heartRegular)} />
         <IconButton style={`background-color: #00be5f; color: white;`} on={{ clicked: handlePlaylistPlayPause }} icon={new QIcon(currentPlaylist?.id === params.id ? stop : play)} />
-      </BoxView>
+      </View>
       <Text>{`<center><h2>${location.state.name[0].toUpperCase()}${location.state.name.slice(1)}</h2></center>`}</Text>
-      <ScrollArea style={`flex-grow: 1; border: none;`}>
-        <BoxView /* style={`flex-direction:column;`} */ direction={Direction.TopToBottom}>
+      <ScrollArea style={`flx:1; flex-grow: 1; border: none;`}>
+        <View style={`flex-direction:column; flex: 1;`}>
           {isLoading && <Text>{`Loading Tracks...`}</Text>}
           {isError && (
             <>
@@ -78,9 +78,9 @@ const PlaylistView: FC = () => {
               />
             );
           })}
-        </BoxView>
+        </View>
       </ScrollArea>
-    </BoxView>
+    </View>
   );
 };
 

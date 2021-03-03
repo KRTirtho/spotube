@@ -139,12 +139,10 @@ function RootApp() {
         <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, expires_in, setAccess_token, setExpires_in: setExpireTime, ...credentials }}>
           <playerContext.Provider value={{ currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
             <QueryClientProvider client={queryClient}>
-              {/* <View style={`flex: 1; flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch'; height: '100%';`}> */}
-              <BoxView direction={Direction.TopToBottom}>
+              <View style={`flex: 1; flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch'; height: '100%';`}>
                 <Routes />
                 {isLoggedIn && <Player />}
-              </BoxView>
-              {/* </View> */}
+              </View>
             </QueryClientProvider>
           </playerContext.Provider>
         </authContext.Provider>
