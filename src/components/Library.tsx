@@ -68,8 +68,9 @@ function UserSavedTracks() {
       <PlaylistSimpleControls handlePlaylistPlayPause={handlePlaylistPlayPause} isActive={currentPlaylist?.id === userSavedPlaylistId} />
       <ScrollArea style="flex: 1; border: none;">
         <View style="flex: 1; flex-direction: 'column'; align-items: 'stretch';">
-          {userTracks?.map(({ track }) => (
+          {userTracks?.map(({ track }, index) => (
             <TrackButton
+              key={index+track.id}
               active={currentPlaylist?.id === userSavedPlaylistId && currentTrack?.id === track.id}
               artist={track.artists.map((x) => x.name).join(", ")}
               name={track.name}

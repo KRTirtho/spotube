@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Spotube
+Exec=AppRun
+Icon=default
+Comment=A music streaming app combining the power of Spotify & Youtube
+Terminal=true
+Categories=Music;

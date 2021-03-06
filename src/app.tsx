@@ -13,6 +13,9 @@ import express from "express";
 import open from "open";
 import spotifyApi from "./initializations/spotifyApi";
 import showError from "./helpers/showError";
+import fs from "fs"
+import path from "path";
+import { confDir } from "./conf";
 
 export enum CredentialKeys {
   credentials = "credentials",
@@ -26,7 +29,9 @@ export interface Credentials {
 
 const minSize = { width: 700, height: 750 };
 const winIcon = new QIcon(nodeguiIcon);
-global.localStorage = new LocalStorage("./local");
+const localStorageDir = path.join(confDir, "local");
+fs.mkdirSync(localStorageDir, {recursive: true});
+global.localStorage = new LocalStorage(localStorageDir);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

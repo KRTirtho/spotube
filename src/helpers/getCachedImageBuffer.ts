@@ -6,6 +6,7 @@ import { Stream } from "stream";
 import { streamToBuffer } from "./streamToBuffer";
 import Jimp from "jimp";
 import du from "du";
+import { cacheDir } from "../conf";
 
 
 interface ImageDimensions {
@@ -18,15 +19,15 @@ const fsm = fs.promises;
 export async function getCachedImageBuffer(name: string, dims?: ImageDimensions): Promise<Buffer> {
   try {
     const MB_5 = 5000000; //5 Megabytes
-    const cacheFolder = path.join(process.cwd(), "cache", "images");
+    const cacheImgFolder = path.join(cacheDir, "images");
     // for clearing up the cache if it reaches out of the size
     const cacheName = `${isUrl(name) ? name.split("/").slice(-1)[0] : name}.cnim`;
-    const cachePath = path.join(cacheFolder, cacheName);
+    const cachePath = path.join(cacheImgFolder, cacheName);
     // checking if the cached image already exists or not
     if (fs.existsSync(cachePath)) {
       // automatically removing cache after a certain 50 MB oversize
-      if ((await du(cacheFolder)) > MB_5) {
-        fs.rmSync(cacheFolder, { recursive: true, force: true });
+      if ((await du(cacheImgFolder)) > MB_5) {
+        fs.rmSync(cacheImgFolder, { recursive: true, force: true });
       }
       const cachedImg = await fsm.readFile(cachePath);
       const cachedImgMeta = (await Jimp.read(cachedImg)).bitmap;
@@ -35,7 +36,7 @@ export async function getCachedImageBuffer(name: string, dims?: ImageDimensions)
       // images are removed and replaced with a new one
       if (dims && (cachedImgMeta.height !== dims.height || cachedImgMeta.width !== dims?.width)) {
         fs.rmSync(cachePath);
-        return await imageResizeAndWrite(cachedImg, { cacheFolder, cacheName, dims });
+        return await imageResizeAndWrite(cachedImg, { cacheFolder: cacheImgFolder, cacheName, dims });
       }
       return cachedImg;
     } else {
@@ -44,11 +45,11 @@ export async function getCachedImageBuffer(name: string, dims?: ImageDimensions)
       // converting axios stream to buffer
       const resImgBuf = await streamToBuffer(imgData);
       // creating cache_dir
-      await fsm.mkdir(cacheFolder, { recursive: true });
+      await fsm.mkdir(cacheImgFolder, { recursive: true });
       if (dims) {
-        return await imageResizeAndWrite(resImgBuf, { cacheFolder, cacheName, dims });
+        return await imageResizeAndWrite(resImgBuf, { cacheFolder: cacheImgFolder, cacheName, dims });
       }
-      await fsm.writeFile(path.join(cacheFolder, cacheName), resImgBuf);
+      await fsm.writeFile(path.join(cacheImgFolder, cacheName), resImgBuf);
       return resImgBuf;
     }
   } catch (error) {
