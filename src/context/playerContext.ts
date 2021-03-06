@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 
 export type CurrentTrack = SpotifyApi.TrackObjectFull;
 
-export type CurrentPlaylist = { tracks: SpotifyApi.PlaylistTrackObject[]; id: string; name: string; thumbnail: string };
+export type CurrentPlaylist = { tracks: (SpotifyApi.PlaylistTrackObject | SpotifyApi.SavedTrackObject)[]; id: string; name: string; thumbnail: string };
 
 export interface PlayerContext {
   currentPlaylist?: CurrentPlaylist;

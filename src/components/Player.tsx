@@ -6,11 +6,10 @@ import { shuffleArray } from "../helpers/shuffleArray";
 import NodeMpv from "node-mpv";
 import { getYoutubeTrack } from "../helpers/getYoutubeTrack";
 import PlayerProgressBar from "./PlayerProgressBar";
-import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular } from "../icons";
+import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular, heart } from "../icons";
 import IconButton from "./shared/IconButton";
-import authContext from "../context/authContext";
-import useSpotifyApi from "../hooks/useSpotifyApi";
 import showError from "../helpers/showError";
+import useTrackReaction from "../hooks/useTrackReaction";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -26,8 +25,7 @@ export const audioPlayer = new NodeMpv(
 
 function Player(): ReactElement {
   const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
-  const spotifyApi = useSpotifyApi();
-  const { access_token } = useContext(authContext);
+  const { reactToTrack, isFavorite } = useTrackReaction();
   const initVolume = parseFloat(localStorage.getItem("volume") ?? "55");
   const [isPaused, setIsPaused] = useState(true);
   const [volume, setVolume] = useState<number>(initVolume);
@@ -60,7 +58,7 @@ function Player(): ReactElement {
         }
       } catch (error) {
         console.error("Failed to start audio player", error);
-        showError(error, "[Failed starting audio player]: ")
+        showError(error, "[Failed starting audio player]: ");
       }
     })();
 
@@ -70,19 +68,6 @@ function Player(): ReactElement {
       }
     };
   }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       if (access_token) {
-  //         const userSavedTrack = await spotifyApi.getMySavedTracks();
-  //         console.log("userSavedTrack:", userSavedTrack);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to get spotify user saved tracks: ", error);
-  //     }
-  //   })();
-  // }, [access_token]);
 
   // track change effect
   useEffect(() => {
@@ -143,14 +128,14 @@ function Player(): ReactElement {
       };
       const pauseListener = () => {
         setIsPaused(true);
-      }
+      };
       const resumeListener = () => {
         setIsPaused(false);
       };
       audioPlayer.on("status", statusListener);
       audioPlayer.on("stopped", stopListener);
-      audioPlayer.on("paused", pauseListener)
-      audioPlayer.on("resumed", resumeListener)
+      audioPlayer.on("paused", pauseListener);
+      audioPlayer.on("resumed", resumeListener);
       return () => {
         audioPlayer.off("status", statusListener);
         audioPlayer.off("stopped", stopListener);
@@ -189,13 +174,13 @@ function Player(): ReactElement {
         await audioPlayer.stop();
       }
     } catch (error) {
-      showError(error, "[Failed at audio-player stop]: ")
+      showError(error, "[Failed at audio-player stop]: ");
     }
   }
 
   const artistsNames = currentTrack?.artists?.map((x) => x.name);
   return (
-    <GridView enabled={!!currentTrack} style="flex: 1; max-height: 100px;">
+    <GridView enabled={!!currentTrack} style="flex: 1; max-height: 120px;">
       <GridRow>
         <GridColumn width={2}>
           <Text ref={titleRef} wordWrap>
@@ -221,7 +206,16 @@ function Player(): ReactElement {
         </GridColumn>
         <GridColumn width={2}>
           <BoxView>
-            <IconButton icon={new QIcon(heartRegular)} />
+            <IconButton
+              on={{
+                clicked() {
+                  if (currentTrack) {
+                    reactToTrack({ added_at: Date.now().toString(), track: currentTrack });
+                  }
+                },
+              }}
+              icon={new QIcon(isFavorite(currentTrack?.id ?? "") ? heart : heartRegular)}
+            />
             <Slider minSize={{ height: 20, width: 80 }} maxSize={{ height: 20, width: 100 }} hasTracking sliderPosition={volume} on={volumeHandler} orientation={Orientation.Horizontal} />
           </BoxView>
         </GridColumn>

@@ -1,8 +1,8 @@
 import React, { FC, useContext } from "react";
-import { BoxView, View, Button, ScrollArea, Text } from "@nodegui/react-nodegui";
+import { View, Button, ScrollArea, Text } from "@nodegui/react-nodegui";
 import BackButton from "./BackButton";
 import { useLocation, useParams } from "react-router";
-import { Direction, QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
+import { QAbstractButtonSignals, QIcon } from "@nodegui/nodegui";
 import { WidgetEventListeners } from "@nodegui/react-nodegui/dist/components/View/RNView";
 import playerContext from "../context/playerContext";
 import IconButton from "./shared/IconButton";
@@ -44,14 +44,10 @@ const PlaylistView: FC = () => {
   };
 
   return (
-    <View style={`flex: 1; flex-direction: 'column'; flex-grow: 1;`}>
-      <View style={`justify-content: 'space-evenly'; max-width: 150px; padding: 10px;`}>
-        <BackButton />
-        <IconButton icon={new QIcon(heartRegular)} />
-        <IconButton style={`background-color: #00be5f; color: white;`} on={{ clicked: handlePlaylistPlayPause }} icon={new QIcon(currentPlaylist?.id === params.id ? stop : play)} />
-      </View>
+    <View style={`flex: 1; flex-direction: 'column';`}>
+      <PlaylistSimpleControls handlePlaylistPlayPause={handlePlaylistPlayPause} isActive={currentPlaylist?.id === params.id} />
       <Text>{`<center><h2>${location.state.name[0].toUpperCase()}${location.state.name.slice(1)}</h2></center>`}</Text>
-      <ScrollArea style={`flx:1; flex-grow: 1; border: none;`}>
+      <ScrollArea style={`flex:1; flex-grow: 1; border: none;`}>
         <View style={`flex-direction:column; flex: 1;`}>
           {isLoading && <Text>{`Loading Tracks...`}</Text>}
           {isError && (
@@ -70,7 +66,7 @@ const PlaylistView: FC = () => {
           {tracks?.map(({ track }, index) => {
             return (
               <TrackButton
-                key={index+track.id}
+                key={index + track.id}
                 active={currentTrack?.id === track.id && currentPlaylist?.id === params.id}
                 artist={track.artists.map((x) => x.name).join(", ")}
                 name={track.name}
@@ -84,14 +80,14 @@ const PlaylistView: FC = () => {
   );
 };
 
-interface TrackButtonProps {
+export interface TrackButtonProps {
   name: string;
   artist: string;
   active: boolean;
   on: Partial<QAbstractButtonSignals | WidgetEventListeners>;
 }
 
-const TrackButton: FC<TrackButtonProps> = ({ name, artist, on, active }) => {
+export const TrackButton: FC<TrackButtonProps> = ({ name, artist, on, active }) => {
   return <Button id={`${active ? "active" : ""}`} on={on} text={`${name} -- ${artist}`} styleSheet={trackButtonStyle} />;
 };
 
@@ -103,3 +99,18 @@ const trackButtonStyle = `
 `;
 
 export default PlaylistView;
+
+interface PlaylistSimpleControlsProps {
+  handlePlaylistPlayPause: () => void;
+  isActive: boolean;
+}
+
+export function PlaylistSimpleControls({ handlePlaylistPlayPause, isActive }: PlaylistSimpleControlsProps) {
+  return (
+    <View style={`justify-content: 'space-evenly'; max-width: 150px; padding: 10px;`}>
+      <BackButton />
+      <IconButton icon={new QIcon(heartRegular)} />
+      <IconButton style={`background-color: #00be5f; color: white;`} on={{ clicked: handlePlaylistPlayPause }} icon={new QIcon(isActive ? stop : play)} />
+    </View>
+  );
+}

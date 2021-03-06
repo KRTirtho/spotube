@@ -74,12 +74,9 @@ function RootApp() {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [credentials, setCredentials] = useState<Credentials>({ clientId: "", clientSecret: "" });
-  const [expires_in, setExpires_in] = useState<number>(0);
   const [access_token, setAccess_token] = useState<string>("");
   const [currentPlaylist, setCurrentPlaylist] = useState<CurrentPlaylist>();
   const cachedCredentials = localStorage.getItem(CredentialKeys.credentials);
-
-  const setExpireTime = (expirationDuration: number) => setExpires_in(Date.now() + expirationDuration * 1000 /* 1s = 1000 ms */);
 
   useEffect(() => {
     setIsLoggedIn(!!cachedCredentials);
@@ -109,7 +106,6 @@ function RootApp() {
           spotifyApi.setClientSecret(credentials.clientSecret);
           const { body: authRes } = await spotifyApi.authorizationCodeGrant(req.query.code);
           setAccess_token(authRes.access_token);
-          setExpireTime(authRes.expires_in);
           localStorage.setItem(CredentialKeys.refresh_token, authRes.refresh_token);
           return res.end();
         } catch (error) {
@@ -119,7 +115,11 @@ function RootApp() {
 
       const server = app.listen(4304, () => {
         console.log("Server is running");
-        open(spotifyApi.createAuthorizeURL(["user-library-read", "user-library-modify"], "xxxyyysssddd")).catch((e) => console.error("Opening IPC connection with browser failed: ", e));
+        spotifyApi.setClientId(credentials.clientId);
+        spotifyApi.setClientSecret(credentials.clientSecret);
+        open(spotifyApi.createAuthorizeURL(["user-library-read", "playlist-read-private", "user-library-modify"], "xxxyyysssddd")).catch((e) =>
+          console.error("Opening IPC connection with browser failed: ", e)
+        );
       });
       return () => {
         server.close(() => console.log("Closed server"));
@@ -136,10 +136,10 @@ function RootApp() {
   return (
     <Window ref={windowRef} on={windowEvents} windowState={WindowState.WindowMaximized} windowIcon={winIcon} windowTitle="Spotube" minSize={minSize}>
       <MemoryRouter>
-        <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, expires_in, setAccess_token, setExpires_in: setExpireTime, ...credentials }}>
+        <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, setAccess_token, ...credentials }}>
           <playerContext.Provider value={{ currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
             <QueryClientProvider client={queryClient}>
-              <View style={`flex: 1; flex-direction: 'column'; justify-content: 'center'; align-items: 'stretch'; height: '100%';`}>
+              <View style={`flex: 1; flex-direction: 'column'; align-items: 'stretch';`}>
                 <Routes />
                 {isLoggedIn && <Player />}
               </View>

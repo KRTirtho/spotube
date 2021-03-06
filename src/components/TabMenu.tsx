@@ -1,26 +1,26 @@
 import React from "react";
-import {Route} from "react-router"
-import {View, Button} from "@nodegui/react-nodegui"
-import {QIcon} from "@nodegui/nodegui"
+import { View, Button, Text } from "@nodegui/react-nodegui";
+import { useHistory, useLocation } from "react-router";
 
-function TabMenu(){
-  return  (
+function TabMenu() {
+
+  return (
     <View id="tabmenu" styleSheet={tabBarStylesheet}>
-      <TabMenuItem title="Browse"/>
-      <TabMenuItem title="Library"/>
-      <TabMenuItem title="Currently Playing"/>
+      <View>
+        <Text>{`<h1>Spotube</h1>`}</Text>
+      </View>
+      <TabMenuItem url="/home" title="Browse" />
+      <TabMenuItem url="/library" title="Library" />
+      <TabMenuItem url="/currently" title="Currently Playing" />
     </View>
-  )
+  );
 }
 
-const tabBarStylesheet = `  
+export const tabBarStylesheet = `  
   #tabmenu{
-    flex-direction: 'column';
-    align-items: 'center';
-    max-width: 225px;
-  }
-  #tabmenu-item{
-    background-color: transparent;
+    padding: 10px;
+    flex-direction: 'row';
+    justify-content: 'space-around';
   }
   #tabmenu-item:hover{
     color: green;
@@ -28,20 +28,30 @@ const tabBarStylesheet = `
   #tabmenu-item:active{
     color: #59ff88;
   }
-`
+  #tabmenu-active-item{
+    background-color: green;
+    color: white;
+  }
+`;
 
 export default TabMenu;
 
-interface TabMenuItemProps{
+export interface TabMenuItemProps {
   title: string;
+  url: string;
   /**
    * path to the icon in string
    */
   icon?: string;
 }
 
-export function TabMenuItem({icon, title}:TabMenuItemProps){
-  return (
-    <Button id="tabmenu-item" text={title}/>
-  )
+export function TabMenuItem({ icon, title, url }: TabMenuItemProps) {
+  const location = useLocation();
+  const history = useHistory();
+
+  function clicked() {
+    history.push(url);
+  }
+
+  return <Button on={{ clicked }} id={location.pathname.replace("/", " ").startsWith(url.replace("/", " ")) ? "tabmenu-active-item" : `tabmenu-item`} text={title} />;
 }

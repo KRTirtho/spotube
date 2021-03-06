@@ -8,34 +8,18 @@ import useSpotifyQuery from "../hooks/useSpotifyQuery";
 import ErrorApplet from "./shared/ErrorApplet";
 
 function Home() {
-  const {
-    data: categories,
-    isError,
-    isRefetchError,
-    refetch,
-  } = useSpotifyQuery<SpotifyApi.CategoryObject[]>(
+  const { data: categories, isError, isRefetchError, refetch } = useSpotifyQuery<SpotifyApi.CategoryObject[]>(
     QueryCacheKeys.categories,
-    (spotifyApi) =>
-      spotifyApi
-        .getCategories({ country: "US" })
-        .then((categoriesReceived) => categoriesReceived.body.categories.items),
+    (spotifyApi) => spotifyApi.getCategories({ country: "US" }).then((categoriesReceived) => categoriesReceived.body.categories.items),
     { initialData: [] }
   );
 
   return (
-    <ScrollArea style={`flex-grow: 1; border: none;`}>
+    <ScrollArea style={`flex-grow: 1; border: none; flex: 1;`}>
       <View style={`flex-direction: 'column'; justify-content: 'center'; flex: 1;`}>
-        {(isError || isRefetchError) && (
-          <ErrorApplet message="Failed to query genres" reload={refetch} helps />
-        )}
+        {(isError || isRefetchError) && <ErrorApplet message="Failed to query genres" reload={refetch} helps />}
         {categories?.map((category, index) => {
-          return (
-            <CategoryCard
-              key={index + category.id}
-              id={category.id}
-              name={category.name}
-            />
-          );
+          return <CategoryCard key={index + category.id} id={category.id} name={category.name} />;
         })}
       </View>
     </ScrollArea>
@@ -51,14 +35,9 @@ interface CategoryCardProps {
 
 const CategoryCard = ({ id, name }: CategoryCardProps) => {
   const history = useHistory();
-  const { data: playlists, isError } = useSpotifyQuery<
-    SpotifyApi.PlaylistObjectSimplified[]
-  >(
+  const { data: playlists, isError } = useSpotifyQuery<SpotifyApi.PlaylistObjectSimplified[]>(
     [QueryCacheKeys.categoryPlaylists, id],
-    (spotifyApi) =>
-      spotifyApi
-        .getPlaylistsForCategory(id, { limit: 4 })
-        .then((playlistsRes) => playlistsRes.body.playlists.items),
+    (spotifyApi) => spotifyApi.getPlaylistsForCategory(id, { limit: 4 }).then((playlistsRes) => playlistsRes.body.playlists.items),
     { initialData: [] }
   );
 
@@ -66,26 +45,14 @@ const CategoryCard = ({ id, name }: CategoryCardProps) => {
     history.push(`/genre/playlists/${id}`, { name });
   }
   if (isError) {
-    return <></ >;
+    return <></>;
   }
   return (
     <View id="container" styleSheet={categoryStylesheet}>
-      <Button
-        id="anchor-heading"
-        cursor={CursorShape.PointingHandCursor}
-        on={{ MouseButtonRelease: goToGenre }}
-        text={name}
-      />
+      <Button id="anchor-heading" cursor={CursorShape.PointingHandCursor} on={{ MouseButtonRelease: goToGenre }} text={name} />
       <View id="child-view">
         {playlists?.map((playlist, index) => {
-          return (
-            <PlaylistCard
-              key={index + playlist.id}
-              id={playlist.id}
-              name={playlist.name}
-              thumbnail={playlist.images[0].url}
-            />
-          );
+          return <PlaylistCard key={index + playlist.id} id={playlist.id} name={playlist.name} thumbnail={playlist.images[0].url} />;
         })}
       </View>
     </View>
@@ -126,15 +93,14 @@ interface PlaylistCardProps {
   id: string;
 }
 
-export const PlaylistCard = React.memo(
-  ({ id, name, thumbnail }: PlaylistCardProps) => {
-    const history = useHistory();
+export const PlaylistCard = React.memo(({ id, name, thumbnail }: PlaylistCardProps) => {
+  const history = useHistory();
 
-    function gotoPlaylist() {
-      history.push(`/playlist/${id}`, { name, thumbnail });
-    }
+  function gotoPlaylist() {
+    history.push(`/playlist/${id}`, { name, thumbnail });
+  }
 
-    const playlistStyleSheet = `
+  const playlistStyleSheet = `
     #playlist-container{
       max-width: 250px;
       flex-direction: column;
@@ -148,20 +114,9 @@ export const PlaylistCard = React.memo(
     }
   `;
 
-    return (
-      <View
-        id="playlist-container"
-        cursor={CursorShape.PointingHandCursor}
-        styleSheet={playlistStyleSheet}
-        on={{ MouseButtonRelease: gotoPlaylist }}
-      >
-        <CachedImage
-          src={thumbnail}
-          maxSize={{ height: 150, width: 150 }}
-          scaledContents
-          alt={name}
-        />
-      </View>
-    );
-  }
-);
+  return (
+    <View id="playlist-container" cursor={CursorShape.PointingHandCursor} styleSheet={playlistStyleSheet} on={{ MouseButtonRelease: gotoPlaylist }}>
+      <CachedImage src={thumbnail} maxSize={{ height: 150, width: 150 }} scaledContents alt={name} />
+    </View>
+  );
+});
