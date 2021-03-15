@@ -49,9 +49,7 @@ function PlaylistGenreView() {
             return (
               <PlaylistCard
                 key={index + playlist.id}
-                id={playlist.id}
-                name={playlist.name}
-                thumbnail={playlist.images[0].url}
+                playlist={playlist}
               />
           );
           })}

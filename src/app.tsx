@@ -122,7 +122,7 @@ function RootApp() {
         console.log("Server is running");
         spotifyApi.setClientId(credentials.clientId);
         spotifyApi.setClientSecret(credentials.clientSecret);
-        open(spotifyApi.createAuthorizeURL(["user-library-read", "playlist-read-private", "user-library-modify"], "xxxyyysssddd")).catch((e) =>
+        open(spotifyApi.createAuthorizeURL(["user-library-read", "playlist-read-private", "user-library-modify","playlist-modify-private", "playlist-modify-public"], "xxxyyysssddd")).catch((e) =>
           console.error("Opening IPC connection with browser failed: ", e)
         );
       });

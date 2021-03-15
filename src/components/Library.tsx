@@ -5,7 +5,7 @@ import { QueryCacheKeys } from "../conf";
 import playerContext from "../context/playerContext";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";
 import { PlaylistCard } from "./Home";
-import { PlaylistSimpleControls, TrackButton } from "./PlaylistView";
+import { PlaylistSimpleControls, TrackButton, TrackTableIndex } from "./PlaylistView";
 import { TabMenuItem } from "./TabMenu";
 
 function Library() {
@@ -39,7 +39,7 @@ function UserPlaylists() {
     <ScrollArea style="flex: 1; border: none;">
       <View style="flex: 1; flex-direction: 'row'; flex-wrap: 'wrap'; justify-content: 'space-evenly'; width: 330px; align-items: 'center';">
         {userPlaylists?.map((playlist, index) => (
-          <PlaylistCard key={index + playlist.id} id={playlist.id} name={playlist.name} thumbnail={playlist.images[0].url} />
+          <PlaylistCard key={index + playlist.id} playlist={playlist} />
         ))}
       </View>
     </ScrollArea>
@@ -53,10 +53,10 @@ function UserSavedTracks() {
   );
   const { currentPlaylist, setCurrentPlaylist, setCurrentTrack, currentTrack } = useContext(playerContext);
 
-  function handlePlaylistPlayPause() {
+  function handlePlaylistPlayPause(index?: number) {
     if (currentPlaylist?.id !== userSavedPlaylistId && userTracks) {
       setCurrentPlaylist({ id: userSavedPlaylistId, name: "Liked Tracks", thumbnail: "https://nerdist.com/wp-content/uploads/2020/07/maxresdefault.jpg", tracks: userTracks });
-      setCurrentTrack(userTracks[0].track);
+      setCurrentTrack(userTracks[index ?? 0].track);
     } else {
       setCurrentPlaylist(undefined);
       setCurrentTrack(undefined);
@@ -66,19 +66,21 @@ function UserSavedTracks() {
   return (
     <View style="flex: 1; flex-direction: 'column';">
       <PlaylistSimpleControls handlePlaylistPlayPause={handlePlaylistPlayPause} isActive={currentPlaylist?.id === userSavedPlaylistId} />
+      <TrackTableIndex/>
       <ScrollArea style="flex: 1; border: none;">
         <View style="flex: 1; flex-direction: 'column'; align-items: 'stretch';">
           {userTracks?.map(({ track }, index) => (
             <TrackButton
               key={index+track.id}
               active={currentPlaylist?.id === userSavedPlaylistId && currentTrack?.id === track.id}
-              artist={track.artists.map((x) => x.name).join(", ")}
-              name={track.name}
+              track={track}
+              index={index}
               on={{
-                clicked() {
+                MouseButtonRelease() {
                   setCurrentTrack(track);
                 },
               }}
+              onTrackClick={()=>handlePlaylistPlayPause(index)}
             />
           ))}
         </View>

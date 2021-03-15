@@ -26,9 +26,8 @@ export const audioPlayer = new NodeMpv(
 function Player(): ReactElement {
   const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
   const { reactToTrack, isFavorite } = useTrackReaction();
-  const initVolume = parseFloat(localStorage.getItem("volume") ?? "55");
   const [isPaused, setIsPaused] = useState(true);
-  const [volume, setVolume] = useState<number>(initVolume);
+  const [volume, setVolume] = useState<number>(55);
   const [totalDuration, setTotalDuration] = useState(0);
   const [shuffle, setShuffle] = useState<boolean>(false);
   const [realPlaylist, setRealPlaylist] = useState<CurrentPlaylist["tracks"]>([]);
@@ -54,10 +53,9 @@ function Player(): ReactElement {
       try {
         if (!playerRunning) {
           await audioPlayer.start();
-          await audioPlayer.volume(initVolume);
+          await audioPlayer.volume(volume);
         }
       } catch (error) {
-        console.error("Failed to start audio player", error);
         showError(error, "[Failed starting audio player]: ");
       }
     })();
@@ -89,6 +87,11 @@ function Player(): ReactElement {
       }
     })();
   }, [currentTrack]);
+
+  // changing shuffle to default
+  useEffect(() => {
+    setShuffle(false);
+  }, [currentPlaylist])
 
   useEffect(() => {
     if (playerRunning) {
@@ -186,7 +189,7 @@ function Player(): ReactElement {
           <Text ref={titleRef} wordWrap>
             {artistsNames && currentTrack
               ? `
-            <p><b>${currentTrack.name}</b> - ${artistsNames[0]} feat. ${artistsNames.slice(1).join(" ")}</p>
+            <p><b>${currentTrack.name}</b> - ${artistsNames[0]} ${artistsNames.length > 1 ? "feat. " + artistsNames.slice(1).join(", ") : ""}</p>
             `
               : `<b>Oh, dear don't waste time</b>`}
           </Text>

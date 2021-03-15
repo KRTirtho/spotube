@@ -1,7 +1,7 @@
 import { ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import React, { useContext } from "react";
 import playerContext from "../context/playerContext";
-import { TrackButton } from "./PlaylistView";
+import { TrackButton, TrackTableIndex } from "./PlaylistView";
 
 function CurrentPlaylist() {
   const { currentPlaylist, currentTrack, setCurrentTrack } = useContext(playerContext);
@@ -12,7 +12,8 @@ function CurrentPlaylist() {
 
   return (
     <View style="flex: 1; flex-direction: 'column';">
-      <Text>{ `<center><h2>${currentPlaylist?.name}</h2></center>` }</Text>
+      <Text>{`<center><h2>${currentPlaylist?.name}</h2></center>`}</Text>
+      <TrackTableIndex />
       <ScrollArea style={`flex:1; flex-grow: 1; border: none;`}>
         <View style={`flex-direction:column; flex: 1;`}>
           {currentPlaylist?.tracks.map(({ track }, index) => {
@@ -20,9 +21,10 @@ function CurrentPlaylist() {
               <TrackButton
                 key={index + track.id}
                 active={currentTrack?.id === track.id}
-                artist={track.artists.map((x) => x.name).join(", ")}
-                name={track.name}
-                on={{ clicked: () => setCurrentTrack(track) }}
+                track={track}
+                index={index}
+                on={{ MouseButtonRelease: () => setCurrentTrack(track) }}
+                onTrackClick={() => {}}
               />
             );
           })}
