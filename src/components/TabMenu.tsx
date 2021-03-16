@@ -12,6 +12,7 @@ function TabMenu() {
       <TabMenuItem url="/home" title="Browse" />
       <TabMenuItem url="/library" title="Library" />
       <TabMenuItem url="/currently" title="Currently Playing" />
+      <TabMenuItem url="/search" title="Search"/>
     </View>
   );
 }

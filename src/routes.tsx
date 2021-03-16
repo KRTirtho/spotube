@@ -8,6 +8,7 @@ import PlaylistGenreView from "./components/PlaylistGenreView";
 import TabMenu from "./components/TabMenu";
 import CurrentPlaylist from "./components/CurrentPlaylist";
 import Library from "./components/Library";
+import Search from "./components/Search";
 
 function Routes() {
   const { isLoggedIn } = useContext(authContext);
@@ -32,6 +33,7 @@ function Routes() {
           <Login />
         )}
       </Route>
+      <Route path="/search"><Search/></Route>
       <Route path="/currently">
         <CurrentPlaylist />
       </Route>

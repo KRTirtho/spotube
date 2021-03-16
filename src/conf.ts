@@ -15,5 +15,6 @@ export enum QueryCacheKeys{
   genrePlaylists="genrePlaylists",
   playlistTracks="playlistTracks",
   userPlaylists = "user-palylists",
-  userSavedTracks = "user-saved-tracks"
+  userSavedTracks = "user-saved-tracks",
+  search="search"
 }
