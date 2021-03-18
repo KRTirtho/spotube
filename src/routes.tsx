@@ -9,6 +9,7 @@ import TabMenu from "./components/TabMenu";
 import CurrentPlaylist from "./components/CurrentPlaylist";
 import Library from "./components/Library";
 import Search from "./components/Search";
+import SearchResultPlaylistCollection from "./components/SearchResultPlaylistCollection";
 
 function Routes() {
   const { isLoggedIn } = useContext(authContext);
@@ -33,12 +34,17 @@ function Routes() {
           <Login />
         )}
       </Route>
-      <Route path="/search"><Search/></Route>
       <Route path="/currently">
         <CurrentPlaylist />
       </Route>
       <Route path="/library">
         <Library />
+      </Route>
+      <Route exact path="/search">
+        <Search />
+      </Route>
+      <Route exact path="/search/playlists">
+        <SearchResultPlaylistCollection />
       </Route>
     </>
   );

@@ -75,8 +75,11 @@ const CategoryCard = ({ id, name }: CategoryCardProps) => {
     { initialData: [] }
   );
 
-  function goToGenre() {
-    history.push(`/genre/playlists/${id}`, { name });
+  function goToGenre(native: any) {
+    const mouse = new QMouseEvent(native);
+    if (mouse.button() === 1) {
+      history.push(`/genre/playlists/${id}`, { name });
+    }
   }
   if (isError) {
     return <></>;

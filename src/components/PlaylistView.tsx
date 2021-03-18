@@ -76,20 +76,22 @@ const PlaylistView: FC = () => {
             </>
           )}
           {tracks?.map(({ track }, index) => {
-            return (
-              <TrackButton
-                key={index + track.id}
-                track={track}
-                index={index}
-                active={currentTrack?.id === track.id && currentPlaylist?.id === params.id}
-                on={{
-                  MouseButtonRelease: () => trackClickHandler(track),
-                }}
-                onTrackClick={() => {
-                  handlePlaylistPlayPause(index);
-                }}
-              />
-            );
+            if (track) {
+              return (
+                <TrackButton
+                  key={index + track.id}
+                  track={track}
+                  index={index}
+                  active={currentTrack?.id === track.id && currentPlaylist?.id === params.id}
+                  on={{
+                    MouseButtonRelease: () => trackClickHandler(track),
+                  }}
+                  onTrackClick={() => {
+                    handlePlaylistPlayPause(index);
+                  }}
+                />
+              );
+            }
           })}
         </View>
       </ScrollArea>

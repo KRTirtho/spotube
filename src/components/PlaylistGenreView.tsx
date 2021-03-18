@@ -1,5 +1,5 @@
-import { Direction } from "@nodegui/nodegui";
-import { BoxView, ScrollArea, Text, View, GridView, GridColumn, GridRow } from "@nodegui/react-nodegui";
+import { QAbstractButtonSignals } from "@nodegui/nodegui";
+import { Button, ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import React from "react";
 import { useLocation, useParams } from "react-router";
 import { QueryCacheKeys } from "../conf";
@@ -12,11 +12,23 @@ function PlaylistGenreView() {
   const location = useLocation<{ name: string }>();
   const { data: playlists } = useSpotifyQuery<SpotifyApi.PlaylistObjectSimplified[]>(
     [QueryCacheKeys.genrePlaylists, id],
-    (spotifyApi) => spotifyApi.getPlaylistsForCategory(id)
-      .then((playlistsRes) => playlistsRes.body.playlists.items),
+    (spotifyApi) => spotifyApi.getPlaylistsForCategory(id).then((playlistsRes) => playlistsRes.body.playlists.items),
     { initialData: [] }
-  )
+  );
 
+  return <GenreView heading={location.state.name} playlists={playlists ?? []} />;
+}
+
+export default PlaylistGenreView;
+
+interface GenreViewProps {
+  heading: string;
+  playlists: SpotifyApi.PlaylistObjectSimplified[];
+  loadMore?: QAbstractButtonSignals["clicked"];
+  isLoadable?: boolean;
+}
+
+export function GenreView({ heading, playlists, loadMore, isLoadable }: GenreViewProps) {
   const playlistGenreViewStylesheet = `
     #genre-container{
       flex-direction: column;
@@ -38,25 +50,18 @@ function PlaylistGenreView() {
       width: 330px;
     }
   `;
-
   return (
     <View id="genre-container" styleSheet={playlistGenreViewStylesheet}>
       <BackButton />
-      <Text id="heading">{`<h2>${location.state.name}</h2>`}</Text>
+      <Text id="heading">{`<h2>${heading}</h2>`}</Text>
       <ScrollArea id="scroll-view">
         <View id="child-container">
           {playlists?.map((playlist, index) => {
-            return (
-              <PlaylistCard
-                key={index + playlist.id}
-                playlist={playlist}
-              />
-          );
+            return <PlaylistCard key={index + playlist.id} playlist={playlist} />;
           })}
+          {loadMore && <Button text="Load more" on={{ clicked: loadMore }} enabled={isLoadable} />}
         </View>
       </ScrollArea>
     </View>
   );
 }
-
-export default PlaylistGenreView;
