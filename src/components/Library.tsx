@@ -1,11 +1,14 @@
-import { ScrollArea, View } from "@nodegui/react-nodegui";
+import { Button, ScrollArea, View } from "@nodegui/react-nodegui";
 import React, { useContext } from "react";
 import { Redirect, Route } from "react-router";
 import { QueryCacheKeys } from "../conf";
 import playerContext from "../context/playerContext";
+import useSpotifyInfiniteQuery from "../hooks/useSpotifyInfiniteQuery";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";
-import { PlaylistCard } from "./Home";
-import { PlaylistSimpleControls, TrackButton, TrackTableIndex } from "./PlaylistView";
+import { PlaylistSimpleControls, TrackTableIndex } from "./PlaylistView";
+import PlaceholderApplet from "./shared/PlaceholderApplet";
+import PlaylistCard from "./shared/PlaylistCard";
+import { TrackButton } from "./shared/TrackButton";
 import { TabMenuItem } from "./TabMenu";
 
 function Library() {
@@ -38,6 +41,7 @@ function UserPlaylists() {
   return (
     <ScrollArea style="flex: 1; border: none;">
       <View style="flex: 1; flex-direction: 'row'; flex-wrap: 'wrap'; justify-content: 'space-evenly'; width: 330px; align-items: 'center';">
+        <PlaceholderApplet error={isError} loading={isLoading} message="Failed querying spotify" reload={refetch} />
         {userPlaylists?.map((playlist, index) => (
           <PlaylistCard key={index + playlist.id} playlist={playlist} />
         ))}
@@ -48,10 +52,23 @@ function UserPlaylists() {
 
 function UserSavedTracks() {
   const userSavedPlaylistId = "user-saved-tracks";
-  const { data: userTracks, isError, isLoading } = useSpotifyQuery<SpotifyApi.SavedTrackObject[]>(QueryCacheKeys.userSavedTracks, (spotifyApi) =>
-    spotifyApi.getMySavedTracks({ limit: 50 }).then((tracks) => tracks.body.items)
+  const { data: userSavedTracks, fetchNextPage, hasNextPage, isFetchingNextPage, isError, isLoading, refetch } = useSpotifyInfiniteQuery<SpotifyApi.UsersSavedTracksResponse>(
+    QueryCacheKeys.userSavedTracks,
+    (spotifyApi, { pageParam }) => spotifyApi.getMySavedTracks({ limit: 50, offset: pageParam }).then((res) => res.body),
+    {
+      getNextPageParam(lastPage) {
+        if (lastPage.next) {
+          return lastPage.offset + lastPage.limit;
+        }
+      },
+    }
   );
-  const { currentPlaylist, setCurrentPlaylist, setCurrentTrack, currentTrack } = useContext(playerContext);
+  const { currentPlaylist, setCurrentPlaylist, setCurrentTrack } = useContext(playerContext);
+
+  const userTracks = userSavedTracks?.pages
+    ?.map((page) => page.items)
+    .filter(Boolean)
+    .flat(1) as SpotifyApi.SavedTrackObject[] | undefined;
 
   function handlePlaylistPlayPause(index?: number) {
     if (currentPlaylist?.id !== userSavedPlaylistId && userTracks) {
@@ -63,26 +80,58 @@ function UserSavedTracks() {
     }
   }
 
+  const playlist: SpotifyApi.PlaylistObjectFull = {
+    collaborative: false,
+    description: "User Playlist",
+    tracks: {
+      items: [userTracks ?? []].map(
+        (userTrack) =>
+          (({
+            ...userTrack,
+            added_by: "Me",
+            is_local: false,
+            added_at: Date.now(),
+          } as unknown) as SpotifyApi.PlaylistTrackObject)
+      ),
+      limit: 20,
+      href: "",
+      next: "",
+      offset: 0,
+      previous: "",
+      total: 20,
+    },
+    external_urls: { spotify: "" },
+    followers: { href: null, total: 2 },
+    href: "",
+    id: userSavedPlaylistId,
+    images: [],
+    name: "User saved track",
+    owner: { external_urls: { spotify: "" }, href: "", id: "Me", type: "user", uri: "spotify:user:me", display_name: "User", followers: { href: null, total: 0 } },
+    public: false,
+    snapshot_id: userSavedPlaylistId + "snapshot",
+    type: "playlist",
+    uri: "spotify:user:me:saved-tracks",
+  };
   return (
     <View style="flex: 1; flex-direction: 'column';">
       <PlaylistSimpleControls handlePlaylistPlayPause={handlePlaylistPlayPause} isActive={currentPlaylist?.id === userSavedPlaylistId} />
-      <TrackTableIndex/>
+      <TrackTableIndex />
       <ScrollArea style="flex: 1; border: none;">
         <View style="flex: 1; flex-direction: 'column'; align-items: 'stretch';">
-          {userTracks?.map(({ track }, index) => (
-            <TrackButton
-              key={index+track.id}
-              active={currentPlaylist?.id === userSavedPlaylistId && currentTrack?.id === track.id}
-              track={track}
-              index={index}
+          <PlaceholderApplet error={isError} loading={isLoading || isFetchingNextPage} message="Failed querying spotify" reload={refetch} />
+          {userTracks?.map(({ track }, index) => track && <TrackButton key={index + track.id} track={track} index={index} playlist={playlist} />)}
+          {hasNextPage && (
+            <Button
+              style="flex-grow: 0; align-self: 'center';"
+              text="Load more"
               on={{
-                MouseButtonRelease() {
-                  setCurrentTrack(track);
+                clicked() {
+                  fetchNextPage();
                 },
               }}
-              onTrackClick={()=>handlePlaylistPlayPause(index)}
+              enabled={!isFetchingNextPage}
             />
-          ))}
+          )}
         </View>
       </ScrollArea>
     </View>

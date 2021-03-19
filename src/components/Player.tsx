@@ -174,6 +174,8 @@ function Player(): ReactElement {
   async function stopPlayback() {
     try {
       if (playerRunning) {
+        setCurrentTrack(undefined);
+        setCurrentPlaylist(undefined);
         await audioPlayer.stop();
       }
     } catch (error) {

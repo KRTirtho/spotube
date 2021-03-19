@@ -1,6 +1,5 @@
 import { Direction, Orientation, QAbstractSliderSignals } from "@nodegui/nodegui";
-import { BoxView, Slider, Text, useEventHandler, View } from "@nodegui/react-nodegui";
-import { WidgetEventListeners } from "@nodegui/react-nodegui/dist/components/View/RNView";
+import { BoxView, Slider, Text, useEventHandler } from "@nodegui/react-nodegui";
 import NodeMpv from "node-mpv";
 import React, { useContext, useEffect, useState } from "react";
 import playerContext from "../context/playerContext";
@@ -36,7 +35,6 @@ function PlayerProgressBar({ audioPlayer, totalDuration }: PlayerProgressBarProp
 
   useEffect(() => {
     const progressListener = (seconds: number) => {
-      console.log("seconds", seconds);
       setTrackTime(seconds);
     };
     const statusListener = ({ property }: import("node-mpv").StatusObject): void => {

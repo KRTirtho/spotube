@@ -53,7 +53,6 @@ function RootApp() {
           if (nativeEv) {
             const event = new QKeyEvent(nativeEv);
             const eventKey = event.key();
-            console.log("eventKey:", eventKey);
             if (audioPlayer.isRunning() && currentTrack)
               switch (eventKey) {
                 case 32: //space

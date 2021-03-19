@@ -1,13 +1,18 @@
 import { useQueryClient } from "react-query";
 import { QueryCacheKeys } from "../conf";
+import useSpotifyInfiniteQuery from "./useSpotifyInfiniteQuery";
 import useSpotifyMutation from "./useSpotifyMutation";
 import useSpotifyQuery from "./useSpotifyQuery";
 
 function useTrackReaction() {
   const queryClient = useQueryClient();
-  const { data: favoriteTracks } = useSpotifyQuery<SpotifyApi.SavedTrackObject[]>(QueryCacheKeys.userSavedTracks, (spotifyApi) =>
-    spotifyApi.getMySavedTracks({ limit: 50 }).then((tracks) => tracks.body.items)
+  const { data: userSavedTracks } = useSpotifyInfiniteQuery<SpotifyApi.UsersSavedTracksResponse>(QueryCacheKeys.userSavedTracks, (spotifyApi, { pageParam }) =>
+    spotifyApi.getMySavedTracks({ limit: 50, offset: pageParam }).then((res) => res.body)
   );
+  const favoriteTracks = userSavedTracks?.pages
+    ?.map((page) => page.items)
+    .filter(Boolean)
+    .flat(1) as SpotifyApi.SavedTrackObject[] | undefined;
   const { mutate: reactToTrack } = useSpotifyMutation<{}, SpotifyApi.SavedTrackObject>(
     (spotifyApi, { track }) => spotifyApi[isFavorite(track.id) ? "removeFromMySavedTracks" : "addToMySavedTracks"]([track.id]).then((res) => res.body),
     {

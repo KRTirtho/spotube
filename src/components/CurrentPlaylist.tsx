@@ -1,13 +1,20 @@
 import { ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import React, { useContext } from "react";
 import playerContext from "../context/playerContext";
-import { TrackButton, TrackTableIndex } from "./PlaylistView";
+import { TrackTableIndex } from "./PlaylistView";
+import { TrackButton } from "./shared/TrackButton";
 
 function CurrentPlaylist() {
-  const { currentPlaylist, currentTrack, setCurrentTrack } = useContext(playerContext);
+  const { currentPlaylist, currentTrack } = useContext(playerContext);
 
   if (!currentPlaylist && !currentTrack) {
     return <Text style="flex: 1;">{`<center>There is nothing being played now</center>`}</Text>;
+  }
+
+  if (currentTrack && !currentPlaylist) {
+    <View style="flex: 1;">
+      <TrackButton track={currentTrack} index={0}/>
+    </View>
   }
 
   return (
@@ -17,16 +24,7 @@ function CurrentPlaylist() {
       <ScrollArea style={`flex:1; flex-grow: 1; border: none;`}>
         <View style={`flex-direction:column; flex: 1;`}>
           {currentPlaylist?.tracks.map(({ track }, index) => {
-            return (
-              <TrackButton
-                key={index + track.id}
-                active={currentTrack?.id === track.id}
-                track={track}
-                index={index}
-                on={{ MouseButtonRelease: () => setCurrentTrack(track) }}
-                onTrackClick={() => {}}
-              />
-            );
+            return <TrackButton key={index + track.id} track={track} index={index} />;
           })}
         </View>
       </ScrollArea>

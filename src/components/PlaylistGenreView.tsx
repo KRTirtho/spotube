@@ -5,18 +5,19 @@ import { useLocation, useParams } from "react-router";
 import { QueryCacheKeys } from "../conf";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";
 import BackButton from "./BackButton";
-import { PlaylistCard } from "./Home";
+import PlaceholderApplet from "./shared/PlaceholderApplet";
+import PlaylistCard from "./shared/PlaylistCard";
 
 function PlaylistGenreView() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation<{ name: string }>();
-  const { data: playlists } = useSpotifyQuery<SpotifyApi.PlaylistObjectSimplified[]>(
+  const { data: playlists, isError, isLoading, refetch } = useSpotifyQuery<SpotifyApi.PlaylistObjectSimplified[]>(
     [QueryCacheKeys.genrePlaylists, id],
     (spotifyApi) => spotifyApi.getPlaylistsForCategory(id).then((playlistsRes) => playlistsRes.body.playlists.items),
     { initialData: [] }
   );
 
-  return <GenreView heading={location.state.name} playlists={playlists ?? []} />;
+  return <GenreView isError={isError} isLoading={isLoading} refetch={refetch} heading={location.state.name} playlists={playlists ?? []} />;
 }
 
 export default PlaylistGenreView;
@@ -26,9 +27,12 @@ interface GenreViewProps {
   playlists: SpotifyApi.PlaylistObjectSimplified[];
   loadMore?: QAbstractButtonSignals["clicked"];
   isLoadable?: boolean;
+  isError: boolean;
+  isLoading: boolean;
+  refetch: Function;
 }
 
-export function GenreView({ heading, playlists, loadMore, isLoadable }: GenreViewProps) {
+export function GenreView({ heading, playlists, loadMore, isLoadable, isError, isLoading, refetch }: GenreViewProps) {
   const playlistGenreViewStylesheet = `
     #genre-container{
       flex-direction: column;
@@ -56,6 +60,7 @@ export function GenreView({ heading, playlists, loadMore, isLoadable }: GenreVie
       <Text id="heading">{`<h2>${heading}</h2>`}</Text>
       <ScrollArea id="scroll-view">
         <View id="child-container">
+          <PlaceholderApplet error={isError} loading={isLoading} reload={refetch} message={`Failed loading ${heading}'s playlists`} />
           {playlists?.map((playlist, index) => {
             return <PlaylistCard key={index + playlist.id} playlist={playlist} />;
           })}

@@ -8,6 +8,7 @@ import _heart from "../assets/heart-solid.svg"
 import _random from "../assets/random-solid.svg"
 import _stop from "../assets/stop-solid.svg"
 import _search from "../assets/search-solid.svg";
+import _loadingSpinner from "../assets/loading-spinner.gif";
 
 export const play = _play;
 export const pause = _pause;
@@ -19,3 +20,4 @@ export const heart = _heart;
 export const random = _random;
 export const stop = _stop;
 export const search = _search;
+export const loadingSpinner = _loadingSpinner;

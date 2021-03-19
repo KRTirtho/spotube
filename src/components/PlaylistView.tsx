@@ -1,18 +1,17 @@
-import React, { FC, useContext, useMemo } from "react";
-import { View, Button, ScrollArea, Text } from "@nodegui/react-nodegui";
+import React, { FC, useContext } from "react";
+import { View, ScrollArea, Text } from "@nodegui/react-nodegui";
 import BackButton from "./BackButton";
 import { useLocation, useParams } from "react-router";
-import { QAbstractButtonSignals, QIcon, QMouseEvent, QWidgetSignals } from "@nodegui/nodegui";
-import { WidgetEventListeners } from "@nodegui/react-nodegui/dist/components/View/RNView";
+import { QIcon } from "@nodegui/nodegui";
 import playerContext from "../context/playerContext";
 import IconButton from "./shared/IconButton";
-import { heart, heartRegular, pause, play, stop } from "../icons";
+import { heart, heartRegular, play, stop } from "../icons";
 import { audioPlayer } from "./Player";
 import { QueryCacheKeys } from "../conf";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";
-import useTrackReaction from "../hooks/useTrackReaction";
 import usePlaylistReaction from "../hooks/usePlaylistReaction";
-import { msToMinAndSec } from "../helpers/msToMin:sec";
+import { TrackButton } from "./shared/TrackButton";
+import PlaceholderApplet from "./shared/PlaceholderApplet";
 
 export interface PlaylistTrackRes {
   name: string;
@@ -21,7 +20,7 @@ export interface PlaylistTrackRes {
 }
 
 const PlaylistView: FC = () => {
-  const { setCurrentTrack, currentPlaylist, currentTrack, setCurrentPlaylist } = useContext(playerContext);
+  const { setCurrentTrack, currentPlaylist, setCurrentPlaylist } = useContext(playerContext);
   const params = useParams<{ id: string }>();
   const location = useLocation<{ name: string; thumbnail: string }>();
   const { isFavorite, reactToPlaylist } = usePlaylistReaction();
@@ -34,19 +33,15 @@ const PlaylistView: FC = () => {
     { initialData: [] }
   );
 
-  const handlePlaylistPlayPause = (index?: number) => {
+  const handlePlaylistPlayPause = () => {
     if (currentPlaylist?.id !== params.id && isSuccess && tracks) {
       setCurrentPlaylist({ ...params, ...location.state, tracks });
-      setCurrentTrack(tracks[index ?? 0].track);
+      setCurrentTrack(tracks[0].track);
     } else {
       audioPlayer.stop().catch((error) => console.error("Failed to stop audio player: ", error));
       setCurrentTrack(undefined);
       setCurrentPlaylist(undefined);
     }
-  };
-
-  const trackClickHandler = (track: SpotifyApi.TrackObjectFull) => {
-    setCurrentTrack(track);
   };
 
   return (
@@ -61,36 +56,10 @@ const PlaylistView: FC = () => {
       {<TrackTableIndex />}
       <ScrollArea style={`flex:1; flex-grow: 1; border: none;`}>
         <View style={`flex-direction:column; flex: 1;`}>
-          {isLoading && <Text>{`Loading Tracks...`}</Text>}
-          {isError && (
-            <>
-              <Text>{`Failed to load ${location.state.name} tracks`}</Text>
-              <Button
-                on={{
-                  clicked() {
-                    refetch();
-                  },
-                }}
-                text="Retry"
-              />
-            </>
-          )}
+          <PlaceholderApplet error={isError} loading={isLoading} reload={refetch} message={`Failed retrieving ${location.state.name} tracks`} />
           {tracks?.map(({ track }, index) => {
             if (track) {
-              return (
-                <TrackButton
-                  key={index + track.id}
-                  track={track}
-                  index={index}
-                  active={currentTrack?.id === track.id && currentPlaylist?.id === params.id}
-                  on={{
-                    MouseButtonRelease: () => trackClickHandler(track),
-                  }}
-                  onTrackClick={() => {
-                    handlePlaylistPlayPause(index);
-                  }}
-                />
-              );
+              return <TrackButton key={index + track.id} track={track} index={index} playlist={playlist} />;
             }
           })}
         </View>
@@ -98,62 +67,6 @@ const PlaylistView: FC = () => {
     </View>
   );
 };
-
-export interface TrackButtonProps {
-  track: SpotifyApi.TrackObjectFull;
-  on: Partial<QWidgetSignals | WidgetEventListeners>;
-  onTrackClick?: QAbstractButtonSignals["clicked"];
-  active: boolean;
-  index: number;
-}
-
-export const TrackButton: FC<TrackButtonProps> = ({ track, active, index, on, onTrackClick }) => {
-  const { reactToTrack, isFavorite } = useTrackReaction();
-
-  const duration = useMemo(() => msToMinAndSec(track.duration_ms), []);
-  return (
-    <View
-      id={active ? "active" : "track-button"}
-      styleSheet={trackButtonStyle}
-      on={{
-        ...on,
-        MouseButtonRelease(native: any) {
-          if (new QMouseEvent(native).button() === 1) {
-            (on as WidgetEventListeners).MouseButtonRelease();
-          }
-        },
-      }}>
-      <Text style="padding: 5px;">{index + 1}</Text>
-      <View style="flex-direction: 'column'; width: '35%';">
-        <Text>{`<h3>${track.name}</h3>`}</Text>
-        <Text>{track.artists.map((artist) => artist.name).join(", ")}</Text>
-      </View>
-      <Text style="width: '25%';">{track.album.name}</Text>
-      <Text style="width: '15%';">{duration}</Text>
-      <View style="width: '15%'; padding: 5px; justify-content: 'space-around';">
-        <IconButton
-          icon={new QIcon(isFavorite(track.id) ? heart : heartRegular)}
-          on={{
-            clicked() {
-              reactToTrack({ track, added_at: "" });
-            },
-          }}
-        />
-        <IconButton icon={new QIcon(active ? pause : play)} on={{ clicked: onTrackClick }} />
-      </View>
-    </View>
-  );
-};
-
-const trackButtonStyle = `
-  #active{
-    background-color: #34eb71;
-    color: #333;
-  }
-  #track-button:hover, #active:hover{
-    background-color: rgba(229, 224, 224, 0.48);
-  }
-`;
 
 export default PlaylistView;
 
