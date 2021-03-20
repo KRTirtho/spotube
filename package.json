@@ -11,7 +11,8 @@
     "start": "qode ./dist/index.js",
     "start:trace": "qode ./dist/index.js --trace",
     "debug": "qode --inspect ./dist/index.js",
-    "pack": "nodegui-packer -p ./dist"
+    "pack": "nodegui-packer -p ./dist",
+    "pack-deb": "node scripts/build-deb.js"
   },
   "dependencies": {
     "@nodegui/nodegui": "^0.27.0",

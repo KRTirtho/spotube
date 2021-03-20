@@ -2,7 +2,7 @@
 Type=Application
 Name=Spotube
 Exec=AppRun
-Icon=default
+Icon=spotube
 Comment=A music streaming app combining the power of Spotify & Youtube
-Terminal=true
+Terminal=false
 Categories=Music;
