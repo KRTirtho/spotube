@@ -5,10 +5,11 @@ import { QueryCacheKeys } from "../conf";
 import playerContext from "../context/playerContext";
 import useSpotifyInfiniteQuery from "../hooks/useSpotifyInfiniteQuery";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";
+import { GenreView } from "./PlaylistGenreView";
 import { PlaylistSimpleControls, TrackTableIndex } from "./PlaylistView";
 import PlaceholderApplet from "./shared/PlaceholderApplet";
 import PlaylistCard from "./shared/PlaylistCard";
-import { TrackButton } from "./shared/TrackButton";
+import { TrackButton, TrackButtonPlaylistObject } from "./shared/TrackButton";
 import { TabMenuItem } from "./TabMenu";
 
 function Library() {
@@ -32,21 +33,36 @@ function Library() {
 export default Library;
 
 function UserPlaylists() {
-  const { data: userPlaylists, isError, isLoading, refetch } = useSpotifyQuery<SpotifyApi.PlaylistObjectSimplified[]>(QueryCacheKeys.userPlaylists, (spotifyApi) =>
-    spotifyApi.getUserPlaylists().then((userPlaylists) => {
-      return userPlaylists.body.items;
-    })
+  const { data: userPagedPlaylists, isError, isLoading, refetch, isFetchingNextPage, hasNextPage, fetchNextPage } = useSpotifyInfiniteQuery<SpotifyApi.ListOfUsersPlaylistsResponse>(
+    QueryCacheKeys.userPlaylists,
+    (spotifyApi, { pageParam }) =>
+      spotifyApi.getUserPlaylists({ limit: 20, offset: pageParam }).then((userPlaylists) => {
+        return userPlaylists.body;
+      }),
+    {
+      getNextPageParam(lastPage) {
+        if (lastPage.next) {
+          return lastPage.offset + lastPage.limit;
+        }
+      },
+    }
   );
 
+  const userPlaylists = userPagedPlaylists?.pages
+    ?.map((playlist) => playlist.items)
+    .filter(Boolean)
+    .flat(1) as SpotifyApi.PlaylistObjectSimplified[];
+
   return (
-    <ScrollArea style="flex: 1; border: none;">
-      <View style="flex: 1; flex-direction: 'row'; flex-wrap: 'wrap'; justify-content: 'space-evenly'; width: 330px; align-items: 'center';">
-        <PlaceholderApplet error={isError} loading={isLoading} message="Failed querying spotify" reload={refetch} />
-        {userPlaylists?.map((playlist, index) => (
-          <PlaylistCard key={index + playlist.id} playlist={playlist} />
-        ))}
-      </View>
-    </ScrollArea>
+    <GenreView
+      heading="User Playlists"
+      isError={isError}
+      isLoading={isLoading}
+      playlists={userPlaylists ?? []}
+      isLoadable={!isFetchingNextPage}
+      refetch={refetch}
+      loadMore={hasNextPage ? ()=>fetchNextPage() : undefined}
+    />
   );
 }
 
@@ -80,19 +96,11 @@ function UserSavedTracks() {
     }
   }
 
-  const playlist: SpotifyApi.PlaylistObjectFull = {
+  const playlist: TrackButtonPlaylistObject = {
     collaborative: false,
     description: "User Playlist",
     tracks: {
-      items: [userTracks ?? []].map(
-        (userTrack) =>
-          (({
-            ...userTrack,
-            added_by: "Me",
-            is_local: false,
-            added_at: Date.now(),
-          } as unknown) as SpotifyApi.PlaylistTrackObject)
-      ),
+      items: userTracks ?? [],
       limit: 20,
       href: "",
       next: "",
@@ -101,10 +109,9 @@ function UserSavedTracks() {
       total: 20,
     },
     external_urls: { spotify: "" },
-    followers: { href: null, total: 2 },
     href: "",
     id: userSavedPlaylistId,
-    images: [],
+    images: [{ url: "https://facebook.com/img.jpeg" }],
     name: "User saved track",
     owner: { external_urls: { spotify: "" }, href: "", id: "Me", type: "user", uri: "spotify:user:me", display_name: "User", followers: { href: null, total: 0 } },
     public: false,

@@ -5,26 +5,27 @@ import playerContext from "../../context/playerContext";
 import { msToMinAndSec } from "../../helpers/msToMin:sec";
 import useTrackReaction from "../../hooks/useTrackReaction";
 import { heart, heartRegular, pause, play } from "../../icons";
-import { audioPlayer } from "../Player";
 import IconButton from "./IconButton";
+
+export interface TrackButtonPlaylistObject extends SpotifyApi.PlaylistBaseObject {
+  follower?: SpotifyApi.FollowersObject;
+  tracks: SpotifyApi.PagingObject<SpotifyApi.SavedTrackObject | SpotifyApi.PlaylistTrackObject>;
+}
 
 export interface TrackButtonProps {
   track: SpotifyApi.TrackObjectFull;
-  playlist?: SpotifyApi.PlaylistObjectFull;
+  playlist?: TrackButtonPlaylistObject;
   index: number;
 }
 
 export const TrackButton: FC<TrackButtonProps> = ({ track, index, playlist }) => {
   const { reactToTrack, isFavorite } = useTrackReaction();
   const { currentPlaylist, setCurrentPlaylist, setCurrentTrack, currentTrack } = useContext(playerContext);
-  const handlePlaylistPlayPause = (index?: number) => {
-    if (currentPlaylist?.id !== playlist?.id && playlist?.tracks) {
-      setCurrentPlaylist({ id: playlist.id, name: playlist.name, thumbnail: playlist.images[0].url, tracks: playlist.tracks.items });
-      setCurrentTrack(playlist.tracks.items[index ?? 0].track);
-    } else {
-      audioPlayer.stop().catch((error) => console.error("Failed to stop audio player: ", error));
-      setCurrentTrack(undefined);
-      setCurrentPlaylist(undefined);
+  const handlePlaylistPlayPause = (index: number) => {
+    if (playlist && currentPlaylist?.id !== playlist.id) {
+      const globalPlaylistObj = { id: playlist.id, name: playlist.name, thumbnail: playlist.images[0].url, tracks: playlist.tracks.items };
+      setCurrentPlaylist(globalPlaylistObj);
+      setCurrentTrack(playlist.tracks.items[index].track);
     }
   };
 
@@ -36,7 +37,7 @@ export const TrackButton: FC<TrackButtonProps> = ({ track, index, playlist }) =>
   const active = (currentPlaylist?.id === playlist?.id && currentTrack?.id === track.id) || currentTrack?.id === track.id;
   return (
     <View
-      id={active?"active":"track-button"}
+      id={active ? "active" : "track-button"}
       styleSheet={trackButtonStyle}
       on={{
         MouseButtonRelease(native: any) {

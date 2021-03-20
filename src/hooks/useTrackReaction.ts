@@ -1,8 +1,7 @@
-import { useQueryClient } from "react-query";
+import { InfiniteData, useQueryClient } from "react-query";
 import { QueryCacheKeys } from "../conf";
 import useSpotifyInfiniteQuery from "./useSpotifyInfiniteQuery";
 import useSpotifyMutation from "./useSpotifyMutation";
-import useSpotifyQuery from "./useSpotifyQuery";
 
 function useTrackReaction() {
   const queryClient = useQueryClient();
@@ -13,14 +12,31 @@ function useTrackReaction() {
     ?.map((page) => page.items)
     .filter(Boolean)
     .flat(1) as SpotifyApi.SavedTrackObject[] | undefined;
+
+  function updateFunction(track: SpotifyApi.SavedTrackObject, old?: InfiniteData<SpotifyApi.UsersSavedTracksResponse>): InfiniteData<SpotifyApi.UsersSavedTracksResponse> {
+    const obj: typeof old = {
+      pageParams: old?.pageParams ?? [],
+      pages:
+        old?.pages.map(
+          (oldPage, index): SpotifyApi.UsersSavedTracksResponse => {
+            const isTrackFavorite = isFavorite(track.track.id);
+            if (index === 0 && !isTrackFavorite) {
+              return { ...oldPage, items: [...oldPage.items, track] };
+            } else if (isTrackFavorite) {
+              return { ...oldPage, items: oldPage.items.filter((oldTrack) => oldTrack.track.id !== track.track.id) };
+            }
+            return oldPage;
+          }
+        ) ?? [],
+    };
+    return obj;
+  }
+
   const { mutate: reactToTrack } = useSpotifyMutation<{}, SpotifyApi.SavedTrackObject>(
     (spotifyApi, { track }) => spotifyApi[isFavorite(track.id) ? "removeFromMySavedTracks" : "addToMySavedTracks"]([track.id]).then((res) => res.body),
     {
       onSuccess(_, track) {
-        queryClient.setQueryData<SpotifyApi.SavedTrackObject[]>(
-          QueryCacheKeys.userSavedTracks,
-          isFavorite(track.track.id) ? (old) => (old ?? []).filter((oldTrack) => oldTrack.track.id !== track.track.id) : (old) => [...(old ?? []), track]
-        );
+        queryClient.setQueryData<InfiniteData<SpotifyApi.UsersSavedTracksResponse>>(QueryCacheKeys.userSavedTracks, (old) => updateFunction(track, old));
       },
     }
   );
