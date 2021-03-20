@@ -4,6 +4,8 @@ dist/
 # user specific
 cache/
 local/
+# debian build specific
+deb-struct/usr
 # deply build binaries
 deploy/linux/build
 deploy/win32/build

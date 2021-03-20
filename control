@@ -1,0 +1,10 @@
+Package: Spotube
+Version: 0.0.1
+Section: sound
+Priority: optional
+Architecture: all
+Essential: no
+Installed-Size: 44000
+Maintainer: KR Tirtho
+Description: A music streaming app combining the power of Spotify & Youtube
+Homepage: https://github.com/KRTirtho/spotube
