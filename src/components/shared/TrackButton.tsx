@@ -2,7 +2,7 @@ import { QIcon, QMouseEvent } from "@nodegui/nodegui";
 import { Text, View } from "@nodegui/react-nodegui";
 import React, { FC, useContext, useMemo } from "react";
 import playerContext from "../../context/playerContext";
-import { msToMinAndSec } from "../../helpers/msToMin:sec";
+import { msToMinAndSec } from "../../helpers/msToMin_sec";
 import useTrackReaction from "../../hooks/useTrackReaction";
 import { heart, heartRegular, pause, play } from "../../icons";
 import IconButton from "./IconButton";
