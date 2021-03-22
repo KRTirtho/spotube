@@ -11,11 +11,7 @@ interface PlayerProgressBarProps {
 
 function PlayerProgressBar({ audioPlayer, totalDuration }: PlayerProgressBarProps) {
   const { currentTrack } = useContext(playerContext);
-<<<<<<< HEAD
   const [trackTime, setTrackTime] = useState<number>(0);
-=======
-  const [trackTime, setTrackTime] = useState(0);
->>>>>>> 4aa80fbee543b23474e26fcb82f56a593ea61515
   const trackSliderEvents = useEventHandler<QAbstractSliderSignals>(
     {
       sliderMoved: (value) => {
