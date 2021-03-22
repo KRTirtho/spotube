@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "lib": [
+      "ES2019.Array",
+      "DOM"
+    ],
+    "jsx": "react",
+    "strict": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*"],
+  "exclude": ["**/node_modules/*"]
+}
