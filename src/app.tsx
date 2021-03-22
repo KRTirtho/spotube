@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Window, hot, View, useEventHandler, BoxView } from "@nodegui/react-nodegui";
 import { Direction, QIcon, QKeyEvent, QMainWindow, QMainWindowSignals, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
-import nodeguiIcon from "../assets/nodegui.jpg";
 import { MemoryRouter } from "react-router";
 import Routes from "./routes";
 import { LocalStorage } from "node-localstorage";
@@ -16,6 +15,7 @@ import showError from "./helpers/showError";
 import fs from "fs"
 import path from "path";
 import { confDir } from "./conf";
+import spotubeIcon from "../assets/spotube.png";
 
 export enum CredentialKeys {
   credentials = "credentials",
@@ -28,7 +28,7 @@ export interface Credentials {
 }
 
 const minSize = { width: 700, height: 750 };
-const winIcon = new QIcon(nodeguiIcon);
+const winIcon = new QIcon(spotubeIcon);
 const localStorageDir = path.join(confDir, "local");
 fs.mkdirSync(localStorageDir, {recursive: true});
 global.localStorage = new LocalStorage(localStorageDir);
