@@ -117,7 +117,7 @@ function Player(): ReactElement {
     if (playerRunning) {
       const statusListener = (status: { property: string; value: any }) => {
         if (status?.property === "duration") {
-          setTotalDuration(status.value);
+          setTotalDuration(status.value ?? 0);
         }
       };
       const stopListener = () => {

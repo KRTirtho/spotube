@@ -26,9 +26,6 @@ export const tabBarStylesheet = `
   #tabmenu-item:hover{
     color: green;
   }
-  #tabmenu-item:active{
-    color: #59ff88;
-  }
   #tabmenu-active-item{
     background-color: green;
     color: white;
