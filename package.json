@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode=production",
-    "dev": "webpack --mode=development",
+    "dev": "cross-env TSC_WATCHFILE=UseFsEvents webpack --mode=development",
     "start": "qode ./dist/index.js",
     "start:trace": "qode ./dist/index.js --trace",
     "debug": "qode --inspect ./dist/index.js",
@@ -56,6 +56,10 @@
     "@types/webpack-env": "^1.15.3",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
+<<<<<<< HEAD
+=======
+    "cross-env": "^7.0.3",
+>>>>>>> 4aa80fbee543b23474e26fcb82f56a593ea61515
     "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "^6.1.0",
     "native-addon-loader": "^2.0.1",
