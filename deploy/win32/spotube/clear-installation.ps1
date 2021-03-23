@@ -23,6 +23,19 @@ if(Test-Path "$ScriptDir\qode.exe"){
         else{
             throw "Wrong Option, use either 'y' or 'n', aborting..."
         }
+        # removing all the shortcuts
+        $shortcut_paths = @(
+        "$HOME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Spotube.lnk", 
+        "$HOME\Desktop\Spotube.lnk"
+        )
+
+        foreach($shortcut in $shortcut_paths){
+            if(Test-Path $shortcut){
+                echo "Deleting Shortcut: $shortcut"
+                Remove-Item -Path $shortcut
+            }
+        }
+
 
         echo "Uninstall complete, just delete the Spotube folder now"
         echo "Will miss you💕!"

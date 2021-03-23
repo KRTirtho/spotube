@@ -8,8 +8,8 @@ $shortcut_paths = @(
         "$HOME\Desktop\Spotube.lnk"
      )
 # for creating shortcuts
-function CreateShortcut {
-    $Target = "$ScriptDir\qode.exe"
+function CreateShortcut([String]$InstallLocation) {
+    $Target = "$InstallLocation\qode.exe"
     $WshShell = New-Object -comObject WScript.Shell
 
     echo "Creating shortcuts"
@@ -17,8 +17,8 @@ function CreateShortcut {
         echo $shortcut
         $StartShortcut = $WshShell.CreateShortcut($shortcut)
         $StartShortcut.TargetPath = $Target
-        $StartShortcut.WorkingDirectory = $ScriptDir
-        $StartShortcut.IconLocation = "$ScriptDir\dist\icon.ico"
+        $StartShortcut.WorkingDirectory = $InstallLocation
+        $StartShortcut.IconLocation = "$InstallLocation\icon.ico"
         $StartShortcut.Save()
     }
 }
@@ -44,7 +44,10 @@ function InstallSpotube {
     $WannaCreateShortcut = Read-Host -Prompt "Do you want to create shortcuts?[y]Yes/[n]No"
     $WannaCreateShortcut = $WannaCreateShortcut.Trim().ToLower()
     if($WannaCreateShortcut -eq "y"){
-        CreateShortcut
+        if(!$Spotube_Location.Trim()){
+            $Spotube_Location= $Env:Programfiles
+        }
+        CreateShortcut -InstallLocation "$Spotube_Location\Spotube"
     }
     elseif($WannaCreateShortcut -eq "n"){
         echo "Ok, skipping this part"

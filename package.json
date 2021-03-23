@@ -12,7 +12,8 @@
     "start:trace": "qode ./dist/index.js --trace",
     "debug": "qode --inspect ./dist/index.js",
     "pack": "nodegui-packer -p ./dist",
-    "pack-deb": "node scripts/build-deb.js"
+    "pack-deb": "node scripts/build-deb.js",
+    "pack-win32": "powershell.exe -ExecutionPolicy Unrestricted -Command \". '.\\scripts\\build-win32.ps1'\""
   },
   "dependencies": {
     "@nodegui/nodegui": "^0.27.0",
