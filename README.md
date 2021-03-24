@@ -1,4 +1,4 @@
-<img src="./assets/spotube_banner.svg"/>
+![Spotube](assets/spotube_banner.svg)
 
 Spotube is a [qt](https://qt.io) based lightweight spotify client which uses [nodegui/react-nodegui](https://github.com/nodegui/react-nodegui) as frontend & nodejs as backend. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
 ![spotube](https://user-images.githubusercontent.com/61944859/111771249-a7d38180-88d5-11eb-85f2-d9db57717694.png)
@@ -23,7 +23,8 @@ Don't worry **spotify premium isn't required**😱. But some extra packages are 
 - [MPV](https://mpv.io/installation/) player for playing the actual audio
 - [youtube-dl](https://github.com/ytdl-org/youtube-dl) for streaming the audio from youtube. It already comes pre bundled with mpv
 
-**Tip!:** If you're using windows try installing **mpv & youtube-dl** player with **chocolatey package manager** as it'd make the installation a lot easier
+**Tip!:** If you're using **[Windows]()** try installing **mpv & youtube-dl** player with **[chocolatey](https://chocolatey.org/install) package manager** as it'd make the installation a lot easier.
+**But always install youtube-dl first & then mpv player**
 
 **Important for [Ubuntu/Debian]():** If you're using any **ubuntu/debian** based linux distro then **youtube-dl** installed from the typical **apt-get** repositories will most likely not work as that version is older than current release. So remove it & install from the repository manually
 
@@ -47,7 +48,7 @@ $ snap install youtube-dl
 
 I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
 
-All the binaries are located in the [releases](https://github.com/krtirtho/spotube/releases)
+All the binaries are located in the [releases](https://github.com/krtirtho/spotube/releases), just download & install
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
 
@@ -123,7 +124,7 @@ $ cd deploy/<os-name>/build/spotube
 If everything went smoothly then double clicking on the
 
 - `AppRun` or Spotube-x86_64.AppImage for **linux**
-- Spotube-x86_64.exe for **Windows**
+- qode.exe for **Windows**
 - Spotube-x86_64.dmg for **MacOS**
 
 should work just fine without any problem
@@ -153,6 +154,12 @@ There will be some glitches, lags & stuck motions because of the library Spotube
 - Add seek Lyric for currently playing track
 - Support for playing/streaming podcasts/shows
 - Easy installation procedure/mechanism for simplicity
+
+## Things that don't work
+- Shows & Podcasts aren't supported as it'd require premium anyway
+- Beautiful UI (you missed it, see the title😂^)
+- Images aren't added to ensure the lowest resource usage
+- OS Media Controls
 
 #### Social handlers
 

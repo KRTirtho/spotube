@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
 Name=Spotube
-Exec=AppRun
-Icon=spotube
+Exec=/usr/bin/spotube
+Icon=icon
 Comment=A music streaming app combining the power of Spotify & Youtube
 Terminal=false
 Categories=Music;

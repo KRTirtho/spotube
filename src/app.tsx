@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Window, hot, View, useEventHandler, BoxView } from "@nodegui/react-nodegui";
-import { Direction, QIcon, QKeyEvent, QMainWindow, QMainWindowSignals, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
+import { Window, hot, View, useEventHandler } from "@nodegui/react-nodegui";
+import { QIcon, QKeyEvent, QMainWindow, QMainWindowSignals, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
 import { MemoryRouter } from "react-router";
 import Routes from "./routes";
 import { LocalStorage } from "node-localstorage";
@@ -15,7 +15,7 @@ import showError from "./helpers/showError";
 import fs from "fs"
 import path from "path";
 import { confDir } from "./conf";
-import spotubeIcon from "../assets/spotube.png";
+import spotubeIcon from "../assets/icon.svg";
 
 export enum CredentialKeys {
   credentials = "credentials",
