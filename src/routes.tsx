@@ -11,6 +11,7 @@ import Library from "./components/Library";
 import Search from "./components/Search";
 import SearchResultPlaylistCollection from "./components/SearchResultPlaylistCollection";
 import SearchResultSongsCollection from "./components/SearchResultSongsCollection";
+import Settings from "./components/Settings";
 
 function Routes() {
   const { isLoggedIn } = useContext(authContext);
@@ -49,6 +50,9 @@ function Routes() {
       </Route>
       <Route exact path="/search/songs">
         <SearchResultSongsCollection />
+      </Route>
+      <Route exact path="/settings/">
+        <Settings />
       </Route>
     </>
   );

@@ -15,8 +15,8 @@ function Home() {
   );
 
   return (
-    <ScrollArea style={`flex-grow: 1; border: none; flex: 1;`}>
-      <View style={`flex-direction: 'column'; justify-content: 'center'; flex: 1;`}>
+    <ScrollArea style={`flex-grow: 1; border: none;`}>
+      <View style={`flex-direction: 'column'; align-items: 'center'; flex: 1;`}>
         <PlaceholderApplet error={isError} message="Failed to query genres" reload={refetch} helps loading={isLoading} />
         {categories?.map((category, index) => {
           return <CategoryCard key={index + category.id} id={category.id} name={category.name} />;
@@ -36,9 +36,8 @@ interface CategoryCardProps {
 const categoryStylesheet = `
      #container{
        flex: 1;
-       flex-direction: column;
+       flex-direction: 'column';
        justify-content: 'center';
-       margin-bottom: 20px;
      }
      #anchor-heading{
        background: transparent;
@@ -51,8 +50,6 @@ const categoryStylesheet = `
      }
      #child-view{
         flex: 1;
-        justify-content: 'space-around';
-        align-items: 'center';
       }
      #anchor-heading:hover{
        border: none;

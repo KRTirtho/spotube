@@ -4,19 +4,17 @@ import { Redirect, Route } from "react-router";
 import { QueryCacheKeys } from "../conf";
 import playerContext from "../context/playerContext";
 import useSpotifyInfiniteQuery from "../hooks/useSpotifyInfiniteQuery";
-import useSpotifyQuery from "../hooks/useSpotifyQuery";
 import { GenreView } from "./PlaylistGenreView";
 import { PlaylistSimpleControls, TrackTableIndex } from "./PlaylistView";
 import PlaceholderApplet from "./shared/PlaceholderApplet";
-import PlaylistCard from "./shared/PlaylistCard";
 import { TrackButton, TrackButtonPlaylistObject } from "./shared/TrackButton";
 import { TabMenuItem } from "./TabMenu";
 
 function Library() {
   return (
-    <View style="flex: 1; flex-direction: 'row';">
+    <View style="flex: 1; flex-direction: 'column';">
       <Redirect from="/library" to="/library/saved-tracks" />
-      <View style="flex-direction: 'column'; flex: 1; max-width: 150px;">
+      <View style="max-width: 350px; justify-content: 'space-evenly'">
         <TabMenuItem title="Saved Tracks" url="/library/saved-tracks" />
         <TabMenuItem title="Playlists" url="/library/playlists" />
       </View>

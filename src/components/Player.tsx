@@ -6,10 +6,11 @@ import { shuffleArray } from "../helpers/shuffleArray";
 import NodeMpv from "node-mpv";
 import { getYoutubeTrack } from "../helpers/getYoutubeTrack";
 import PlayerProgressBar from "./PlayerProgressBar";
-import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular, heart } from "../icons";
+import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular, heart, musicNode } from "../icons";
 import IconButton from "./shared/IconButton";
 import showError from "../helpers/showError";
 import useTrackReaction from "../hooks/useTrackReaction";
+import ManualLyricDialog from "./ManualLyricDialog";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -22,7 +23,6 @@ export const audioPlayer = new NodeMpv(
   },
   ["--ytdl-raw-options-set=format=140,http-chunk-size=300000"]
 );
-
 function Player(): ReactElement {
   const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
   const { reactToTrack, isFavorite } = useTrackReaction();
@@ -32,6 +32,7 @@ function Player(): ReactElement {
   const [shuffle, setShuffle] = useState<boolean>(false);
   const [realPlaylist, setRealPlaylist] = useState<CurrentPlaylist["tracks"]>([]);
   const [isStopped, setIsStopped] = useState<boolean>(false);
+  const [openLyrics, setOpenLyrics] = useState<boolean>(false);
   const playlistTracksIds = currentPlaylist?.tracks.map((t) => t.track.id);
   const volumeHandler = useEventHandler<QAbstractSliderSignals>(
     {
@@ -91,7 +92,7 @@ function Player(): ReactElement {
   // changing shuffle to default
   useEffect(() => {
     setShuffle(false);
-  }, [currentPlaylist])
+  }, [currentPlaylist]);
 
   useEffect(() => {
     if (playerRunning) {
@@ -198,6 +199,7 @@ function Player(): ReactElement {
         </GridColumn>
         <GridColumn width={4}>
           <BoxView direction={Direction.TopToBottom} style={`max-width: 600px; min-width: 380px;`}>
+            {currentTrack && <ManualLyricDialog open={openLyrics} track={currentTrack} />}
             <PlayerProgressBar audioPlayer={audioPlayer} totalDuration={totalDuration} />
 
             <BoxView direction={Direction.LeftToRight}>
@@ -220,6 +222,11 @@ function Player(): ReactElement {
                 },
               }}
               icon={new QIcon(isFavorite(currentTrack?.id ?? "") ? heart : heartRegular)}
+            />
+            <IconButton
+              style={openLyrics ? "background-color: green;": ""}
+              icon={new QIcon(musicNode)}
+              on={{ clicked: () => currentTrack && setOpenLyrics(!openLyrics) }}
             />
             <Slider minSize={{ height: 20, width: 80 }} maxSize={{ height: 20, width: 100 }} hasTracking sliderPosition={volume} on={volumeHandler} orientation={Orientation.Horizontal} />
           </BoxView>

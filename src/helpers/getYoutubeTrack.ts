@@ -26,7 +26,7 @@ export async function getYoutubeTrack(track: SpotifyApi.TrackObjectFull): Promis
   try {
     const artistsName = track.artists.map((ar) => ar.name);
     const queryString = `${artistsName[0]} - ${track.name}${artistsName.length > 1 ? ` feat. ${artistsName.slice(1).join(" ")}` : ``}`;
-    console.log('Youtube Query String:', queryString);
+    console.log("Youtube Query String:", queryString);
     const result = await scrapYt.search(queryString, { limit: 7, type: "video" });
     const tracksWithRelevance = result
       .map((video) => {
@@ -40,7 +40,9 @@ export async function getYoutubeTrack(track: SpotifyApi.TrackObjectFull): Promis
       .sort((a, b) => (a.matchPercentage > b.matchPercentage ? -1 : 1));
     const sameChannelTracks = tracksWithRelevance.filter((tr) => tr.sameChannel);
 
-    const finalTrack = { ...track, youtube_uri: (sameChannelTracks.length > 0 ? sameChannelTracks : tracksWithRelevance)[0].url };
+    const rarestTrack = result.map((res) => ({ url: `http://www.youtube.com/watch?v=${res.id}`, id: res.id }));
+
+    const finalTrack = { ...track, youtube_uri: (sameChannelTracks.length > 0 ? sameChannelTracks : tracksWithRelevance.length > 0 ? tracksWithRelevance : rarestTrack)[0].url };
     return finalTrack;
   } catch (error) {
     console.error("Failed to resolve track's youtube url: ", error);

@@ -35,14 +35,13 @@ interface GenreViewProps {
 export function GenreView({ heading, playlists, loadMore, isLoadable, isError, isLoading, refetch }: GenreViewProps) {
   const playlistGenreViewStylesheet = `
     #genre-container{
-      flex-direction: column;
+      flex-direction: 'column';
       flex: 1;
     }
     #heading {
       padding: 10px;
     }
     #scroll-view{
-      flex: 1;
       flex-grow: 1;
       border: none;
     }
