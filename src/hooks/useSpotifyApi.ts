@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { useContext, useEffect } from "react";
-import { CredentialKeys } from "../app";
+import { LocalStorageKeys } from "../app";
 import authContext from "../context/authContext";
 import showError from "../helpers/showError";
 import spotifyApi from "../initializations/spotifyApi";
@@ -13,7 +13,7 @@ function useSpotifyApi() {
     isLoggedIn,
     setAccess_token,
   } = useContext(authContext);
-  const refreshToken = localStorage.getItem(CredentialKeys.refresh_token);
+  const refreshToken = localStorage.getItem(LocalStorageKeys.refresh_token);
 
   useEffect(() => {
     if (isLoggedIn && clientId && clientSecret && refreshToken) {

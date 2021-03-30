@@ -12,14 +12,16 @@ import express from "express";
 import open from "open";
 import spotifyApi from "./initializations/spotifyApi";
 import showError from "./helpers/showError";
-import fs from "fs"
+import fs from "fs";
 import path from "path";
 import { confDir } from "./conf";
 import spotubeIcon from "../assets/icon.svg";
+import preferencesContext, { PreferencesContextProperties } from "./context/preferencesContext";
 
-export enum CredentialKeys {
+export enum LocalStorageKeys {
   credentials = "credentials",
   refresh_token = "refresh_token",
+  preferences = "user-preferences",
 }
 
 export interface Credentials {
@@ -30,7 +32,7 @@ export interface Credentials {
 const minSize = { width: 700, height: 750 };
 const winIcon = new QIcon(spotubeIcon);
 const localStorageDir = path.join(confDir, "local");
-fs.mkdirSync(localStorageDir, {recursive: true});
+fs.mkdirSync(localStorageDir, { recursive: true });
 global.localStorage = new LocalStorage(localStorageDir);
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +44,11 @@ const queryClient = new QueryClient({
   },
 });
 
+const initialPreferences: PreferencesContextProperties = {
+  playlistImages: false,
+};
+
+//* Application start
 function RootApp() {
   const windowRef = useRef<QMainWindow>();
   const [currentTrack, setCurrentTrack] = useState<CurrentTrack>();
@@ -75,16 +82,28 @@ function RootApp() {
     },
     [currentTrack]
   );
-
+  // cache
+  const cachedPreferences = localStorage.getItem(LocalStorageKeys.preferences);
+  const cachedCredentials = localStorage.getItem(LocalStorageKeys.credentials);
+  // state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [credentials, setCredentials] = useState<Credentials>({ clientId: "", clientSecret: "" });
+  const [preferences, setPreferences] = useState<PreferencesContextProperties>(() => {
+    if (cachedPreferences) {
+      return JSON.parse(cachedPreferences);
+    }
+    return initialPreferences;
+  });
   const [access_token, setAccess_token] = useState<string>("");
   const [currentPlaylist, setCurrentPlaylist] = useState<CurrentPlaylist>();
-  const cachedCredentials = localStorage.getItem(CredentialKeys.credentials);
 
   useEffect(() => {
     setIsLoggedIn(!!cachedCredentials);
   }, []);
+  // just saves the preferences
+  useEffect(() => {
+    localStorage.setItem(LocalStorageKeys.preferences, JSON.stringify(preferences));
+  }, [preferences]);
 
   useEffect(() => {
     const onWindowClose = () => {
@@ -100,7 +119,7 @@ function RootApp() {
   });
   // for user code login
   useEffect(() => {
-    if (isLoggedIn && credentials && !localStorage.getItem(CredentialKeys.refresh_token)) {
+    if (isLoggedIn && credentials && !localStorage.getItem(LocalStorageKeys.refresh_token)) {
       const app = express();
       app.use(express.json());
 
@@ -110,7 +129,7 @@ function RootApp() {
           spotifyApi.setClientSecret(credentials.clientSecret);
           const { body: authRes } = await spotifyApi.authorizationCodeGrant(req.query.code);
           setAccess_token(authRes.access_token);
-          localStorage.setItem(CredentialKeys.refresh_token, authRes.refresh_token);
+          localStorage.setItem(LocalStorageKeys.refresh_token, authRes.refresh_token);
           return res.end();
         } catch (error) {
           console.error("Failed to fullfil code grant flow: ", error);
@@ -121,7 +140,7 @@ function RootApp() {
         console.log("Server is running");
         spotifyApi.setClientId(credentials.clientId);
         spotifyApi.setClientSecret(credentials.clientSecret);
-        open(spotifyApi.createAuthorizeURL(["user-library-read", "playlist-read-private", "user-library-modify","playlist-modify-private", "playlist-modify-public"], "xxxyyysssddd")).catch((e) =>
+        open(spotifyApi.createAuthorizeURL(["user-library-read", "playlist-read-private", "user-library-modify", "playlist-modify-private", "playlist-modify-public"], "xxxyyysssddd")).catch((e) =>
           console.error("Opening IPC connection with browser failed: ", e)
         );
       });
@@ -141,14 +160,16 @@ function RootApp() {
     <Window ref={windowRef} on={windowEvents} windowState={WindowState.WindowMaximized} windowIcon={winIcon} windowTitle="Spotube" minSize={minSize}>
       <MemoryRouter>
         <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, setAccess_token, ...credentials }}>
-          <playerContext.Provider value={{ currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
-            <QueryClientProvider client={queryClient}>
-              <View style={`flex: 1; flex-direction: 'column'; align-items: 'stretch';`}>
-                <Routes />
-                {isLoggedIn && <Player />}
-              </View>
-            </QueryClientProvider>
-          </playerContext.Provider>
+          <preferencesContext.Provider value={{ ...preferences, setPreferences }}>
+            <playerContext.Provider value={{ currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
+              <QueryClientProvider client={queryClient}>
+                <View style={`flex: 1; flex-direction: 'column'; align-items: 'stretch';`}>
+                  <Routes />
+                  {isLoggedIn && <Player />}
+                </View>
+              </QueryClientProvider>
+            </playerContext.Provider>
+          </preferencesContext.Provider>
         </authContext.Provider>
       </MemoryRouter>
     </Window>

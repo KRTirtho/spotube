@@ -1,22 +1,26 @@
-import { CursorShape, QIcon, QMouseEvent } from '@nodegui/nodegui';
-import { Text, View } from '@nodegui/react-nodegui';
-import React, { useContext, useMemo, useState } from 'react'
-import { useHistory } from 'react-router';
-import { QueryCacheKeys } from '../../conf';
-import playerContext from '../../context/playerContext';
-import { generateRandomColor, getDarkenForeground } from '../../helpers/RandomColor';
-import showError from '../../helpers/showError';
-import usePlaylistReaction from '../../hooks/usePlaylistReaction';
-import useSpotifyQuery from '../../hooks/useSpotifyQuery';
-import { heart, heartRegular, pause, play } from '../../icons';
-import { audioPlayer } from '../Player';
-import IconButton from './IconButton';
+import { CursorShape, QIcon, QMouseEvent } from "@nodegui/nodegui";
+import { Text, View } from "@nodegui/react-nodegui";
+import React, { useContext, useMemo, useState } from "react";
+import { useHistory } from "react-router";
+import { QueryCacheKeys } from "../../conf";
+import playerContext from "../../context/playerContext";
+import preferencesContext from "../../context/preferencesContext";
+import { generateRandomColor, getDarkenForeground } from "../../helpers/RandomColor";
+import showError from "../../helpers/showError";
+import usePlaylistReaction from "../../hooks/usePlaylistReaction";
+import useSpotifyQuery from "../../hooks/useSpotifyQuery";
+import { heart, heartRegular, pause, play } from "../../icons";
+import { audioPlayer } from "../Player";
+import CachedImage from "./CachedImage";
+import IconButton from "./IconButton";
 
 interface PlaylistCardProps {
   playlist: SpotifyApi.PlaylistObjectSimplified;
 }
 
 const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
+  const preferences = useContext(preferencesContext);
+  const thumbnail = playlist.images[0].url;
   const { id, description, name, images } = playlist;
   const history = useHistory();
   const [hovered, setHovered] = useState(false);
@@ -31,7 +35,7 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
     try {
       const { data: tracks, isSuccess } = await refetch();
       if (currentPlaylist?.id !== id && isSuccess && tracks) {
-        setCurrentPlaylist({ tracks, id, name, thumbnail: images[0].url });
+        setCurrentPlaylist({ tracks, id, name, thumbnail });
         setCurrentTrack(tracks[0].track);
       } else {
         await audioPlayer.stop();
@@ -46,7 +50,7 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
   function gotoPlaylist(native?: any) {
     const key = new QMouseEvent(native);
     if (key.button() === 1) {
-      history.push(`/playlist/${id}`, { name, thumbnail: images[0].url });
+      history.push(`/playlist/${id}`, { name, thumbnail });
     }
   }
 
@@ -54,14 +58,16 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
   const color = useMemo(() => getDarkenForeground(bgColor1), [bgColor1]);
 
   const playlistStyleSheet = `
-    #playlist-container{
+    #playlist-container, #img-container{
       width: 150px;
-      flex-direction: column;
       padding: 10px;
-      min-height: 150px;
-      background-color: ${bgColor1};
-      border-radius: 5px;
       margin: 5px;
+      flex-direction: column;
+      background-color: ${bgColor1};
+    }
+    #playlist-container{
+      border-radius: 5px;
+      min-height: 150px;
     }
     #playlist-container:hover{
       border: 1px solid green;
@@ -70,23 +76,55 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
       border: 5px solid green;
     }
   `;
+  const playlistAction = `
+    position: absolute;
+    bottom: 30px;
+    background-color: ${color};
+  `;
+
+  const playlistActions = (
+    <>
+      <IconButton
+        style={preferences.playlistImages ? "" : playlistAction + "left: '55%'"}
+        icon={new QIcon(isFavorite(id) ? heart : heartRegular)}
+        on={{
+          clicked() {
+            reactToPlaylist(playlist);
+          },
+        }}
+      />
+      <IconButton
+        style={preferences.playlistImages ? "" : playlistAction + "left: '80%'"}
+        icon={new QIcon(currentPlaylist?.id === id ? pause : play)}
+        on={{
+          clicked() {
+            handlePlaylistPlayPause();
+          },
+        }}
+      />
+    </>
+  );
+  const hovers = {
+    HoverEnter() {
+      setHovered(true);
+    },
+    HoverLeave() {
+      setHovered(false);
+    },
+  };
 
   return (
     <View
-      id="playlist-container"
+      id={preferences.playlistImages ? "img-container" : "playlist-container"}
       cursor={CursorShape.PointingHandCursor}
       styleSheet={playlistStyleSheet}
       on={{
         MouseButtonRelease: gotoPlaylist,
-        HoverEnter() {
-          setHovered(true);
-        },
-        HoverLeave() {
-          setHovered(false);
-        },
+        ...hovers,
       }}>
-      {/* <CachedImage src={thumbnail} maxSize={{ height: 150, width: 150 }} scaledContents alt={name} /> */}
-      <Text style={`color: ${color};`} wordWrap on={{ MouseButtonRelease: gotoPlaylist }}>
+      {preferences.playlistImages && <CachedImage src={thumbnail} maxSize={{ height: 150, width: 150 }} scaledContents alt={name} />}
+
+      <Text style={`color: ${color};`} wordWrap on={{ MouseButtonRelease: gotoPlaylist, ...hovers }}>
         {`
           <center>
             <h3>${name}</h3>
@@ -94,28 +132,12 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
           </center>
         `}
       </Text>
-      {(hovered || currentPlaylist?.id === id) && (
-        <>
-          <IconButton
-            style={`position: absolute; bottom: 30px; left: '55%'; background-color: ${color};`}
-            icon={new QIcon(isFavorite(id) ? heart : heartRegular)}
-            on={{
-              clicked() {
-                reactToPlaylist(playlist);
-              },
-            }}
-          />
-          <IconButton
-            icon={new QIcon(currentPlaylist?.id === id ? pause : play)}
-            style={`position: absolute; bottom: 30px; left: '80%'; background-color: ${color};`}
-            on={{
-              clicked() {
-                handlePlaylistPlayPause();
-              },
-            }}
-          />
-        </>
-      )}
+
+      {(hovered || currentPlaylist?.id === id) && !preferences.playlistImages && playlistActions}
+      {preferences.playlistImages &&
+        <View style="flex: 1; justify-content: 'space-around';">{playlistActions}
+        </View>
+      }
     </View>
   );
 };

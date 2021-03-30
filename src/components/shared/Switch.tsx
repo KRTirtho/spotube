@@ -3,20 +3,22 @@ import { Slider } from "@nodegui/react-nodegui";
 import { CheckBoxProps } from "@nodegui/react-nodegui/dist/components/CheckBox/RNCheckBox";
 import React, { useEffect, useState } from "react";
 
-interface SwitchProps extends Omit<CheckBoxProps, "on" |"icon" | "text">{
-  onChange?(checked:boolean): void
+export interface SwitchProps extends Omit<CheckBoxProps, "on" | "icon" | "text"> {
+  onChange?(checked: boolean): void;
 }
 
-function Switch({ checked, onChange, ...props }: SwitchProps) {
-  const [value, setValue] = useState<0|1>(0);
+function Switch({ checked: derivedChecked, onChange, ...props }: SwitchProps) {
+  const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
-    setValue(checked ? 1 : 0);
-  }, [checked])
-  
+    if (derivedChecked) {
+      setChecked(derivedChecked);
+    }
+  }, []);
+
   return (
     <Slider
-      value={value}
+      value={checked ? 1 : 0}
       hasTracking
       mouseTracking
       orientation={Orientation.Horizontal}
@@ -25,18 +27,18 @@ function Switch({ checked, onChange, ...props }: SwitchProps) {
       maxSize={{ width: 30, height: 20 }}
       on={{
         valueChanged(value) {
-          onChange && onChange(value === 1);
+          onChange && onChange(value===1);
         },
         MouseButtonRelease(native: any) {
           const mouse = new QMouseEvent(native);
           if (mouse.button() === 1) {
-            setValue(value===1?0:1)
+            setChecked(!checked);
           }
-        }
-      }
-      }
+        },
+      }}
       {...props}
-    />);
+    />
+  );
 }
 
 export default Switch;
