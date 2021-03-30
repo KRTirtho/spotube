@@ -11,6 +11,7 @@ import IconButton from "./shared/IconButton";
 import showError from "../helpers/showError";
 import useTrackReaction from "../hooks/useTrackReaction";
 import ManualLyricDialog from "./ManualLyricDialog";
+import { LocalStorageKeys } from "../app";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -26,8 +27,9 @@ export const audioPlayer = new NodeMpv(
 function Player(): ReactElement {
   const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
   const { reactToTrack, isFavorite } = useTrackReaction();
+  const cachedVolume = localStorage.getItem(LocalStorageKeys.volume);
   const [isPaused, setIsPaused] = useState(true);
-  const [volume, setVolume] = useState<number>(55);
+  const [volume, setVolume] = useState<number>(() => (cachedVolume ? parseFloat(cachedVolume) : 55));
   const [totalDuration, setTotalDuration] = useState<number>(0);
   const [shuffle, setShuffle] = useState<boolean>(false);
   const [realPlaylist, setRealPlaylist] = useState<CurrentPlaylist["tracks"]>([]);
@@ -40,10 +42,10 @@ function Player(): ReactElement {
         setVolume(value);
       },
       sliderReleased: () => {
-        localStorage.setItem("volume", volume.toString());
+        localStorage.setItem(LocalStorageKeys.volume, volume.toString());
       },
     },
-    []
+    [volume]
   );
   const playerRunning = audioPlayer.isRunning();
   const titleRef = useRef<QLabel>();
@@ -223,11 +225,7 @@ function Player(): ReactElement {
               }}
               icon={new QIcon(isFavorite(currentTrack?.id ?? "") ? heart : heartRegular)}
             />
-            <IconButton
-              style={openLyrics ? "background-color: green;": ""}
-              icon={new QIcon(musicNode)}
-              on={{ clicked: () => currentTrack && setOpenLyrics(!openLyrics) }}
-            />
+            <IconButton style={openLyrics ? "background-color: green;" : ""} icon={new QIcon(musicNode)} on={{ clicked: () => currentTrack && setOpenLyrics(!openLyrics) }} />
             <Slider minSize={{ height: 20, width: 80 }} maxSize={{ height: 20, width: 100 }} hasTracking sliderPosition={volume} on={volumeHandler} orientation={Orientation.Horizontal} />
           </BoxView>
         </GridColumn>

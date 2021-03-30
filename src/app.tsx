@@ -22,6 +22,7 @@ export enum LocalStorageKeys {
   credentials = "credentials",
   refresh_token = "refresh_token",
   preferences = "user-preferences",
+  volume = "volume"
 }
 
 export interface Credentials {
@@ -47,6 +48,7 @@ const queryClient = new QueryClient({
 const initialPreferences: PreferencesContextProperties = {
   playlistImages: false,
 };
+const initialCredentials: Credentials = { clientId: "", clientSecret: "" };
 
 //* Application start
 function RootApp() {
@@ -87,7 +89,13 @@ function RootApp() {
   const cachedCredentials = localStorage.getItem(LocalStorageKeys.credentials);
   // state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [credentials, setCredentials] = useState<Credentials>({ clientId: "", clientSecret: "" });
+
+  const [credentials, setCredentials] = useState<Credentials>(() => {
+    if (cachedCredentials) {
+      return JSON.parse(cachedCredentials);
+    }
+    return initialCredentials;
+  });
   const [preferences, setPreferences] = useState<PreferencesContextProperties>(() => {
     if (cachedPreferences) {
       return JSON.parse(cachedPreferences);
@@ -98,28 +106,15 @@ function RootApp() {
   const [currentPlaylist, setCurrentPlaylist] = useState<CurrentPlaylist>();
 
   useEffect(() => {
-    setIsLoggedIn(!!cachedCredentials);
+    const parsedCredentials: Credentials = JSON.parse(cachedCredentials ?? "{}");
+    setIsLoggedIn(!!(parsedCredentials.clientId && parsedCredentials.clientSecret));
   }, []);
-  // just saves the preferences
-  useEffect(() => {
-    localStorage.setItem(LocalStorageKeys.preferences, JSON.stringify(preferences));
-  }, [preferences]);
 
-  useEffect(() => {
-    const onWindowClose = () => {
-      if (audioPlayer.isRunning()) {
-        audioPlayer.stop().catch((e) => console.error("Failed to quit MPV player: ", e));
-      }
-    };
-
-    windowRef.current?.addEventListener(WidgetEventTypes.Close, onWindowClose);
-    return () => {
-      windowRef.current?.removeEventListener(WidgetEventTypes.Close, onWindowClose);
-    };
-  });
   // for user code login
   useEffect(() => {
-    if (isLoggedIn && credentials && !localStorage.getItem(LocalStorageKeys.refresh_token)) {
+    // saving changed credentials to storage
+    localStorage.setItem(LocalStorageKeys.credentials, JSON.stringify(credentials));
+    if (credentials.clientId && credentials.clientSecret && !localStorage.getItem(LocalStorageKeys.refresh_token)) {
       const app = express();
       app.use(express.json());
 
@@ -130,6 +125,7 @@ function RootApp() {
           const { body: authRes } = await spotifyApi.authorizationCodeGrant(req.query.code);
           setAccess_token(authRes.access_token);
           localStorage.setItem(LocalStorageKeys.refresh_token, authRes.refresh_token);
+          setIsLoggedIn(true);
           return res.end();
         } catch (error) {
           console.error("Failed to fullfil code grant flow: ", error);
@@ -148,18 +144,31 @@ function RootApp() {
         server.close(() => console.log("Closed server"));
       };
     }
-  }, [isLoggedIn, credentials]);
+  }, [credentials]);
 
+  // just saves the preferences
   useEffect(() => {
-    if (cachedCredentials) {
-      setCredentials(JSON.parse(cachedCredentials));
-    }
-  }, [isLoggedIn]);
+    localStorage.setItem(LocalStorageKeys.preferences, JSON.stringify(preferences));
+  }, [preferences]);
+
+  // window event listeners
+  useEffect(() => {
+    const onWindowClose = () => {
+      if (audioPlayer.isRunning()) {
+        audioPlayer.stop().catch((e) => console.error("Failed to quit MPV player: ", e));
+      }
+    };
+
+    windowRef.current?.addEventListener(WidgetEventTypes.Close, onWindowClose);
+    return () => {
+      windowRef.current?.removeEventListener(WidgetEventTypes.Close, onWindowClose);
+    };
+  });
 
   return (
     <Window ref={windowRef} on={windowEvents} windowState={WindowState.WindowMaximized} windowIcon={winIcon} windowTitle="Spotube" minSize={minSize}>
       <MemoryRouter>
-        <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, setAccess_token, ...credentials }}>
+        <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, setAccess_token, ...credentials, setCredentials }}>
           <preferencesContext.Provider value={{ ...preferences, setPreferences }}>
             <playerContext.Provider value={{ currentPlaylist, currentTrack, setCurrentPlaylist, setCurrentTrack }}>
               <QueryClientProvider client={queryClient}>

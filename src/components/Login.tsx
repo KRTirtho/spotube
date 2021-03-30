@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
 import { LineEdit, Text, Button, View } from "@nodegui/react-nodegui";
 import authContext from "../context/authContext";
-import { LocalStorageKeys, Credentials } from "../app";
 
 function Login() {
-  const { setIsLoggedIn } = useContext(authContext);
+  const { setCredentials: setGlobalCredentials } = useContext(authContext);
   const [credentials, setCredentials] = useState({
     clientId: "",
     clientSecret: "",
@@ -54,14 +53,7 @@ function Login() {
       <Button
         on={{
           clicked: () => {
-            localStorage.setItem(
-              LocalStorageKeys.credentials,
-              JSON.stringify({
-                clientId: credentials.clientId,
-                clientSecret: credentials.clientSecret,
-              } as Credentials)
-            );
-            setIsLoggedIn(true);
+            setGlobalCredentials(credentials);
           },
         }}
         text="Add"
