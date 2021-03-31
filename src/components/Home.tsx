@@ -6,13 +6,25 @@ import { QueryCacheKeys } from "../conf";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";
 import PlaceholderApplet from "./shared/PlaceholderApplet";
 import PlaylistCard from "./shared/PlaylistCard";
+import useSpotifyInfiniteQuery from "../hooks/useSpotifyInfiniteQuery";
 
 function Home() {
-  const { data: categories, isError, refetch, isLoading } = useSpotifyQuery<SpotifyApi.CategoryObject[]>(
+  const { data: pagedCategories, isError, refetch, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useSpotifyInfiniteQuery<SpotifyApi.PagingObject<SpotifyApi.CategoryObject>>(
     QueryCacheKeys.categories,
-    (spotifyApi) => spotifyApi.getCategories({ country: "US" }).then((categoriesReceived) => categoriesReceived.body.categories.items),
-    { initialData: [] }
+    (spotifyApi, { pageParam }) => spotifyApi.getCategories({ country: "US", limit: 10, offset: pageParam }).then((categoriesReceived) => categoriesReceived.body.categories),
+    {
+      getNextPageParam(lastPage) {
+        if (lastPage.next) {
+          return lastPage.offset + lastPage.limit;
+        }
+      },
+    }
   );
+
+  const categories = pagedCategories?.pages
+    .map((page) => page.items)
+    .filter(Boolean)
+    .flat(1);
 
   return (
     <ScrollArea style={`flex-grow: 1; border: none;`}>
@@ -21,6 +33,12 @@ function Home() {
         {categories?.map((category, index) => {
           return <CategoryCard key={index + category.id} id={category.id} name={category.name} />;
         })}
+        {hasNextPage &&
+          <Button
+            on={{ clicked: () => fetchNextPage() }}
+            text="Load More"
+            enabled={!isFetchingNextPage}
+          />}
       </View>
     </ScrollArea>
   );

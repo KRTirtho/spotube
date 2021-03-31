@@ -3,7 +3,7 @@ import { Button, ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import React from "react";
 import { useLocation, useParams } from "react-router";
 import { QueryCacheKeys } from "../conf";
-import useSpotifyQuery from "../hooks/useSpotifyQuery";
+import useSpotifyInfiniteQuery from "../hooks/useSpotifyInfiniteQuery";
 import BackButton from "./BackButton";
 import PlaceholderApplet from "./shared/PlaceholderApplet";
 import PlaylistCard from "./shared/PlaylistCard";
@@ -11,13 +11,34 @@ import PlaylistCard from "./shared/PlaylistCard";
 function PlaylistGenreView() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation<{ name: string }>();
-  const { data: playlists, isError, isLoading, refetch } = useSpotifyQuery<SpotifyApi.PlaylistObjectSimplified[]>(
+  const { data: pagedPlaylists, isError, isLoading, refetch, hasNextPage, isFetchingNextPage, fetchNextPage } = useSpotifyInfiniteQuery<SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified>>(
     [QueryCacheKeys.genrePlaylists, id],
-    (spotifyApi) => spotifyApi.getPlaylistsForCategory(id).then((playlistsRes) => playlistsRes.body.playlists.items),
-    { initialData: [] }
+    (spotifyApi, { pageParam }) => spotifyApi.getPlaylistsForCategory(id, { limit: 20, offset: pageParam }).then((playlistsRes) => playlistsRes.body.playlists),
+    {
+      getNextPageParam(lastPage) {
+        if (lastPage.next) {
+          return lastPage.offset + lastPage.limit;
+        }
+      },
+    }
   );
 
-  return <GenreView isError={isError} isLoading={isLoading} refetch={refetch} heading={location.state.name} playlists={playlists ?? []} />;
+  const playlists = pagedPlaylists?.pages
+    .map((page) => page.items)
+    .filter(Boolean)
+    .flat(1);
+
+  return (
+    <GenreView
+      isError={isError}
+      isLoading={isLoading || isFetchingNextPage}
+      refetch={refetch}
+      heading={location.state.name}
+      playlists={playlists ?? []}
+      loadMore={hasNextPage ? () => fetchNextPage() : undefined}
+      isLoadable={!isFetchingNextPage}
+    />
+  );
 }
 
 export default PlaylistGenreView;
