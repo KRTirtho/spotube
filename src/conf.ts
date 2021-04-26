@@ -12,6 +12,7 @@ export const cacheDir = join(homedir(), ".cache", "spotube")
 export enum QueryCacheKeys{
   categories="categories",
   categoryPlaylists = "categoryPlaylists",
+  featuredPlaylists = "featuredPlaylists",
   genrePlaylists="genrePlaylists",
   playlistTracks="playlistTracks",
   userPlaylists = "user-palylists",

@@ -13,7 +13,16 @@ function PlaylistGenreView() {
   const location = useLocation<{ name: string }>();
   const { data: pagedPlaylists, isError, isLoading, refetch, hasNextPage, isFetchingNextPage, fetchNextPage } = useSpotifyInfiniteQuery<SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified>>(
     [QueryCacheKeys.genrePlaylists, id],
-    (spotifyApi, { pageParam }) => spotifyApi.getPlaylistsForCategory(id, { limit: 20, offset: pageParam }).then((playlistsRes) => playlistsRes.body.playlists),
+    async (spotifyApi, { pageParam }) => {
+      const option = { limit: 20, offset: pageParam };
+      let res;
+      if (id === "featured") {
+        res = await spotifyApi.getFeaturedPlaylists(option);
+      } else {
+        res = await spotifyApi.getPlaylistsForCategory(id, option);
+      }
+      return res.body.playlists;
+    },
     {
       getNextPageParam(lastPage) {
         if (lastPage.next) {
