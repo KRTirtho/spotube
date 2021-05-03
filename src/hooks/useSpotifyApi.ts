@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { useContext, useEffect } from "react";
-import { LocalStorageKeys } from "../app";
+import { LocalStorageKeys } from "../conf";
 import authContext from "../context/authContext";
 import showError from "../helpers/showError";
 import spotifyApi from "../initializations/spotifyApi";

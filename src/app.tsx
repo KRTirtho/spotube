@@ -14,16 +14,9 @@ import spotifyApi from "./initializations/spotifyApi";
 import showError from "./helpers/showError";
 import fs from "fs";
 import path from "path";
-import { confDir } from "./conf";
+import { confDir, LocalStorageKeys } from "./conf";
 import spotubeIcon from "../assets/icon.svg";
 import preferencesContext, { PreferencesContextProperties } from "./context/preferencesContext";
-
-export enum LocalStorageKeys {
-  credentials = "credentials",
-  refresh_token = "refresh_token",
-  preferences = "user-preferences",
-  volume = "volume",
-}
 
 export interface Credentials {
   clientId: string;
