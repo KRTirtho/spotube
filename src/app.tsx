@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Window, hot, View, useEventHandler } from "@nodegui/react-nodegui";
-import { QIcon, QKeyEvent, QMainWindow, QMainWindowSignals, WidgetEventTypes, WindowState } from "@nodegui/nodegui";
+import { Window, hot, View } from "@nodegui/react-nodegui";
+import { QIcon, QMainWindow, WidgetEventTypes, WindowState, QShortcut, QKeySequence } from "@nodegui/nodegui";
 import { MemoryRouter } from "react-router";
 import Routes from "./routes";
 import { LocalStorage } from "node-localstorage";
@@ -14,16 +14,9 @@ import spotifyApi from "./initializations/spotifyApi";
 import showError from "./helpers/showError";
 import fs from "fs";
 import path from "path";
-import { confDir } from "./conf";
+import { confDir, LocalStorageKeys } from "./conf";
 import spotubeIcon from "../assets/icon.svg";
 import preferencesContext, { PreferencesContextProperties } from "./context/preferencesContext";
-
-export enum LocalStorageKeys {
-  credentials = "credentials",
-  refresh_token = "refresh_token",
-  preferences = "user-preferences",
-  volume = "volume"
-}
 
 export interface Credentials {
   clientId: string;
@@ -54,36 +47,6 @@ const initialCredentials: Credentials = { clientId: "", clientSecret: "" };
 function RootApp() {
   const windowRef = useRef<QMainWindow>();
   const [currentTrack, setCurrentTrack] = useState<CurrentTrack>();
-
-  const windowEvents = useEventHandler<QMainWindowSignals>(
-    {
-      async KeyRelease(nativeEv) {
-        try {
-          if (nativeEv) {
-            const event = new QKeyEvent(nativeEv);
-            const eventKey = event.key();
-            if (audioPlayer.isRunning() && currentTrack)
-              switch (eventKey) {
-                case 32: //space
-                  (await audioPlayer.isPaused()) ? await audioPlayer.play() : await audioPlayer.pause();
-                  break;
-                case 16777236: //arrow-right
-                  (await audioPlayer.isSeekable()) && (await audioPlayer.seek(+5));
-                  break;
-                case 16777234: //arrow-left
-                  (await audioPlayer.isSeekable()) && (await audioPlayer.seek(-5));
-                  break;
-                default:
-                  break;
-              }
-          }
-        } catch (error) {
-          console.error("Error in window events: ", error);
-        }
-      },
-    },
-    [currentTrack]
-  );
   // cache
   const cachedPreferences = localStorage.getItem(LocalStorageKeys.preferences);
   const cachedCredentials = localStorage.getItem(LocalStorageKeys.credentials);
@@ -160,13 +123,67 @@ function RootApp() {
     };
 
     windowRef.current?.addEventListener(WidgetEventTypes.Close, onWindowClose);
+
     return () => {
       windowRef.current?.removeEventListener(WidgetEventTypes.Close, onWindowClose);
     };
   });
+  let spaceShortcut: QShortcut | null;
+  let rightShortcut: QShortcut | null;
+  let leftShortcut: QShortcut | null;
+  // short cut effect
+  useEffect(() => {
+    if (windowRef.current) {
+      spaceShortcut = new QShortcut(windowRef.current);
+      rightShortcut = new QShortcut(windowRef.current);
+      leftShortcut = new QShortcut(windowRef.current);
+
+      spaceShortcut.setKey(new QKeySequence("SPACE"));
+      rightShortcut.setKey(new QKeySequence("RIGHT"));
+      leftShortcut.setKey(new QKeySequence("LEFT"));
+
+      async function spaceAction() {
+        try {
+          currentTrack && audioPlayer.isRunning() && (await audioPlayer.isPaused()) ? await audioPlayer.play() : await audioPlayer.pause();
+          console.log("You pressed SPACE");
+        } catch (error) {
+          showError(error, "[Failed to play/pause audioPlayer]: ");
+        }
+      }
+      async function rightAction() {
+        try {
+          currentTrack && audioPlayer.isRunning() && (await audioPlayer.isSeekable()) && (await audioPlayer.seek(+5));
+          console.log("You pressed RIGHT");
+        } catch (error) {
+          showError(error, "[Failed to seek audioPlayer]: ");
+        }
+      }
+      async function leftAction() {
+        try {
+          currentTrack && audioPlayer.isRunning() && (await audioPlayer.isSeekable()) && (await audioPlayer.seek(-5));
+          console.log("You pressed LEFT");
+        } catch (error) {
+          showError(error, "[Failed to seek audioPlayer]: ");
+        }
+      }
+
+      spaceShortcut.addEventListener("activated", spaceAction);
+      rightShortcut.addEventListener("activated", rightAction);
+      leftShortcut.addEventListener("activated", leftAction);
+
+      return () => {
+        spaceShortcut?.removeEventListener("activated", spaceAction);
+        rightShortcut?.removeEventListener("activated", rightAction);
+        leftShortcut?.removeEventListener("activated", leftAction);
+        spaceShortcut = null;
+        rightShortcut = null;
+        leftShortcut = null;
+      };
+    }
+  });
 
   return (
-    <Window ref={windowRef} on={windowEvents} windowState={WindowState.WindowMaximized} windowIcon={winIcon} windowTitle="Spotube" minSize={minSize}>
+    <Window ref={windowRef} windowState={WindowState.WindowMaximized} windowIcon={winIcon} windowTitle="Spotube" minSize={minSize}>
       <MemoryRouter>
         <authContext.Provider value={{ isLoggedIn, setIsLoggedIn, access_token, setAccess_token, ...credentials, setCredentials }}>
           <preferencesContext.Provider value={{ ...preferences, setPreferences }}>

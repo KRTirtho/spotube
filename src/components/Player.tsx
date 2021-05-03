@@ -4,14 +4,14 @@ import React, { ReactElement, useContext, useEffect, useRef, useState } from "re
 import playerContext, { CurrentPlaylist } from "../context/playerContext";
 import { shuffleArray } from "../helpers/shuffleArray";
 import NodeMpv from "node-mpv";
-import { getYoutubeTrack } from "../helpers/getYoutubeTrack";
+import { getYoutubeTrack, YoutubeTrack } from "../helpers/getYoutubeTrack";
 import PlayerProgressBar from "./PlayerProgressBar";
 import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular, heart, musicNode } from "../icons";
 import IconButton from "./shared/IconButton";
 import showError from "../helpers/showError";
 import useTrackReaction from "../hooks/useTrackReaction";
 import ManualLyricDialog from "./ManualLyricDialog";
-import { LocalStorageKeys } from "../app";
+import { LocalStorageKeys } from "../conf";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -35,6 +35,7 @@ function Player(): ReactElement {
   const [realPlaylist, setRealPlaylist] = useState<CurrentPlaylist["tracks"]>([]);
   const [isStopped, setIsStopped] = useState<boolean>(false);
   const [openLyrics, setOpenLyrics] = useState<boolean>(false);
+  const [currentYtTrack, setCurrentYtTrack] = useState<YoutubeTrack>();
   const playlistTracksIds = currentPlaylist?.tracks.map((t) => t.track.id);
   const volumeHandler = useEventHandler<QAbstractSliderSignals>(
     {
@@ -49,6 +50,8 @@ function Player(): ReactElement {
   );
   const playerRunning = audioPlayer.isRunning();
   const titleRef = useRef<QLabel>();
+  const cachedPlaylist = localStorage.getItem(LocalStorageKeys.cachedPlaylist);
+  const cachedTrack = localStorage.getItem(LocalStorageKeys.cachedTrack);
 
   // initial Effect
   useEffect(() => {
@@ -61,21 +64,31 @@ function Player(): ReactElement {
       } catch (error) {
         showError(error, "[Failed starting audio player]: ");
       }
-    })();
+    })().then(() => {
+      if (cachedPlaylist && !currentPlaylist) {
+        setCurrentPlaylist(JSON.parse(cachedPlaylist));
+      }
+      if (cachedTrack && !currentTrack) {
+        setCurrentTrack(JSON.parse(cachedTrack));
+      }
+    });
 
     return () => {
       if (playerRunning) {
-        audioPlayer.quit().catch((e: any) => console.log(e));
+        audioPlayer.quit().catch((e: unknown) => console.log(e));
       }
     };
   }, []);
 
   // track change effect
   useEffect(() => {
+    // caching current track
+    localStorage.setItem(LocalStorageKeys.cachedTrack, JSON.stringify(currentTrack ?? ""));
     (async () => {
       try {
         if (currentTrack && playerRunning) {
           const youtubeTrack = await getYoutubeTrack(currentTrack);
+          setCurrentYtTrack(youtubeTrack);
           await audioPlayer.load(youtubeTrack.youtube_uri, "replace");
           await audioPlayer.play();
           setIsPaused(false);
@@ -94,6 +107,8 @@ function Player(): ReactElement {
   // changing shuffle to default
   useEffect(() => {
     setShuffle(false);
+    // caching playlist
+    localStorage.setItem(LocalStorageKeys.cachedPlaylist, JSON.stringify(currentPlaylist ?? ""));
   }, [currentPlaylist]);
 
   useEffect(() => {
@@ -191,10 +206,10 @@ function Player(): ReactElement {
     <GridView enabled={!!currentTrack} style="flex: 1; max-height: 120px;">
       <GridRow>
         <GridColumn width={2}>
-          <Text ref={titleRef} wordWrap>
+          <Text ref={titleRef} wordWrap openExternalLinks>
             {artistsNames && currentTrack
               ? `
-            <p><b>${currentTrack.name}</b> - ${artistsNames[0]} ${artistsNames.length > 1 ? "feat. " + artistsNames.slice(1).join(", ") : ""}</p>
+            <p><b><a href="${currentYtTrack?.youtube_uri}"}>${currentTrack.name}</a></b> - ${artistsNames[0]} ${artistsNames.length > 1 ? "feat. " + artistsNames.slice(1).join(", ") : ""}</p>
             `
               : `<b>Oh, dear don't waste time</b>`}
           </Text>

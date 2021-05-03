@@ -14,7 +14,7 @@ Following are the features that currently spotube offers:
 - Playback control is on user's machine instead of server based
 - Small size & less data hungry
 - No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
-- Lyric Seek (WIP)
+- Lyric Seek
 
 ## Requirements
 
@@ -149,11 +149,12 @@ $ npm start
 There will be some glitches, lags & stuck motions because of the library Spotube is currently using under the hood. It has some issues with layouts thus sometime some contents aren't shown or overflows out of the window. But resizing the window would fix this issue. Soon there will be some updates fixing this sort of layout related problems
 
 ## TODO:
-
-- Compile, Debug & Build for **MacOS**
-- Add seek Lyric for currently playing track
-- Support for playing/streaming podcasts/shows
-- Easy installation procedure/mechanism for simplicity
+- [ ] Compile, Debug & Build for **MacOS**
+- [x] Compile, Debug & Build for **Windows**
+- [x] Add seek Lyric for currently playing track
+- [ ] Support for playing/streaming podcasts/shows
+- [ ] Easy installation procedure/mechanism for simplicity in Windows
+- [ ] Artist, User & Album pages
 
 ## Things that don't work
 - Shows & Podcasts aren't supported as it'd require premium anyway

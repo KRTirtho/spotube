@@ -10,9 +10,11 @@
     "dev": "cross-env TSC_WATCHFILE=UseFsEvents webpack --mode=development",
     "start": "qode ./dist/index.js",
     "start:watch": "nodemon -e node -w ./*.babelrc -x \"npm start\"",
-    "start-dev": "concurrently -n \"webpack,spotube\" -p \"{name}-{pid}\" -c \"bgBlue,bgGreen\" -i --default-input-target spotube \"npm run dev\" \"npm run start:watch\"",
+    "start-dev": "concurrently -n \"webpack,spotube\" -p \"{name}-{pid}\" -c \"bgBlue.black.bold,bgGreen.black.bold\" -i --default-input-target spotube \"npm run dev\" \"npm run start:watch\"",
+    "debug-dev": "concurrently -n \"webpack,spotube\" -p \"{name}-{pid}\" -c \"bgBlue.black.bold,bgGreen.black.bold\" -i --default-input-target spotube \"npm run dev\" \"npm run debug:watch\"",
     "start:trace": "qode ./dist/index.js --trace",
     "debug": "qode --inspect ./dist/index.js",
+    "debug:watch": "nodemon -e node -w ./*.babelrc -x \"npm run debug\"",
     "pack": "nodegui-packer -p ./dist",
     "pack-deb": "node scripts/build-deb.js",
     "pack-win32": "powershell.exe -ExecutionPolicy Unrestricted -Command \". '.\\scripts\\build-win32.ps1'\""
