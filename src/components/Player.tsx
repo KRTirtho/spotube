@@ -6,12 +6,13 @@ import { shuffleArray } from "../helpers/shuffleArray";
 import NodeMpv from "node-mpv";
 import { getYoutubeTrack, YoutubeTrack } from "../helpers/getYoutubeTrack";
 import PlayerProgressBar from "./PlayerProgressBar";
-import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular, heart, musicNode } from "../icons";
+import { random as shuffleIcon, play, pause, backward, forward, stop, heartRegular, heart, musicNode, download } from "../icons";
 import IconButton from "./shared/IconButton";
 import showError from "../helpers/showError";
 import useTrackReaction from "../hooks/useTrackReaction";
 import ManualLyricDialog from "./ManualLyricDialog";
 import { LocalStorageKeys } from "../conf";
+import useDownloadQueue from "../hooks/useDownloadQueue";
 
 export const audioPlayer = new NodeMpv(
   {
@@ -27,7 +28,9 @@ export const audioPlayer = new NodeMpv(
 function Player(): ReactElement {
   const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } = useContext(playerContext);
   const { reactToTrack, isFavorite } = useTrackReaction();
+
   const cachedVolume = localStorage.getItem(LocalStorageKeys.volume);
+
   const [isPaused, setIsPaused] = useState(true);
   const [volume, setVolume] = useState<number>(() => (cachedVolume ? parseFloat(cachedVolume) : 55));
   const [totalDuration, setTotalDuration] = useState<number>(0);
@@ -36,6 +39,8 @@ function Player(): ReactElement {
   const [isStopped, setIsStopped] = useState<boolean>(false);
   const [openLyrics, setOpenLyrics] = useState<boolean>(false);
   const [currentYtTrack, setCurrentYtTrack] = useState<YoutubeTrack>();
+  const { addToQueue, isActiveDownloading, isFinishedDownloading } = useDownloadQueue();
+
   const playlistTracksIds = currentPlaylist?.tracks.map((t) => t.track.id);
   const volumeHandler = useEventHandler<QAbstractSliderSignals>(
     {
@@ -230,6 +235,16 @@ function Player(): ReactElement {
         </GridColumn>
         <GridColumn width={2}>
           <BoxView>
+            <IconButton
+              style={isActiveDownloading() && !isFinishedDownloading() ? "background-color: green;" : ""}
+              enabled={!!currentYtTrack}
+              icon={new QIcon(download)}
+              on={{
+                clicked() {
+                  currentYtTrack && addToQueue(currentYtTrack);
+                },
+              }}
+            />
             <IconButton
               on={{
                 clicked() {

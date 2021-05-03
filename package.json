@@ -41,7 +41,8 @@
     "react-router": "^5.2.0",
     "scrape-yt": "^1.4.7",
     "spotify-web-api-node": "^5.0.2",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "ytdl-core": "^4.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

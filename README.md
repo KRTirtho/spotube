@@ -1,7 +1,7 @@
 ![Spotube](assets/spotube_banner.svg)
 
 Spotube is a [qt](https://qt.io) based lightweight spotify client which uses [nodegui/react-nodegui](https://github.com/nodegui/react-nodegui) as frontend & nodejs as backend. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
-![spotube](https://user-images.githubusercontent.com/61944859/111771249-a7d38180-88d5-11eb-85f2-d9db57717694.png)
+![Application Screenshot](assets/spotube-screenshot.png)
 
 ## Features
 
@@ -23,10 +23,10 @@ Don't worry **spotify premium isn't required**😱. But some extra packages are 
 - [MPV](https://mpv.io/installation/) player for playing the actual audio
 - [youtube-dl](https://github.com/ytdl-org/youtube-dl) for streaming the audio from youtube. It already comes pre bundled with mpv
 
-**Tip!:** If you're using **[Windows]()** try installing **mpv & youtube-dl** player with **[chocolatey](https://chocolatey.org/install) package manager** as it'd make the installation a lot easier.
+> **Tip!:** If you're using **[Windows]()** try installing **mpv & youtube-dl** player with **[chocolatey](https://chocolatey.org/install) package manager** as it'd make the installation a lot easier.
 **But always install youtube-dl first & then mpv player**
 
-**Important for [Ubuntu/Debian]():** If you're using any **ubuntu/debian** based linux distro then **youtube-dl** installed from the typical **apt-get** repositories will most likely not work as that version is older than current release. So remove it & install from the repository manually
+> **Important for [Ubuntu/Debian]():** If you're using any **ubuntu/debian** based linux distro then **youtube-dl** installed from the typical **apt-get** repositories will most likely not work as that version is older than current release. So remove it & install from the repository manually
 
 Remove the **youtube-dl** installed with **mpv** player or from **apt package manger**
 
@@ -39,10 +39,9 @@ Now, Install youtube-dl from
 - official github repo: https://github.com/ytdl-org/youtube-dl#installation (recommended)
 **or**
 - snap installation
-
-```bash
-$ snap install youtube-dl
-```
+  ```bash
+  $ snap install youtube-dl
+  ```
 
 ## Installation
 
@@ -75,7 +74,7 @@ You need a spotify account & a web app for
 - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields
   ![step-4](https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png)
 
-**[Important]!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself
+> **Note!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself
 
 ### Building from source
 
@@ -146,7 +145,7 @@ $ npm start
 
 ## Known Issues
 
-There will be some glitches, lags & stuck motions because of the library Spotube is currently using under the hood. It has some issues with layouts thus sometime some contents aren't shown or overflows out of the window. But resizing the window would fix this issue. Soon there will be some updates fixing this sort of layout related problems
+There will be some glitches, lags & stuck motions because of the library Spotube is currently using under the hood. It has some issues with layouts thus sometimes some contents aren't shown or overflows out of the window. But resizing the window would fix this issue. Soon there will be some updates fixing this sort of layout related problems
 
 ## TODO:
 - [ ] Compile, Debug & Build for **MacOS**
@@ -158,8 +157,7 @@ There will be some glitches, lags & stuck motions because of the library Spotube
 
 ## Things that don't work
 - Shows & Podcasts aren't supported as it'd require premium anyway
-- Beautiful UI (you missed it, see the title😂^)
-- Images aren't added to ensure the lowest resource usage
+- Beautiful UI (you missed it, see the title😂👆)
 - OS Media Controls
 
 #### Social handlers
