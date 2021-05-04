@@ -12,6 +12,7 @@ import _loadingSpinner from "../assets/loading-spinner.gif";
 import _settingsCog from "../assets/setting-cog.svg"
 import _times from "../assets/times-solid.svg"
 import _musicNode from "../assets/music-solid.svg"
+import _download from "../assets/download-solid.svg"
 
 export const play = _play;
 export const pause = _pause;
@@ -27,3 +28,4 @@ export const loadingSpinner = _loadingSpinner;
 export const settingsCog = _settingsCog;
 export const times = _times;
 export const musicNode = _musicNode;
+export const download = _download;
