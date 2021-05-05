@@ -12,9 +12,9 @@ function CreateShortcut([String]$InstallLocation) {
     $Target = "$InstallLocation\qode.exe"
     $WshShell = New-Object -comObject WScript.Shell
 
-    echo "Creating shortcuts"
+    Write-Output "Creating shortcuts"
     foreach($shortcut in $shortcut_paths){
-        echo $shortcut
+        Write-Output $shortcut
         $StartShortcut = $WshShell.CreateShortcut($shortcut)
         $StartShortcut.TargetPath = $Target
         $StartShortcut.WorkingDirectory = $InstallLocation
@@ -36,21 +36,24 @@ function InstallSpotube {
     if(!$Spotube_Location.Trim()){
         New-Item -Path $Env:Programfiles -Name "Spotube" -ItemType "directory"
         [System.IO.Compression.ZipFile]::ExtractToDirectory("$ScriptDir\spotube.data", $Spotube_Dir)
+        Install-Mpv -SpotubeLocation $Spotube_Dir
     }
     else{
         New-Item -Path Spotube_Location -Name "Spotube" -ItemType "directory"
-        [System.IO.Compression.ZipFile]::ExtractToDirectory("$ScriptDir\spotube.data", "$Spotube_Location\Spotube")
+        $Spotube_Location = "$Spotube_Location\Spotube"
+        [System.IO.Compression.ZipFile]::ExtractToDirectory("$ScriptDir\spotube.data", $Spotube_Location)
+        Install-Mpv -SpotubeLocation $Spotube_Location
     }
     $WannaCreateShortcut = Read-Host -Prompt "Do you want to create shortcuts?[y]Yes/[n]No"
     $WannaCreateShortcut = $WannaCreateShortcut.Trim().ToLower()
     if($WannaCreateShortcut -eq "y"){
         if(!$Spotube_Location.Trim()){
-            $Spotube_Location= $Env:Programfiles
+            $Spotube_Location= $Spotube_Dir
         }
-        CreateShortcut -InstallLocation "$Spotube_Location\Spotube"
+        CreateShortcut -InstallLocation $Spotube_Location
     }
     elseif($WannaCreateShortcut -eq "n"){
-        echo "Ok, skipping this part"
+        Write-Output "Ok, skipping this part"
     }
     else{
         throw "Wrong Option, use either 'y' or 'n', aborting..."
@@ -58,22 +61,44 @@ function InstallSpotube {
     
 }
 
+function Install-Mpv{
+    param([String]$SpotubeLocation)
+    $Mpv_Dir = "$Env:ProgramData"
+    if(!(Test-Path "$Mpv_Dir\Spotube")){
+        New-Item -Path $Mpv_Dir -Name "Spotube" -ItemType "directory"
+    }
+    $Mpv_Dir = "$Env:ProgramData\Spotube"
+    if(!(Test-Path "$Mpv_Dir\mpv")){
+        New-Item -Path $Mpv_Dir -Name "mpv" -ItemType "directory"
+    }
+    $Mpv_Dir = "$Mpv_Dir\mpv"
+    # invoking the scripts for downloading mpv player
+    Write-Output "Downloading mpv player"
+    Invoke-Expression "& '$SpotubeLocation\deps\bootstrap-mpv.ps1' -CWD '$Mpv_Dir'"
+    # setting the env vars
+    if (!($ENV:Path.Contains($Mpv_Dir))) {
+        Write-Output "Setting environment vars"
+        [System.Environment]::SetEnvironmentVariable("Path", "$ENV:Path;$Mpv_Dir", [System.EnvironmentVariableTarget]::Machine)
+        [System.Environment]::SetEnvironmentVariable("Path", "$ENV:Path;$Mpv_Dir", [System.EnvironmentVariableTarget]::User)
+    }
+}
+
 if(!(Test-Path $Spotube_Dir)){
     InstallSpotube -PromptLocation $True
 }
 # reinstallation procedure
 else{
-    echo "Spotube already exists in $Env:Programfiles\Spotube"
+    Write-Output "Spotube already exists in $Env:Programfiles\Spotube"
     $WannaReplace = Read-Host -Prompt "Do you want to reinstall?[y]Yes/[n]No"
     $WannaReplace = $WannaReplace.Trim().ToLower()
     if($WannaReplace -eq "y"){
-        echo "Removing Old Spotube"
-        Remove-Item -Path "$Spotube_Dir" -Recurse
-        echo "Installing New Spotube"
+        Write-Output "Removing Old Spotube"
+        Remove-Item -Path "$Spotube_Dir" -Recurse -Exclude "$Spotube_Dir\mpv"
+        Write-Output "Installing New Spotube"
         InstallSpotube
     }
     elseif($WannaReplace -eq "n"){
-        echo "Keeping the older installation, quitting..."
+        Write-Output "Keeping the older installation, quitting..."
     }
     else{
         throw "Wrong Option, use either 'y' or 'n', aborting..."

@@ -1,6 +1,6 @@
-import { Direction, Orientation, QAbstractSliderSignals, QIcon, QLabel } from "@nodegui/nodegui";
+import { Direction, Orientation, QAbstractSliderSignals, QIcon } from "@nodegui/nodegui";
 import { BoxView, GridColumn, GridRow, GridView, Slider, Text, useEventHandler } from "@nodegui/react-nodegui";
-import React, { ReactElement, useContext, useEffect, useRef, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import playerContext, { CurrentPlaylist } from "../context/playerContext";
 import { shuffleArray } from "../helpers/shuffleArray";
 import NodeMpv from "node-mpv";
@@ -41,7 +41,7 @@ function Player(): ReactElement {
   const [currentYtTrack, setCurrentYtTrack] = useState<YoutubeTrack>();
   const { addToQueue, isActiveDownloading, isFinishedDownloading } = useDownloadQueue();
 
-  const playlistTracksIds = currentPlaylist?.tracks.map((t) => t.track.id);
+  const playlistTracksIds = currentPlaylist?.tracks?.map((t) => t.track.id) ?? [];
   const volumeHandler = useEventHandler<QAbstractSliderSignals>(
     {
       sliderMoved: (value) => {
@@ -54,7 +54,6 @@ function Player(): ReactElement {
     [volume]
   );
   const playerRunning = audioPlayer.isRunning();
-  const titleRef = useRef<QLabel>();
   const cachedPlaylist = localStorage.getItem(LocalStorageKeys.cachedPlaylist);
   const cachedTrack = localStorage.getItem(LocalStorageKeys.cachedTrack);
 
@@ -88,7 +87,9 @@ function Player(): ReactElement {
   // track change effect
   useEffect(() => {
     // caching current track
-    localStorage.setItem(LocalStorageKeys.cachedTrack, JSON.stringify(currentTrack ?? ""));
+    if(!currentTrack) localStorage.removeItem(LocalStorageKeys.cachedTrack);
+    else localStorage.setItem(LocalStorageKeys.cachedTrack, JSON.stringify(currentTrack));
+    
     (async () => {
       try {
         if (currentTrack && playerRunning) {
@@ -113,7 +114,8 @@ function Player(): ReactElement {
   useEffect(() => {
     setShuffle(false);
     // caching playlist
-    localStorage.setItem(LocalStorageKeys.cachedPlaylist, JSON.stringify(currentPlaylist ?? ""));
+    if(!currentPlaylist)  localStorage.removeItem(LocalStorageKeys.cachedPlaylist);
+    else  localStorage.setItem(LocalStorageKeys.cachedPlaylist, JSON.stringify(currentPlaylist));
   }, [currentPlaylist]);
 
   useEffect(() => {
@@ -211,7 +213,7 @@ function Player(): ReactElement {
     <GridView enabled={!!currentTrack} style="flex: 1; max-height: 120px;">
       <GridRow>
         <GridColumn width={2}>
-          <Text ref={titleRef} wordWrap openExternalLinks>
+          <Text wordWrap openExternalLinks>
             {artistsNames && currentTrack
               ? `
             <p><b><a href="${currentYtTrack?.youtube_uri}"}>${currentTrack.name}</a></b> - ${artistsNames[0]} ${artistsNames.length > 1 ? "feat. " + artistsNames.slice(1).join(", ") : ""}</p>
@@ -255,7 +257,11 @@ function Player(): ReactElement {
               }}
               icon={new QIcon(isFavorite(currentTrack?.id ?? "") ? heart : heartRegular)}
             />
-            <IconButton style={openLyrics ? "background-color: green;" : ""} icon={new QIcon(musicNode)} on={{ clicked: () => currentTrack && setOpenLyrics(!openLyrics) }} />
+            <IconButton
+              style={openLyrics ? "background-color: green;" : ""}
+              icon={new QIcon(musicNode)}
+              on={{ clicked: () => currentTrack && setOpenLyrics(!openLyrics) }}
+            />
             <Slider minSize={{ height: 20, width: 80 }} maxSize={{ height: 20, width: 100 }} hasTracking sliderPosition={volume} on={volumeHandler} orientation={Orientation.Horizontal} />
           </BoxView>
         </GridColumn>
