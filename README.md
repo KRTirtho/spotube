@@ -14,17 +14,15 @@ Following are the features that currently spotube offers:
 - Playback control is on user's machine instead of server based
 - Small size & less data hungry
 - No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
-- Lyric Seek
+- Lyrics
+- Downloadable track
 
-## Requirements
+## Requirements (Linux🐧 only)
 
 Don't worry **spotify premium isn't required**😱. But some extra packages are required.
 
 - [MPV](https://mpv.io/installation/) player for playing the actual audio
 - [youtube-dl](https://github.com/ytdl-org/youtube-dl) for streaming the audio from youtube. It already comes pre bundled with mpv
-
-> **Tip!:** If you're using **[Windows]()** try installing **mpv & youtube-dl** player with **[chocolatey](https://chocolatey.org/install) package manager** as it'd make the installation a lot easier.
-**But always install youtube-dl first & then mpv player**
 
 > **Important for [Ubuntu/Debian]():** If you're using any **ubuntu/debian** based linux distro then **youtube-dl** installed from the typical **apt-get** repositories will most likely not work as that version is older than current release. So remove it & install from the repository manually
 
@@ -37,7 +35,7 @@ $ sudo apt-get remove youtube-dl
 Now, Install youtube-dl from
 
 - official github repo: https://github.com/ytdl-org/youtube-dl#installation (recommended)
-**or**
+  **or**
 - snap installation
   ```bash
   $ snap install youtube-dl
@@ -47,7 +45,23 @@ Now, Install youtube-dl from
 
 I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
 
-All the binaries are located in the [releases](https://github.com/krtirtho/spotube/releases), just download & install
+All the binaries are located in the [releases](https://github.com/krtirtho/spotube/releases), just download
+
+### Windows
+
+Extract the **`Spotube-winx64-v<version>.zip`** & double click on **`install.bat`** & follow along the installer
+
+### Linux
+
+- **Ubuntu/Debian**
+  Make sure you've fulfilled all the requirements
+  ```bash
+  sudo apt install spotube_linux-x86_64-v<version>.deb
+  or
+  sudo dpkg -i spotube_linux-x86_64-v<version>.deb
+  ```
+- **Others**: Navigate to the downloaded **`Spotube_linux-x86_64-v<version>.AppImage`**
+  file & double click to run it
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
 
@@ -148,14 +162,17 @@ $ npm start
 There will be some glitches, lags & stuck motions because of the library Spotube is currently using under the hood. It has some issues with layouts thus sometimes some contents aren't shown or overflows out of the window. But resizing the window would fix this issue. Soon there will be some updates fixing this sort of layout related problems
 
 ## TODO:
+
 - [ ] Compile, Debug & Build for **MacOS**
-- [x] Compile, Debug & Build for **Windows**
-- [x] Add seek Lyric for currently playing track
+- [x] Add support for show Lyric of currently playing track
+- [x] Track download
+- [x] Cached playback
 - [ ] Support for playing/streaming podcasts/shows
-- [ ] Easy installation procedure/mechanism for simplicity in Windows
+- [x] Easy installation procedure/mechanism for simplicity in Windows
 - [ ] Artist, User & Album pages
 
 ## Things that don't work
+
 - Shows & Podcasts aren't supported as it'd require premium anyway
 - Beautiful UI (you missed it, see the title😂👆)
 - OS Media Controls
