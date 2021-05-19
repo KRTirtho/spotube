@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  spotube:
+    volumes:
+      - /home/$USER/.config:/root/.config
+      - ./:/app
+      - /app/node_modules
