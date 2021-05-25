@@ -12,3 +12,8 @@ deb-struct/usr/share/applications
 deploy/linux/build
 deploy/win32/build
 deploy/darwin/build
+# aur build specific
+aur-struct/src
+aur-struct/pkg
+aur-struct/*.zip*
+aur-struct/*.zst
