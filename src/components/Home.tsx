@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, ScrollArea, View } from "@nodegui/react-nodegui";
 import { QueryCacheKeys } from "../conf";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";

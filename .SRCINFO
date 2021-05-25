@@ -1,0 +1,13 @@
+pkgbase = spotube-bin
+	pkgdesc = A music streaming app combining the power of Spotify & Youtube
+	pkgver = 0.0.3
+	pkgrel = 1
+	url = https://github.com/KRTirtho/spotube/
+	arch = x86_64
+	license = MIT
+	depends = mpv
+	depends = youtube-dl
+	source = https://github.com/KRTirtho/spotube//releases/download/v0.0.3/Spotube_linux-x86_64-v0.0.3.zip
+
+pkgname = spotube-bin
+

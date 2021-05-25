@@ -16,7 +16,11 @@ RUN apt-get update &&\
   libqt5x11extras5\
   xcb\
   mpv\
-  python
+  python\
+  fuse\
+  kmod
+
+RUN addgroup fuse
 
 RUN apt-get install -y --reinstall libxcb-xinerama0
 # removing broken youtube-dl & giving execution permissions

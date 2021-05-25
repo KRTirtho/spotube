@@ -20,8 +20,8 @@
     "pack-win32": "powershell.exe -ExecutionPolicy Unrestricted -Command \". '.\\scripts\\build-win32.ps1'\""
   },
   "dependencies": {
-    "@nodegui/nodegui": "^0.27.0",
-    "@nodegui/react-nodegui": "^0.10.0",
+    "@nodegui/nodegui": "0.27.0",
+    "@nodegui/react-nodegui": "0.10.0",
     "axios": "^0.21.1",
     "base64url": "^3.0.1",
     "chalk": "^4.1.0",
