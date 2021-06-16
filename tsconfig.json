@@ -11,8 +11,13 @@
     "alwaysStrict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "incremental": true
   },
-  "include": ["**/*"],
-  "exclude": ["**/node_modules/*"]
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "**/node_modules/*"
+  ]
 }

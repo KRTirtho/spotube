@@ -2,8 +2,13 @@ const path = require("path");
 const webpack = require("webpack");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { ESBuildMinifyPlugin } = require("esbuild-loader")
+
 
 module.exports = (env, argv) => {
+  /**
+   * @type {import("webpack").Configuration}
+   */
   const config = {
     mode: "production",
     entry: ["./src/index.tsx"],
@@ -15,11 +20,30 @@ module.exports = (env, argv) => {
     module: {
       rules: [
         {
-          test: /\.(j|t)sx?$/,
+          test: /\.js?$/,
           exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: { cacheDirectory: true, cacheCompression: false },
+          loader: 'esbuild-loader',
+          options: {
+            loader: 'jsx',
+            target: 'es2015'
+          },
+        },
+        {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          loader: 'esbuild-loader',
+          options: {
+            loader: 'tsx',
+            target: 'es2015'
+          },
+        },
+        {
+          test: /\.ts?$/,
+          exclude: /node_modules/,
+          loader: 'esbuild-loader',
+          options: {
+            loader: 'ts',
+            target: 'es2015'
           },
         },
         {
@@ -46,6 +70,11 @@ module.exports = (env, argv) => {
       new webpack.DefinePlugin({"global.GENTLY": false}),
       new CleanWebpackPlugin(),
     ],
+    optimization: {
+      minimizer: [
+        new ESBuildMinifyPlugin({target: 'es2015'})
+      ]
+    },
     resolve: {
       extensions: [".tsx", ".ts", ".js", ".jsx", ".json"],
     },
