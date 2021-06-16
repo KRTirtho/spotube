@@ -5,9 +5,15 @@ import { angleLeft } from "../icons";
 import IconButton from "./shared/IconButton";
 
 function BackButton(): ReactElement {
-  const history = useHistory();
+    const history = useHistory();
 
-  return <IconButton style={"align-self: flex-start;"} icon={new QIcon(angleLeft)} on={{ clicked: () => history.goBack() }} />;
+    return (
+        <IconButton
+            style={"align-self: flex-start;"}
+            icon={new QIcon(angleLeft)}
+            on={{ clicked: () => history.goBack() }}
+        />
+    );
 }
 
 export default BackButton;

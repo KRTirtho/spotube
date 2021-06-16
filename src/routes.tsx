@@ -12,50 +12,54 @@ import Search from "./components/Search";
 import SearchResultPlaylistCollection from "./components/SearchResultPlaylistCollection";
 import SearchResultSongsCollection from "./components/SearchResultSongsCollection";
 import Settings from "./components/Settings";
+import Artist from "./components/Artist";
 
 function Routes() {
-  const { isLoggedIn } = useContext(authContext);
-  return (
-    <>
-      <Route path="/">
-        {isLoggedIn ? (
-          <>
-            <Redirect from="/" to="/home" />
-            <TabMenu />
-            <Route exact path="/home">
-              <Home />
+    const { isLoggedIn } = useContext(authContext);
+    return (
+        <>
+            <Route path="/">
+                {isLoggedIn ? (
+                    <>
+                        <Redirect from="/" to="/home" />
+                        <TabMenu />
+                        <Route exact path="/home">
+                            <Home />
+                        </Route>
+                        <Route exact path="/playlist/:id">
+                            <PlaylistView />
+                        </Route>
+                        <Route exact path="/genre/playlists/:id">
+                            <PlaylistGenreView />
+                        </Route>
+                    </>
+                ) : (
+                    <Login />
+                )}
             </Route>
-            <Route exact path="/playlist/:id">
-              <PlaylistView />
+            <Route path="/currently">
+                <CurrentPlaylist />
             </Route>
-            <Route exact path="/genre/playlists/:id">
-              <PlaylistGenreView />
+            <Route path="/library">
+                <Library />
             </Route>
-          </>
-        ) : (
-          <Login />
-        )}
-      </Route>
-      <Route path="/currently">
-        <CurrentPlaylist />
-      </Route>
-      <Route path="/library">
-        <Library />
-      </Route>
-      <Route exact path="/search">
-        <Search />
-      </Route>
-      <Route exact path="/search/playlists">
-        <SearchResultPlaylistCollection />
-      </Route>
-      <Route exact path="/search/songs">
-        <SearchResultSongsCollection />
-      </Route>
-      <Route exact path="/settings/">
-        <Settings />
-      </Route>
-    </>
-  );
+            <Route path="/artist">
+                <Artist />
+            </Route>
+            <Route exact path="/search">
+                <Search />
+            </Route>
+            <Route exact path="/search/playlists">
+                <SearchResultPlaylistCollection />
+            </Route>
+            <Route exact path="/search/songs">
+                <SearchResultSongsCollection />
+            </Route>
+            <Route exact path="/settings/">
+                <Settings />
+            </Route>
+        </>
+    );
 }
 
 export default Routes;

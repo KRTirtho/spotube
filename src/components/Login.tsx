@@ -3,63 +3,63 @@ import { LineEdit, Text, Button, View } from "@nodegui/react-nodegui";
 import authContext from "../context/authContext";
 
 function Login() {
-  const { setCredentials: setGlobalCredentials } = useContext(authContext);
-  const [credentials, setCredentials] = useState({
-    clientId: "",
-    clientSecret: "",
-  });
+    const { setCredentials: setGlobalCredentials } = useContext(authContext);
+    const [credentials, setCredentials] = useState({
+        clientId: "",
+        clientSecret: "",
+    });
 
-  const [touched, setTouched] = useState({
-    clientId: false,
-    clientSecret: false,
-  });
+    const [touched, setTouched] = useState({
+        clientId: false,
+        clientSecret: false,
+    });
 
-  type fieldNames = "clientId" | "clientSecret";
+    type fieldNames = "clientId" | "clientSecret";
 
-  function textChanged(text: string, fieldName: fieldNames) {
-    setCredentials({ ...credentials, [fieldName]: text });
-  }
-
-  function textEdited(name: fieldNames) {
-    if (!touched[name]) {
-      setTouched({ ...touched, [name]: true });
+    function textChanged(text: string, fieldName: fieldNames) {
+        setCredentials({ ...credentials, [fieldName]: text });
     }
-  }
 
-  return (
-    <View style={`flex: 1; flex-direction: 'column';`}>
-      <Text>{`<center><h1>Add Spotify & Youtube credentials to get started</h1></center>`}</Text>
-      <Text>{`<center><p>Don't worry any of the credentials won't be collected or used for abuses</p></center>`}</Text>
-      <LineEdit
-        on={{
-          textChanged: (t) => textChanged(t, "clientId"),
-          textEdited() {
-            textEdited("clientId");
-          },
-        }}
-        text={credentials.clientId}
-        placeholderText="spotify clientId"
-      />
-      <LineEdit
-        on={{
-          textChanged: (t) => textChanged(t, "clientSecret"),
-          textEdited() {
-            textEdited("clientSecret");
-          },
-        }}
-        text={credentials.clientSecret}
-        placeholderText="spotify clientSecret"
-      />
-      <Button
-        on={{
-          clicked: () => {
-            setGlobalCredentials(credentials);
-          },
-        }}
-        text="Add"
-      />
-    </View>
-  );
+    function textEdited(name: fieldNames) {
+        if (!touched[name]) {
+            setTouched({ ...touched, [name]: true });
+        }
+    }
+
+    return (
+        <View style={`flex: 1; flex-direction: 'column';`}>
+            <Text>{`<center><h1>Add Spotify & Youtube credentials to get started</h1></center>`}</Text>
+            <Text>{`<center><p>Don't worry any of the credentials won't be collected or used for abuses</p></center>`}</Text>
+            <LineEdit
+                on={{
+                    textChanged: (t) => textChanged(t, "clientId"),
+                    textEdited() {
+                        textEdited("clientId");
+                    },
+                }}
+                text={credentials.clientId}
+                placeholderText="spotify clientId"
+            />
+            <LineEdit
+                on={{
+                    textChanged: (t) => textChanged(t, "clientSecret"),
+                    textEdited() {
+                        textEdited("clientSecret");
+                    },
+                }}
+                text={credentials.clientSecret}
+                placeholderText="spotify clientSecret"
+            />
+            <Button
+                on={{
+                    clicked: () => {
+                        setGlobalCredentials(credentials);
+                    },
+                }}
+                text="Add"
+            />
+        </View>
+    );
 }
 
 export default Login;

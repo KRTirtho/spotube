@@ -5,10 +5,10 @@ import { useHistory } from "react-router";
 import PlaylistCard from "./PlaylistCard";
 
 interface CategoryCardProps {
-  url: string;
-  name: string;
-  isError: boolean;
-  playlists: SpotifyApi.PlaylistObjectSimplified[];
+    url: string;
+    name: string;
+    isError: boolean;
+    playlists: SpotifyApi.PlaylistObjectSimplified[];
 }
 
 const categoryStylesheet = `
@@ -36,26 +36,32 @@ const categoryStylesheet = `
      }
   `;
 const CategoryCard: FC<CategoryCardProps> = ({ name, isError, playlists, url }) => {
-  const history = useHistory();
-  function goToGenre(native: any) {
-    const mouse = new QMouseEvent(native);
-    if (mouse.button() === 1) {
-      history.push(url, { name });
+    const history = useHistory();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function goToGenre(native: any) {
+        const mouse = new QMouseEvent(native);
+        if (mouse.button() === 1) {
+            history.push(url, { name });
+        }
     }
-  }
-  if (isError) {
-    return <></>;
-  }
-  return (
-    <View id="container" styleSheet={categoryStylesheet}>
-      <Button id="anchor-heading" cursor={CursorShape.PointingHandCursor} on={{ MouseButtonRelease: goToGenre }} text={name} />
-      <View id="child-view">
-        {playlists.map((playlist, index) => {
-          return <PlaylistCard key={index + playlist.id} playlist={playlist} />;
-        })}
-      </View>
-    </View>
-  );
+    if (isError) {
+        return <></>;
+    }
+    return (
+        <View id="container" styleSheet={categoryStylesheet}>
+            <Button
+                id="anchor-heading"
+                cursor={CursorShape.PointingHandCursor}
+                on={{ MouseButtonRelease: goToGenre }}
+                text={name}
+            />
+            <View id="child-view">
+                {playlists.map((playlist, index) => {
+                    return <PlaylistCard key={index + playlist.id} playlist={playlist} />;
+                })}
+            </View>
+        </View>
+    );
 };
 
 export default CategoryCard;

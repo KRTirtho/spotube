@@ -7,23 +7,26 @@ import useSpotifyApiError from "./useSpotifyApiError";
 type SpotifyQueryFn<TQueryData> = (spotifyApi: SpotifyWebApi) => Promise<TQueryData>;
 
 function useSpotifyQuery<TQueryData = unknown>(
-  queryKey: QueryKey,
-  queryHandler: SpotifyQueryFn<TQueryData>,
-  options: UseQueryOptions<TQueryData, SpotifyApi.ErrorObject> = {}
+    queryKey: QueryKey,
+    queryHandler: SpotifyQueryFn<TQueryData>,
+    options: UseQueryOptions<TQueryData, SpotifyApi.ErrorObject> = {},
 ): UseQueryResult<TQueryData, SpotifyApi.ErrorObject> {
-  const spotifyApi = useSpotifyApi();
-  const handleSpotifyError = useSpotifyApiError(spotifyApi);
-  const query = useQuery<TQueryData, SpotifyApi.ErrorObject>(queryKey, ()=>queryHandler(spotifyApi), options);
-  const { isError, error } = query;
-  
-  
-  useEffect(() => {
-    if (isError && error) {
-      handleSpotifyError(error);
-    }
-  }, [isError, error]);
+    const spotifyApi = useSpotifyApi();
+    const handleSpotifyError = useSpotifyApiError(spotifyApi);
+    const query = useQuery<TQueryData, SpotifyApi.ErrorObject>(
+        queryKey,
+        () => queryHandler(spotifyApi),
+        options,
+    );
+    const { isError, error } = query;
 
-  return query;
+    useEffect(() => {
+        if (isError && error) {
+            handleSpotifyError(error);
+        }
+    }, [isError, error]);
+
+    return query;
 }
 
 export default useSpotifyQuery;
