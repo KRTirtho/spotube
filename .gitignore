@@ -17,3 +17,5 @@ aur-struct/src
 aur-struct/pkg
 aur-struct/*.zip*
 aur-struct/*.zst
+
+*.tsbuildinfo
