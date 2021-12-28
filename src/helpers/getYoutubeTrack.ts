@@ -1,5 +1,8 @@
-import scrapYt from "scrape-yt";
 import { CurrentTrack } from "../context/playerContext";
+import { Client, SearchResult } from "youtubei";
+import { Logger } from "../initializations/logger";
+
+const youtube = new Client();
 
 /**
  * returns the percentage of matched elements of a certain array(src)
@@ -25,6 +28,8 @@ export interface YoutubeTrack extends CurrentTrack {
     youtube_uri: string;
 }
 
+const logger = new Logger("GetYoutubeTrack");
+
 export async function getYoutubeTrack(
     track: SpotifyApi.TrackObjectFull,
 ): Promise<YoutubeTrack> {
@@ -33,8 +38,10 @@ export async function getYoutubeTrack(
         const queryString = `${artistsName[0]} - ${track.name}${
             artistsName.length > 1 ? ` feat. ${artistsName.slice(1).join(" ")}` : ``
         }`;
-        console.log("Youtube Query String:", queryString);
-        const result = await scrapYt.search(queryString, { limit: 7, type: "video" });
+        logger.info(`Youtube Query String: ${queryString}`);
+        const result = (await youtube.search(queryString, {
+            type: "video",
+        })) as SearchResult<"video">;
         const tracksWithRelevance = result
             .map((video) => {
                 // percentage of matched track {name, artists} matched with
@@ -45,8 +52,8 @@ export async function getYoutubeTrack(
                 ]);
                 // keeps only those tracks which are from the same artist channel
                 const sameChannel =
-                    video.channel.name.includes(artistsName[0]) ||
-                    artistsName[0].includes(video.channel.name);
+                    video.channel?.name.includes(artistsName[0]) ||
+                    (video.channel && artistsName[0].includes(video.channel.name));
                 return {
                     url: `http://www.youtube.com/watch?v=${video.id}`,
                     matchPercentage,
@@ -71,8 +78,8 @@ export async function getYoutubeTrack(
                 : rarestTrack)[0].url,
         };
         return finalTrack;
-    } catch (error) {
-        console.error("Failed to resolve track's youtube url: ", error);
+    } catch (error: any) {
+        logger.error(error);
         throw error;
     }
 }

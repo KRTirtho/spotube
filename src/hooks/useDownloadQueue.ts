@@ -5,9 +5,10 @@ import { YoutubeTrack } from "../helpers/getYoutubeTrack";
 import { join } from "path";
 import os from "os";
 import playerContext from "../context/playerContext";
-import showError from "../helpers/showError";
+import { useLogger } from "./useLogger";
 
 function useDownloadQueue() {
+    const logger = useLogger(useDownloadQueue.name);
     const [downloadQueue, setDownloadQueue] = useState<YoutubeTrack[]>([]);
     const [completedQueue, setCompletedQueue] = useState<YoutubeTrack[]>([]);
     const { currentTrack } = useContext(playerContext);
@@ -45,7 +46,7 @@ function useDownloadQueue() {
                         ),
                     )
                     .on("error", (err) => {
-                        showError(err, `[failed to download ${el.name}]: `);
+                        logger.error(`failed to download ${el.name}`, err);
                     })
                     .on("finish", () => {
                         setCompletedQueue([...completedQueue, el]);

@@ -18,7 +18,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import express from "express";
 import open from "open";
 import spotifyApi from "./initializations/spotifyApi";
-import showError from "./helpers/showError";
 import fs from "fs";
 import path from "path";
 import { confDir, LocalStorageKeys } from "./conf";
@@ -26,6 +25,8 @@ import spotubeIcon from "../assets/icon.svg";
 import preferencesContext, {
     PreferencesContextProperties,
 } from "./context/preferencesContext";
+import { useLogger } from "./hooks/useLogger";
+import { Logger } from "./initializations/logger";
 
 export interface Credentials {
     clientId: string;
@@ -40,8 +41,9 @@ global.localStorage = new LocalStorage(localStorageDir);
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            onError(error) {
-                showError(error);
+            onError(error: any) {
+                const logger = new Logger(QueryClient.name);
+                logger.error(error);
             },
         },
     },
@@ -54,6 +56,7 @@ const initialCredentials: Credentials = { clientId: "", clientSecret: "" };
 
 //* Application start
 function RootApp() {
+    const logger = useLogger(RootApp.name);
     const windowRef = useRef<QMainWindow>();
     const [currentTrack, setCurrentTrack] = useState<CurrentTrack>();
     // cache
@@ -110,14 +113,14 @@ function RootApp() {
                         );
                         setIsLoggedIn(true);
                         return res.end();
-                    } catch (error) {
-                        console.error("Failed to fullfil code grant flow: ", error);
+                    } catch (error: any) {
+                        logger.error("Failed to fullfil code grant flow", error);
                     }
                 },
             );
 
             const server = app.listen(4304, () => {
-                console.log("Server is running");
+                logger.info("Server is running");
                 spotifyApi.setClientId(credentials.clientId);
                 spotifyApi.setClientSecret(credentials.clientSecret);
                 open(
@@ -132,11 +135,11 @@ function RootApp() {
                         "xxxyyysssddd",
                     ),
                 ).catch((e) =>
-                    console.error("Opening IPC connection with browser failed: ", e),
+                    logger.error("Opening IPC connection with browser failed", e),
                 );
             });
             return () => {
-                server.close(() => console.log("Closed server"));
+                server.close(() => logger.info("Closed server"));
             };
         }
     }, [credentials]);
@@ -152,7 +155,7 @@ function RootApp() {
             if (audioPlayer.isRunning()) {
                 audioPlayer
                     .stop()
-                    .catch((e) => console.error("Failed to quit MPV player: ", e));
+                    .catch((e) => logger.error("Failed to quit MPV player", e));
             }
         };
 
@@ -183,9 +186,9 @@ function RootApp() {
                     (await audioPlayer.isPaused())
                         ? await audioPlayer.play()
                         : await audioPlayer.pause();
-                    console.log("You pressed SPACE");
-                } catch (error) {
-                    showError(error, "[Failed to play/pause audioPlayer]: ");
+                    logger.info("You pressed SPACE");
+                } catch (error: any) {
+                    logger.error("Failed to play/pause audioPlayer", error);
                 }
             }
             async function rightAction() {
@@ -194,9 +197,9 @@ function RootApp() {
                         audioPlayer.isRunning() &&
                         (await audioPlayer.isSeekable()) &&
                         (await audioPlayer.seek(+5));
-                    console.log("You pressed RIGHT");
-                } catch (error) {
-                    showError(error, "[Failed to seek audioPlayer]: ");
+                    logger.info("You pressed RIGHT");
+                } catch (error: any) {
+                    logger.error("Failed to seek audioPlayer", error);
                 }
             }
             async function leftAction() {
@@ -205,9 +208,9 @@ function RootApp() {
                         audioPlayer.isRunning() &&
                         (await audioPlayer.isSeekable()) &&
                         (await audioPlayer.seek(-5));
-                    console.log("You pressed LEFT");
-                } catch (error) {
-                    showError(error, "[Failed to seek audioPlayer]: ");
+                    logger.info("You pressed LEFT");
+                } catch (error: any) {
+                    logger.error("Failed to seek audioPlayer", error);
                 }
             }
 

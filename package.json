@@ -43,6 +43,8 @@
     "scrape-yt": "^1.4.7",
     "spotify-web-api-node": "^5.0.2",
     "uuid": "^8.3.2",
+    "winston": "^3.3.3",
+    "youtubei": "^0.0.1-rc.27",
     "ytdl-core": "^4.5.0"
   },
   "devDependencies": {

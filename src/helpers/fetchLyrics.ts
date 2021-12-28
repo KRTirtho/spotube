@@ -1,17 +1,19 @@
 import axios from "axios";
 import htmlToText from "html-to-text";
-import showError from "./showError";
+import { Logger } from "../initializations/logger";
 const delim1 =
     '</div></div></div></div><div class="hwc"><div class="BNeawe tAd8D AP7Wnd"><div><div class="BNeawe tAd8D AP7Wnd">';
 const delim2 =
     '</div></div></div></div></div><div><span class="hwc"><div class="BNeawe uEec3 AP7Wnd">';
 const url = "https://www.google.com/search?q=";
 
+const logger = new Logger("FetchLyrics");
+
 export default async function fetchLyrics(artists: string, title: string) {
     let lyrics;
     try {
-        console.log(
-            "[lyric query]:",
+        logger.info(
+            "Lyric Query",
             `${url}${encodeURIComponent(title + " " + artists)}+lyrics`,
         );
         lyrics = (
@@ -22,11 +24,11 @@ export default async function fetchLyrics(artists: string, title: string) {
         ).data;
         [, lyrics] = lyrics.split(delim1);
         [lyrics] = lyrics.split(delim2);
-    } catch (err) {
-        showError(err, "[Lyric Query Error]: ");
+    } catch (err: any) {
+        logger.error("Lyric Query Error", err);
         try {
-            console.log(
-                "[lyric query]:",
+            logger.info(
+                "Lyric Query",
                 `${url}${encodeURIComponent(title + " " + artists)}+song+lyrics`,
             );
             lyrics = (
@@ -36,11 +38,11 @@ export default async function fetchLyrics(artists: string, title: string) {
             ).data;
             [, lyrics] = lyrics.split(delim1);
             [lyrics] = lyrics.split(delim2);
-        } catch (err_1) {
-            showError(err_1, "[Lyric Query Error]: ");
+        } catch (err_1: any) {
+            logger.error("Lyric Query Error", err_1);
             try {
-                console.log(
-                    "[lyric query]:",
+                logger.info(
+                    "Lyric Query",
                     `${url}${encodeURIComponent(title + " " + artists)}+song`,
                 );
                 lyrics = (
@@ -50,11 +52,11 @@ export default async function fetchLyrics(artists: string, title: string) {
                 ).data;
                 [, lyrics] = lyrics.split(delim1);
                 [lyrics] = lyrics.split(delim2);
-            } catch (err_2) {
-                showError(err_2, "[Lyric Query Error]: ");
+            } catch (err_2: any) {
+                logger.error("Lyric Query Error", err_2);
                 try {
-                    console.log(
-                        "[lyric query]:",
+                    logger.info(
+                        "Lyric Query",
                         `${url}${encodeURIComponent(title + " " + artists)}`,
                     );
                     lyrics = (
@@ -64,8 +66,8 @@ export default async function fetchLyrics(artists: string, title: string) {
                     ).data;
                     [, lyrics] = lyrics.split(delim1);
                     [lyrics] = lyrics.split(delim2);
-                } catch (err_3) {
-                    showError(err_3, "[Lyric Query Error]: ");
+                } catch (err_3: any) {
+                    logger.error("Lyric Query Error", err_3);
                     lyrics = "Not Found";
                 }
             }

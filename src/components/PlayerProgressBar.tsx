@@ -3,6 +3,7 @@ import { BoxView, Slider, Text, useEventHandler } from "@nodegui/react-nodegui";
 import NodeMpv from "node-mpv";
 import React, { useContext, useEffect, useState } from "react";
 import playerContext from "../context/playerContext";
+import { useLogger } from "../hooks/useLogger";
 
 interface PlayerProgressBarProps {
     audioPlayer: NodeMpv;
@@ -10,6 +11,7 @@ interface PlayerProgressBarProps {
 }
 
 function PlayerProgressBar({ audioPlayer, totalDuration }: PlayerProgressBarProps) {
+    const logger = useLogger(PlayerProgressBar.name);
     const { currentTrack } = useContext(playerContext);
     const [trackTime, setTrackTime] = useState<number>(0);
     const trackSliderEvents = useEventHandler<QAbstractSliderSignals>(
@@ -24,8 +26,8 @@ function PlayerProgressBar({ audioPlayer, totalDuration }: PlayerProgressBarProp
                 (async () => {
                     try {
                         await audioPlayer.goToPosition(trackTime);
-                    } catch (error) {
-                        console.error(error);
+                    } catch (error: any) {
+                        logger.error(error);
                     }
                 })();
             },

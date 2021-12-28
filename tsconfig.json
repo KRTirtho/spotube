@@ -12,7 +12,10 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "incremental": true
+    "incremental": true,
+    "downlevelIteration": true,
+    "declaration": true,
+    "sourceMap": true
   },
   "include": [
     "**/*"

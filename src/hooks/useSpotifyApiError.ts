@@ -1,10 +1,10 @@
-import chalk from "chalk";
 import { useContext } from "react";
 import SpotifyWebApi from "spotify-web-api-node";
 import authContext from "../context/authContext";
-import showError from "../helpers/showError";
+import { useLogger } from "./useLogger";
 
 function useSpotifyApiError(spotifyApi: SpotifyWebApi) {
+    const logger = useLogger(useSpotifyApiError.name);
     const { setAccess_token, isLoggedIn } = useContext(authContext);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return async (error: SpotifyApi.ErrorObject | any) => {
@@ -18,13 +18,13 @@ function useSpotifyApiError(spotifyApi: SpotifyWebApi) {
             ((noToken || expiredToken) && bodyStatus401)
         ) {
             try {
-                console.log(chalk.bgYellow.blackBright("Refreshing Access token"));
+                logger.info("Refreshing Access token");
                 const {
                     body: { access_token: refreshedAccessToken },
                 } = await spotifyApi.refreshAccessToken();
                 setAccess_token(refreshedAccessToken);
-            } catch (error) {
-                showError(error, "[Authorization Failure]: ");
+            } catch (error: any) {
+                logger.error("Authorization Failure", error);
             }
         }
     };

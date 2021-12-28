@@ -6,7 +6,7 @@ import { QueryCacheKeys } from "../../conf";
 import playerContext from "../../context/playerContext";
 import preferencesContext from "../../context/preferencesContext";
 import { generateRandomColor, getDarkenForeground } from "../../helpers/RandomColor";
-import showError from "../../helpers/showError";
+import { useLogger } from "../../hooks/useLogger";
 import usePlaylistReaction from "../../hooks/usePlaylistReaction";
 import useSpotifyQuery from "../../hooks/useSpotifyQuery";
 import { heart, heartRegular, pause, play } from "../../icons";
@@ -19,6 +19,7 @@ interface PlaylistCardProps {
 }
 
 const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
+    const logger = useLogger(PlaylistCard.name);
     const preferences = useContext(preferencesContext);
     const thumbnail = playlist.images[0].url;
     const { id, description, name } = playlist;
@@ -48,8 +49,8 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
                 setCurrentTrack(undefined);
                 setCurrentPlaylist(undefined);
             }
-        } catch (error) {
-            showError(error, "[Failed adding playlist to queue]: ");
+        } catch (error: any) {
+            logger.error("Failed adding playlist to queue", error);
         }
     };
 

@@ -7,6 +7,7 @@ import { streamToBuffer } from "./streamToBuffer";
 import Jimp from "jimp";
 import du from "du";
 import { cacheDir } from "../conf";
+import { Logger } from "../initializations/logger";
 
 interface ImageDimensions {
     height: number;
@@ -14,6 +15,8 @@ interface ImageDimensions {
 }
 
 const fsm = fs.promises;
+
+const logger = new Logger("GetCachedImageBuffer");
 
 export async function getCachedImageBuffer(
     name: string,
@@ -68,8 +71,8 @@ export async function getCachedImageBuffer(
             await fsm.writeFile(path.join(cacheImgFolder, cacheName), resImgBuf);
             return resImgBuf;
         }
-    } catch (error) {
-        console.error("[Error in Image Cache]: ", error);
+    } catch (error: any) {
+        logger.error("Error in Image Cache ", error);
         throw error;
     }
 }

@@ -1802,7 +1802,7 @@
         "affectsGlobalScope": false
       },
       "./src/context/authContext.ts": {
-        "version": "3f398f162e7d353c3ebb4b3229b9b7fb092ea9cb0c920a01d22ee3f41539abb6",
+        "version": "16db4b74f9db7d3062dc0f36a0ac8f0c5d5f1d031b2a9613a6b67c4832ef9570",
         "signature": "4bc1a951dacfcb31c014a5e905969a1f2e564a90e96b7d1cfd5535f3f7b1d635",
         "affectsGlobalScope": false
       },
@@ -1812,7 +1812,7 @@
         "affectsGlobalScope": false
       },
       "./src/conf.ts": {
-        "version": "113ecbcb46f23994df08038e8da2e1236a133fa61b34428b70ce374566555f02",
+        "version": "bb293d1935af65f601646692de8321a3614920878ac6eb97dea7d26188df446c",
         "signature": "c9ab18e6b7924079399d8b70972fe052c1e9e53e276d13b8eecbfb91da877d43",
         "affectsGlobalScope": false
       },
@@ -1981,58 +1981,88 @@
         "signature": "0492ac3a55bbcded671643782991a27b58e6d665116585f43fdde82485259415",
         "affectsGlobalScope": false
       },
+      "./src/initializations/spotifyApi.ts": {
+        "version": "b920e009de42cfac798cb2c8848bf77c0bbaec63c3618ed98780d863dc14051b",
+        "signature": "2fc5e6eca2a2d675d7a212198bc5eec658df48260d20700244b410157ca45c48",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/logform/index.d.ts": {
+        "version": "89c631193ed616083e1ee16611dae34d719029b77274680d0f00dbf3bb8ba998",
+        "signature": "89c631193ed616083e1ee16611dae34d719029b77274680d0f00dbf3bb8ba998",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/winston-transport/index.d.ts": {
+        "version": "7258d586040b2cf5c44521625215598a125329d1a860bcd4d1596d85bc37386f",
+        "signature": "7258d586040b2cf5c44521625215598a125329d1a860bcd4d1596d85bc37386f",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/winston/lib/winston/config/index.d.ts": {
+        "version": "e9c33c05be71c17c3b08988fe6755605632a09c5cdd267cede8de5558ec80027",
+        "signature": "e9c33c05be71c17c3b08988fe6755605632a09c5cdd267cede8de5558ec80027",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/winston/lib/winston/transports/index.d.ts": {
+        "version": "3fb6de4789fba0473c4877a4ef4ee002902ccef2b04f620caf2313e4d1b2aecc",
+        "signature": "3fb6de4789fba0473c4877a4ef4ee002902ccef2b04f620caf2313e4d1b2aecc",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/winston/index.d.ts": {
+        "version": "e7c0503e5da78c978e6b9c43dc5728312fa9e19943fd392eca047739e348f283",
+        "signature": "e7c0503e5da78c978e6b9c43dc5728312fa9e19943fd392eca047739e348f283",
+        "affectsGlobalScope": false
+      },
       "./node_modules/chalk/index.d.ts": {
         "version": "0d14fa22c41fdc7277e6f71473b20ebc07f40f00e38875142335d5b63cdfc9d2",
         "signature": "0d14fa22c41fdc7277e6f71473b20ebc07f40f00e38875142335d5b63cdfc9d2",
         "affectsGlobalScope": false
       },
-      "./src/helpers/showError.ts": {
-        "version": "26a99e642e08d6a177c4652254c35753e72ca539cb4bbe9786fdbd3654c658c2",
-        "signature": "9f6c9e62cab95945fdaf18b0f388df626b7f4b3e90d980991d9ff387dd352be6",
+      "./src/initializations/logger.ts": {
+        "version": "e4a471e6d9f00c7109d41ede7f89f6be67c3f9f429c0a22507e3e4a643d7bc57",
+        "signature": "5430cb2400a23ea3f79defc788205fd9cc8e7b983cb31d539cac85f0282d7a22",
         "affectsGlobalScope": false
       },
-      "./src/initializations/spotifyApi.ts": {
-        "version": "f11997cc07d419fa97f6d160e1f0bf060a7a8036b3331b5342da14a6f14909d4",
-        "signature": "2fc5e6eca2a2d675d7a212198bc5eec658df48260d20700244b410157ca45c48",
+      "./src/hooks/useLogger.ts": {
+        "version": "6896d90309022c6ac2d953690b1a6b2b02f73b10ed6afc61bad40f21f97f7871",
+        "signature": "0f72a63fdeec61073ab9f21db9f956e512923df30055bfba1e529f6bc8b1d832",
         "affectsGlobalScope": false
       },
       "./src/hooks/useSpotifyApi.ts": {
-        "version": "0ea955e97656302e6149ac7140aa465f247240d2865771886d0b498992166743",
+        "version": "ac7ffd58e6b1e1382005c051fdf3c4c439b533d91eb8175b501c1fb067de4f42",
         "signature": "3d67dbca02c3d87f7933d0728cbbf7e7984d165d987453907360cec467b10f93",
         "affectsGlobalScope": false
       },
       "./src/hooks/useSpotifyApiError.ts": {
-        "version": "fa4d821643d055bd061d13073ddcdbb795dd5f57065fd12096898e9d5aee5326",
-        "signature": "1c332add568d47f878db769d840b8db8ac3c90727ad87dab1cc2d8a3b17870b3",
+        "version": "28d98c395d351e64044d7c5e0eca00be4213dc84ef39e704b1e14ae7a6e53a43",
+        "signature": "5483c685f5bb6159068d1ba6951044badc92baf71ef67fc292189f88a44207b2",
         "affectsGlobalScope": false
       },
       "./src/hooks/useSpotifyQuery.ts": {
-        "version": "c6cd19bac6313724c9e1aba6ff6585db61f4ee93547ad54d6ec3d2cca3da3840",
+        "version": "a57045ac55725126e931117b1fab769d956294437360f2621961d58ebb01e5d9",
         "signature": "c4f00e448449d67c849d8524e3f2c189fb7fdbbc442cb6c133560557b663b900",
         "affectsGlobalScope": false
       },
       "./src/icons.ts": {
-        "version": "a4cb0b5e80b6bbe69261def40d0c883b0d4d4358dd8832564793c7fdd5be7b04",
+        "version": "d1462a3bc3b287f9fdb2012d1083e6f783bdd6a531d26eaa0183aceb818f571e",
         "signature": "b8d5823f1d495bf8b6452dda2ec91eddf91e053d0806a3b6525c334829bf39be",
         "affectsGlobalScope": false
       },
       "./src/components/shared/PlaceholderApplet.tsx": {
-        "version": "e3d2cb2ee920c136a6b00440b4eea597fabbfac3eb3a6e35e5d05bd6dd54be58",
-        "signature": "cb7a326b855d062d756bcc0f14895b2672bbe95b892e914233ebf7f583a0c1a6",
+        "version": "e73bcd15e448fe1adb3384010031d7ff4e9fe364542ba557d1d143effac7bfca",
+        "signature": "0a67282c87de708eddaaa58ee79e06241fdcc498704580be248df77d614644ca",
         "affectsGlobalScope": false
       },
       "./src/hooks/useSpotifyInfiniteQuery.ts": {
-        "version": "58e3319ef2ce8369dddf84efaccd99edcfea60d91ee91e859daf72192c2219ec",
+        "version": "ed63813fd5b1d72edfd0ce481f1bc5f5092e70057e7fad6633391fcc7b4b313d",
         "signature": "7e4b6b39a4657818863c05b362670f97f5d1786be97a2853c6bea559de9d11ac",
         "affectsGlobalScope": false
       },
       "./src/context/playerContext.ts": {
-        "version": "c18bf14a06257e7484db422bdd24d3487c882f7a5261cbd6ccedc395e258ea5a",
+        "version": "d57f2a82837626adfed36b9bf2f7d397e50a662a54dad515e424744909c87a73",
         "signature": "912aad59fe90b0a0a1053668427ae89ad4f9f571f7b4878657859931973c68fc",
         "affectsGlobalScope": false
       },
       "./src/context/preferencesContext.ts": {
-        "version": "60f3e2108329d9f9c9deb4b56bb199bff67cabcee30bf09d639303075567af6a",
+        "version": "992305208e046bce0ce325c20c62d5358fd92bd70ae5c52c84a8a60bbe4738dd",
         "signature": "138fd4c3f0298b011e79be1d57f397eb6cf4aae09dcb1fe856f458d79c0911a5",
         "affectsGlobalScope": false
       },
@@ -2062,22 +2092,22 @@
         "affectsGlobalScope": false
       },
       "./src/helpers/RandomColor.ts": {
-        "version": "3dacaebe6c793dded6d17957f79251f8d6e101fcfe502040f3c6ac8071e6fdb2",
+        "version": "3f27a9dee85fa1a101d7ee1aee5b786b8d6ee41f764908471fec3f770c94ec2c",
         "signature": "55e78617986efcec70f9ae071d3ede632833df50b141003cdc5c7493faa1041a",
         "affectsGlobalScope": false
       },
       "./src/hooks/useSpotifyMutation.ts": {
-        "version": "2863479fe63c1d7b5b8aa0de27d22a0b591b022ec53128ca72691820455d929f",
+        "version": "58c6e359a22a5874aa31fd016c58b53a537a34fa78468921666bd7c33ee93024",
         "signature": "f39ec3c2f9494da113166c0e28fa2a5bac88bad6f964474813365926aa600826",
         "affectsGlobalScope": false
       },
       "./src/hooks/usePlaylistReaction.ts": {
-        "version": "57d31a1b140d6d1fc54dac286d9e67ece2466ee33dde27357afb199c77a360cb",
-        "signature": "4d1e68a684630b65da832e3ae9cf1b1f81925ce298d7dfefce21f8664f2826bc",
+        "version": "f86ad3ad535c737e0f1328cb6607968f28ec11e510a490fdedc5ad8b1b68eabc",
+        "signature": "a38225845a8dcdff47fe7dbf5b01e28e00778b1293981539bd896ea3e54d7d0c",
         "affectsGlobalScope": false
       },
       "./src/helpers/shuffleArray.ts": {
-        "version": "a20600ae98cfb24fff24f061c5ef421adca742f70d4c5c6fe1c080fc2303105b",
+        "version": "f4a612167fa2cbae01a4cc15cd4c5a0d04411e33ec2aa3a215c0fb0d2107a049",
         "signature": "e5dffa8c9e0de655c81c601e0b2a789df5bf80ea1b765a131909b69d67089a47",
         "affectsGlobalScope": false
       },
@@ -2086,34 +2116,144 @@
         "signature": "a667bafae498bca6b79c887099951cbbe28dea5c31de700a6995ff10ddf5cbec",
         "affectsGlobalScope": false
       },
-      "./node_modules/scrape-yt/dist/common/types.d.ts": {
-        "version": "faa68d2bfe5bb9e55ddc18fb202d5e7239d18be6375f8e0f69adbfda586e9dcd",
-        "signature": "faa68d2bfe5bb9e55ddc18fb202d5e7239d18be6375f8e0f69adbfda586e9dcd",
+      "./node_modules/youtubei/dist/common/types.d.ts": {
+        "version": "b534d713b2745d0f17ca71556c4cd7976aab592c6c7cbdfedb3faabfa62949b7",
+        "signature": "b534d713b2745d0f17ca71556c4cd7976aab592c6c7cbdfedb3faabfa62949b7",
         "affectsGlobalScope": false
       },
-      "./node_modules/scrape-yt/dist/index.d.ts": {
-        "version": "599c59b954a4dfc796cea4dde7982e8481b28b63a95d6270ebcddfd1ceaba46c",
-        "signature": "599c59b954a4dfc796cea4dde7982e8481b28b63a95d6270ebcddfd1ceaba46c",
+      "./node_modules/youtubei/dist/common/HTTP.d.ts": {
+        "version": "e266ff20f207f9d1441fea1eae0ec1a09aa4ff81bddd057b24aae33a6e47138c",
+        "signature": "e266ff20f207f9d1441fea1eae0ec1a09aa4ff81bddd057b24aae33a6e47138c",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/common/helper.d.ts": {
+        "version": "fd3bb8b15ff4ba3c41a83594708c116e7f5e672ed6815392fae5c6e7b37a9923",
+        "signature": "fd3bb8b15ff4ba3c41a83594708c116e7f5e672ed6815392fae5c6e7b37a9923",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/common/decorators.d.ts": {
+        "version": "23006aeacc3c37d5f20c70aa802b197b3647f3c5c4da33840654b5449ef7d476",
+        "signature": "23006aeacc3c37d5f20c70aa802b197b3647f3c5c4da33840654b5449ef7d476",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/common/mixins.d.ts": {
+        "version": "e6424a9430d9d432101589af653a61ce21d13c1459fc17ca80c49fb5adb34b2e",
+        "signature": "e6424a9430d9d432101589af653a61ce21d13c1459fc17ca80c49fb5adb34b2e",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/common/index.d.ts": {
+        "version": "fbac205a61080746b06c59dcbcaf4115719c71b001f7f3003893983602381715",
+        "signature": "fbac205a61080746b06c59dcbcaf4115719c71b001f7f3003893983602381715",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/SearchResult.d.ts": {
+        "version": "a9bd1729f4eda4b7c549e969885e41d1d24bb2a7221a01b0e313dcd92afbc818",
+        "signature": "a9bd1729f4eda4b7c549e969885e41d1d24bb2a7221a01b0e313dcd92afbc818",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Client.d.ts": {
+        "version": "abf02361914e4fac08ffa93a6b3a43c6c4cf87266171b0f4724923665bc2f025",
+        "signature": "abf02361914e4fac08ffa93a6b3a43c6c4cf87266171b0f4724923665bc2f025",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Base.d.ts": {
+        "version": "29cb71f044a45f69ad1dac5a4aded2cfe3ed4b42341b2efd50211a6ad1d16c73",
+        "signature": "29cb71f044a45f69ad1dac5a4aded2cfe3ed4b42341b2efd50211a6ad1d16c73",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/BaseVideo.d.ts": {
+        "version": "92c14e4c1f9b2b1b0d531f19ffa68a08a87db447ebdcac32bc19491adb98680f",
+        "signature": "92c14e4c1f9b2b1b0d531f19ffa68a08a87db447ebdcac32bc19491adb98680f",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/VideoCompact.d.ts": {
+        "version": "dbbefaadba2a29b1384e651bc53e15f5cebbb46a45490c4f77a840c64d0d1c1a",
+        "signature": "dbbefaadba2a29b1384e651bc53e15f5cebbb46a45490c4f77a840c64d0d1c1a",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Thumbnails.d.ts": {
+        "version": "6da798c1dda27b3dde8f5f4e3d5447f2047b4613dd3d4c6c931e0844837db940",
+        "signature": "6da798c1dda27b3dde8f5f4e3d5447f2047b4613dd3d4c6c931e0844837db940",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts": {
+        "version": "ce8bf770ee7820a1ee510a546661b6f7c3df549b717692052f4256018de57069",
+        "signature": "ce8bf770ee7820a1ee510a546661b6f7c3df549b717692052f4256018de57069",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts": {
+        "version": "cb7261681ed700e302b7ff61d88f0468251c52fd6c97d832299e88172f79bcad",
+        "signature": "cb7261681ed700e302b7ff61d88f0468251c52fd6c97d832299e88172f79bcad",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Channel.d.ts": {
+        "version": "edd8e2f385d88a11f64502b543bb1804557749cbca87edfd883286d713e70c6a",
+        "signature": "edd8e2f385d88a11f64502b543bb1804557749cbca87edfd883286d713e70c6a",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Comment.d.ts": {
+        "version": "2a1aa0fd3530c5c2dd62f9fb36697d2af61d3dea1dc726053852871e91f55fcf",
+        "signature": "2a1aa0fd3530c5c2dd62f9fb36697d2af61d3dea1dc726053852871e91f55fcf",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Reply.d.ts": {
+        "version": "c1de9a6ecefa2856ffb45c853f45aab4d7e28a05c53a00958ba6513badf6c455",
+        "signature": "c1de9a6ecefa2856ffb45c853f45aab4d7e28a05c53a00958ba6513badf6c455",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Chat.d.ts": {
+        "version": "d7f58c8a74f06658f14255076072bfb172a3c22c8f8af279ff60445647d4f80a",
+        "signature": "d7f58c8a74f06658f14255076072bfb172a3c22c8f8af279ff60445647d4f80a",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Playlist.d.ts": {
+        "version": "c5863ccabbb6ec6a7e91c121a9a6056e2ce45a3e95ad501c36a9839ef1c481c0",
+        "signature": "c5863ccabbb6ec6a7e91c121a9a6056e2ce45a3e95ad501c36a9839ef1c481c0",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/Video.d.ts": {
+        "version": "aab9861c17790ac2150830ff3d6fa3cb09d13fb4b47521e1c21205fdb4ed1b80",
+        "signature": "aab9861c17790ac2150830ff3d6fa3cb09d13fb4b47521e1c21205fdb4ed1b80",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/LiveVideo.d.ts": {
+        "version": "bfc094dd58c953c4172368cb70533a7c02a47d6c5035d43aa7592e99e66352a4",
+        "signature": "bfc094dd58c953c4172368cb70533a7c02a47d6c5035d43aa7592e99e66352a4",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/MixPlaylist.d.ts": {
+        "version": "6da1f5abd10d697ff501486bdd53f8cb43efd376917661facf97015e2ec2dabb",
+        "signature": "6da1f5abd10d697ff501486bdd53f8cb43efd376917661facf97015e2ec2dabb",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/classes/index.d.ts": {
+        "version": "fc4b7db20352639fc368e8da4249dba00750833a229b92fc03faff2f44aae189",
+        "signature": "fc4b7db20352639fc368e8da4249dba00750833a229b92fc03faff2f44aae189",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/youtubei/dist/index.d.ts": {
+        "version": "19259b0ae78334670dc38e0c19092f2d2e480fae082e875fa5a5c23ac8b99f5d",
+        "signature": "19259b0ae78334670dc38e0c19092f2d2e480fae082e875fa5a5c23ac8b99f5d",
         "affectsGlobalScope": false
       },
       "./src/helpers/getYoutubeTrack.ts": {
-        "version": "679e75e44d94b0be5bf82046b07121690e3c69823a1ae11ba3cf6740c9d0158c",
+        "version": "b4a2fe713a34b2fd147cea0a4f29335d66112590f9eb0d3ab5a1cef4bf6043d4",
         "signature": "8ae62259d68e025876872cd5b920ce7f513f9ea64967a19a9acb4d538b750711",
         "affectsGlobalScope": false
       },
       "./src/components/PlayerProgressBar.tsx": {
-        "version": "060d4eacd3b203076facefd5675b63f4d7cdf109fca736b0be35378a0096d82a",
+        "version": "979b3e33ce95bce63821de2a9f28ddd569bca213ea3da876daf83663520c3f38",
         "signature": "88b42a3ab8ad2f01a08486d5874bfd71eab6f0635ca59decc66c7fd6809aaa32",
         "affectsGlobalScope": false
       },
       "./src/components/shared/IconButton.tsx": {
-        "version": "9c06afa69017c8ffe55c12ae47a1f0fe77eca282242d6429e6e4f9d122c1249e",
-        "signature": "4fb80a60482183f4d01bcbd7eed5fb03b5ffcf880461024ab87aba489a6ad40f",
+        "version": "45d42b1fd95a873f06cad19b0d3fed3605fcfe0971d375e020dfcc6f3367c9eb",
+        "signature": "cabf4fbf3e888c3593e714344f2b03b463b505d3c4e1e051e6007ee85c4df4e0",
         "affectsGlobalScope": false
       },
       "./src/hooks/useTrackReaction.ts": {
-        "version": "05023a7327401dffec407a1e788cb9a8122df9e7bcbd068e1ba0a02d242f9ae8",
-        "signature": "e52631a4d79a8e47b4745f1e74b46466e3c8e2ba166faa05f0c83ef304441e52",
+        "version": "b8bb3633139a2411a1be4fabd94698b17926410e852694fe1b6dad3d415a8d95",
+        "signature": "1b5ac1ccf850ed0ff71b890f4da9d2cc37e8ab69962dfc24c271897c9ae05f37",
         "affectsGlobalScope": false
       },
       "./node_modules/axios/index.d.ts": {
@@ -2132,13 +2272,13 @@
         "affectsGlobalScope": false
       },
       "./src/helpers/fetchLyrics.ts": {
-        "version": "31d44fba5f6a74d07ebeb16d3329efdfec354e973dbc6be2545db33c4cbf39d4",
+        "version": "711e77f993fa83964339f14693a7199fd0ebf1004ebdabbbef2c0a82f9265b60",
         "signature": "0e5c46cfaca1ebc14cf87623420d4c19432aa393bf2ccc4338fc46643a190827",
         "affectsGlobalScope": false
       },
       "./src/components/ManualLyricDialog.tsx": {
-        "version": "f005d1cad823b5610859883a68078cfdfdb13c3eea735f7072c6cee1fa6ef0f9",
-        "signature": "8c1007f743c642371acace6a5abc4f1443cf1eea94fe72f9e19685350be15bf6",
+        "version": "1973006b24bcc6b9c8447553ac2ac27c45a107adb2b9dabc96bdac18905d471b",
+        "signature": "8613f78865cc23168613700d1126bc93764118d332d5913e0c608cff34864b1c",
         "affectsGlobalScope": false
       },
       "./node_modules/ytdl-core/typings/index.d.ts": {
@@ -2147,12 +2287,12 @@
         "affectsGlobalScope": false
       },
       "./src/hooks/useDownloadQueue.ts": {
-        "version": "34a563f67031f9e98926bada3e3b421eb854926b39fcbba5c36612ae5617a18c",
+        "version": "4ae9fd5980eac34ae6ebf9d1aa2f10470b0514748bd81f58313256925d47d7c3",
         "signature": "0066967f0fd0f6522edf29f2d6bd3c3bbe9697953a5f036d6d415b237e0a7a3d",
         "affectsGlobalScope": false
       },
       "./src/components/Player.tsx": {
-        "version": "a4a4199b6d2f17e191314ff8766106e06480426f5573311fe8d0b2633a478d9e",
+        "version": "e742a2edd054696268f7a93f2b81cbad8a8e39aa0cbe8aea6434bfa5670482fa",
         "signature": "f282ee63ce0036b6359971bd9e221108c5e24f8e08801ec53c5a479c69ef61ee",
         "affectsGlobalScope": false
       },
@@ -2162,7 +2302,7 @@
         "affectsGlobalScope": false
       },
       "./src/helpers/streamToBuffer.ts": {
-        "version": "8e59e6cde96a9c0dacf8a6679fed480ad8fef56c70feb07736bead27da288c0f",
+        "version": "805142986e1ca276b20d2b17fb82238bbde5b81b4106c991f6987c32faf2581b",
         "signature": "275e3d8bd0c38e4fac2d10ee585383afcc45b998631a2d0fcf53ac8f8cbf5c0c",
         "affectsGlobalScope": false
       },
@@ -2347,107 +2487,107 @@
         "affectsGlobalScope": false
       },
       "./src/helpers/getCachedImageBuffer.ts": {
-        "version": "c287ff65a175f3856dac8ac65ae4679e32bfb027b7fd062359c880472845d61e",
+        "version": "90562858eee555e866c6685f9ab2fdf7dfe1379fb4da5b0ac8e8fb8e1b46f044",
         "signature": "f24743b47596c97a87ccc9f19cf39c7508a2f257995f9cf44ee9321736330926",
         "affectsGlobalScope": false
       },
       "./src/components/shared/CachedImage.tsx": {
-        "version": "60d3e364af08fe401fdc441a08eb63bf1a08a16032189321c4414ad1c1838994",
+        "version": "4b91d83bce697228a81747d69d0049ed83b1d3e2d3ae3a531b2fdbd6d58bf898",
         "signature": "58b3d5f4c87dce19ec3a6dda00b38a44a4201b1d2b6ac43c65a75d284599c184",
         "affectsGlobalScope": false
       },
       "./src/components/shared/PlaylistCard.tsx": {
-        "version": "d8553ee45b64635f6c9f3190bde584b995d95cbf483318abe10f82ee0cd6dbbb",
+        "version": "2764f1c6d4c47afcab032fbb39da15bc075665f3d2551e9d1aa79521789b84ef",
         "signature": "7fcdea892be633158c382fa9d51f38367046e7cf43c760cf18be6a6106a32e52",
         "affectsGlobalScope": false
       },
       "./src/components/shared/CategoryCardView.tsx": {
-        "version": "8bbd1b50a512336031fd76b2ce532640e62ad852c3d99371f78fce6bddff9d22",
+        "version": "8f3abac8da8eff507524df41b9298f81a12f6c5cd379a94475b45be505d09b2c",
         "signature": "da7cee8c7217609ff8253c3cc0047fca08f2a950004ae59353e2798891e2a488",
         "affectsGlobalScope": false
       },
       "./src/components/Home.tsx": {
-        "version": "17ea7363bc90221536095d5c753951c9c1fe5cae299d0dbc0bf8609eb58650f1",
+        "version": "4e0a1eb50acec701b55a907dc90d441a37fdd4232edde42762b350be051fee3a",
         "signature": "205fbbb8bbcd07778b401d3ef8afe4aa5b0252eb420d0b0f99d589e908636406",
         "affectsGlobalScope": false
       },
       "./src/components/Login.tsx": {
-        "version": "53bd5a1f489bd69531208614179f526017bcf3245ece214bd72771fcbf5e91d5",
+        "version": "6574090323922d4a4da872542e97cb6a03a70aefbd3d335f2047491682e282ef",
         "signature": "683530a06337db1600fbe68391c5f58d7344be33ff40cea342c1bf6f971e7f51",
         "affectsGlobalScope": false
       },
       "./src/components/BackButton.tsx": {
-        "version": "378959f3556118a7c5fb2db95b73fcc43b9d2c564d4f66da2be76dc20477c7bc",
+        "version": "bb9ed9afdaf5e7ff950ea5fd4d5b7acfaf20b51f770300afd33b929e118cca01",
         "signature": "1268dd06c940c3a6dd1842f926277def02e046cf5561c006320e6d55db7ab593",
         "affectsGlobalScope": false
       },
       "./src/helpers/msToMin_sec.ts": {
-        "version": "260b6d8ead554beff1624830603b107103245807c82ecf6d2f3ee7464f7ecc2e",
+        "version": "c7f2d1295167388ef0c646093873ff44d100bde71439a64ef30e597e3bf13d8b",
         "signature": "5de277f508e46c65ed5d23c14178219cb6b49f0409b40079db65063edbf57862",
         "affectsGlobalScope": false
       },
       "./src/components/shared/TrackButton.tsx": {
-        "version": "f08db65819c4c17418be4583c642fe44a7d7705706197099187aa1107d06f76a",
+        "version": "a127562a5d556d108abcea66cfdd85b0e6a41bb7b8efe854446bf20e99bf101b",
         "signature": "237667e2fdfc96353d8a2ad88cf9c8c39b45d6b3a2328195c04be4545798f49b",
         "affectsGlobalScope": false
       },
       "./src/components/PlaylistView.tsx": {
-        "version": "a68c9f3aeeff250bda9e3a48489ab04391442ffa4949fd56566da3f4c23f7e5c",
-        "signature": "cbfc98b1494d8d7a16152c646309f5486511cd14cae168d202886405ac968e79",
+        "version": "8af1d97029a04f9c3adf386b2187977c2ccde36dfe3b1deff85920992686bbe7",
+        "signature": "ac0569e0ac442770588a52b0d6b6a12ec0063a317628256a32f9d82ff3d9a74e",
         "affectsGlobalScope": false
       },
       "./src/components/PlaylistGenreView.tsx": {
-        "version": "c3007fdf645517d141c4c77eaa60127a23a47834170fb7c5010e6b35f3500a2b",
-        "signature": "aaece052ccc54bfa16b28e2e2281fcc38b36cbcb6e09d74f75eed10c548724be",
+        "version": "2b44ab99778f124ab61f462185a1675c82ffcaf79048af4d392cb1c6df1bfa8f",
+        "signature": "feb2551473f411c168425bfc053de67bc41bfa81abad91db5b639fcae0bf5c2b",
         "affectsGlobalScope": false
       },
       "./src/components/TabMenu.tsx": {
-        "version": "b7f18f8c4936ba85375e70d466a7c2deb1afff028b918fcc9ab9ea65293e0fff",
-        "signature": "9c9ebd5a8ab0ea0f15ea94f7ff8c367054fcab744a01dff51d329ca26c86eac4",
+        "version": "926875a05a72ae099c7b6960f5e1578234ff024030bd089ec4a2d4cc286b5cee",
+        "signature": "3111732ea5fad303feef43b5b218220397610c909c1eb5967b12667672e2d252",
         "affectsGlobalScope": false
       },
       "./src/components/CurrentPlaylist.tsx": {
-        "version": "978c21e86bf452d06885ec481230a9e9e403ac62983b418813cefe3262c55dc9",
+        "version": "6be1fa7ce08e57e2243fb5ac0a86ed1fe4fa0bbf09785716f028693dc47df7ea",
         "signature": "47de22610263df5522fbce9d0d69499a95b04114b81ab6e8d463e2f4907a6814",
         "affectsGlobalScope": false
       },
       "./src/components/Library.tsx": {
-        "version": "ab6daff08d2317feded94af22a36eb21f421bd17b3c5171c7ae1c67f6659c988",
+        "version": "6260b0b729b3b15883654f0c5c35dd073a806716cf9c938b0000568d8d23cab5",
         "signature": "413bad0e9a800508ea2993222123bce20125d28cde05c03f897b7d1d22b1d986",
         "affectsGlobalScope": false
       },
       "./src/components/Search.tsx": {
-        "version": "720c28baf2e9a7599b4287bdae93c8a790ffb9c5a8c79e3e794797677589ac99",
+        "version": "222124f093f6cc9ac8c0c16f5a53ecf5d21b8e9e0152b2d8541d8086e96926ee",
         "signature": "b306baff2c51ae17143eeda6f618e1c2243e8f0901f0de4b17137dd0a01f6174",
         "affectsGlobalScope": false
       },
       "./src/components/SearchResultPlaylistCollection.tsx": {
-        "version": "b13a3610c6a57c744fd9bdde4a02415c47546e8e649be2311903f9441c321335",
+        "version": "10097ebbbea3731c5e8f3b81c63a9b64f9e57743e0e618c142605ccab7b16d4c",
         "signature": "8ff7a7a1936e3db3e0371f1be6485d4ff0f0bfdb73090c982b969f10aff2c412",
         "affectsGlobalScope": false
       },
       "./src/components/SearchResultSongsCollection.tsx": {
-        "version": "767c15255737438a9a4f1165a139a4120cf8afc6fa165dadca5dc6d26b34817d",
+        "version": "9fce75a14d02be667a88e6692f7854e84a7a2cb7a495ae3f7ed330fcb0c8a9f6",
         "signature": "17562d93cde1dfd4671e9e6a2fc74044eecaffe6b9252439709a0a00abf2defd",
         "affectsGlobalScope": false
       },
       "./src/components/shared/Switch.tsx": {
-        "version": "c646852ded40e9fede259a6763c42a17bb7222d5601fae3cac7690078b2f2842",
+        "version": "d37a522657b55e96dda02ead9e80bada001472f2a59c746f99fd8b25cfc1212f",
         "signature": "09aee43ff74447584b65f236d5ca4d41e9efdcf70295ef95b8ce23cff43a2309",
         "affectsGlobalScope": false
       },
       "./src/components/Settings.tsx": {
-        "version": "399d6bfba8382fff2b05ebe7046357f5fc00c507bd6618e139f154fd9bad3fd7",
-        "signature": "5fa68971abd632dfc3423c5b1e4be1ffd075cb978f48368981d861cdb7d9096d",
+        "version": "7870d3230145bbd93a504dbf21434d9f5db57c38b76f9f6c89b35763f3a059c3",
+        "signature": "dedbfdffdac25842053faeb9addd56ef0ccd2bcc9b81a4defd9c11cc6bc6b17a",
         "affectsGlobalScope": false
       },
       "./src/components/Artist.tsx": {
-        "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "version": "ce5eef4d0cb57b0141ee9bdfe3f2743e078afe2fb9ef0a071c19e9f7db567f47",
+        "signature": "99005c7f417727fa1148ce075f5b8e7ae47dd04de6fbe45aa499fba0464df86a",
         "affectsGlobalScope": false
       },
       "./src/routes.tsx": {
-        "version": "3ac676aff4b82daaafb4d163542df3a2c79838c2e990f15f44977750e4b4d4ad",
+        "version": "f679025eecac3ce839e0078838085b0d69d6edee0608bcca094c15e95fa61316",
         "signature": "5ff073ea29db06628a9a170cda0c6e9a6e0dbd26c09393e43167c50efb794fb4",
         "affectsGlobalScope": false
       },
@@ -2502,13 +2642,18 @@
         "affectsGlobalScope": false
       },
       "./src/app.tsx": {
-        "version": "4bd3cadf4581e73e839c9fa976d6d47bd36c292700cad1d8ed4d2d487cf07e96",
+        "version": "3d013569737d091d6ddf53c34c76150433ab4af37298ab68cb0f89577a8f4bc4",
         "signature": "37dce5f0b8c0d9235234f3bfab3dc519796a6f08f4cf89c5ac11a006985c3fe6",
         "affectsGlobalScope": false
       },
       "./src/index.tsx": {
-        "version": "659ba30e5e9fc4ffef2bd9b9b1087c85c7cfaa4198566ffe8d6ba7dd96f89c8e",
+        "version": "674d0fb585d82e3b23a6eb46e7f937491d7b974e20cbd75125cfae8bac1d6105",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+        "affectsGlobalScope": false
+      },
+      "./src/helpers/showError.ts": {
+        "version": "630687474f06fa85b511fd1e25d449d6b799023b1eaff03d634504f57ca1f67e",
+        "signature": "f2a0b4fe8754a8016c61d31825f31f578911bd025b86ddea38eaaeb1138dc581",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/anymatch/index.d.ts": {
@@ -2549,6 +2694,11 @@
       "./node_modules/@types/glob/index.d.ts": {
         "version": "393137c76bd922ba70a2f8bf1ade4f59a16171a02fb25918c168d48875b0cfb0",
         "signature": "393137c76bd922ba70a2f8bf1ade4f59a16171a02fb25918c168d48875b0cfb0",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/json5/index.d.ts": {
+        "version": "96d14f21b7652903852eef49379d04dbda28c16ed36468f8c9fa08f7c14c9538",
+        "signature": "96d14f21b7652903852eef49379d04dbda28c16ed36468f8c9fa08f7c14c9538",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/normalize-package-data/index.d.ts": {
@@ -2686,6 +2836,9 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
       "incremental": true,
+      "downlevelIteration": true,
+      "declaration": true,
+      "sourceMap": true,
       "noEmit": true,
       "pretty": true,
       "configFilePath": "./tsconfig.json"
@@ -4460,8 +4613,127 @@
         "./node_modules/react-query/types/core/types.d.ts",
         "./node_modules/react-query/types/react/types.d.ts"
       ],
-      "./node_modules/scrape-yt/dist/index.d.ts": [
-        "./node_modules/scrape-yt/dist/common/types.d.ts"
+      "./node_modules/winston-transport/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/logform/index.d.ts"
+      ],
+      "./node_modules/winston/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/logform/index.d.ts",
+        "./node_modules/winston-transport/index.d.ts",
+        "./node_modules/winston/lib/winston/config/index.d.ts",
+        "./node_modules/winston/lib/winston/transports/index.d.ts"
+      ],
+      "./node_modules/winston/lib/winston/config/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts"
+      ],
+      "./node_modules/winston/lib/winston/transports/index.d.ts": [
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/winston-transport/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Base.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/BaseVideo.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Channel.d.ts": [
+        "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/Thumbnails.d.ts",
+        "./node_modules/youtubei/dist/classes/VideoCompact.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Chat.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Client.d.ts": [
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/youtubei/dist/classes/SearchResult.d.ts",
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Comment.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/LiveVideo.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/MixPlaylist.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Playlist.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Reply.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/SearchResult.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Video.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/VideoCompact.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/index.d.ts": [
+        "./node_modules/youtubei/dist/classes/Base.d.ts",
+        "./node_modules/youtubei/dist/classes/BaseVideo.d.ts",
+        "./node_modules/youtubei/dist/classes/Channel.d.ts",
+        "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/Chat.d.ts",
+        "./node_modules/youtubei/dist/classes/Client.d.ts",
+        "./node_modules/youtubei/dist/classes/Comment.d.ts",
+        "./node_modules/youtubei/dist/classes/LiveVideo.d.ts",
+        "./node_modules/youtubei/dist/classes/MixPlaylist.d.ts",
+        "./node_modules/youtubei/dist/classes/Playlist.d.ts",
+        "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/Reply.d.ts",
+        "./node_modules/youtubei/dist/classes/SearchResult.d.ts",
+        "./node_modules/youtubei/dist/classes/Thumbnails.d.ts",
+        "./node_modules/youtubei/dist/classes/Video.d.ts",
+        "./node_modules/youtubei/dist/classes/VideoCompact.d.ts"
+      ],
+      "./node_modules/youtubei/dist/common/HTTP.d.ts": [
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/youtubei/dist/classes/Client.d.ts",
+        "./node_modules/youtubei/dist/common/types.d.ts"
+      ],
+      "./node_modules/youtubei/dist/common/helper.d.ts": [
+        "./node_modules/youtubei/dist/common/types.d.ts"
+      ],
+      "./node_modules/youtubei/dist/common/index.d.ts": [
+        "./node_modules/youtubei/dist/common/HTTP.d.ts",
+        "./node_modules/youtubei/dist/common/decorators.d.ts",
+        "./node_modules/youtubei/dist/common/helper.d.ts",
+        "./node_modules/youtubei/dist/common/mixins.d.ts",
+        "./node_modules/youtubei/dist/common/types.d.ts"
+      ],
+      "./node_modules/youtubei/dist/index.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts"
       ],
       "./node_modules/ytdl-core/typings/index.d.ts": [
         "./node_modules/@types/node/http.d.ts",
@@ -4484,9 +4756,14 @@
         "./src/context/authContext.ts",
         "./src/context/playerContext.ts",
         "./src/context/preferencesContext.ts",
-        "./src/helpers/showError.ts",
+        "./src/hooks/useLogger.ts",
+        "./src/initializations/logger.ts",
         "./src/initializations/spotifyApi.ts",
         "./src/routes.tsx"
+      ],
+      "./src/components/Artist.tsx": [
+        "./node_modules/@nodegui/react-nodegui/dist/index.d.ts",
+        "./node_modules/@types/react/index.d.ts"
       ],
       "./src/components/BackButton.tsx": [
         "./node_modules/@nodegui/nodegui/dist/index.d.ts",
@@ -4535,7 +4812,7 @@
         "./node_modules/@nodegui/nodegui/dist/index.d.ts",
         "./node_modules/@types/react/index.d.ts",
         "./src/helpers/fetchLyrics.ts",
-        "./src/helpers/showError.ts"
+        "./src/hooks/useLogger.ts"
       ],
       "./src/components/Player.tsx": [
         "./node_modules/@nodegui/nodegui/dist/index.d.ts",
@@ -4548,9 +4825,9 @@
         "./src/conf.ts",
         "./src/context/playerContext.ts",
         "./src/helpers/getYoutubeTrack.ts",
-        "./src/helpers/showError.ts",
         "./src/helpers/shuffleArray.ts",
         "./src/hooks/useDownloadQueue.ts",
+        "./src/hooks/useLogger.ts",
         "./src/hooks/useTrackReaction.ts",
         "./src/icons.ts"
       ],
@@ -4559,13 +4836,15 @@
         "./node_modules/@nodegui/react-nodegui/dist/index.d.ts",
         "./node_modules/@types/react/index.d.ts",
         "./node_modules/node-mpv/index.d.ts",
-        "./src/context/playerContext.ts"
+        "./src/context/playerContext.ts",
+        "./src/hooks/useLogger.ts"
       ],
       "./src/components/PlaylistGenreView.tsx": [
         "./node_modules/@nodegui/nodegui/dist/index.d.ts",
         "./node_modules/@nodegui/react-nodegui/dist/index.d.ts",
         "./node_modules/@types/react-router/index.d.ts",
         "./node_modules/@types/react/index.d.ts",
+        "./node_modules/react-query/types/index.d.ts",
         "./src/components/BackButton.tsx",
         "./src/components/shared/PlaceholderApplet.tsx",
         "./src/components/shared/PlaylistCard.tsx",
@@ -4584,6 +4863,7 @@
         "./src/components/shared/TrackButton.tsx",
         "./src/conf.ts",
         "./src/context/playerContext.ts",
+        "./src/hooks/useLogger.ts",
         "./src/hooks/usePlaylistReaction.ts",
         "./src/hooks/useSpotifyQuery.ts",
         "./src/icons.ts"
@@ -4599,7 +4879,7 @@
         "./src/components/shared/PlaylistCard.tsx",
         "./src/components/shared/TrackButton.tsx",
         "./src/conf.ts",
-        "./src/helpers/showError.ts",
+        "./src/hooks/useLogger.ts",
         "./src/hooks/useSpotifyQuery.ts",
         "./src/icons.ts"
       ],
@@ -4640,7 +4920,7 @@
         "./node_modules/@nodegui/react-nodegui/dist/index.d.ts",
         "./node_modules/@types/react/index.d.ts",
         "./src/helpers/getCachedImageBuffer.ts",
-        "./src/helpers/showError.ts"
+        "./src/hooks/useLogger.ts"
       ],
       "./src/components/shared/CategoryCardView.tsx": [
         "./node_modules/@nodegui/nodegui/dist/index.d.ts",
@@ -4673,7 +4953,7 @@
         "./src/context/playerContext.ts",
         "./src/context/preferencesContext.ts",
         "./src/helpers/RandomColor.ts",
-        "./src/helpers/showError.ts",
+        "./src/hooks/useLogger.ts",
         "./src/hooks/usePlaylistReaction.ts",
         "./src/hooks/useSpotifyQuery.ts",
         "./src/icons.ts"
@@ -4715,7 +4995,7 @@
       "./src/helpers/fetchLyrics.ts": [
         "./node_modules/@types/html-to-text/index.d.ts",
         "./node_modules/axios/index.d.ts",
-        "./src/helpers/showError.ts"
+        "./src/initializations/logger.ts"
       ],
       "./src/helpers/getCachedImageBuffer.ts": [
         "./node_modules/@types/du/index.d.ts",
@@ -4726,11 +5006,13 @@
         "./node_modules/axios/index.d.ts",
         "./node_modules/jimp/types/ts3.1/index.d.ts",
         "./src/conf.ts",
-        "./src/helpers/streamToBuffer.ts"
+        "./src/helpers/streamToBuffer.ts",
+        "./src/initializations/logger.ts"
       ],
       "./src/helpers/getYoutubeTrack.ts": [
-        "./node_modules/scrape-yt/dist/index.d.ts",
-        "./src/context/playerContext.ts"
+        "./node_modules/youtubei/dist/index.d.ts",
+        "./src/context/playerContext.ts",
+        "./src/initializations/logger.ts"
       ],
       "./src/helpers/showError.ts": [
         "./node_modules/chalk/index.d.ts",
@@ -4747,7 +5029,11 @@
         "./node_modules/ytdl-core/typings/index.d.ts",
         "./src/context/playerContext.ts",
         "./src/helpers/getYoutubeTrack.ts",
-        "./src/helpers/showError.ts"
+        "./src/hooks/useLogger.ts"
+      ],
+      "./src/hooks/useLogger.ts": [
+        "./node_modules/@types/react/index.d.ts",
+        "./src/initializations/logger.ts"
       ],
       "./src/hooks/usePlaylistReaction.ts": [
         "./node_modules/react-query/types/index.d.ts",
@@ -4757,18 +5043,16 @@
       ],
       "./src/hooks/useSpotifyApi.ts": [
         "./node_modules/@types/react/index.d.ts",
-        "./node_modules/chalk/index.d.ts",
         "./src/conf.ts",
         "./src/context/authContext.ts",
-        "./src/helpers/showError.ts",
+        "./src/hooks/useLogger.ts",
         "./src/initializations/spotifyApi.ts"
       ],
       "./src/hooks/useSpotifyApiError.ts": [
         "./node_modules/@types/react/index.d.ts",
         "./node_modules/@types/spotify-web-api-node/index.d.ts",
-        "./node_modules/chalk/index.d.ts",
         "./src/context/authContext.ts",
-        "./src/helpers/showError.ts"
+        "./src/hooks/useLogger.ts"
       ],
       "./src/hooks/useSpotifyInfiniteQuery.ts": [
         "./node_modules/@types/react/index.d.ts",
@@ -4805,6 +5089,11 @@
         "./node_modules/@types/react/index.d.ts",
         "./src/app.tsx"
       ],
+      "./src/initializations/logger.ts": [
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/chalk/index.d.ts",
+        "./node_modules/winston/index.d.ts"
+      ],
       "./src/initializations/spotifyApi.ts": [
         "./node_modules/@types/spotify-web-api-node/index.d.ts",
         "./src/conf.ts"
@@ -4812,6 +5101,7 @@
       "./src/routes.tsx": [
         "./node_modules/@types/react-router/index.d.ts",
         "./node_modules/@types/react/index.d.ts",
+        "./src/components/Artist.tsx",
         "./src/components/CurrentPlaylist.tsx",
         "./src/components/Home.tsx",
         "./src/components/Library.tsx",
@@ -6596,8 +6886,127 @@
         "./node_modules/react-query/types/core/types.d.ts",
         "./node_modules/react-query/types/react/types.d.ts"
       ],
-      "./node_modules/scrape-yt/dist/index.d.ts": [
-        "./node_modules/scrape-yt/dist/common/types.d.ts"
+      "./node_modules/winston-transport/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/logform/index.d.ts"
+      ],
+      "./node_modules/winston/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/logform/index.d.ts",
+        "./node_modules/winston-transport/index.d.ts",
+        "./node_modules/winston/lib/winston/config/index.d.ts",
+        "./node_modules/winston/lib/winston/transports/index.d.ts"
+      ],
+      "./node_modules/winston/lib/winston/config/index.d.ts": [
+        "./node_modules/@types/node/index.d.ts"
+      ],
+      "./node_modules/winston/lib/winston/transports/index.d.ts": [
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/winston-transport/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Base.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/BaseVideo.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Channel.d.ts": [
+        "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/Thumbnails.d.ts",
+        "./node_modules/youtubei/dist/classes/VideoCompact.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Chat.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Client.d.ts": [
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/youtubei/dist/classes/SearchResult.d.ts",
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Comment.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/LiveVideo.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/MixPlaylist.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Playlist.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Reply.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/SearchResult.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/Video.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/VideoCompact.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        "./node_modules/youtubei/dist/common/index.d.ts"
+      ],
+      "./node_modules/youtubei/dist/classes/index.d.ts": [
+        "./node_modules/youtubei/dist/classes/Base.d.ts",
+        "./node_modules/youtubei/dist/classes/BaseVideo.d.ts",
+        "./node_modules/youtubei/dist/classes/Channel.d.ts",
+        "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/Chat.d.ts",
+        "./node_modules/youtubei/dist/classes/Client.d.ts",
+        "./node_modules/youtubei/dist/classes/Comment.d.ts",
+        "./node_modules/youtubei/dist/classes/LiveVideo.d.ts",
+        "./node_modules/youtubei/dist/classes/MixPlaylist.d.ts",
+        "./node_modules/youtubei/dist/classes/Playlist.d.ts",
+        "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts",
+        "./node_modules/youtubei/dist/classes/Reply.d.ts",
+        "./node_modules/youtubei/dist/classes/SearchResult.d.ts",
+        "./node_modules/youtubei/dist/classes/Thumbnails.d.ts",
+        "./node_modules/youtubei/dist/classes/Video.d.ts",
+        "./node_modules/youtubei/dist/classes/VideoCompact.d.ts"
+      ],
+      "./node_modules/youtubei/dist/common/HTTP.d.ts": [
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/youtubei/dist/classes/Client.d.ts",
+        "./node_modules/youtubei/dist/common/types.d.ts"
+      ],
+      "./node_modules/youtubei/dist/common/helper.d.ts": [
+        "./node_modules/youtubei/dist/common/types.d.ts"
+      ],
+      "./node_modules/youtubei/dist/common/index.d.ts": [
+        "./node_modules/youtubei/dist/common/HTTP.d.ts",
+        "./node_modules/youtubei/dist/common/decorators.d.ts",
+        "./node_modules/youtubei/dist/common/helper.d.ts",
+        "./node_modules/youtubei/dist/common/mixins.d.ts",
+        "./node_modules/youtubei/dist/common/types.d.ts"
+      ],
+      "./node_modules/youtubei/dist/index.d.ts": [
+        "./node_modules/youtubei/dist/classes/index.d.ts"
       ],
       "./node_modules/ytdl-core/typings/index.d.ts": [
         "./node_modules/@types/node/http.d.ts",
@@ -6620,7 +7029,8 @@
         "./node_modules/node-mpv/index.d.ts"
       ],
       "./src/components/PlaylistGenreView.tsx": [
-        "./node_modules/@nodegui/nodegui/dist/index.d.ts"
+        "./node_modules/@nodegui/nodegui/dist/index.d.ts",
+        "./node_modules/react-query/types/index.d.ts"
       ],
       "./src/components/PlaylistView.tsx": [
         "./node_modules/@types/react/index.d.ts"
@@ -6662,6 +7072,9 @@
       "./src/hooks/useDownloadQueue.ts": [
         "./src/helpers/getYoutubeTrack.ts"
       ],
+      "./src/hooks/useLogger.ts": [
+        "./src/initializations/logger.ts"
+      ],
       "./src/hooks/usePlaylistReaction.ts": [
         "./node_modules/react-query/types/index.d.ts"
       ],
@@ -6685,6 +7098,9 @@
       ],
       "./src/hooks/useTrackReaction.ts": [
         "./node_modules/react-query/types/index.d.ts"
+      ],
+      "./src/initializations/logger.ts": [
+        "./node_modules/winston/index.d.ts"
       ],
       "./src/initializations/spotifyApi.ts": [
         "./node_modules/@types/spotify-web-api-node/index.d.ts"
@@ -7023,6 +7439,7 @@
       "./node_modules/@types/html-to-text/lib/block-text-builder.d.ts",
       "./node_modules/@types/is-url/index.d.ts",
       "./node_modules/@types/json-schema/index.d.ts",
+      "./node_modules/@types/json5/index.d.ts",
       "./node_modules/@types/mime/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/node-localstorage/index.d.ts",
@@ -7112,6 +7529,7 @@
       "./node_modules/csstype/index.d.ts",
       "./node_modules/dotenv/types/index.d.ts",
       "./node_modules/jimp/types/ts3.1/index.d.ts",
+      "./node_modules/logform/index.d.ts",
       "./node_modules/node-mpv/index.d.ts",
       "./node_modules/open/index.d.ts",
       "./node_modules/react-query/types/core/focusManager.d.ts",
@@ -7145,8 +7563,6 @@
       "./node_modules/react-query/types/react/useMutation.d.ts",
       "./node_modules/react-query/types/react/useQueries.d.ts",
       "./node_modules/react-query/types/react/useQuery.d.ts",
-      "./node_modules/scrape-yt/dist/common/types.d.ts",
-      "./node_modules/scrape-yt/dist/index.d.ts",
       "./node_modules/typescript/lib/lib.dom.d.ts",
       "./node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "./node_modules/typescript/lib/lib.es2015.core.d.ts",
@@ -7176,6 +7592,34 @@
       "./node_modules/typescript/lib/lib.es2020.bigint.d.ts",
       "./node_modules/typescript/lib/lib.es5.d.ts",
       "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
+      "./node_modules/winston-transport/index.d.ts",
+      "./node_modules/winston/index.d.ts",
+      "./node_modules/winston/lib/winston/config/index.d.ts",
+      "./node_modules/winston/lib/winston/transports/index.d.ts",
+      "./node_modules/youtubei/dist/classes/Base.d.ts",
+      "./node_modules/youtubei/dist/classes/BaseVideo.d.ts",
+      "./node_modules/youtubei/dist/classes/Channel.d.ts",
+      "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts",
+      "./node_modules/youtubei/dist/classes/Chat.d.ts",
+      "./node_modules/youtubei/dist/classes/Client.d.ts",
+      "./node_modules/youtubei/dist/classes/Comment.d.ts",
+      "./node_modules/youtubei/dist/classes/LiveVideo.d.ts",
+      "./node_modules/youtubei/dist/classes/MixPlaylist.d.ts",
+      "./node_modules/youtubei/dist/classes/Playlist.d.ts",
+      "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts",
+      "./node_modules/youtubei/dist/classes/Reply.d.ts",
+      "./node_modules/youtubei/dist/classes/SearchResult.d.ts",
+      "./node_modules/youtubei/dist/classes/Thumbnails.d.ts",
+      "./node_modules/youtubei/dist/classes/Video.d.ts",
+      "./node_modules/youtubei/dist/classes/VideoCompact.d.ts",
+      "./node_modules/youtubei/dist/classes/index.d.ts",
+      "./node_modules/youtubei/dist/common/HTTP.d.ts",
+      "./node_modules/youtubei/dist/common/decorators.d.ts",
+      "./node_modules/youtubei/dist/common/helper.d.ts",
+      "./node_modules/youtubei/dist/common/index.d.ts",
+      "./node_modules/youtubei/dist/common/mixins.d.ts",
+      "./node_modules/youtubei/dist/common/types.d.ts",
+      "./node_modules/youtubei/dist/index.d.ts",
       "./node_modules/ytdl-core/typings/index.d.ts",
       "./src/app.tsx",
       "./src/components/Artist.tsx",
@@ -7214,6 +7658,7 @@
       "./src/helpers/shuffleArray.ts",
       "./src/helpers/streamToBuffer.ts",
       "./src/hooks/useDownloadQueue.ts",
+      "./src/hooks/useLogger.ts",
       "./src/hooks/usePlaylistReaction.ts",
       "./src/hooks/useSpotifyApi.ts",
       "./src/hooks/useSpotifyApiError.ts",
@@ -7223,28 +7668,2081 @@
       "./src/hooks/useTrackReaction.ts",
       "./src/icons.ts",
       "./src/index.tsx",
+      "./src/initializations/logger.ts",
       "./src/initializations/spotifyApi.ts",
-      [
-        "./src/routes.tsx",
-        [
-          {
-            "file": "./src/routes.tsx",
-            "start": 765,
-            "length": 21,
-            "messageText": "File '/home/krtirtho/dev/desktop/spotube/src/components/Artist.tsx' is not a module.",
-            "category": 1,
-            "code": 2306
-          }
-        ]
-      ]
+      "./src/routes.tsx"
     ],
     "affectedFilesPendingEmit": [
+      [
+        "./assets.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/bmp/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/core/types/etc.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/core/types/functions.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/core/types/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/core/types/jimp.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/core/types/plugins.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/core/types/utils.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/gif/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/jpeg/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-blit/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-blur/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-circle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-color/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-contain/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-cover/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-crop/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-displace/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-dither/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-fisheye/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-flip/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-gaussian/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-invert/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-mask/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-normalize/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-print/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-resize/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-rotate/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-scale/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-shadow/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugin-threshold/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/plugins/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/png/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/tiff/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@jimp/types/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QDate.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QDateTime.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QMimeData.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QModelIndex.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QObject.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QPoint.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QPointF.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QRect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QRectF.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QSettings.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QSize.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QTime.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QUrl.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QVariant.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/AcceptMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/AlignmentFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/AnchorPoint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ApplicationAttribute/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ApplicationState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ArrowType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/AspectRatioMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Axis/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/BGMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/BrushStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/CaseSensitivity/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/CheckState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ChecksumType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ClipOperation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ConnectionType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ContextMenuPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/CoordinateSystem/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Corner/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/CursorMoveStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/CursorShape/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/DateFormat/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/DayOfWeek/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/DialogCode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/DialogLabel/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Direction/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/DockWidgetArea/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/DropAction/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Edge/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/EnterKeyType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/EventPriority/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/FileMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/FillRule/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/FindChildOption/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/FocusPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/FocusReason/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/GestureFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/GestureState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/GestureType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/GlobalColor/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/HitTestAccuracy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ImageConversionFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/InputMethodHint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/InputMethodQuery/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemDataRole/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemSelectionMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemSelectionOperation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Key/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/KeyboardModifier/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/LayoutDirection/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/MaskMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/MatchFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Modifier/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/MouseButton/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/MouseEventFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/MouseEventSource/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/NativeGestureType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/NavigationMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Option/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/Orientation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/PenCapStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/PenStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScreenOrientation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScrollBarPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScrollHint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScrollPhase/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ShortcutContext/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/SizeAdjustPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/SizeHint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/SizeMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/SortOrder/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TabFocusBehavior/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TabPosition/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextElideMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextFormat/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextInteractionFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TileRule/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TimeSpec/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TimerType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ToolBarArea/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ToolButtonStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TouchPointState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/TransformationMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/UIEffect/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/ViewMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/WhiteSpaceMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/WidgetAttribute/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowFrameSection/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowModality/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtEnums/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QApplication.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QBrush.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QClipboard.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QColor.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QCursor.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QDrag.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QDragLeaveEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QDragMoveEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QDropEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QKeyEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QMouseEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QNativeGestureEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QTabletEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QWheelEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QFont.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QFontDatabase.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QIcon.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QKeySequence.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QMovie.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QPen.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QPicture.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QPixmap.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QStyle.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QTextOption.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractItemView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractScrollArea.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractSlider.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAction.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QBoxLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QButtonGroup.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QCalendarWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QCheckBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QColorDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QComboBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDateEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDateTimeEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDesktopWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDial.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDoubleSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QErrorMessage.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QFileDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QFontDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QFrame.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGraphicsBlurEffect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGraphicsDropShadowEffect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGraphicsEffect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGridLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGroupBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QInputDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLCDNumber.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLabel.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLineEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QListView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QListWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QListWidgetItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMainWindow.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMenu.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMenuBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMessageBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPainter.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPainterPath.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPlainTextEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QProgressBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QProgressDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPushButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QRadioButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QScrollArea.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QScrollBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QShortcut.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSlider.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStackedWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStandardItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStandardItemModel.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStatusBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSvgWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSystemTrayIcon.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTabBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTabWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTableView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTableWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTableWidgetItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTextBrowser.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTextEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTimeEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QToolButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTreeWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTreeWidgetItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/core/Component.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/core/EventWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/core/FlexLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/core/Style/StyleSheet.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/core/YogaWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/core/bootstrap.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/utils/helpers.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/AbstractComponents/RNAbstractButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Action/RNAction.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Action/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/AnimatedImage/RNAnimatedImage.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/AnimatedImage/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/BoxView/RNBoxView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/BoxView/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Button/RNButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Button/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/CheckBox/RNCheckBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/CheckBox/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ComboBox/RNComboBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ComboBox/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Dial/RNDial.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Dial/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/GridView/GridColumn/RNGridColumn.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/GridView/GridColumn/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/GridView/GridRow/RNGridRow.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/GridView/GridRow/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/GridView/RNGridView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/GridView/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/GridView/utils.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Image/RNImage.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Image/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/LineEdit/RNLineEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/LineEdit/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Menu/RNMenu.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Menu/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/MenuBar/RNMenuBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/MenuBar/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/PlainTextEdit/RNPlainTextEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/PlainTextEdit/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ProgressBar/RNProgressBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ProgressBar/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/RadioButton/RNRadioButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/RadioButton/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ScrollArea/RNScrollArea.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ScrollArea/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Slider/RNSlider.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Slider/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/SpinBox/RNSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/SpinBox/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/SystemTrayIcon/RNSystemTrayIcon.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/SystemTrayIcon/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Tab/RNTab.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Tab/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/TabItem/RNTabItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/TabItem/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Text/RNText.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Text/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/View/RNView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/View/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Window/RNWindow.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Window/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/config.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/development/hot-reload.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/development/types.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/hooks/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/reconciler/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/renderer/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/anymatch/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/body-parser/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/color-convert/conversions.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/color-convert/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/color-convert/route.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/color-name/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/color/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/connect/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/du/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/eslint-scope/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/eslint/helpers.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/eslint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/estree/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/events/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/express-serve-static-core/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/express/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/glob/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/history/DOMUtils.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/history/LocationUtils.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/history/PathUtils.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/history/createBrowserHistory.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/history/createHashHistory.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/history/createMemoryHistory.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/history/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/html-to-text/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/html-to-text/lib/block-text-builder.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/is-url/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/json-schema/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/json5/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/mime/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/minimatch/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node-localstorage/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/assert.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/async_hooks.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/base.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/buffer.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/child_process.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/cluster.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/console.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/constants.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/crypto.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/dgram.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/dns.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/domain.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/events.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/fs.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/fs/promises.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/globals.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/globals.global.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/http.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/http2.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/https.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/inspector.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/module.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/net.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/os.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/path.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/perf_hooks.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/process.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/punycode.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/querystring.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/readline.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/repl.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/stream.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/string_decoder.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/timers.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/tls.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/trace_events.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/ts3.4/base.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/ts3.6/base.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/tty.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/url.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/util.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/v8.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/vm.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/wasi.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/worker_threads.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/node/zlib.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/normalize-package-data/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/parse-json/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/prop-types/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/qs/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/range-parser/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/react-reconciler/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/react-router/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/react/global.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/react/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/serve-static/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/source-list-map/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/spotify-api/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/spotify-web-api-node/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/tapable/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/uglify-js/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/uglify-js/node_modules/source-map/source-map.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/uuid/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-env/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/CachedSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/CompatSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/ConcatSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/OriginalSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/PrefixSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/RawSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/ReplaceSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/SizeOnlySource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/Source.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/SourceMapSource.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/lib/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack-sources/node_modules/source-map/source-map.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/webpack/node_modules/source-map/source-map.d.ts",
+        1
+      ],
+      [
+        "./node_modules/anymatch/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/axios/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/chalk/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/csstype/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/dotenv/types/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/jimp/types/ts3.1/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/logform/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/node-mpv/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/open/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/focusManager.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/infiniteQueryObserver.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/logger.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/mutation.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/mutationCache.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/mutationObserver.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/notifyManager.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/onlineManager.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/queriesObserver.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/query.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/queryCache.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/queryClient.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/queryObserver.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/retryer.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/subscribable.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/types.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/core/utils.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/QueryClientProvider.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/QueryErrorResetBoundary.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/setBatchUpdatesFn.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/setLogger.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/types.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/useInfiniteQuery.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/useIsFetching.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/useIsMutating.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/useMutation.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/useQueries.d.ts",
+        1
+      ],
+      [
+        "./node_modules/react-query/types/react/useQuery.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.dom.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.collection.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.core.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.generator.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.promise.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2016.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2017.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2017.intl.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2017.object.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2017.string.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2018.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2018.intl.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2018.promise.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2018.regexp.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2019.array.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es2020.bigint.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.es5.d.ts",
+        1
+      ],
+      [
+        "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
+        1
+      ],
+      [
+        "./node_modules/winston-transport/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/winston/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/winston/lib/winston/config/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/winston/lib/winston/transports/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Base.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/BaseVideo.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Channel.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/ChannelCompact.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Chat.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Client.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Comment.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/LiveVideo.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/MixPlaylist.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Playlist.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/PlaylistCompact.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Reply.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/SearchResult.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Thumbnails.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/Video.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/VideoCompact.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/classes/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/common/HTTP.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/common/decorators.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/common/helper.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/common/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/common/mixins.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/common/types.d.ts",
+        1
+      ],
+      [
+        "./node_modules/youtubei/dist/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/ytdl-core/typings/index.d.ts",
+        1
+      ],
       [
         "./src/app.tsx",
         1
       ],
       [
         "./src/components/Artist.tsx",
+        1
+      ],
+      [
+        "./src/components/BackButton.tsx",
+        1
+      ],
+      [
+        "./src/components/CurrentPlaylist.tsx",
         1
       ],
       [
@@ -7256,7 +9754,19 @@
         1
       ],
       [
+        "./src/components/Login.tsx",
+        1
+      ],
+      [
+        "./src/components/ManualLyricDialog.tsx",
+        1
+      ],
+      [
         "./src/components/Player.tsx",
+        1
+      ],
+      [
+        "./src/components/PlayerProgressBar.tsx",
         1
       ],
       [
@@ -7280,7 +9790,39 @@
         1
       ],
       [
+        "./src/components/Settings.tsx",
+        1
+      ],
+      [
+        "./src/components/TabMenu.tsx",
+        1
+      ],
+      [
+        "./src/components/shared/CachedImage.tsx",
+        1
+      ],
+      [
+        "./src/components/shared/CategoryCardView.tsx",
+        1
+      ],
+      [
+        "./src/components/shared/IconButton.tsx",
+        1
+      ],
+      [
+        "./src/components/shared/PlaceholderApplet.tsx",
+        1
+      ],
+      [
         "./src/components/shared/PlaylistCard.tsx",
+        1
+      ],
+      [
+        "./src/components/shared/Switch.tsx",
+        1
+      ],
+      [
+        "./src/components/shared/TrackButton.tsx",
         1
       ],
       [
@@ -7288,11 +9830,55 @@
         1
       ],
       [
+        "./src/context/authContext.ts",
+        1
+      ],
+      [
+        "./src/context/playerContext.ts",
+        1
+      ],
+      [
+        "./src/context/preferencesContext.ts",
+        1
+      ],
+      [
+        "./src/helpers/RandomColor.ts",
+        1
+      ],
+      [
+        "./src/helpers/fetchLyrics.ts",
+        1
+      ],
+      [
         "./src/helpers/getCachedImageBuffer.ts",
         1
       ],
       [
+        "./src/helpers/getYoutubeTrack.ts",
+        1
+      ],
+      [
+        "./src/helpers/msToMin_sec.ts",
+        1
+      ],
+      [
         "./src/helpers/showError.ts",
+        1
+      ],
+      [
+        "./src/helpers/shuffleArray.ts",
+        1
+      ],
+      [
+        "./src/helpers/streamToBuffer.ts",
+        1
+      ],
+      [
+        "./src/hooks/useDownloadQueue.ts",
+        1
+      ],
+      [
+        "./src/hooks/useLogger.ts",
         1
       ],
       [
@@ -7304,7 +9890,35 @@
         1
       ],
       [
+        "./src/hooks/useSpotifyApiError.ts",
+        1
+      ],
+      [
+        "./src/hooks/useSpotifyInfiniteQuery.ts",
+        1
+      ],
+      [
+        "./src/hooks/useSpotifyMutation.ts",
+        1
+      ],
+      [
+        "./src/hooks/useSpotifyQuery.ts",
+        1
+      ],
+      [
         "./src/hooks/useTrackReaction.ts",
+        1
+      ],
+      [
+        "./src/icons.ts",
+        1
+      ],
+      [
+        "./src/index.tsx",
+        1
+      ],
+      [
+        "./src/initializations/logger.ts",
         1
       ],
       [

@@ -19,3 +19,4 @@ aur-struct/*.zip*
 aur-struct/*.zst
 
 *.tsbuildinfo
+tsconfig.tsbuildinfo

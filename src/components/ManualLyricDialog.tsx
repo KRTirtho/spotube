@@ -8,8 +8,8 @@ import {
     TextFormat,
 } from "@nodegui/nodegui";
 import React, { PropsWithChildren, useEffect, useState } from "react";
-import showError from "../helpers/showError";
 import fetchLyrics from "../helpers/fetchLyrics";
+import { useLogger } from "../hooks/useLogger";
 
 interface ManualLyricDialogProps extends PropsWithChildren<unknown> {
     open: boolean;
@@ -18,6 +18,8 @@ interface ManualLyricDialogProps extends PropsWithChildren<unknown> {
 }
 
 function ManualLyricDialog({ open, track }: ManualLyricDialogProps) {
+    const logger = useLogger(ManualLyricDialog.name);
+
     const dialog = new QDialog();
     const areaContainer = new QWidget();
     const retryButton = new QPushButton();
@@ -31,11 +33,11 @@ function ManualLyricDialog({ open, track }: ManualLyricDialogProps) {
     async function handleBtnClick() {
         try {
             const lyrics = await fetchLyrics(artists, track.name);
-            console.log("lyrics:", lyrics);
+            logger.info("lyrics", lyrics);
             setLyrics(lyrics);
             setLyricNotFound(lyrics === "Not Found");
-        } catch (error) {
-            showError(error, `[Finding lyrics for ${track.name} failed]: `);
+        } catch (error: any) {
+            logger.error(`Finding lyrics for ${track.name} failed`, error);
             setLyrics("No lyrics found, rare track :)");
             setLyricNotFound(true);
         }
@@ -77,7 +79,7 @@ function ManualLyricDialog({ open, track }: ManualLyricDialogProps) {
                     setLyricNotFound(lyrics === "Not Found");
                 })
                 .catch((e: Error) => {
-                    showError(e, `[Finding lyrics for ${track.name} failed]: `);
+                    logger.error(`Finding lyrics for ${track.name} failed `, e);
                     setLyrics("No lyrics found, rare track :)");
                     setLyricNotFound(true);
                 });

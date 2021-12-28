@@ -1,10 +1,11 @@
 import { useContext, useEffect } from "react";
 import { LocalStorageKeys } from "../conf";
 import authContext from "../context/authContext";
-import showError from "../helpers/showError";
 import spotifyApi from "../initializations/spotifyApi";
+import { useLogger } from "./useLogger";
 
 function useSpotifyApi() {
+    const logger = useLogger(useSpotifyApi.name);
     const { access_token, clientId, clientSecret, isLoggedIn, setAccess_token } =
         useContext(authContext);
     const refreshToken = localStorage.getItem(LocalStorageKeys.refresh_token);
@@ -21,7 +22,7 @@ function useSpotifyApi() {
                         setAccess_token(token.body.access_token);
                     })
                     .catch((error) => {
-                        showError(error);
+                        logger.error(error);
                     });
             }
             spotifyApi.setAccessToken(access_token);

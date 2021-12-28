@@ -12,6 +12,7 @@ import useSpotifyQuery from "../hooks/useSpotifyQuery";
 import usePlaylistReaction from "../hooks/usePlaylistReaction";
 import { TrackButton } from "./shared/TrackButton";
 import PlaceholderApplet from "./shared/PlaceholderApplet";
+import { useLogger } from "../hooks/useLogger";
 
 export interface PlaylistTrackRes {
     name: string;
@@ -20,6 +21,8 @@ export interface PlaylistTrackRes {
 }
 
 const PlaylistView: FC = () => {
+    const logger = useLogger(PlaylistView.name);
+
     const { setCurrentTrack, currentPlaylist, setCurrentPlaylist } =
         useContext(playerContext);
     const params = useParams<{ id: string }>();
@@ -50,7 +53,7 @@ const PlaylistView: FC = () => {
         } else {
             audioPlayer
                 .stop()
-                .catch((error) => console.error("Failed to stop audio player: ", error));
+                .catch((error) => logger.error("Failed to stop audio player", error));
             setCurrentTrack(undefined);
             setCurrentPlaylist(undefined);
         }

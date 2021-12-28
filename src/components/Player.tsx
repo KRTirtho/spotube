@@ -27,11 +27,11 @@ import {
     download,
 } from "../icons";
 import IconButton from "./shared/IconButton";
-import showError from "../helpers/showError";
 import useTrackReaction from "../hooks/useTrackReaction";
 import ManualLyricDialog from "./ManualLyricDialog";
 import { LocalStorageKeys } from "../conf";
 import useDownloadQueue from "../hooks/useDownloadQueue";
+import { useLogger } from "../hooks/useLogger";
 
 export const audioPlayer = new NodeMpv(
     {
@@ -45,6 +45,8 @@ export const audioPlayer = new NodeMpv(
     ["--ytdl-raw-options-set=format=140,http-chunk-size=300000"],
 );
 function Player(): ReactElement {
+    const logger = useLogger(Player.name);
+
     const { currentTrack, currentPlaylist, setCurrentTrack, setCurrentPlaylist } =
         useContext(playerContext);
     const { reactToTrack, isFavorite } = useTrackReaction();
@@ -87,8 +89,8 @@ function Player(): ReactElement {
                     await audioPlayer.start();
                     await audioPlayer.volume(volume);
                 }
-            } catch (error) {
-                showError(error, "[Failed starting audio player]: ");
+            } catch (error: any) {
+                logger.error("Failed starting audio player", error);
             }
         })().then(() => {
             if (cachedPlaylist && !currentPlaylist) {
@@ -101,7 +103,7 @@ function Player(): ReactElement {
 
         return () => {
             if (playerRunning) {
-                audioPlayer.quit().catch((e: unknown) => console.log(e));
+                audioPlayer.quit().catch((e: any) => logger.error(e));
             }
         };
     }, []);
@@ -126,12 +128,12 @@ function Player(): ReactElement {
                     setIsPaused(false);
                 }
                 setIsStopped(false);
-            } catch (error) {
+            } catch (error: any) {
                 if (error.errcode !== 5) {
                     setIsStopped(true);
                     setIsPaused(true);
                 }
-                showError(error, "[Failure at track change]: ");
+                logger.error("Failure at track change", error);
             }
         })();
     }, [currentTrack]);
@@ -223,8 +225,8 @@ function Player(): ReactElement {
                 setIsStopped(true);
                 setIsPaused(true);
             }
-        } catch (error) {
-            showError(error, "[Track control failed]: ");
+        } catch (error: any) {
+            logger.error("Track control failed", error);
         }
     };
 
@@ -250,8 +252,8 @@ function Player(): ReactElement {
                 setCurrentPlaylist(undefined);
                 await audioPlayer.stop();
             }
-        } catch (error) {
-            showError(error, "[Failed at audio-player stop]: ");
+        } catch (error: any) {
+            logger.error("Failed at audio-player stop", error);
         }
     }
 

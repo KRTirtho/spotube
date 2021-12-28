@@ -3,7 +3,7 @@ import { LineEdit, ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { QueryCacheKeys } from "../conf";
-import showError from "../helpers/showError";
+import { useLogger } from "../hooks/useLogger";
 import useSpotifyQuery from "../hooks/useSpotifyQuery";
 import { search } from "../icons";
 import { TrackTableIndex } from "./PlaylistView";
@@ -13,6 +13,7 @@ import PlaylistCard from "./shared/PlaylistCard";
 import { TrackButton } from "./shared/TrackButton";
 
 function Search() {
+    const logger = useLogger(Search.name);
     const history = useHistory<{ searchQuery: string }>();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const {
@@ -32,8 +33,8 @@ function Search() {
     async function handleSearch() {
         try {
             await refetch();
-        } catch (error) {
-            showError(error, "[Failed to search through spotify]: ");
+        } catch (error: any) {
+            logger.error("Failed to search through spotify", error);
         }
     }
 

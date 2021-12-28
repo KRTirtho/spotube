@@ -3,7 +3,7 @@ import { Text, View } from "@nodegui/react-nodegui";
 import { QLabel, QPixmap } from "@nodegui/nodegui";
 import { ImageProps } from "@nodegui/react-nodegui/dist/components/Image/RNImage";
 import { getCachedImageBuffer } from "../../helpers/getCachedImageBuffer";
-import showError from "../../helpers/showError";
+import { useLogger } from "../../hooks/useLogger";
 
 interface CachedImageProps extends Omit<ImageProps, "buffer"> {
     src: string;
@@ -11,6 +11,7 @@ interface CachedImageProps extends Omit<ImageProps, "buffer"> {
 }
 
 function CachedImage({ src, alt, size, maxSize, ...props }: CachedImageProps) {
+    const logger = useLogger(CachedImage.name);
     const labelRef = useRef<QLabel>();
     const [imageBuffer, setImageBuffer] = useState<Buffer>();
     const [imageProcessError, setImageProcessError] = useState<boolean>(false);
@@ -22,7 +23,7 @@ function CachedImage({ src, alt, size, maxSize, ...props }: CachedImageProps) {
                 .then((buffer) => setImageBuffer(buffer))
                 .catch((error) => {
                     setImageProcessError(false);
-                    showError(error, "[Cached Image Error]: ");
+                    logger.error("Cached Image Error", error);
                 });
         }
 
