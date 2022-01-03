@@ -27,13 +27,38 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: Colors.greenAccent[400],
-          primarySwatch: Colors.green,
-          buttonTheme: const ButtonThemeData(
-            buttonColor: Colors.green,
-          ),
-        ),
-        home: Home(),
+            primaryColor: Colors.greenAccent[400],
+            primarySwatch: Colors.green,
+            buttonTheme: const ButtonThemeData(
+              buttonColor: Colors.green,
+            ),
+            textTheme: TextTheme(
+              bodyText1: TextStyle(color: Colors.grey[850]),
+              headline1: TextStyle(color: Colors.grey[850]),
+              headline2: TextStyle(color: Colors.grey[850]),
+              headline3: TextStyle(color: Colors.grey[850]),
+              headline4: TextStyle(color: Colors.grey[850]),
+              headline5: TextStyle(color: Colors.grey[850]),
+              headline6: TextStyle(color: Colors.grey[850]),
+            ),
+            listTileTheme: ListTileThemeData(
+              iconColor: Colors.grey[850],
+              horizontalTitleGap: 0,
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.green[400]!,
+                  width: 2.0,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.grey[800]!,
+                ),
+              ),
+            )),
+        home: const Home(),
       ),
     );
   }

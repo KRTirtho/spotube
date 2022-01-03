@@ -45,7 +45,7 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
                         return const Center(child: Text("Error occurred"));
                       }
                       if (!snapshot.hasData) {
-                        return const Center(child: Text("Loading.."));
+                        return const CircularProgressIndicator.adaptive();
                       }
                       return Wrap(
                         children: snapshot.data!

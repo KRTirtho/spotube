@@ -115,22 +115,27 @@ class _PlayerState extends State<Player> {
   }
 
   Future playPlaylist(CurrentPlaylist playlist) async {
-    if (player.isRunning() && playlist.id != _currentPlaylistId) {
-      var playlistPath = "/tmp/playlist-${playlist.id}.txt";
-      File file = File(playlistPath);
-      var newPlaylist = playlistToStr(playlist);
+    try {
+      if (player.isRunning() && playlist.id != _currentPlaylistId) {
+        var playlistPath = "/tmp/playlist-${playlist.id}.txt";
+        File file = File(playlistPath);
+        var newPlaylist = playlistToStr(playlist);
 
-      if (!await file.exists()) {
-        await file.create();
+        if (!await file.exists()) {
+          await file.create();
+        }
+
+        await file.writeAsString(newPlaylist);
+
+        await player.loadPlaylist(playlistPath);
+        setState(() {
+          _currentPlaylistId = playlist.id;
+          _shuffled = false;
+        });
       }
-
-      await file.writeAsString(newPlaylist);
-
-      await player.loadPlaylist(playlistPath);
-      setState(() {
-        _currentPlaylistId = playlist.id;
-        _shuffled = false;
-      });
+    } catch (e, stackTrace) {
+      print("[Player]: $e");
+      print(stackTrace);
     }
   }
 

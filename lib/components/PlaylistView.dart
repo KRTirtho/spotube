@@ -15,7 +15,6 @@ class PlaylistView extends StatefulWidget {
 class _PlaylistViewState extends State<PlaylistView> {
   @override
   Widget build(BuildContext context) {
-    Playback playback = context.read<Playback>();
     return Consumer<SpotifyDI>(builder: (_, data, __) {
       return Scaffold(
         body: FutureBuilder<Iterable<Track>>(
@@ -70,7 +69,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                   snapshot.hasError
                       ? const Center(child: Text("Error occurred"))
                       : !snapshot.hasData
-                          ? const Center(child: Text("Loading.."))
+                          ? const CircularProgressIndicator.adaptive()
                           : Expanded(
                               child: Scrollbar(
                                 isAlwaysShown: true,

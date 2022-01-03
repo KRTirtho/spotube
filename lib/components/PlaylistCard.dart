@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/PlaylistView.dart';
+import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/SpotifyDI.dart';
 
 class PlaylistCard extends StatefulWidget {
-  PlaylistSimple playlist;
-  PlaylistCard(this.playlist);
+  final PlaylistSimple playlist;
+  const PlaylistCard(this.playlist, {Key? key}) : super(key: key);
   @override
   _PlaylistCardState createState() => _PlaylistCardState();
 }
@@ -22,7 +25,7 @@ class _PlaylistCardState extends State<PlaylistCard> {
         ));
       },
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 200),
+        constraints: const BoxConstraints(maxWidth: 200),
         child: Ink(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -30,7 +33,7 @@ class _PlaylistCardState extends State<PlaylistCard> {
             boxShadow: [
               BoxShadow(
                 blurRadius: 10,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
                 spreadRadius: 5,
                 color: Colors.grey.shade300,
               )
@@ -40,21 +43,66 @@ class _PlaylistCardState extends State<PlaylistCard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // thumbnail of the playlist
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                    imageUrl: widget.playlist.images![0].url!),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: CachedNetworkImage(
+                        imageUrl: widget.playlist.images![0].url!),
+                  ),
+                  Positioned.directional(
+                    textDirection: TextDirection.ltr,
+                    bottom: 10,
+                    end: 5,
+                    child: Builder(builder: (context) {
+                      Playback playback = context.watch<Playback>();
+                      SpotifyDI data = context.watch<SpotifyDI>();
+                      bool isPlaylistPlaying = playback.currentPlaylist !=
+                              null &&
+                          playback.currentPlaylist!.id == widget.playlist.id;
+                      return ElevatedButton(
+                        onPressed: () async {
+                          if (isPlaylistPlaying) return;
+
+                          List<Track> tracks = (await data.spotifyApi.playlists
+                                  .getTracksByPlaylistId(widget.playlist.id!)
+                                  .all())
+                              .toList();
+
+                          playback.setCurrentPlaylist = CurrentPlaylist(
+                            tracks: tracks,
+                            id: widget.playlist.id!,
+                            name: widget.playlist.name!,
+                            thumbnail: widget.playlist.images!.first.url!,
+                          );
+                        },
+                        child: Icon(
+                          isPlaylistPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                        ),
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            const CircleBorder(),
+                          ),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.all(16),
+                          ),
+                        ),
+                      );
+                    }),
+                  )
+                ],
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       widget.playlist.name!,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

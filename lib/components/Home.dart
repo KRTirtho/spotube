@@ -33,8 +33,13 @@ class _HomeState extends State<Home> {
 
         if (clientId != null && clientSecret != null) {
           SpotifyApi spotifyApi = SpotifyApi(
-            SpotifyApiCredentials(clientId, clientSecret,
-                scopes: ["user-library-read", "user-library-modify"]),
+            SpotifyApiCredentials(clientId, clientSecret, scopes: [
+              "user-library-read",
+              "user-library-modify",
+              "user-read-private",
+              "user-read-email",
+              "playlist-read-collaborative"
+            ]),
           );
           SpotifyApiCredentials credentials = await spotifyApi.getCredentials();
           if (credentials.accessToken?.isNotEmpty ?? false) {
@@ -89,7 +94,7 @@ class _HomeState extends State<Home> {
             child: Row(
               children: [
                 Container(
-                  color: Colors.grey.shade100,
+                  color: Colors.blueGrey[50],
                   constraints: const BoxConstraints(maxWidth: 230),
                   child: Material(
                     type: MaterialType.transparency,
@@ -121,39 +126,50 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         // user name & settings
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "User's name",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              IconButton(
-                                  icon: const Icon(Icons.settings_outlined),
-                                  onPressed: () {}),
-                            ],
-                          ),
-                        )
+                        Consumer<SpotifyDI>(builder: (context, data, widget) {
+                          return FutureBuilder<User>(
+                            future: data.spotifyApi.me.get(),
+                            builder: (context, snapshot) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      snapshot.data?.displayName ??
+                                          "User's name",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    IconButton(
+                                        icon:
+                                            const Icon(Icons.settings_outlined),
+                                        onPressed: () {}),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        })
                       ],
                     ),
                   ),
                 ),
                 // contents of the spotify
-                Consumer<SpotifyDI>(builder: (_, data, __) {
-                  return Expanded(
-                    child: Scrollbar(
-                      child: PagedListView(
-                          pagingController: _pagingController,
-                          builderDelegate: PagedChildBuilderDelegate<Category>(
-                            itemBuilder: (context, item, index) {
-                              return CategoryCard(item);
-                            },
-                          )),
+                Expanded(
+                  child: Scrollbar(
+                    child: PagedListView(
+                      pagingController: _pagingController,
+                      builderDelegate: PagedChildBuilderDelegate<Category>(
+                        itemBuilder: (context, item, index) {
+                          return CategoryCard(item);
+                        },
+                      ),
                     ),
-                  );
-                }),
+                  ),
+                ),
               ],
             ),
           ),

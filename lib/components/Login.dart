@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,43 +52,61 @@ class _LoginState extends State<Login> {
     return Consumer<Auth>(
       builder: (context, authState, child) {
         return Scaffold(
-          body: Container(
-            padding: EdgeInsets.all(8.0),
+          body: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text("Add your spotify credentials to get started",
-                    style: Theme.of(context).textTheme.headline3),
-                Text(
+                    style: Theme.of(context).textTheme.headline4),
+                const Text(
                     "Don't worry, any of your credentials won't be collected or shared with anyone"),
-                TextField(
-                  decoration: InputDecoration(
-                      hintText: "Spotify Client ID", labelText: "ClientId"),
-                  onChanged: (value) {
-                    setState(() {
-                      client_id = value;
-                    });
-                  },
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                      hintText: "Spotify Client Secret",
-                      labelText: "ClientSecret"),
-                  onChanged: (value) {
-                    setState(() {
-                      client_secret = value;
-                    });
-                  },
-                ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                MaterialButton(
-                  color: Theme.of(context).buttonColor,
-                  onPressed: () {
-                    handleLogin(authState);
-                  },
-                  child: Text("Submit"),
-                )
+                Container(
+                  constraints: const BoxConstraints(
+                    maxWidth: 400,
+                  ),
+                  child: Column(
+                    children: [
+                      TextField(
+                        decoration: const InputDecoration(
+                          hintText: "Spotify Client ID",
+                          label: Text("ClientID"),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            client_id = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        decoration: const InputDecoration(
+                          hintText: "Spotify Client Secret",
+                          label: Text("Client Secret"),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            client_secret = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          handleLogin(authState);
+                        },
+                        child: const Text("Submit"),
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
