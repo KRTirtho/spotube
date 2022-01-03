@@ -30,7 +30,7 @@ class _TrackButtonState extends State<TrackButton> {
       child: InkWell(
         onTap: widget.onTap,
         child: Ink(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -38,16 +38,16 @@ class _TrackButtonState extends State<TrackButton> {
                 children: [
                   Text(
                     widget.index,
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
-                  SizedBox(width: 15),
+                  const SizedBox(width: 15),
                   if (widget.thumbnail_url != null)
                     CachedNetworkImage(
                       imageUrl: widget.thumbnail_url!,
                       maxHeightDiskCache: 50,
                       maxWidthDiskCache: 50,
                     ),
-                  SizedBox(width: 15),
+                  const SizedBox(width: 15),
                   Container(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +55,7 @@ class _TrackButtonState extends State<TrackButton> {
                         Text(
                           widget.trackName,
                           textAlign: TextAlign.justify,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 17),
                         ),
                         Text(widget.artists.join(", "))
@@ -64,9 +64,9 @@ class _TrackButtonState extends State<TrackButton> {
                   ),
                 ],
               ),
-              SizedBox(width: 15),
+              const SizedBox(width: 15),
               Text(widget.album),
-              SizedBox(width: 15),
+              const SizedBox(width: 15),
               Text(widget.playback_time)
             ],
           ),

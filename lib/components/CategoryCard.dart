@@ -7,7 +7,7 @@ import 'package:spotube/provider/SpotifyDI.dart';
 
 class CategoryCard extends StatefulWidget {
   final Category category;
-  CategoryCard(this.category);
+  const CategoryCard(this.category, {Key? key}) : super(key: key);
 
   @override
   _CategoryCardState createState() => _CategoryCardState();
@@ -16,56 +16,57 @@ class CategoryCard extends StatefulWidget {
 class _CategoryCardState extends State<CategoryCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.category.name ?? "Unknown",
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return PlaylistGenreView(widget.category.id!);
-                        },
-                      ),
-                    );
-                  },
-                  child: Text("See all"),
-                )
-              ],
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.category.name ?? "Unknown",
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return PlaylistGenreView(
+                          widget.category.id!,
+                          widget.category.name!,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: const Text("See all"),
+              )
+            ],
           ),
-          Consumer<SpotifyDI>(
-            builder: (context, data, child) =>
-                FutureBuilder<Page<PlaylistSimple>>(
-                    future: data.spotifyApi.playlists
-                        .getByCategoryId(widget.category.id!)
-                        .getPage(4, 0),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(child: Text("Error occurred"));
-                      }
-                      if (!snapshot.hasData) {
-                        return Center(child: Text("Loading.."));
-                      }
-                      return Wrap(
-                        spacing: 20,
-                        children: snapshot.data!.items!
-                            .map((playlist) => PlaylistCard(playlist))
-                            .toList(),
-                      );
-                    }),
-          )
-        ],
-      ),
+        ),
+        Consumer<SpotifyDI>(
+          builder: (context, data, child) =>
+              FutureBuilder<Page<PlaylistSimple>>(
+                  future: data.spotifyApi.playlists
+                      .getByCategoryId(widget.category.id!)
+                      .getPage(4, 0),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(child: Text("Error occurred"));
+                    }
+                    if (!snapshot.hasData) {
+                      return const Center(child: Text("Loading.."));
+                    }
+                    return Wrap(
+                      spacing: 20,
+                      children: snapshot.data!.items!
+                          .map((playlist) => PlaylistCard(playlist))
+                          .toList(),
+                    );
+                  }),
+        )
+      ],
     );
   }
 }

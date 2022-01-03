@@ -5,11 +5,15 @@ class PlayerControls extends StatefulWidget {
   final MPVPlayer player;
   final bool isPlaying;
   final double duration;
+  final bool shuffled;
   final Function? onStop;
+  final Function? onShuffle;
   const PlayerControls({
     required this.player,
     required this.isPlaying,
     required this.duration,
+    required this.shuffled,
+    this.onShuffle,
     this.onStop,
     Key? key,
   }) : super(key: key);
@@ -86,8 +90,10 @@ class _PlayerControlsState extends State<PlayerControls> {
             children: [
               IconButton(
                   icon: const Icon(Icons.shuffle_rounded),
-                  onPressed: () async {
-                    await widget.player.shuffle();
+                  color:
+                      widget.shuffled ? Theme.of(context).primaryColor : null,
+                  onPressed: () {
+                    widget.onShuffle?.call();
                   }),
               IconButton(
                   icon: const Icon(Icons.skip_previous_rounded),

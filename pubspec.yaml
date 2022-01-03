@@ -44,6 +44,7 @@ dependencies:
   youtube_explode_dart: ^1.10.8
   mpv_dart:
     path: ../mpv_dart
+  infinite_scroll_pagination: ^3.1.0
 
 dev_dependencies:
   flutter_test:

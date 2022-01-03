@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.greenAccent[400],
           primarySwatch: Colors.green,
-          buttonTheme: ButtonThemeData(
-            buttonColor: Colors.greenAccent[400],
+          buttonTheme: const ButtonThemeData(
+            buttonColor: Colors.green,
           ),
         ),
         home: Home(),

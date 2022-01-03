@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spotube/components/PlayerControls.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +20,7 @@ class _PlayerState extends State<Player> {
   late MPVPlayer player;
 
   bool _isPlaying = false;
-  String? _mediaTitle;
-  String? _mediaArtists;
+  bool _shuffled = false;
   double _duration = 0;
 
   String? _currentPlaylistId;
@@ -45,7 +46,9 @@ class _PlayerState extends State<Player> {
           _volume = volume / 100;
         });
       } catch (e) {
-        print("[PLAYER]: $e");
+        if (kDebugMode) {
+          print("[PLAYER]: $e");
+        }
       }
     })();
 
@@ -65,20 +68,27 @@ class _PlayerState extends State<Player> {
       player.on(MPVEvents.status, null, (ev, _) async {
         Map data = ev.eventData as Map;
         Playback playback = context.read<Playback>();
-        print("[DATA]: $data");
         if (data["property"] == "media-title" && data["value"] != null) {
-          var props = (data["value"] as String).split("-");
-          setState(() {
-            _isPlaying = true;
-            _mediaTitle = props.last.replaceAll(
-              RegExp(
-                "(official|video|lyric|[(){}\\[\\]\\|])",
-                caseSensitive: false,
-              ),
-              "",
-            );
-            _mediaArtists = props.first;
-          });
+          var containsYtdl = (data["value"] as String).contains("ytsearch:");
+          if (containsYtdl) {
+            var props = (data["value"] as String).split("-");
+            var mediaTitle = props.last.trim();
+            var mediaArtists = props.first.split("ytsearch:").last.trim();
+            setState(() {
+              _isPlaying = true;
+            });
+
+            var matchedTracks = playback.currentPlaylist?.tracks.where(
+                  (track) {
+                    return track.name == mediaTitle &&
+                        artistsToString(track.artists ?? []) == mediaArtists;
+                  },
+                ) ??
+                [];
+            if (matchedTracks.isNotEmpty) {
+              playback.setCurrentTrack = matchedTracks.first;
+            }
+          }
         }
         if (data["property"] == "duration" && data["value"] != null) {
           setState(() {
@@ -88,30 +98,6 @@ class _PlayerState extends State<Player> {
       });
     });
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    Playback playback = context.read<Playback>();
-
-    String? prevTrackName = playback.currentTrack?.name;
-    String prevTrackArtists =
-        artistsToString(playback.currentTrack?.artists ?? []);
-
-    if (playback.currentPlaylist != null &&
-        playback.currentPlaylist!.tracks.isNotEmpty &&
-        prevTrackName != _mediaTitle &&
-        prevTrackArtists != _mediaArtists) {
-      var tracks = playback.currentPlaylist?.tracks.where((track) {
-            return _mediaTitle == track.name! &&
-                artistsToString(track.artists ?? []) == _mediaTitle;
-          }) ??
-          [];
-      if (tracks.isNotEmpty) {
-        playback.setCurrentTrack = tracks.first;
-      }
-    }
   }
 
   @override
@@ -134,7 +120,6 @@ class _PlayerState extends State<Player> {
       File file = File(playlistPath);
       var newPlaylist = playlistToStr(playlist);
 
-      print("😃PLAYING PLAYLIST😃");
       if (!await file.exists()) {
         await file.create();
       }
@@ -144,6 +129,7 @@ class _PlayerState extends State<Player> {
       await player.loadPlaylist(playlistPath);
       setState(() {
         _currentPlaylistId = playlist.id;
+        _shuffled = false;
       });
     }
   }
@@ -162,21 +148,30 @@ class _PlayerState extends State<Player> {
             playPlaylist(playback.currentPlaylist!);
           }
 
+          String? albumArt = playback.currentTrack?.album?.images?.last.url;
+
           return Material(
             type: MaterialType.transparency,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                if (albumArt != null)
+                  CachedNetworkImage(
+                    imageUrl: albumArt,
+                    maxHeightDiskCache: 50,
+                    maxWidthDiskCache: 50,
+                  ),
                 //  title of the currently playing track
                 Flexible(
                   flex: 1,
                   child: Column(
                     children: [
                       Text(
-                        _mediaTitle ?? "Not playing",
+                        playback.currentTrack?.name ?? "Not playing",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(_mediaArtists ?? "")
+                      Text(
+                          artistsToString(playback.currentTrack?.artists ?? []))
                     ],
                   ),
                 ),
@@ -187,13 +182,28 @@ class _PlayerState extends State<Player> {
                     player: player,
                     isPlaying: _isPlaying,
                     duration: _duration,
+                    shuffled: _shuffled,
+                    onShuffle: () {
+                      if (!_shuffled) {
+                        player.shuffle().then(
+                              (value) => setState(() {
+                                _shuffled = true;
+                              }),
+                            );
+                      } else {
+                        player.unshuffle().then(
+                              (value) => setState(() {
+                                _shuffled = false;
+                              }),
+                            );
+                      }
+                    },
                     onStop: () {
                       setState(() {
                         _isPlaying = false;
                         _currentPlaylistId = null;
-                        _mediaArtists = null;
-                        _mediaTitle = null;
                         _duration = 0;
+                        _shuffled = false;
                       });
                       playback.reset();
                     },
