@@ -1,13 +1,5 @@
-import { Direction, Orientation, QAbstractSliderSignals, QIcon } from "@nodegui/nodegui";
-import {
-    BoxView,
-    GridColumn,
-    GridRow,
-    GridView,
-    Slider,
-    Text,
-    useEventHandler,
-} from "@nodegui/react-nodegui";
+import { Orientation, QAbstractSliderSignals, QIcon } from "@nodegui/nodegui";
+import { Slider, Text, useEventHandler, View } from "@nodegui/react-nodegui";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import playerContext, { CurrentPlaylist } from "../context/playerContext";
 import { shuffleArray } from "../helpers/shuffleArray";
@@ -258,125 +250,234 @@ function Player(): ReactElement {
     }
 
     const artistsNames = currentTrack?.artists?.map((x) => x.name);
-    return (
-        <GridView enabled={!!currentTrack} style="flex: 1; max-height: 120px;">
-            <GridRow>
-                <GridColumn width={2}>
-                    <Text wordWrap openExternalLinks>
-                        {artistsNames && currentTrack
-                            ? `
-            <p><b><a href="${currentYtTrack?.youtube_uri}"}>${
-                                  currentTrack.name
-                              }</a></b> - ${artistsNames[0]} ${
-                                  artistsNames.length > 1
-                                      ? "feat. " + artistsNames.slice(1).join(", ")
-                                      : ""
-                              }</p>
-            `
-                            : `<b>Oh, dear don't waste time</b>`}
-                    </Text>
-                </GridColumn>
-                <GridColumn width={4}>
-                    <BoxView
-                        direction={Direction.TopToBottom}
-                        style={`max-width: 600px; min-width: 380px;`}
-                    >
-                        {currentTrack && (
-                            <ManualLyricDialog open={openLyrics} track={currentTrack} />
-                        )}
-                        <PlayerProgressBar
-                            audioPlayer={audioPlayer}
-                            totalDuration={totalDuration}
-                        />
 
-                        <BoxView direction={Direction.LeftToRight}>
-                            <IconButton
-                                style={`background-color: ${
-                                    shuffle ? "orange" : "rgba(255, 255, 255, 0.055)"
-                                }`}
-                                on={{ clicked: () => setShuffle(!shuffle) }}
-                                icon={new QIcon(shuffleIcon)}
-                            />
-                            <IconButton
-                                on={{ clicked: () => prevOrNext(-1) }}
-                                icon={new QIcon(backward)}
-                            />
-                            <IconButton
-                                on={{ clicked: handlePlayPause }}
-                                icon={
-                                    new QIcon(
-                                        isStopped || isPaused || !currentTrack
-                                            ? play
-                                            : pause,
-                                    )
-                                }
-                            />
-                            <IconButton
-                                on={{ clicked: () => prevOrNext(1) }}
-                                icon={new QIcon(forward)}
-                            />
-                            <IconButton
-                                icon={new QIcon(stop)}
-                                on={{ clicked: stopPlayback }}
-                            />
-                        </BoxView>
-                    </BoxView>
-                </GridColumn>
-                <GridColumn width={2}>
-                    <BoxView>
-                        <IconButton
-                            style={
-                                isActiveDownloading() && !isFinishedDownloading()
-                                    ? "background-color: green;"
-                                    : ""
+    return (
+        <View
+            enabled={!!currentTrack}
+            style="max-height: 120px; flex-direction: row; width:100%; flex: 1"
+        >
+            {/* title box */}
+            <Text wordWrap openExternalLinks>
+                {artistsNames && currentTrack
+                    ? `<p><b><a href="${currentYtTrack?.youtube_uri}"}>${
+                          currentTrack.name
+                      }</a></b> - ${artistsNames[0]} ${
+                          artistsNames.length > 1
+                              ? "feat. " + artistsNames.slice(1).join(", ")
+                              : ""
+                      }</p>`
+                    : "<b>Oh, dear don't waste time</b>"}
+            </Text>
+            {/* player control & progressbar */}
+            <View>
+                {/* progressbar */}
+                <View>
+                    {currentTrack && (
+                        <ManualLyricDialog open={openLyrics} track={currentTrack} />
+                    )}
+                    <PlayerProgressBar
+                        audioPlayer={audioPlayer}
+                        totalDuration={totalDuration}
+                    />
+                </View>
+                <View style="flex-direction: row">
+                    <IconButton
+                        style={`background-color: ${
+                            shuffle ? "orange" : "rgba(255, 255, 255, 0.055)"
+                        }`}
+                        on={{ clicked: () => setShuffle(!shuffle) }}
+                        icon={new QIcon(shuffleIcon)}
+                    />
+                    <IconButton
+                        on={{ clicked: () => prevOrNext(-1) }}
+                        icon={new QIcon(backward)}
+                    />
+                    <IconButton
+                        on={{ clicked: handlePlayPause }}
+                        icon={
+                            new QIcon(
+                                isStopped || isPaused || !currentTrack ? play : pause,
+                            )
+                        }
+                    />
+                    <IconButton
+                        on={{ clicked: () => prevOrNext(1) }}
+                        icon={new QIcon(forward)}
+                    />
+                    <IconButton icon={new QIcon(stop)} on={{ clicked: stopPlayback }} />
+                </View>
+            </View>
+            {/* track reactions & features */}
+            <View style="flex-direction: row">
+                <IconButton
+                    style={
+                        isActiveDownloading() && !isFinishedDownloading()
+                            ? "background-color: green;"
+                            : ""
+                    }
+                    enabled={!!currentYtTrack}
+                    icon={new QIcon(download)}
+                    on={{
+                        clicked() {
+                            currentYtTrack && addToQueue(currentYtTrack);
+                        },
+                    }}
+                />
+                <IconButton
+                    on={{
+                        clicked() {
+                            if (currentTrack) {
+                                reactToTrack({
+                                    added_at: Date.now().toString(),
+                                    track: currentTrack,
+                                });
                             }
-                            enabled={!!currentYtTrack}
-                            icon={new QIcon(download)}
-                            on={{
-                                clicked() {
-                                    currentYtTrack && addToQueue(currentYtTrack);
-                                },
-                            }}
-                        />
-                        <IconButton
-                            on={{
-                                clicked() {
-                                    if (currentTrack) {
-                                        reactToTrack({
-                                            added_at: Date.now().toString(),
-                                            track: currentTrack,
-                                        });
-                                    }
-                                },
-                            }}
-                            icon={
-                                new QIcon(
-                                    isFavorite(currentTrack?.id ?? "")
-                                        ? heart
-                                        : heartRegular,
-                                )
-                            }
-                        />
-                        <IconButton
-                            style={openLyrics ? "background-color: green;" : ""}
-                            icon={new QIcon(musicNode)}
-                            on={{
-                                clicked: () => currentTrack && setOpenLyrics(!openLyrics),
-                            }}
-                        />
-                        <Slider
-                            minSize={{ height: 20, width: 80 }}
-                            maxSize={{ height: 20, width: 100 }}
-                            hasTracking
-                            sliderPosition={volume}
-                            on={volumeHandler}
-                            orientation={Orientation.Horizontal}
-                        />
-                    </BoxView>
-                </GridColumn>
-            </GridRow>
-        </GridView>
+                        },
+                    }}
+                    icon={
+                        new QIcon(
+                            isFavorite(currentTrack?.id ?? "") ? heart : heartRegular,
+                        )
+                    }
+                />
+                <IconButton
+                    style={openLyrics ? "background-color: green;" : ""}
+                    icon={new QIcon(musicNode)}
+                    on={{
+                        clicked: () => currentTrack && setOpenLyrics(!openLyrics),
+                    }}
+                />
+                <Slider
+                    minSize={{ height: 20, width: 80 }}
+                    maxSize={{ height: 20, width: 100 }}
+                    hasTracking
+                    sliderPosition={volume}
+                    on={volumeHandler}
+                    orientation={Orientation.Horizontal}
+                />
+            </View>
+        </View>
     );
 }
 
 export default Player;
+
+// return (
+//     <GridView enabled={!!currentTrack} style="flex: 1; max-height: 120px;">
+//         <GridRow>
+//             <GridColumn width={2}>
+//                 <Text wordWrap openExternalLinks>
+//                     {artistsNames && currentTrack
+//                         ? `
+//         <p><b><a href="${currentYtTrack?.youtube_uri}"}>${
+//                               currentTrack.name
+//                           }</a></b> - ${artistsNames[0]} ${
+//                               artistsNames.length > 1
+//                                   ? "feat. " + artistsNames.slice(1).join(", ")
+//                                   : ""
+//                           }</p>
+//         `
+//                         : `<b>Oh, dear don't waste time</b>`}
+//                 </Text>
+//             </GridColumn>
+//             <GridColumn width={4}>
+//                 <BoxView
+//                     direction={Direction.TopToBottom}
+//                     style={`max-width: 600px; min-width: 380px;`}
+//                 >
+//                     {currentTrack && (
+//                         <ManualLyricDialog open={openLyrics} track={currentTrack} />
+//                     )}
+//                     <PlayerProgressBar
+//                         audioPlayer={audioPlayer}
+//                         totalDuration={totalDuration}
+//                     />
+
+//                     <BoxView direction={Direction.LeftToRight}>
+//                         <IconButton
+//                             style={`background-color: ${
+//                                 shuffle ? "orange" : "rgba(255, 255, 255, 0.055)"
+//                             }`}
+//                             on={{ clicked: () => setShuffle(!shuffle) }}
+//                             icon={new QIcon(shuffleIcon)}
+//                         />
+//                         <IconButton
+//                             on={{ clicked: () => prevOrNext(-1) }}
+//                             icon={new QIcon(backward)}
+//                         />
+//                         <IconButton
+//                             on={{ clicked: handlePlayPause }}
+//                             icon={
+//                                 new QIcon(
+//                                     isStopped || isPaused || !currentTrack
+//                                         ? play
+//                                         : pause,
+//                                 )
+//                             }
+//                         />
+//                         <IconButton
+//                             on={{ clicked: () => prevOrNext(1) }}
+//                             icon={new QIcon(forward)}
+//                         />
+//                         <IconButton
+//                             icon={new QIcon(stop)}
+//                             on={{ clicked: stopPlayback }}
+//                         />
+//                     </BoxView>
+//                 </BoxView>
+//             </GridColumn>
+//             <GridColumn width={2}>
+//                 <BoxView>
+//                     <IconButton
+//                         style={
+//                             isActiveDownloading() && !isFinishedDownloading()
+//                                 ? "background-color: green;"
+//                                 : ""
+//                         }
+//                         enabled={!!currentYtTrack}
+//                         icon={new QIcon(download)}
+//                         on={{
+//                             clicked() {
+//                                 currentYtTrack && addToQueue(currentYtTrack);
+//                             },
+//                         }}
+//                     />
+//                     <IconButton
+//                         on={{
+//                             clicked() {
+//                                 if (currentTrack) {
+//                                     reactToTrack({
+//                                         added_at: Date.now().toString(),
+//                                         track: currentTrack,
+//                                     });
+//                                 }
+//                             },
+//                         }}
+//                         icon={
+//                             new QIcon(
+//                                 isFavorite(currentTrack?.id ?? "")
+//                                     ? heart
+//                                     : heartRegular,
+//                             )
+//                         }
+//                     />
+//                     <IconButton
+//                         style={openLyrics ? "background-color: green;" : ""}
+//                         icon={new QIcon(musicNode)}
+//                         on={{
+//                             clicked: () => currentTrack && setOpenLyrics(!openLyrics),
+//                         }}
+//                     />
+//                     <Slider
+//                         minSize={{ height: 20, width: 80 }}
+//                         maxSize={{ height: 20, width: 100 }}
+//                         hasTracking
+//                         sliderPosition={volume}
+//                         on={volumeHandler}
+//                         orientation={Orientation.Horizontal}
+//                     />
+//                 </BoxView>
+//             </GridColumn>
+//         </GridRow>
+//     </GridView>
+// );

@@ -126,11 +126,12 @@ function RootApp() {
                 open(
                     spotifyApi.createAuthorizeURL(
                         [
-                            "user-library-read",
-                            "playlist-read-private",
+                            "user-follow-read",
                             "user-library-modify",
+                            "user-library-read",
                             "playlist-modify-private",
                             "playlist-modify-public",
+                            "playlist-read-private",
                         ],
                         "xxxyyysssddd",
                     ),
@@ -260,11 +261,9 @@ function RootApp() {
                             }}
                         >
                             <QueryClientProvider client={queryClient}>
-                                <View
-                                    style={`flex: 1; flex-direction: 'column'; align-items: 'stretch';`}
-                                >
+                                <View style="flex: 1; flex-direction: column; align-items: stretch">
                                     <Routes />
-                                    {isLoggedIn && <Player />}
+                                    {/* {isLoggedIn && <Player />} */}
                                 </View>
                             </QueryClientProvider>
                         </playerContext.Provider>

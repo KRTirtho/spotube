@@ -15,7 +15,8 @@
     "incremental": true,
     "downlevelIteration": true,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "src"
   },
   "include": [
     "**/*"

@@ -166,9 +166,14 @@
         "signature": "a7e32dcb90bf0c1b7a1e4ac89b0f7747cbcba25e7beddc1ebf17be1e161842ad",
         "affectsGlobalScope": false
       },
+      "./node_modules/@types/scheduler/tracing.d.ts": {
+        "version": "f5a8b384f182b3851cec3596ccc96cb7464f8d3469f48c74bf2befb782a19de5",
+        "signature": "f5a8b384f182b3851cec3596ccc96cb7464f8d3469f48c74bf2befb782a19de5",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@types/react/index.d.ts": {
-        "version": "cf77444d61a8abc44f343c194889e121d43a3cd5fa928e06cad35fdb5422c89c",
-        "signature": "cf77444d61a8abc44f343c194889e121d43a3cd5fa928e06cad35fdb5422c89c",
+        "version": "1bc82f5b3bb93df76d19730c84467b0b346187198537135d63a672956f323720",
+        "signature": "1bc82f5b3bb93df76d19730c84467b0b346187198537135d63a672956f323720",
         "affectsGlobalScope": true
       },
       "./node_modules/@nodegui/nodegui/dist/lib/core/bootstrap.d.ts": {
@@ -2242,7 +2247,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/PlayerProgressBar.tsx": {
-        "version": "979b3e33ce95bce63821de2a9f28ddd569bca213ea3da876daf83663520c3f38",
+        "version": "c8901bf5f4ebdfed6cf7c67344180e1ad363d9107b53bbca8c98f3858629363c",
         "signature": "88b42a3ab8ad2f01a08486d5874bfd71eab6f0635ca59decc66c7fd6809aaa32",
         "affectsGlobalScope": false
       },
@@ -2292,7 +2297,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/Player.tsx": {
-        "version": "e742a2edd054696268f7a93f2b81cbad8a8e39aa0cbe8aea6434bfa5670482fa",
+        "version": "4bd2fecce6fcf08862192fbab2d2dbf17563dc21fccc714a92e0edb6902db0d0",
         "signature": "f282ee63ce0036b6359971bd9e221108c5e24f8e08801ec53c5a479c69ef61ee",
         "affectsGlobalScope": false
       },
@@ -2507,7 +2512,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/Home.tsx": {
-        "version": "4e0a1eb50acec701b55a907dc90d441a37fdd4232edde42762b350be051fee3a",
+        "version": "a750fde73f6ab02478f2a1898244a4431da3c3b0b2413363b3659fce49c10cfc",
         "signature": "205fbbb8bbcd07778b401d3ef8afe4aa5b0252eb420d0b0f99d589e908636406",
         "affectsGlobalScope": false
       },
@@ -2552,7 +2557,7 @@
         "affectsGlobalScope": false
       },
       "./src/components/Library.tsx": {
-        "version": "6260b0b729b3b15883654f0c5c35dd073a806716cf9c938b0000568d8d23cab5",
+        "version": "4de8a7fe18f227444c670530b6bce6d8bbf1b256f33093cfea8aacec212a96e8",
         "signature": "413bad0e9a800508ea2993222123bce20125d28cde05c03f897b7d1d22b1d986",
         "affectsGlobalScope": false
       },
@@ -2642,18 +2647,13 @@
         "affectsGlobalScope": false
       },
       "./src/app.tsx": {
-        "version": "3d013569737d091d6ddf53c34c76150433ab4af37298ab68cb0f89577a8f4bc4",
+        "version": "95afea1248940275409c744f9fe8c9fd43a7cf3cd46758b4ff08e6dd938203c2",
         "signature": "37dce5f0b8c0d9235234f3bfab3dc519796a6f08f4cf89c5ac11a006985c3fe6",
         "affectsGlobalScope": false
       },
       "./src/index.tsx": {
         "version": "674d0fb585d82e3b23a6eb46e7f937491d7b974e20cbd75125cfae8bac1d6105",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-        "affectsGlobalScope": false
-      },
-      "./src/helpers/showError.ts": {
-        "version": "630687474f06fa85b511fd1e25d449d6b799023b1eaff03d634504f57ca1f67e",
-        "signature": "f2a0b4fe8754a8016c61d31825f31f578911bd025b86ddea38eaaeb1138dc581",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/anymatch/index.d.ts": {
@@ -2709,6 +2709,11 @@
       "./node_modules/@types/parse-json/index.d.ts": {
         "version": "2b8264b2fefd7367e0f20e2c04eed5d3038831fe00f5efbc110ff0131aab899b",
         "signature": "2b8264b2fefd7367e0f20e2c04eed5d3038831fe00f5efbc110ff0131aab899b",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/scheduler/index.d.ts": {
+        "version": "74b0245c42990ed8a849df955db3f4362c81b13f799ebc981b7bec2d5b414a57",
+        "signature": "74b0245c42990ed8a849df955db3f4362c81b13f799ebc981b7bec2d5b414a57",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/source-list-map/index.d.ts": {
@@ -2839,6 +2844,7 @@
       "downlevelIteration": true,
       "declaration": true,
       "sourceMap": true,
+      "baseUrl": "./src",
       "noEmit": true,
       "pretty": true,
       "configFilePath": "./tsconfig.json"
@@ -4363,6 +4369,7 @@
       "./node_modules/@types/react/index.d.ts": [
         "./node_modules/@types/prop-types/index.d.ts",
         "./node_modules/@types/react/global.d.ts",
+        "./node_modules/@types/scheduler/tracing.d.ts",
         "./node_modules/csstype/index.d.ts"
       ],
       "./node_modules/@types/serve-static/index.d.ts": [
@@ -5013,10 +5020,6 @@
         "./node_modules/youtubei/dist/index.d.ts",
         "./src/context/playerContext.ts",
         "./src/initializations/logger.ts"
-      ],
-      "./src/helpers/showError.ts": [
-        "./node_modules/chalk/index.d.ts",
-        "./src/conf.ts"
       ],
       "./src/helpers/streamToBuffer.ts": [
         "./node_modules/@types/node/stream.d.ts"
@@ -6636,6 +6639,7 @@
       "./node_modules/@types/react/index.d.ts": [
         "./node_modules/@types/prop-types/index.d.ts",
         "./node_modules/@types/react/global.d.ts",
+        "./node_modules/@types/scheduler/tracing.d.ts",
         "./node_modules/csstype/index.d.ts"
       ],
       "./node_modules/@types/serve-static/index.d.ts": [
@@ -7499,6 +7503,8 @@
       "./node_modules/@types/react-router/index.d.ts",
       "./node_modules/@types/react/global.d.ts",
       "./node_modules/@types/react/index.d.ts",
+      "./node_modules/@types/scheduler/index.d.ts",
+      "./node_modules/@types/scheduler/tracing.d.ts",
       "./node_modules/@types/serve-static/index.d.ts",
       "./node_modules/@types/source-list-map/index.d.ts",
       "./node_modules/@types/spotify-api/index.d.ts",
@@ -7654,7 +7660,6 @@
       "./src/helpers/getCachedImageBuffer.ts",
       "./src/helpers/getYoutubeTrack.ts",
       "./src/helpers/msToMin_sec.ts",
-      "./src/helpers/showError.ts",
       "./src/helpers/shuffleArray.ts",
       "./src/helpers/streamToBuffer.ts",
       "./src/hooks/useDownloadQueue.ts",
@@ -7818,11 +7823,23 @@
         1
       ],
       [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QAbstractItemModel.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QAbstractTableModel.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QDate.d.ts",
         1
       ],
       [
         "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QDateTime.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QItemSelectionModel.d.ts",
         1
       ],
       [
@@ -7859,6 +7876,10 @@
       ],
       [
         "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QSize.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtCore/QSizeF.d.ts",
         1
       ],
       [
@@ -8282,6 +8303,14 @@
         1
       ],
       [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QInputEvent.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QKeyEvent.d.ts",
         1
       ],
@@ -8291,6 +8320,14 @@
       ],
       [
         "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QNativeGestureEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QPaintEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QResizeEvent.d.ts",
         1
       ],
       [
@@ -8310,7 +8347,19 @@
         1
       ],
       [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QFontMetrics.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QFontMetricsF.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QIcon.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QImage.d.ts",
         1
       ],
       [
@@ -8319,6 +8368,10 @@
       ],
       [
         "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QMovie.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QPalette.d.ts",
         1
       ],
       [
@@ -8334,11 +8387,19 @@
         1
       ],
       [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QScreen.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QStyle.d.ts",
         1
       ],
       [
         "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QTextOption.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtGui/QWindow.d.ts",
         1
       ],
       [
@@ -8450,6 +8511,10 @@
         1
       ],
       [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QHeaderView.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QInputDialog.d.ts",
         1
       ],
@@ -8538,11 +8603,19 @@
         1
       ],
       [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSizePolicy.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSlider.d.ts",
         1
       ],
       [
         "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSplitter.d.ts",
         1
       ],
       [
@@ -8559,6 +8632,10 @@
       ],
       [
         "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStatusBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStyleFactory.d.ts",
         1
       ],
       [
@@ -8638,7 +8715,15 @@
         1
       ],
       [
+        "./node_modules/@nodegui/nodegui/dist/lib/core/__test__/CacheTestQObject.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/nodegui/dist/lib/core/bootstrap.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/nodegui/dist/lib/utils/Margins.d.ts",
         1
       ],
       [
@@ -8690,6 +8775,14 @@
         1
       ],
       [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ColorDialog/RNColorDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ColorDialog/index.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/react-nodegui/dist/components/ComboBox/RNComboBox.d.ts",
         1
       ],
@@ -8703,6 +8796,38 @@
       ],
       [
         "./node_modules/@nodegui/react-nodegui/dist/components/Dial/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Dialog/RNDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Dialog/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ErrorPrompt/RNErrorPrompt.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ErrorPrompt/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/FileDialog/RNFileDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/FileDialog/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/FontDialog/RNFontDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/FontDialog/index.d.ts",
         1
       ],
       [
@@ -8739,6 +8864,14 @@
       ],
       [
         "./node_modules/@nodegui/react-nodegui/dist/components/Image/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/InputDialog/RNInputDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/InputDialog/index.d.ts",
         1
       ],
       [
@@ -8779,6 +8912,14 @@
       ],
       [
         "./node_modules/@nodegui/react-nodegui/dist/components/ProgressBar/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ProgressDialog/RNProgressDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/ProgressDialog/index.d.ts",
         1
       ],
       [
@@ -8838,6 +8979,22 @@
         1
       ],
       [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Table/RNTable.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/Table/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/TableItem/RNTableItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/dist/components/TableItem/index.d.ts",
+        1
+      ],
+      [
         "./node_modules/@nodegui/react-nodegui/dist/components/Text/RNText.d.ts",
         1
       ],
@@ -8887,6 +9044,866 @@
       ],
       [
         "./node_modules/@nodegui/react-nodegui/dist/renderer/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QDate.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QDateTime.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QMimeData.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QModelIndex.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QObject.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QPoint.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QPointF.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QRect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QRectF.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QSettings.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QSize.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QTime.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QUrl.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtCore/QVariant.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/AcceptMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/AlignmentFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/AnchorPoint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ApplicationAttribute/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ApplicationState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ArrowType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/AspectRatioMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Axis/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/BGMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/BrushStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/CaseSensitivity/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/CheckState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ChecksumType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ClipOperation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ConnectionType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ContextMenuPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/CoordinateSystem/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Corner/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/CursorMoveStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/CursorShape/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/DateFormat/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/DayOfWeek/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/DialogCode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/DialogLabel/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Direction/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/DockWidgetArea/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/DropAction/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Edge/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/EnterKeyType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/EventPriority/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/FileMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/FillRule/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/FindChildOption/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/FocusPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/FocusReason/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/GestureFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/GestureState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/GestureType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/GlobalColor/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/HitTestAccuracy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ImageConversionFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/InputMethodHint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/InputMethodQuery/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemDataRole/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemSelectionMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ItemSelectionOperation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Key/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/KeyboardModifier/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/LayoutDirection/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/MaskMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/MatchFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Modifier/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/MouseButton/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/MouseEventFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/MouseEventSource/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/NativeGestureType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/NavigationMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Option/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/Orientation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/PenCapStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/PenStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScreenOrientation/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScrollBarPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScrollHint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ScrollPhase/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ShortcutContext/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/SizeAdjustPolicy/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/SizeHint/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/SizeMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/SortOrder/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TabFocusBehavior/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TabPosition/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextElideMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextFormat/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TextInteractionFlag/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TileRule/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TimeSpec/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TimerType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ToolBarArea/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ToolButtonStyle/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TouchPointState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/TransformationMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/UIEffect/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/ViewMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/WhiteSpaceMode/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/WidgetAttribute/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowFrameSection/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowModality/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowState/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/WindowType/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtEnums/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QApplication.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QBrush.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QClipboard.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QColor.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QCursor.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QDrag.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QDragLeaveEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QDragMoveEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QDropEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QInputEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QKeyEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QMouseEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QNativeGestureEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QPaintEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QTabletEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QEvent/QWheelEvent.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QFont.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QFontDatabase.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QFontMetrics.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QIcon.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QImage.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QKeySequence.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QMovie.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QPalette.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QPen.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QPicture.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QPixmap.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QStyle.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtGui/QTextOption.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractItemView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractScrollArea.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractSlider.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAbstractSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QAction.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QBoxLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QButtonGroup.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QCalendarWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QCheckBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QColorDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QComboBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDateEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDateTimeEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDesktopWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDial.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QDoubleSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QErrorMessage.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QFileDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QFontDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QFrame.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGraphicsBlurEffect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGraphicsDropShadowEffect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGraphicsEffect.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGridLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QGroupBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QInputDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLCDNumber.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLabel.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QLineEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QListView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QListWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QListWidgetItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMainWindow.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMenu.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMenuBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QMessageBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPainter.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPainterPath.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPlainTextEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QProgressBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QProgressDialog.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QPushButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QRadioButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QScrollArea.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QScrollBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QShortcut.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSlider.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSpinBox.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStackedWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStandardItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStandardItemModel.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QStatusBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSvgWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QSystemTrayIcon.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTabBar.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTabWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTableView.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTableWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTableWidgetItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTextBrowser.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTextEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTimeEdit.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QToolButton.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTreeWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QTreeWidgetItem.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/QtWidgets/QWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/core/Component.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/core/EventWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/core/FlexLayout.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/core/Style/StyleSheet.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/core/YogaWidget.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/core/bootstrap.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/utils/Margins.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@nodegui/react-nodegui/node_modules/@nodegui/nodegui/dist/lib/utils/helpers.d.ts",
         1
       ],
       [
@@ -9239,6 +10256,14 @@
       ],
       [
         "./node_modules/@types/react/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/scheduler/index.d.ts",
+        1
+      ],
+      [
+        "./node_modules/@types/scheduler/tracing.d.ts",
         1
       ],
       [

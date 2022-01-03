@@ -1,5 +1,5 @@
-import { Direction, Orientation, QAbstractSliderSignals } from "@nodegui/nodegui";
-import { BoxView, Slider, Text, useEventHandler } from "@nodegui/react-nodegui";
+import { Orientation, QAbstractSliderSignals } from "@nodegui/nodegui";
+import { Slider, Text, useEventHandler, View } from "@nodegui/react-nodegui";
 import NodeMpv from "node-mpv";
 import React, { useContext, useEffect, useState } from "react";
 import playerContext from "../context/playerContext";
@@ -56,11 +56,13 @@ function PlayerProgressBar({ audioPlayer, totalDuration }: PlayerProgressBarProp
         new Date(trackTime * 1000).toISOString().substr(14, 5) +
         "/" +
         new Date(totalDuration * 1000).toISOString().substr(14, 5);
+
+    const containerStyle = `
+      padding: 20px 0px; 
+      flex-direction: row
+    `;
     return (
-        <BoxView
-            direction={Direction.LeftToRight}
-            style={`padding: 20px 0px; flex-direction: row;`}
-        >
+        <View style={containerStyle}>
             <Slider
                 enabled={!!currentTrack || trackTime > 0}
                 on={trackSliderEvents}
@@ -69,7 +71,7 @@ function PlayerProgressBar({ audioPlayer, totalDuration }: PlayerProgressBarProp
                 orientation={Orientation.Horizontal}
             />
             <Text>{playbackTime}</Text>
-        </BoxView>
+        </View>
     );
 }
 

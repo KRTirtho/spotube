@@ -2,8 +2,8 @@ import { CursorShape } from "@nodegui/nodegui";
 import { Button, ScrollArea, Text, View } from "@nodegui/react-nodegui";
 import React, { useContext } from "react";
 import { Redirect, Route } from "react-router";
-import { QueryCacheKeys } from "../conf";
-import playerContext from "../context/playerContext";
+import { QueryCacheKeys } from "conf";
+import playerContext from "context/playerContext";
 import useSpotifyInfiniteQuery from "../hooks/useSpotifyInfiniteQuery";
 import { GenreView } from "./PlaylistGenreView";
 import { PlaylistSimpleControls, TrackTableIndex } from "./PlaylistView";
@@ -14,7 +14,7 @@ import { TabMenuItem } from "./TabMenu";
 
 function Library() {
     return (
-        <View style="flex: 1; flex-direction: 'column';">
+        <View style="flex: 1; flex-direction: column">
             <Redirect from="/library" to="/library/saved-tracks" />
             <View style="max-width: 350px; justify-content: 'space-evenly'">
                 <TabMenuItem title="Saved Tracks" url="/library/saved-tracks" />
