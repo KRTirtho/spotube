@@ -222,10 +222,10 @@ packages:
   mpv_dart:
     dependency: "direct main"
     description:
-      path: "../mpv_dart"
-      relative: true
-    source: path
-    version: "1.0.0"
+      name: mpv_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   nested:
     dependency: transitive
     description:

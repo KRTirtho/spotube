@@ -1,4 +1,4 @@
-![Spotube](assets/spotube_banner.svg)
+![Spotube](assets/spotube_banner.png)
 
 Spotube is a [qt](https://qt.io) based lightweight spotify client which uses [nodegui/react-nodegui](https://github.com/nodegui/react-nodegui) as frontend & nodejs as backend. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
 ![Application Screenshot](assets/spotube-screenshot.png)

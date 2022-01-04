@@ -42,8 +42,7 @@ dependencies:
   spotify: ^0.6.0
   url_launcher: ^6.0.17
   youtube_explode_dart: ^1.10.8
-  mpv_dart:
-    path: ../mpv_dart
+  mpv_dart: ^0.0.1
   infinite_scroll_pagination: ^3.1.0
 
 dev_dependencies:
