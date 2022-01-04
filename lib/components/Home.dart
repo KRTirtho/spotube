@@ -8,6 +8,7 @@ import 'package:spotube/components/CategoryCard.dart';
 import 'package:spotube/components/Login.dart';
 import 'package:spotube/components/Player.dart' as player;
 import 'package:spotube/components/Settings.dart';
+import 'package:spotube/components/UserLibrary.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -205,6 +206,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
+                if (_selectedIndex == 2) const UserLibrary(),
                 // player itself
               ],
             ),

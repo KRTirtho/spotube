@@ -64,10 +64,17 @@ class _PlaylistCardState extends State<PlaylistCard> {
                         onPressed: () async {
                           if (isPlaylistPlaying) return;
 
-                          List<Track> tracks = (await data.spotifyApi.playlists
-                                  .getTracksByPlaylistId(widget.playlist.id!)
-                                  .all())
-                              .toList();
+                          List<Track> tracks =
+                              (widget.playlist.id != "user-liked-tracks"
+                                      ? await data.spotifyApi.playlists
+                                          .getTracksByPlaylistId(
+                                              widget.playlist.id!)
+                                          .all()
+                                      : await data.spotifyApi.tracks.me.saved
+                                          .all()
+                                          .then((tracks) =>
+                                              tracks.map((e) => e.track!)))
+                                  .toList();
 
                           playback.setCurrentPlaylist = CurrentPlaylist(
                             tracks: tracks,

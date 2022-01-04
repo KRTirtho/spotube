@@ -1,6 +1,6 @@
 ![Spotube](assets/spotube_banner.png)
 
-Spotube is a [qt](https://qt.io) based lightweight spotify client which uses [nodegui/react-nodegui](https://github.com/nodegui/react-nodegui) as frontend & nodejs as backend. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
+Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
 ![Application Screenshot](assets/spotube-screenshot.png)
 
 ## Features
@@ -10,11 +10,11 @@ Following are the features that currently spotube offers:
 - Open Source
 - No telementry, diagnostics or user data collection
 - Lightweight & resource friendly
-- Near native performance & seemless with default desktop themes (Win10, Win7, OSX, QT-default)
+- Near native performance (Thanks to Flutter+Skia)
 - Playback control is on user's machine instead of server based
 - Small size & less data hungry
 - No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
-- Lyrics
+- Lyrics (WIP)
 - Downloadable track
 
 ## Requirements (Linux🐧 only)

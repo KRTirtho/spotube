@@ -25,7 +25,7 @@ class _PlaylistViewState extends State<PlaylistView> {
         children: [
           TableCell(
               child: Text(
-            track.key.toString(),
+            (track.key + 1).toString(),
             textAlign: TextAlign.center,
           )),
           TableCell(
@@ -85,9 +85,13 @@ class _PlaylistViewState extends State<PlaylistView> {
     return Consumer<SpotifyDI>(builder: (_, data, __) {
       return Scaffold(
         body: FutureBuilder<Iterable<Track>>(
-            future: data.spotifyApi.playlists
-                .getTracksByPlaylistId(widget.playlist.id)
-                .all(),
+            future: widget.playlist.id != "user-liked-tracks"
+                ? data.spotifyApi.playlists
+                    .getTracksByPlaylistId(widget.playlist.id)
+                    .all()
+                : data.spotifyApi.tracks.me.saved
+                    .all()
+                    .then((tracks) => tracks.map((e) => e.track!)),
             builder: (context, snapshot) {
               List<Track> tracks = snapshot.data?.toList() ?? [];
               TextStyle tableHeadStyle =
