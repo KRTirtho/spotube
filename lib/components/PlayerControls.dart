@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mpv_dart/mpv_dart.dart';
+import 'package:spotube/helpers/zero-pad-num-str.dart';
 
 class PlayerControls extends StatefulWidget {
   final MPVPlayer player;
@@ -41,10 +42,6 @@ class _PlayerControlsState extends State<PlayerControls> {
   void dispose() {
     widget.player.removeAllByEvent(MPVEvents.timeposition);
     super.dispose();
-  }
-
-  String zeroPadNumStr(int input) {
-    return input < 10 ? "0$input" : input.toString();
   }
 
   @override

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Home.dart';
+import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -18,8 +20,36 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<Auth>(create: (context) => Auth()),
         ChangeNotifierProvider<SpotifyDI>(create: (context) {
           Auth authState = Provider.of<Auth>(context, listen: false);
-          return SpotifyDI(SpotifyApi(SpotifyApiCredentials(
-              authState.cliendId, authState.clientSecret)));
+          return SpotifyDI(
+            SpotifyApi(
+              SpotifyApiCredentials(
+                authState.clientId,
+                authState.clientSecret,
+                accessToken: authState.accessToken,
+                refreshToken: authState.refreshToken,
+                expiration: authState.expiration,
+                scopes: spotifyScopes,
+              ),
+              onCredentialsRefreshed: (credentials) async {
+                SharedPreferences localStorage =
+                    await SharedPreferences.getInstance();
+                localStorage.setString(
+                  LocalStorageKeys.refreshToken,
+                  credentials.refreshToken!,
+                );
+                localStorage.setString(
+                  LocalStorageKeys.accessToken,
+                  credentials.accessToken!,
+                );
+                localStorage.setString(
+                    LocalStorageKeys.clientId, credentials.clientId!);
+                localStorage.setString(
+                  LocalStorageKeys.clientSecret,
+                  credentials.clientSecret!,
+                );
+              },
+            ),
+          );
         }),
         ChangeNotifierProvider<Playback>(create: (context) => Playback()),
       ],

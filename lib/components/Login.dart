@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/components/Home.dart';
 import 'package:spotube/helpers/server_ipc.dart';
+import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
 
 class Login extends StatefulWidget {
@@ -12,38 +14,65 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  String client_id = "";
-  String client_secret = "";
+  String clientId = "";
+  String clientSecret = "";
   bool _fieldError = false;
+  String? accessToken;
+  String? refreshToken;
+  DateTime? expiration;
 
   handleLogin(Auth authState) async {
     try {
-      if (client_id == "" || client_secret == "") {
+      if (clientId == "" || clientSecret == "") {
         return setState(() {
           _fieldError = true;
         });
       }
-      final credentials = SpotifyApiCredentials(client_id, client_secret);
+      final credentials = SpotifyApiCredentials(clientId, clientSecret);
       final grant = SpotifyApi.authorizationCodeGrant(credentials);
-      final redirectUri = "http://localhost:4304/auth/spotify/callback";
-      final scopes = ["user-library-read", "user-library-modify"];
+      const redirectUri = "http://localhost:4304/auth/spotify/callback";
 
-      final authUri =
-          grant.getAuthorizationUrl(Uri.parse(redirectUri), scopes: scopes);
+      final authUri = grant.getAuthorizationUrl(Uri.parse(redirectUri),
+          scopes: spotifyScopes);
 
       final responseUri = await connectIpc(authUri.toString(), redirectUri);
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
       if (responseUri != null) {
         final SpotifyApi spotify =
             SpotifyApi.fromAuthCodeGrant(grant, responseUri);
+        var credentials = await spotify.getCredentials();
+        if (credentials.accessToken != null) {
+          accessToken = credentials.accessToken;
+          await localStorage.setString(
+              LocalStorageKeys.accessToken, credentials.accessToken!);
+        }
+        if (credentials.refreshToken != null) {
+          refreshToken = credentials.refreshToken;
+          await localStorage.setString(
+              LocalStorageKeys.refreshToken, credentials.refreshToken!);
+        }
+        if (credentials.expiration != null) {
+          expiration = credentials.expiration;
+          await localStorage.setString(LocalStorageKeys.expiration,
+              credentials.expiration?.toString() ?? "");
+        }
       }
 
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      await localStorage.setString('client_id', client_id);
-      await localStorage.setString('client_secret', client_secret);
+      await localStorage.setString(LocalStorageKeys.clientId, clientId);
+      await localStorage.setString(
+        LocalStorageKeys.clientSecret,
+        clientSecret,
+      );
       authState.setAuthState(
-          clientId: client_id, clientSecret: client_secret, isLoggedIn: true);
+        clientId: clientId,
+        clientSecret: clientSecret,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        expiration: expiration,
+        isLoggedIn: true,
+      );
     } catch (e) {
-      print(e);
+      print("[Login.handleLogin] $e");
     }
   }
 
@@ -57,6 +86,11 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Image.asset(
+                  "assets/spotube-logo.png",
+                  width: 400,
+                  height: 400,
+                ),
                 Text("Add your spotify credentials to get started",
                     style: Theme.of(context).textTheme.headline4),
                 const Text(
@@ -77,7 +111,7 @@ class _LoginState extends State<Login> {
                         ),
                         onChanged: (value) {
                           setState(() {
-                            client_id = value;
+                            clientId = value;
                           });
                         },
                       ),
@@ -91,7 +125,7 @@ class _LoginState extends State<Login> {
                         ),
                         onChanged: (value) {
                           setState(() {
-                            client_secret = value;
+                            clientSecret = value;
                           });
                         },
                       ),

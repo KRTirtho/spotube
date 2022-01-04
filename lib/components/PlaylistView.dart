@@ -1,8 +1,11 @@
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/TrackButton.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class PlaylistView extends StatefulWidget {
@@ -13,6 +16,70 @@ class PlaylistView extends StatefulWidget {
 }
 
 class _PlaylistViewState extends State<PlaylistView> {
+  List<TableRow> trackToTableRow(List<Track> tracks) {
+    return tracks.asMap().entries.map((track) {
+      var thumbnailUrl = track.value.album?.images?.last.url;
+      var duration =
+          "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+      return (TableRow(
+        children: [
+          TableCell(
+              child: Text(
+            track.key.toString(),
+            textAlign: TextAlign.center,
+          )),
+          TableCell(
+            child: Row(
+              children: [
+                if (thumbnailUrl != null)
+                  CachedNetworkImage(
+                    imageUrl: thumbnailUrl,
+                    maxHeightDiskCache: 40,
+                    maxWidthDiskCache: 40,
+                  ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        track.value.name ?? "",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        (track.value.artists ?? [])
+                            .map((e) => e.name)
+                            .join(", "),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TableCell(
+            child: Text(
+              track.value.album?.name ?? "",
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          TableCell(
+            child: Text(
+              duration,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+        ],
+      ));
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<SpotifyDI>(builder: (_, data, __) {
@@ -23,6 +90,8 @@ class _PlaylistViewState extends State<PlaylistView> {
                 .all(),
             builder: (context, snapshot) {
               List<Track> tracks = snapshot.data?.toList() ?? [];
+              TextStyle tableHeadStyle =
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
               return Column(
                 children: [
                   Row(
@@ -72,39 +141,49 @@ class _PlaylistViewState extends State<PlaylistView> {
                           ? const CircularProgressIndicator.adaptive()
                           : Expanded(
                               child: Scrollbar(
-                                isAlwaysShown: true,
-                                child: ListView.builder(
-                                    itemCount: tracks.length + 1,
-                                    itemBuilder: (context, index) {
-                                      if (index == 0) {
-                                        return Column(
-                                          children: [
-                                            TrackButton(
-                                                index: "#",
-                                                trackName: "Title",
-                                                artists: ["Artist"],
-                                                album: "Album",
-                                                playback_time: "Time"),
-                                            const Divider()
-                                          ],
-                                        );
-                                      }
-                                      Track track = tracks[index - 1];
-                                      return TrackButton(
-                                        index: (index - 1).toString(),
-                                        thumbnail_url: track
-                                                .album?.images?.last.url ??
-                                            "https://i.scdn.co/image/ab67616d00001e02b993cba8ff7d0a8e9ee18d46",
-                                        trackName: track.name!,
-                                        artists: track.artists!
-                                            .map((e) => e.name!)
-                                            .toList(),
-                                        album: track.album!.name!,
-                                        playback_time: track.duration!.inMinutes
-                                            .toString(),
-                                        onTap: () {},
-                                      );
-                                    }),
+                                child: ListView(
+                                  children: [
+                                    SingleChildScrollView(
+                                      child: Table(
+                                        columnWidths: const {
+                                          0: FixedColumnWidth(40),
+                                          1: FlexColumnWidth(),
+                                          2: FlexColumnWidth(),
+                                          3: FixedColumnWidth(40),
+                                        },
+                                        children: [
+                                          TableRow(
+                                            children: [
+                                              TableCell(
+                                                  child: Text(
+                                                "#",
+                                                textAlign: TextAlign.center,
+                                                style: tableHeadStyle,
+                                              )),
+                                              TableCell(
+                                                  child: Text(
+                                                "Title",
+                                                style: tableHeadStyle,
+                                              )),
+                                              TableCell(
+                                                  child: Text(
+                                                "Album",
+                                                style: tableHeadStyle,
+                                              )),
+                                              TableCell(
+                                                  child: Text(
+                                                "Time",
+                                                textAlign: TextAlign.center,
+                                                style: tableHeadStyle,
+                                              )),
+                                            ],
+                                          ),
+                                          ...trackToTableRow(tracks),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                 ],

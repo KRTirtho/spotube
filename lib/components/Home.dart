@@ -1,14 +1,25 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/CategoryCard.dart';
 import 'package:spotube/components/Login.dart';
 import 'package:spotube/components/Player.dart' as player;
+import 'package:spotube/components/Settings.dart';
+import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+
+List<String> spotifyScopes = [
+  "user-library-read",
+  "user-library-modify",
+  "user-read-private",
+  "user-read-email",
+  "playlist-read-collaborative"
+];
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -21,6 +32,8 @@ class _HomeState extends State<Home> {
   final PagingController<int, Category> _pagingController =
       PagingController(firstPageKey: 0);
 
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -28,24 +41,36 @@ class _HomeState extends State<Home> {
       try {
         Auth authProvider = context.read<Auth>();
         SharedPreferences localStorage = await SharedPreferences.getInstance();
-        String? clientId = localStorage.getString('client_id');
-        String? clientSecret = localStorage.getString('client_secret');
+        var clientId = localStorage.getString(LocalStorageKeys.clientId);
+        var clientSecret =
+            localStorage.getString(LocalStorageKeys.clientSecret);
+        var accessToken = localStorage.getString(LocalStorageKeys.accessToken);
+        var refreshToken =
+            localStorage.getString(LocalStorageKeys.refreshToken);
+        var expirationStr = localStorage.getString(LocalStorageKeys.expiration);
+        var expiration =
+            expirationStr != null ? DateTime.parse(expirationStr) : null;
 
         if (clientId != null && clientSecret != null) {
           SpotifyApi spotifyApi = SpotifyApi(
-            SpotifyApiCredentials(clientId, clientSecret, scopes: [
-              "user-library-read",
-              "user-library-modify",
-              "user-read-private",
-              "user-read-email",
-              "playlist-read-collaborative"
-            ]),
+            SpotifyApiCredentials(
+              clientId,
+              clientSecret,
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+              expiration: expiration,
+              scopes: spotifyScopes,
+            ),
           );
           SpotifyApiCredentials credentials = await spotifyApi.getCredentials();
           if (credentials.accessToken?.isNotEmpty ?? false) {
             authProvider.setAuthState(
-              clientId: credentials.clientId,
-              clientSecret: credentials.clientSecret,
+              clientId: clientId,
+              clientSecret: clientSecret,
+              accessToken:
+                  credentials.accessToken, // accessToken can be new/refreshed
+              refreshToken: refreshToken,
+              expiration: credentials.expiration,
               isLoggedIn: true,
             );
           }
@@ -89,87 +114,98 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: Column(
         children: [
-          // Side Tab Bar
           Expanded(
             child: Row(
               children: [
-                Container(
-                  color: Colors.blueGrey[50],
-                  constraints: const BoxConstraints(maxWidth: 230),
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Column(
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          // TabButtons
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text("Spotube",
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
-                                leading:
-                                    const Icon(Icons.miscellaneous_services),
+                NavigationRail(
+                  backgroundColor: Colors.blueGrey[50],
+                  destinations: sidebarTileList
+                      .map((e) => NavigationRailDestination(
+                            icon: Icon(e.icon),
+                            label: Text(
+                              e.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
-                              const SizedBox(height: 20),
-                              ...sidebarTileList
-                                  .map(
-                                    (sidebarTile) => ListTile(
-                                      title: Text(sidebarTile.title),
-                                      leading: Icon(sidebarTile.icon),
-                                      onTap: () {},
-                                    ),
-                                  )
-                                  .toList(),
+                            ),
+                          ))
+                      .toList(),
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: (value) => setState(() {
+                    _selectedIndex = value;
+                  }),
+                  extended: true,
+                  leading: Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Row(children: [
+                      Image.asset(
+                        "assets/spotube-logo.png",
+                        height: 50,
+                        width: 50,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text("Spotube",
+                          style: Theme.of(context).textTheme.headline4),
+                    ]),
+                  ),
+                  trailing:
+                      Consumer<SpotifyDI>(builder: (context, data, widget) {
+                    return FutureBuilder<User>(
+                      future: data.spotifyApi.me.get(),
+                      builder: (context, snapshot) {
+                        var avatarImg = snapshot.data?.images?.last.url;
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (avatarImg != null)
+                                CircleAvatar(
+                                  child: CachedNetworkImage(
+                                    imageUrl: avatarImg,
+                                  ),
+                                ),
+                              Text(
+                                snapshot.data?.displayName ?? "User's name",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                  icon: const Icon(Icons.settings_outlined),
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) {
+                                        return const Settings();
+                                      },
+                                    ));
+                                  }),
                             ],
                           ),
-                        ),
-                        // user name & settings
-                        Consumer<SpotifyDI>(builder: (context, data, widget) {
-                          return FutureBuilder<User>(
-                            future: data.spotifyApi.me.get(),
-                            builder: (context, snapshot) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      snapshot.data?.displayName ??
-                                          "User's name",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    IconButton(
-                                        icon:
-                                            const Icon(Icons.settings_outlined),
-                                        onPressed: () {}),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        })
-                      ],
-                    ),
-                  ),
+                        );
+                      },
+                    );
+                  }),
                 ),
                 // contents of the spotify
-                Expanded(
-                  child: Scrollbar(
-                    child: PagedListView(
-                      pagingController: _pagingController,
-                      builderDelegate: PagedChildBuilderDelegate<Category>(
-                        itemBuilder: (context, item, index) {
-                          return CategoryCard(item);
-                        },
+                if (_selectedIndex == 0)
+                  Expanded(
+                    child: Scrollbar(
+                      child: PagedListView(
+                        pagingController: _pagingController,
+                        builderDelegate: PagedChildBuilderDelegate<Category>(
+                          itemBuilder: (context, item, index) {
+                            return CategoryCard(item);
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
+                // player itself
               ],
             ),
           ),
