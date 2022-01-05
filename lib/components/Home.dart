@@ -83,11 +83,18 @@ class _HomeState extends State<Home> {
                 .list(country: "US")
                 .getPage(15, pageKey);
 
+            var items = categories.items!.toList();
+            if (pageKey == 0) {
+              Category category = Category();
+              category.id = "user-featured-playlists";
+              category.name = "Featured";
+              items.insert(0, category);
+            }
+
             if (categories.isLast && categories.items != null) {
-              _pagingController.appendLastPage(categories.items!.toList());
+              _pagingController.appendLastPage(items);
             } else if (categories.items != null) {
-              _pagingController.appendPage(
-                  categories.items!.toList(), categories.nextOffset);
+              _pagingController.appendPage(items, categories.nextOffset);
             }
           } catch (e) {
             _pagingController.error = e;
@@ -119,7 +126,6 @@ class _HomeState extends State<Home> {
             child: Row(
               children: [
                 NavigationRail(
-                  backgroundColor: Colors.blueGrey[50],
                   destinations: sidebarTileList
                       .map((e) => NavigationRailDestination(
                             icon: Icon(e.icon),

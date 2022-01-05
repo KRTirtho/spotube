@@ -7,8 +7,13 @@ import 'package:spotube/provider/SpotifyDI.dart';
 class PlaylistGenreView extends StatefulWidget {
   final String genreId;
   final String genreName;
-  const PlaylistGenreView(this.genreId, this.genreName, {Key? key})
-      : super(key: key);
+  final Iterable<PlaylistSimple>? playlists;
+  const PlaylistGenreView(
+    this.genreId,
+    this.genreName, {
+    this.playlists,
+    Key? key,
+  }) : super(key: key);
   @override
   _PlaylistGenreViewState createState() => _PlaylistGenreViewState();
 }
@@ -37,9 +42,13 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
             builder: (context, data, child) => Expanded(
               child: SingleChildScrollView(
                 child: FutureBuilder<Iterable<PlaylistSimple>>(
-                    future: data.spotifyApi.playlists
-                        .getByCategoryId(widget.genreId)
-                        .all(),
+                    future: widget.playlists == null
+                        ? (widget.genreId != "user-featured-playlists"
+                            ? data.spotifyApi.playlists
+                                .getByCategoryId(widget.genreId)
+                                .all()
+                            : data.spotifyApi.playlists.featured.all())
+                        : Future.value(widget.playlists),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return const Center(child: Text("Error occurred"));

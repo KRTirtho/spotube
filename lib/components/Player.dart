@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:mpv_dart/mpv_dart.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/provider/SpotifyDI.dart';
 
 class Player extends StatefulWidget {
   const Player({Key? key}) : super(key: key);
@@ -220,9 +221,32 @@ class _PlayerState extends State<Player> {
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      IconButton(
-                          icon: const Icon(Icons.favorite_outline_rounded),
-                          onPressed: () {}),
+                      Consumer<SpotifyDI>(builder: (context, data, widget) {
+                        return FutureBuilder<bool>(
+                            future: playback.currentTrack?.id != null
+                                ? data.spotifyApi.tracks.me
+                                    .containsOne(playback.currentTrack!.id!)
+                                : Future.value(false),
+                            initialData: false,
+                            builder: (context, snapshot) {
+                              bool isLiked = snapshot.data ?? false;
+                              return IconButton(
+                                  icon: Icon(
+                                    !isLiked
+                                        ? Icons.favorite_outline_rounded
+                                        : Icons.favorite_rounded,
+                                    color: isLiked ? Colors.green : null,
+                                  ),
+                                  onPressed: () {
+                                    if (!isLiked &&
+                                        playback.currentTrack?.id != null) {
+                                      data.spotifyApi.tracks.me
+                                          .saveOne(playback.currentTrack!.id!)
+                                          .then((value) => setState(() {}));
+                                    }
+                                  });
+                            });
+                      }),
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 200),
                         child: Slider.adaptive(

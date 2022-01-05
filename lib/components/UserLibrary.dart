@@ -20,7 +20,9 @@ class _UserLibraryState extends State<UserLibrary> {
       future: data.spotifyApi.playlists.me.all(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const CircularProgressIndicator.adaptive();
+          return const Expanded(
+            child: Center(child: CircularProgressIndicator.adaptive()),
+          );
         }
         Image image = Image();
         image.height = 300;
@@ -40,8 +42,8 @@ class _UserLibraryState extends State<UserLibrary> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Wrap(
-                  spacing: 8.0, // gap between adjacent chips
-                  runSpacing: 8.0, // gap between lines
+                  spacing: 20, // gap between adjacent chips
+                  runSpacing: 20, // gap between lines
                   alignment: WrapAlignment.center,
                   children: [
                     PlaylistCard(likedTracksPlaylist),

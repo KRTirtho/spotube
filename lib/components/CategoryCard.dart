@@ -7,7 +7,12 @@ import 'package:spotube/provider/SpotifyDI.dart';
 
 class CategoryCard extends StatefulWidget {
   final Category category;
-  const CategoryCard(this.category, {Key? key}) : super(key: key);
+  final Iterable<PlaylistSimple>? playlists;
+  const CategoryCard(
+    this.category, {
+    Key? key,
+    this.playlists,
+  }) : super(key: key);
 
   @override
   _CategoryCardState createState() => _CategoryCardState();
@@ -35,6 +40,7 @@ class _CategoryCardState extends State<CategoryCard> {
                         return PlaylistGenreView(
                           widget.category.id!,
                           widget.category.name!,
+                          playlists: widget.playlists,
                         );
                       },
                     ),
@@ -46,25 +52,34 @@ class _CategoryCardState extends State<CategoryCard> {
           ),
         ),
         Consumer<SpotifyDI>(
-          builder: (context, data, child) =>
-              FutureBuilder<Page<PlaylistSimple>>(
-                  future: data.spotifyApi.playlists
-                      .getByCategoryId(widget.category.id!)
-                      .getPage(4, 0),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Center(child: Text("Error occurred"));
-                    }
-                    if (!snapshot.hasData) {
-                      return const Center(child: Text("Loading.."));
-                    }
-                    return Wrap(
-                      spacing: 20,
-                      children: snapshot.data!.items!
-                          .map((playlist) => PlaylistCard(playlist))
-                          .toList(),
+          builder: (context, data, child) {
+            return FutureBuilder<Iterable<PlaylistSimple>>(
+                future: widget.playlists == null
+                    ? (widget.category.id != "user-featured-playlists"
+                            ? data.spotifyApi.playlists
+                                .getByCategoryId(widget.category.id!)
+                            : data.spotifyApi.playlists.featured)
+                        .getPage(4, 0)
+                        .then((value) => value.items ?? [])
+                    : Future.value(widget.playlists),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(child: Text("Error occurred"));
+                  }
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
                     );
-                  }),
+                  }
+                  return Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: snapshot.data!
+                        .map((playlist) => PlaylistCard(playlist))
+                        .toList(),
+                  );
+                });
+          },
         )
       ],
     );

@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Spotube',
         theme: ThemeData(
             primaryColor: Colors.greenAccent[400],
             primarySwatch: Colors.green,
@@ -87,6 +87,9 @@ class MyApp extends StatelessWidget {
                   color: Colors.grey[800]!,
                 ),
               ),
+            ),
+            navigationRailTheme: NavigationRailThemeData(
+              backgroundColor: Colors.blueGrey[50],
             )),
         home: const Home(),
       ),
