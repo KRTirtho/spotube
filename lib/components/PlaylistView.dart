@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
@@ -98,42 +97,49 @@ class _PlaylistViewState extends State<PlaylistView> {
                   const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
               return Column(
                 children: [
-                  Row(
-                    children: [
-                      // nav back
-                      const BackButton(),
-                      // heart playlist
-                      IconButton(
-                        icon: const Icon(Icons.favorite_outline_rounded),
-                        onPressed: () {},
-                      ),
-                      // play playlist
-                      Consumer<Playback>(builder: (context, playback, widget) {
-                        var isPlaylistPlaying = playback.currentPlaylist?.id ==
-                            this.widget.playlist.id;
-                        return IconButton(
-                          icon: Icon(
-                            isPlaylistPlaying
-                                ? Icons.stop_rounded
-                                : Icons.play_arrow_rounded,
-                          ),
-                          onPressed: snapshot.hasData
-                              ? () {
-                                  if (!isPlaylistPlaying) {
-                                    playback.setCurrentPlaylist =
-                                        CurrentPlaylist(
-                                      tracks: tracks,
-                                      id: this.widget.playlist.id!,
-                                      name: this.widget.playlist.name!,
-                                      thumbnail:
-                                          this.widget.playlist.images![0].url!,
-                                    );
+                  PageWindowTitleBar(
+                    leading: Row(
+                      children: [
+                        // nav back
+                        const BackButton(),
+                        // heart playlist
+                        IconButton(
+                          icon: const Icon(Icons.favorite_outline_rounded),
+                          onPressed: () {},
+                        ),
+                        // play playlist
+                        Consumer<Playback>(
+                            builder: (context, playback, widget) {
+                          var isPlaylistPlaying =
+                              playback.currentPlaylist?.id ==
+                                  this.widget.playlist.id;
+                          return IconButton(
+                            icon: Icon(
+                              isPlaylistPlaying
+                                  ? Icons.stop_rounded
+                                  : Icons.play_arrow_rounded,
+                            ),
+                            onPressed: snapshot.hasData
+                                ? () {
+                                    if (!isPlaylistPlaying) {
+                                      playback.setCurrentPlaylist =
+                                          CurrentPlaylist(
+                                        tracks: tracks,
+                                        id: this.widget.playlist.id!,
+                                        name: this.widget.playlist.name!,
+                                        thumbnail: this
+                                            .widget
+                                            .playlist
+                                            .images![0]
+                                            .url!,
+                                      );
+                                    }
                                   }
-                                }
-                              : null,
-                        );
-                      }),
-                    ],
+                                : null,
+                          );
+                        }),
+                      ],
+                    ),
                   ),
                   Center(
                     child: Text(widget.playlist.name!,

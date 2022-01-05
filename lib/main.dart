@@ -1,3 +1,4 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,12 @@ import 'package:spotube/provider/SpotifyDI.dart';
 
 void main() {
   runApp(MyApp());
+  doWhenWindowReady(() {
+    appWindow.minSize = const Size(900, 700);
+    appWindow.alignment = Alignment.center;
+    appWindow.maximize();
+    appWindow.show();
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -57,40 +64,46 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Spotube',
         theme: ThemeData(
-            primaryColor: Colors.greenAccent[400],
-            primarySwatch: Colors.green,
-            buttonTheme: const ButtonThemeData(
-              buttonColor: Colors.green,
-            ),
-            textTheme: TextTheme(
-              bodyText1: TextStyle(color: Colors.grey[850]),
-              headline1: TextStyle(color: Colors.grey[850]),
-              headline2: TextStyle(color: Colors.grey[850]),
-              headline3: TextStyle(color: Colors.grey[850]),
-              headline4: TextStyle(color: Colors.grey[850]),
-              headline5: TextStyle(color: Colors.grey[850]),
-              headline6: TextStyle(color: Colors.grey[850]),
-            ),
-            listTileTheme: ListTileThemeData(
-              iconColor: Colors.grey[850],
-              horizontalTitleGap: 0,
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.green[400]!,
-                  width: 2.0,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey[800]!,
-                ),
+          primaryColor: Colors.greenAccent[400],
+          primarySwatch: Colors.green,
+          buttonTheme: const ButtonThemeData(
+            buttonColor: Colors.green,
+          ),
+          textTheme: TextTheme(
+            bodyText1: TextStyle(color: Colors.grey[850]),
+            headline1: TextStyle(color: Colors.grey[850]),
+            headline2: TextStyle(color: Colors.grey[850]),
+            headline3: TextStyle(color: Colors.grey[850]),
+            headline4: TextStyle(color: Colors.grey[850]),
+            headline5: TextStyle(color: Colors.grey[850]),
+            headline6: TextStyle(color: Colors.grey[850]),
+          ),
+          listTileTheme: ListTileThemeData(
+            iconColor: Colors.grey[850],
+            horizontalTitleGap: 0,
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.green[400]!,
+                width: 2.0,
               ),
             ),
-            navigationRailTheme: NavigationRailThemeData(
-              backgroundColor: Colors.blueGrey[50],
-            )),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey[800]!,
+              ),
+            ),
+          ),
+          navigationRailTheme: NavigationRailThemeData(
+            backgroundColor: Colors.blueGrey[50],
+            unselectedIconTheme:
+                IconThemeData(color: Colors.grey[850], opacity: 1),
+            unselectedLabelTextStyle: TextStyle(
+              color: Colors.grey[850],
+            ),
+          ),
+        ),
         home: const Home(),
       ),
     );

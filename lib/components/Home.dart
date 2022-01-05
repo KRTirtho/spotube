@@ -1,3 +1,4 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -122,6 +123,27 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: Column(
         children: [
+          WindowTitleBarBox(
+            child: Row(
+              children: [
+                Expanded(
+                    child: Row(
+                  children: [
+                    Container(
+                      constraints: const BoxConstraints(maxWidth: 256),
+                      color:
+                          Theme.of(context).navigationRailTheme.backgroundColor,
+                      child: MoveWindow(),
+                    ),
+                    Expanded(child: MoveWindow())
+                  ],
+                )),
+                MinimizeWindowButton(animate: true),
+                MaximizeWindowButton(animate: true),
+                CloseWindowButton(animate: true),
+              ],
+            ),
+          ),
           Expanded(
             child: Row(
               children: [
@@ -165,21 +187,25 @@ class _HomeState extends State<Home> {
                       builder: (context, snapshot) {
                         var avatarImg = snapshot.data?.images?.last.url;
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              if (avatarImg != null)
-                                CircleAvatar(
-                                  child: CachedNetworkImage(
-                                    imageUrl: avatarImg,
+                              Row(
+                                children: [
+                                  if (avatarImg != null)
+                                    CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(avatarImg),
+                                    ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    snapshot.data?.displayName ?? "User's name",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              Text(
-                                snapshot.data?.displayName ?? "User's name",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                ],
                               ),
                               IconButton(
                                   icon: const Icon(Icons.settings_outlined),
@@ -202,12 +228,15 @@ class _HomeState extends State<Home> {
                 if (_selectedIndex == 0)
                   Expanded(
                     child: Scrollbar(
-                      child: PagedListView(
-                        pagingController: _pagingController,
-                        builderDelegate: PagedChildBuilderDelegate<Category>(
-                          itemBuilder: (context, item, index) {
-                            return CategoryCard(item);
-                          },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PagedListView(
+                          pagingController: _pagingController,
+                          builderDelegate: PagedChildBuilderDelegate<Category>(
+                            itemBuilder: (context, item, index) {
+                              return CategoryCard(item);
+                            },
+                          ),
                         ),
                       ),
                     ),

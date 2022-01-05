@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/provider/Auth.dart';
 
 class Settings extends StatefulWidget {
@@ -14,18 +15,16 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: Theme.of(context).iconTheme,
-        title: const Text(
-          "Settings",
-        ),
-        centerTitle: true,
-        titleTextStyle: Theme.of(context).textTheme.headline4,
-      ),
       body: Column(
         children: [
+          PageWindowTitleBar(
+            leading: const BackButton(),
+            center: Text(
+              "Settings",
+              style: Theme.of(context).textTheme.headline5,
+            ),
+          ),
+          const SizedBox(height: 10),
           Builder(builder: (context) {
             var auth = context.read<Auth>();
             return ElevatedButton(

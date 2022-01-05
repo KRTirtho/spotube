@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/components/PlaylistCard.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
@@ -24,19 +25,13 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const BackButton(),
-              // genre name
-              Expanded(
-                child: Text(
-                  widget.genreName,
-                  style: Theme.of(context).textTheme.headline4,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
+          const PageWindowTitleBar(
+            leading: BackButton(),
+          ),
+          Text(
+            widget.genreName,
+            style: Theme.of(context).textTheme.headline4,
+            textAlign: TextAlign.center,
           ),
           Consumer<SpotifyDI>(
             builder: (context, data, child) => Expanded(
