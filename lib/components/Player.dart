@@ -81,7 +81,7 @@ class _PlayerState extends State<Player> {
 
             var matchedTracks = playback.currentPlaylist?.tracks.where(
                   (track) {
-                    return track.name == mediaTitle &&
+                    return track.name?.replaceAll("-", " ") == mediaTitle &&
                         artistsToString(track.artists ?? []) == mediaArtists;
                   },
                 ) ??
@@ -147,7 +147,7 @@ class _PlayerState extends State<Player> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).backgroundColor,
       child: Consumer<Playback>(
         builder: (context, playback, widget) {
           if (playback.currentPlaylist != null) {

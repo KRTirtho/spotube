@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/Home.dart';
+import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/server_ipc.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -81,68 +82,75 @@ class _LoginState extends State<Login> {
     return Consumer<Auth>(
       builder: (context, authState, child) {
         return Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/spotube-logo.png",
-                  width: 400,
-                  height: 400,
-                ),
-                Text("Add your spotify credentials to get started",
-                    style: Theme.of(context).textTheme.headline4),
-                const Text(
-                    "Don't worry, any of your credentials won't be collected or shared with anyone"),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 400,
-                  ),
+          body: Column(
+            children: [
+              const PageWindowTitleBar(),
+              Expanded(
+                child: Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      TextField(
-                        decoration: const InputDecoration(
-                          hintText: "Spotify Client ID",
-                          label: Text("ClientID"),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            clientId = value;
-                          });
-                        },
+                      Image.asset(
+                        "assets/spotube-logo.png",
+                        width: 400,
+                        height: 400,
                       ),
+                      Text("Add your spotify credentials to get started",
+                          style: Theme.of(context).textTheme.headline4),
+                      const Text(
+                          "Don't worry, any of your credentials won't be collected or shared with anyone"),
                       const SizedBox(
                         height: 10,
                       ),
-                      TextField(
-                        decoration: const InputDecoration(
-                          hintText: "Spotify Client Secret",
-                          label: Text("Client Secret"),
+                      Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 400,
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            clientSecret = value;
-                          });
-                        },
+                        child: Column(
+                          children: [
+                            TextField(
+                              decoration: const InputDecoration(
+                                hintText: "Spotify Client ID",
+                                label: Text("ClientID"),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  clientId = value;
+                                });
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                              decoration: const InputDecoration(
+                                hintText: "Spotify Client Secret",
+                                label: Text("Client Secret"),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  clientSecret = value;
+                                });
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                handleLogin(authState);
+                              },
+                              child: const Text("Submit"),
+                            )
+                          ],
+                        ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          handleLogin(authState);
-                        },
-                        child: const Text("Submit"),
-                      )
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

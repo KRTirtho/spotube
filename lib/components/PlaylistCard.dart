@@ -28,15 +28,14 @@ class _PlaylistCardState extends State<PlaylistCard> {
         constraints: const BoxConstraints(maxWidth: 200),
         child: Ink(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).backgroundColor,
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-                spreadRadius: 5,
-                color: Colors.grey.shade300,
-              )
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                  spreadRadius: 5,
+                  color: Theme.of(context).shadowColor)
             ],
           ),
           child: Column(

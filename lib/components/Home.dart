@@ -227,16 +227,14 @@ class _HomeState extends State<Home> {
                 // contents of the spotify
                 if (_selectedIndex == 0)
                   Expanded(
-                    child: Scrollbar(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: PagedListView(
-                          pagingController: _pagingController,
-                          builderDelegate: PagedChildBuilderDelegate<Category>(
-                            itemBuilder: (context, item, index) {
-                              return CategoryCard(item);
-                            },
-                          ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PagedListView(
+                        pagingController: _pagingController,
+                        builderDelegate: PagedChildBuilderDelegate<Category>(
+                          itemBuilder: (context, item, index) {
+                            return CategoryCard(item);
+                          },
                         ),
                       ),
                     ),

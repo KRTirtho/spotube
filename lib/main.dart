@@ -64,11 +64,12 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Spotube',
         theme: ThemeData(
-          primaryColor: Colors.greenAccent[400],
+          primaryColor: Colors.green,
           primarySwatch: Colors.green,
           buttonTheme: const ButtonThemeData(
             buttonColor: Colors.green,
           ),
+          shadowColor: Colors.grey[300],
           textTheme: TextTheme(
             bodyText1: TextStyle(color: Colors.grey[850]),
             headline1: TextStyle(color: Colors.grey[850]),
@@ -104,6 +105,36 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: Colors.green,
+          primarySwatch: Colors.green,
+          backgroundColor: Colors.blueGrey[900],
+          scaffoldBackgroundColor: Colors.blueGrey[900],
+          dialogBackgroundColor: Colors.blueGrey[800],
+          shadowColor: Colors.black12,
+          buttonTheme: const ButtonThemeData(
+            buttonColor: Colors.green,
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.green[400]!,
+                width: 2.0,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey[800]!,
+              ),
+            ),
+          ),
+          navigationRailTheme: NavigationRailThemeData(
+            backgroundColor: Colors.blueGrey[800],
+            unselectedIconTheme: const IconThemeData(opacity: 1),
+          ),
+        ),
+        themeMode: ThemeMode.system,
         home: const Home(),
       ),
     );
