@@ -1,5 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:mpv_dart/mpv_dart.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
@@ -7,6 +8,7 @@ import 'package:spotube/components/Home.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/PlayerDI.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 void main() {
@@ -59,6 +61,15 @@ class MyApp extends StatelessWidget {
           );
         }),
         ChangeNotifierProvider<Playback>(create: (context) => Playback()),
+        ChangeNotifierProvider<PlayerDI>(
+          create: (context) => PlayerDI(MPVPlayer(
+            audioOnly: true,
+            mpvArgs: [
+              "--ytdl-raw-options-set=format=140,http-chunk-size=300000",
+              "--script-opts=ytdl_hook-ytdl_path=yt-dlp",
+            ],
+          )),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -70,6 +81,7 @@ class MyApp extends StatelessWidget {
             buttonColor: Colors.green,
           ),
           shadowColor: Colors.grey[300],
+          backgroundColor: Colors.white,
           textTheme: TextTheme(
             bodyText1: TextStyle(color: Colors.grey[850]),
             headline1: TextStyle(color: Colors.grey[850]),
@@ -112,7 +124,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.blueGrey[900],
           scaffoldBackgroundColor: Colors.blueGrey[900],
           dialogBackgroundColor: Colors.blueGrey[800],
-          shadowColor: Colors.black12,
+          shadowColor: Colors.black26,
           buttonTheme: const ButtonThemeData(
             buttonColor: Colors.green,
           ),

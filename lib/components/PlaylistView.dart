@@ -23,18 +23,34 @@ class _PlaylistViewState extends State<PlaylistView> {
       return (TableRow(
         children: [
           TableCell(
-              child: Text(
-            (track.key + 1).toString(),
-            textAlign: TextAlign.center,
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              (track.key + 1).toString(),
+              textAlign: TextAlign.center,
+            ),
           )),
           TableCell(
             child: Row(
               children: [
                 if (thumbnailUrl != null)
-                  CachedNetworkImage(
-                    imageUrl: thumbnailUrl,
-                    maxHeightDiskCache: 40,
-                    maxWidthDiskCache: 40,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      child: CachedNetworkImage(
+                        placeholder: (context, url) {
+                          return Container(
+                            height: 40,
+                            width: 40,
+                            color: Colors.green[300],
+                          );
+                        },
+                        imageUrl: thumbnailUrl,
+                        maxHeightDiskCache: 40,
+                        maxWidthDiskCache: 40,
+                      ),
+                    ),
                   ),
                 const SizedBox(width: 10),
                 Flexible(
@@ -62,16 +78,22 @@ class _PlaylistViewState extends State<PlaylistView> {
             ),
           ),
           TableCell(
-            child: Text(
-              track.value.album?.name ?? "",
-              overflow: TextOverflow.ellipsis,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                track.value.album?.name ?? "",
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
           TableCell(
-            child: Text(
-              duration,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                duration,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           )
         ],
@@ -148,7 +170,10 @@ class _PlaylistViewState extends State<PlaylistView> {
                   snapshot.hasError
                       ? const Center(child: Text("Error occurred"))
                       : !snapshot.hasData
-                          ? const CircularProgressIndicator.adaptive()
+                          ? const Expanded(
+                              child: Center(
+                                  child: CircularProgressIndicator.adaptive()),
+                            )
                           : Expanded(
                               child: Scrollbar(
                                 child: ListView(
@@ -159,7 +184,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                           0: FixedColumnWidth(40),
                                           1: FlexColumnWidth(),
                                           2: FlexColumnWidth(),
-                                          3: FixedColumnWidth(40),
+                                          3: FixedColumnWidth(45),
                                         },
                                         children: [
                                           TableRow(

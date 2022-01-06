@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:mpv_dart/mpv_dart.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/provider/PlayerDI.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class Player extends StatefulWidget {
@@ -18,8 +19,6 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
-  late MPVPlayer player;
-
   bool _isPlaying = false;
   bool _shuffled = false;
   double _duration = 0;
@@ -29,80 +28,69 @@ class _PlayerState extends State<Player> {
   double _volume = 0;
   @override
   void initState() {
-    player = MPVPlayer(
-      // verbose: true,
-      // debug: true,
-      audioOnly: true,
-      mpvArgs: [
-        "--ytdl-raw-options-set=format=140,http-chunk-size=300000",
-        "--script-opts=ytdl_hook-ytdl_path=yt-dlp",
-      ],
-    );
-
-    (() async {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
       try {
+        MPVPlayer player = context.read<PlayerDI>().player;
         await player.start();
         double volume = await player.getProperty<double>("volume");
         setState(() {
           _volume = volume / 100;
+        });
+        player.on(MPVEvents.paused, null, (ev, context) {
+          setState(() {
+            _isPlaying = false;
+          });
+        });
+
+        player.on(MPVEvents.resumed, null, (ev, context) {
+          setState(() {
+            _isPlaying = true;
+          });
+        });
+
+        player.on(MPVEvents.status, null, (ev, _) async {
+          Map data = ev.eventData as Map;
+          Playback playback = context.read<Playback>();
+          if (data["property"] == "media-title" && data["value"] != null) {
+            var containsYtdl = (data["value"] as String).contains("ytsearch:");
+            if (containsYtdl) {
+              var props = (data["value"] as String).split("-");
+              var mediaTitle = props.last.trim();
+              var mediaArtists = props.first.split("ytsearch:").last.trim();
+              setState(() {
+                _isPlaying = true;
+              });
+
+              var matchedTracks = playback.currentPlaylist?.tracks.where(
+                    (track) {
+                      return track.name?.replaceAll("-", " ") == mediaTitle &&
+                          artistsToString(track.artists ?? []) == mediaArtists;
+                    },
+                  ) ??
+                  [];
+              if (matchedTracks.isNotEmpty) {
+                playback.setCurrentTrack = matchedTracks.first;
+              }
+            }
+          }
+          if (data["property"] == "duration" && data["value"] != null) {
+            setState(() {
+              _duration = data["value"];
+            });
+          }
         });
       } catch (e) {
         if (kDebugMode) {
           print("[PLAYER]: $e");
         }
       }
-    })();
-
-    player.on(MPVEvents.paused, null, (ev, context) {
-      setState(() {
-        _isPlaying = false;
-      });
-    });
-
-    player.on(MPVEvents.resumed, null, (ev, context) {
-      setState(() {
-        _isPlaying = true;
-      });
-    });
-
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      player.on(MPVEvents.status, null, (ev, _) async {
-        Map data = ev.eventData as Map;
-        Playback playback = context.read<Playback>();
-        if (data["property"] == "media-title" && data["value"] != null) {
-          var containsYtdl = (data["value"] as String).contains("ytsearch:");
-          if (containsYtdl) {
-            var props = (data["value"] as String).split("-");
-            var mediaTitle = props.last.trim();
-            var mediaArtists = props.first.split("ytsearch:").last.trim();
-            setState(() {
-              _isPlaying = true;
-            });
-
-            var matchedTracks = playback.currentPlaylist?.tracks.where(
-                  (track) {
-                    return track.name?.replaceAll("-", " ") == mediaTitle &&
-                        artistsToString(track.artists ?? []) == mediaArtists;
-                  },
-                ) ??
-                [];
-            if (matchedTracks.isNotEmpty) {
-              playback.setCurrentTrack = matchedTracks.first;
-            }
-          }
-        }
-        if (data["property"] == "duration" && data["value"] != null) {
-          setState(() {
-            _duration = data["value"];
-          });
-        }
-      });
     });
     super.initState();
   }
 
   @override
   void dispose() {
+    MPVPlayer player = context.read<PlayerDI>().player;
     player.removeAllByEvent(MPVEvents.paused);
     player.removeAllByEvent(MPVEvents.resumed);
     player.removeAllByEvent(MPVEvents.status);
@@ -115,7 +103,7 @@ class _PlayerState extends State<Player> {
     }).join("\n");
   }
 
-  Future playPlaylist(CurrentPlaylist playlist) async {
+  Future playPlaylist(MPVPlayer player, CurrentPlaylist playlist) async {
     try {
       if (player.isRunning() && playlist.id != _currentPlaylistId) {
         var playlistPath = "/tmp/playlist-${playlist.id}.txt";
@@ -146,12 +134,14 @@ class _PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
+    MPVPlayer player = context.watch<PlayerDI>().player;
+
     return Container(
       color: Theme.of(context).backgroundColor,
       child: Consumer<Playback>(
         builder: (context, playback, widget) {
           if (playback.currentPlaylist != null) {
-            playPlaylist(playback.currentPlaylist!);
+            playPlaylist(player, playback.currentPlaylist!);
           }
 
           String? albumArt = playback.currentTrack?.album?.images?.last.url;
@@ -166,6 +156,13 @@ class _PlayerState extends State<Player> {
                     imageUrl: albumArt,
                     maxHeightDiskCache: 50,
                     maxWidthDiskCache: 50,
+                    placeholder: (context, url) {
+                      return Container(
+                        height: 50,
+                        width: 50,
+                        color: Colors.green[400],
+                      );
+                    },
                   ),
                 //  title of the currently playing track
                 Flexible(

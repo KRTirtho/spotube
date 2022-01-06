@@ -47,7 +47,13 @@ class _PlaylistCardState extends State<PlaylistCard> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(
-                        imageUrl: widget.playlist.images![0].url!),
+                      imageUrl: widget.playlist.images![0].url!,
+                      progressIndicatorBuilder: (context, url, progress) {
+                        return CircularProgressIndicator.adaptive(
+                          value: progress.progress,
+                        );
+                      },
+                    ),
                   ),
                   Positioned.directional(
                     textDirection: TextDirection.ltr,

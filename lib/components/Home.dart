@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/CategoryCard.dart';
 import 'package:spotube/components/Login.dart';
+import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player.dart' as player;
 import 'package:spotube/components/Settings.dart';
 import 'package:spotube/components/UserLibrary.dart';
@@ -135,12 +136,10 @@ class _HomeState extends State<Home> {
                           Theme.of(context).navigationRailTheme.backgroundColor,
                       child: MoveWindow(),
                     ),
-                    Expanded(child: MoveWindow())
+                    Expanded(child: MoveWindow()),
+                    const TitleBarActionButtons(),
                   ],
                 )),
-                MinimizeWindowButton(animate: true),
-                MaximizeWindowButton(animate: true),
-                CloseWindowButton(animate: true),
               ],
             ),
           ),
