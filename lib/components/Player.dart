@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/components/PlayerControls.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
+import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:mpv_dart/mpv_dart.dart';
 import 'package:provider/provider.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/PlayerDI.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
@@ -27,6 +28,9 @@ class _PlayerState extends State<Player> {
   String? _currentPlaylistId;
 
   double _volume = 0;
+
+  List<HotKey> _hotKeys = [];
+
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
@@ -79,6 +83,45 @@ class _PlayerState extends State<Player> {
               _duration = data["value"];
             });
           }
+          playOrPause(key) async {
+            _isPlaying ? await player.pause() : await player.play();
+          }
+
+          List<GlobalKeyActions> keyWithActions = [
+            GlobalKeyActions(
+              HotKey(KeyCode.space, scope: HotKeyScope.inapp),
+              playOrPause,
+            ),
+            GlobalKeyActions(
+              HotKey(KeyCode.mediaPlayPause),
+              playOrPause,
+            ),
+            GlobalKeyActions(HotKey(KeyCode.mediaTrackNext), (key) async {
+              await player.next();
+            }),
+            GlobalKeyActions(HotKey(KeyCode.mediaTrackPrevious), (key) async {
+              await player.prev();
+            }),
+            GlobalKeyActions(HotKey(KeyCode.mediaStop), (key) async {
+              await player.stop();
+              setState(() {
+                _isPlaying = false;
+                _currentPlaylistId = null;
+                _duration = 0;
+                _shuffled = false;
+              });
+              playback.reset();
+            })
+          ];
+
+          await Future.wait(
+            keyWithActions.map((e) {
+              return hotKeyManager.register(
+                e.hotKey,
+                keyDownHandler: e.onKeyDown,
+              );
+            }),
+          );
         });
       } catch (e) {
         if (kDebugMode) {
@@ -90,11 +133,12 @@ class _PlayerState extends State<Player> {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     MPVPlayer player = context.read<PlayerDI>().player;
     player.removeAllByEvent(MPVEvents.paused);
     player.removeAllByEvent(MPVEvents.resumed);
     player.removeAllByEvent(MPVEvents.status);
+    await Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e)));
     super.dispose();
   }
 

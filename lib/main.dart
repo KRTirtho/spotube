@@ -1,5 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:mpv_dart/mpv_dart.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +13,11 @@ import 'package:spotube/provider/PlayerDI.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
-void main() {
+void main() async {
+  // Must add this line.
+  WidgetsFlutterBinding.ensureInitialized();
+  // For hot reload, `unregisterAll()` needs to be called.
+  await hotKeyManager.unregisterAll();
   runApp(MyApp());
   doWhenWindowReady(() {
     appWindow.minSize = const Size(900, 700);
