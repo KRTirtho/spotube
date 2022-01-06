@@ -37,6 +37,12 @@ class _LyricsState extends State<Lyrics> {
       });
     }
 
+    if (_lyrics["lyrics"] != null && playback.currentTrack == null) {
+      setState(() {
+        _lyrics = {};
+      });
+    }
+
     if (_lyrics["lyrics"] == null && playback.currentTrack != null) {
       return const Expanded(
         child: Center(
