@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 
 class Lyrics extends StatefulWidget {
   const Lyrics({Key? key}) : super(key: key);
@@ -12,19 +13,20 @@ class Lyrics extends StatefulWidget {
 }
 
 class _LyricsState extends State<Lyrics> {
-  Map<String, String>? _lyrics;
+  Map<String, String> _lyrics = {};
 
   @override
   Widget build(BuildContext context) {
     Playback playback = context.watch<Playback>();
+    UserPreferences userPreferences = context.watch<UserPreferences>();
 
     if (playback.currentTrack != null &&
-        playback.currentTrack!.id != _lyrics?["id"]) {
+        userPreferences.geniusAccessToken != null &&
+        playback.currentTrack!.id != _lyrics["id"]) {
       getLyrics(
         playback.currentTrack!.name!,
         artistsToString(playback.currentTrack!.artists ?? []),
-        apiKey:
-            "O6K9JcMNsVD36lRJM6wvl0YsfjrtHFFfAwYHZqxxTNg2xBuMxcaJXrYbpR6kVipN",
+        apiKey: userPreferences.geniusAccessToken,
         optimizeQuery: true,
       ).then((lyrics) {
         if (lyrics != null) {
@@ -35,7 +37,7 @@ class _LyricsState extends State<Lyrics> {
       });
     }
 
-    if (_lyrics == null && playback.currentTrack != null) {
+    if (_lyrics["lyrics"] == null && playback.currentTrack != null) {
       return const Expanded(
         child: Center(
           child: CircularProgressIndicator.adaptive(),
@@ -48,13 +50,13 @@ class _LyricsState extends State<Lyrics> {
         children: [
           Center(
             child: Text(
-              playback.currentTrack!.name!,
+              playback.currentTrack?.name ?? "",
               style: Theme.of(context).textTheme.headline3,
             ),
           ),
           Center(
             child: Text(
-              artistsToString(playback.currentTrack!.artists ?? []),
+              artistsToString(playback.currentTrack?.artists ?? []),
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
@@ -62,9 +64,9 @@ class _LyricsState extends State<Lyrics> {
             child: SingleChildScrollView(
               child: Center(
                 child: Text(
-                  _lyrics == null && playback.currentTrack == null
+                  _lyrics["lyrics"] == null && playback.currentTrack == null
                       ? "No Track being played currently"
-                      : _lyrics!["lyrics"]!,
+                      : _lyrics["lyrics"]!,
                   style: Theme.of(context).textTheme.headline6,
                 ),
               ),

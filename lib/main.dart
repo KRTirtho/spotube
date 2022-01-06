@@ -10,6 +10,7 @@ import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/PlayerDI.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -69,7 +70,12 @@ class MyApp extends StatelessWidget {
               "--script-opts=ytdl_hook-ytdl_path=yt-dlp",
             ],
           )),
-        )
+        ),
+        ChangeNotifierProvider<UserPreferences>(
+          create: (context) {
+            return UserPreferences();
+          },
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
