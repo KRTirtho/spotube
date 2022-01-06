@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotube/components/PlayerControls.dart';
+import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:mpv_dart/mpv_dart.dart';
@@ -126,10 +127,6 @@ class _PlayerState extends State<Player> {
       print("[Player]: $e");
       print(stackTrace);
     }
-  }
-
-  String artistsToString(List<Artist> artists) {
-    return artists.map((e) => e.name?.replaceAll(",", " ")).join(", ");
   }
 
   @override

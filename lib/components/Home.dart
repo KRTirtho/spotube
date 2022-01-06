@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/CategoryCard.dart';
 import 'package:spotube/components/Login.dart';
+import 'package:spotube/components/Lyrics.dart';
 import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player.dart' as player;
 import 'package:spotube/components/Settings.dart';
@@ -239,7 +240,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 if (_selectedIndex == 2) const UserLibrary(),
-                // player itself
+                if (_selectedIndex == 3) const Lyrics(),
               ],
             ),
           ),
