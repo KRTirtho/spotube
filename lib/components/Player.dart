@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -59,52 +58,20 @@ class _PlayerState extends State<Player> {
 
         player.on(MPVEvents.status, null, (ev, _) async {
           Map data = ev.eventData as Map;
-          print(
-              "\n======================\nEVENT $data\n=======================\n");
           Playback playback = context.read<Playback>();
 
-          // that means a new playlist have been added
-          if (data["property"] == "playlist-count" && data["value"] > 0) {
-            var playlist = await player.getProperty("playlist");
-          }
-
           if (data["property"] == "media-title" && data["value"] != null) {
-            // var containsYtdl = (data["value"] as String).contains("ytsearch:");
-            // if (containsYtdl) {
-            //   var props = (data["value"] as String).split("-");
-            //   var mediaTitle = props.last.trim();
-            //   var mediaArtists = props.first.split("ytsearch:").last.trim();
-            //   setState(() {
-            //     _isPlaying = true;
-            //   });
-
-            //   var matchedTracks = playback.currentPlaylist?.tracks.where(
-            //         (track) {
-            //           return track.name?.replaceAll("-", " ") == mediaTitle &&
-            //               artistsToString(track.artists ?? []) == mediaArtists;
-            //         },
-            //       ) ??
-            //       [];
-            //   if (matchedTracks.isNotEmpty) {
-            //     playback.setCurrentTrack = matchedTracks.first;
-            //   }
-            // }
-            int playlistCurrentPos;
-            if (_shuffled) {
-              await player.unshuffle();
-              playlistCurrentPos = await player.getPlaylistPosition();
-              await player.shuffle();
-            } else {
-              playlistCurrentPos = await player.getPlaylistPosition();
-            }
-            print("${data["value"]} $playlistCurrentPos");
-            Track? track =
-                playback.currentPlaylist?.tracks.elementAt(playlistCurrentPos);
-            if (track != null) {
+            var track = playback.currentPlaylist?.tracks.where((track) {
+              String title = data["value"];
+              return title.contains(track.name!) &&
+                  track.artists!
+                      .every((artist) => title.contains(artist.name!));
+            });
+            if (track != null && track.isNotEmpty) {
               setState(() {
                 _isPlaying = true;
               });
-              playback.setCurrentTrack = track;
+              playback.setCurrentTrack = track.first;
             }
           }
           if (data["property"] == "duration" && data["value"] != null) {
