@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/components/PlayerControls.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
@@ -36,7 +38,9 @@ class _PlayerState extends State<Player> {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
       try {
         MPVPlayer player = context.read<PlayerDI>().player;
-        await player.start();
+        if (!player.isRunning()) {
+          await player.start();
+        }
         double volume = await player.getProperty<double>("volume");
         setState(() {
           _volume = volume / 100;
@@ -55,27 +59,52 @@ class _PlayerState extends State<Player> {
 
         player.on(MPVEvents.status, null, (ev, _) async {
           Map data = ev.eventData as Map;
+          print(
+              "\n======================\nEVENT $data\n=======================\n");
           Playback playback = context.read<Playback>();
+
+          // that means a new playlist have been added
+          if (data["property"] == "playlist-count" && data["value"] > 0) {
+            var playlist = await player.getProperty("playlist");
+          }
+
           if (data["property"] == "media-title" && data["value"] != null) {
-            var containsYtdl = (data["value"] as String).contains("ytsearch:");
-            if (containsYtdl) {
-              var props = (data["value"] as String).split("-");
-              var mediaTitle = props.last.trim();
-              var mediaArtists = props.first.split("ytsearch:").last.trim();
+            // var containsYtdl = (data["value"] as String).contains("ytsearch:");
+            // if (containsYtdl) {
+            //   var props = (data["value"] as String).split("-");
+            //   var mediaTitle = props.last.trim();
+            //   var mediaArtists = props.first.split("ytsearch:").last.trim();
+            //   setState(() {
+            //     _isPlaying = true;
+            //   });
+
+            //   var matchedTracks = playback.currentPlaylist?.tracks.where(
+            //         (track) {
+            //           return track.name?.replaceAll("-", " ") == mediaTitle &&
+            //               artistsToString(track.artists ?? []) == mediaArtists;
+            //         },
+            //       ) ??
+            //       [];
+            //   if (matchedTracks.isNotEmpty) {
+            //     playback.setCurrentTrack = matchedTracks.first;
+            //   }
+            // }
+            int playlistCurrentPos;
+            if (_shuffled) {
+              await player.unshuffle();
+              playlistCurrentPos = await player.getPlaylistPosition();
+              await player.shuffle();
+            } else {
+              playlistCurrentPos = await player.getPlaylistPosition();
+            }
+            print("${data["value"]} $playlistCurrentPos");
+            Track? track =
+                playback.currentPlaylist?.tracks.elementAt(playlistCurrentPos);
+            if (track != null) {
               setState(() {
                 _isPlaying = true;
               });
-
-              var matchedTracks = playback.currentPlaylist?.tracks.where(
-                    (track) {
-                      return track.name?.replaceAll("-", " ") == mediaTitle &&
-                          artistsToString(track.artists ?? []) == mediaArtists;
-                    },
-                  ) ??
-                  [];
-              if (matchedTracks.isNotEmpty) {
-                playback.setCurrentTrack = matchedTracks.first;
-              }
+              playback.setCurrentTrack = track;
             }
           }
           if (data["property"] == "duration" && data["value"] != null) {
@@ -143,15 +172,20 @@ class _PlayerState extends State<Player> {
   }
 
   String playlistToStr(CurrentPlaylist playlist) {
-    return playlist.tracks.map((track) {
-      return "ytdl://ytsearch:${artistsToString(track.artists ?? [])} - ${track.name?.replaceAll("-", " ")}";
-    }).join("\n");
+    var tracks = playlist.tracks.map((track) {
+      var artists = artistsToString(track.artists ?? []);
+      var title = track.name?.replaceAll("-", " ");
+
+      return "ytdl://ytsearch:$artists - $title";
+    }).toList();
+
+    return tracks.join("\n");
   }
 
   Future playPlaylist(MPVPlayer player, CurrentPlaylist playlist) async {
     try {
       if (player.isRunning() && playlist.id != _currentPlaylistId) {
-        var playlistPath = "/tmp/playlist-${playlist.id}.txt";
+        var playlistPath = "/tmp/playlist-${playlist.id}.json";
         File file = File(playlistPath);
         var newPlaylist = playlistToStr(playlist);
 
