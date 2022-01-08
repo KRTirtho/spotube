@@ -1,12 +1,4 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "npm",
-			"script": "start",
-			"problemMatcher": [],
-			"label": "npm: start",
-			"detail": "qode ./dist/index.js"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": []
 }

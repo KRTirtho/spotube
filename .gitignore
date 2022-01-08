@@ -1,22 +1,46 @@
-node_modules
-dist/
+# Miscellaneous
+*.class
 *.log
-# user specific
-cache/
-local/
-# debian build specific
-deb-struct/usr/lib/
-deb-struct/usr/bin/
-deb-struct/usr/share/applications
-# deply build binaries
-deploy/linux/build
-deploy/win32/build
-deploy/darwin/build
-# aur build specific
-aur-struct/src
-aur-struct/pkg
-aur-struct/*.zip*
-aur-struct/*.zst
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
 
-*.tsbuildinfo
-tsconfig.tsbuildinfo
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
