@@ -44,3 +44,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+*.pkg.tar.zst
+/aur-struct/*.tar
+/aur-struct/src
+/aur-struct/pkg

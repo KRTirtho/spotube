@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/PlayerControls.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
@@ -152,7 +151,7 @@ class _PlayerState extends State<Player> {
   Future playPlaylist(MPVPlayer player, CurrentPlaylist playlist) async {
     try {
       if (player.isRunning() && playlist.id != _currentPlaylistId) {
-        var playlistPath = "/tmp/playlist-${playlist.id}.json";
+        var playlistPath = "/tmp/playlist-${playlist.id}.txt";
         File file = File(playlistPath);
         var newPlaylist = playlistToStr(playlist);
 
