@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_linux
   hotkey_manager
+  libwinmedia
   url_launcher_linux
 )
 

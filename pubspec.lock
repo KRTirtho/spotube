@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  audio_session:
+    dependency: transitive
+    description:
+      name: audio_session
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.6+1"
   bitsdojo_window:
     dependency: "direct main"
     description:
@@ -141,13 +148,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  eventify:
-    dependency: transitive
-    description:
-      name: eventify
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -275,6 +275,41 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+  just_audio:
+    dependency: "direct main"
+    description:
+      name: just_audio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.18"
+  just_audio_libwinmedia:
+    dependency: "direct main"
+    description:
+      name: just_audio_libwinmedia
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4"
+  just_audio_platform_interface:
+    dependency: transitive
+    description:
+      name: just_audio_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
+  just_audio_web:
+    dependency: transitive
+    description:
+      name: just_audio_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2"
+  libwinmedia:
+    dependency: transitive
+    description:
+      name: libwinmedia
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
   lints:
     dependency: transitive
     description:
@@ -296,13 +331,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  mpv_dart:
-    dependency: "direct main"
-    description:
-      name: mpv_dart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.1"
   msix:
     dependency: "direct dev"
     description:

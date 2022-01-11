@@ -12,6 +12,8 @@ class CurrentPlaylist {
     required String this.name,
     required String this.thumbnail,
   });
+
+  List<String> get trackIds => tracks.map((e) => e.id!).toList();
 }
 
 class Playback extends ChangeNotifier {
@@ -39,6 +41,22 @@ class Playback extends ChangeNotifier {
     _currentPlaylist = null;
     _currentTrack = null;
     notifyListeners();
+  }
+
+  /// sets the provided id matched track's uri\
+  /// Doesn't notify listeners\
+  /// @returns `bool` - `true` if succeed & `false` when failed
+  bool setTrackUriById(String id, String uri) {
+    if (_currentPlaylist == null) return false;
+    try {
+      int index =
+          _currentPlaylist!.tracks.indexWhere((element) => element.id == id);
+      if (index == -1) return false;
+      _currentPlaylist!.tracks[index].uri = uri;
+      return _currentPlaylist!.tracks[index].uri == uri;
+    } catch (e) {
+      return false;
+    }
   }
 }
 

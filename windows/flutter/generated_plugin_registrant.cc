@@ -8,6 +8,7 @@
 
 #include <bitsdojo_window_windows/bitsdojo_window_plugin.h>
 #include <hotkey_manager/hotkey_manager_plugin.h>
+#include <libwinmedia/libwinmedia_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
@@ -15,6 +16,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("BitsdojoWindowPlugin"));
   HotkeyManagerPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("HotkeyManagerPlugin"));
+  LibwinmediaPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("LibwinmediaPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("UrlLauncherWindows"));
 }

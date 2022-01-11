@@ -87,6 +87,7 @@ class _PlaylistCardState extends State<PlaylistCard> {
                             name: widget.playlist.name!,
                             thumbnail: widget.playlist.images!.first.url!,
                           );
+                          playback.setCurrentTrack = tracks.first;
                         },
                         child: Icon(
                           isPlaylistPlaying

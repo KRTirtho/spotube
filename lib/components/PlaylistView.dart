@@ -155,6 +155,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                             .images![0]
                                             .url!,
                                       );
+                                      playback.setCurrentTrack = tracks.first;
                                     }
                                   }
                                 : null,

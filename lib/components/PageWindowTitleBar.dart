@@ -1,15 +1,11 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
-import 'package:mpv_dart/mpv_dart.dart';
-import 'package:provider/provider.dart';
-import 'package:spotube/provider/PlayerDI.dart';
 
 class TitleBarActionButtons extends StatelessWidget {
   const TitleBarActionButtons({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    MPVPlayer player = context.watch<PlayerDI>().player;
     return Row(
       children: [
         TextButton(
@@ -32,7 +28,6 @@ class TitleBarActionButtons extends StatelessWidget {
             child: const Icon(Icons.crop_square_rounded)),
         TextButton(
             onPressed: () {
-              player.stop();
               appWindow.close();
             },
             style: ButtonStyle(

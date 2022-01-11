@@ -1,22 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:mpv_dart/mpv_dart.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 
 class PlayerControls extends StatefulWidget {
-  final MPVPlayer player;
+  final Stream<Duration> positionStream;
   final bool isPlaying;
-  final double duration;
+  final Duration duration;
   final bool shuffled;
   final Function? onStop;
   final Function? onShuffle;
+  final Function(double value)? onSeek;
+  final Function? onNext;
+  final Function? onPrevious;
+  final Function? onPlay;
+  final Function? onPause;
   const PlayerControls({
-    required this.player,
+    required this.positionStream,
     required this.isPlaying,
     required this.duration,
     required this.shuffled,
     this.onShuffle,
     this.onStop,
+    this.onSeek,
+    this.onNext,
+    this.onPrevious,
+    this.onPlay,
+    this.onPause,
     Key? key,
   }) : super(key: key);
 
@@ -25,64 +35,58 @@ class PlayerControls extends StatefulWidget {
 }
 
 class _PlayerControlsState extends State<PlayerControls> {
-  double currentPos = 0;
+  StreamSubscription? _timePositionListener;
 
   @override
-  void initState() {
-    super.initState();
-    widget.player.on(MPVEvents.timeposition, null, (ev, context) {
-      widget.player.getPercentPosition().then((value) {
-        setState(() {
-          currentPos = value / 100;
-        });
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.player.removeAllByEvent(MPVEvents.timeposition);
+  void dispose() async {
+    await _timePositionListener?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var totalDuration = Duration(seconds: widget.duration.toInt());
-    var totalMinutes = zeroPadNumStr(totalDuration.inMinutes.remainder(60));
-    var totalSeconds = zeroPadNumStr(totalDuration.inSeconds.remainder(60));
-
-    var currentDuration =
-        Duration(seconds: (widget.duration * currentPos).toInt());
-
-    var currentMinutes = zeroPadNumStr(currentDuration.inMinutes.remainder(60));
-    var currentSeconds = zeroPadNumStr(currentDuration.inSeconds.remainder(60));
-
     return Container(
       constraints: const BoxConstraints(maxWidth: 700),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Slider.adaptive(
-                  value: currentPos,
-                  onChanged: (value) async {
-                    try {
-                      setState(() {
-                        currentPos = value;
-                      });
-                      await widget.player.goToPosition(value * widget.duration);
-                    } catch (e) {
-                      print("[PlayerControls]: $e");
-                    }
-                  },
-                ),
-              ),
-              Text(
-                "$currentMinutes:$currentSeconds/$totalMinutes:$totalSeconds",
-              )
-            ],
-          ),
+          StreamBuilder<Duration>(
+              stream: widget.positionStream,
+              builder: (context, snapshot) {
+                var totalMinutes =
+                    zeroPadNumStr(widget.duration.inMinutes.remainder(60));
+                var totalSeconds =
+                    zeroPadNumStr(widget.duration.inSeconds.remainder(60));
+                var currentMinutes = snapshot.hasData
+                    ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
+                    : "00";
+                var currentSeconds = snapshot.hasData
+                    ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
+                    : "00";
+
+                var sliderMax = widget.duration.inSeconds;
+                var sliderValue = snapshot.data?.inSeconds ?? 0;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Slider.adaptive(
+                        // cannot divide by zero
+                        // there's an edge case for value being bigger
+                        // than total duration. Keeping it resolved
+                        value: (sliderMax == 0 || sliderValue > sliderMax)
+                            ? 0
+                            : sliderValue / sliderMax,
+                        onChanged: (value) {},
+                        onChangeEnd: (value) {
+                          widget.onSeek?.call(value * sliderMax);
+                        },
+                      ),
+                    ),
+                    Text(
+                      "$currentMinutes:$currentSeconds/$totalMinutes:$totalSeconds",
+                    )
+                  ],
+                );
+              }),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -95,13 +99,8 @@ class _PlayerControlsState extends State<PlayerControls> {
                   }),
               IconButton(
                   icon: const Icon(Icons.skip_previous_rounded),
-                  onPressed: () async {
-                    bool moved = await widget.player.prev();
-                    if (moved) {
-                      setState(() {
-                        currentPos = 0;
-                      });
-                    }
+                  onPressed: () {
+                    widget.onPrevious?.call();
                   }),
               IconButton(
                   icon: Icon(
@@ -109,30 +108,17 @@ class _PlayerControlsState extends State<PlayerControls> {
                         ? Icons.pause_rounded
                         : Icons.play_arrow_rounded,
                   ),
-                  onPressed: () async {
+                  onPressed: () {
                     widget.isPlaying
-                        ? await widget.player.pause()
-                        : await widget.player.play();
+                        ? widget.onPause?.call()
+                        : widget.onPlay?.call();
                   }),
               IconButton(
                   icon: const Icon(Icons.skip_next_rounded),
-                  onPressed: () async {
-                    bool moved = await widget.player.next();
-                    if (moved) {
-                      setState(() {
-                        currentPos = 0;
-                      });
-                    }
-                  }),
+                  onPressed: () => widget.onNext?.call()),
               IconButton(
                 icon: const Icon(Icons.stop_rounded),
-                onPressed: () async {
-                  await widget.player.stop();
-                  widget.onStop?.call();
-                  setState(() {
-                    currentPos = 0;
-                  });
-                },
+                onPressed: () => widget.onStop?.call(),
               )
             ],
           )

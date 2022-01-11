@@ -1,7 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:mpv_dart/mpv_dart.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
@@ -9,18 +8,16 @@ import 'package:spotube/components/Home.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
-import 'package:spotube/provider/PlayerDI.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
 void main() async {
-  // Must add this line.
   WidgetsFlutterBinding.ensureInitialized();
-  // For hot reload, `unregisterAll()` needs to be called.
   await hotKeyManager.unregisterAll();
   runApp(MyApp());
   doWhenWindowReady(() {
     appWindow.minSize = const Size(900, 700);
+    appWindow.size = const Size(900, 700);
     appWindow.alignment = Alignment.center;
     appWindow.maximize();
     appWindow.show();
@@ -67,15 +64,6 @@ class MyApp extends StatelessWidget {
           );
         }),
         ChangeNotifierProvider<Playback>(create: (context) => Playback()),
-        ChangeNotifierProvider<PlayerDI>(
-          create: (context) => PlayerDI(MPVPlayer(
-            audioOnly: true,
-            mpvArgs: [
-              "--ytdl-raw-options-set=format=140,http-chunk-size=300000",
-              "--script-opts=ytdl_hook-ytdl_path=yt-dlp",
-            ],
-          )),
-        ),
         ChangeNotifierProvider<UserPreferences>(
           create: (context) {
             return UserPreferences();
