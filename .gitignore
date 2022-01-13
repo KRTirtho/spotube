@@ -50,3 +50,5 @@ app.*.map.json
 /aur-struct/*.tar
 /aur-struct/src
 /aur-struct/pkg
+
+/deb-struct/usr

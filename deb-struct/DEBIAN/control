@@ -4,7 +4,7 @@ Section: sound
 Priority: optional
 Architecture: all
 Essential: no
-Installed-Size: 31000
-Maintainer: KR Tirtho
-Description: A music streaming app combining the power of Spotify & Youtube
+Installed-Size: 24400
+Maintainer: Kingkor Roy Tirtho
+Description: A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
 Homepage: https://github.com/KRTirtho/spotube
