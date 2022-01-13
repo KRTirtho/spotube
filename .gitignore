@@ -52,3 +52,7 @@ app.*.map.json
 /aur-struct/pkg
 
 /deb-struct/usr
+
+/AppDir
+/appimage-builder-cache
+*.AppImage
