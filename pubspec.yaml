@@ -101,3 +101,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+msix_config:
+  display_name: Spotube
+  publisher_display_name: KRTirtho
+  identity_name: oss.krtirtho.spotube
+  msix_version: 1.0.0.0
+  logo_path: .\assets\spotube-logo.png
+  capabilities: "internetClient,internetClientServer,backgroundMediaPlayback"

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.spotube">
+    package="oss.krtirtho.spotube">
    <application
         android:label="spotube"
         android:name="${applicationName}"
