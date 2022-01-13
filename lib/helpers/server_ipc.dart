@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 Future<String?> connectIpc(String authUri, String redirectUri) async {
   try {
     if (await canLaunch(authUri)) {
+      print("[Launching]: $authUri");
       await launch(authUri);
     }
 

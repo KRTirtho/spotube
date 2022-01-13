@@ -16,7 +16,7 @@ class UserPreferences extends ChangeNotifier {
     }
   }
 
-  get geniusAccessToken => _geniusAccessToken;
+  String? get geniusAccessToken => _geniusAccessToken;
 
   setGeniusAccessToken(String? token) {
     _geniusAccessToken = token;

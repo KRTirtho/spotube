@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -30,70 +31,24 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
 
   double _volume = 0;
 
-  final List<HotKey> _hotKeys = [];
+  late List<GlobalKeyActions> _hotKeys;
 
   @override
   void initState() {
-    super.initState();
-    player = AudioPlayer();
-    WidgetsBinding.instance?.addObserver(this);
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      try {
-        setState(() {
-          _volume = player.volume;
-        });
-        player.playingStream.listen((playing) async {
-          setState(() {
-            _isPlaying = playing;
-          });
-        });
-
-        player.durationStream.listen((duration) async {
-          if (duration != null) {
-            // Actually things doesn't work all the time as they were
-            // described. So instead of listening to a `playback.ready`
-            // stream, it has to listen to duration stream since duration
-            // is always added to the Stream sink after all icyMetadata has
-            // been loaded thus indicating buffering started
-            if (duration != Duration.zero && duration != _duration) {
-              // this line is for prev/next or already playing playlist
-              if (player.playing) await player.pause();
-              await player.play();
-            }
-            setState(() {
-              _duration = duration;
-            });
-          }
-        });
-
-        player.processingStateStream.listen((event) async {
-          try {
-            if (event == ProcessingState.completed && _currentTrackId != null) {
-              _movePlaylistPositionBy(1);
-            }
-          } catch (e, stack) {
-            print("[PrecessingStateStreamListener] $e");
-            print(stack);
-          }
-        });
-
-        playOrPause(key) async {
-          try {
-            _isPlaying ? await player.pause() : await player.play();
-          } catch (e, stack) {
-            print("[PlayPauseShortcut] $e");
-            print(stack);
-          }
-        }
-
-        List<GlobalKeyActions> keyWithActions = [
-          GlobalKeyActions(
-            HotKey(KeyCode.space, scope: HotKeyScope.inapp),
-            playOrPause,
-          ),
+    try {
+      super.initState();
+      player = AudioPlayer();
+      _hotKeys = [
+        GlobalKeyActions(
+          HotKey(KeyCode.space, scope: HotKeyScope.inapp),
+          _playOrPause,
+        ),
+        // causaes crash in Windows for aquiring global hotkey of
+        // keyboard media buttons
+        if (!Platform.isWindows) ...[
           GlobalKeyActions(
             HotKey(KeyCode.mediaPlayPause),
-            playOrPause,
+            _playOrPause,
           ),
           GlobalKeyActions(HotKey(KeyCode.mediaTrackNext), (key) async {
             _movePlaylistPositionBy(1);
@@ -111,27 +66,74 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
             });
             playback.reset();
           })
-        ];
+        ]
+      ];
+      WidgetsBinding.instance?.addObserver(this);
+      WidgetsBinding.instance?.addPostFrameCallback(_init);
+    } catch (e, stack) {
+      print("[Player.initState()] $e");
+      print(stack);
+    }
+  }
 
-        await Future.wait(
-          keyWithActions.map((e) {
-            return hotKeyManager.register(
-              e.hotKey,
-              keyDownHandler: e.onKeyDown,
-            );
-          }),
-        );
-      } catch (e) {
-        print("[Player.initState()]: $e");
-      }
-    });
+  _init(Duration timeStamp) async {
+    try {
+      setState(() {
+        _volume = player.volume;
+      });
+      player.playingStream.listen((playing) async {
+        setState(() {
+          _isPlaying = playing;
+        });
+      });
+
+      player.durationStream.listen((duration) async {
+        if (duration != null) {
+          // Actually things doesn't work all the time as they were
+          // described. So instead of listening to a `playback.ready`
+          // stream, it has to listen to duration stream since duration
+          // is always added to the Stream sink after all icyMetadata has
+          // been loaded thus indicating buffering started
+          if (duration != Duration.zero && duration != _duration) {
+            // this line is for prev/next or already playing playlist
+            if (player.playing) await player.pause();
+            await player.play();
+          }
+          setState(() {
+            _duration = duration;
+          });
+        }
+      });
+
+      player.processingStateStream.listen((event) async {
+        try {
+          if (event == ProcessingState.completed && _currentTrackId != null) {
+            _movePlaylistPositionBy(1);
+          }
+        } catch (e, stack) {
+          print("[PrecessingStateStreamListener] $e");
+          print(stack);
+        }
+      });
+
+      await Future.wait(
+        _hotKeys.map((e) {
+          return hotKeyManager.register(
+            e.hotKey,
+            keyDownHandler: e.onKeyDown,
+          );
+        }),
+      );
+    } catch (e) {
+      print("[Player._init()]: $e");
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance?.removeObserver(this);
     player.dispose();
-    Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e)));
+    Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
     super.dispose();
   }
 
@@ -142,6 +144,15 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
       // if the app resumes later, it will still remember what position to
       // resume from.
       player.stop();
+    }
+  }
+
+  _playOrPause(key) async {
+    try {
+      _isPlaying ? await player.pause() : await player.play();
+    } catch (e, stack) {
+      print("[PlayPauseShortcut] $e");
+      print(stack);
     }
   }
 
@@ -303,19 +314,19 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                       }
                     },
                     onShuffle: () async {
+                      if (playback.currentTrack == null ||
+                          playback.currentPlaylist == null) return;
                       try {
                         if (!_shuffled) {
-                          await player.setShuffleModeEnabled(true).then(
-                                (value) => setState(() {
-                                  _shuffled = true;
-                                }),
-                              );
+                          playback.currentPlaylist!.shuffle();
+                          setState(() {
+                            _shuffled = true;
+                          });
                         } else {
-                          await player.setShuffleModeEnabled(false).then(
-                                (value) => setState(() {
-                                  _shuffled = false;
-                                }),
-                              );
+                          playback.currentPlaylist!.unshuffle();
+                          setState(() {
+                            _shuffled = false;
+                          });
                         }
                       } catch (e, stack) {
                         print("[PlayerControls.onShuffle()] $e");

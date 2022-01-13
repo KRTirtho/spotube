@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spotube/components/Settings.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -20,13 +21,16 @@ class _LyricsState extends State<Lyrics> {
     Playback playback = context.watch<Playback>();
     UserPreferences userPreferences = context.watch<UserPreferences>();
 
+    bool hasToken = (userPreferences.geniusAccessToken != null ||
+        (userPreferences.geniusAccessToken?.isNotEmpty ?? false));
+
     if (playback.currentTrack != null &&
-        userPreferences.geniusAccessToken != null &&
+        hasToken &&
         playback.currentTrack!.id != _lyrics["id"]) {
       getLyrics(
         playback.currentTrack!.name!,
         artistsToString(playback.currentTrack!.artists ?? []),
-        apiKey: userPreferences.geniusAccessToken,
+        apiKey: userPreferences.geniusAccessToken!,
         optimizeQuery: true,
       ).then((lyrics) {
         if (lyrics != null) {
@@ -44,12 +48,32 @@ class _LyricsState extends State<Lyrics> {
     }
 
     if (_lyrics["lyrics"] == null && playback.currentTrack != null) {
+      if (!hasToken) {
+        return Expanded(
+            child: Center(
+          child: Column(
+            children: [
+              const Text("Genius lyrics API access token isn't set"),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return const Settings();
+                      },
+                    ));
+                  },
+                  child: const Text("Add Access Token"))
+            ],
+          ),
+        ));
+      }
       return const Expanded(
         child: Center(
           child: CircularProgressIndicator.adaptive(),
         ),
       );
     }
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
