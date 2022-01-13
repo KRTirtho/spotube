@@ -10,23 +10,12 @@ Following are the features that currently spotube offers:
 - Open Source
 - No telementry, diagnostics or user data collection
 - Lightweight & resource friendly
-- Near native performance (Thanks to Flutter+Skia)
+- Native performance (Thanks to Flutter+Skia)
 - Playback control is on user's machine instead of server based
 - Small size & less data hungry
 - No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
 - Lyrics
 - Downloadable track (WIP)
-
-## Requirements (Linux🐧 only)
-
-Don't worry **spotify premium isn't required**😱. But some extra packages are required.
-
-- [MPV](https://mpv.io/installation/) player for playing the actual audio
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp) for streaming the audio from youtube
-
-Now, Install youtube-dl from
-
-- official github repo: https://github.com/yt-dlp/yt-dlp#installation (recommended)
 
 ## Installation
 
@@ -36,18 +25,18 @@ All the binaries are located in the [releases](https://github.com/krtirtho/spotu
 
 ### Windows
 
-Extract the **`Spotube-winx64-v<version>.zip`** & double click on **`install.bat`** & follow along the installer
+Extract the **`Spotube-windows-x86_64-setup.exe`** & double click on **`install.bat`** & follow along the installer
 
 ### Linux
 
-- **Ubuntu/Debian**
-  Make sure you've fulfilled all the requirements
+- #### Ubuntu/Debian
   ```bash
-  sudo apt install spotube_linux-x86_64-v<version>.deb
+  sudo apt install spotube-linux-x86_64.deb
   or
-  sudo dpkg -i spotube_linux-x86_64-v<version>.deb
+  sudo dpkg -i spotube-linux-x86_64.deb
   ```
-- **Others**: Navigate to the downloaded **`Spotube_linux-x86_64-v<version>.AppImage`**
+- #### Others:
+   Navigate to the downloaded **`Spotube_linux-x86_64.AppImage`**
   file & double click to run it
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
