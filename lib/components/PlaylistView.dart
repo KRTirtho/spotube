@@ -17,8 +17,10 @@ class PlaylistView extends StatefulWidget {
 class _PlaylistViewState extends State<PlaylistView> {
   List<TableRow> trackToTableRow(List<Track> tracks) {
     return tracks.asMap().entries.map((track) {
-      var thumbnailUrl = track.value.album?.images?.last.url;
-      var duration =
+      String? thumbnailUrl = (track.value.album?.images?.isNotEmpty ?? false)
+          ? track.value.album?.images?.last.url
+          : null;
+      String duration =
           "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
       return (TableRow(
         children: [

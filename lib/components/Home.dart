@@ -185,7 +185,11 @@ class _HomeState extends State<Home> {
                     return FutureBuilder<User>(
                       future: data.spotifyApi.me.get(),
                       builder: (context, snapshot) {
-                        var avatarImg = snapshot.data?.images?.last.url;
+                        var avatarImg = ((snapshot.data?.images?.isNotEmpty ??
+                                    false) &&
+                                snapshot.data?.images?.last.url != null)
+                            ? snapshot.data!.images!.last.url!
+                            : "https://avatars.dicebear.com/api/human/${snapshot.data?.id}.png";
                         return Padding(
                           padding: const EdgeInsets.all(16),
                           child: Row(
@@ -193,11 +197,10 @@ class _HomeState extends State<Home> {
                             children: [
                               Row(
                                 children: [
-                                  if (avatarImg != null)
-                                    CircleAvatar(
-                                      backgroundImage:
-                                          CachedNetworkImageProvider(avatarImg),
-                                    ),
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        CachedNetworkImageProvider(avatarImg),
+                                  ),
                                   const SizedBox(width: 10),
                                   Text(
                                     snapshot.data?.displayName ?? "User's name",

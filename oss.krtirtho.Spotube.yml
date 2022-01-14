@@ -1,0 +1,13 @@
+app-id: oss.krtirtho.Spotube
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: spotube
+modules:
+  - name: spotube
+    buildsystem: simple
+    build-commands:
+      - install -D hello.sh /app/bin/hello.sh
+    sources:
+      - type: file
+        path: hello.sh

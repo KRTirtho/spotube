@@ -1,14 +1,14 @@
-# Maintainer: KRTirtho <krtirho@gmail.com>
+# Maintainer: Kingkor Roy Tirtho <krtirho@gmail.com>
 pkgname=spotube
 pkgver=1.0.0
 pkgrel=1
 epoch=
-pkgdesc="A music streaming app combining the power of Spotify & Youtube"
+pkgdesc="A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed"
 arch=(x86_64)
 url="https://github.com/KRTirtho/spotube/"
-license=('MIT')
+license=('BSD 4-Clause')
 groups=()
-depends=('mpv' 'yt-dlp')
+depends=()
 makedepends=()
 checkdepends=()
 optdepends=()
@@ -19,17 +19,18 @@ backup=()
 options=()
 install=
 changelog=
-source=("./spotube-v1.0.0-linux-x86-64.tar")
+source=("https://github.com/KRTirtho/spotube/releases/download/v${version}/Spotube-linux-x86_64.tar.xz")
 noextract=()
-md5sums=(a58727a9233d7d381872be59b622f864)
+md5sums=(f1830c1edf38c236416bdd3bd33ec845)
 validpgpkeys=()
 
 package(){
   install -dm755 "${pkgdir}/usr/share/icons/${pkgname}"
+  install -dm755 "${pkgdir}/usr/share/applications"
   install -dm755 "${pkgdir}/usr/share/${pkgname}"
   install -dm755 "${pkgdir}/usr/bin"
   cp -ra ./ "${pkgdir}/usr/share/${pkgname}"
-  cp ./spotube.desktop ~/.local/share/applications
-  cp ./data/flutter_assets/assets/spotube-logo.png "${pkgdir}/usr/share/icons/${pkgname}"
+  cp ./spotube.desktop "${pkgdir}/usr/share/applications"
+  cp ./spotube-logo.png "${pkgdir}/usr/share/icons/${pkgname}"
   ln -s "/usr/share/${pkgname}/spotube" "${pkgdir}/usr/bin/${pkgname}"
 }

@@ -227,7 +227,10 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
             _playTrack(playback.currentTrack!, playback);
           }
 
-          String? albumArt = playback.currentTrack?.album?.images?.last.url;
+          String? albumArt =
+              (playback.currentTrack?.album?.images?.isNotEmpty ?? false)
+                  ? playback.currentTrack?.album?.images?.last.url
+                  : null;
 
           return Material(
             type: MaterialType.transparency,
