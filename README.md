@@ -3,7 +3,7 @@
 Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
 ![Application Screenshot](assets/spotube-screenshot.png)
 
-## Features
+# Features
 
 Following are the features that currently spotube offers:
 
@@ -17,31 +17,44 @@ Following are the features that currently spotube offers:
 - Lyrics
 - Downloadable track (WIP)
 
-## Installation
+# Installation
 
 I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
 
 All the binaries are located in the [releases](https://github.com/krtirtho/spotube/releases), just download
 
-### Windows
+## Windows
 
-Extract the **`Spotube-windows-x86_64-setup.exe`** & double click on **`install.bat`** & follow along the installer
+Download the [setup file](https://github.com/KRTirtho/spotube/releases/download/v1.0.0/Spotube-windows-x86_64-setup.exe) & follow along the installer
 
-### Linux
+## Linux
 
-- #### Ubuntu/Debian
+### Ubuntu/Debian/Linux Mint/Pop_!OS:
+  Download the [Spotube-linux-x86_64.deb](https://github.com/KRTirtho/spotube/releases/download/v1.0.0/Spotube-linux-x86_64.deb) then double click it or run
   ```bash
-  sudo apt install spotube-linux-x86_64.deb
-  or
-  sudo dpkg -i spotube-linux-x86_64.deb
+  $ sudo apt install Spotube-linux-x86_64.deb
+  # or
+  $ sudo dpkg -i Spotube-linux-x86_64.deb
   ```
-- #### Others:
-   Navigate to the downloaded **`Spotube_linux-x86_64.AppImage`**
-  file & double click to run it
+  in the directory where it was downloaded
+
+
+### Arch/Manjaro/Endeavour:
+  Run following terminal
+  ```bash
+  # for `yay` users
+  $ yay -S spotube
+  # for `pamac` users
+  $ pamac install spotube
+  ```
+
+
+### Others:
+   Download the [Spotube-linux-x86_64.AppImage](Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
 
-## Configuration
+# Configuration
 
 There are some configurations that needs to be done to start using this software
 
@@ -70,7 +83,7 @@ Also, you need a [genius](https://genius.com) account for **lyrics** & a API Cli
 
 > **Note!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself
 
-## TODO:
+# TODO:
 
 - [ ] Compile, Debug & Build for **MacOS**
 - [x] Add support for show Lyric of currently playing track
@@ -78,12 +91,25 @@ Also, you need a [genius](https://genius.com) account for **lyrics** & a API Cli
 - [ ] Support for playing/streaming podcasts/shows
 - [ ] Artist, User & Album pages
 
-## Things that don't work
+# Building from source
+
+- Download the latest Flutter SDK (>=2.15.1) & enable desktop support
+- Install Development dependencies in linux
+  - `libwebkit2gtk-4.0-dev` & `keybinder-3.0` (for Debian/Ubuntu)
+  - `webkit2gtk` & `libkeybinder3` (for Arch/Manjaro)
+- Clone the Repo
+
+```bash
+$ flutter pub get
+$ flutter run -d <window|macos|linux>
+```
+
+# Things that don't work
 
 - Shows & Podcasts aren't supported as it'd require premium anyway
 - OS Media Controls
 - Global Media Shortcuts/Keyboard Media Buttons
 
-#### Social handlers
+# Social handlers
 
 Follow me on [Twitter](https://twitter.com/@krtirtho) for newer updates about this application
