@@ -81,6 +81,8 @@ class _PlaylistCardState extends State<PlaylistCard> {
                                               tracks.map((e) => e.track!)))
                                   .toList();
 
+                          if (tracks.isEmpty) return;
+
                           playback.setCurrentPlaylist = CurrentPlaylist(
                             tracks: tracks,
                             id: widget.playlist.id!,

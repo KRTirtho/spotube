@@ -189,7 +189,7 @@ class _HomeState extends State<Home> {
                                     false) &&
                                 snapshot.data?.images?.last.url != null)
                             ? snapshot.data!.images!.last.url!
-                            : "https://avatars.dicebear.com/api/human/${snapshot.data?.id}.png";
+                            : "https://avatars.dicebear.com/api/adventurer/${snapshot.data?.id}.png";
                         return Padding(
                           padding: const EdgeInsets.all(16),
                           child: Row(

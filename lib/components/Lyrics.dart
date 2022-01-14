@@ -50,21 +50,25 @@ class _LyricsState extends State<Lyrics> {
     if (_lyrics["lyrics"] == null && playback.currentTrack != null) {
       if (!hasToken) {
         return Expanded(
-            child: Center(
-          child: Column(
-            children: [
-              const Text("Genius lyrics API access token isn't set"),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) {
-                        return const Settings();
-                      },
-                    ));
-                  },
-                  child: const Text("Add Access Token"))
-            ],
-          ),
+            child: Column(
+          children: [
+            Text(
+              "Genius lyrics API access token isn't set",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline4
+                  ?.copyWith(color: Colors.red[400]),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return const Settings();
+                    },
+                  ));
+                },
+                child: const Text("Add Access Token"))
+          ],
         ));
       }
       return const Expanded(

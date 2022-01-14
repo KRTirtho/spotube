@@ -25,12 +25,12 @@ All the binaries are located in the [releases](https://github.com/krtirtho/spotu
 
 ## Windows
 
-Download the [setup file](https://github.com/KRTirtho/spotube/releases/download/v1.0.0/Spotube-windows-x86_64-setup.exe) & follow along the installer
+Download the [setup file](https://github.com/KRTirtho/spotube/releases/download/v1.0.1/Spotube-windows-x86_64-setup.exe) & follow along the installer
 
 ## Linux
 
 ### Ubuntu/Debian/Linux Mint/Pop_!OS:
-  Download the [Spotube-linux-x86_64.deb](https://github.com/KRTirtho/spotube/releases/download/v1.0.0/Spotube-linux-x86_64.deb) then double click it or run
+  Download the [Spotube-linux-x86_64.deb](https://github.com/KRTirtho/spotube/releases/download/v1.0.1/Spotube-linux-x86_64.deb) then double click it or run
   ```bash
   $ sudo apt install Spotube-linux-x86_64.deb
   # or
@@ -50,7 +50,7 @@ Download the [setup file](https://github.com/KRTirtho/spotube/releases/download/
 
 
 ### Others:
-   Download the [Spotube-linux-x86_64.AppImage](Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
+   Download the [Spotube-linux-x86_64.AppImage](https://github.com/KRTirtho/spotube/releases/download/v1.0.1/Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
 
