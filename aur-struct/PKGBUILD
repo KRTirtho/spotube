@@ -21,7 +21,7 @@ install=
 changelog=
 source=("https://github.com/KRTirtho/spotube/releases/download/v${version}/Spotube-linux-x86_64.tar.xz")
 noextract=()
-md5sums=(f1830c1edf38c236416bdd3bd33ec845)
+md5sums=(44f79f93ddaf6f0c4e7d133d2fe34bde)
 validpgpkeys=()
 
 package(){
