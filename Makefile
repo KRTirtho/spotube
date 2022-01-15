@@ -22,3 +22,13 @@ tar:
 appimage:
 				 appimage-builder --recipe AppImageBuilder.yml\
 				 && mv Spotube-*-x86_64.AppImage build
+
+publishaur: 
+					 echo '[Warning!]: you need SSH paired with AUR'\
+					 && rm -rf build/spotube\
+					 && git clone ssh://aur@aur.archlinux.org/spotube.git build/spotube\
+					 && cp aur-struct/PKGBUILD aur-struct/.SRCINFO build/spotube\
+					 && cd build/spotube\
+					 && git add .\
+					 && git commit -m "${MSG}"\
+					 && git push
