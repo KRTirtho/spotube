@@ -56,3 +56,6 @@ app.*.map.json
 /AppDir
 /appimage-builder-cache
 *.AppImage
+
+/.flatpak
+/.flatpak-builder

@@ -32,3 +32,8 @@ publishaur:
 					 && git add .\
 					 && git commit -m "${MSG}"\
 					 && git push
+
+flatpak:
+				rm -rf build/flatpak\
+				&& rm -rf .flatpak-builder/build\
+				&& flatpak-builder build/flatpak oss.krtirtho.Spotube.yml

@@ -1,13 +1,28 @@
 app-id: oss.krtirtho.Spotube
-runtime: org.freedesktop.Platform
-runtime-version: '21.08'
-sdk: org.freedesktop.Sdk
-command: spotube
+runtime: org.gnome.Platform
+runtime-version: '40'
+sdk: org.gnome.Sdk
+command: /app/spotube/spotube
+finish-args:
+  - --socket=x11
+  - --socket=fallback-x11 
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --device=dri
+  - --filesystem=~/.local/share
 modules:
   - name: spotube
     buildsystem: simple
     build-commands:
-      - install -D hello.sh /app/bin/hello.sh
+      - install -dm755 /app/share/applications /app/share/icons/spotube /app/bin /app/spotube
+      - cp -R spotube/ /app
+      - cp spotube/spotube.desktop /app/share/applications
+      - cp spotube/spotube-logo.png /app/share/icons/spotube
     sources:
-      - type: file
-        path: hello.sh
+      - type: archive
+        only_arches:
+          - x86_64
+        url: https://github.com/KRTirtho/spotube/releases/download/v1.0.1/Spotube-linux-x86_64.tar.xz
+        dest: spotube
+        sha256: 117f379c4e32a03cf1a596345e14ba82d9c143cc0ff5ac49a6e10fdc7a3d5178
