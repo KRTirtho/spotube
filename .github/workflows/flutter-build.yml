@@ -12,7 +12,7 @@ jobs:
       - uses: subosito/flutter-action@v2.2.0
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev libkeybinder-3.0-0
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0
       - run: flutter config --enable-linux-desktop
       - run: flutter pub get
       - run: flutter clean
