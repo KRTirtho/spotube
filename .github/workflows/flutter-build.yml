@@ -35,5 +35,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2
+      - shell: powershell
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
+      - run: curl -o installer.exe https://jrsoftware.org/download.php/is.exe
+      - run: ./installer.exe /verysilent /allusers /dir=iscc
+      - run: & ./iscc/iscc.exe scripts/windows-setup-creator.iss
+      - run: rm -recurse iscc
+      - run: rm installer.exe
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Spotube-Linux-Bundle
+          path: build/installer/Spotube-windows-x86_64-setup.exe

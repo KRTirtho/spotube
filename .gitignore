@@ -59,3 +59,6 @@ app.*.map.json
 
 /.flatpak
 /.flatpak-builder
+
+/iscc
+installer.exe
