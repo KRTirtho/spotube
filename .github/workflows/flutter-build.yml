@@ -1,0 +1,22 @@
+name: Flutter Cross Build
+on:
+  push:
+    branches: [build]
+  workflow_dispatch:
+
+jobs:
+  build_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: subosito/flutter-action@v2.2.0
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y make build-essntials ninja-build libgtk-3-dev libwebkit2gtk-4.0-dev libkeybinder-3.0-0
+      - run: flutter config --enable-linux-desktop
+      - run: flutter pub get
+      - run: flutter build linux
+      - run: make deb
+      - uses: actions/upload-artifact@v2
+        with:
+          name: bundle-deb
+          path: build/Spotube-linux-x86_64.deb

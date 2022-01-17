@@ -2,7 +2,7 @@ app-id: oss.krtirtho.Spotube
 runtime: org.gnome.Platform
 runtime-version: '40'
 sdk: org.gnome.Sdk
-command: /app/spotube/spotube
+command: spotube
 finish-args:
   - --socket=x11
   - --socket=fallback-x11 
@@ -19,6 +19,7 @@ modules:
       - cp -R spotube/ /app
       - cp spotube/spotube.desktop /app/share/applications
       - cp spotube/spotube-logo.png /app/share/icons/spotube
+      - ln -s /app/spotube/spotube /app/bin/spotube
     sources:
       - type: archive
         only_arches:
