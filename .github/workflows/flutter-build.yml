@@ -30,3 +30,10 @@ jobs:
             build/Spotube-linux-x86_64.deb
             build/Spotube-linux-x86_64.tar.xz
             build/Spotube-*-x86_64.AppImage
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+      - run: flutter config --enable-windows-desktop
+      - run: flutter build windows
