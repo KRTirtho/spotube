@@ -1,4 +1,6 @@
 name: Flutter Cross Build
+env:
+  INNO_VERSION: 6.2.0
 on:
   push:
     branches: [build]
@@ -37,7 +39,7 @@ jobs:
       - uses: subosito/flutter-action@v2.2.0
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
-      - run: curl -o installer.exe https://jrsoftware.org/download.php/is.exe
+      - run: curl -L -o installer.exe http://files.jrsoftware.org/is/6/innosetup-${{ env.INNO_VERSION }}.exe
       - run: ./installer.exe /verysilent /allusers /dir=iscc
       - run: ./iscc/iscc.exe scripts/windows-setup-creator.iss
       - run: rm -recurse iscc
