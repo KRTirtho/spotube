@@ -29,3 +29,4 @@ jobs:
           path: |
             build/Spotube-linux-x86_64.deb
             build/Spotube-linux-x86_64.tar.xz
+            build/Spotube-*-x86_64.AppImage
