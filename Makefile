@@ -3,8 +3,7 @@ USR_SHARE=deb-struct/usr/share
 BUNDLE_DIR=build/linux/x64/release/bundle
 deb: 
 		mkdir -p spotube\
-		&& mkdir -p $(USR_SHARE)/applications\
-		&& mkdir -p $(USR_SHARE)/icons/spotube\
+		&& mkdir -p $(USR_SHARE)/applications $(USR_SHARE)/icons/spotube $(USR_SHARE)/spotube\
 		&& cp -r $(BUNDLE_DIR)/* $(USR_SHARE)/spotube\
 		&& cp linux/spotube.desktop $(USR_SHARE)/applications/\
 		&& cp assets/spotube-logo.png $(USR_SHARE)/icons/spotube\
