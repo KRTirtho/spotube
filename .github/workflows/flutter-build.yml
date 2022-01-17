@@ -12,13 +12,20 @@ jobs:
       - uses: subosito/flutter-action@v2.2.0
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
       - run: flutter config --enable-linux-desktop
       - run: flutter pub get
       - run: flutter clean
       - run: flutter build linux
       - run: make deb
+      - run: make tar
+      - run: wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
+      - run: chmod +x /usr/local/bin/appimagetool
+      - run: pip3 install appimage-builder
+      - run: make appimage
       - uses: actions/upload-artifact@v2
         with:
-          name: bundle-deb
-          path: build/Spotube-linux-x86_64.deb
+          name: Spotube-Linux-Bundle
+          path: |
+            build/Spotube-linux-x86_64.deb
+            build/Spotube-linux-x86_64.tar.xz
