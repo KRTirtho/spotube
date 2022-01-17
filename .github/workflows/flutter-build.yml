@@ -34,8 +34,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2
-      - shell: powershell
+      - uses: subosito/flutter-action@v2.2.0
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
       - run: curl -o installer.exe https://jrsoftware.org/download.php/is.exe
@@ -43,7 +42,6 @@ jobs:
       - run: ./iscc/iscc.exe scripts/windows-setup-creator.iss
       - run: rm -recurse iscc
       - run: rm installer.exe
-      
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Windows-Bundle
