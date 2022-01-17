@@ -8,6 +8,7 @@ jobs:
   build_ubuntu:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2.2.0
       - run: |
           sudo apt-get update -y
