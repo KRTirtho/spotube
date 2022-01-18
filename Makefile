@@ -2,8 +2,9 @@ INNO_VERSION=6.2.0
 TEMP_DIR=/tmp/spotube-tar
 USR_SHARE=deb-struct/usr/share
 BUNDLE_DIR=build/linux/x64/release/bundle
+MIRRORLIST=${PWD}/build/mirrorlist
 deb: 
-		mkdir -p spotube\
+		mkdir -p ${USR_SHARE}/spotube\
 		&& mkdir -p $(USR_SHARE)/applications $(USR_SHARE)/icons/spotube $(USR_SHARE)/spotube\
 		&& cp -r $(BUNDLE_DIR)/* $(USR_SHARE)/spotube\
 		&& cp linux/spotube.desktop $(USR_SHARE)/applications/\
@@ -21,6 +22,9 @@ tar:
 appimage:
 				 appimage-builder --recipe AppImageBuilder.yml\
 				 && mv Spotube-*-x86_64.AppImage build
+
+aursrcinfo:
+					 docker run -e EXPORT_SRC=1 -v ${PWD}/aur-struct:/pkg -v ${MIRRORLIST}:/etc/pacman.d/mirrorlist:ro whynothugo/makepkg
 
 publishaur: 
 					 echo '[Warning!]: you need SSH paired with AUR'\

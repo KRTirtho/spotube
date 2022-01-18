@@ -1,10 +1,11 @@
 pkgbase = spotube
 	pkgdesc = A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
 	pkgver = 1.0.1
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/KRTirtho/spotube/
 	arch = x86_64
 	license = BSD 4-Clause
+	depends = libkeybinder3
 	source = https://github.com/KRTirtho/spotube/releases/download/v1.0.1/Spotube-linux-x86_64.tar.xz
 	md5sums = 44f79f93ddaf6f0c4e7d133d2fe34bde
 
