@@ -39,6 +39,8 @@ jobs:
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
       - uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: -h
       - run: choco install make -y
       - run: make innoinstall
       - run: make inno
