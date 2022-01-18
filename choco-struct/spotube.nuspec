@@ -5,7 +5,7 @@
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>spotube</id>
     <version>1.0.1</version>
-    <packageSourceUrl>https://github.com/KRTirtho/spotube/tree/master/choco</packageSourceUrl>
+    <packageSourceUrl>https://github.com/KRTirtho/spotube/tree/master/choco-struct</packageSourceUrl>
     <owners>Kingkor Roy Tirtho</owners>
     <!-- ============================== -->
 
@@ -39,6 +39,7 @@
     - Lyrics
     - Downloadable track (WIP)
     </description>
+    <releaseNotes>https://github.com/KRTirtho/spotube/releases/tag/v1.0.1</releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />

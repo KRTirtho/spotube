@@ -1,0 +1,23 @@
+VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+
+1. The embedded files are also available as a release in GitHub.
+
+Please go to releases page
+https://github.com/KRTirtho/spotube/releases
+
+Download same version as this choco package (example for v1.0.1)
+https://github.com/KRTirtho/spotube/releases/tag/v1.0.1
+
+1. get hashes. Run:
+powershell -command Get-FileHash tools\Spotube-windows-x86_64-setup.exe
+
+2. The checksums should match the following:
+--- 
+Version Hashes for v1.0.1
+ 
+
+Algorithm  Hash                                                              Path
+---------  ----                                                              ----
+SHA256     85820A7169A2C265648D66D8950377C4C8FE11F677D2FE2B03DB5C2815BFEB6D  tools\Spotube-windows-x86_64-setup.exe
