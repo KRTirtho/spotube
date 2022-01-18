@@ -62,3 +62,5 @@ app.*.map.json
 
 /iscc
 installer.exe
+
+/choco-struct/tools/*.exe

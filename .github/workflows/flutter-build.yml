@@ -1,9 +1,8 @@
 name: Flutter Cross Build
-env:
-  INNO_VERSION: 6.2.0
 on:
   push:
-    branches: [build]
+    branches:
+      - build
   workflow_dispatch:
 
 jobs:
@@ -39,12 +38,14 @@ jobs:
       - uses: subosito/flutter-action@v2.2.0
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
-      - run: curl -L -o installer.exe http://files.jrsoftware.org/is/6/innosetup-${{ env.INNO_VERSION }}.exe
-      - run: ./installer.exe /verysilent /allusers /dir=iscc
-      - run: ./iscc/iscc.exe scripts/windows-setup-creator.iss
-      - run: rm -recurse iscc
-      - run: rm installer.exe
+      - uses: crazy-max/ghaction-chocolatey@v1
+      - run: choco install make -y
+      - run: make innoinstall
+      - run: make inno
+      - run: make choco
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Windows-Bundle
-          path: build/installer/Spotube-windows-x86_64-setup.exe
+          path: |
+            build/installer/Spotube-windows-x86_64-setup.exe
+            build/spotube.*.nupkg
