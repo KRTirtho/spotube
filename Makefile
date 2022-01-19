@@ -36,11 +36,6 @@ publishaur:
 					 && git commit -m "${MSG}"\
 					 && git push
 
-flatpak:
-				rm -rf build/flatpak\
-				&& rm -rf .flatpak-builder/build\
-				&& flatpak-builder build/flatpak oss.krtirtho.Spotube.yml
-
 innoinstall:
 						powershell curl -o build\installer.exe http://files.jrsoftware.org/is/6/innosetup-${INNO_VERSION}.exe
 		 				powershell build\installer.exe /verysilent /allusers /dir=build\iscc

@@ -95,7 +95,7 @@ Also, you need a [genius](https://genius.com) account for **lyrics** & a API Cli
 
 - Download the latest Flutter SDK (>=2.15.1) & enable desktop support
 - Install Development dependencies in linux
-  - `libwebkit2gtk-4.0-dev` & `libkeybinder-3.0-0` (for Debian/Ubuntu)
+  - `libwebkit2gtk-4.0-dev`, `libkeybinder-3.0-0` & `libkeybinder-3.0-0-dev` (for Debian/Ubuntu)
   - `webkit2gtk` & `libkeybinder3` (for Arch/Manjaro)
 - Clone the Repo
 
@@ -110,6 +110,31 @@ $ flutter run -d <window|macos|linux>
 - OS Media Controls
 - Global Media Shortcuts/Keyboard Media Buttons
 
+# License
+
+[BSD 4-Clause](/LICENSE)
+
+Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p)
+
+# Relevant Project/Tools Links
+
+- [Flutter](https://flutter.dev/) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
+- [Linux](https://www.linux.org/) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
+- [AUR](https://aur.archlinux.org/) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users
+- [Flatpak](https://flatpak.org/) - Flatpak is a utility for software deployment and package management for Linux
+- [spotify (dart)](https://github.com/rinukkusu/spotify-dart) - A dart library for interfacing with the Spotify API
+- [just_audio](https://github.com/ryanheise/just_audio/tree/master/just_audio) - A feature-rich cross-platform audio player for Flutter that supports network audio streams too
+- [libwinmedia](https://github.com/harmonoid/libwinmedia) - A cross-platform media playback library for C/C++ with good number of features (only Windows & Linux)
+- [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - YoutubeExplode is a library that provides an interface to query metadata of YouTube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks
+- [infinite_scroll_pagination](https://github.com/EdsonBueno/infinite_scroll_pagination) - Flutter package to help you lazily load and display pages of items as the user scrolls down your screen
+- [bitsdojo_window](https://github.com/bitsdojo/bitsdojo_window) - A Flutter package that makes it easy to customize and work with your Flutter desktop app window on Windows, macOS and Linux
+- [hotkey_manager](https://github.com/leanflutter/hotkey_manager) - A flutter plugin that allow Flutter desktop apps to defines system/inapp wide hotkey
+- [Inno Setup](https://jrsoftware.org/isinfo.php) - Inno Setup is a free installer for Windows programs by Jordan Russell and Martijn Laan
+
+
 # Social handlers
 
 Follow me on [Twitter](https://twitter.com/@krtirtho) for newer updates about this application
+
+
+<p align="center">&copy; 2022 Spotube</p>

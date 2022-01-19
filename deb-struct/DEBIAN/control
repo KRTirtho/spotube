@@ -5,6 +5,7 @@ Priority: optional
 Architecture: all
 Essential: no
 Installed-Size: 24400
-Maintainer: Kingkor Roy Tirtho
+Depends: libkeybinder-3.0-0 (>= 0.3.2)
+Maintainer: Kingkor Roy Tirtho <krtirtho@gmail.com>
 Description: A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
 Homepage: https://github.com/KRTirtho/spotube
