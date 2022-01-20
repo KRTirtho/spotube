@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +7,8 @@ import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/server_ipc.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
+
+const redirectUri = "http://localhost:4304/auth/spotify/callback";
 
 class Login extends StatefulWidget {
   @override
@@ -31,7 +32,6 @@ class _LoginState extends State<Login> {
       }
       final credentials = SpotifyApiCredentials(clientId, clientSecret);
       final grant = SpotifyApi.authorizationCodeGrant(credentials);
-      const redirectUri = "http://localhost:4304/auth/spotify/callback";
 
       final authUri = grant.getAuthorizationUrl(Uri.parse(redirectUri),
           scopes: spotifyScopes);

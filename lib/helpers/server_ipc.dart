@@ -4,10 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 Future<String?> connectIpc(String authUri, String redirectUri) async {
   try {
-    if (await canLaunch(authUri)) {
-      print("[Launching]: $authUri");
-      await launch(authUri);
-    }
+    print("[Launching]: $authUri");
+    await launch(authUri);
 
     HttpServer server =
         await HttpServer.bind(InternetAddress.loopbackIPv4, 4304);
@@ -32,7 +30,9 @@ Future<String?> connectIpc(String authUri, String redirectUri) async {
         }
       }
     }
-  } catch (error) {
-    throw error;
+  } catch (error, stack) {
+    print("[connectIpc]: $error");
+    print(stack);
+    rethrow;
   }
 }

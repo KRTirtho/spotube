@@ -24,7 +24,52 @@ void main() async {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  static _MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>();
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      String? themeMode = localStorage.getString(LocalStorageKeys.themeMode);
+
+      setState(() {
+        switch (themeMode) {
+          case "light":
+            _themeMode = ThemeMode.light;
+            break;
+          case "dark":
+            _themeMode = ThemeMode.dark;
+            break;
+          default:
+            _themeMode = ThemeMode.system;
+        }
+      });
+    });
+    super.initState();
+  }
+
+  void setThemeMode(ThemeMode themeMode) {
+    SharedPreferences.getInstance().then((localStorage) {
+      localStorage.setString(
+          LocalStorageKeys.themeMode, themeMode.toString().split(".").last);
+      setState(() {
+        _themeMode = themeMode;
+      });
+    });
+  }
+
+  ThemeMode getThemeMode() {
+    return _themeMode;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -145,7 +190,7 @@ class MyApp extends StatelessWidget {
             unselectedIconTheme: const IconThemeData(opacity: 1),
           ),
         ),
-        themeMode: ThemeMode.system,
+        themeMode: _themeMode,
         home: const Home(),
       ),
     );

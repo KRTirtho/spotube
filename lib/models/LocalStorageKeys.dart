@@ -5,4 +5,6 @@ abstract class LocalStorageKeys {
   static String refreshToken = 'refresh_token';
   static String expiration = "expiration";
   static String geniusAccessToken = "genius_access_token";
+
+  static String themeMode = "theme_mode";
 }
