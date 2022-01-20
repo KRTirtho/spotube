@@ -19,6 +19,7 @@ Future<Track> toYoutubeTrack(Track track) async {
 
   var trackManifest = await youtube.videos.streams.getManifest(ytVideo.id);
 
-  track.uri = trackManifest.audioOnly.first.url.toString();
+  track.uri = trackManifest.audioOnly.withHighestBitrate().url.toString();
+  track.href = ytVideo.url;
   return track;
 }

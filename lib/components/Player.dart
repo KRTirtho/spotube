@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/DownloadTrackButton.dart';
 import 'package:spotube/components/PlayerControls.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
@@ -353,6 +354,9 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                       }
                     },
                   ),
+                ),
+                DownloadTrackButton(
+                  track: playback.currentTrack,
                 ),
                 // add to saved tracks
                 Expanded(
