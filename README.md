@@ -27,6 +27,13 @@ All the binaries are located in the [releases](https://github.com/krtirtho/spotu
 
 Download the [setup file](https://github.com/KRTirtho/spotube/releases/download/v1.0.1/Spotube-windows-x86_64-setup.exe) & follow along the installer
 
+### Chocolatey
+
+Run the following command to install Spotube with windows chocolatey package manager
+```powershell
+choco install spotube
+```
+
 ## Linux
 
 ### Ubuntu/Debian/Linux Mint/Pop_!OS:
