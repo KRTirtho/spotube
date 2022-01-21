@@ -15,7 +15,25 @@ class PlaylistView extends StatefulWidget {
 }
 
 class _PlaylistViewState extends State<PlaylistView> {
-  List<TableRow> trackToTableRow(List<Track> tracks) {
+  playPlaylist(Playback playback, List<Track> tracks, {Track? currentTrack}) {
+    currentTrack ??= tracks.first;
+    var isPlaylistPlaying = playback.currentPlaylist?.id == widget.playlist.id;
+    if (!isPlaylistPlaying) {
+      playback.setCurrentPlaylist = CurrentPlaylist(
+        tracks: tracks,
+        id: widget.playlist.id!,
+        name: widget.playlist.name!,
+        thumbnail: widget.playlist.images![0].url!,
+      );
+      playback.setCurrentTrack = currentTrack;
+    } else if (isPlaylistPlaying &&
+        currentTrack.id != null &&
+        currentTrack.id != playback.currentTrack?.id) {
+      playback.setCurrentTrack = currentTrack;
+    }
+  }
+
+  List<TableRow> trackToTableRow(Playback playback, List<Track> tracks) {
     return tracks.asMap().entries.map((track) {
       String? thumbnailUrl = (track.value.album?.images?.isNotEmpty ?? false)
           ? track.value.album?.images?.last.url
@@ -35,6 +53,18 @@ class _PlaylistViewState extends State<PlaylistView> {
           TableCell(
             child: Row(
               children: [
+                IconButton(
+                  icon: Icon(
+                    playback.currentTrack?.id != null &&
+                            playback.currentTrack?.id == track.value.id
+                        ? Icons.pause_circle_rounded
+                        : Icons.play_circle_rounded,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onPressed: () {
+                    playPlaylist(playback, tracks, currentTrack: track.value);
+                  },
+                ),
                 if (thumbnailUrl != null)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -105,6 +135,9 @@ class _PlaylistViewState extends State<PlaylistView> {
 
   @override
   Widget build(BuildContext context) {
+    Playback playback = context.watch<Playback>();
+    var isPlaylistPlaying =
+        playback.currentPlaylist?.id == this.widget.playlist.id;
     return Consumer<SpotifyDI>(builder: (_, data, __) {
       return Scaffold(
         body: FutureBuilder<Iterable<Track>>(
@@ -132,37 +165,16 @@ class _PlaylistViewState extends State<PlaylistView> {
                           onPressed: () {},
                         ),
                         // play playlist
-                        Consumer<Playback>(
-                            builder: (context, playback, widget) {
-                          var isPlaylistPlaying =
-                              playback.currentPlaylist?.id ==
-                                  this.widget.playlist.id;
-                          return IconButton(
-                            icon: Icon(
-                              isPlaylistPlaying
-                                  ? Icons.stop_rounded
-                                  : Icons.play_arrow_rounded,
-                            ),
-                            onPressed: snapshot.hasData
-                                ? () {
-                                    if (!isPlaylistPlaying) {
-                                      playback.setCurrentPlaylist =
-                                          CurrentPlaylist(
-                                        tracks: tracks,
-                                        id: this.widget.playlist.id!,
-                                        name: this.widget.playlist.name!,
-                                        thumbnail: this
-                                            .widget
-                                            .playlist
-                                            .images![0]
-                                            .url!,
-                                      );
-                                      playback.setCurrentTrack = tracks.first;
-                                    }
-                                  }
-                                : null,
-                          );
-                        }),
+                        IconButton(
+                          icon: Icon(
+                            isPlaylistPlaying
+                                ? Icons.stop_rounded
+                                : Icons.play_arrow_rounded,
+                          ),
+                          onPressed: snapshot.hasData
+                              ? () => playPlaylist(playback, tracks)
+                              : null,
+                        )
                       ],
                     ),
                   ),
@@ -216,7 +228,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                               )),
                                             ],
                                           ),
-                                          ...trackToTableRow(tracks),
+                                          ...trackToTableRow(playback, tracks),
                                         ],
                                       ),
                                     ),

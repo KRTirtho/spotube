@@ -15,8 +15,11 @@ class DownloadTrackButton extends StatefulWidget {
   _DownloadTrackButtonState createState() => _DownloadTrackButtonState();
 }
 
+enum TrackStatus { downloading, idle, done }
+
 class _DownloadTrackButtonState extends State<DownloadTrackButton> {
   late YoutubeExplode yt;
+  TrackStatus status = TrackStatus.idle;
 
   @override
   void initState() {
@@ -30,33 +33,89 @@ class _DownloadTrackButtonState extends State<DownloadTrackButton> {
     super.dispose();
   }
 
+  _downloadTrack() async {
+    if (widget.track == null) return;
+    StreamManifest manifest =
+        await yt.videos.streamsClient.getManifest(widget.track?.href);
+
+    var audioStream = yt.videos.streamsClient
+        .get(manifest.audioOnly.withHighestBitrate())
+        .asBroadcastStream();
+
+    var statusCb = audioStream.listen(
+      (event) {
+        if (status != TrackStatus.downloading) {
+          setState(() {
+            status = TrackStatus.downloading;
+          });
+        }
+      },
+      onDone: () async {
+        setState(() {
+          status = TrackStatus.done;
+        });
+        await Future.delayed(
+          const Duration(seconds: 3),
+          () {
+            if (status == TrackStatus.done) {
+              setState(() {
+                status = TrackStatus.idle;
+              });
+            }
+          },
+        );
+      },
+    );
+
+    String downloadFolder = path.join(
+        (await path_provider.getDownloadsDirectory())!.path, "Spotube");
+    String fileName =
+        "${widget.track?.name} - ${artistsToString(widget.track?.artists ?? [])}.mp3";
+    File outputFile = File(path.join(downloadFolder, fileName));
+    if (!outputFile.existsSync()) {
+      outputFile.createSync(recursive: true);
+      IOSink outputFileStream = outputFile.openWrite();
+      await audioStream.pipe(outputFileStream);
+      await outputFileStream.flush();
+      await outputFileStream.close().then((value) async {
+        if (status == TrackStatus.downloading) {
+          setState(() {
+            status = TrackStatus.done;
+          });
+          await Future.delayed(
+            const Duration(seconds: 3),
+            () {
+              if (status == TrackStatus.done) {
+                setState(() {
+                  status = TrackStatus.idle;
+                });
+              }
+            },
+          );
+        }
+        return statusCb.cancel();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (status == TrackStatus.downloading) {
+      return const SizedBox(
+        child: CircularProgressIndicator.adaptive(
+          strokeWidth: 2,
+        ),
+        height: 20,
+        width: 20,
+      );
+    } else if (status == TrackStatus.done) {
+      return const Icon(Icons.download_done_rounded);
+    }
     return IconButton(
       icon: const Icon(Icons.download_rounded),
-      onPressed: widget.track != null
-          ? () async {
-              if (widget.track == null) return;
-              StreamManifest manifest = await yt.videos.streamsClient
-                  .getManifest(widget.track?.href!.split("watch?v=").last);
-
-              var audioStream = yt.videos.streamsClient
-                  .get(manifest.audioOnly.withHighestBitrate());
-
-              String downloadFolder = path.join(
-                  (await path_provider.getDownloadsDirectory())!.path,
-                  "Spotube");
-              String fileName =
-                  "${widget.track?.name} - ${artistsToString(widget.track?.artists ?? [])}.mp3";
-              File outputFile = File(path.join(downloadFolder, fileName));
-              if (!outputFile.existsSync()) {
-                outputFile.createSync(recursive: true);
-                IOSink outputFileStream = outputFile.openWrite();
-                await audioStream.pipe(outputFileStream);
-                await outputFileStream.flush();
-                await outputFileStream.close();
-              }
-            }
+      onPressed: widget.track != null &&
+              !(widget.track!.href ?? "").startsWith("https://api.spotify.com")
+          ? _downloadTrack
           : null,
     );
   }
