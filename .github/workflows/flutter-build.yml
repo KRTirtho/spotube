@@ -62,10 +62,10 @@ jobs:
       - run: flutter config --enable-macos-desktop
       - run: flutter create .
       - run: flutter pub get
-      - run: flutter build macos
-      - run: brew install tree
-      - run: tree ./
       - uses: actions/upload-artifact@v2
         with:
           name: Macos Source Code
           path: ./
+      - run: flutter build macos
+      - run: brew install tree
+      - run: tree ./
