@@ -14,6 +14,7 @@ import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class Player extends StatefulWidget {
   const Player({Key? key}) : super(key: key);
@@ -32,6 +33,8 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
 
   double _volume = 0;
 
+  late YoutubeExplode youtube;
+
   late List<GlobalKeyActions> _hotKeys;
 
   @override
@@ -39,6 +42,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
     try {
       super.initState();
       player = AudioPlayer();
+      youtube = YoutubeExplode();
       _hotKeys = [
         GlobalKeyActions(
           HotKey(KeyCode.space, scope: HotKeyScope.inapp),
@@ -134,6 +138,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance?.removeObserver(this);
     player.dispose();
+    youtube.close();
     Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
     super.dispose();
   }
@@ -200,7 +205,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
             });
           });
         }
-        var ytTrack = await toYoutubeTrack(currentTrack);
+        var ytTrack = await toYoutubeTrack(youtube, currentTrack);
         if (playback.setTrackUriById(currentTrack.id!, ytTrack.uri!)) {
           await player
               .setAudioSource(AudioSource.uri(Uri.parse(ytTrack.uri!)))

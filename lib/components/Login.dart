@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotify/spotify.dart' hide Image;
-import 'package:spotube/components/Home.dart';
 import 'package:spotube/components/PageWindowTitleBar.dart';
-import 'package:spotube/helpers/server_ipc.dart';
-import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/provider/Auth.dart';
 
-const redirectUri = "http://localhost:4304/auth/spotify/callback";
-
 class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
+
   @override
   _LoginState createState() => _LoginState();
 }
@@ -19,9 +15,6 @@ class _LoginState extends State<Login> {
   String clientId = "";
   String clientSecret = "";
   bool _fieldError = false;
-  String? accessToken;
-  String? refreshToken;
-  DateTime? expiration;
 
   handleLogin(Auth authState) async {
     try {
@@ -30,48 +23,7 @@ class _LoginState extends State<Login> {
           _fieldError = true;
         });
       }
-      final credentials = SpotifyApiCredentials(clientId, clientSecret);
-      final grant = SpotifyApi.authorizationCodeGrant(credentials);
-
-      final authUri = grant.getAuthorizationUrl(Uri.parse(redirectUri),
-          scopes: spotifyScopes);
-
-      final responseUri = await connectIpc(authUri.toString(), redirectUri);
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      if (responseUri != null) {
-        final SpotifyApi spotify =
-            SpotifyApi.fromAuthCodeGrant(grant, responseUri);
-        var credentials = await spotify.getCredentials();
-        if (credentials.accessToken != null) {
-          accessToken = credentials.accessToken;
-          await localStorage.setString(
-              LocalStorageKeys.accessToken, credentials.accessToken!);
-        }
-        if (credentials.refreshToken != null) {
-          refreshToken = credentials.refreshToken;
-          await localStorage.setString(
-              LocalStorageKeys.refreshToken, credentials.refreshToken!);
-        }
-        if (credentials.expiration != null) {
-          expiration = credentials.expiration;
-          await localStorage.setString(LocalStorageKeys.expiration,
-              credentials.expiration?.toString() ?? "");
-        }
-      }
-
-      await localStorage.setString(LocalStorageKeys.clientId, clientId);
-      await localStorage.setString(
-        LocalStorageKeys.clientSecret,
-        clientSecret,
-      );
-      authState.setAuthState(
-        clientId: clientId,
-        clientSecret: clientSecret,
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        expiration: expiration,
-        isLoggedIn: true,
-      );
+      await oauthLogin(context, clientId: clientId, clientSecret: clientSecret);
     } catch (e) {
       print("[Login.handleLogin] $e");
     }

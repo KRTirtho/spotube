@@ -1,8 +1,7 @@
 import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-YoutubeExplode youtube = YoutubeExplode();
-Future<Track> toYoutubeTrack(Track track) async {
+Future<Track> toYoutubeTrack(YoutubeExplode youtube, Track track) async {
   var artistsName = track.artists?.map((ar) => ar.name).toList() ?? [];
   String queryString =
       "${artistsName.first} - ${track.name}${artistsName.length > 1 ? " feat. ${artistsName.sublist(1).join(" ")}" : ""}";
@@ -10,8 +9,11 @@ Future<Track> toYoutubeTrack(Track track) async {
   SearchList videos = await youtube.search.getVideos(queryString);
 
   List<Video> matchedVideos = videos.where((video) {
-    return video.title.contains(track.name!) &&
-        (track.artists?.every((artist) => video.title.contains(artist.name!)) ??
+    // the find should be lazy thus everything case insensitive
+    return video.title.toLowerCase().contains(track.name!.toLowerCase()) &&
+        (track.artists?.every((artist) => video.title
+                .toLowerCase()
+                .contains(artist.name!.toLowerCase())) ??
             false);
   }).toList();
 

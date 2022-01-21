@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide Page;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:oauth2/oauth2.dart' show AuthorizationException;
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/CategoryCard.dart';
 import 'package:spotube/components/Login.dart';
@@ -12,6 +13,7 @@ import 'package:spotube/components/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player.dart' as player;
 import 'package:spotube/components/Settings.dart';
 import 'package:spotube/components/UserLibrary.dart';
+import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -42,18 +44,20 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      String? clientId = localStorage.getString(LocalStorageKeys.clientId);
+      String? clientSecret =
+          localStorage.getString(LocalStorageKeys.clientSecret);
+      String? accessToken =
+          localStorage.getString(LocalStorageKeys.accessToken);
+      String? refreshToken =
+          localStorage.getString(LocalStorageKeys.refreshToken);
+      String? expirationStr =
+          localStorage.getString(LocalStorageKeys.expiration);
+      DateTime? expiration =
+          expirationStr != null ? DateTime.parse(expirationStr) : null;
       try {
         Auth authProvider = context.read<Auth>();
-        SharedPreferences localStorage = await SharedPreferences.getInstance();
-        var clientId = localStorage.getString(LocalStorageKeys.clientId);
-        var clientSecret =
-            localStorage.getString(LocalStorageKeys.clientSecret);
-        var accessToken = localStorage.getString(LocalStorageKeys.accessToken);
-        var refreshToken =
-            localStorage.getString(LocalStorageKeys.refreshToken);
-        var expirationStr = localStorage.getString(LocalStorageKeys.expiration);
-        var expiration =
-            expirationStr != null ? DateTime.parse(expirationStr) : null;
 
         if (clientId != null && clientSecret != null) {
           SpotifyApi spotifyApi = SpotifyApi(
@@ -103,8 +107,17 @@ class _HomeState extends State<Home> {
             _pagingController.error = e;
           }
         });
-      } catch (e) {
-        print("[login state error]: $e");
+      } on AuthorizationException catch (e) {
+        if (clientId != null && clientSecret != null) {
+          oauthLogin(
+            context,
+            clientId: clientId,
+            clientSecret: clientSecret,
+          );
+        }
+      } catch (e, stack) {
+        print("[Home.initState]: $e");
+        print(stack);
       }
     });
   }
