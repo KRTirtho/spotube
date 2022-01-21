@@ -60,6 +60,8 @@ jobs:
         with:
           cache: true
       - run: flutter config --enable-macos-desktop
+      - run: flutter create .
+      - run: flutter pub get
       - run: flutter build macos
       - run: brew install tree
       - run: tree ./
