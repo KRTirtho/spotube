@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2.2.0
+        with:
+          cache: true
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
@@ -36,6 +38,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2.2.0
+        with:
+          cache: true
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
       - uses: crazy-max/ghaction-chocolatey@v1
@@ -51,3 +55,14 @@ jobs:
           path: |
             build/installer/Spotube-windows-x86_64-setup.exe
             build/spotube.*.nupkg
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter config --enable-macos-desktop
+      - run: flutter build macos
+      - run: brew install tree
+      - run: tree ./

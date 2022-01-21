@@ -34,6 +34,12 @@ Run the following command to install Spotube with windows chocolatey package man
 choco install spotube
 ```
 
+### Winget
+Run the following command to install Spotube with new Windows Package Manager:
+```powershell
+winget install --id KRTirtho.Spotube
+```
+
 ## Linux
 
 ### Ubuntu/Debian/Linux Mint/Pop_!OS:
