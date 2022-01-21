@@ -65,3 +65,7 @@ jobs:
       - run: flutter build macos
       - run: brew install tree
       - run: tree ./
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Macos Source Code
+          path: ./
