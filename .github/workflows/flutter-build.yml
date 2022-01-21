@@ -42,9 +42,6 @@ jobs:
           cache: true
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
-      - uses: crazy-max/ghaction-chocolatey@v1
-        with:
-          args: -h
       - run: choco install make -y
       - run: make innoinstall
       - run: make inno
@@ -56,7 +53,7 @@ jobs:
             build/installer/Spotube-windows-x86_64-setup.exe
             build/spotube.*.nupkg
   build_macos:
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v2
