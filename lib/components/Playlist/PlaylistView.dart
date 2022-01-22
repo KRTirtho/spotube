@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:spotube/components/PageWindowTitleBar.dart';
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';

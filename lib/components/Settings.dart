@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/components/PageWindowTitleBar.dart';
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/main.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart' hide Page;
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/PlaylistCard.dart';
-import 'package:spotube/components/PlaylistGenreView.dart';
+import 'package:spotube/components/Playlist/PlaylistCard.dart';
+import 'package:spotube/components/Playlist/PlaylistGenreView.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class CategoryCard extends StatefulWidget {

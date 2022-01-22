@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/PlaylistView.dart';
+import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 

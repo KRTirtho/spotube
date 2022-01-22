@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:spotube/components/PageWindowTitleBar.dart';
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/provider/Auth.dart';
 

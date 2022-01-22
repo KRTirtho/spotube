@@ -5,14 +5,14 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oauth2/oauth2.dart' show AuthorizationException;
-import 'package:spotify/spotify.dart' hide Image;
-import 'package:spotube/components/CategoryCard.dart';
+import 'package:spotify/spotify.dart' hide Image, Player;
+import 'package:spotube/components/Catergory/CategoryCard.dart';
 import 'package:spotube/components/Login.dart';
 import 'package:spotube/components/Lyrics.dart';
-import 'package:spotube/components/PageWindowTitleBar.dart';
-import 'package:spotube/components/Player.dart' as player;
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Settings.dart';
-import 'package:spotube/components/UserLibrary.dart';
+import 'package:spotube/components/Library/UserLibrary.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/sideBarTiles.dart';
@@ -132,7 +132,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Auth authProvider = Provider.of<Auth>(context);
     if (!authProvider.isLoggedIn) {
-      return Login();
+      return const Login();
     }
 
     return Scaffold(
@@ -261,7 +261,7 @@ class _HomeState extends State<Home> {
             ),
           ),
           // player itself
-          const player.Player()
+          const Player()
         ],
       ),
     );
