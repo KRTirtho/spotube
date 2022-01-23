@@ -13,8 +13,8 @@ class UserArtists extends StatefulWidget {
 }
 
 class _UserArtistsState extends State<UserArtists> {
-  final PagingController<int, Artist> _pagingController =
-      PagingController(firstPageKey: 0);
+  final PagingController<String, Artist> _pagingController =
+      PagingController(firstPageKey: "");
 
   @override
   void initState() {
@@ -23,22 +23,16 @@ class _UserArtistsState extends State<UserArtists> {
       _pagingController.addPageRequestListener((pageKey) async {
         try {
           SpotifyDI data = context.read<SpotifyDI>();
-          var offset =
-              _pagingController.value.itemList?.elementAt(pageKey).id ?? "";
           CursorPage<Artist> artists = await data.spotifyApi.me
               .following(FollowingType.artist)
-              .getPage(15, offset);
+              .getPage(15, pageKey);
 
           var items = artists.items!.toList();
 
           if (artists.items != null && items.length < 15) {
             _pagingController.appendLastPage(items);
           } else if (artists.items != null) {
-            var yetToBe = [
-              ...(_pagingController.value.itemList ?? []),
-              ...items
-            ];
-            _pagingController.appendPage(items, yetToBe.length - 1);
+            _pagingController.appendPage(items, items.last.id);
           }
         } catch (e, stack) {
           _pagingController.error = e;
@@ -47,6 +41,12 @@ class _UserArtistsState extends State<UserArtists> {
         }
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override

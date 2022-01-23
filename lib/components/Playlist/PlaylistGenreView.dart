@@ -23,11 +23,11 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const PageWindowTitleBar(
+        leading: BackButton(),
+      ),
       body: Column(
         children: [
-          const PageWindowTitleBar(
-            leading: BackButton(),
-          ),
           Text(
             widget.genreName,
             style: Theme.of(context).textTheme.headline4,
@@ -51,15 +51,17 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
                       if (!snapshot.hasData) {
                         return const CircularProgressIndicator.adaptive();
                       }
-                      return Wrap(
-                        children: snapshot.data!
-                            .map(
-                              (playlist) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: PlaylistCard(playlist),
-                              ),
-                            )
-                            .toList(),
+                      return Center(
+                        child: Wrap(
+                          children: snapshot.data!
+                              .map(
+                                (playlist) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: PlaylistCard(playlist),
+                                ),
+                              )
+                              .toList(),
+                        ),
                       );
                     }),
               ),

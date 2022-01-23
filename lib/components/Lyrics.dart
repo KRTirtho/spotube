@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Settings.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/getLyrics.dart';
@@ -29,7 +30,7 @@ class _LyricsState extends State<Lyrics> {
         playback.currentTrack!.id != _lyrics["id"]) {
       getLyrics(
         playback.currentTrack!.name!,
-        artistsToString(playback.currentTrack!.artists ?? []),
+        artistsToString<Artist>(playback.currentTrack!.artists ?? []),
         apiKey: userPreferences.geniusAccessToken!,
         optimizeQuery: true,
       ).then((lyrics) {
@@ -90,7 +91,7 @@ class _LyricsState extends State<Lyrics> {
           ),
           Center(
             child: Text(
-              artistsToString(playback.currentTrack?.artists ?? []),
+              artistsToString<Artist>(playback.currentTrack?.artists ?? []),
               style: Theme.of(context).textTheme.headline5,
             ),
           ),

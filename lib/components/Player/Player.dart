@@ -240,8 +240,8 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                         playback.currentTrack?.name ?? "Not playing",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                          artistsToString(playback.currentTrack?.artists ?? []))
+                      Text(artistsToString<Artist>(
+                          playback.currentTrack?.artists ?? []))
                     ],
                   ),
                 ),

@@ -34,75 +34,69 @@ class _LoginState extends State<Login> {
     return Consumer<Auth>(
       builder: (context, authState, child) {
         return Scaffold(
-          body: Column(
-            children: [
-              const PageWindowTitleBar(),
-              Expanded(
-                child: Center(
+          appBar: const PageWindowTitleBar(),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/spotube-logo.png",
+                  width: 400,
+                  height: 400,
+                ),
+                Text("Add your spotify credentials to get started",
+                    style: Theme.of(context).textTheme.headline4),
+                const Text(
+                    "Don't worry, any of your credentials won't be collected or shared with anyone"),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  constraints: const BoxConstraints(
+                    maxWidth: 400,
+                  ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        "assets/spotube-logo.png",
-                        width: 400,
-                        height: 400,
+                      TextField(
+                        decoration: const InputDecoration(
+                          hintText: "Spotify Client ID",
+                          label: Text("ClientID"),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            clientId = value;
+                          });
+                        },
                       ),
-                      Text("Add your spotify credentials to get started",
-                          style: Theme.of(context).textTheme.headline4),
-                      const Text(
-                          "Don't worry, any of your credentials won't be collected or shared with anyone"),
                       const SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        constraints: const BoxConstraints(
-                          maxWidth: 400,
+                      TextField(
+                        decoration: const InputDecoration(
+                          hintText: "Spotify Client Secret",
+                          label: Text("Client Secret"),
                         ),
-                        child: Column(
-                          children: [
-                            TextField(
-                              decoration: const InputDecoration(
-                                hintText: "Spotify Client ID",
-                                label: Text("ClientID"),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  clientId = value;
-                                });
-                              },
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextField(
-                              decoration: const InputDecoration(
-                                hintText: "Spotify Client Secret",
-                                label: Text("Client Secret"),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  clientSecret = value;
-                                });
-                              },
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                handleLogin(authState);
-                              },
-                              child: const Text("Submit"),
-                            )
-                          ],
-                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            clientSecret = value;
+                          });
+                        },
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          handleLogin(authState);
+                        },
+                        child: const Text("Submit"),
+                      )
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

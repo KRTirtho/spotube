@@ -60,12 +60,8 @@ jobs:
         with:
           cache: true
       - run: flutter config --enable-macos-desktop
-      - run: flutter create .
-      - run: flutter pub get
+      - run: flutter build macos
       - uses: actions/upload-artifact@v2
         with:
-          name: Macos Source Code
-          path: ./
-      - run: flutter build macos
-      - run: brew install tree
-      - run: tree ./
+          name: Spotube-Macos-Bundle
+          path: build/macos/Build/Release/Products/spotube.app

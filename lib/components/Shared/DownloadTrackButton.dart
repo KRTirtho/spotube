@@ -70,7 +70,7 @@ class _DownloadTrackButtonState extends State<DownloadTrackButton> {
     String downloadFolder = path.join(
         (await path_provider.getDownloadsDirectory())!.path, "Spotube");
     String fileName =
-        "${widget.track?.name} - ${artistsToString(widget.track?.artists ?? [])}.mp3";
+        "${widget.track?.name} - ${artistsToString<Artist>(widget.track?.artists ?? [])}.mp3";
     File outputFile = File(path.join(downloadFolder, fileName));
     if (!outputFile.existsSync()) {
       outputFile.createSync(recursive: true);

@@ -43,11 +43,15 @@ class TitleBarActionButtons extends StatelessWidget {
   }
 }
 
-class PageWindowTitleBar extends StatelessWidget {
+class PageWindowTitleBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final Widget? leading;
   final Widget? center;
   const PageWindowTitleBar({Key? key, this.leading, this.center})
       : super(key: key);
+  @override
+  Size get preferredSize => Size.fromHeight(appWindow.titleBarHeight);
+
   @override
   Widget build(BuildContext context) {
     return WindowTitleBarBox(
