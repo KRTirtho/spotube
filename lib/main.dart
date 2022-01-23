@@ -160,6 +160,11 @@ class _MyAppState extends State<MyApp> {
               color: Colors.grey[850],
             ),
           ),
+          cardTheme: CardTheme(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            color: Colors.white,
+          ),
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
@@ -188,6 +193,12 @@ class _MyAppState extends State<MyApp> {
           navigationRailTheme: NavigationRailThemeData(
             backgroundColor: Colors.blueGrey[800],
             unselectedIconTheme: const IconThemeData(opacity: 1),
+          ),
+          cardTheme: CardTheme(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            color: Colors.blueGrey[900],
+            elevation: 20,
           ),
         ),
         themeMode: _themeMode,

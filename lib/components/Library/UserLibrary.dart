@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Image;
+import 'package:spotube/components/Library/UserArtists.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
 
 class UserLibrary extends StatefulWidget {
@@ -27,7 +28,7 @@ class _UserLibraryState extends State<UserLibrary> {
           ),
           body: const TabBarView(children: [
             UserPlaylists(),
-            Icon(Icons.ac_unit_outlined),
+            UserArtists(),
             Icon(Icons.ac_unit_outlined),
           ]),
         ),

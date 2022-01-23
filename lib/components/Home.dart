@@ -24,6 +24,8 @@ List<String> spotifyScopes = [
   "user-library-modify",
   "user-read-private",
   "user-read-email",
+  "user-follow-read",
+  "user-follow-modify",
   "playlist-read-collaborative"
 ];
 
