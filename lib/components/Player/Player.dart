@@ -48,9 +48,9 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
           HotKey(KeyCode.space, scope: HotKeyScope.inapp),
           _playOrPause,
         ),
-        // causaes crash in Windows for aquiring global hotkey of
+        // causaes crash in Windows and macOS for aquiring global hotkey of
         // keyboard media buttons
-        if (!Platform.isWindows) ...[
+        if (!Platform.isWindows && !Platform.isMacOS) ...[
           GlobalKeyActions(
             HotKey(KeyCode.mediaPlayPause),
             _playOrPause,
