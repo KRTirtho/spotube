@@ -64,4 +64,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Macos-Bundle
-          path: build/macos/Build/Release/Products/spotube.app
+          path: build/
