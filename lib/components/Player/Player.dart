@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -48,30 +47,6 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
           HotKey(KeyCode.space, scope: HotKeyScope.inapp),
           _playOrPause,
         ),
-        // causaes crash in Windows and macOS for aquiring global hotkey of
-        // keyboard media buttons
-        if (!Platform.isWindows && !Platform.isMacOS) ...[
-          GlobalKeyActions(
-            HotKey(KeyCode.mediaPlayPause),
-            _playOrPause,
-          ),
-          GlobalKeyActions(HotKey(KeyCode.mediaTrackNext), (key) async {
-            _movePlaylistPositionBy(1);
-          }),
-          GlobalKeyActions(HotKey(KeyCode.mediaTrackPrevious), (key) async {
-            _movePlaylistPositionBy(-1);
-          }),
-          GlobalKeyActions(HotKey(KeyCode.mediaStop), (key) async {
-            Playback playback = context.read<Playback>();
-            setState(() {
-              _isPlaying = false;
-              _currentTrackId = null;
-              _duration = null;
-              _shuffled = false;
-            });
-            playback.reset();
-          })
-        ]
       ];
       WidgetsBinding.instance?.addObserver(this);
       WidgetsBinding.instance?.addPostFrameCallback(_init);

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Artist/ArtistProfile.dart';
 
 class ArtistCard extends StatelessWidget {
   final Artist artist;
@@ -9,7 +10,13 @@ class ArtistCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return ArtistProfile(artist.id!);
+          },
+        ));
+      },
       borderRadius: BorderRadius.circular(10),
       child: Ink(
         width: 200,
@@ -35,7 +42,7 @@ class ArtistCard extends StatelessWidget {
                             .images?.isNotEmpty ??
                         false)
                     ? artist.images!.first.url!
-                    : "https://avatars.dicebear.com/api/open-peeps/${artist.id}.svg?b=%231ed760&r=50&flip=1&translateX=3&translateY=-6"),
+                    : "https://avatars.dicebear.com/api/open-peeps/${artist.id}.png?b=%231ed760&r=50&flip=1&translateX=3&translateY=-6"),
               ),
               Text(
                 artist.name!,

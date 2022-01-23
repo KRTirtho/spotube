@@ -15,7 +15,9 @@ Following are the features that currently spotube offers:
 - Small size & less data hungry
 - No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
 - Lyrics
-- Downloadable track (WIP)
+- Downloadable track
+
+<a href="https://www.producthunt.com/posts/spotube?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-spotube" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=327965&theme=dark" alt="Spotube - A lightweight+free Spotify desktop-client made with flutter | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 # Installation
 
@@ -98,9 +100,9 @@ Also, you need a [genius](https://genius.com) account for **lyrics** & a API Cli
 
 # TODO:
 
-- [ ] Compile, Debug & Build for **MacOS**
+- [x] Compile, Debug & Build for **MacOS**
 - [x] Add support for show Lyric of currently playing track
-- [ ] Track download
+- [x] Track download
 - [ ] Support for playing/streaming podcasts/shows
 - [ ] Artist, User & Album pages
 
