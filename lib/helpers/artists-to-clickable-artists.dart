@@ -3,8 +3,14 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 
-Widget artistsToClickableArtists(List<ArtistSimple> artists) {
+Widget artistsToClickableArtists(
+  List<ArtistSimple> artists, {
+  CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
+  MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
+}) {
   return Row(
+    crossAxisAlignment: crossAxisAlignment,
+    mainAxisAlignment: mainAxisAlignment,
     children: artists
         .asMap()
         .entries

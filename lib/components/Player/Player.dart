@@ -245,6 +245,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                       ),
                       artistsToClickableArtists(
                         playback.currentTrack?.artists ?? [],
+                        mainAxisAlignment: MainAxisAlignment.center,
                       )
                     ],
                   ),
@@ -339,42 +340,15 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                     },
                   ),
                 ),
-                DownloadTrackButton(
-                  track: playback.currentTrack,
-                ),
                 // add to saved tracks
                 Expanded(
                   flex: 1,
                   child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
                     children: [
-                      Consumer<SpotifyDI>(builder: (context, data, widget) {
-                        return FutureBuilder<bool>(
-                            future: playback.currentTrack?.id != null
-                                ? data.spotifyApi.tracks.me
-                                    .containsOne(playback.currentTrack!.id!)
-                                : Future.value(false),
-                            initialData: false,
-                            builder: (context, snapshot) {
-                              bool isLiked = snapshot.data ?? false;
-                              return IconButton(
-                                  icon: Icon(
-                                    !isLiked
-                                        ? Icons.favorite_outline_rounded
-                                        : Icons.favorite_rounded,
-                                    color: isLiked ? Colors.green : null,
-                                  ),
-                                  onPressed: () {
-                                    if (!isLiked &&
-                                        playback.currentTrack?.id != null) {
-                                      data.spotifyApi.tracks.me
-                                          .saveOne(playback.currentTrack!.id!)
-                                          .then((value) => setState(() {}));
-                                    }
-                                  });
-                            });
-                      }),
-                      ConstrainedBox(
+                      Container(
+                        height: 20,
                         constraints: const BoxConstraints(maxWidth: 200),
                         child: Slider.adaptive(
                           value: _volume,
@@ -391,6 +365,41 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                             }
                           },
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          DownloadTrackButton(
+                            track: playback.currentTrack,
+                          ),
+                          Consumer<SpotifyDI>(builder: (context, data, widget) {
+                            return FutureBuilder<bool>(
+                                future: playback.currentTrack?.id != null
+                                    ? data.spotifyApi.tracks.me
+                                        .containsOne(playback.currentTrack!.id!)
+                                    : Future.value(false),
+                                initialData: false,
+                                builder: (context, snapshot) {
+                                  bool isLiked = snapshot.data ?? false;
+                                  return IconButton(
+                                      icon: Icon(
+                                        !isLiked
+                                            ? Icons.favorite_outline_rounded
+                                            : Icons.favorite_rounded,
+                                        color: isLiked ? Colors.green : null,
+                                      ),
+                                      onPressed: () {
+                                        if (!isLiked &&
+                                            playback.currentTrack?.id != null) {
+                                          data.spotifyApi.tracks.me
+                                              .saveOne(
+                                                  playback.currentTrack!.id!)
+                                              .then((value) => setState(() {}));
+                                        }
+                                      });
+                                });
+                          }),
+                        ],
                       ),
                     ],
                   ),
