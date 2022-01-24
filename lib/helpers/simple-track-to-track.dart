@@ -1,6 +1,6 @@
 import 'package:spotify/spotify.dart';
 
-Track simpleTrackToTrack(TrackSimple trackSmp, Album album) {
+Track simpleTrackToTrack(TrackSimple trackSmp, AlbumSimple album) {
   Track track = Track();
   track.name = trackSmp.name;
   track.album = album;

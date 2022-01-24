@@ -4,9 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
+import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
+import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -240,8 +243,9 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                         playback.currentTrack?.name ?? "Not playing",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(artistsToString<Artist>(
-                          playback.currentTrack?.artists ?? []))
+                      artistsToClickableArtists(
+                        playback.currentTrack?.artists ?? [],
+                      )
                     ],
                   ),
                 ),

@@ -8,7 +8,7 @@ import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class AlbumView extends StatelessWidget {
-  final Album album;
+  final AlbumSimple album;
   const AlbumView(this.album, {Key? key}) : super(key: key);
 
   playPlaylist(Playback playback, List<Track> tracks, {Track? currentTrack}) {

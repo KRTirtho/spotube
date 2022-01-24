@@ -2,6 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Album/AlbumView.dart';
+import 'package:spotube/components/Artist/ArtistProfile.dart';
+import 'package:spotube/components/Shared/LinkText.dart';
+import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 
@@ -76,12 +80,7 @@ class TracksTableView extends StatelessWidget {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      Text(
-                        (track.value.artists ?? [])
-                            .map((e) => e.name)
-                            .join(", "),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      artistsToClickableArtists(track.value.artists ?? []),
                     ],
                   ),
                 ),
@@ -91,8 +90,11 @@ class TracksTableView extends StatelessWidget {
           TableCell(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
+              child: LinkText(
                 track.value.album?.name ?? "",
+                MaterialPageRoute(
+                  builder: (context) => AlbumView(track.value.album!),
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
