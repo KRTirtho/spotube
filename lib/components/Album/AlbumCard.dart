@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
+import 'package:spotube/helpers/simple-track-to-track.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/SpotifyDI.dart';
 
 class AlbumCard extends StatelessWidget {
   final Album album;
@@ -12,6 +15,8 @@ class AlbumCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Playback playback = context.watch<Playback>();
+    bool isPlaylistPlaying = playback.currentPlaylist != null &&
+        playback.currentPlaylist!.id == album.id;
 
     return PlaybuttonCard(
       imageUrl: album.images!.first.url!,
@@ -20,8 +25,29 @@ class AlbumCard extends StatelessWidget {
       title: album.name!,
       description:
           "Alubm • ${artistsToString<ArtistSimple>(album.artists ?? [])}",
-      onTap: () {},
-      onPlaybuttonPressed: () => {},
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return AlbumView(album);
+          },
+        ));
+      },
+      onPlaybuttonPressed: () async {
+        SpotifyApi spotify = context.read<SpotifyDI>().spotifyApi;
+        if (isPlaylistPlaying) return;
+        List<Track> tracks = (await spotify.albums.getTracks(album.id!).all())
+            .map((track) => simpleTrackToTrack(track, album))
+            .toList();
+        if (tracks.isEmpty) return;
+
+        playback.setCurrentPlaylist = CurrentPlaylist(
+          tracks: tracks,
+          id: album.id!,
+          name: album.name!,
+          thumbnail: album.images!.first.url!,
+        );
+        playback.setCurrentTrack = tracks.first;
+      },
     );
   }
 }

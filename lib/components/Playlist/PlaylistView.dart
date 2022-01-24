@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/helpers/zero-pad-num-str.dart';
+import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +16,8 @@ class PlaylistView extends StatefulWidget {
 class _PlaylistViewState extends State<PlaylistView> {
   playPlaylist(Playback playback, List<Track> tracks, {Track? currentTrack}) {
     currentTrack ??= tracks.first;
-    var isPlaylistPlaying = playback.currentPlaylist?.id == widget.playlist.id;
+    var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
+        playback.currentPlaylist?.id == widget.playlist.id;
     if (!isPlaylistPlaying) {
       playback.setCurrentPlaylist = CurrentPlaylist(
         tracks: tracks,
@@ -33,111 +33,11 @@ class _PlaylistViewState extends State<PlaylistView> {
     }
   }
 
-  List<TableRow> trackToTableRow(Playback playback, List<Track> tracks) {
-    return tracks.asMap().entries.map((track) {
-      String? thumbnailUrl = (track.value.album?.images?.isNotEmpty ?? false)
-          ? track.value.album?.images?.last.url
-          : null;
-      String duration =
-          "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-      return (TableRow(
-        children: [
-          TableCell(
-              child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              (track.key + 1).toString(),
-              textAlign: TextAlign.center,
-            ),
-          )),
-          TableCell(
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    playback.currentTrack?.id != null &&
-                            playback.currentTrack?.id == track.value.id
-                        ? Icons.pause_circle_rounded
-                        : Icons.play_circle_rounded,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  onPressed: () {
-                    playPlaylist(playback, tracks, currentTrack: track.value);
-                  },
-                ),
-                if (thumbnailUrl != null)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      child: CachedNetworkImage(
-                        placeholder: (context, url) {
-                          return Container(
-                            height: 40,
-                            width: 40,
-                            color: Colors.green[300],
-                          );
-                        },
-                        imageUrl: thumbnailUrl,
-                        maxHeightDiskCache: 40,
-                        maxWidthDiskCache: 40,
-                      ),
-                    ),
-                  ),
-                const SizedBox(width: 10),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        track.value.name ?? "",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        (track.value.artists ?? [])
-                            .map((e) => e.name)
-                            .join(", "),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TableCell(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                track.value.album?.name ?? "",
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          TableCell(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                duration,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          )
-        ],
-      ));
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     Playback playback = context.watch<Playback>();
-    var isPlaylistPlaying =
-        playback.currentPlaylist?.id == this.widget.playlist.id;
+    var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
+        playback.currentPlaylist?.id == widget.playlist.id;
     return Consumer<SpotifyDI>(builder: (_, data, __) {
       return Scaffold(
         body: FutureBuilder<Iterable<Track>>(
@@ -150,8 +50,6 @@ class _PlaylistViewState extends State<PlaylistView> {
                     .then((tracks) => tracks.map((e) => e.track!)),
             builder: (context, snapshot) {
               List<Track> tracks = snapshot.data?.toList() ?? [];
-              TextStyle tableHeadStyle =
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
               return Column(
                 children: [
                   PageWindowTitleBar(
@@ -189,51 +87,13 @@ class _PlaylistViewState extends State<PlaylistView> {
                               child: Center(
                                   child: CircularProgressIndicator.adaptive()),
                             )
-                          : Expanded(
-                              child: Scrollbar(
-                                child: ListView(
-                                  children: [
-                                    SingleChildScrollView(
-                                      child: Table(
-                                        columnWidths: const {
-                                          0: FixedColumnWidth(40),
-                                          1: FlexColumnWidth(),
-                                          2: FlexColumnWidth(),
-                                          3: FixedColumnWidth(45),
-                                        },
-                                        children: [
-                                          TableRow(
-                                            children: [
-                                              TableCell(
-                                                  child: Text(
-                                                "#",
-                                                textAlign: TextAlign.center,
-                                                style: tableHeadStyle,
-                                              )),
-                                              TableCell(
-                                                  child: Text(
-                                                "Title",
-                                                style: tableHeadStyle,
-                                              )),
-                                              TableCell(
-                                                  child: Text(
-                                                "Album",
-                                                style: tableHeadStyle,
-                                              )),
-                                              TableCell(
-                                                  child: Text(
-                                                "Time",
-                                                textAlign: TextAlign.center,
-                                                style: tableHeadStyle,
-                                              )),
-                                            ],
-                                          ),
-                                          ...trackToTableRow(playback, tracks),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                          : TracksTableView(
+                              tracks,
+                              onTrackPlayButtonPressed: (currentTrack) =>
+                                  playPlaylist(
+                                playback,
+                                tracks,
+                                currentTrack: currentTrack,
                               ),
                             ),
                 ],
