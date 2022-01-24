@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
-import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';

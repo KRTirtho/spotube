@@ -4,10 +4,15 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
+import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
+import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/readable-number.dart';
+import 'package:spotube/helpers/zero-pad-num-str.dart';
+import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class ArtistProfile extends StatefulWidget {
@@ -32,6 +37,7 @@ class _ArtistProfileState extends State<ArtistProfile> {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator.adaptive());
           }
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -119,6 +125,121 @@ class _ArtistProfileState extends State<ArtistProfile> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 50),
+                FutureBuilder<Iterable<Track>>(
+                  future:
+                      spotify.artists.getTopTracks(snapshot.data!.id!, "US"),
+                  builder: (context, trackSnapshot) {
+                    if (!trackSnapshot.hasData) {
+                      return const Center(
+                          child: CircularProgressIndicator.adaptive());
+                    }
+                    Playback playback = context.watch<Playback>();
+                    var isPlaylistPlaying =
+                        playback.currentPlaylist?.id == snapshot.data?.id;
+                    playPlaylist(List<Track> tracks, {Track? currentTrack}) {
+                      currentTrack ??= tracks.first;
+                      if (!isPlaylistPlaying) {
+                        playback.setCurrentPlaylist = CurrentPlaylist(
+                          tracks: tracks,
+                          id: snapshot.data!.id!,
+                          name: "${snapshot.data!.name!} To Tracks",
+                          thumbnail: snapshot.data!.images!.first.url!,
+                        );
+                        playback.setCurrentTrack = currentTrack;
+                      } else if (isPlaylistPlaying &&
+                          currentTrack.id != null &&
+                          currentTrack.id != playback.currentTrack?.id) {
+                        playback.setCurrentTrack = currentTrack;
+                      }
+                    }
+
+                    return Column(children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Top Tracks",
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                          IconButton(
+                            icon: Icon(isPlaylistPlaying
+                                ? Icons.stop_circle_rounded
+                                : Icons.play_circle_filled_rounded),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: trackSnapshot.hasData
+                                ? () =>
+                                    playPlaylist(trackSnapshot.data!.toList())
+                                : null,
+                          )
+                        ],
+                      ),
+                      ...trackSnapshot.data?.map((track) {
+                            String duration =
+                                "${track.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.duration?.inSeconds.remainder(60) ?? 0)}";
+                            return Row(
+                              children: [
+                                if (track.album != null &&
+                                    track.album!.images!.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(5)),
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) {
+                                          return Container(
+                                            height: 40,
+                                            width: 40,
+                                            color: Colors.green[300],
+                                          );
+                                        },
+                                        imageUrl:
+                                            track.album!.images!.last.url!,
+                                        maxHeightDiskCache: 40,
+                                        maxWidthDiskCache: 40,
+                                      ),
+                                    ),
+                                  ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        track.name ?? "",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      artistsToClickableArtists(
+                                          track.artists ?? []),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      LinkText(
+                                        track.album!.name!,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              AlbumView(track.album!),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(duration)
+                              ],
+                            );
+                          }).toList() ??
+                          [],
+                    ]);
+                  },
                 ),
                 const SizedBox(height: 50),
                 Row(
