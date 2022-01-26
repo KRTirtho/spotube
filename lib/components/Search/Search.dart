@@ -20,6 +20,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   late TextEditingController _controller;
+
   String searchTerm = "";
 
   @override
@@ -43,6 +44,11 @@ class _SearchState extends State<Search> {
                   child: TextField(
                     decoration: const InputDecoration(hintText: "Search..."),
                     controller: _controller,
+                    onSubmitted: (value) {
+                      setState(() {
+                        searchTerm = _controller.value.text;
+                      });
+                    },
                   ),
                 ),
                 const SizedBox(width: 5),
@@ -64,7 +70,7 @@ class _SearchState extends State<Search> {
           ),
           FutureBuilder<List<Page>>(
             future: searchTerm.isNotEmpty
-                ? spotify.search.get(searchTerm).first(5)
+                ? spotify.search.get(searchTerm).first(10)
                 : null,
             builder: (context, snapshot) {
               if (!snapshot.hasData && searchTerm.isNotEmpty) {
@@ -116,7 +122,27 @@ class _SearchState extends State<Search> {
                             duration: duration,
                             thumbnailUrl:
                                 imageToUrlString(track.value.album?.images),
-                            onTrackPlayButtonPressed: (currentTrack) {},
+                            onTrackPlayButtonPressed: (currentTrack) async {
+                              var isPlaylistPlaying =
+                                  playback.currentPlaylist?.id != null &&
+                                      playback.currentPlaylist?.id ==
+                                          currentTrack.id;
+                              if (!isPlaylistPlaying) {
+                                playback.setCurrentPlaylist = CurrentPlaylist(
+                                  tracks: [currentTrack],
+                                  id: currentTrack.id!,
+                                  name: currentTrack.name!,
+                                  thumbnail: imageToUrlString(
+                                      currentTrack.album?.images),
+                                );
+                                playback.setCurrentTrack = currentTrack;
+                              } else if (isPlaylistPlaying &&
+                                  currentTrack.id != null &&
+                                  currentTrack.id !=
+                                      playback.currentTrack?.id) {
+                                playback.setCurrentTrack = currentTrack;
+                              }
+                            },
                           );
                         }),
                         if (albums.isNotEmpty)
@@ -125,12 +151,14 @@ class _SearchState extends State<Search> {
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          children: albums.map((album) {
-                            return AlbumCard(simpleAlbumToAlbum(album));
-                          }).toList(),
+                        Center(
+                          child: Wrap(
+                            spacing: 20,
+                            runSpacing: 20,
+                            children: albums.map((album) {
+                              return AlbumCard(simpleAlbumToAlbum(album));
+                            }).toList(),
+                          ),
                         ),
                         const SizedBox(height: 20),
                         if (artists.isNotEmpty)
@@ -139,12 +167,14 @@ class _SearchState extends State<Search> {
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          children: artists.map((artist) {
-                            return ArtistCard(artist);
-                          }).toList(),
+                        Center(
+                          child: Wrap(
+                            spacing: 20,
+                            runSpacing: 20,
+                            children: artists.map((artist) {
+                              return ArtistCard(artist);
+                            }).toList(),
+                          ),
                         ),
                         const SizedBox(height: 20),
                         if (playlists.isNotEmpty)
@@ -153,12 +183,14 @@ class _SearchState extends State<Search> {
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          children: playlists.map((playlist) {
-                            return PlaylistCard(playlist);
-                          }).toList(),
+                        Center(
+                          child: Wrap(
+                            spacing: 20,
+                            runSpacing: 20,
+                            children: playlists.map((playlist) {
+                              return PlaylistCard(playlist);
+                            }).toList(),
+                          ),
                         ),
                       ],
                     ),

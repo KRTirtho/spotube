@@ -81,16 +81,12 @@ class TracksTableView extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Row(
-            children: [
-              LinkText(
-                track.value.album!.name!,
-                MaterialPageRoute(
-                  builder: (context) => AlbumView(track.value.album!),
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+          child: LinkText(
+            track.value.album!.name!,
+            MaterialPageRoute(
+              builder: (context) => AlbumView(track.value.album!),
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         const SizedBox(width: 10),
