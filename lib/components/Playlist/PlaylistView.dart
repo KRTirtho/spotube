@@ -1,5 +1,6 @@
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class _PlaylistViewState extends State<PlaylistView> {
         tracks: tracks,
         id: widget.playlist.id!,
         name: widget.playlist.name!,
-        thumbnail: widget.playlist.images![0].url!,
+        thumbnail: imageToUrlString(widget.playlist.images),
       );
       playback.setCurrentTrack = currentTrack;
     } else if (isPlaylistPlaying &&

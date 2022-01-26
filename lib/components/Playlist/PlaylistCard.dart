@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
@@ -49,7 +50,7 @@ class _PlaylistCardState extends State<PlaylistCard> {
           tracks: tracks,
           id: widget.playlist.id!,
           name: widget.playlist.name!,
-          thumbnail: widget.playlist.images!.first.url!,
+          thumbnail: imageToUrlString(widget.playlist.images),
         );
         playback.setCurrentTrack = tracks.first;
       },

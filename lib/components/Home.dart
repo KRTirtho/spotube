@@ -5,14 +5,16 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oauth2/oauth2.dart' show AuthorizationException;
-import 'package:spotify/spotify.dart' hide Image, Player;
-import 'package:spotube/components/Catergory/CategoryCard.dart';
+import 'package:spotify/spotify.dart' hide Image, Player, Search;
+import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/Login.dart';
 import 'package:spotube/components/Lyrics.dart';
+import 'package:spotube/components/Search/Search.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Settings.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/sideBarTiles.dart';
@@ -200,11 +202,8 @@ class _HomeState extends State<Home> {
                     return FutureBuilder<User>(
                       future: data.spotifyApi.me.get(),
                       builder: (context, snapshot) {
-                        var avatarImg = ((snapshot.data?.images?.isNotEmpty ??
-                                    false) &&
-                                snapshot.data?.images?.last.url != null)
-                            ? snapshot.data!.images!.last.url!
-                            : "https://avatars.dicebear.com/api/adventurer/${snapshot.data?.id}.png";
+                        var avatarImg = imageToUrlString(snapshot.data?.images,
+                            index: (snapshot.data?.images?.length ?? 1) - 1);
                         return Padding(
                           padding: const EdgeInsets.all(16),
                           child: Row(
@@ -257,6 +256,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
+                if (_selectedIndex == 1) const Search(),
                 if (_selectedIndex == 2) const UserLibrary(),
                 if (_selectedIndex == 3) const Lyrics(),
               ],

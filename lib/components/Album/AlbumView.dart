@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-track-to-track.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -19,7 +20,7 @@ class AlbumView extends StatelessWidget {
         tracks: tracks,
         id: album.id!,
         name: album.name!,
-        thumbnail: album.images!.first.url!,
+        thumbnail: imageToUrlString(album.images),
       );
       playback.setCurrentTrack = currentTrack;
     } else if (isPlaylistPlaying &&

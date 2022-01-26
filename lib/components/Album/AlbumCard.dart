@@ -4,6 +4,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-track-to-track.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -19,7 +20,7 @@ class AlbumCard extends StatelessWidget {
         playback.currentPlaylist!.id == album.id;
 
     return PlaybuttonCard(
-      imageUrl: album.images!.first.url!,
+      imageUrl: imageToUrlString(album.images),
       isPlaying: playback.currentPlaylist?.id != null &&
           playback.currentPlaylist?.id == album.id,
       title: album.name!,

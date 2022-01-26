@@ -5,6 +5,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 
@@ -148,10 +149,10 @@ class TracksTableView extends StatelessWidget {
               ],
             ),
             ...tracks.asMap().entries.map((track) {
-              String? thumbnailUrl =
-                  (track.value.album?.images?.isNotEmpty ?? false)
-                      ? track.value.album?.images?.last.url
-                      : null;
+              String? thumbnailUrl = imageToUrlString(
+                track.value.album?.images,
+                index: (track.value.album?.images?.length ?? 1) - 1,
+              );
               String duration =
                   "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
               return buildTrackTile(context, playback,

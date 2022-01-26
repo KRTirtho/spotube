@@ -8,6 +8,7 @@ import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/readable-number.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -47,7 +48,7 @@ class _ArtistProfileState extends State<ArtistProfile> {
                     CircleAvatar(
                       radius: MediaQuery.of(context).size.width * 0.18,
                       backgroundImage: CachedNetworkImageProvider(
-                        snapshot.data!.images!.first.url!,
+                        imageToUrlString(snapshot.data!.images),
                       ),
                     ),
                     Flexible(
@@ -143,7 +144,7 @@ class _ArtistProfileState extends State<ArtistProfile> {
                           tracks: tracks,
                           id: snapshot.data!.id!,
                           name: "${snapshot.data!.name!} To Tracks",
-                          thumbnail: snapshot.data!.images!.first.url!,
+                          thumbnail: imageToUrlString(snapshot.data?.images),
                         );
                         playback.setCurrentTrack = currentTrack;
                       } else if (isPlaylistPlaying &&
@@ -186,10 +187,11 @@ class _ArtistProfileState extends State<ArtistProfile> {
                               .map((track) {
                             String duration =
                                 "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                            String? thumbnailUrl = track.value.album != null &&
-                                    track.value.album!.images!.isNotEmpty
-                                ? track.value.album!.images!.last.url!
-                                : null;
+                            String? thumbnailUrl = imageToUrlString(
+                                track.value.album?.images,
+                                index:
+                                    (track.value.album?.images?.length ?? 1) -
+                                        1);
                             return TracksTableView.buildTrackTile(
                               context,
                               playback,

@@ -10,6 +10,7 @@ import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -211,10 +212,10 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
             _playTrack(playback.currentTrack!, playback);
           }
 
-          String? albumArt =
-              (playback.currentTrack?.album?.images?.isNotEmpty ?? false)
-                  ? playback.currentTrack?.album?.images?.last.url
-                  : null;
+          String? albumArt = imageToUrlString(
+            playback.currentTrack?.album?.images,
+            index: (playback.currentTrack?.album?.images?.length ?? 1) - 1,
+          );
 
           return Material(
             type: MaterialType.transparency,
