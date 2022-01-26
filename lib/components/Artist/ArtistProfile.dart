@@ -4,12 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
-import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
-import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/helpers/artists-to-clickable-artists.dart';
+import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/readable-number.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -162,81 +160,49 @@ class _ArtistProfileState extends State<ArtistProfile> {
                             "Top Tracks",
                             style: Theme.of(context).textTheme.headline4,
                           ),
-                          IconButton(
-                            icon: Icon(isPlaylistPlaying
-                                ? Icons.stop_circle_rounded
-                                : Icons.play_circle_filled_rounded),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: trackSnapshot.hasData
-                                ? () =>
-                                    playPlaylist(trackSnapshot.data!.toList())
-                                : null,
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: IconButton(
+                              icon: Icon(isPlaylistPlaying
+                                  ? Icons.stop_rounded
+                                  : Icons.play_arrow_rounded),
+                              color: Colors.white,
+                              onPressed: trackSnapshot.hasData
+                                  ? () =>
+                                      playPlaylist(trackSnapshot.data!.toList())
+                                  : null,
+                            ),
                           )
                         ],
                       ),
-                      ...trackSnapshot.data?.map((track) {
+                      ...trackSnapshot.data
+                              ?.toList()
+                              .asMap()
+                              .entries
+                              .map((track) {
                             String duration =
-                                "${track.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.duration?.inSeconds.remainder(60) ?? 0)}";
-                            return Row(
-                              children: [
-                                if (track.album != null &&
-                                    track.album!.images!.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(5)),
-                                      child: CachedNetworkImage(
-                                        placeholder: (context, url) {
-                                          return Container(
-                                            height: 40,
-                                            width: 40,
-                                            color: Colors.green[300],
-                                          );
-                                        },
-                                        imageUrl:
-                                            track.album!.images!.last.url!,
-                                        maxHeightDiskCache: 40,
-                                        maxWidthDiskCache: 40,
-                                      ),
-                                    ),
-                                  ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        track.name ?? "",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      artistsToClickableArtists(
-                                          track.artists ?? []),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      LinkText(
-                                        track.album!.name!,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              AlbumView(track.album!),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(duration)
-                              ],
+                                "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                            String? thumbnailUrl = track.value.album != null &&
+                                    track.value.album!.images!.isNotEmpty
+                                ? track.value.album!.images!.last.url!
+                                : null;
+                            return TracksTableView.buildTrackTile(
+                              context,
+                              playback,
+                              duration: duration,
+                              track: track,
+                              thumbnailUrl: thumbnailUrl,
+                              onTrackPlayButtonPressed: (currentTrack) =>
+                                  playPlaylist(
+                                trackSnapshot.data!.toList(),
+                                currentTrack: track.value,
+                              ),
                             );
-                          }).toList() ??
+                          }) ??
                           [],
                     ]);
                   },
