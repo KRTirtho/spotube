@@ -61,6 +61,7 @@ jobs:
           cache: true
       - run: flutter config --enable-macos-desktop
       - run: flutter build macos
+      - run: du -sh build/macos/Build/Products/Release/spotube.app
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Macos-Bundle
