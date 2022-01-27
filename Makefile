@@ -46,3 +46,6 @@ inno:
 choco:
 			powershell cp build\installer\Spotube-windows-x86_64-setup.exe choco-struct\tools
 			powershell choco pack .\choco-struct\spotube.nuspec  --outputdirectory build
+
+gensums:
+				sh -c scripts/gensums.sh
