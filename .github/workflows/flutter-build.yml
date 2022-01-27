@@ -62,7 +62,11 @@ jobs:
       - run: flutter config --enable-macos-desktop
       - run: flutter build macos
       - run: du -sh build/macos/Build/Products/Release/spotube.app
+      - run: npm install -g appdmg
+      - run: appdmg appdmg.json build/Spotube-macos-x86_64.dmg
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Macos-Bundle
-          path: build/macos/Build/Products/Release/spotube.app
+          path: |
+            build/macos/Build/Products/Release/spotube.app
+            build/Spotube-macos-x86_64.dmg

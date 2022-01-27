@@ -1,3 +1,30 @@
+# v1.1.0
+
+### New
+- MacOS support https://github.com/KRTirtho/spotube/pull/7
+- Download currently playing track to `/home/<user>/Downloads/Spotube` (Linux, MacOS) or `C:\Users\<user>\Downloads\Spotube` (Windows)
+- Play playlist from any song (index) instead of only the first track
+- AlbumCard for showing album's metadata
+- AlbumView aka show album tracks
+- Play an album
+- ArtistCard for showing artist metadata on the fly
+- ArtistProfile for showing complete details of the artist
+- Play artist's top tracks
+- View Artist's "Fans also like" section
+- Search page
+- Play tracks from search result
+- Click to open artist-profile/album everywhere in the application
+
+### Improved
+- UserLibrary album & artist tab
+- PlaylistView simplified layout with `ListView` instead of `TableView`
+- Control Theme from settings manually
+- `PageWindowTitleBar` now acts as `appBar`
+
+### Bug fixes
+- Unsafe access to album art/artist/user Images with `.first` or `.last` causing accessing empty List error
+- `url_launcher`'s unstable `canLaunch` method blocks OAuth login in certain *nix OSs
+- Refresh token gets revoked & doesn't get renewed automatically
 # v1.0.1
 
 ### Improved
