@@ -1,5 +1,24 @@
 ![Spotube](assets/spotube_banner.png)
 
+<p align="center">
+  <a href="https://github.com/KRTirtho/spotube/actions/workflows/flutter-build.yml">
+    <img alt="GitHub Action Status" src="https://img.shields.io/github/workflow/status/KRTirtho/spotube/Flutter%20Cross%20Build/build?color=%2316ba58&style=flat-square"/>
+  </a>
+  <a href="https://github.com/KRTirtho/Spotube/releases">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/KRTirtho/spotube?color=%2316ba58&style=flat-square"/>
+  </a>
+  <a href="LICENSE">
+    <img alt="License" src="https://img.shields.io/aur/license/spotube?color=%2316ba58&style=flat-square"/>
+  </a>
+  <a href="https://github.com/KRTirtho">
+    <img alt="Maintainer" src="https://img.shields.io/badge/Maintainer-KRTirtho-%2316ba58?style=flat-square"/>
+  </a>
+  <a href="https://opencollective.com/spotube">
+    <img alt="Open Collective backers and sponsors" src="https://img.shields.io/opencollective/all/spotube?color=%2316ba58&style=flat-square"/>
+  </a>
+</p>
+
+
 Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
 ![Application Screenshot](assets/spotube-screenshot.png)
 
@@ -44,6 +63,13 @@ winget install --id KRTirtho.Spotube
 
 ## Linux
 
+### Flatpak
+Run in terminal:
+```shell
+$ flatpak install flathub com.github.KRTirtho.Spotube
+```
+<a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
+
 ### Ubuntu/Debian/Linux Mint/Pop_!OS:
   Download the [Spotube-linux-x86_64.deb](https://github.com/KRTirtho/spotube/releases/download/v1.1.0/Spotube-linux-x86_64.deb) then double click it or run
   ```bash
@@ -64,7 +90,7 @@ winget install --id KRTirtho.Spotube
   ```
 
 
-### Others:
+### AppImage:
    Download the [Spotube-linux-x86_64.AppImage](https://github.com/KRTirtho/spotube/releases/download/v1.1.0/Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
