@@ -25,7 +25,7 @@ class AlbumCard extends StatelessWidget {
           playback.currentPlaylist?.id == album.id,
       title: album.name!,
       description:
-          "Alubm • ${artistsToString<ArtistSimple>(album.artists ?? [])}",
+          "Album • ${artistsToString<ArtistSimple>(album.artists ?? [])}",
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) {
