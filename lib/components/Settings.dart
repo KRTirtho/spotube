@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/main.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
@@ -128,17 +129,58 @@ class _SettingsState extends State<Settings> {
             const SizedBox(height: 10),
             Builder(builder: (context) {
               var auth = context.read<Auth>();
-              return ElevatedButton(
-                child: const Text("Logout"),
-                onPressed: () async {
-                  SharedPreferences localStorage =
-                      await SharedPreferences.getInstance();
-                  await localStorage.clear();
-                  auth.logout();
-                  Navigator.of(context).pop();
-                },
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Log out of this account"),
+                  ElevatedButton(
+                    child: const Text("Logout"),
+                    onPressed: () async {
+                      SharedPreferences localStorage =
+                          await SharedPreferences.getInstance();
+                      await localStorage.clear();
+                      auth.logout();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
               );
-            })
+            }),
+            const SizedBox(height: 40),
+            const Text("Spotube v1.1.0"),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text("Author: "),
+                Hyperlink(
+                  "Kingkor Roy Tirtho",
+                  "https://github.com/KRTirtho",
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Hyperlink(
+                  "Sponsor/Donate",
+                  "https://opencollective.com/spotube",
+                ),
+                Text(" • "),
+                Hyperlink(
+                  "BSD 4-Clause LICENSE",
+                  "https://github.com/KRTirtho/spotube/blob/master/LICENSE",
+                ),
+                Text(" • "),
+                Hyperlink(
+                  "Bug Report",
+                  "https://github.com/KRTirtho/spotube/issues/new?assignees=&labels=bug&template=bug_report.md&title=",
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Text("© Spotube 2022. All rights reserved")
           ],
         ),
       ),

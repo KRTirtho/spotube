@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:spotube/components/Shared/AnchorButton.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class LinkText<T> extends StatelessWidget {
+class Hyperlink extends StatelessWidget {
   final String text;
   final TextStyle style;
   final TextAlign? textAlign;
   final TextOverflow? overflow;
-  final Route<T> route;
-  const LinkText(
+  final String url;
+  const Hyperlink(
     this.text,
-    this.route, {
+    this.url, {
     Key? key,
     this.textAlign,
     this.overflow,
@@ -21,11 +22,11 @@ class LinkText<T> extends StatelessWidget {
     return AnchorButton(
       text,
       onTap: () async {
-        await Navigator.of(context).push(route);
+        await launch(url);
       },
       key: key,
       overflow: overflow,
-      style: style,
+      style: style.copyWith(color: Colors.blue),
       textAlign: textAlign,
     );
   }

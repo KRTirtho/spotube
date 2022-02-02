@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +61,7 @@ class PageWindowTitleBar extends StatelessWidget
         children: [
           if (leading != null) leading!,
           Expanded(child: MoveWindow(child: Center(child: center))),
-          const TitleBarActionButtons()
+          if (!Platform.isMacOS) const TitleBarActionButtons()
         ],
       ),
     );
