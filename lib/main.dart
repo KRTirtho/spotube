@@ -200,6 +200,7 @@ class _MyAppState extends State<MyApp> {
             color: Colors.blueGrey[900],
             elevation: 20,
           ),
+          canvasColor: Colors.blueGrey[900],
         ),
         themeMode: _themeMode,
         home: const Home(),

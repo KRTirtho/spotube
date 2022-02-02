@@ -135,6 +135,9 @@ class _SettingsState extends State<Settings> {
                   const Text("Log out of this account"),
                   ElevatedButton(
                     child: const Text("Logout"),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                    ),
                     onPressed: () async {
                       SharedPreferences localStorage =
                           await SharedPreferences.getInstance();
