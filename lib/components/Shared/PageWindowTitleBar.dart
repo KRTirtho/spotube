@@ -59,6 +59,10 @@ class PageWindowTitleBar extends StatelessWidget
     return WindowTitleBarBox(
       child: Row(
         children: [
+          if (Platform.isMacOS)
+            const SizedBox(
+              width: 150,
+            ),
           if (leading != null) leading!,
           Expanded(child: MoveWindow(child: Center(child: center))),
           if (!Platform.isMacOS) const TitleBarActionButtons()

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Page;
@@ -155,7 +157,7 @@ class _HomeState extends State<Home> {
                       child: MoveWindow(),
                     ),
                     Expanded(child: MoveWindow()),
-                    const TitleBarActionButtons(),
+                    if (!Platform.isMacOS) const TitleBarActionButtons(),
                   ],
                 )),
               ],
