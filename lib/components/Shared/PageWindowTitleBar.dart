@@ -60,8 +60,8 @@ class PageWindowTitleBar extends StatelessWidget
       child: Row(
         children: [
           if (Platform.isMacOS)
-            const SizedBox(
-              width: 150,
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.07,
             ),
           if (leading != null) leading!,
           Expanded(child: MoveWindow(child: Center(child: center))),
