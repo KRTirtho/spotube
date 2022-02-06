@@ -84,9 +84,9 @@ $ flatpak install flathub com.github.KRTirtho.Spotube
   Run following terminal
   ```bash
   # for `yay` users
-  $ yay -S spotube
+  $ yay -S spotube-bin
   # for `pamac` users
-  $ pamac install spotube
+  $ pamac install spotube-bin
   ```
 
 

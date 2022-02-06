@@ -29,7 +29,7 @@ aursrcinfo:
 publishaur: 
 					 echo '[Warning!]: you need SSH paired with AUR'\
 					 && rm -rf build/spotube\
-					 && git clone ssh://aur@aur.archlinux.org/spotube.git build/spotube\
+					 && git clone ssh://aur@aur.archlinux.org/spotube-bin.git build/spotube\
 					 && cp aur-struct/PKGBUILD aur-struct/.SRCINFO build/spotube\
 					 && cd build/spotube\
 					 && git add .\
