@@ -153,7 +153,7 @@ $ flutter run -d <window|macos|linux>
 
 # License
 
-[BSD-4-Clause-UC](/LICENSE)
+[BSD-4-Clause](/LICENSE)
 
 Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p)
 

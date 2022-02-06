@@ -195,7 +195,7 @@ class _SettingsState extends State<Settings> {
                 ),
                 Text(" • "),
                 Hyperlink(
-                  "BSD 4-Clause LICENSE",
+                  "BSD-4-Clause LICENSE",
                   "https://github.com/KRTirtho/spotube/blob/master/LICENSE",
                 ),
                 Text(" • "),
