@@ -1,25 +1,100 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 
 class UserPreferences extends ChangeNotifier {
-  String? _geniusAccessToken;
-  UserPreferences({String? geniusAccessToken}) {
-    if (geniusAccessToken == null) {
-      SharedPreferences.getInstance().then((localStorage) {
-        String? accessToken =
-            localStorage.getString(LocalStorageKeys.geniusAccessToken);
-        _geniusAccessToken ??= accessToken;
-      });
-    } else {
-      _geniusAccessToken = geniusAccessToken;
+  String? geniusAccessToken;
+  HotKey? nextTrackHotKey;
+  HotKey? prevTrackHotKey;
+  HotKey? playPauseHotKey;
+  UserPreferences({
+    this.nextTrackHotKey,
+    this.prevTrackHotKey,
+    this.playPauseHotKey,
+    this.geniusAccessToken,
+  }) {
+    onInit();
+  }
+
+  Future<HotKey?> _getHotKeyFromLocalStorage(
+      SharedPreferences preferences, String key) async {
+    String? str = preferences.getString(key);
+    if (str != null) {
+      Map<String, dynamic> json = await jsonDecode(str);
+      if (json.isEmpty) {
+        return null;
+      }
+      return HotKey.fromJson(json);
     }
   }
 
-  String? get geniusAccessToken => _geniusAccessToken;
+  onInit() async {
+    try {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      String? accessToken =
+          localStorage.getString(LocalStorageKeys.geniusAccessToken);
+
+      geniusAccessToken ??= accessToken;
+
+      nextTrackHotKey ??= await _getHotKeyFromLocalStorage(
+        localStorage,
+        LocalStorageKeys.nextTrackHotKey,
+      );
+
+      prevTrackHotKey ??= await _getHotKeyFromLocalStorage(
+        localStorage,
+        LocalStorageKeys.prevTrackHotKey,
+      );
+
+      playPauseHotKey ??= await _getHotKeyFromLocalStorage(
+        localStorage,
+        LocalStorageKeys.playPauseHotKey,
+      );
+      notifyListeners();
+    } catch (e, stack) {
+      print("[UserPreferences.onInit]: $e");
+      print(stack);
+    }
+  }
 
   setGeniusAccessToken(String? token) {
-    _geniusAccessToken = token;
+    geniusAccessToken = token;
+    notifyListeners();
+  }
+
+  setNextTrackHotKey(HotKey? value) {
+    nextTrackHotKey = value;
+    SharedPreferences.getInstance().then((preferences) {
+      preferences.setString(
+        LocalStorageKeys.nextTrackHotKey,
+        jsonEncode(value?.toJson() ?? {}),
+      );
+    });
+    notifyListeners();
+  }
+
+  setPrevTrackHotKey(HotKey? value) {
+    prevTrackHotKey = value;
+    SharedPreferences.getInstance().then((preferences) {
+      preferences.setString(
+        LocalStorageKeys.prevTrackHotKey,
+        jsonEncode(value?.toJson() ?? {}),
+      );
+    });
+    notifyListeners();
+  }
+
+  setPlayPauseHotKey(HotKey? value) {
+    playPauseHotKey = value;
+    SharedPreferences.getInstance().then((preferences) {
+      preferences.setString(
+        LocalStorageKeys.playPauseHotKey,
+        jsonEncode(value?.toJson() ?? {}),
+      );
+    });
     notifyListeners();
   }
 }

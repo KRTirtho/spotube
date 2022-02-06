@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/main.dart';
@@ -94,6 +96,27 @@ class _SettingsState extends State<Settings> {
               ],
             ),
             const SizedBox(height: 10),
+            SettingsHotKeyTile(
+              title: "Next track global shortcut",
+              currentHotKey: preferences.nextTrackHotKey,
+              onHotKeyRecorded: (value) {
+                preferences.setNextTrackHotKey(value);
+              },
+            ),
+            SettingsHotKeyTile(
+              title: "Prev track global shortcut",
+              currentHotKey: preferences.prevTrackHotKey,
+              onHotKeyRecorded: (value) {
+                preferences.setPrevTrackHotKey(value);
+              },
+            ),
+            SettingsHotKeyTile(
+              title: "Play/Pause global shortcut",
+              currentHotKey: preferences.playPauseHotKey,
+              onHotKeyRecorded: (value) {
+                preferences.setPlayPauseHotKey(value);
+              },
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -167,7 +190,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 Hyperlink(
-                  "Sponsor/Donate",
+                  "💚 Sponsor/Donate 💚",
                   "https://opencollective.com/spotube",
                 ),
                 Text(" • "),

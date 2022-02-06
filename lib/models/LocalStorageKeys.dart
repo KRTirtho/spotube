@@ -7,4 +7,7 @@ abstract class LocalStorageKeys {
   static String geniusAccessToken = "genius_access_token";
 
   static String themeMode = "theme_mode";
+  static String nextTrackHotKey = "next_track_hot_key";
+  static String prevTrackHotKey = "prev_track_hot_key";
+  static String playPauseHotKey = "play_pause_hot_key";
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
@@ -9,7 +8,6 @@ import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
-import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,20 +33,13 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
 
   late YoutubeExplode youtube;
 
-  late List<GlobalKeyActions> _hotKeys;
-
   @override
   void initState() {
     try {
       super.initState();
       player = AudioPlayer();
       youtube = YoutubeExplode();
-      _hotKeys = [
-        GlobalKeyActions(
-          HotKey(KeyCode.space, scope: HotKeyScope.inapp),
-          _playOrPause,
-        ),
-      ];
+
       WidgetsBinding.instance?.addObserver(this);
       WidgetsBinding.instance?.addPostFrameCallback(_init);
     } catch (e, stack) {
@@ -96,15 +87,6 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
           print(stack);
         }
       });
-
-      await Future.wait(
-        _hotKeys.map((e) {
-          return hotKeyManager.register(
-            e.hotKey,
-            keyDownHandler: e.onKeyDown,
-          );
-        }),
-      );
     } catch (e) {
       print("[Player._init()]: $e");
     }
@@ -115,7 +97,6 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
     WidgetsBinding.instance?.removeObserver(this);
     player.dispose();
     youtube.close();
-    Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
     super.dispose();
   }
 
@@ -126,15 +107,6 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
       // if the app resumes later, it will still remember what position to
       // resume from.
       player.stop();
-    }
-  }
-
-  _playOrPause(key) async {
-    try {
-      _isPlaying ? await player.pause() : await player.play();
-    } catch (e, stack) {
-      print("[PlayPauseShortcut] $e");
-      print(stack);
     }
   }
 
@@ -198,6 +170,29 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
     }
   }
 
+  _onNext() async {
+    try {
+      await player.pause();
+      await player.seek(Duration.zero);
+      _movePlaylistPositionBy(1);
+      print("ON NEXT");
+    } catch (e, stack) {
+      print("[PlayerControls.onNext()] $e");
+      print(stack);
+    }
+  }
+
+  _onPrevious() async {
+    try {
+      await player.pause();
+      await player.seek(Duration.zero);
+      _movePlaylistPositionBy(-1);
+    } catch (e, stack) {
+      print("[PlayerControls.onPrevious()] $e");
+      print(stack);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -256,26 +251,8 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                     isPlaying: _isPlaying,
                     duration: _duration ?? Duration.zero,
                     shuffled: _shuffled,
-                    onNext: () async {
-                      try {
-                        await player.pause();
-                        await player.seek(Duration.zero);
-                        _movePlaylistPositionBy(1);
-                      } catch (e, stack) {
-                        print("[PlayerControls.onNext()] $e");
-                        print(stack);
-                      }
-                    },
-                    onPrevious: () async {
-                      try {
-                        await player.pause();
-                        await player.seek(Duration.zero);
-                        _movePlaylistPositionBy(-1);
-                      } catch (e, stack) {
-                        print("[PlayerControls.onPrevious()] $e");
-                        print(stack);
-                      }
-                    },
+                    onNext: _onNext,
+                    onPrevious: _onPrevious,
                     onPause: () async {
                       try {
                         await player.pause();

@@ -1,7 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
+import 'package:spotube/models/GlobalKeyActions.dart';
+import 'package:spotube/provider/UserPreferences.dart';
+import 'package:provider/provider.dart';
 
 class PlayerControls extends StatefulWidget {
   final Stream<Duration> positionStream;
@@ -36,15 +40,57 @@ class PlayerControls extends StatefulWidget {
 
 class _PlayerControlsState extends State<PlayerControls> {
   StreamSubscription? _timePositionListener;
+  late List<GlobalKeyActions> _hotKeys = [];
 
   @override
   void dispose() async {
     await _timePositionListener?.cancel();
+    Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
     super.dispose();
+  }
+
+  _playOrPause(key) async {
+    try {
+      widget.isPlaying ? widget.onPause?.call() : await widget.onPlay?.call();
+    } catch (e, stack) {
+      print("[PlayPauseShortcut] $e");
+      print(stack);
+    }
+  }
+
+  _configureHotKeys(UserPreferences preferences) async {
+    await Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)))
+        .then((val) async {
+      _hotKeys = [
+        GlobalKeyActions(
+          HotKey(KeyCode.space, scope: HotKeyScope.inapp),
+          _playOrPause,
+        ),
+        if (preferences.nextTrackHotKey != null)
+          GlobalKeyActions(
+              preferences.nextTrackHotKey!, (key) => widget.onNext?.call()),
+        if (preferences.prevTrackHotKey != null)
+          GlobalKeyActions(
+              preferences.prevTrackHotKey!, (key) => widget.onPrevious?.call()),
+        if (preferences.playPauseHotKey != null)
+          GlobalKeyActions(preferences.playPauseHotKey!, _playOrPause)
+      ];
+      await Future.wait(
+        _hotKeys.map((e) {
+          return hotKeyManager.register(
+            e.hotKey,
+            keyDownHandler: e.onKeyDown,
+          );
+        }),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    UserPreferences preferences = context.watch<UserPreferences>();
+    _configureHotKeys(preferences);
+
     return Container(
       constraints: const BoxConstraints(maxWidth: 700),
       child: Column(
@@ -103,16 +149,13 @@ class _PlayerControlsState extends State<PlayerControls> {
                     widget.onPrevious?.call();
                   }),
               IconButton(
-                  icon: Icon(
-                    widget.isPlaying
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                  ),
-                  onPressed: () {
-                    widget.isPlaying
-                        ? widget.onPause?.call()
-                        : widget.onPlay?.call();
-                  }),
+                icon: Icon(
+                  widget.isPlaying
+                      ? Icons.pause_rounded
+                      : Icons.play_arrow_rounded,
+                ),
+                onPressed: () => _playOrPause(null),
+              ),
               IconButton(
                   icon: const Icon(Icons.skip_next_rounded),
                   onPressed: () => widget.onNext?.call()),
