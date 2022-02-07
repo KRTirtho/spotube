@@ -8,7 +8,7 @@
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/KRTirtho/spotube?color=%2316ba58&style=flat-square"/>
   </a>
   <a href="LICENSE">
-    <img alt="License" src="https://img.shields.io/aur/license/spotube?color=%2316ba58&style=flat-square"/>
+    <img alt="License" src="https://img.shields.io/aur/license/spotube-bin?color=%2316ba58&style=flat-square"/>
   </a>
   <a href="https://github.com/KRTirtho">
     <img alt="Maintainer" src="https://img.shields.io/badge/Maintainer-KRTirtho-%2316ba58?style=flat-square"/>
