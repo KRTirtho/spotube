@@ -5,10 +5,12 @@ BUNDLE_DIR=build/linux/x64/release/bundle
 MIRRORLIST=${PWD}/build/mirrorlist
 deb: 
 		mkdir -p ${USR_SHARE}/spotube\
-		&& mkdir -p $(USR_SHARE)/applications $(USR_SHARE)/icons/spotube $(USR_SHARE)/spotube\
+		&& mkdir -p $(USR_SHARE)/applications $(USR_SHARE)/icons/spotube $(USR_SHARE)/spotube $(USR_SHARE)/appdata\
 		&& cp -r $(BUNDLE_DIR)/* $(USR_SHARE)/spotube\
 		&& cp linux/spotube.desktop $(USR_SHARE)/applications/\
+		&& cp linux/com.github.KRTirtho.Spotube.appdata.xml $(USR_SHARE)/appdata/spotube.appdata.xml\
 		&& cp assets/spotube-logo.png $(USR_SHARE)/icons/spotube\
+		&& sed -i 's|com.github.KRTirtho.Spotube|spotube|' $(USR_SHARE)/appdata/spotube.appdata.xml\
 		&& dpkg-deb -b deb-struct/ build/Spotube-linux-x86_64.deb
 
 tar:
@@ -16,6 +18,7 @@ tar:
 		&& cp -r $(BUNDLE_DIR)/* $(TEMP_DIR)\
 		&& cp linux/spotube.desktop $(TEMP_DIR)\
 		&& cp assets/spotube-logo.png $(TEMP_DIR)\
+		&& cp linux/com.github.KRTirtho.Spotube.appdata.xml $(TEMP_DIR)\
 		&& tar -cJf build/Spotube-linux-x86_64.tar.xz -C $(TEMP_DIR) .\
 		&& rm -rf $(TEMP_DIR)
 

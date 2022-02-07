@@ -173,7 +173,7 @@ class _SettingsState extends State<Settings> {
               );
             }),
             const SizedBox(height: 40),
-            const Text("Spotube v1.1.0"),
+            const Text("Spotube v1.2.0"),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

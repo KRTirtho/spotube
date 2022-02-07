@@ -39,20 +39,32 @@ class UserPreferences extends ChangeNotifier {
 
       geniusAccessToken ??= accessToken;
 
-      nextTrackHotKey ??= await _getHotKeyFromLocalStorage(
-        localStorage,
-        LocalStorageKeys.nextTrackHotKey,
-      );
+      nextTrackHotKey ??= (await _getHotKeyFromLocalStorage(
+            localStorage,
+            LocalStorageKeys.nextTrackHotKey,
+          )) ??
+          HotKey(
+            KeyCode.slash,
+            modifiers: [KeyModifier.control, KeyModifier.alt],
+          );
 
-      prevTrackHotKey ??= await _getHotKeyFromLocalStorage(
-        localStorage,
-        LocalStorageKeys.prevTrackHotKey,
-      );
+      prevTrackHotKey ??= (await _getHotKeyFromLocalStorage(
+            localStorage,
+            LocalStorageKeys.prevTrackHotKey,
+          )) ??
+          HotKey(
+            KeyCode.comma,
+            modifiers: [KeyModifier.control, KeyModifier.alt],
+          );
 
-      playPauseHotKey ??= await _getHotKeyFromLocalStorage(
-        localStorage,
-        LocalStorageKeys.playPauseHotKey,
-      );
+      playPauseHotKey ??= (await _getHotKeyFromLocalStorage(
+            localStorage,
+            LocalStorageKeys.playPauseHotKey,
+          )) ??
+          HotKey(
+            KeyCode.period,
+            modifiers: [KeyModifier.control, KeyModifier.alt],
+          );
       notifyListeners();
     } catch (e, stack) {
       print("[UserPreferences.onInit]: $e");

@@ -1,3 +1,21 @@
+# v1.2.0
+
+### New
+- Global custom reconfigurable *hotkey* support for playback controls (play-pause/next/previous)
+- Credit section in the Settings page with important links
+### Improved
+- Macos support
+- Genius (Lyrics Provider) access_token can be saved in the Login page too
+- Better theme for dropdown-buttons
+
+### Bug fixes
+- broken authentication IPC on Mac OS (https://github.com/KRTirtho/spotube/pull/18)
+- Mac OS's global appmenu's default APP_NAME replaced with Spotube
+- location of back button on macOS (https://github.com/KRTirtho/spotube/pull/21)
+- windows titlebar buttons appears on Mac OS
+- genius access_token not loading on initial app start
+
+
 # v1.1.0
 
 ### New

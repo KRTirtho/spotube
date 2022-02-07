@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.KRTirtho.Spotube</id>
+  <name>Spotube</name>
+  <summary>
+  A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube &amp; no Spotify premium account is needed
+  </summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>BSD-4-Clause</project_license>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </recommends>
+  <developer_name>Kingkor Roy Tirtho</developer_name>
+  <url type="homepage">https://github.com/krtirtho/spotube</url>
+  <description>
+    <p>Spotube is a Flutter based lightweight Spotify client. It utilizes the power of Spotify &amp; Youtube's public API &amp; creates a hazardless, performant &amp; resource friendly User Experience</p>
+    <p>Following are the features that currently spotube offers:</p>
+    <ul>
+      <li>Open Source</li>
+      <li>No telementry, diagnostics or user data collection</li>
+      <li>Lightweight &amp; resource friendly</li>
+      <li>Native performance (Thanks to Flutter+Skia)</li>
+      <li>Playback control is on user's machine instead of server based</li>
+      <li>Small size &amp; less data hungry</li>
+      <li>No spotify or youtube ads since it uses all public &amp; free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)</li>
+      <li>Lyrics</li>
+      <li>Downloadable track</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot>
+      <image type="source">https://rawcdn.githack.com/KRTirtho/spotube/e1e5340e241038ce8574bf02370be0cf78cc85a2/assets/spotube-screenshot.png</image>
+    </screenshot>
+  </screenshots>
+  <launchable type="desktop-id">com.github.KRTirtho.Spotube.desktop</launchable>
+  <releases>
+    <release version="1.1.0" date="2022-01-27" />
+    <release version="1.0.1" date="2022-01-15" />
+    <release version="1.0.0" date="2022-01-14" />
+    <release version="0.0.3" date="2021-05-08" />
+    <release version="0.0.2" date="2021-03-31" />
+    <release version="0.0.1" date="2021-03-20" />
+  </releases>
+  <content_rating type="oars-1.1" />
+  <update_contact>krtirtho@gmail.com</update_contact>
+</component>
