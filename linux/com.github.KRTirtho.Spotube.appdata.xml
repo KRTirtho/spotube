@@ -36,6 +36,7 @@
   </screenshots>
   <launchable type="desktop-id">com.github.KRTirtho.Spotube.desktop</launchable>
   <releases>
+    <release version="1.2.0" date="2022-02-02" />
     <release version="1.1.0" date="2022-01-27" />
     <release version="1.0.1" date="2022-01-15" />
     <release version="1.0.0" date="2022-01-14" />
