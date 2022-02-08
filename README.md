@@ -94,7 +94,7 @@ $ flatpak install flathub com.github.KRTirtho.Spotube
    Download the [Spotube-linux-x86_64.AppImage](https://github.com/KRTirtho/spotube/releases/download/v1.2.0/Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
 
 ## Mac OS
-Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube/releases/download/v1.1.0/Spotube-macos-x86_64.dmg) from the release & follow along the setup wizard
+Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube/releases/download/v1.2.0/Spotube-macos-x86_64.dmg) from the release & follow along the setup wizard
 
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey/homebrew stores or software centers or repositories**
