@@ -93,8 +93,11 @@ $ flatpak install flathub com.github.KRTirtho.Spotube
 ### AppImage:
    Download the [Spotube-linux-x86_64.AppImage](https://github.com/KRTirtho/spotube/releases/download/v1.2.0/Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
 
-**I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
+## Mac OS
+Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube/releases/download/v1.1.0/Spotube-macos-x86_64.dmg) from the release & follow along the setup wizard
 
+
+**I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey/homebrew stores or software centers or repositories**
 # Configuration
 
 There are some configurations that needs to be done to start using this software
@@ -130,7 +133,7 @@ Also, you need a [genius](https://genius.com) account for **lyrics** & a API Cli
 - [x] Add support for show Lyric of currently playing track
 - [x] Track download
 - [ ] Support for playing/streaming podcasts/shows
-- [ ] Artist, User & Album pages
+- [x] Artist, User & Album pages
 
 # Building from source
 
@@ -149,7 +152,6 @@ $ flutter run -d <window|macos|linux>
 
 - Shows & Podcasts aren't supported as it'd require premium anyway
 - OS Media Controls
-- Global Media Shortcuts/Keyboard Media Buttons
 
 # License
 
