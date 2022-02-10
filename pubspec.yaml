@@ -49,6 +49,7 @@ dependencies:
   just_audio_libwinmedia: ^0.0.4
   path: ^1.8.0
   path_provider: ^2.0.8
+  collection: ^1.15.0
 
 dev_dependencies:
   flutter_test:
