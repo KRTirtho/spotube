@@ -138,7 +138,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
   Future _playTrack(Track currentTrack, Playback playback) async {
     try {
       if (currentTrack.id != _currentTrackId) {
-        Uri? parsedUri = Uri.tryParse(currentTrack.uri!);
+        Uri? parsedUri = Uri.tryParse(currentTrack.uri ?? "");
         if (parsedUri != null && parsedUri.hasAbsolutePath) {
           await player
               .setAudioSource(
