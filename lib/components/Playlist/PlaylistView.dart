@@ -7,24 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class PlaylistView extends ConsumerStatefulWidget {
+class PlaylistView extends ConsumerWidget {
   final PlaylistSimple playlist;
   const PlaylistView(this.playlist, {Key? key}) : super(key: key);
-  @override
-  _PlaylistViewState createState() => _PlaylistViewState();
-}
 
-class _PlaylistViewState extends ConsumerState<PlaylistView> {
   playPlaylist(Playback playback, List<Track> tracks, {Track? currentTrack}) {
     currentTrack ??= tracks.first;
     var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
-        playback.currentPlaylist?.id == widget.playlist.id;
+        playback.currentPlaylist?.id == playlist.id;
     if (!isPlaylistPlaying) {
       playback.setCurrentPlaylist = CurrentPlaylist(
         tracks: tracks,
-        id: widget.playlist.id!,
-        name: widget.playlist.name!,
-        thumbnail: imageToUrlString(widget.playlist.images),
+        id: playlist.id!,
+        name: playlist.name!,
+        thumbnail: imageToUrlString(playlist.images),
       );
       playback.setCurrentTrack = currentTrack;
     } else if (isPlaylistPlaying &&
@@ -35,17 +31,15 @@ class _PlaylistViewState extends ConsumerState<PlaylistView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
     SpotifyApi spotifyApi = ref.watch(spotifyProvider);
     var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
-        playback.currentPlaylist?.id == widget.playlist.id;
+        playback.currentPlaylist?.id == playlist.id;
     return Scaffold(
       body: FutureBuilder<Iterable<Track>>(
-          future: widget.playlist.id != "user-liked-tracks"
-              ? spotifyApi.playlists
-                  .getTracksByPlaylistId(widget.playlist.id)
-                  .all()
+          future: playlist.id != "user-liked-tracks"
+              ? spotifyApi.playlists.getTracksByPlaylistId(playlist.id).all()
               : spotifyApi.tracks.me.saved
                   .all()
                   .then((tracks) => tracks.map((e) => e.track!)),
@@ -78,7 +72,7 @@ class _PlaylistViewState extends ConsumerState<PlaylistView> {
                   ),
                 ),
                 Center(
-                  child: Text(widget.playlist.name!,
+                  child: Text(playlist.name!,
                       style: Theme.of(context).textTheme.headline4),
                 ),
                 snapshot.hasError

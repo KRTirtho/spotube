@@ -176,7 +176,6 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
       await player.pause();
       await player.seek(Duration.zero);
       _movePlaylistPositionBy(1);
-      print("ON NEXT");
     } catch (e, stack) {
       print("[PlayerControls.onNext()] $e");
       print(stack);

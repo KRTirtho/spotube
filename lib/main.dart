@@ -1,15 +1,17 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Home.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/provider/ThemeProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await hotKeyManager.unregisterAll();
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(child: MyApp()));
   doWhenWindowReady(() {
     appWindow.minSize = const Size(900, 700);
     appWindow.size = const Size(900, 700);
@@ -19,56 +21,28 @@ void main() async {
   });
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  static _MyAppState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>();
+class MyApp extends HookConsumerWidget {
   @override
-  State<MyApp> createState() => _MyAppState();
-}
+  Widget build(BuildContext context, ref) {
+    var themeMode = ref.watch(themeProvider);
+    useEffect(() {
+      SharedPreferences.getInstance().then((localStorage) {
+        String? themeMode = localStorage.getString(LocalStorageKeys.themeMode);
+        var themeNotifier = ref.read(themeProvider.notifier);
 
-class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
-
-  @override
-  void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      String? themeMode = localStorage.getString(LocalStorageKeys.themeMode);
-
-      setState(() {
         switch (themeMode) {
           case "light":
-            _themeMode = ThemeMode.light;
+            themeNotifier.state = ThemeMode.light;
             break;
           case "dark":
-            _themeMode = ThemeMode.dark;
+            themeNotifier.state = ThemeMode.dark;
             break;
           default:
-            _themeMode = ThemeMode.system;
+            themeNotifier.state = ThemeMode.system;
         }
       });
-    });
-    super.initState();
-  }
+    }, []);
 
-  void setThemeMode(ThemeMode themeMode) {
-    SharedPreferences.getInstance().then((localStorage) {
-      localStorage.setString(
-          LocalStorageKeys.themeMode, themeMode.toString().split(".").last);
-      setState(() {
-        _themeMode = themeMode;
-      });
-    });
-  }
-
-  ThemeMode getThemeMode() {
-    return _themeMode;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
@@ -156,7 +130,7 @@ class _MyAppState extends State<MyApp> {
         ),
         canvasColor: Colors.blueGrey[900],
       ),
-      themeMode: _themeMode,
+      themeMode: themeMode,
       home: const Home(),
     );
   }

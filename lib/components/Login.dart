@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -8,35 +9,32 @@ import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
-class Login extends ConsumerStatefulWidget {
+class Login extends HookConsumerWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
-}
+  Widget build(BuildContext context, ref) {
+    var clientIdController = useTextEditingController();
+    var clientSecretController = useTextEditingController();
+    var accessTokenController = useTextEditingController();
+    var fieldError = useState(false);
 
-class _LoginState extends ConsumerState<Login> {
-  String clientId = "";
-  String clientSecret = "";
-  String accessToken = "";
-  bool _fieldError = false;
-
-  Future handleLogin(Auth authState) async {
-    try {
-      if (clientId == "" || clientSecret == "") {
-        return setState(() {
-          _fieldError = true;
-        });
+    Future handleLogin(Auth authState) async {
+      try {
+        if (clientIdController.value.text == "" ||
+            clientSecretController.value.text == "") {
+          fieldError.value = true;
+        }
+        await oauthLogin(
+          ref.read(authProvider),
+          clientId: clientIdController.value.text,
+          clientSecret: clientSecretController.value.text,
+        );
+      } catch (e) {
+        print("[Login.handleLogin] $e");
       }
-      await oauthLogin(ref.read(authProvider),
-          clientId: clientId, clientSecret: clientSecret);
-    } catch (e) {
-      print("[Login.handleLogin] $e");
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     Auth authState = ref.watch(authProvider);
     return Scaffold(
       appBar: const PageWindowTitleBar(),
@@ -65,15 +63,11 @@ class _LoginState extends ConsumerState<Login> {
                 child: Column(
                   children: [
                     TextField(
+                      controller: clientIdController,
                       decoration: const InputDecoration(
                         hintText: "Spotify Client ID",
                         label: Text("ClientID"),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          clientId = value;
-                        });
-                      },
                     ),
                     const SizedBox(height: 10),
                     TextField(
@@ -81,11 +75,7 @@ class _LoginState extends ConsumerState<Login> {
                         hintText: "Spotify Client Secret",
                         label: Text("Client Secret"),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          clientSecret = value;
-                        });
-                      },
+                      controller: clientSecretController,
                     ),
                     const SizedBox(height: 10),
                     const Divider(color: Colors.grey),
@@ -94,11 +84,7 @@ class _LoginState extends ConsumerState<Login> {
                       decoration: const InputDecoration(
                         label: Text("Genius Access Token (optional)"),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          accessToken = value;
-                        });
-                      },
+                      controller: accessTokenController,
                     ),
                     const SizedBox(
                       height: 10,
@@ -110,12 +96,12 @@ class _LoginState extends ConsumerState<Login> {
                             ref.read(userPreferencesProvider);
                         SharedPreferences localStorage =
                             await SharedPreferences.getInstance();
-                        preferences.setGeniusAccessToken(accessToken);
+                        preferences.setGeniusAccessToken(
+                            accessTokenController.value.text);
                         await localStorage.setString(
-                            LocalStorageKeys.geniusAccessToken, accessToken);
-                        setState(() {
-                          accessToken = "";
-                        });
+                            LocalStorageKeys.geniusAccessToken,
+                            accessTokenController.value.text);
+                        accessTokenController.text = "";
                       },
                       child: const Text("Submit"),
                     )

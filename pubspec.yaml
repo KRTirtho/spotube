@@ -50,6 +50,8 @@ dependencies:
   path_provider: ^2.0.8
   collection: ^1.15.0
   flutter_riverpod: ^1.0.3
+  flutter_hooks: ^0.18.2+1
+  hooks_riverpod: ^1.0.3
 
 dev_dependencies:
   flutter_test:

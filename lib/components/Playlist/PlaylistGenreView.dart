@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class PlaylistGenreView extends StatefulWidget {
+class PlaylistGenreView extends ConsumerWidget {
   final String genreId;
   final String genreName;
   final Iterable<PlaylistSimple>? playlists;
@@ -15,13 +15,9 @@ class PlaylistGenreView extends StatefulWidget {
     this.playlists,
     Key? key,
   }) : super(key: key);
-  @override
-  _PlaylistGenreViewState createState() => _PlaylistGenreViewState();
-}
 
-class _PlaylistGenreViewState extends State<PlaylistGenreView> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return Scaffold(
       appBar: const PageWindowTitleBar(
         leading: BackButton(),
@@ -29,7 +25,7 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
       body: Column(
         children: [
           Text(
-            widget.genreName,
+            genreName,
             style: Theme.of(context).textTheme.headline4,
             textAlign: TextAlign.center,
           ),
@@ -39,13 +35,13 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
               return Expanded(
                 child: SingleChildScrollView(
                   child: FutureBuilder<Iterable<PlaylistSimple>>(
-                      future: widget.playlists == null
-                          ? (widget.genreId != "user-featured-playlists"
+                      future: playlists == null
+                          ? (genreId != "user-featured-playlists"
                               ? spotifyApi.playlists
-                                  .getByCategoryId(widget.genreId)
+                                  .getByCategoryId(genreId)
                                   .all()
                               : spotifyApi.playlists.featured.all())
-                          : Future.value(widget.playlists),
+                          : Future.value(playlists),
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
                           return const Center(child: Text("Error occurred"));

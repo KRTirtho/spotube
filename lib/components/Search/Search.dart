@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
@@ -11,27 +12,14 @@ import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class Search extends ConsumerStatefulWidget {
+class Search extends HookConsumerWidget {
   const Search({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<Search> createState() => _SearchState();
-}
-
-class _SearchState extends ConsumerState<Search> {
-  late TextEditingController _controller;
-
-  String searchTerm = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     SpotifyApi spotify = ref.watch(spotifyProvider);
+    var controller = useTextEditingController();
+    var searchTerm = useState("");
 
     return Expanded(
       child: Column(
@@ -43,11 +31,9 @@ class _SearchState extends ConsumerState<Search> {
                 Expanded(
                   child: TextField(
                     decoration: const InputDecoration(hintText: "Search..."),
-                    controller: _controller,
+                    controller: controller,
                     onSubmitted: (value) {
-                      setState(() {
-                        searchTerm = _controller.value.text;
-                      });
+                      searchTerm.value = controller.value.text;
                     },
                   ),
                 ),
@@ -60,24 +46,22 @@ class _SearchState extends ConsumerState<Search> {
                   textColor: Colors.white,
                   child: const Icon(Icons.search_rounded),
                   onPressed: () {
-                    setState(() {
-                      searchTerm = _controller.value.text;
-                    });
+                    searchTerm.value = controller.value.text;
                   },
                 ),
               ],
             ),
           ),
           FutureBuilder<List<Page>>(
-            future: searchTerm.isNotEmpty
-                ? spotify.search.get(searchTerm).first(10)
+            future: searchTerm.value.isNotEmpty
+                ? spotify.search.get(searchTerm.value).first(10)
                 : null,
             builder: (context, snapshot) {
-              if (!snapshot.hasData && searchTerm.isNotEmpty) {
+              if (!snapshot.hasData && searchTerm.value.isNotEmpty) {
                 return const Center(
                   child: CircularProgressIndicator.adaptive(),
                 );
-              } else if (!snapshot.hasData && searchTerm.isEmpty) {
+              } else if (!snapshot.hasData && searchTerm.value.isEmpty) {
                 return Container();
               }
               Playback playback = ref.watch(playbackProvider);
