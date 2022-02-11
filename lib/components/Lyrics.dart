@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Settings.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
@@ -7,20 +7,20 @@ import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
-class Lyrics extends StatefulWidget {
+class Lyrics extends ConsumerStatefulWidget {
   const Lyrics({Key? key}) : super(key: key);
 
   @override
-  State<Lyrics> createState() => _LyricsState();
+  ConsumerState<Lyrics> createState() => _LyricsState();
 }
 
-class _LyricsState extends State<Lyrics> {
+class _LyricsState extends ConsumerState<Lyrics> {
   Map<String, String> _lyrics = {};
 
   @override
   Widget build(BuildContext context) {
-    Playback playback = context.watch<Playback>();
-    UserPreferences userPreferences = context.watch<UserPreferences>();
+    Playback playback = ref.watch(playbackProvider);
+    UserPreferences userPreferences = ref.watch(userPreferencesProvider);
 
     bool hasToken = (userPreferences.geniusAccessToken != null ||
         (userPreferences.geniusAccessToken?.isNotEmpty ?? false));

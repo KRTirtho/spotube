@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/UserPreferences.dart';
-import 'package:provider/provider.dart';
 
-class PlayerControls extends StatefulWidget {
+class PlayerControls extends ConsumerStatefulWidget {
   final Stream<Duration> positionStream;
   final bool isPlaying;
   final Duration duration;
@@ -38,7 +38,7 @@ class PlayerControls extends StatefulWidget {
   _PlayerControlsState createState() => _PlayerControlsState();
 }
 
-class _PlayerControlsState extends State<PlayerControls> {
+class _PlayerControlsState extends ConsumerState<PlayerControls> {
   StreamSubscription? _timePositionListener;
   late List<GlobalKeyActions> _hotKeys = [];
 
@@ -88,7 +88,7 @@ class _PlayerControlsState extends State<PlayerControls> {
 
   @override
   Widget build(BuildContext context) {
-    UserPreferences preferences = context.watch<UserPreferences>();
+    UserPreferences preferences = ref.watch(userPreferencesProvider);
     _configureHotKeys(preferences);
 
     return Container(

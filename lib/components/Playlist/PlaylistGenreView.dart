@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
@@ -33,39 +33,42 @@ class _PlaylistGenreViewState extends State<PlaylistGenreView> {
             style: Theme.of(context).textTheme.headline4,
             textAlign: TextAlign.center,
           ),
-          Consumer<SpotifyDI>(
-            builder: (context, data, child) => Expanded(
-              child: SingleChildScrollView(
-                child: FutureBuilder<Iterable<PlaylistSimple>>(
-                    future: widget.playlists == null
-                        ? (widget.genreId != "user-featured-playlists"
-                            ? data.spotifyApi.playlists
-                                .getByCategoryId(widget.genreId)
-                                .all()
-                            : data.spotifyApi.playlists.featured.all())
-                        : Future.value(widget.playlists),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return const Center(child: Text("Error occurred"));
-                      }
-                      if (!snapshot.hasData) {
-                        return const CircularProgressIndicator.adaptive();
-                      }
-                      return Center(
-                        child: Wrap(
-                          children: snapshot.data!
-                              .map(
-                                (playlist) => Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: PlaylistCard(playlist),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      );
-                    }),
-              ),
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              SpotifyApi spotifyApi = ref.watch(spotifyProvider);
+              return Expanded(
+                child: SingleChildScrollView(
+                  child: FutureBuilder<Iterable<PlaylistSimple>>(
+                      future: widget.playlists == null
+                          ? (widget.genreId != "user-featured-playlists"
+                              ? spotifyApi.playlists
+                                  .getByCategoryId(widget.genreId)
+                                  .all()
+                              : spotifyApi.playlists.featured.all())
+                          : Future.value(widget.playlists),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Center(child: Text("Error occurred"));
+                        }
+                        if (!snapshot.hasData) {
+                          return const CircularProgressIndicator.adaptive();
+                        }
+                        return Center(
+                          child: Wrap(
+                            children: snapshot.data!
+                                .map(
+                                  (playlist) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: PlaylistCard(playlist),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        );
+                      }),
+                ),
+              );
+            },
           )
         ],
       ),

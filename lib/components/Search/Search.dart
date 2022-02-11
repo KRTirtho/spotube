@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
@@ -11,14 +11,14 @@ import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class Search extends StatefulWidget {
+class Search extends ConsumerStatefulWidget {
   const Search({Key? key}) : super(key: key);
 
   @override
-  State<Search> createState() => _SearchState();
+  ConsumerState<Search> createState() => _SearchState();
 }
 
-class _SearchState extends State<Search> {
+class _SearchState extends ConsumerState<Search> {
   late TextEditingController _controller;
 
   String searchTerm = "";
@@ -31,7 +31,7 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    SpotifyApi spotify = context.watch<SpotifyDI>().spotifyApi;
+    SpotifyApi spotify = ref.watch(spotifyProvider);
 
     return Expanded(
       child: Column(
@@ -80,7 +80,7 @@ class _SearchState extends State<Search> {
               } else if (!snapshot.hasData && searchTerm.isEmpty) {
                 return Container();
               }
-              Playback playback = context.watch<Playback>();
+              Playback playback = ref.watch(playbackProvider);
               List<AlbumSimple> albums = [];
               List<Artist> artists = [];
               List<Track> tracks = [];

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
@@ -10,14 +9,14 @@ import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
-class Settings extends StatefulWidget {
+class Settings extends ConsumerStatefulWidget {
   const Settings({Key? key}) : super(key: key);
 
   @override
   _SettingsState createState() => _SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsState extends ConsumerState<Settings> {
   TextEditingController? _textEditingController;
   String? _geniusAccessToken;
 
@@ -40,7 +39,7 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    UserPreferences preferences = context.watch<UserPreferences>();
+    UserPreferences preferences = ref.watch(userPreferencesProvider);
 
     return Scaffold(
       appBar: PageWindowTitleBar(
@@ -151,7 +150,7 @@ class _SettingsState extends State<Settings> {
             ),
             const SizedBox(height: 10),
             Builder(builder: (context) {
-              var auth = context.read<Auth>();
+              Auth auth = ref.watch(authProvider);
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

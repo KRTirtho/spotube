@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
@@ -14,7 +14,7 @@ import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class ArtistProfile extends StatefulWidget {
+class ArtistProfile extends ConsumerStatefulWidget {
   final String artistId;
   const ArtistProfile(this.artistId, {Key? key}) : super(key: key);
 
@@ -22,10 +22,10 @@ class ArtistProfile extends StatefulWidget {
   _ArtistProfileState createState() => _ArtistProfileState();
 }
 
-class _ArtistProfileState extends State<ArtistProfile> {
+class _ArtistProfileState extends ConsumerState<ArtistProfile> {
   @override
   Widget build(BuildContext context) {
-    SpotifyApi spotify = context.watch<SpotifyDI>().spotifyApi;
+    SpotifyApi spotify = ref.watch(spotifyProvider);
     return Scaffold(
       appBar: const PageWindowTitleBar(
         leading: BackButton(),
@@ -134,7 +134,7 @@ class _ArtistProfileState extends State<ArtistProfile> {
                       return const Center(
                           child: CircularProgressIndicator.adaptive());
                     }
-                    Playback playback = context.watch<Playback>();
+                    Playback playback = ref.watch(playbackProvider);
                     var isPlaylistPlaying =
                         playback.currentPlaylist?.id == snapshot.data?.id;
                     playPlaylist(List<Track> tracks, {Track? currentTrack}) {

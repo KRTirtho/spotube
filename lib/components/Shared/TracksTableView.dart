@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
@@ -9,7 +9,7 @@ import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 
-class TracksTableView extends StatelessWidget {
+class TracksTableView extends ConsumerWidget {
   final void Function(Track currentTrack)? onTrackPlayButtonPressed;
   final List<Track> tracks;
   const TracksTableView(this.tracks, {Key? key, this.onTrackPlayButtonPressed})
@@ -97,8 +97,8 @@ class TracksTableView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Playback playback = context.watch<Playback>();
+  Widget build(context, ref) {
+    Playback playback = ref.watch(playbackProvider);
     TextStyle tableHeadStyle =
         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
     return Expanded(

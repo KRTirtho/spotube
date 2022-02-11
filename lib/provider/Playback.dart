@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 
 class CurrentPlaylist {
@@ -77,4 +78,4 @@ class Playback extends ChangeNotifier {
   }
 }
 
-var x = Playback();
+var playbackProvider = ChangeNotifierProvider<Playback>((_) => Playback());

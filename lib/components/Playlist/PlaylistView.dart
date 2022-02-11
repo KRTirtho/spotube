@@ -1,20 +1,20 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class PlaylistView extends StatefulWidget {
+class PlaylistView extends ConsumerStatefulWidget {
   final PlaylistSimple playlist;
   const PlaylistView(this.playlist, {Key? key}) : super(key: key);
   @override
   _PlaylistViewState createState() => _PlaylistViewState();
 }
 
-class _PlaylistViewState extends State<PlaylistView> {
+class _PlaylistViewState extends ConsumerState<PlaylistView> {
   playPlaylist(Playback playback, List<Track> tracks, {Track? currentTrack}) {
     currentTrack ??= tracks.first;
     var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
@@ -36,71 +36,70 @@ class _PlaylistViewState extends State<PlaylistView> {
 
   @override
   Widget build(BuildContext context) {
-    Playback playback = context.watch<Playback>();
+    Playback playback = ref.watch(playbackProvider);
+    SpotifyApi spotifyApi = ref.watch(spotifyProvider);
     var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
         playback.currentPlaylist?.id == widget.playlist.id;
-    return Consumer<SpotifyDI>(builder: (_, data, __) {
-      return Scaffold(
-        body: FutureBuilder<Iterable<Track>>(
-            future: widget.playlist.id != "user-liked-tracks"
-                ? data.spotifyApi.playlists
-                    .getTracksByPlaylistId(widget.playlist.id)
-                    .all()
-                : data.spotifyApi.tracks.me.saved
-                    .all()
-                    .then((tracks) => tracks.map((e) => e.track!)),
-            builder: (context, snapshot) {
-              List<Track> tracks = snapshot.data?.toList() ?? [];
-              return Column(
-                children: [
-                  PageWindowTitleBar(
-                    leading: Row(
-                      children: [
-                        // nav back
-                        const BackButton(),
-                        // heart playlist
-                        IconButton(
-                          icon: const Icon(Icons.favorite_outline_rounded),
-                          onPressed: () {},
+    return Scaffold(
+      body: FutureBuilder<Iterable<Track>>(
+          future: widget.playlist.id != "user-liked-tracks"
+              ? spotifyApi.playlists
+                  .getTracksByPlaylistId(widget.playlist.id)
+                  .all()
+              : spotifyApi.tracks.me.saved
+                  .all()
+                  .then((tracks) => tracks.map((e) => e.track!)),
+          builder: (context, snapshot) {
+            List<Track> tracks = snapshot.data?.toList() ?? [];
+            return Column(
+              children: [
+                PageWindowTitleBar(
+                  leading: Row(
+                    children: [
+                      // nav back
+                      const BackButton(),
+                      // heart playlist
+                      IconButton(
+                        icon: const Icon(Icons.favorite_outline_rounded),
+                        onPressed: () {},
+                      ),
+                      // play playlist
+                      IconButton(
+                        icon: Icon(
+                          isPlaylistPlaying
+                              ? Icons.stop_rounded
+                              : Icons.play_arrow_rounded,
                         ),
-                        // play playlist
-                        IconButton(
-                          icon: Icon(
-                            isPlaylistPlaying
-                                ? Icons.stop_rounded
-                                : Icons.play_arrow_rounded,
-                          ),
-                          onPressed: snapshot.hasData
-                              ? () => playPlaylist(playback, tracks)
-                              : null,
-                        )
-                      ],
-                    ),
+                        onPressed: snapshot.hasData
+                            ? () => playPlaylist(playback, tracks)
+                            : null,
+                      )
+                    ],
                   ),
-                  Center(
-                    child: Text(widget.playlist.name!,
-                        style: Theme.of(context).textTheme.headline4),
-                  ),
-                  snapshot.hasError
-                      ? const Center(child: Text("Error occurred"))
-                      : !snapshot.hasData
-                          ? const Expanded(
-                              child: Center(
-                                  child: CircularProgressIndicator.adaptive()),
-                            )
-                          : TracksTableView(
+                ),
+                Center(
+                  child: Text(widget.playlist.name!,
+                      style: Theme.of(context).textTheme.headline4),
+                ),
+                snapshot.hasError
+                    ? const Center(child: Text("Error occurred"))
+                    : !snapshot.hasData
+                        ? const Expanded(
+                            child: Center(
+                                child: CircularProgressIndicator.adaptive()),
+                          )
+                        : TracksTableView(
+                            tracks,
+                            onTrackPlayButtonPressed: (currentTrack) =>
+                                playPlaylist(
+                              playback,
                               tracks,
-                              onTrackPlayButtonPressed: (currentTrack) =>
-                                  playPlaylist(
-                                playback,
-                                tracks,
-                                currentTrack: currentTrack,
-                              ),
+                              currentTrack: currentTrack,
                             ),
-                ],
-              );
-            }),
-      );
-    });
+                          ),
+              ],
+            );
+          }),
+    );
   }
 }

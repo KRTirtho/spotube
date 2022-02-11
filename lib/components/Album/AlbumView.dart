@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
@@ -8,7 +8,7 @@ import 'package:spotube/helpers/simple-track-to-track.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class AlbumView extends StatelessWidget {
+class AlbumView extends ConsumerWidget {
   final AlbumSimple album;
   const AlbumView(this.album, {Key? key}) : super(key: key);
 
@@ -31,11 +31,11 @@ class AlbumView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Playback playback = context.watch<Playback>();
+  Widget build(BuildContext context, ref) {
+    Playback playback = ref.watch(playbackProvider);
 
     var isPlaylistPlaying = playback.currentPlaylist?.id == album.id;
-    SpotifyApi spotify = context.watch<SpotifyDI>().spotifyApi;
+    SpotifyApi spotify = ref.watch(spotifyProvider);
     return Scaffold(
       body: FutureBuilder<Iterable<TrackSimple>>(
           future: spotify.albums.getTracks(album.id!).all(),

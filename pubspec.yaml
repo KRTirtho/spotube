@@ -37,7 +37,6 @@ dependencies:
   cached_network_image: ^3.2.0
   html: ^0.15.0
   http: ^0.13.4
-  provider: ^6.0.1
   shared_preferences: ^2.0.11
   spotify: ^0.6.0
   url_launcher: ^6.0.17
@@ -50,6 +49,7 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.8
   collection: ^1.15.0
+  flutter_riverpod: ^1.0.3
 
 dev_dependencies:
   flutter_test:

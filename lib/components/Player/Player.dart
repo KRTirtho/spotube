@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
@@ -10,18 +11,17 @@ import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class Player extends StatefulWidget {
+class Player extends ConsumerStatefulWidget {
   const Player({Key? key}) : super(key: key);
 
   @override
   _PlayerState createState() => _PlayerState();
 }
 
-class _PlayerState extends State<Player> with WidgetsBindingObserver {
+class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
   late AudioPlayer player;
   bool _isPlaying = false;
   bool _shuffled = false;
@@ -111,7 +111,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
   }
 
   void _movePlaylistPositionBy(int pos) {
-    Playback playback = context.read<Playback>();
+    Playback playback = ref.read(playbackProvider);
     if (playback.currentTrack != null && playback.currentPlaylist != null) {
       int index = playback.currentPlaylist!.trackIds
               .indexOf(playback.currentTrack!.id!) +
@@ -198,8 +198,9 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).backgroundColor,
-      child: Consumer<Playback>(
-        builder: (context, playback, widget) {
+      child: Consumer(
+        builder: (context, ref, widget) {
+          Playback playback = ref.watch(playbackProvider);
           if (playback.currentPlaylist != null &&
               playback.currentTrack != null) {
             _playTrack(playback.currentTrack!, playback);
@@ -348,10 +349,11 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                           DownloadTrackButton(
                             track: playback.currentTrack,
                           ),
-                          Consumer<SpotifyDI>(builder: (context, data, widget) {
+                          Consumer(builder: (context, ref, widget) {
+                            SpotifyApi spotifyApi = ref.watch(spotifyProvider);
                             return FutureBuilder<bool>(
                                 future: playback.currentTrack?.id != null
-                                    ? data.spotifyApi.tracks.me
+                                    ? spotifyApi.tracks.me
                                         .containsOne(playback.currentTrack!.id!)
                                     : Future.value(false),
                                 initialData: false,
@@ -367,7 +369,7 @@ class _PlayerState extends State<Player> with WidgetsBindingObserver {
                                       onPressed: () {
                                         if (!isLiked &&
                                             playback.currentTrack?.id != null) {
-                                          data.spotifyApi.tracks.me
+                                          spotifyApi.tracks.me
                                               .saveOne(
                                                   playback.currentTrack!.id!)
                                               .then((value) => setState(() {}));

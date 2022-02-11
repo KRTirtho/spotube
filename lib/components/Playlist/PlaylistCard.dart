@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
@@ -7,17 +7,17 @@ import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class PlaylistCard extends StatefulWidget {
+class PlaylistCard extends ConsumerStatefulWidget {
   final PlaylistSimple playlist;
   const PlaylistCard(this.playlist, {Key? key}) : super(key: key);
   @override
   _PlaylistCardState createState() => _PlaylistCardState();
 }
 
-class _PlaylistCardState extends State<PlaylistCard> {
+class _PlaylistCardState extends ConsumerState<PlaylistCard> {
   @override
   Widget build(BuildContext context) {
-    Playback playback = context.watch<Playback>();
+    Playback playback = ref.watch(playbackProvider);
     bool isPlaylistPlaying = playback.currentPlaylist != null &&
         playback.currentPlaylist!.id == widget.playlist.id;
     return PlaybuttonCard(
@@ -33,13 +33,13 @@ class _PlaylistCardState extends State<PlaylistCard> {
       },
       onPlaybuttonPressed: () async {
         if (isPlaylistPlaying) return;
-        SpotifyDI data = context.read<SpotifyDI>();
+        SpotifyApi spotifyApi = ref.read(spotifyProvider);
 
         List<Track> tracks = (widget.playlist.id != "user-liked-tracks"
-                ? await data.spotifyApi.playlists
+                ? await spotifyApi.playlists
                     .getTracksByPlaylistId(widget.playlist.id!)
                     .all()
-                : await data.spotifyApi.tracks.me.saved
+                : await spotifyApi.tracks.me.saved
                     .all()
                     .then((tracks) => tracks.map((e) => e.track!)))
             .toList();

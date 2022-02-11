@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistGenreView.dart';
@@ -51,14 +51,15 @@ class _CategoryCardState extends State<CategoryCard> {
             ],
           ),
         ),
-        Consumer<SpotifyDI>(
-          builder: (context, data, child) {
+        Consumer(
+          builder: (context, ref, child) {
+            SpotifyApi spotifyApi = ref.watch(spotifyProvider);
             return FutureBuilder<Iterable<PlaylistSimple>>(
                 future: widget.playlists == null
                     ? (widget.category.id != "user-featured-playlists"
-                            ? data.spotifyApi.playlists
+                            ? spotifyApi.playlists
                                 .getByCategoryId(widget.category.id!)
-                            : data.spotifyApi.playlists.featured)
+                            : spotifyApi.playlists.featured)
                         .getPage(4, 0)
                         .then((value) => value.items ?? [])
                     : Future.value(widget.playlists),
