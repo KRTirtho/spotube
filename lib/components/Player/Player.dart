@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
@@ -14,72 +15,72 @@ import 'package:flutter/material.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class Player extends ConsumerStatefulWidget {
+class Player extends HookConsumerWidget {
   const Player({Key? key}) : super(key: key);
 
   @override
-  _PlayerState createState() => _PlayerState();
-}
+  Widget build(BuildContext context, ref) {
+    var _isPlaying = useState(false);
+    var _shuffled = useState(false);
+    var _volume = useState(0.0);
+    var _duration = useState<Duration?>(null);
+    var _currentTrackId = useState<String?>(null);
 
-class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
-  late AudioPlayer player;
-  bool _isPlaying = false;
-  bool _shuffled = false;
-  Duration? _duration;
+    AudioPlayer player = useMemoized(() => AudioPlayer(), []);
+    YoutubeExplode youtube = useMemoized(() => YoutubeExplode(), []);
 
-  String? _currentTrackId;
+    var _movePlaylistPositionBy = useCallback((int pos) {
+      Playback playback = ref.read(playbackProvider);
+      if (playback.currentTrack != null && playback.currentPlaylist != null) {
+        int index = playback.currentPlaylist!.trackIds
+                .indexOf(playback.currentTrack!.id!) +
+            pos;
 
-  double _volume = 0;
+        var safeIndex = index > playback.currentPlaylist!.trackIds.length - 1
+            ? 0
+            : index < 0
+                ? playback.currentPlaylist!.trackIds.length
+                : index;
+        Track? track =
+            playback.currentPlaylist!.tracks.asMap().containsKey(safeIndex)
+                ? playback.currentPlaylist!.tracks.elementAt(safeIndex)
+                : null;
+        if (track != null) {
+          playback.setCurrentTrack = track;
+          _duration.value = null;
+        }
+      }
+    }, [_duration]);
 
-  late YoutubeExplode youtube;
+    useEffect(() {
+      _volume.value = player.volume;
 
-  @override
-  void initState() {
-    try {
-      super.initState();
-      player = AudioPlayer();
-      youtube = YoutubeExplode();
-
-      WidgetsBinding.instance?.addObserver(this);
-      WidgetsBinding.instance?.addPostFrameCallback(_init);
-    } catch (e, stack) {
-      print("[Player.initState()] $e");
-      print(stack);
-    }
-  }
-
-  _init(Duration timeStamp) async {
-    try {
-      setState(() {
-        _volume = player.volume;
+      var playingStreamListener = player.playingStream.listen((playing) async {
+        _isPlaying.value = playing;
       });
-      player.playingStream.listen((playing) async {
-        setState(() {
-          _isPlaying = playing;
-        });
-      });
 
-      player.durationStream.listen((duration) async {
+      var durationStreamListener =
+          player.durationStream.listen((duration) async {
         if (duration != null) {
           // Actually things doesn't work all the time as they were
           // described. So instead of listening to a `playback.ready`
           // stream, it has to listen to duration stream since duration
           // is always added to the Stream sink after all icyMetadata has
           // been loaded thus indicating buffering started
-          if (duration != Duration.zero && duration != _duration) {
+          if (duration != Duration.zero && duration != _duration.value) {
             // this line is for prev/next or already playing playlist
             if (player.playing) await player.pause();
             await player.play();
           }
-          setState(() {
-            _duration = duration;
-          });
+          _duration.value = duration;
         }
       });
 
-      player.processingStateStream.listen((event) async {
+      var processingStateStreamListener =
+          player.processingStateStream.listen((event) async {
         try {
-          if (event == ProcessingState.completed && _currentTrackId != null) {
+          if (event == ProcessingState.completed &&
+              _currentTrackId.value != null) {
             _movePlaylistPositionBy(1);
           }
         } catch (e, stack) {
@@ -87,117 +88,72 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
           print(stack);
         }
       });
-    } catch (e) {
-      print("[Player._init()]: $e");
-    }
-  }
+      return () {
+        playingStreamListener.cancel();
+        durationStreamListener.cancel();
+        processingStateStreamListener.cancel();
+        player.dispose();
+        youtube.close();
+      };
+    }, []);
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
-    player.dispose();
-    youtube.close();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      // Release the player's resources when not in use. We use "stop" so that
-      // if the app resumes later, it will still remember what position to
-      // resume from.
-      player.stop();
-    }
-  }
-
-  void _movePlaylistPositionBy(int pos) {
-    Playback playback = ref.read(playbackProvider);
-    if (playback.currentTrack != null && playback.currentPlaylist != null) {
-      int index = playback.currentPlaylist!.trackIds
-              .indexOf(playback.currentTrack!.id!) +
-          pos;
-
-      var safeIndex = index > playback.currentPlaylist!.trackIds.length - 1
-          ? 0
-          : index < 0
-              ? playback.currentPlaylist!.trackIds.length
-              : index;
-      Track? track =
-          playback.currentPlaylist!.tracks.asMap().containsKey(safeIndex)
-              ? playback.currentPlaylist!.tracks.elementAt(safeIndex)
-              : null;
-      if (track != null) {
-        playback.setCurrentTrack = track;
-        setState(() {
-          _duration = null;
-        });
-      }
-    }
-  }
-
-  Future _playTrack(Track currentTrack, Playback playback) async {
-    try {
-      if (currentTrack.id != _currentTrackId) {
-        Uri? parsedUri = Uri.tryParse(currentTrack.uri ?? "");
-        if (parsedUri != null && parsedUri.hasAbsolutePath) {
-          await player
-              .setAudioSource(
-            AudioSource.uri(parsedUri),
-            preload: true,
-          )
-              .then((value) async {
-            setState(() {
-              _currentTrackId = currentTrack.id;
-              if (_duration != null) {
-                _duration = value;
+    var _playTrack = useCallback((Track currentTrack, Playback playback) async {
+      try {
+        if (currentTrack.id != _currentTrackId.value) {
+          Uri? parsedUri = Uri.tryParse(currentTrack.uri ?? "");
+          if (parsedUri != null && parsedUri.hasAbsolutePath) {
+            await player
+                .setAudioSource(
+              AudioSource.uri(parsedUri),
+              preload: true,
+            )
+                .then((value) async {
+              _currentTrackId.value = currentTrack.id;
+              if (_duration.value != null) {
+                _duration.value = value;
               }
             });
-          });
-        }
-        var ytTrack = await toYoutubeTrack(youtube, currentTrack);
-        if (playback.setTrackUriById(currentTrack.id!, ytTrack.uri!)) {
-          await player
-              .setAudioSource(AudioSource.uri(Uri.parse(ytTrack.uri!)))
-              .then((value) {
-            setState(() {
-              _currentTrackId = currentTrack.id;
+          }
+          var ytTrack = await toYoutubeTrack(youtube, currentTrack);
+          if (playback.setTrackUriById(currentTrack.id!, ytTrack.uri!)) {
+            await player
+                .setAudioSource(AudioSource.uri(Uri.parse(ytTrack.uri!)))
+                .then((value) {
+              _currentTrackId.value = currentTrack.id;
             });
-          });
+          }
         }
+      } catch (e, stack) {
+        print("[Player._playTrack()] $e");
+        print(stack);
       }
-    } catch (e, stack) {
-      print("[Player._playTrack()] $e");
-      print(stack);
-    }
-  }
+    }, [player, _currentTrackId, _duration]);
 
-  _onNext() async {
-    try {
-      await player.pause();
-      await player.seek(Duration.zero);
-      _movePlaylistPositionBy(1);
-    } catch (e, stack) {
-      print("[PlayerControls.onNext()] $e");
-      print(stack);
-    }
-  }
+    var _onNext = useCallback(() async {
+      try {
+        await player.pause();
+        await player.seek(Duration.zero);
+        _movePlaylistPositionBy(1);
+      } catch (e, stack) {
+        print("[PlayerControls.onNext()] $e");
+        print(stack);
+      }
+    }, [player]);
 
-  _onPrevious() async {
-    try {
-      await player.pause();
-      await player.seek(Duration.zero);
-      _movePlaylistPositionBy(-1);
-    } catch (e, stack) {
-      print("[PlayerControls.onPrevious()] $e");
-      print(stack);
-    }
-  }
+    var _onPrevious = useCallback(() async {
+      try {
+        await player.pause();
+        await player.seek(Duration.zero);
+        _movePlaylistPositionBy(-1);
+      } catch (e, stack) {
+        print("[PlayerControls.onPrevious()] $e");
+        print(stack);
+      }
+    }, [player]);
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).backgroundColor,
-      child: Consumer(
+      child: HookConsumer(
         builder: (context, ref, widget) {
           Playback playback = ref.watch(playbackProvider);
           if (playback.currentPlaylist != null &&
@@ -205,9 +161,12 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
             _playTrack(playback.currentTrack!, playback);
           }
 
-          String? albumArt = imageToUrlString(
-            playback.currentTrack?.album?.images,
-            index: (playback.currentTrack?.album?.images?.length ?? 1) - 1,
+          String? albumArt = useMemoized(
+            () => imageToUrlString(
+              playback.currentTrack?.album?.images,
+              index: (playback.currentTrack?.album?.images?.length ?? 1) - 1,
+            ),
+            [playback.currentTrack?.album?.images],
           );
 
           return Material(
@@ -249,9 +208,9 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
                   flex: 3,
                   child: PlayerControls(
                     positionStream: player.positionStream,
-                    isPlaying: _isPlaying,
-                    duration: _duration ?? Duration.zero,
-                    shuffled: _shuffled,
+                    isPlaying: _isPlaying.value,
+                    duration: _duration.value ?? Duration.zero,
+                    shuffled: _shuffled.value,
                     onNext: _onNext,
                     onPrevious: _onPrevious,
                     onPause: () async {
@@ -282,16 +241,12 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
                       if (playback.currentTrack == null ||
                           playback.currentPlaylist == null) return;
                       try {
-                        if (!_shuffled) {
+                        if (!_shuffled.value) {
                           playback.currentPlaylist!.shuffle();
-                          setState(() {
-                            _shuffled = true;
-                          });
+                          _shuffled.value = true;
                         } else {
                           playback.currentPlaylist!.unshuffle();
-                          setState(() {
-                            _shuffled = false;
-                          });
+                          _shuffled.value = false;
                         }
                       } catch (e, stack) {
                         print("[PlayerControls.onShuffle()] $e");
@@ -302,12 +257,10 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
                       try {
                         await player.pause();
                         await player.seek(Duration.zero);
-                        setState(() {
-                          _isPlaying = false;
-                          _currentTrackId = null;
-                          _duration = null;
-                          _shuffled = false;
-                        });
+                        _isPlaying.value = false;
+                        _currentTrackId.value = null;
+                        _duration.value = null;
+                        _shuffled.value = false;
                         playback.reset();
                       } catch (e, stack) {
                         print("[PlayerControls.onStop()] $e");
@@ -327,13 +280,11 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
                         height: 20,
                         constraints: const BoxConstraints(maxWidth: 200),
                         child: Slider.adaptive(
-                          value: _volume,
+                          value: _volume.value,
                           onChanged: (value) async {
                             try {
                               await player.setVolume(value).then((_) {
-                                setState(() {
-                                  _volume = value;
-                                });
+                                _volume.value = value;
                               });
                             } catch (e, stack) {
                               print("[VolumeSlider.onChange()] $e");
@@ -368,10 +319,8 @@ class _PlayerState extends ConsumerState<Player> with WidgetsBindingObserver {
                                       onPressed: () {
                                         if (!isLiked &&
                                             playback.currentTrack?.id != null) {
-                                          spotifyApi.tracks.me
-                                              .saveOne(
-                                                  playback.currentTrack!.id!)
-                                              .then((value) => setState(() {}));
+                                          spotifyApi.tracks.me.saveOne(
+                                              playback.currentTrack!.id!);
                                         }
                                       });
                                 });
