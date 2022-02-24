@@ -13,7 +13,7 @@ void main() async {
   await hotKeyManager.unregisterAll();
   runApp(ProviderScope(child: MyApp()));
   doWhenWindowReady(() {
-    appWindow.minSize = const Size(900, 700);
+    appWindow.minSize = const Size(280, 700);
     appWindow.size = const Size(900, 700);
     appWindow.alignment = Alignment.center;
     appWindow.maximize();
@@ -88,6 +88,10 @@ class MyApp extends HookConsumerWidget {
             color: Colors.grey[850],
           ),
         ),
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: Colors.blueGrey[50],
+          height: 55,
+        ),
         cardTheme: CardTheme(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -121,6 +125,10 @@ class MyApp extends HookConsumerWidget {
         navigationRailTheme: NavigationRailThemeData(
           backgroundColor: Colors.blueGrey[800],
           unselectedIconTheme: const IconThemeData(opacity: 1),
+        ),
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: Colors.blueGrey[800],
+          height: 55,
         ),
         cardTheme: CardTheme(
           shape:

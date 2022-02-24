@@ -1,26 +1,24 @@
 import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oauth2/oauth2.dart' show AuthorizationException;
 import 'package:spotify/spotify.dart' hide Image, Player, Search;
+
 import 'package:spotube/components/Category/CategoryCard.dart';
+import 'package:spotube/components/Home/Sidebar.dart';
+import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
 import 'package:spotube/components/Login.dart';
 import 'package:spotube/components/Lyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
-import 'package:spotube/components/Settings.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
-import 'package:spotube/components/Shared/SpotubePageRoute.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
-import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
@@ -135,10 +133,14 @@ class _HomeState extends ConsumerState<Home> {
     super.dispose();
   }
 
+  _onSelectedIndexChanged(int index) => setState(() {
+        _selectedIndex = index;
+      });
+
   @override
   Widget build(BuildContext context) {
     Auth auth = ref.watch(authProvider);
-    SpotifyApi spotify = ref.watch(spotifyProvider);
+    final width = MediaQuery.of(context).size.width;
     if (!auth.isLoggedIn) {
       return const Login();
     }
@@ -153,7 +155,12 @@ class _HomeState extends ConsumerState<Home> {
                     child: Row(
                   children: [
                     Container(
-                      constraints: const BoxConstraints(maxWidth: 256),
+                      constraints: BoxConstraints(
+                          maxWidth: width > 400 && width <= 700
+                              ? 72
+                              : width > 700
+                                  ? 256
+                                  : 0),
                       color:
                           Theme.of(context).navigationRailTheme.backgroundColor,
                       child: MoveWindow(),
@@ -168,76 +175,9 @@ class _HomeState extends ConsumerState<Home> {
           Expanded(
             child: Row(
               children: [
-                NavigationRail(
-                  destinations: sidebarTileList
-                      .map((e) => NavigationRailDestination(
-                            icon: Icon(e.icon),
-                            label: Text(
-                              e.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ))
-                      .toList(),
+                Sidebar(
                   selectedIndex: _selectedIndex,
-                  onDestinationSelected: (value) => setState(() {
-                    _selectedIndex = value;
-                  }),
-                  extended: true,
-                  leading: Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Row(children: [
-                      Image.asset(
-                        "assets/spotube-logo.png",
-                        height: 50,
-                        width: 50,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text("Spotube",
-                          style: Theme.of(context).textTheme.headline4),
-                    ]),
-                  ),
-                  trailing: FutureBuilder<User>(
-                    future: spotify.me.get(),
-                    builder: (context, snapshot) {
-                      var avatarImg = imageToUrlString(snapshot.data?.images,
-                          index: (snapshot.data?.images?.length ?? 1) - 1);
-                      return Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      CachedNetworkImageProvider(avatarImg),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  snapshot.data?.displayName ?? "User's name",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            IconButton(
-                                icon: const Icon(Icons.settings_outlined),
-                                onPressed: () {
-                                  Navigator.of(context).push(SpotubePageRoute(
-                                    child: const Settings(),
-                                  ));
-                                }),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                  onSelectedIndexChanged: _onSelectedIndexChanged,
                 ),
                 // contents of the spotify
                 if (_selectedIndex == 0)
@@ -261,7 +201,11 @@ class _HomeState extends ConsumerState<Home> {
             ),
           ),
           // player itself
-          const Player()
+          const Player(),
+          SpotubeNavigationBar(
+            selectedIndex: _selectedIndex,
+            onSelectedIndexChanged: _onSelectedIndexChanged,
+          ),
         ],
       ),
     );
