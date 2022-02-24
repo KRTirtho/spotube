@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-track-to-track.dart';
@@ -27,10 +28,8 @@ class AlbumCard extends ConsumerWidget {
       description:
           "Album • ${artistsToString<ArtistSimple>(album.artists ?? [])}",
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) {
-            return AlbumView(album);
-          },
+        Navigator.of(context).push(SpotubePageRoute(
+          child: AlbumView(album),
         ));
       },
       onPlaybuttonPressed: () async {

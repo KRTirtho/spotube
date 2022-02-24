@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
@@ -83,8 +84,8 @@ class TracksTableView extends ConsumerWidget {
         Expanded(
           child: LinkText(
             track.value.album!.name!,
-            MaterialPageRoute(
-              builder: (context) => AlbumView(track.value.album!),
+            SpotubePageRoute(
+              child: AlbumView(track.value.album!),
             ),
             overflow: TextOverflow.ellipsis,
           ),

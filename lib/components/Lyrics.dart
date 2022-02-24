@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Settings.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -68,10 +69,8 @@ class Lyrics extends HookConsumerWidget {
             ),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) {
-                      return const Settings();
-                    },
+                  Navigator.of(context).push(SpotubePageRoute(
+                    child: const Settings(),
                   ));
                 },
                 child: const Text("Add Access Token"))

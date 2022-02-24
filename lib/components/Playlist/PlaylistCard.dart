@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -20,10 +21,8 @@ class PlaylistCard extends ConsumerWidget {
       imageUrl: playlist.images![0].url!,
       isPlaying: isPlaylistPlaying,
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) {
-            return PlaylistView(playlist);
-          },
+        Navigator.of(context).push(SpotubePageRoute(
+          child: PlaylistView(playlist),
         ));
       },
       onPlaybuttonPressed: () async {

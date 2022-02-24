@@ -16,6 +16,7 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Settings.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
@@ -228,10 +229,8 @@ class _HomeState extends ConsumerState<Home> {
                             IconButton(
                                 icon: const Icon(Icons.settings_outlined),
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) {
-                                      return const Settings();
-                                    },
+                                  Navigator.of(context).push(SpotubePageRoute(
+                                    child: const Settings(),
                                   ));
                                 }),
                           ],

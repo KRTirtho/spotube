@@ -46,11 +46,8 @@ class PlaybuttonCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(
                       imageUrl: imageUrl,
-                      progressIndicatorBuilder: (context, url, progress) {
-                        return CircularProgressIndicator.adaptive(
-                          value: progress.progress,
-                        );
-                      },
+                      placeholder: (context, url) =>
+                          Image.asset("assets/placeholder.png"),
                     ),
                   ),
                   Positioned.directional(

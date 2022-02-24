@@ -4,12 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
+import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -20,14 +22,18 @@ class Player extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    var _isPlaying = useState(false);
-    var _shuffled = useState(false);
-    var _volume = useState(0.0);
-    var _duration = useState<Duration?>(null);
-    var _currentTrackId = useState<String?>(null);
+    final _isPlaying = useState(false);
+    final _shuffled = useState(false);
+    final _volume = useState(0.0);
+    final _duration = useState<Duration?>(null);
+    final _currentTrackId = useState<String?>(null);
 
-    AudioPlayer player = useMemoized(() => AudioPlayer(), []);
-    YoutubeExplode youtube = useMemoized(() => YoutubeExplode(), []);
+    final AudioPlayer player = useMemoized(() => AudioPlayer(), []);
+    final YoutubeExplode youtube = useMemoized(() => YoutubeExplode(), []);
+    final Future<SharedPreferences> future =
+        useMemoized(SharedPreferences.getInstance);
+    final AsyncSnapshot<SharedPreferences?> localStorage =
+        useFuture(future, initialData: null);
 
     var _movePlaylistPositionBy = useCallback((int pos) {
       Playback playback = ref.read(playbackProvider);
@@ -53,8 +59,6 @@ class Player extends HookConsumerWidget {
     }, [_duration]);
 
     useEffect(() {
-      _volume.value = player.volume;
-
       var playingStreamListener = player.playingStream.listen((playing) async {
         _isPlaying.value = playing;
       });
@@ -96,6 +100,13 @@ class Player extends HookConsumerWidget {
         youtube.close();
       };
     }, []);
+
+    useEffect(() {
+      if (localStorage.hasData) {
+        _volume.value = localStorage.data?.getDouble(LocalStorageKeys.volume) ??
+            player.volume;
+      }
+    }, [localStorage.data]);
 
     var _playTrack = useCallback((Track currentTrack, Playback playback) async {
       try {
@@ -285,6 +296,10 @@ class Player extends HookConsumerWidget {
                             try {
                               await player.setVolume(value).then((_) {
                                 _volume.value = value;
+                                localStorage.data?.setDouble(
+                                  LocalStorageKeys.volume,
+                                  value,
+                                );
                               });
                             } catch (e, stack) {
                               print("[VolumeSlider.onChange()] $e");

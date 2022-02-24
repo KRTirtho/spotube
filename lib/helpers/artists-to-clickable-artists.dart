@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 
 Widget artistsToClickableArtists(
   List<ArtistSimple> artists, {
@@ -19,8 +20,8 @@ Widget artistsToClickableArtists(
             (artist.key != artists.length - 1)
                 ? "${artist.value.name}, "
                 : artist.value.name!,
-            MaterialPageRoute<ArtistProfile>(
-              builder: (context) => ArtistProfile(artist.value.id!),
+            SpotubePageRoute(
+              child: ArtistProfile(artist.value.id!),
             ),
             overflow: TextOverflow.ellipsis,
           ),

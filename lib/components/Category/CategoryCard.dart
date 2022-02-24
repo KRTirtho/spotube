@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistGenreView.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class CategoryCard extends StatelessWidget {
@@ -30,14 +31,12 @@ class CategoryCard extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return PlaylistGenreView(
-                          category.id!,
-                          category.name!,
-                          playlists: playlists,
-                        );
-                      },
+                    SpotubePageRoute(
+                      child: PlaylistGenreView(
+                        category.id!,
+                        category.name!,
+                        playlists: playlists,
+                      ),
                     ),
                   );
                 },

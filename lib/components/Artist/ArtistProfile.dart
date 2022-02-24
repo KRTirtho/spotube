@@ -7,6 +7,7 @@ import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/readable-number.dart';
@@ -215,8 +216,8 @@ class ArtistProfile extends ConsumerWidget {
                     TextButton(
                       child: const Text("See All"),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ArtistAlbumView(
+                        Navigator.of(context).push(SpotubePageRoute(
+                          child: ArtistAlbumView(
                             artistId,
                             snapshot.data?.name ?? "KRTX",
                           ),
