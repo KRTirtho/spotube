@@ -1,46 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/main.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
+import 'package:spotube/provider/ThemeProvider.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
-class Settings extends StatefulWidget {
+class Settings extends HookConsumerWidget {
   const Settings({Key? key}) : super(key: key);
 
   @override
-  _SettingsState createState() => _SettingsState();
-}
+  Widget build(BuildContext context, ref) {
+    UserPreferences preferences = ref.watch(userPreferencesProvider);
+    ThemeMode theme = ref.watch(themeProvider);
+    var geniusAccessToken = useState<String?>(null);
+    TextEditingController textEditingController = useTextEditingController();
 
-class _SettingsState extends State<Settings> {
-  TextEditingController? _textEditingController;
-  String? _geniusAccessToken;
-
-  @override
-  void initState() {
-    super.initState();
-    _textEditingController = TextEditingController();
-    _textEditingController?.addListener(() {
-      setState(() {
-        _geniusAccessToken = _textEditingController?.value.text;
-      });
+    textEditingController.addListener(() {
+      geniusAccessToken.value = textEditingController.value.text;
     });
-  }
-
-  @override
-  void dispose() {
-    _textEditingController?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    UserPreferences preferences = context.watch<UserPreferences>();
 
     return Scaffold(
       appBar: PageWindowTitleBar(
@@ -66,7 +48,7 @@ class _SettingsState extends State<Settings> {
                 Expanded(
                   flex: 1,
                   child: TextField(
-                    controller: _textEditingController,
+                    controller: textEditingController,
                     decoration: InputDecoration(
                       hintText: preferences.geniusAccessToken,
                     ),
@@ -75,19 +57,19 @@ class _SettingsState extends State<Settings> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
-                    onPressed: _geniusAccessToken != null
+                    onPressed: geniusAccessToken != null
                         ? () async {
                             SharedPreferences localStorage =
                                 await SharedPreferences.getInstance();
                             preferences
-                                .setGeniusAccessToken(_geniusAccessToken);
+                                .setGeniusAccessToken(geniusAccessToken.value);
                             localStorage.setString(
                                 LocalStorageKeys.geniusAccessToken,
-                                _geniusAccessToken!);
-                            setState(() {
-                              _geniusAccessToken = null;
-                            });
-                            _textEditingController?.text = "";
+                                geniusAccessToken.value ?? "");
+
+                            geniusAccessToken.value = null;
+
+                            textEditingController.text = "";
                           }
                         : null,
                     child: const Text("Save"),
@@ -122,7 +104,7 @@ class _SettingsState extends State<Settings> {
               children: [
                 const Text("Theme"),
                 DropdownButton<ThemeMode>(
-                  value: MyApp.of(context)?.getThemeMode(),
+                  value: theme,
                   items: const [
                     DropdownMenuItem(
                       child: Text(
@@ -143,7 +125,7 @@ class _SettingsState extends State<Settings> {
                   ],
                   onChanged: (value) {
                     if (value != null) {
-                      MyApp.of(context)?.setThemeMode(value);
+                      ref.read(themeProvider.notifier).state = value;
                     }
                   },
                 )
@@ -151,7 +133,7 @@ class _SettingsState extends State<Settings> {
             ),
             const SizedBox(height: 10),
             Builder(builder: (context) {
-              var auth = context.read<Auth>();
+              Auth auth = ref.watch(authProvider);
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

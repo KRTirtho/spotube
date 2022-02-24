@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/UserPreferences.dart';
-import 'package:provider/provider.dart';
 
-class PlayerControls extends StatefulWidget {
+class PlayerControls extends HookConsumerWidget {
   final Stream<Duration> positionStream;
   final bool isPlaying;
   final Duration duration;
@@ -34,33 +35,21 @@ class PlayerControls extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  @override
-  _PlayerControlsState createState() => _PlayerControlsState();
-}
-
-class _PlayerControlsState extends State<PlayerControls> {
-  StreamSubscription? _timePositionListener;
-  late List<GlobalKeyActions> _hotKeys = [];
-
-  @override
-  void dispose() async {
-    await _timePositionListener?.cancel();
-    Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
-    super.dispose();
-  }
-
   _playOrPause(key) async {
     try {
-      widget.isPlaying ? widget.onPause?.call() : await widget.onPlay?.call();
+      isPlaying ? await onPause?.call() : await onPlay?.call();
     } catch (e, stack) {
       print("[PlayPauseShortcut] $e");
       print(stack);
     }
   }
 
-  _configureHotKeys(UserPreferences preferences) async {
-    await Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)))
-        .then((val) async {
+  @override
+  Widget build(BuildContext context, ref) {
+    UserPreferences preferences = ref.watch(userPreferencesProvider);
+
+    var _hotKeys = [];
+    useEffect(() {
       _hotKeys = [
         GlobalKeyActions(
           HotKey(KeyCode.space, scope: HotKeyScope.inapp),
@@ -68,14 +57,14 @@ class _PlayerControlsState extends State<PlayerControls> {
         ),
         if (preferences.nextTrackHotKey != null)
           GlobalKeyActions(
-              preferences.nextTrackHotKey!, (key) => widget.onNext?.call()),
+              preferences.nextTrackHotKey!, (key) => onNext?.call()),
         if (preferences.prevTrackHotKey != null)
           GlobalKeyActions(
-              preferences.prevTrackHotKey!, (key) => widget.onPrevious?.call()),
+              preferences.prevTrackHotKey!, (key) => onPrevious?.call()),
         if (preferences.playPauseHotKey != null)
           GlobalKeyActions(preferences.playPauseHotKey!, _playOrPause)
       ];
-      await Future.wait(
+      Future.wait(
         _hotKeys.map((e) {
           return hotKeyManager.register(
             e.hotKey,
@@ -83,25 +72,22 @@ class _PlayerControlsState extends State<PlayerControls> {
           );
         }),
       );
+      return () {
+        Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
+      };
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    UserPreferences preferences = context.watch<UserPreferences>();
-    _configureHotKeys(preferences);
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 700),
       child: Column(
         children: [
           StreamBuilder<Duration>(
-              stream: widget.positionStream,
+              stream: positionStream,
               builder: (context, snapshot) {
                 var totalMinutes =
-                    zeroPadNumStr(widget.duration.inMinutes.remainder(60));
+                    zeroPadNumStr(duration.inMinutes.remainder(60));
                 var totalSeconds =
-                    zeroPadNumStr(widget.duration.inSeconds.remainder(60));
+                    zeroPadNumStr(duration.inSeconds.remainder(60));
                 var currentMinutes = snapshot.hasData
                     ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
                     : "00";
@@ -109,7 +95,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                     ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
                     : "00";
 
-                var sliderMax = widget.duration.inSeconds;
+                var sliderMax = duration.inSeconds;
                 var sliderValue = snapshot.data?.inSeconds ?? 0;
                 return Row(
                   children: [
@@ -123,7 +109,7 @@ class _PlayerControlsState extends State<PlayerControls> {
                             : sliderValue / sliderMax,
                         onChanged: (value) {},
                         onChangeEnd: (value) {
-                          widget.onSeek?.call(value * sliderMax);
+                          onSeek?.call(value * sliderMax);
                         },
                       ),
                     ),
@@ -138,30 +124,27 @@ class _PlayerControlsState extends State<PlayerControls> {
             children: [
               IconButton(
                   icon: const Icon(Icons.shuffle_rounded),
-                  color:
-                      widget.shuffled ? Theme.of(context).primaryColor : null,
+                  color: shuffled ? Theme.of(context).primaryColor : null,
                   onPressed: () {
-                    widget.onShuffle?.call();
+                    onShuffle?.call();
                   }),
               IconButton(
                   icon: const Icon(Icons.skip_previous_rounded),
                   onPressed: () {
-                    widget.onPrevious?.call();
+                    onPrevious?.call();
                   }),
               IconButton(
                 icon: Icon(
-                  widget.isPlaying
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
+                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                 ),
                 onPressed: () => _playOrPause(null),
               ),
               IconButton(
                   icon: const Icon(Icons.skip_next_rounded),
-                  onPressed: () => widget.onNext?.call()),
+                  onPressed: () => onNext?.call()),
               IconButton(
                 icon: const Icon(Icons.stop_rounded),
-                onPressed: () => widget.onStop?.call(),
+                onPressed: () => onStop?.call(),
               )
             ],
           )

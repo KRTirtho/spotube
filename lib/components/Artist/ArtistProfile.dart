@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
@@ -14,24 +14,19 @@ import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class ArtistProfile extends StatefulWidget {
+class ArtistProfile extends ConsumerWidget {
   final String artistId;
   const ArtistProfile(this.artistId, {Key? key}) : super(key: key);
 
   @override
-  _ArtistProfileState createState() => _ArtistProfileState();
-}
-
-class _ArtistProfileState extends State<ArtistProfile> {
-  @override
-  Widget build(BuildContext context) {
-    SpotifyApi spotify = context.watch<SpotifyDI>().spotifyApi;
+  Widget build(BuildContext context, ref) {
+    SpotifyApi spotify = ref.watch(spotifyProvider);
     return Scaffold(
       appBar: const PageWindowTitleBar(
         leading: BackButton(),
       ),
       body: FutureBuilder<Artist>(
-        future: spotify.artists.get(widget.artistId),
+        future: spotify.artists.get(artistId),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator.adaptive());
@@ -134,7 +129,7 @@ class _ArtistProfileState extends State<ArtistProfile> {
                       return const Center(
                           child: CircularProgressIndicator.adaptive());
                     }
-                    Playback playback = context.watch<Playback>();
+                    Playback playback = ref.watch(playbackProvider);
                     var isPlaylistPlaying =
                         playback.currentPlaylist?.id == snapshot.data?.id;
                     playPlaylist(List<Track> tracks, {Track? currentTrack}) {
@@ -222,7 +217,7 @@ class _ArtistProfileState extends State<ArtistProfile> {
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ArtistAlbumView(
-                            widget.artistId,
+                            artistId,
                             snapshot.data?.name ?? "KRTX",
                           ),
                         ));
@@ -260,7 +255,7 @@ class _ArtistProfileState extends State<ArtistProfile> {
                 ),
                 const SizedBox(height: 10),
                 FutureBuilder<Iterable<Artist>>(
-                  future: spotify.artists.getRelatedArtists(widget.artistId),
+                  future: spotify.artists.getRelatedArtists(artistId),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return const Center(

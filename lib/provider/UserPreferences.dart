@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
@@ -110,3 +111,5 @@ class UserPreferences extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+var userPreferencesProvider = ChangeNotifierProvider((_) => UserPreferences());

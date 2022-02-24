@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistGenreView.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class CategoryCard extends StatefulWidget {
+class CategoryCard extends StatelessWidget {
   final Category category;
   final Iterable<PlaylistSimple>? playlists;
   const CategoryCard(
@@ -14,11 +14,6 @@ class CategoryCard extends StatefulWidget {
     this.playlists,
   }) : super(key: key);
 
-  @override
-  _CategoryCardState createState() => _CategoryCardState();
-}
-
-class _CategoryCardState extends State<CategoryCard> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,7 +24,7 @@ class _CategoryCardState extends State<CategoryCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.category.name ?? "Unknown",
+                category.name ?? "Unknown",
                 style: Theme.of(context).textTheme.headline5,
               ),
               TextButton(
@@ -38,9 +33,9 @@ class _CategoryCardState extends State<CategoryCard> {
                     MaterialPageRoute(
                       builder: (context) {
                         return PlaylistGenreView(
-                          widget.category.id!,
-                          widget.category.name!,
-                          playlists: widget.playlists,
+                          category.id!,
+                          category.name!,
+                          playlists: playlists,
                         );
                       },
                     ),
@@ -51,17 +46,17 @@ class _CategoryCardState extends State<CategoryCard> {
             ],
           ),
         ),
-        Consumer<SpotifyDI>(
-          builder: (context, data, child) {
+        Consumer(
+          builder: (context, ref, child) {
+            SpotifyApi spotifyApi = ref.watch(spotifyProvider);
             return FutureBuilder<Iterable<PlaylistSimple>>(
-                future: widget.playlists == null
-                    ? (widget.category.id != "user-featured-playlists"
-                            ? data.spotifyApi.playlists
-                                .getByCategoryId(widget.category.id!)
-                            : data.spotifyApi.playlists.featured)
+                future: playlists == null
+                    ? (category.id != "user-featured-playlists"
+                            ? spotifyApi.playlists.getByCategoryId(category.id!)
+                            : spotifyApi.playlists.featured)
                         .getPage(4, 0)
                         .then((value) => value.items ?? [])
-                    : Future.value(widget.playlists),
+                    : Future.value(playlists),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const Center(child: Text("Error occurred"));

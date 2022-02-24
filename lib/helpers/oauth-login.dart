@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Home.dart';
@@ -9,7 +7,7 @@ import 'package:spotube/provider/Auth.dart';
 
 const redirectUri = "http://localhost:4304/auth/spotify/callback";
 
-Future<void> oauthLogin(BuildContext context,
+Future<void> oauthLogin(Auth auth,
     {required String clientId, required String clientSecret}) async {
   try {
     String? accessToken;
@@ -50,7 +48,7 @@ Future<void> oauthLogin(BuildContext context,
       clientSecret,
     );
 
-    Provider.of<Auth>(context, listen: false).setAuthState(
+    auth.setAuthState(
       clientId: clientId,
       clientSecret: clientSecret,
       accessToken: accessToken,

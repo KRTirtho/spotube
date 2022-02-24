@@ -2,14 +2,8 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:spotube/components/Library/UserArtists.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
 
-class UserLibrary extends StatefulWidget {
+class UserLibrary extends StatelessWidget {
   const UserLibrary({Key? key}) : super(key: key);
-
-  @override
-  _UserLibraryState createState() => _UserLibraryState();
-}
-
-class _UserLibraryState extends State<UserLibrary> {
   @override
   Widget build(BuildContext context) {
     return Expanded(

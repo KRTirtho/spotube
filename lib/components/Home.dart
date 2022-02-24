@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Page;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oauth2/oauth2.dart' show AuthorizationException;
 import 'package:spotify/spotify.dart' hide Image, Player, Search;
@@ -33,14 +33,14 @@ List<String> spotifyScopes = [
   "playlist-read-collaborative"
 ];
 
-class Home extends StatefulWidget {
+class Home extends ConsumerStatefulWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends ConsumerState<Home> {
   final PagingController<int, Category> _pagingController =
       PagingController(firstPageKey: 0);
 
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
       DateTime? expiration =
           expirationStr != null ? DateTime.parse(expirationStr) : null;
       try {
-        Auth authProvider = context.read<Auth>();
+        Auth auth = ref.read(authProvider);
 
         if (clientId != null && clientSecret != null) {
           SpotifyApi spotifyApi = SpotifyApi(
@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
           );
           SpotifyApiCredentials credentials = await spotifyApi.getCredentials();
           if (credentials.accessToken?.isNotEmpty ?? false) {
-            authProvider.setAuthState(
+            auth.setAuthState(
               clientId: clientId,
               clientSecret: clientSecret,
               accessToken:
@@ -91,8 +91,8 @@ class _HomeState extends State<Home> {
         }
         _pagingController.addPageRequestListener((pageKey) async {
           try {
-            SpotifyDI data = context.read<SpotifyDI>();
-            Page<Category> categories = await data.spotifyApi.categories
+            SpotifyApi spotifyApi = ref.read(spotifyProvider);
+            Page<Category> categories = await spotifyApi.categories
                 .list(country: "US")
                 .getPage(15, pageKey);
 
@@ -113,10 +113,10 @@ class _HomeState extends State<Home> {
             _pagingController.error = e;
           }
         });
-      } on AuthorizationException catch (e) {
+      } on AuthorizationException catch (_) {
         if (clientId != null && clientSecret != null) {
           oauthLogin(
-            context,
+            ref.read(authProvider),
             clientId: clientId,
             clientSecret: clientSecret,
           );
@@ -136,8 +136,9 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    Auth authProvider = Provider.of<Auth>(context);
-    if (!authProvider.isLoggedIn) {
+    Auth auth = ref.watch(authProvider);
+    SpotifyApi spotify = ref.watch(spotifyProvider);
+    if (!auth.isLoggedIn) {
       return const Login();
     }
 
@@ -199,49 +200,45 @@ class _HomeState extends State<Home> {
                           style: Theme.of(context).textTheme.headline4),
                     ]),
                   ),
-                  trailing:
-                      Consumer<SpotifyDI>(builder: (context, data, widget) {
-                    return FutureBuilder<User>(
-                      future: data.spotifyApi.me.get(),
-                      builder: (context, snapshot) {
-                        var avatarImg = imageToUrlString(snapshot.data?.images,
-                            index: (snapshot.data?.images?.length ?? 1) - 1);
-                        return Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        CachedNetworkImageProvider(avatarImg),
+                  trailing: FutureBuilder<User>(
+                    future: spotify.me.get(),
+                    builder: (context, snapshot) {
+                      var avatarImg = imageToUrlString(snapshot.data?.images,
+                          index: (snapshot.data?.images?.length ?? 1) - 1);
+                      return Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      CachedNetworkImageProvider(avatarImg),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  snapshot.data?.displayName ?? "User's name",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    snapshot.data?.displayName ?? "User's name",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                  icon: const Icon(Icons.settings_outlined),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) {
-                                        return const Settings();
-                                      },
-                                    ));
-                                  }),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  }),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                                icon: const Icon(Icons.settings_outlined),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) {
+                                      return const Settings();
+                                    },
+                                  ));
+                                }),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 // contents of the spotify
                 if (_selectedIndex == 0)

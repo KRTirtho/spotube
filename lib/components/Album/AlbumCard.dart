@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
@@ -9,13 +9,13 @@ import 'package:spotube/helpers/simple-track-to-track.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class AlbumCard extends StatelessWidget {
+class AlbumCard extends ConsumerWidget {
   final Album album;
   const AlbumCard(this.album, {Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    Playback playback = context.watch<Playback>();
+  Widget build(BuildContext context, ref) {
+    Playback playback = ref.watch(playbackProvider);
     bool isPlaylistPlaying = playback.currentPlaylist != null &&
         playback.currentPlaylist!.id == album.id;
 
@@ -34,7 +34,7 @@ class AlbumCard extends StatelessWidget {
         ));
       },
       onPlaybuttonPressed: () async {
-        SpotifyApi spotify = context.read<SpotifyDI>().spotifyApi;
+        SpotifyApi spotify = ref.read(spotifyProvider);
         if (isPlaylistPlaying) return;
         List<Track> tracks = (await spotify.albums.getTracks(album.id!).all())
             .map((track) => simpleTrackToTrack(track, album))
