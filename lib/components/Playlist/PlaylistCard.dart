@@ -17,6 +17,7 @@ class PlaylistCard extends ConsumerWidget {
     bool isPlaylistPlaying = playback.currentPlaylist != null &&
         playback.currentPlaylist!.id == playlist.id;
     return PlaybuttonCard(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       title: playlist.name!,
       imageUrl: playlist.images![0].url!,
       isPlaying: isPlaylistPlaying,

@@ -6,6 +6,7 @@ import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/Settings.dart';
 import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
+import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 import '../../models/sideBarTiles.dart';
@@ -28,7 +29,7 @@ class Sidebar extends HookConsumerWidget {
     );
   }
 
-  void _goToSettings(BuildContext context) {
+  static void goToSettings(BuildContext context) {
     Navigator.of(context).push(SpotubePageRoute(
       child: const Settings(),
     ));
@@ -36,30 +37,35 @@ class Sidebar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final width = MediaQuery.of(context).size.width;
-    if (width <= 400) return Container();
+    final breakpoints = useBreakpoints();
+    if (breakpoints.isSm) return Container();
     final extended = useState(false);
     final SpotifyApi spotify = ref.watch(spotifyProvider);
+
     useEffect(() {
-      if (width <= 700 && extended.value) {
+      if (breakpoints.isMd && extended.value) {
         extended.value = false;
-      } else if (width > 700 && !extended.value) {
+      } else if (breakpoints.isMoreThanOrEqualTo(Breakpoints.lg) &&
+          !extended.value) {
         extended.value = true;
       }
+      return null;
     });
 
     return NavigationRail(
       destinations: sidebarTileList
-          .map((e) => NavigationRailDestination(
-                icon: Icon(e.icon),
-                label: Text(
-                  e.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+          .map(
+            (e) => NavigationRailDestination(
+              icon: Icon(e.icon),
+              label: Text(
+                e.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
-              ))
+              ),
+            ),
+          )
           .toList(),
       selectedIndex: selectedIndex,
       onDestinationSelected: onSelectedIndexChanged,
@@ -104,11 +110,11 @@ class Sidebar extends HookConsumerWidget {
                       ),
                       IconButton(
                           icon: const Icon(Icons.settings_outlined),
-                          onPressed: () => _goToSettings(context)),
+                          onPressed: () => goToSettings(context)),
                     ],
                   ))
               : InkWell(
-                  onTap: () => _goToSettings(context),
+                  onTap: () => goToSettings(context),
                   child: CircleAvatar(
                     backgroundImage: CachedNetworkImageProvider(avatarImg),
                   ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart' hide Page;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistGenreView.dart';
 import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class CategoryCard extends StatelessWidget {
+class CategoryCard extends HookWidget {
   final Category category;
   final Iterable<PlaylistSimple>? playlists;
   const CategoryCard(
@@ -45,9 +47,10 @@ class CategoryCard extends StatelessWidget {
             ],
           ),
         ),
-        Consumer(
+        HookConsumer(
           builder: (context, ref, child) {
             SpotifyApi spotifyApi = ref.watch(spotifyProvider);
+            final scrollController = useScrollController();
             return FutureBuilder<Iterable<PlaylistSimple>>(
                 future: playlists == null
                     ? (category.id != "user-featured-playlists"
@@ -65,12 +68,18 @@ class CategoryCard extends StatelessWidget {
                       child: CircularProgressIndicator.adaptive(),
                     );
                   }
-                  return Wrap(
-                    spacing: 20,
-                    runSpacing: 20,
-                    children: snapshot.data!
-                        .map((playlist) => PlaylistCard(playlist))
-                        .toList(),
+                  return Scrollbar(
+                    controller: scrollController,
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: snapshot.data!
+                            .map((playlist) => PlaylistCard(playlist))
+                            .toList(),
+                      ),
+                    ),
                   );
                 });
           },

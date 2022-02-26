@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart' hide Page;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:oauth2/oauth2.dart' show AuthorizationException;
 import 'package:spotify/spotify.dart' hide Image, Player, Search;
 
@@ -18,6 +18,9 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
 import 'package:spotube/helpers/oauth-login.dart';
+import 'package:spotube/hooks/useBreakpointValue.dart';
+import 'package:spotube/hooks/usePagingController.dart';
+import 'package:spotube/hooks/useSharedPreferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -32,40 +35,70 @@ List<String> spotifyScopes = [
   "playlist-read-collaborative"
 ];
 
-class Home extends ConsumerStatefulWidget {
+class Home extends HookConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
-}
+  Widget build(BuildContext context, ref) {
+    Auth auth = ref.watch(authProvider);
 
-class _HomeState extends ConsumerState<Home> {
-  final PagingController<int, Category> _pagingController =
-      PagingController(firstPageKey: 0);
+    final pagingController =
+        usePagingController<int, Category>(firstPageKey: 0);
+    final int titleBarDragMaxWidth = useBreakpointValue(
+      md: 72,
+      lg: 256,
+      sm: 0,
+      xl: 0,
+      xxl: 0,
+    );
+    final _selectedIndex = useState(0);
+    _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
 
-  int _selectedIndex = 0;
+    final localStorage = useSharedPreferences();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      String? clientId = localStorage.getString(LocalStorageKeys.clientId);
-      String? clientSecret =
+    useEffect(() {
+      if (localStorage == null) return null;
+      final String? clientId =
+          localStorage.getString(LocalStorageKeys.clientId);
+      final String? clientSecret =
           localStorage.getString(LocalStorageKeys.clientSecret);
-      String? accessToken =
+      final String? accessToken =
           localStorage.getString(LocalStorageKeys.accessToken);
-      String? refreshToken =
+      final String? refreshToken =
           localStorage.getString(LocalStorageKeys.refreshToken);
-      String? expirationStr =
+      final String? expirationStr =
           localStorage.getString(LocalStorageKeys.expiration);
-      DateTime? expiration =
-          expirationStr != null ? DateTime.parse(expirationStr) : null;
-      try {
-        Auth auth = ref.read(authProvider);
+      listener(pageKey) async {
+        final spotify = ref.read(spotifyProvider);
+        try {
+          Page<Category> categories =
+              await spotify.categories.list(country: "US").getPage(15, pageKey);
 
+          var items = categories.items!.toList();
+          if (pageKey == 0) {
+            Category category = Category();
+            category.id = "user-featured-playlists";
+            category.name = "Featured";
+            items.insert(0, category);
+          }
+
+          if (categories.isLast && categories.items != null) {
+            pagingController.appendLastPage(items);
+          } else if (categories.items != null) {
+            pagingController.appendPage(items, categories.nextOffset);
+          }
+        } catch (e, stack) {
+          pagingController.error = e;
+          print("[Home.pagingController.addPageRequestListener] $e");
+          print(stack);
+        }
+      }
+
+      try {
+        final DateTime? expiration =
+            expirationStr != null ? DateTime.parse(expirationStr) : null;
         if (clientId != null && clientSecret != null) {
-          SpotifyApi spotifyApi = SpotifyApi(
+          SpotifyApi spotify = SpotifyApi(
             SpotifyApiCredentials(
               clientId,
               clientSecret,
@@ -75,47 +108,27 @@ class _HomeState extends ConsumerState<Home> {
               scopes: spotifyScopes,
             ),
           );
-          SpotifyApiCredentials credentials = await spotifyApi.getCredentials();
-          if (credentials.accessToken?.isNotEmpty ?? false) {
-            auth.setAuthState(
-              clientId: clientId,
-              clientSecret: clientSecret,
-              accessToken:
-                  credentials.accessToken, // accessToken can be new/refreshed
-              refreshToken: refreshToken,
-              expiration: credentials.expiration,
-              isLoggedIn: true,
-            );
-          }
+          spotify.getCredentials().then((credentials) {
+            if (credentials.accessToken?.isNotEmpty ?? false) {
+              auth.setAuthState(
+                clientId: clientId,
+                clientSecret: clientSecret,
+                accessToken:
+                    credentials.accessToken, // accessToken can be new/refreshed
+                refreshToken: refreshToken,
+                expiration: credentials.expiration,
+                isLoggedIn: true,
+              );
+            }
+            return null;
+          }).then((_) {
+            pagingController.addPageRequestListener(listener);
+          });
         }
-        _pagingController.addPageRequestListener((pageKey) async {
-          try {
-            SpotifyApi spotifyApi = ref.read(spotifyProvider);
-            Page<Category> categories = await spotifyApi.categories
-                .list(country: "US")
-                .getPage(15, pageKey);
-
-            var items = categories.items!.toList();
-            if (pageKey == 0) {
-              Category category = Category();
-              category.id = "user-featured-playlists";
-              category.name = "Featured";
-              items.insert(0, category);
-            }
-
-            if (categories.isLast && categories.items != null) {
-              _pagingController.appendLastPage(items);
-            } else if (categories.items != null) {
-              _pagingController.appendPage(items, categories.nextOffset);
-            }
-          } catch (e) {
-            _pagingController.error = e;
-          }
-        });
       } on AuthorizationException catch (_) {
         if (clientId != null && clientSecret != null) {
           oauthLogin(
-            ref.read(authProvider),
+            auth,
             clientId: clientId,
             clientSecret: clientSecret,
           );
@@ -124,23 +137,11 @@ class _HomeState extends ConsumerState<Home> {
         print("[Home.initState]: $e");
         print(stack);
       }
-    });
-  }
+      return () {
+        pagingController.removePageRequestListener(listener);
+      };
+    }, [localStorage]);
 
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  _onSelectedIndexChanged(int index) => setState(() {
-        _selectedIndex = index;
-      });
-
-  @override
-  Widget build(BuildContext context) {
-    Auth auth = ref.watch(authProvider);
-    final width = MediaQuery.of(context).size.width;
     if (!auth.isLoggedIn) {
       return const Login();
     }
@@ -156,11 +157,8 @@ class _HomeState extends ConsumerState<Home> {
                   children: [
                     Container(
                       constraints: BoxConstraints(
-                          maxWidth: width > 400 && width <= 700
-                              ? 72
-                              : width > 700
-                                  ? 256
-                                  : 0),
+                        maxWidth: titleBarDragMaxWidth.toDouble(),
+                      ),
                       color:
                           Theme.of(context).navigationRailTheme.backgroundColor,
                       child: MoveWindow(),
@@ -176,16 +174,16 @@ class _HomeState extends ConsumerState<Home> {
             child: Row(
               children: [
                 Sidebar(
-                  selectedIndex: _selectedIndex,
+                  selectedIndex: _selectedIndex.value,
                   onSelectedIndexChanged: _onSelectedIndexChanged,
                 ),
                 // contents of the spotify
-                if (_selectedIndex == 0)
+                if (_selectedIndex.value == 0)
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: PagedListView(
-                        pagingController: _pagingController,
+                        pagingController: pagingController,
                         builderDelegate: PagedChildBuilderDelegate<Category>(
                           itemBuilder: (context, item, index) {
                             return CategoryCard(item);
@@ -194,16 +192,16 @@ class _HomeState extends ConsumerState<Home> {
                       ),
                     ),
                   ),
-                if (_selectedIndex == 1) const Search(),
-                if (_selectedIndex == 2) const UserLibrary(),
-                if (_selectedIndex == 3) const Lyrics(),
+                if (_selectedIndex.value == 1) const Search(),
+                if (_selectedIndex.value == 2) const UserLibrary(),
+                if (_selectedIndex.value == 3) const Lyrics(),
               ],
             ),
           ),
           // player itself
           const Player(),
           SpotubeNavigationBar(
-            selectedIndex: _selectedIndex,
+            selectedIndex: _selectedIndex.value,
             onSelectedIndexChanged: _onSelectedIndexChanged,
           ),
         ],

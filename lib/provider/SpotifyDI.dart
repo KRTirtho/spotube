@@ -7,6 +7,7 @@ import 'package:spotube/provider/Auth.dart';
 
 var spotifyProvider = Provider<SpotifyApi>((ref) {
   Auth authState = ref.watch(authProvider);
+
   return SpotifyApi(
     SpotifyApiCredentials(
       authState.clientId,
