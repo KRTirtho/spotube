@@ -99,8 +99,7 @@ class Search extends HookConsumerWidget {
                         ...tracks.asMap().entries.map((track) {
                           String duration =
                               "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                          return TracksTableView.buildTrackTile(
-                            context,
+                          return TrackTile(
                             playback,
                             track: track,
                             duration: duration,

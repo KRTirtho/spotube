@@ -5,10 +5,11 @@ import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
 import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
+import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class PlaylistCard extends ConsumerWidget {
+class PlaylistCard extends HookConsumerWidget {
   final PlaylistSimple playlist;
   const PlaylistCard(this.playlist, {Key? key}) : super(key: key);
   @override
@@ -16,8 +17,11 @@ class PlaylistCard extends ConsumerWidget {
     Playback playback = ref.watch(playbackProvider);
     bool isPlaylistPlaying = playback.currentPlaylist != null &&
         playback.currentPlaylist!.id == playlist.id;
+
+    final int marginH =
+        useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
     return PlaybuttonCard(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       title: playlist.name!,
       imageUrl: playlist.images![0].url!,
       isPlaying: isPlaylistPlaying,

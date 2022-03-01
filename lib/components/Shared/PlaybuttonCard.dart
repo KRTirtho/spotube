@@ -85,9 +85,13 @@ class PlaybuttonCard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                   child: Column(
                     children: [
-                      Text(
-                        title,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      Tooltip(
+                        message: title,
+                        child: Text(
+                          title,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       if (description != null) ...[
                         const SizedBox(height: 10),

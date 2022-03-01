@@ -123,15 +123,17 @@ class Home extends HookConsumerWidget {
             return null;
           }).then((_) {
             pagingController.addPageRequestListener(listener);
+          }).catchError((e, stack) {
+            if (e is AuthorizationException) {
+              oauthLogin(
+                auth,
+                clientId: clientId,
+                clientSecret: clientSecret,
+              );
+            }
+            print("[Home.useEffect.spotify.getCredentials]: $e");
+            print(stack);
           });
-        }
-      } on AuthorizationException catch (_) {
-        if (clientId != null && clientSecret != null) {
-          oauthLogin(
-            auth,
-            clientId: clientId,
-            clientSecret: clientSecret,
-          );
         }
       } catch (e, stack) {
         print("[Home.initState]: $e");

@@ -30,7 +30,13 @@ class SpotubeNavigationBar extends HookWidget {
         )
       ],
       selectedIndex: selectedIndex,
-      onDestinationSelected: (i) => Sidebar.goToSettings(context),
+      onDestinationSelected: (i) {
+        if (i == 4) {
+          Sidebar.goToSettings(context);
+        } else {
+          onSelectedIndexChanged(i);
+        }
+      },
     );
   }
 }

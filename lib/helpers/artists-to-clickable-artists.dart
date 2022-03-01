@@ -8,6 +8,7 @@ Widget artistsToClickableArtists(
   List<ArtistSimple> artists, {
   CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
   MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
+  TextStyle textStyle = const TextStyle(),
 }) {
   return Row(
     crossAxisAlignment: crossAxisAlignment,
@@ -24,6 +25,7 @@ Widget artistsToClickableArtists(
               child: ArtistProfile(artist.value.id!),
             ),
             overflow: TextOverflow.ellipsis,
+            style: textStyle,
           ),
         )
         .toList(),

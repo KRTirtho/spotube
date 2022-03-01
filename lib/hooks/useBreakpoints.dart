@@ -12,11 +12,11 @@ class BreakpointUtils {
   ];
   BreakpointUtils(this.breakpoint);
 
-  get isSm => breakpoint == Breakpoints.sm;
-  get isMd => breakpoint == Breakpoints.md;
-  get isLg => breakpoint == Breakpoints.lg;
-  get isXl => breakpoint == Breakpoints.xl;
-  get isXxl => breakpoint == Breakpoints.xxl;
+  bool get isSm => breakpoint == Breakpoints.sm;
+  bool get isMd => breakpoint == Breakpoints.md;
+  bool get isLg => breakpoint == Breakpoints.lg;
+  bool get isXl => breakpoint == Breakpoints.xl;
+  bool get isXxl => breakpoint == Breakpoints.xxl;
 
   bool isMoreThanOrEqualTo(Breakpoints b) {
     return breakpointList
@@ -56,6 +56,11 @@ class BreakpointUtils {
 
   bool operator <=(other) {
     return isLessThanOrEqualTo(other);
+  }
+
+  @override
+  String toString() {
+    return "BreakpointUtils($breakpoint)";
   }
 }
 
