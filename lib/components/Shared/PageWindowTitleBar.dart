@@ -65,7 +65,8 @@ class PageWindowTitleBar extends StatelessWidget
             ),
           if (leading != null) leading!,
           Expanded(child: MoveWindow(child: Center(child: center))),
-          if (!Platform.isMacOS) const TitleBarActionButtons()
+          if (!Platform.isMacOS && !Platform.isIOS && !Platform.isAndroid)
+            const TitleBarActionButtons()
         ],
       ),
     );
