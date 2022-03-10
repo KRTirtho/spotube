@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
@@ -57,7 +58,7 @@ class Settings extends HookConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
-                    onPressed: geniusAccessToken != null
+                    onPressed: geniusAccessToken.value != null
                         ? () async {
                             SharedPreferences localStorage =
                                 await SharedPreferences.getInstance();
@@ -148,7 +149,7 @@ class Settings extends HookConsumerWidget {
                           await SharedPreferences.getInstance();
                       await localStorage.clear();
                       auth.logout();
-                      Navigator.of(context).pop();
+                      GoRouter.of(context).pop();
                     },
                   ),
                 ],

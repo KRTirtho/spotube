@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
@@ -32,12 +33,7 @@ class AlbumCard extends HookConsumerWidget {
       description:
           "Album • ${artistsToString<ArtistSimple>(album.artists ?? [])}",
       onTap: () {
-        Navigator.of(context).push(SpotubePageRoute(
-          child: AlbumView(
-            album,
-            key: Key("album-${album.id}"),
-          ),
-        ));
+        GoRouter.of(context).push("/album/${album.id}", extra: album);
       },
       onPlaybuttonPressed: () async {
         SpotifyApi spotify = ref.read(spotifyProvider);

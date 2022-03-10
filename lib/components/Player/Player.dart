@@ -1,24 +1,23 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/Player/PlayerOverlay.dart';
 import 'package:spotube/components/Player/PlayerTrackDetails.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
-import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/ThemeProvider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class Player extends HookConsumerWidget {
@@ -26,6 +25,7 @@ class Player extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
+
     final _isPlaying = useState(false);
     final _shuffled = useState(false);
     final _volume = useState(0.0);
@@ -200,7 +200,10 @@ class Player extends HookConsumerWidget {
       }
     }
 
+    final paletteColor = usePaletteColor(albumArt);
+
     final controls = PlayerControls(
+      iconColor: paletteColor.bodyTextColor,
       positionStream: player.positionStream,
       isPlaying: _isPlaying.value,
       duration: _duration.value ?? Duration.zero,
@@ -274,6 +277,7 @@ class Player extends HookConsumerWidget {
           builder: (context) => PlayerOverlay(
             controls: controls,
             albumArt: albumArt,
+            paletteColor: paletteColor,
           ),
         );
         // I can't believe useEffect doesn't run Post Frame aka

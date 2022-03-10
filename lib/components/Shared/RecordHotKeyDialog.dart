@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
 class RecordHotKeyDialog extends HookWidget {
@@ -66,7 +67,7 @@ class RecordHotKeyDialog extends HookWidget {
         TextButton(
           child: const Text('Cancel'),
           onPressed: () {
-            Navigator.of(context).pop();
+            GoRouter.of(context).pop();
           },
         ),
         TextButton(
@@ -75,7 +76,7 @@ class RecordHotKeyDialog extends HookWidget {
               ? null
               : () {
                   onHotKeyRecorded(_hotKey.value);
-                  Navigator.of(context).pop();
+                  GoRouter.of(context).pop();
                 },
         ),
       ],

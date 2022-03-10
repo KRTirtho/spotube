@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Artist/ArtistProfile.dart';
-import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 
 class ArtistCard extends StatelessWidget {
   final Artist artist;
@@ -17,12 +16,7 @@ class ArtistCard extends StatelessWidget {
         : "https://avatars.dicebear.com/api/open-peeps/${artist.id}.png?b=%231ed760&r=50&flip=1&translateX=3&translateY=-6");
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(SpotubePageRoute(
-          child: ArtistProfile(
-            artist.id!,
-            key: Key("artist-${artist.id}"),
-          ),
-        ));
+        GoRouter.of(context).push("/artist/${artist.id}");
       },
       borderRadius: BorderRadius.circular(10),
       child: Ink(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
@@ -26,13 +27,9 @@ class PlaylistCard extends HookConsumerWidget {
       imageUrl: playlist.images![0].url!,
       isPlaying: isPlaylistPlaying,
       onTap: () {
-        Navigator.of(context).push(
-          SpotubePageRoute(
-            child: PlaylistView(
-              playlist,
-              key: Key("playlist-${playlist.id}"),
-            ),
-          ),
+        GoRouter.of(context).push(
+          "/playlist/${playlist.id}",
+          extra: playlist,
         );
       },
       onPlaybuttonPressed: () async {

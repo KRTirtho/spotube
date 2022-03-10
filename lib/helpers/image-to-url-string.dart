@@ -5,5 +5,5 @@ const uuid = Uuid();
 String imageToUrlString(List<Image>? images, {int index = 0}) {
   return images != null && images.isNotEmpty
       ? images[0].url!
-      : "https://avatars.dicebear.com/api/croodles-neutral/${uuid.v4()}.png";
+      : "https://avatars.dicebear.com/api/bottts/${uuid.v4()}.png";
 }

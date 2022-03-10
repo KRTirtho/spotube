@@ -21,6 +21,7 @@ class PlayerControls extends HookConsumerWidget {
   final Function? onPrevious;
   final Function? onPlay;
   final Function? onPause;
+  final Color? iconColor;
   const PlayerControls({
     required this.positionStream,
     required this.isPlaying,
@@ -33,6 +34,7 @@ class PlayerControls extends HookConsumerWidget {
     this.onPrevious,
     this.onPlay,
     this.onPause,
+    this.iconColor,
     Key? key,
   }) : super(key: key);
 
@@ -94,6 +96,7 @@ class PlayerControls extends HookConsumerWidget {
                 }),
           IconButton(
               icon: const Icon(Icons.skip_previous_rounded),
+              color: iconColor,
               onPressed: () {
                 onPrevious?.call();
               }),
@@ -101,11 +104,14 @@ class PlayerControls extends HookConsumerWidget {
             icon: Icon(
               isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
             ),
+            color: iconColor,
             onPressed: () => _playOrPause(null),
           ),
           IconButton(
-              icon: const Icon(Icons.skip_next_rounded),
-              onPressed: () => onNext?.call()),
+            icon: const Icon(Icons.skip_next_rounded),
+            onPressed: () => onNext?.call(),
+            color: iconColor,
+          ),
           if (breakpoint.isMoreThan(Breakpoints.md))
             IconButton(
               icon: const Icon(Icons.stop_rounded),

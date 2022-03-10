@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart' hide Image;
-import 'package:spotube/components/Settings.dart';
-import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -30,11 +29,7 @@ class Sidebar extends HookConsumerWidget {
   }
 
   static void goToSettings(BuildContext context) {
-    Navigator.of(context).push(SpotubePageRoute(
-      child: const Settings(
-        key: Key("settings"),
-      ),
-    ));
+    GoRouter.of(context).push("/settings");
   }
 
   @override

@@ -180,9 +180,8 @@ class TrackTile extends HookWidget {
           Expanded(
             child: LinkText(
               track.value.album!.name!,
-              SpotubePageRoute(
-                child: AlbumView(track.value.album!),
-              ),
+              "/album/${track.value.album?.id}",
+              extra: track.value.album,
               overflow: TextOverflow.ellipsis,
             ),
           ),

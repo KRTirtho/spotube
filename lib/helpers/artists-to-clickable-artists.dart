@@ -21,9 +21,7 @@ Widget artistsToClickableArtists(
             (artist.key != artists.length - 1)
                 ? "${artist.value.name}, "
                 : artist.value.name!,
-            SpotubePageRoute(
-              child: ArtistProfile(artist.value.id!),
-            ),
+            "/artist/${artist.value.id}",
             overflow: TextOverflow.ellipsis,
             style: textStyle,
           ),

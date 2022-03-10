@@ -7,7 +7,9 @@ import 'package:spotube/provider/Playback.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
   final String? albumArt;
-  const PlayerTrackDetails({Key? key, this.albumArt}) : super(key: key);
+  final Color? color;
+  const PlayerTrackDetails({Key? key, this.albumArt, this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -36,13 +38,15 @@ class PlayerTrackDetails extends HookConsumerWidget {
           ),
         if (breakpoint.isLessThanOrEqualTo(Breakpoints.md)) ...[
           const SizedBox(width: 10),
-          Text(
-            playback.currentTrack?.name ?? "Not playing",
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1
-                ?.copyWith(fontWeight: FontWeight.bold),
+          Flexible(
+            child: Text(
+              playback.currentTrack?.name ?? "Not playing",
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  ?.copyWith(fontWeight: FontWeight.bold, color: color),
+            ),
           ),
         ],
         //  title of the currently playing track
@@ -53,10 +57,11 @@ class PlayerTrackDetails extends HookConsumerWidget {
               children: [
                 Text(
                   playback.currentTrack?.name ?? "Not playing",
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                      ?.copyWith(fontWeight: FontWeight.bold, color: color),
                 ),
                 artistsToClickableArtists(
                   playback.currentTrack?.artists ?? [],
