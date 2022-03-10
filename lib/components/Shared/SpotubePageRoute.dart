@@ -4,8 +4,8 @@ class SpotubePageRoute extends PageRouteBuilder {
   final Widget child;
   SpotubePageRoute({required this.child})
       : super(
-          pageBuilder: (context, animation, secondaryAnimation) => child,
-        );
+            pageBuilder: (context, animation, secondaryAnimation) => child,
+            settings: RouteSettings(name: child.key.toString()));
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,

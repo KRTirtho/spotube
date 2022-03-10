@@ -26,9 +26,14 @@ class PlaylistCard extends HookConsumerWidget {
       imageUrl: playlist.images![0].url!,
       isPlaying: isPlaylistPlaying,
       onTap: () {
-        Navigator.of(context).push(SpotubePageRoute(
-          child: PlaylistView(playlist),
-        ));
+        Navigator.of(context).push(
+          SpotubePageRoute(
+            child: PlaylistView(
+              playlist,
+              key: Key("playlist-${playlist.id}"),
+            ),
+          ),
+        );
       },
       onPlaybuttonPressed: () async {
         if (isPlaylistPlaying) return;

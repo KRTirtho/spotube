@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
+import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
@@ -77,79 +78,91 @@ class PlayerControls extends HookConsumerWidget {
       };
     });
 
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 700),
-      child: Column(
-        children: [
-          StreamBuilder<Duration>(
-              stream: positionStream,
-              builder: (context, snapshot) {
-                var totalMinutes =
-                    zeroPadNumStr(duration.inMinutes.remainder(60));
-                var totalSeconds =
-                    zeroPadNumStr(duration.inSeconds.remainder(60));
-                var currentMinutes = snapshot.hasData
-                    ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
-                    : "00";
-                var currentSeconds = snapshot.hasData
-                    ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
-                    : "00";
+    final breakpoint = useBreakpoints();
 
-                var sliderMax = duration.inSeconds;
-                var sliderValue = snapshot.data?.inSeconds ?? 0;
-                return Row(
-                  children: [
-                    Expanded(
-                      child: Slider.adaptive(
-                        // cannot divide by zero
-                        // there's an edge case for value being bigger
-                        // than total duration. Keeping it resolved
-                        value: (sliderMax == 0 || sliderValue > sliderMax)
-                            ? 0
-                            : sliderValue / sliderMax,
-                        onChanged: (value) {},
-                        onChangeEnd: (value) {
-                          onSeek?.call(value * sliderMax);
-                        },
-                      ),
-                    ),
-                    Text(
-                      "$currentMinutes:$currentSeconds/$totalMinutes:$totalSeconds",
-                    )
-                  ],
-                );
+    Widget controlButtons = Material(
+      type: MaterialType.transparency,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          if (breakpoint.isMoreThan(Breakpoints.md))
+            IconButton(
+                icon: const Icon(Icons.shuffle_rounded),
+                color: shuffled ? Theme.of(context).primaryColor : null,
+                onPressed: () {
+                  onShuffle?.call();
+                }),
+          IconButton(
+              icon: const Icon(Icons.skip_previous_rounded),
+              onPressed: () {
+                onPrevious?.call();
               }),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                  icon: const Icon(Icons.shuffle_rounded),
-                  color: shuffled ? Theme.of(context).primaryColor : null,
-                  onPressed: () {
-                    onShuffle?.call();
-                  }),
-              IconButton(
-                  icon: const Icon(Icons.skip_previous_rounded),
-                  onPressed: () {
-                    onPrevious?.call();
-                  }),
-              IconButton(
-                icon: Icon(
-                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                ),
-                onPressed: () => _playOrPause(null),
-              ),
-              IconButton(
-                  icon: const Icon(Icons.skip_next_rounded),
-                  onPressed: () => onNext?.call()),
-              IconButton(
-                icon: const Icon(Icons.stop_rounded),
-                onPressed: () => onStop?.call(),
-              )
-            ],
-          )
+          IconButton(
+            icon: Icon(
+              isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+            ),
+            onPressed: () => _playOrPause(null),
+          ),
+          IconButton(
+              icon: const Icon(Icons.skip_next_rounded),
+              onPressed: () => onNext?.call()),
+          if (breakpoint.isMoreThan(Breakpoints.md))
+            IconButton(
+              icon: const Icon(Icons.stop_rounded),
+              onPressed: () => onStop?.call(),
+            )
         ],
       ),
     );
+
+    if (breakpoint.isLessThanOrEqualTo(Breakpoints.md)) {
+      return controlButtons;
+    }
+
+    return Container(
+        constraints: const BoxConstraints(maxWidth: 700),
+        child: Column(
+          children: [
+            StreamBuilder<Duration>(
+                stream: positionStream,
+                builder: (context, snapshot) {
+                  var totalMinutes =
+                      zeroPadNumStr(duration.inMinutes.remainder(60));
+                  var totalSeconds =
+                      zeroPadNumStr(duration.inSeconds.remainder(60));
+                  var currentMinutes = snapshot.hasData
+                      ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
+                      : "00";
+                  var currentSeconds = snapshot.hasData
+                      ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
+                      : "00";
+
+                  var sliderMax = duration.inSeconds;
+                  var sliderValue = snapshot.data?.inSeconds ?? 0;
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Slider.adaptive(
+                          // cannot divide by zero
+                          // there's an edge case for value being bigger
+                          // than total duration. Keeping it resolved
+                          value: (sliderMax == 0 || sliderValue > sliderMax)
+                              ? 0
+                              : sliderValue / sliderMax,
+                          onChanged: (value) {},
+                          onChangeEnd: (value) {
+                            onSeek?.call(value * sliderMax);
+                          },
+                        ),
+                      ),
+                      Text(
+                        "$currentMinutes:$currentSeconds/$totalMinutes:$totalSeconds",
+                      )
+                    ],
+                  );
+                }),
+            controlButtons,
+          ],
+        ));
   }
 }

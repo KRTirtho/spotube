@@ -70,7 +70,9 @@ class Lyrics extends HookConsumerWidget {
             ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(SpotubePageRoute(
-                    child: const Settings(),
+                    child: const Settings(
+                      key: Key("settings"),
+                    ),
                   ));
                 },
                 child: const Text("Add Access Token"))

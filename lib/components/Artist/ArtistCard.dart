@@ -18,7 +18,10 @@ class ArtistCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(SpotubePageRoute(
-          child: ArtistProfile(artist.id!),
+          child: ArtistProfile(
+            artist.id!,
+            key: Key("artist-${artist.id}"),
+          ),
         ));
       },
       borderRadius: BorderRadius.circular(10),

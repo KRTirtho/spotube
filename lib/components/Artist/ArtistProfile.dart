@@ -247,6 +247,7 @@ class ArtistProfile extends HookConsumerWidget {
                           child: ArtistAlbumView(
                             artistId,
                             snapshot.data?.name ?? "KRTX",
+                            key: Key("artist-album-$artistId"),
                           ),
                         ));
                       },

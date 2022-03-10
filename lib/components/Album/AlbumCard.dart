@@ -33,7 +33,10 @@ class AlbumCard extends HookConsumerWidget {
           "Album • ${artistsToString<ArtistSimple>(album.artists ?? [])}",
       onTap: () {
         Navigator.of(context).push(SpotubePageRoute(
-          child: AlbumView(album),
+          child: AlbumView(
+            album,
+            key: Key("album-${album.id}"),
+          ),
         ));
       },
       onPlaybuttonPressed: () async {

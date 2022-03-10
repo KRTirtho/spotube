@@ -31,7 +31,9 @@ class Sidebar extends HookConsumerWidget {
 
   static void goToSettings(BuildContext context) {
     Navigator.of(context).push(SpotubePageRoute(
-      child: const Settings(),
+      child: const Settings(
+        key: Key("settings"),
+      ),
     ));
   }
 
