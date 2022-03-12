@@ -54,6 +54,7 @@ class PlaylistCard extends HookConsumerWidget {
           thumbnail: imageToUrlString(playlist.images),
         );
         playback.setCurrentTrack = tracks.first;
+        await playback.startPlaying();
       },
     );
   }

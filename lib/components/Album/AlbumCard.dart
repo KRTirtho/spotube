@@ -50,6 +50,7 @@ class AlbumCard extends HookConsumerWidget {
           thumbnail: album.images!.first.url!,
         );
         playback.setCurrentTrack = tracks.first;
+        await playback.startPlaying();
       },
     );
   }

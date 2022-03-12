@@ -6,10 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
-import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/readable-number.dart';
@@ -162,7 +160,8 @@ class ArtistProfile extends HookConsumerWidget {
                     Playback playback = ref.watch(playbackProvider);
                     var isPlaylistPlaying =
                         playback.currentPlaylist?.id == snapshot.data?.id;
-                    playPlaylist(List<Track> tracks, {Track? currentTrack}) {
+                    playPlaylist(List<Track> tracks,
+                        {Track? currentTrack}) async {
                       currentTrack ??= tracks.first;
                       if (!isPlaylistPlaying) {
                         playback.setCurrentPlaylist = CurrentPlaylist(
@@ -177,6 +176,7 @@ class ArtistProfile extends HookConsumerWidget {
                           currentTrack.id != playback.currentTrack?.id) {
                         playback.setCurrentTrack = currentTrack;
                       }
+                      await playback.startPlaying();
                     }
 
                     return Column(children: [

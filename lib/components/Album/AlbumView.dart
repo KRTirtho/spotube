@@ -12,7 +12,8 @@ class AlbumView extends ConsumerWidget {
   final AlbumSimple album;
   const AlbumView(this.album, {Key? key}) : super(key: key);
 
-  playPlaylist(Playback playback, List<Track> tracks, {Track? currentTrack}) {
+  playPlaylist(Playback playback, List<Track> tracks,
+      {Track? currentTrack}) async {
     currentTrack ??= tracks.first;
     var isPlaylistPlaying = playback.currentPlaylist?.id == album.id;
     if (!isPlaylistPlaying) {
@@ -28,6 +29,7 @@ class AlbumView extends ConsumerWidget {
         currentTrack.id != playback.currentTrack?.id) {
       playback.setCurrentTrack = currentTrack;
     }
+    await playback.startPlaying();
   }
 
   @override

@@ -125,6 +125,7 @@ class Search extends HookConsumerWidget {
                                       playback.currentTrack?.id) {
                                 playback.setCurrentTrack = currentTrack;
                               }
+                              await playback.startPlaying();
                             },
                           );
                         }),

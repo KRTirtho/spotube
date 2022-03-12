@@ -1,173 +1,163 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
-import 'package:spotube/hooks/useBreakpoints.dart';
-import 'package:spotube/models/GlobalKeyActions.dart';
-import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/hooks/playback.dart';
+import 'package:spotube/provider/Playback.dart';
 
 class PlayerControls extends HookConsumerWidget {
-  final Stream<Duration> positionStream;
-  final bool isPlaying;
-  final Duration duration;
-  final bool shuffled;
-  final Function? onStop;
-  final Function? onShuffle;
-  final Function(double value)? onSeek;
-  final Function? onNext;
-  final Function? onPrevious;
-  final Function? onPlay;
-  final Function? onPause;
   final Color? iconColor;
   const PlayerControls({
-    required this.positionStream,
-    required this.isPlaying,
-    required this.duration,
-    required this.shuffled,
-    this.onShuffle,
-    this.onStop,
-    this.onSeek,
-    this.onNext,
-    this.onPrevious,
-    this.onPlay,
-    this.onPause,
     this.iconColor,
     Key? key,
   }) : super(key: key);
 
-  _playOrPause(key) async {
-    try {
-      isPlaying ? await onPause?.call() : await onPlay?.call();
-    } catch (e, stack) {
-      print("[PlayPauseShortcut] $e");
-      print(stack);
-    }
-  }
-
   @override
   Widget build(BuildContext context, ref) {
-    UserPreferences preferences = ref.watch(userPreferencesProvider);
+    final Playback playback = ref.watch(playbackProvider);
+    final AudioPlayer player = playback.player;
 
-    var _hotKeys = [];
+    final _shuffled = useState(false);
+    final _duration = useState<Duration?>(playback.duration);
+
     useEffect(() {
-      _hotKeys = [
-        GlobalKeyActions(
-          HotKey(KeyCode.space, scope: HotKeyScope.inapp),
-          _playOrPause,
-        ),
-        if (preferences.nextTrackHotKey != null)
-          GlobalKeyActions(
-              preferences.nextTrackHotKey!, (key) => onNext?.call()),
-        if (preferences.prevTrackHotKey != null)
-          GlobalKeyActions(
-              preferences.prevTrackHotKey!, (key) => onPrevious?.call()),
-        if (preferences.playPauseHotKey != null)
-          GlobalKeyActions(preferences.playPauseHotKey!, _playOrPause)
-      ];
-      Future.wait(
-        _hotKeys.map((e) {
-          return hotKeyManager.register(
-            e.hotKey,
-            keyDownHandler: e.onKeyDown,
-          );
-        }),
-      );
-      return () {
-        Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
-      };
-    });
+      listener(Duration? duration) {
+        _duration.value = duration;
+      }
 
-    final breakpoint = useBreakpoints();
+      playback.addDurationChangeListener(listener);
 
-    Widget controlButtons = Material(
-      type: MaterialType.transparency,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          if (breakpoint.isMoreThan(Breakpoints.md))
-            IconButton(
-                icon: const Icon(Icons.shuffle_rounded),
-                color: shuffled ? Theme.of(context).primaryColor : null,
-                onPressed: () {
-                  onShuffle?.call();
-                }),
-          IconButton(
-              icon: const Icon(Icons.skip_previous_rounded),
-              color: iconColor,
-              onPressed: () {
-                onPrevious?.call();
-              }),
-          IconButton(
-            icon: Icon(
-              isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-            ),
-            color: iconColor,
-            onPressed: () => _playOrPause(null),
-          ),
-          IconButton(
-            icon: const Icon(Icons.skip_next_rounded),
-            onPressed: () => onNext?.call(),
-            color: iconColor,
-          ),
-          if (breakpoint.isMoreThan(Breakpoints.md))
-            IconButton(
-              icon: const Icon(Icons.stop_rounded),
-              onPressed: () => onStop?.call(),
-            )
-        ],
-      ),
-    );
+      return () => playback.removeDurationChangeListener(listener);
+    }, []);
 
-    if (breakpoint.isLessThanOrEqualTo(Breakpoints.md)) {
-      return controlButtons;
-    }
+    final onNext = useNextTrack(playback);
+
+    final onPrevious = usePreviousTrack(playback);
+
+    final _playOrPause = useTogglePlayPause(playback);
+
+    final duration = _duration.value ?? Duration.zero;
 
     return Container(
         constraints: const BoxConstraints(maxWidth: 700),
         child: Column(
           children: [
             StreamBuilder<Duration>(
-                stream: positionStream,
+                stream: player.positionStream,
                 builder: (context, snapshot) {
-                  var totalMinutes =
+                  final totalMinutes =
                       zeroPadNumStr(duration.inMinutes.remainder(60));
-                  var totalSeconds =
+                  final totalSeconds =
                       zeroPadNumStr(duration.inSeconds.remainder(60));
-                  var currentMinutes = snapshot.hasData
+                  final currentMinutes = snapshot.hasData
                       ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
                       : "00";
-                  var currentSeconds = snapshot.hasData
+                  final currentSeconds = snapshot.hasData
                       ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
                       : "00";
 
-                  var sliderMax = duration.inSeconds;
-                  var sliderValue = snapshot.data?.inSeconds ?? 0;
-                  return Row(
+                  final sliderMax = duration.inSeconds;
+                  final sliderValue = snapshot.data?.inSeconds ?? 0;
+                  return Column(
                     children: [
-                      Expanded(
-                        child: Slider.adaptive(
-                          // cannot divide by zero
-                          // there's an edge case for value being bigger
-                          // than total duration. Keeping it resolved
-                          value: (sliderMax == 0 || sliderValue > sliderMax)
-                              ? 0
-                              : sliderValue / sliderMax,
-                          onChanged: (value) {},
-                          onChangeEnd: (value) {
-                            onSeek?.call(value * sliderMax);
-                          },
+                      Slider.adaptive(
+                        // cannot divide by zero
+                        // there's an edge case for value being bigger
+                        // than total duration. Keeping it resolved
+                        value: (sliderMax == 0 || sliderValue > sliderMax)
+                            ? 0
+                            : sliderValue / sliderMax,
+                        onChanged: (value) {},
+                        onChangeEnd: (value) {
+                          player.seek(
+                            Duration(
+                              seconds: (value * sliderMax).toInt(),
+                            ),
+                          );
+                        },
+                        activeColor: iconColor,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "$currentMinutes:$currentSeconds",
+                            ),
+                            Text("$totalMinutes:$totalSeconds"),
+                          ],
                         ),
                       ),
-                      Text(
-                        "$currentMinutes:$currentSeconds/$totalMinutes:$totalSeconds",
-                      )
                     ],
                   );
                 }),
-            controlButtons,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                    icon: const Icon(Icons.shuffle_rounded),
+                    color: _shuffled.value
+                        ? Theme.of(context).primaryColor
+                        : iconColor,
+                    onPressed: () {
+                      if (playback.currentTrack == null ||
+                          playback.currentPlaylist == null) {
+                        return;
+                      }
+                      try {
+                        if (!_shuffled.value) {
+                          playback.currentPlaylist!.shuffle();
+                          _shuffled.value = true;
+                        } else {
+                          playback.currentPlaylist!.unshuffle();
+                          _shuffled.value = false;
+                        }
+                      } catch (e, stack) {
+                        print("[PlayerControls.onShuffle()] $e");
+                        print(stack);
+                      }
+                    }),
+                IconButton(
+                    icon: const Icon(Icons.skip_previous_rounded),
+                    color: iconColor,
+                    onPressed: () {
+                      onPrevious();
+                    }),
+                IconButton(
+                  icon: Icon(
+                    playback.isPlaying
+                        ? Icons.pause_rounded
+                        : Icons.play_arrow_rounded,
+                  ),
+                  color: iconColor,
+                  onPressed: _playOrPause,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.skip_next_rounded),
+                  onPressed: () => onNext(),
+                  color: iconColor,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.stop_rounded),
+                  color: iconColor,
+                  onPressed: playback.currentTrack != null
+                      ? () async {
+                          try {
+                            await player.pause();
+                            await player.seek(Duration.zero);
+                            _shuffled.value = false;
+                            playback.reset();
+                          } catch (e, stack) {
+                            print("[PlayerControls.onStop()] $e");
+                            print(stack);
+                          }
+                        }
+                      : null,
+                )
+              ],
+            ),
           ],
         ));
   }

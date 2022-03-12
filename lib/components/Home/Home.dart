@@ -19,6 +19,7 @@ import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
+import 'package:spotube/hooks/useHotKeys.dart';
 import 'package:spotube/hooks/usePagingController.dart';
 import 'package:spotube/hooks/useSharedPreferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
@@ -55,6 +56,9 @@ class Home extends HookConsumerWidget {
     _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
 
     final localStorage = useSharedPreferences();
+
+    // initializing global hot keys
+    useHotKeys(ref);
 
     useEffect(() {
       if (localStorage == null) return null;

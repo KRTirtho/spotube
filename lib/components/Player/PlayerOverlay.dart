@@ -1,39 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:palette_generator/palette_generator.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Player/PlayerTrackDetails.dart';
+import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/hooks/useIsCurrentRoute.dart';
+import 'package:spotube/hooks/usePaletteColor.dart';
+import 'package:spotube/provider/Playback.dart';
 
-class PlayerOverlay extends HookWidget {
-  final Widget controls;
+class PlayerOverlay extends HookConsumerWidget {
   final String albumArt;
-  final PaletteColor paletteColor;
+
   const PlayerOverlay({
-    required this.controls,
     required this.albumArt,
-    required this.paletteColor,
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
-    final isCurrentRoute = useState<bool?>(null);
+    final isCurrentRoute = useIsCurrentRoute("/");
+    final paletteColor = usePaletteColor(context, albumArt);
+    final playback = ref.watch(playbackProvider);
 
-    useEffect(() {
-      WidgetsBinding.instance?.addPostFrameCallback((timer) {
-        final matches = GoRouter.of(context).location == "/";
-        if (matches != isCurrentRoute.value) {
-          isCurrentRoute.value = matches;
-        }
-      });
-      return null;
-    });
-
-    if (isCurrentRoute.value == false) {
+    if (isCurrentRoute == false) {
       return Container();
     }
+
+    final onNext = useNextTrack(playback);
+
+    final onPrevious = usePreviousTrack(playback);
+
+    final _playOrPause = useTogglePlayPause(playback);
 
     return Positioned(
       right: (breakpoint.isMd ? 10 : 5),
@@ -46,17 +44,49 @@ class PlayerOverlay extends HookWidget {
           color: paletteColor.color,
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: PlayerTrackDetails(
-                albumArt: albumArt,
-                color: paletteColor.bodyTextColor,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => GoRouter.of(context).push(
+                    "/player",
+                    extra: paletteColor,
+                  ),
+                  child: PlayerTrackDetails(
+                    albumArt: albumArt,
+                    color: paletteColor.bodyTextColor,
+                  ),
+                ),
               ),
-            ),
-            Expanded(child: controls),
-          ],
+              Row(
+                children: [
+                  IconButton(
+                      icon: const Icon(Icons.skip_previous_rounded),
+                      color: paletteColor.bodyTextColor,
+                      onPressed: () {
+                        onPrevious();
+                      }),
+                  IconButton(
+                    icon: Icon(
+                      playback.isPlaying
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
+                    ),
+                    color: paletteColor.bodyTextColor,
+                    onPressed: _playOrPause,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.skip_next_rounded),
+                    onPressed: () => onNext(),
+                    color: paletteColor.bodyTextColor,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

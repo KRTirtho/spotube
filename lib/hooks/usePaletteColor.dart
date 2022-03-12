@@ -3,21 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-PaletteColor usePaletteColor(String imageUrl) {
+PaletteColor usePaletteColor(BuildContext context, imageUrl) {
   final paletteColor =
       useState<PaletteColor>(PaletteColor(Colors.grey[300]!, 0));
-
-  final context = useContext();
+  final mounted = useIsMounted();
 
   useEffect(() {
-    PaletteGenerator.fromImageProvider(
-      CachedNetworkImageProvider(
-        imageUrl,
-        cacheKey: imageUrl,
-        maxHeight: 50,
-        maxWidth: 50,
-      ),
-    ).then((palette) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      final palette = await PaletteGenerator.fromImageProvider(
+        CachedNetworkImageProvider(
+          imageUrl,
+          cacheKey: imageUrl,
+          maxHeight: 50,
+          maxWidth: 50,
+        ),
+      );
+      if (!mounted()) return;
       final color = Theme.of(context).brightness == Brightness.light
           ? palette.lightMutedColor ?? palette.lightVibrantColor
           : palette.darkMutedColor ?? palette.darkVibrantColor;

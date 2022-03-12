@@ -39,11 +39,14 @@ class CategoryCard extends HookWidget {
                 usePagingController<int, PlaylistSimple>(firstPageKey: 0);
 
             final _error = useState(false);
+            final mounted = useIsMounted();
 
             useEffect(() {
               listener(pageKey) async {
                 try {
-                  if (playlists != null && playlists?.isNotEmpty == true) {
+                  if (playlists != null &&
+                      playlists?.isNotEmpty == true &&
+                      mounted()) {
                     return pagingController.appendLastPage(playlists!.toList());
                   }
                   final Page<PlaylistSimple> page = await (category.id !=
@@ -52,6 +55,7 @@ class CategoryCard extends HookWidget {
                           : spotifyApi.playlists.featured)
                       .getPage(3, pageKey);
 
+                  if (!mounted()) return;
                   if (page.isLast && page.items != null) {
                     pagingController.appendLastPage(page.items!.toList());
                   } else if (page.items != null) {
@@ -60,8 +64,10 @@ class CategoryCard extends HookWidget {
                   }
                   if (_error.value) _error.value = false;
                 } catch (e, stack) {
-                  if (!_error.value) _error.value = true;
-                  pagingController.error = e;
+                  if (mounted()) {
+                    if (!_error.value) _error.value = true;
+                    pagingController.error = e;
+                  }
                   print(
                       "[CategoryCard.pagingController.addPageRequestListener] $e");
                   print(stack);

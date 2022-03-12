@@ -11,7 +11,8 @@ class PlaylistView extends ConsumerWidget {
   final PlaylistSimple playlist;
   const PlaylistView(this.playlist, {Key? key}) : super(key: key);
 
-  playPlaylist(Playback playback, List<Track> tracks, {Track? currentTrack}) {
+  playPlaylist(Playback playback, List<Track> tracks,
+      {Track? currentTrack}) async {
     currentTrack ??= tracks.first;
     var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
         playback.currentPlaylist?.id == playlist.id;
@@ -28,6 +29,7 @@ class PlaylistView extends ConsumerWidget {
         currentTrack.id != playback.currentTrack?.id) {
       playback.setCurrentTrack = currentTrack;
     }
+    await playback.startPlaying();
   }
 
   @override
