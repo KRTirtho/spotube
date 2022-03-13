@@ -34,6 +34,16 @@ class Player extends HookConsumerWidget {
         useFuture(future, initialData: null);
 
     useEffect(() {
+      /// warm up the audio player before playing actual audio
+      /// It's for resolving unresolved issue related to just_audio's
+      /// [disposeAllPlayers] method which is throwing
+      /// [UnimplementedException] in the [PlatformInterface]
+      /// implementation
+      player.setAsset("assets/warmer.mp3");
+      return null;
+    }, []);
+
+    useEffect(() {
       if (localStorage.hasData) {
         _volume.value = localStorage.data?.getDouble(LocalStorageKeys.volume) ??
             player.volume;

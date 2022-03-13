@@ -224,7 +224,10 @@ class Playback extends ChangeNotifier {
         final ytTrack = await toYoutubeTrack(youtube, track);
         if (setTrackUriById(track.id!, ytTrack.uri!)) {
           await player
-              .setAudioSource(AudioSource.uri(Uri.parse(ytTrack.uri!)))
+              .setAudioSource(
+            AudioSource.uri(Uri.parse(ytTrack.uri!)),
+            preload: true,
+          )
               .then((value) {
             _currentTrack = track;
             notifyListeners();
