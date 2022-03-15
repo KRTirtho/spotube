@@ -30,7 +30,7 @@ packages:
     source: hosted
     version: "2.8.2"
   audio_session:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: audio_session
       url: "https://pub.dartlang.org"
@@ -323,7 +323,7 @@ packages:
       name: just_audio_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.4"
+    version: "0.4.7"
   libwinmedia:
     dependency: transitive
     description:

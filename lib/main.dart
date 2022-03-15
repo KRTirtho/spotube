@@ -14,21 +14,25 @@ import 'package:spotube/provider/ThemeProvider.dart';
 import 'package:spotube/provider/YouTube.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await hotKeyManager.unregisterAll();
+  if (!Platform.isAndroid && !Platform.isIOS) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await hotKeyManager.unregisterAll();
+    doWhenWindowReady(() {
+      appWindow.minSize =
+          Size(Platform.isAndroid || Platform.isIOS ? 280 : 359, 700);
+      appWindow.size = const Size(900, 700);
+      appWindow.alignment = Alignment.center;
+      appWindow.maximize();
+      appWindow.show();
+    });
+  }
   runApp(ProviderScope(child: MyApp()));
-  doWhenWindowReady(() {
-    appWindow.minSize =
-        Size(Platform.isAndroid || Platform.isIOS ? 280 : 359, 700);
-    appWindow.size = const Size(900, 700);
-    appWindow.alignment = Alignment.center;
-    appWindow.maximize();
-    appWindow.show();
-  });
 }
 
 class MyApp extends HookConsumerWidget {
   final GoRouter _router = createGoRouter();
+
+  MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
     var themeMode = ref.watch(themeProvider);

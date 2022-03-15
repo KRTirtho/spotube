@@ -52,10 +52,23 @@ class PageWindowTitleBar extends StatelessWidget
   const PageWindowTitleBar({Key? key, this.leading, this.center})
       : super(key: key);
   @override
-  Size get preferredSize => Size.fromHeight(appWindow.titleBarHeight);
+  Size get preferredSize => Size.fromHeight(
+        !Platform.isIOS && !Platform.isAndroid ? appWindow.titleBarHeight : 0,
+      );
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isIOS || Platform.isAndroid) {
+      return PreferredSize(
+        preferredSize: const Size.fromHeight(70),
+        child: Row(
+          children: [
+            if (leading != null) leading!,
+            Expanded(child: Center(child: center)),
+          ],
+        ),
+      );
+    }
     return WindowTitleBarBox(
       child: Row(
         children: [

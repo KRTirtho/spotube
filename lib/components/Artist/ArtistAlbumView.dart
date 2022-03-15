@@ -59,32 +59,34 @@ class _ArtistAlbumViewState extends ConsumerState<ArtistAlbumView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const PageWindowTitleBar(leading: BackButton()),
-      body: Column(
-        children: [
-          Text(
-            widget.artistName,
-            style: Theme.of(context).textTheme.headline4,
-          ),
-          Expanded(
-            child: PagedGridView(
-              pagingController: _pagingController,
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 260,
-                childAspectRatio: 9 / 13,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-              ),
-              padding: const EdgeInsets.all(10),
-              builderDelegate: PagedChildBuilderDelegate<Album>(
-                itemBuilder: (context, item, index) {
-                  return AlbumCard(item);
-                },
+    return SafeArea(
+      child: Scaffold(
+        appBar: const PageWindowTitleBar(leading: BackButton()),
+        body: Column(
+          children: [
+            Text(
+              widget.artistName,
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            Expanded(
+              child: PagedGridView(
+                pagingController: _pagingController,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 260,
+                  childAspectRatio: 9 / 13,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                padding: const EdgeInsets.all(10),
+                builderDelegate: PagedChildBuilderDelegate<Album>(
+                  itemBuilder: (context, item, index) {
+                    return AlbumCard(item);
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

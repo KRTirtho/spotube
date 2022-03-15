@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -18,6 +20,7 @@ useHotKeys(WidgetRef ref) {
   final _playOrPause = useTogglePlayPause(playback);
 
   useEffect(() {
+    if (Platform.isIOS || Platform.isAndroid) return null;
     _hotKeys = [
       GlobalKeyActions(
         HotKey(KeyCode.space, scope: HotKeyScope.inapp),

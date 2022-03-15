@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -60,9 +61,11 @@ class Playback extends ChangeNotifier {
   StreamSubscription<bool>? _playingStreamListener;
   StreamSubscription<Duration?>? _durationStreamListener;
   StreamSubscription<ProcessingState>? _processingStateStreamListener;
+  StreamSubscription<AudioInterruptionEvent>? _audioInterruptionEventListener;
 
   AudioPlayer player;
   YoutubeExplode youtube;
+  AudioSession? _audioSession;
   Playback({
     required this.player,
     required this.youtube,
@@ -106,6 +109,14 @@ class Playback extends ChangeNotifier {
         print("[PrecessingStateStreamListener] $e");
         print(stack);
       }
+    });
+
+    AudioSession.instance.then((session) async {
+      _audioSession = session;
+      await session.configure(const AudioSessionConfiguration.music());
+      _audioInterruptionEventListener = session.interruptionEventStream.listen(
+        (AudioInterruptionEvent event) {},
+      );
     });
   }
 
@@ -175,6 +186,8 @@ class Playback extends ChangeNotifier {
     _processingStateStreamListener?.cancel();
     _durationStreamListener?.cancel();
     _playingStreamListener?.cancel();
+    _audioInterruptionEventListener?.cancel();
+    _audioSession?.setActive(false);
     super.dispose();
   }
 
@@ -206,7 +219,7 @@ class Playback extends ChangeNotifier {
       // the track is already playing so no need to change that
       if (track != null && track.id == _currentTrack?.id) return;
       track ??= _currentTrack;
-      if (track != null) {
+      if (track != null && await _audioSession?.setActive(true) == true) {
         Uri? parsedUri = Uri.tryParse(track.uri ?? "");
         if (parsedUri != null && parsedUri.hasAbsolutePath) {
           await player

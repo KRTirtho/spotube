@@ -42,57 +42,59 @@ class PlayerView extends HookConsumerWidget {
       [currentTrack?.album?.images],
     );
 
-    return Scaffold(
-      appBar: const PageWindowTitleBar(
-        leading: BackButton(),
-      ),
-      backgroundColor: paletteColor.color,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Text(
-                  currentTrack?.name ?? "Not playing",
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: paletteColor.titleTextColor,
-                      ),
-                ),
-                artistsToClickableArtists(
-                  currentTrack?.artists ?? [],
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  textStyle: Theme.of(context).textTheme.headline6!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: paletteColor.bodyTextColor,
-                      ),
-                ),
-              ],
-            ),
-          ),
-          HookBuilder(builder: (context) {
-            final ticker = useSingleTickerProvider();
-            final controller = useAnimationController(
-              duration: const Duration(seconds: 10),
-              vsync: ticker,
-            )..repeat();
-            return RotationTransition(
-              turns: Tween(begin: 0.0, end: 1.0).animate(controller),
-              child: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(
-                  albumArt,
-                  cacheKey: albumArt,
-                ),
-                radius: MediaQuery.of(context).size.width *
-                    (breakpoint.isSm ? 0.4 : 0.3),
+    return SafeArea(
+      child: Scaffold(
+        appBar: const PageWindowTitleBar(
+          leading: BackButton(),
+        ),
+        backgroundColor: paletteColor.color,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Text(
+                    currentTrack?.name ?? "Not playing",
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: paletteColor.titleTextColor,
+                        ),
+                  ),
+                  artistsToClickableArtists(
+                    currentTrack?.artists ?? [],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    textStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: paletteColor.bodyTextColor,
+                        ),
+                  ),
+                ],
               ),
-            );
-          }),
-          PlayerControls(iconColor: paletteColor.bodyTextColor),
-        ],
+            ),
+            HookBuilder(builder: (context) {
+              final ticker = useSingleTickerProvider();
+              final controller = useAnimationController(
+                duration: const Duration(seconds: 10),
+                vsync: ticker,
+              )..repeat();
+              return RotationTransition(
+                turns: Tween(begin: 0.0, end: 1.0).animate(controller),
+                child: CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(
+                    albumArt,
+                    cacheKey: albumArt,
+                  ),
+                  radius: MediaQuery.of(context).size.width *
+                      (breakpoint.isSm ? 0.4 : 0.3),
+                ),
+              );
+            }),
+            PlayerControls(iconColor: paletteColor.bodyTextColor),
+          ],
+        ),
       ),
     );
   }

@@ -28,7 +28,6 @@ Future<void> Function() usePreviousTrack(Playback playback) {
 
 Future<void> Function([dynamic]) useTogglePlayPause(Playback playback) {
   return ([key]) async {
-    print("CLICK CLICK");
     try {
       if (playback.currentTrack == null) return;
       playback.isPlaying

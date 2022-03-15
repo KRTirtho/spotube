@@ -152,65 +152,68 @@ class Home extends HookConsumerWidget {
       return const Login();
     }
 
-    return Scaffold(
-      body: Column(
-        children: [
-          WindowTitleBarBox(
-            child: Row(
-              children: [
-                Expanded(
-                    child: Row(
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: titleBarDragMaxWidth.toDouble(),
-                      ),
-                      color:
-                          Theme.of(context).navigationRailTheme.backgroundColor,
-                      child: MoveWindow(),
-                    ),
-                    Expanded(child: MoveWindow()),
-                    if (!Platform.isMacOS) const TitleBarActionButtons(),
-                  ],
-                ))
-              ],
-            ),
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Sidebar(
-                  selectedIndex: _selectedIndex.value,
-                  onSelectedIndexChanged: _onSelectedIndexChanged,
-                ),
-                // contents of the spotify
-                if (_selectedIndex.value == 0)
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            WindowTitleBarBox(
+              child: Row(
+                children: [
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: PagedListView(
-                        pagingController: pagingController,
-                        builderDelegate: PagedChildBuilderDelegate<Category>(
-                          itemBuilder: (context, item, index) {
-                            return CategoryCard(item);
-                          },
+                      child: Row(
+                    children: [
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: titleBarDragMaxWidth.toDouble(),
+                        ),
+                        color: Theme.of(context)
+                            .navigationRailTheme
+                            .backgroundColor,
+                        child: MoveWindow(),
+                      ),
+                      Expanded(child: MoveWindow()),
+                      if (!Platform.isMacOS) const TitleBarActionButtons(),
+                    ],
+                  ))
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  Sidebar(
+                    selectedIndex: _selectedIndex.value,
+                    onSelectedIndexChanged: _onSelectedIndexChanged,
+                  ),
+                  // contents of the spotify
+                  if (_selectedIndex.value == 0)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PagedListView(
+                          pagingController: pagingController,
+                          builderDelegate: PagedChildBuilderDelegate<Category>(
+                            itemBuilder: (context, item, index) {
+                              return CategoryCard(item);
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                if (_selectedIndex.value == 1) const Search(),
-                if (_selectedIndex.value == 2) const UserLibrary(),
-                if (_selectedIndex.value == 3) const Lyrics(),
-              ],
+                  if (_selectedIndex.value == 1) const Search(),
+                  if (_selectedIndex.value == 2) const UserLibrary(),
+                  if (_selectedIndex.value == 3) const Lyrics(),
+                ],
+              ),
             ),
-          ),
-          // player itself
-          const Player(),
-          SpotubeNavigationBar(
-            selectedIndex: _selectedIndex.value,
-            onSelectedIndexChanged: _onSelectedIndexChanged,
-          ),
-        ],
+            // player itself
+            const Player(),
+            SpotubeNavigationBar(
+              selectedIndex: _selectedIndex.value,
+              onSelectedIndexChanged: _onSelectedIndexChanged,
+            ),
+          ],
+        ),
       ),
     );
   }

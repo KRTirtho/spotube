@@ -5,7 +5,6 @@ import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Home/Home.dart';
-import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Player/PlayerView.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Settings.dart';

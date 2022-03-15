@@ -38,64 +38,66 @@ class PlaylistView extends ConsumerWidget {
     SpotifyApi spotifyApi = ref.watch(spotifyProvider);
     var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
         playback.currentPlaylist?.id == playlist.id;
-    return Scaffold(
-      body: FutureBuilder<Iterable<Track>>(
-          future: playlist.id != "user-liked-tracks"
-              ? spotifyApi.playlists.getTracksByPlaylistId(playlist.id).all()
-              : spotifyApi.tracks.me.saved
-                  .all()
-                  .then((tracks) => tracks.map((e) => e.track!)),
-          builder: (context, snapshot) {
-            List<Track> tracks = snapshot.data?.toList() ?? [];
-            return Column(
-              children: [
-                PageWindowTitleBar(
-                  leading: Row(
-                    children: [
-                      // nav back
-                      const BackButton(),
-                      // heart playlist
-                      IconButton(
-                        icon: const Icon(Icons.favorite_outline_rounded),
-                        onPressed: () {},
-                      ),
-                      // play playlist
-                      IconButton(
-                        icon: Icon(
-                          isPlaylistPlaying
-                              ? Icons.stop_rounded
-                              : Icons.play_arrow_rounded,
+    return SafeArea(
+      child: Scaffold(
+        body: FutureBuilder<Iterable<Track>>(
+            future: playlist.id != "user-liked-tracks"
+                ? spotifyApi.playlists.getTracksByPlaylistId(playlist.id).all()
+                : spotifyApi.tracks.me.saved
+                    .all()
+                    .then((tracks) => tracks.map((e) => e.track!)),
+            builder: (context, snapshot) {
+              List<Track> tracks = snapshot.data?.toList() ?? [];
+              return Column(
+                children: [
+                  PageWindowTitleBar(
+                    leading: Row(
+                      children: [
+                        // nav back
+                        const BackButton(),
+                        // heart playlist
+                        IconButton(
+                          icon: const Icon(Icons.favorite_outline_rounded),
+                          onPressed: () {},
                         ),
-                        onPressed: snapshot.hasData
-                            ? () => playPlaylist(playback, tracks)
-                            : null,
-                      )
-                    ],
-                  ),
-                ),
-                Center(
-                  child: Text(playlist.name!,
-                      style: Theme.of(context).textTheme.headline4),
-                ),
-                snapshot.hasError
-                    ? const Center(child: Text("Error occurred"))
-                    : !snapshot.hasData
-                        ? const Expanded(
-                            child: Center(
-                                child: CircularProgressIndicator.adaptive()),
-                          )
-                        : TracksTableView(
-                            tracks,
-                            onTrackPlayButtonPressed: (currentTrack) =>
-                                playPlaylist(
-                              playback,
-                              tracks,
-                              currentTrack: currentTrack,
-                            ),
+                        // play playlist
+                        IconButton(
+                          icon: Icon(
+                            isPlaylistPlaying
+                                ? Icons.stop_rounded
+                                : Icons.play_arrow_rounded,
                           ),
-              ],
-            );
-          }),
+                          onPressed: snapshot.hasData
+                              ? () => playPlaylist(playback, tracks)
+                              : null,
+                        )
+                      ],
+                    ),
+                  ),
+                  Center(
+                    child: Text(playlist.name!,
+                        style: Theme.of(context).textTheme.headline4),
+                  ),
+                  snapshot.hasError
+                      ? const Center(child: Text("Error occurred"))
+                      : !snapshot.hasData
+                          ? const Expanded(
+                              child: Center(
+                                  child: CircularProgressIndicator.adaptive()),
+                            )
+                          : TracksTableView(
+                              tracks,
+                              onTrackPlayButtonPressed: (currentTrack) =>
+                                  playPlaylist(
+                                playback,
+                                tracks,
+                                currentTrack: currentTrack,
+                              ),
+                            ),
+                ],
+              );
+            }),
+      ),
     );
   }
 }

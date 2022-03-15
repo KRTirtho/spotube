@@ -54,6 +54,7 @@ dependencies:
   hooks_riverpod: ^1.0.3
   go_router: ^3.0.4
   palette_generator: ^0.3.3
+  audio_session: ^0.1.6+1
 
 dev_dependencies:
   flutter_test:
