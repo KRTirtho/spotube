@@ -53,14 +53,14 @@ class PageWindowTitleBar extends StatelessWidget
       : super(key: key);
   @override
   Size get preferredSize => Size.fromHeight(
-        !Platform.isIOS && !Platform.isAndroid ? appWindow.titleBarHeight : 0,
+        !Platform.isIOS && !Platform.isAndroid ? appWindow.titleBarHeight : 35,
       );
 
   @override
   Widget build(BuildContext context) {
     if (Platform.isIOS || Platform.isAndroid) {
       return PreferredSize(
-        preferredSize: const Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(300),
         child: Row(
           children: [
             if (leading != null) leading!,

@@ -20,8 +20,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
       children: [
         if (albumArt != null)
           Padding(
-            padding: EdgeInsets.all(
-                breakpoint.isLessThanOrEqualTo(Breakpoints.md) ? 5.0 : 0),
+            padding: const EdgeInsets.all(5.0),
             child: CachedNetworkImage(
               imageUrl: albumArt!,
               maxHeightDiskCache: 50,
@@ -36,8 +35,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               },
             ),
           ),
-        if (breakpoint.isLessThanOrEqualTo(Breakpoints.md)) ...[
-          const SizedBox(width: 10),
+        if (breakpoint.isLessThanOrEqualTo(Breakpoints.md))
           Flexible(
             child: Text(
               playback.currentTrack?.name ?? "Not playing",
@@ -48,7 +46,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   ?.copyWith(fontWeight: FontWeight.bold, color: color),
             ),
           ),
-        ],
+
         //  title of the currently playing track
         if (breakpoint.isMoreThan(Breakpoints.md))
           Flexible(
@@ -65,7 +63,6 @@ class PlayerTrackDetails extends HookConsumerWidget {
                 ),
                 artistsToClickableArtists(
                   playback.currentTrack?.artists ?? [],
-                  mainAxisAlignment: MainAxisAlignment.center,
                 )
               ],
             ),

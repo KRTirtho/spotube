@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -80,27 +82,29 @@ class Settings extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              SettingsHotKeyTile(
-                title: "Next track global shortcut",
-                currentHotKey: preferences.nextTrackHotKey,
-                onHotKeyRecorded: (value) {
-                  preferences.setNextTrackHotKey(value);
-                },
-              ),
-              SettingsHotKeyTile(
-                title: "Prev track global shortcut",
-                currentHotKey: preferences.prevTrackHotKey,
-                onHotKeyRecorded: (value) {
-                  preferences.setPrevTrackHotKey(value);
-                },
-              ),
-              SettingsHotKeyTile(
-                title: "Play/Pause global shortcut",
-                currentHotKey: preferences.playPauseHotKey,
-                onHotKeyRecorded: (value) {
-                  preferences.setPlayPauseHotKey(value);
-                },
-              ),
+              if (!Platform.isAndroid && !Platform.isIOS) ...[
+                SettingsHotKeyTile(
+                  title: "Next track global shortcut",
+                  currentHotKey: preferences.nextTrackHotKey,
+                  onHotKeyRecorded: (value) {
+                    preferences.setNextTrackHotKey(value);
+                  },
+                ),
+                SettingsHotKeyTile(
+                  title: "Prev track global shortcut",
+                  currentHotKey: preferences.prevTrackHotKey,
+                  onHotKeyRecorded: (value) {
+                    preferences.setPrevTrackHotKey(value);
+                  },
+                ),
+                SettingsHotKeyTile(
+                  title: "Play/Pause global shortcut",
+                  currentHotKey: preferences.playPauseHotKey,
+                  onHotKeyRecorded: (value) {
+                    preferences.setPlayPauseHotKey(value);
+                  },
+                ),
+              ],
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -170,8 +174,8 @@ class Settings extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
                 children: const [
                   Hyperlink(
                     "💚 Sponsor/Donate 💚",

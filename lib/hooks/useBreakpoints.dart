@@ -73,22 +73,22 @@ BreakpointUtils useBreakpoints() {
   final utils = BreakpointUtils(breakpoint.value);
 
   useEffect(() {
-    if (width >= 1920 && breakpoint.value != Breakpoints.xxl) {
+    if (width > 1920 && breakpoint.value != Breakpoints.xxl) {
       breakpoint.value = Breakpoints.xxl;
-    } else if (width >= 1366 &&
-        width < 1920 &&
+    } else if (width > 1366 &&
+        width <= 1920 &&
         breakpoint.value != Breakpoints.xl) {
       breakpoint.value = Breakpoints.xl;
-    } else if (width >= 768 &&
-        width < 1366 &&
+    } else if (width > 768 &&
+        width <= 1366 &&
         breakpoint.value != Breakpoints.lg) {
       breakpoint.value = Breakpoints.lg;
-    } else if (width >= 360 &&
-        width < 768 &&
+    } else if (width > 360 &&
+        width <= 768 &&
         breakpoint.value != Breakpoints.md) {
       breakpoint.value = Breakpoints.md;
     } else if (width >= 250 &&
-        width < 360 &&
+        width <= 360 &&
         breakpoint.value != Breakpoints.sm) {
       breakpoint.value = Breakpoints.sm;
     }

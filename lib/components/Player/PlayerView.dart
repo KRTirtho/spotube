@@ -65,7 +65,6 @@ class PlayerView extends HookConsumerWidget {
                   ),
                   artistsToClickableArtists(
                     currentTrack?.artists ?? [],
-                    mainAxisAlignment: MainAxisAlignment.center,
                     textStyle: Theme.of(context).textTheme.headline6!.copyWith(
                           fontWeight: FontWeight.bold,
                           color: paletteColor.bodyTextColor,
