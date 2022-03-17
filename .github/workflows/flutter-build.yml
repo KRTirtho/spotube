@@ -27,6 +27,8 @@ jobs:
       - run: chmod +x /usr/local/bin/appimagetool
       - run: pip3 install appimage-builder
       - run: make appimage
+      # Building Android Application
+      - run: flutter build apk
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Linux-Bundle
@@ -34,6 +36,7 @@ jobs:
             build/Spotube-linux-x86_64.deb
             build/Spotube-linux-x86_64.tar.xz
             build/Spotube-*-x86_64.AppImage
+            build/app/outputs/apk/release/app-release.apk
   build_windows:
     runs-on: windows-latest
     steps:

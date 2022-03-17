@@ -4,7 +4,10 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/helpers/artist-to-string.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/YouTube.dart';
@@ -221,10 +224,17 @@ class Playback extends ChangeNotifier {
       track ??= _currentTrack;
       if (track != null && await _audioSession?.setActive(true) == true) {
         Uri? parsedUri = Uri.tryParse(track.uri ?? "");
+        final tag = MediaItem(
+          id: track.id!,
+          title: track.name!,
+          album: track.album?.name,
+          artist: artistsToString(track.artists ?? <ArtistSimple>[]),
+          artUri: Uri.parse(imageToUrlString(track.album?.images)),
+        );
         if (parsedUri != null && parsedUri.hasAbsolutePath) {
           await player
               .setAudioSource(
-            AudioSource.uri(parsedUri),
+            AudioSource.uri(parsedUri, tag: tag),
             preload: true,
           )
               .then((value) async {
@@ -238,7 +248,7 @@ class Playback extends ChangeNotifier {
         if (setTrackUriById(track.id!, ytTrack.uri!)) {
           await player
               .setAudioSource(
-            AudioSource.uri(Uri.parse(ytTrack.uri!)),
+            AudioSource.uri(Uri.parse(ytTrack.uri!), tag: tag),
             preload: true,
           )
               .then((value) {

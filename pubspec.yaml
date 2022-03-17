@@ -55,6 +55,7 @@ dependencies:
   go_router: ^3.0.4
   palette_generator: ^0.3.3
   audio_session: ^0.1.6+1
+  just_audio_background: ^0.0.1-beta.5
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
   flutter_launcher_icons: ^0.9.2
+  dotenv: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
