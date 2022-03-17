@@ -67,7 +67,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
-  dotenv: ^3.0.0
+  flutter_launcher_icons: ^0.9.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -118,3 +118,8 @@ msix_config:
   msix_version: 1.0.1.0
   logo_path: .\assets\spotube-logo.png
   capabilities: "internetClient,internetClientServer,backgroundMediaPlayback"
+
+
+flutter_icons:
+  android: true
+  image_path: "assets/spotube-logo.png"
