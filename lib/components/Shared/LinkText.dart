@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:spotube/components/Shared/AnchorButton.dart';
 
 class LinkText<T> extends StatelessWidget {
@@ -6,12 +7,14 @@ class LinkText<T> extends StatelessWidget {
   final TextStyle style;
   final TextAlign? textAlign;
   final TextOverflow? overflow;
-  final Route<T> route;
+  final String route;
+  final T? extra;
   const LinkText(
     this.text,
     this.route, {
     Key? key,
     this.textAlign,
+    this.extra,
     this.overflow,
     this.style = const TextStyle(),
   }) : super(key: key);
@@ -20,8 +23,8 @@ class LinkText<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnchorButton(
       text,
-      onTap: () async {
-        await Navigator.of(context).push(route);
+      onTap: () {
+        GoRouter.of(context).push(route, extra: extra);
       },
       key: key,
       overflow: overflow,

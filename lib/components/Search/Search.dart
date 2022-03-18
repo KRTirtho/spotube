@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:provider/provider.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
@@ -11,27 +12,14 @@ import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class Search extends StatefulWidget {
+class Search extends HookConsumerWidget {
   const Search({Key? key}) : super(key: key);
 
   @override
-  State<Search> createState() => _SearchState();
-}
-
-class _SearchState extends State<Search> {
-  late TextEditingController _controller;
-
-  String searchTerm = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    SpotifyApi spotify = context.watch<SpotifyDI>().spotifyApi;
+  Widget build(BuildContext context, ref) {
+    SpotifyApi spotify = ref.watch(spotifyProvider);
+    var controller = useTextEditingController();
+    var searchTerm = useState("");
 
     return Expanded(
       child: Column(
@@ -43,11 +31,9 @@ class _SearchState extends State<Search> {
                 Expanded(
                   child: TextField(
                     decoration: const InputDecoration(hintText: "Search..."),
-                    controller: _controller,
+                    controller: controller,
                     onSubmitted: (value) {
-                      setState(() {
-                        searchTerm = _controller.value.text;
-                      });
+                      searchTerm.value = controller.value.text;
                     },
                   ),
                 ),
@@ -60,27 +46,25 @@ class _SearchState extends State<Search> {
                   textColor: Colors.white,
                   child: const Icon(Icons.search_rounded),
                   onPressed: () {
-                    setState(() {
-                      searchTerm = _controller.value.text;
-                    });
+                    searchTerm.value = controller.value.text;
                   },
                 ),
               ],
             ),
           ),
           FutureBuilder<List<Page>>(
-            future: searchTerm.isNotEmpty
-                ? spotify.search.get(searchTerm).first(10)
+            future: searchTerm.value.isNotEmpty
+                ? spotify.search.get(searchTerm.value).first(10)
                 : null,
             builder: (context, snapshot) {
-              if (!snapshot.hasData && searchTerm.isNotEmpty) {
+              if (!snapshot.hasData && searchTerm.value.isNotEmpty) {
                 return const Center(
                   child: CircularProgressIndicator.adaptive(),
                 );
-              } else if (!snapshot.hasData && searchTerm.isEmpty) {
+              } else if (!snapshot.hasData && searchTerm.value.isEmpty) {
                 return Container();
               }
-              Playback playback = context.watch<Playback>();
+              Playback playback = ref.watch(playbackProvider);
               List<AlbumSimple> albums = [];
               List<Artist> artists = [];
               List<Track> tracks = [];
@@ -115,8 +99,7 @@ class _SearchState extends State<Search> {
                         ...tracks.asMap().entries.map((track) {
                           String duration =
                               "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                          return TracksTableView.buildTrackTile(
-                            context,
+                          return TrackTile(
                             playback,
                             track: track,
                             duration: duration,
@@ -142,6 +125,7 @@ class _SearchState extends State<Search> {
                                       playback.currentTrack?.id) {
                                 playback.setCurrentTrack = currentTrack;
                               }
+                              await playback.startPlaying();
                             },
                           );
                         }),

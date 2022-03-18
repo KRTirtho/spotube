@@ -1,120 +1,67 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
-import 'package:spotube/models/GlobalKeyActions.dart';
-import 'package:spotube/provider/UserPreferences.dart';
-import 'package:provider/provider.dart';
+import 'package:spotube/hooks/playback.dart';
+import 'package:spotube/provider/Playback.dart';
 
-class PlayerControls extends StatefulWidget {
-  final Stream<Duration> positionStream;
-  final bool isPlaying;
-  final Duration duration;
-  final bool shuffled;
-  final Function? onStop;
-  final Function? onShuffle;
-  final Function(double value)? onSeek;
-  final Function? onNext;
-  final Function? onPrevious;
-  final Function? onPlay;
-  final Function? onPause;
+class PlayerControls extends HookConsumerWidget {
+  final Color? iconColor;
   const PlayerControls({
-    required this.positionStream,
-    required this.isPlaying,
-    required this.duration,
-    required this.shuffled,
-    this.onShuffle,
-    this.onStop,
-    this.onSeek,
-    this.onNext,
-    this.onPrevious,
-    this.onPlay,
-    this.onPause,
+    this.iconColor,
     Key? key,
   }) : super(key: key);
 
   @override
-  _PlayerControlsState createState() => _PlayerControlsState();
-}
+  Widget build(BuildContext context, ref) {
+    final Playback playback = ref.watch(playbackProvider);
+    final AudioPlayer player = playback.player;
 
-class _PlayerControlsState extends State<PlayerControls> {
-  StreamSubscription? _timePositionListener;
-  late List<GlobalKeyActions> _hotKeys = [];
+    final _shuffled = useState(false);
+    final _duration = useState<Duration?>(playback.duration);
 
-  @override
-  void dispose() async {
-    await _timePositionListener?.cancel();
-    Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)));
-    super.dispose();
-  }
+    useEffect(() {
+      listener(Duration? duration) {
+        _duration.value = duration;
+      }
 
-  _playOrPause(key) async {
-    try {
-      widget.isPlaying ? widget.onPause?.call() : await widget.onPlay?.call();
-    } catch (e, stack) {
-      print("[PlayPauseShortcut] $e");
-      print(stack);
-    }
-  }
+      playback.addDurationChangeListener(listener);
 
-  _configureHotKeys(UserPreferences preferences) async {
-    await Future.wait(_hotKeys.map((e) => hotKeyManager.unregister(e.hotKey)))
-        .then((val) async {
-      _hotKeys = [
-        GlobalKeyActions(
-          HotKey(KeyCode.space, scope: HotKeyScope.inapp),
-          _playOrPause,
-        ),
-        if (preferences.nextTrackHotKey != null)
-          GlobalKeyActions(
-              preferences.nextTrackHotKey!, (key) => widget.onNext?.call()),
-        if (preferences.prevTrackHotKey != null)
-          GlobalKeyActions(
-              preferences.prevTrackHotKey!, (key) => widget.onPrevious?.call()),
-        if (preferences.playPauseHotKey != null)
-          GlobalKeyActions(preferences.playPauseHotKey!, _playOrPause)
-      ];
-      await Future.wait(
-        _hotKeys.map((e) {
-          return hotKeyManager.register(
-            e.hotKey,
-            keyDownHandler: e.onKeyDown,
-          );
-        }),
-      );
-    });
-  }
+      return () => playback.removeDurationChangeListener(listener);
+    }, []);
 
-  @override
-  Widget build(BuildContext context) {
-    UserPreferences preferences = context.watch<UserPreferences>();
-    _configureHotKeys(preferences);
+    final onNext = useNextTrack(playback);
+
+    final onPrevious = usePreviousTrack(playback);
+
+    final _playOrPause = useTogglePlayPause(playback);
+
+    final duration = _duration.value ?? Duration.zero;
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: 700),
-      child: Column(
-        children: [
-          StreamBuilder<Duration>(
-              stream: widget.positionStream,
-              builder: (context, snapshot) {
-                var totalMinutes =
-                    zeroPadNumStr(widget.duration.inMinutes.remainder(60));
-                var totalSeconds =
-                    zeroPadNumStr(widget.duration.inSeconds.remainder(60));
-                var currentMinutes = snapshot.hasData
-                    ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
-                    : "00";
-                var currentSeconds = snapshot.hasData
-                    ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
-                    : "00";
+        constraints: const BoxConstraints(maxWidth: 700),
+        child: Column(
+          children: [
+            StreamBuilder<Duration>(
+                stream: player.positionStream,
+                builder: (context, snapshot) {
+                  final totalMinutes =
+                      zeroPadNumStr(duration.inMinutes.remainder(60));
+                  final totalSeconds =
+                      zeroPadNumStr(duration.inSeconds.remainder(60));
+                  final currentMinutes = snapshot.hasData
+                      ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
+                      : "00";
+                  final currentSeconds = snapshot.hasData
+                      ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
+                      : "00";
 
-                var sliderMax = widget.duration.inSeconds;
-                var sliderValue = snapshot.data?.inSeconds ?? 0;
-                return Row(
-                  children: [
-                    Expanded(
-                      child: Slider.adaptive(
+                  final sliderMax = duration.inSeconds;
+                  final sliderValue = snapshot.data?.inSeconds ?? 0;
+                  return Column(
+                    children: [
+                      Slider.adaptive(
                         // cannot divide by zero
                         // there's an edge case for value being bigger
                         // than total duration. Keeping it resolved
@@ -123,50 +70,95 @@ class _PlayerControlsState extends State<PlayerControls> {
                             : sliderValue / sliderMax,
                         onChanged: (value) {},
                         onChangeEnd: (value) {
-                          widget.onSeek?.call(value * sliderMax);
+                          player.seek(
+                            Duration(
+                              seconds: (value * sliderMax).toInt(),
+                            ),
+                          );
                         },
+                        activeColor: iconColor,
                       ),
-                    ),
-                    Text(
-                      "$currentMinutes:$currentSeconds/$totalMinutes:$totalSeconds",
-                    )
-                  ],
-                );
-              }),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                  icon: const Icon(Icons.shuffle_rounded),
-                  color:
-                      widget.shuffled ? Theme.of(context).primaryColor : null,
-                  onPressed: () {
-                    widget.onShuffle?.call();
-                  }),
-              IconButton(
-                  icon: const Icon(Icons.skip_previous_rounded),
-                  onPressed: () {
-                    widget.onPrevious?.call();
-                  }),
-              IconButton(
-                icon: Icon(
-                  widget.isPlaying
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "$currentMinutes:$currentSeconds",
+                            ),
+                            Text("$totalMinutes:$totalSeconds"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                    icon: const Icon(Icons.shuffle_rounded),
+                    color: _shuffled.value
+                        ? Theme.of(context).primaryColor
+                        : iconColor,
+                    onPressed: () {
+                      if (playback.currentTrack == null ||
+                          playback.currentPlaylist == null) {
+                        return;
+                      }
+                      try {
+                        if (!_shuffled.value) {
+                          playback.currentPlaylist!.shuffle();
+                          _shuffled.value = true;
+                        } else {
+                          playback.currentPlaylist!.unshuffle();
+                          _shuffled.value = false;
+                        }
+                      } catch (e, stack) {
+                        print("[PlayerControls.onShuffle()] $e");
+                        print(stack);
+                      }
+                    }),
+                IconButton(
+                    icon: const Icon(Icons.skip_previous_rounded),
+                    color: iconColor,
+                    onPressed: () {
+                      onPrevious();
+                    }),
+                IconButton(
+                  icon: Icon(
+                    playback.isPlaying
+                        ? Icons.pause_rounded
+                        : Icons.play_arrow_rounded,
+                  ),
+                  color: iconColor,
+                  onPressed: _playOrPause,
                 ),
-                onPressed: () => _playOrPause(null),
-              ),
-              IconButton(
+                IconButton(
                   icon: const Icon(Icons.skip_next_rounded),
-                  onPressed: () => widget.onNext?.call()),
-              IconButton(
-                icon: const Icon(Icons.stop_rounded),
-                onPressed: () => widget.onStop?.call(),
-              )
-            ],
-          )
-        ],
-      ),
-    );
+                  onPressed: () => onNext(),
+                  color: iconColor,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.stop_rounded),
+                  color: iconColor,
+                  onPressed: playback.currentTrack != null
+                      ? () async {
+                          try {
+                            await player.pause();
+                            await player.seek(Duration.zero);
+                            _shuffled.value = false;
+                            playback.reset();
+                          } catch (e, stack) {
+                            print("[PlayerControls.onStop()] $e");
+                            print(stack);
+                          }
+                        }
+                      : null,
+                )
+              ],
+            ),
+          ],
+        ));
   }
 }

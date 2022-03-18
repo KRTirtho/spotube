@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
-class RecordHotKeyDialog extends StatefulWidget {
+class RecordHotKeyDialog extends HookWidget {
   final ValueChanged<HotKey> onHotKeyRecorded;
 
   const RecordHotKeyDialog({
@@ -10,14 +12,8 @@ class RecordHotKeyDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RecordHotKeyDialogState createState() => _RecordHotKeyDialogState();
-}
-
-class _RecordHotKeyDialogState extends State<RecordHotKeyDialog> {
-  HotKey _hotKey = HotKey(null);
-
-  @override
   Widget build(BuildContext context) {
+    var _hotKey = useState(HotKey(null));
     return AlertDialog(
       content: SingleChildScrollView(
         child: ListBody(
@@ -58,9 +54,7 @@ class _RecordHotKeyDialogState extends State<RecordHotKeyDialog> {
                 children: [
                   HotKeyRecorder(
                     onHotKeyRecorded: (hotKey) {
-                      setState(() {
-                        _hotKey = hotKey;
-                      });
+                      _hotKey.value = hotKey;
                     },
                   ),
                 ],
@@ -73,16 +67,16 @@ class _RecordHotKeyDialogState extends State<RecordHotKeyDialog> {
         TextButton(
           child: const Text('Cancel'),
           onPressed: () {
-            Navigator.of(context).pop();
+            GoRouter.of(context).pop();
           },
         ),
         TextButton(
           child: const Text('OK'),
-          onPressed: !_hotKey.isSetted
+          onPressed: !_hotKey.value.isSetted
               ? null
               : () {
-                  widget.onHotKeyRecorded(_hotKey);
-                  Navigator.of(context).pop();
+                  onHotKeyRecorded(_hotKey.value);
+                  GoRouter.of(context).pop();
                 },
         ),
       ],

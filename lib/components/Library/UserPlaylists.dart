@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart' hide Image;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class UserPlaylists extends StatelessWidget {
+class UserPlaylists extends ConsumerWidget {
   const UserPlaylists({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    SpotifyDI data = context.watch<SpotifyDI>();
+  Widget build(BuildContext context, ref) {
+    SpotifyApi spotifyApi = ref.watch(spotifyProvider);
 
     return FutureBuilder<Iterable<PlaylistSimple>>(
-      future: data.spotifyApi.playlists.me.all(),
+      future: spotifyApi.playlists.me.all(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator.adaptive());

@@ -8,7 +8,7 @@
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/KRTirtho/spotube?color=%2316ba58&style=flat-square"/>
   </a>
   <a href="LICENSE">
-    <img alt="License" src="https://img.shields.io/aur/license/spotube?color=%2316ba58&style=flat-square"/>
+    <img alt="License" src="https://img.shields.io/aur/license/spotube-bin?color=%2316ba58&style=flat-square"/>
   </a>
   <a href="https://github.com/KRTirtho">
     <img alt="Maintainer" src="https://img.shields.io/badge/Maintainer-KRTirtho-%2316ba58?style=flat-square"/>
@@ -46,7 +46,7 @@ All the binaries are located in the [releases](https://github.com/krtirtho/spotu
 
 ## Windows
 
-Download the [setup file](https://github.com/KRTirtho/spotube/releases/download/v1.2.0/Spotube-windows-x86_64-setup.exe) & follow along the installer
+Download the [setup file](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe) & follow along the installer
 
 ### Chocolatey
 
@@ -71,7 +71,7 @@ $ flatpak install flathub com.github.KRTirtho.Spotube
 <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
 
 ### Ubuntu/Debian/Linux Mint/Pop_!OS:
-  Download the [Spotube-linux-x86_64.deb](https://github.com/KRTirtho/spotube/releases/download/v1.2.0/Spotube-linux-x86_64.deb) then double click it or run
+  Download the [Spotube-linux-x86_64.deb](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.deb) then double click it or run
   ```bash
   $ sudo apt install Spotube-linux-x86_64.deb
   # or
@@ -91,10 +91,13 @@ $ flatpak install flathub com.github.KRTirtho.Spotube
 
 
 ### AppImage:
-   Download the [Spotube-linux-x86_64.AppImage](https://github.com/KRTirtho/spotube/releases/download/v1.2.0/Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
+   Download the [Spotube-linux-x86_64.AppImage](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
 
-**I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey stores or software centers or repositories**
+## Mac OS
+Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg) from the release & follow along the setup wizard
 
+
+**I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey/homebrew stores or software centers or repositories**
 # Configuration
 
 There are some configurations that needs to be done to start using this software
@@ -130,7 +133,7 @@ Also, you need a [genius](https://genius.com) account for **lyrics** & a API Cli
 - [x] Add support for show Lyric of currently playing track
 - [x] Track download
 - [ ] Support for playing/streaming podcasts/shows
-- [ ] Artist, User & Album pages
+- [x] Artist, User & Album pages
 
 # Building from source
 
@@ -149,7 +152,6 @@ $ flutter run -d <window|macos|linux>
 
 - Shows & Podcasts aren't supported as it'd require premium anyway
 - OS Media Controls
-- Global Media Shortcuts/Keyboard Media Buttons
 
 # License
 

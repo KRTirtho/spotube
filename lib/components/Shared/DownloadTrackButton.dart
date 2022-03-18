@@ -1,106 +1,86 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:path/path.dart' as path;
 
-class DownloadTrackButton extends StatefulWidget {
+enum TrackStatus { downloading, idle, done }
+
+class DownloadTrackButton extends HookWidget {
   final Track? track;
   const DownloadTrackButton({Key? key, this.track}) : super(key: key);
 
   @override
-  _DownloadTrackButtonState createState() => _DownloadTrackButtonState();
-}
+  Widget build(BuildContext context) {
+    var status = useState<TrackStatus>(TrackStatus.idle);
+    YoutubeExplode yt = useMemoized(() => YoutubeExplode());
 
-enum TrackStatus { downloading, idle, done }
+    var _downloadTrack = useCallback(() async {
+      if (track == null) return;
+      StreamManifest manifest =
+          await yt.videos.streamsClient.getManifest(track?.href);
 
-class _DownloadTrackButtonState extends State<DownloadTrackButton> {
-  late YoutubeExplode yt;
-  TrackStatus status = TrackStatus.idle;
+      var audioStream = yt.videos.streamsClient.get(
+        manifest.audioOnly
+            .where((audio) => audio.codec.mimeType == "audio/mp4")
+            .withHighestBitrate(),
+      );
 
-  @override
-  void initState() {
-    yt = YoutubeExplode();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    yt.close();
-    super.dispose();
-  }
-
-  _downloadTrack() async {
-    if (widget.track == null) return;
-    StreamManifest manifest =
-        await yt.videos.streamsClient.getManifest(widget.track?.href);
-
-    var audioStream = yt.videos.streamsClient
-        .get(manifest.audioOnly.withHighestBitrate())
-        .asBroadcastStream();
-
-    var statusCb = audioStream.listen(
-      (event) {
-        if (status != TrackStatus.downloading) {
-          setState(() {
-            status = TrackStatus.downloading;
-          });
-        }
-      },
-      onDone: () async {
-        setState(() {
-          status = TrackStatus.done;
-        });
-        await Future.delayed(
-          const Duration(seconds: 3),
-          () {
-            if (status == TrackStatus.done) {
-              setState(() {
-                status = TrackStatus.idle;
-              });
-            }
-          },
-        );
-      },
-    );
-
-    String downloadFolder = path.join(
-        (await path_provider.getDownloadsDirectory())!.path, "Spotube");
-    String fileName =
-        "${widget.track?.name} - ${artistsToString<Artist>(widget.track?.artists ?? [])}.mp3";
-    File outputFile = File(path.join(downloadFolder, fileName));
-    if (!outputFile.existsSync()) {
-      outputFile.createSync(recursive: true);
-      IOSink outputFileStream = outputFile.openWrite();
-      await audioStream.pipe(outputFileStream);
-      await outputFileStream.flush();
-      await outputFileStream.close().then((value) async {
-        if (status == TrackStatus.downloading) {
-          setState(() {
-            status = TrackStatus.done;
-          });
+      var statusCb = audioStream.listen(
+        (event) {
+          if (status.value != TrackStatus.downloading) {
+            status.value = TrackStatus.downloading;
+          }
+        },
+        onDone: () async {
+          status.value = TrackStatus.done;
           await Future.delayed(
             const Duration(seconds: 3),
             () {
-              if (status == TrackStatus.done) {
-                setState(() {
-                  status = TrackStatus.idle;
-                });
+              if (status.value == TrackStatus.done) {
+                status.value = TrackStatus.idle;
               }
             },
           );
-        }
-        return statusCb.cancel();
-      });
-    }
-  }
+        },
+      );
 
-  @override
-  Widget build(BuildContext context) {
-    if (status == TrackStatus.downloading) {
+      String downloadFolder = path.join(
+          (await path_provider.getDownloadsDirectory())!.path, "Spotube");
+      String fileName =
+          "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}.mp3";
+      File outputFile = File(path.join(downloadFolder, fileName));
+      if (!outputFile.existsSync()) {
+        outputFile.createSync(recursive: true);
+        IOSink outputFileStream = outputFile.openWrite();
+        await audioStream.pipe(outputFileStream);
+        await outputFileStream.flush();
+        await outputFileStream.close().then((value) async {
+          if (status.value == TrackStatus.downloading) {
+            status.value = TrackStatus.done;
+            await Future.delayed(
+              const Duration(seconds: 3),
+              () {
+                if (status.value == TrackStatus.done) {
+                  status.value = TrackStatus.idle;
+                }
+              },
+            );
+          }
+          return statusCb.cancel();
+        });
+      }
+    }, [track, status, yt]);
+
+    useEffect(() {
+      return () => yt.close();
+    }, []);
+
+    if (status.value == TrackStatus.downloading) {
       return const SizedBox(
         child: CircularProgressIndicator.adaptive(
           strokeWidth: 2,
@@ -108,13 +88,13 @@ class _DownloadTrackButtonState extends State<DownloadTrackButton> {
         height: 20,
         width: 20,
       );
-    } else if (status == TrackStatus.done) {
+    } else if (status.value == TrackStatus.done) {
       return const Icon(Icons.download_done_rounded);
     }
     return IconButton(
       icon: const Icon(Icons.download_rounded),
-      onPressed: widget.track != null &&
-              !(widget.track!.href ?? "").startsWith("https://api.spotify.com")
+      onPressed: track != null &&
+              !(track!.href ?? "").startsWith("https://api.spotify.com")
           ? _downloadTrack
           : null,
     );

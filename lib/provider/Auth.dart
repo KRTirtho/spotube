@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Auth with ChangeNotifier {
   String? _clientId;
@@ -51,4 +52,11 @@ class Auth with ChangeNotifier {
     _isLoggedIn = false;
     notifyListeners();
   }
+
+  @override
+  String toString() {
+    return "Auth(clientId: $clientId, clientSecret: $clientSecret, accessToken: $accessToken, refreshToken: $refreshToken, expiration:  $expiration, isLoggedIn: $isLoggedIn)";
+  }
 }
+
+var authProvider = ChangeNotifierProvider<Auth>((ref) => Auth());

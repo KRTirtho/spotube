@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 
 Widget artistsToClickableArtists(
   List<ArtistSimple> artists, {
-  CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
-  MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
+  WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.center,
+  WrapAlignment mainAxisAlignment = WrapAlignment.center,
+  TextStyle textStyle = const TextStyle(),
 }) {
-  return Row(
+  return Wrap(
     crossAxisAlignment: crossAxisAlignment,
-    mainAxisAlignment: mainAxisAlignment,
+    alignment: mainAxisAlignment,
     children: artists
         .asMap()
         .entries
@@ -19,10 +19,9 @@ Widget artistsToClickableArtists(
             (artist.key != artists.length - 1)
                 ? "${artist.value.name}, "
                 : artist.value.name!,
-            MaterialPageRoute<ArtistProfile>(
-              builder: (context) => ArtistProfile(artist.value.id!),
-            ),
+            "/artist/${artist.value.id}",
             overflow: TextOverflow.ellipsis,
+            style: textStyle,
           ),
         )
         .toList(),

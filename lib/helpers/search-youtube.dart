@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:collection/collection.dart';
 import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -21,7 +23,16 @@ Future<Track> toYoutubeTrack(YoutubeExplode youtube, Track track) async {
 
   var trackManifest = await youtube.videos.streams.getManifest(ytVideo.id);
 
-  track.uri = trackManifest.audioOnly.withHighestBitrate().url.toString();
+  // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
+  // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
+  // codec/mimetype for those Platforms
+  track.uri = (Platform.isMacOS || Platform.isIOS
+          ? trackManifest.audioOnly
+              .where((info) => info.codec.mimeType == "audio/mp4")
+              .withHighestBitrate()
+          : trackManifest.audioOnly.withHighestBitrate())
+      .url
+      .toString();
   track.href = ytVideo.url;
   return track;
 }
