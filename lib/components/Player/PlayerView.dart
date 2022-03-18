@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
@@ -49,7 +50,7 @@ class PlayerView extends HookConsumerWidget {
         ),
         backgroundColor: paletteColor.color,
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: const EdgeInsets.all(10),
@@ -73,6 +74,7 @@ class PlayerView extends HookConsumerWidget {
                 ],
               ),
             ),
+            const Spacer(),
             HookBuilder(builder: (context) {
               final ticker = useSingleTickerProvider();
               final controller = useAnimationController(
@@ -91,6 +93,10 @@ class PlayerView extends HookConsumerWidget {
                 ),
               );
             }),
+            const Spacer(),
+            const PlayerActions(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
             PlayerControls(iconColor: paletteColor.bodyTextColor),
           ],
         ),

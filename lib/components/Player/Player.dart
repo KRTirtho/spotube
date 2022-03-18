@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerOverlay.dart';
 import 'package:spotube/components/Player/PlayerTrackDetails.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
@@ -141,40 +142,7 @@ class Player extends HookConsumerWidget {
                       },
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      DownloadTrackButton(
-                        track: playback.currentTrack,
-                      ),
-                      Consumer(builder: (context, ref, widget) {
-                        SpotifyApi spotifyApi = ref.watch(spotifyProvider);
-                        return FutureBuilder<bool>(
-                            future: playback.currentTrack?.id != null
-                                ? spotifyApi.tracks.me
-                                    .containsOne(playback.currentTrack!.id!)
-                                : Future.value(false),
-                            initialData: false,
-                            builder: (context, snapshot) {
-                              bool isLiked = snapshot.data ?? false;
-                              return IconButton(
-                                  icon: Icon(
-                                    !isLiked
-                                        ? Icons.favorite_outline_rounded
-                                        : Icons.favorite_rounded,
-                                    color: isLiked ? Colors.green : null,
-                                  ),
-                                  onPressed: () {
-                                    if (!isLiked &&
-                                        playback.currentTrack?.id != null) {
-                                      spotifyApi.tracks.me
-                                          .saveOne(playback.currentTrack!.id!);
-                                    }
-                                  });
-                            });
-                      }),
-                    ],
-                  ),
+                  const PlayerActions()
                 ],
               ),
             )
