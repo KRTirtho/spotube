@@ -9,6 +9,7 @@ import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-album-to-album.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
+import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
@@ -20,6 +21,10 @@ class Search extends HookConsumerWidget {
     SpotifyApi spotify = ref.watch(spotifyProvider);
     var controller = useTextEditingController();
     var searchTerm = useState("");
+    final albumController = useScrollController();
+    final playlistController = useScrollController();
+    final artistController = useScrollController();
+    final breakpoint = useBreakpoints();
 
     return Expanded(
       child: Column(
@@ -135,13 +140,16 @@ class Search extends HookConsumerWidget {
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         const SizedBox(height: 10),
-                        Center(
-                          child: Wrap(
-                            spacing: 20,
-                            runSpacing: 20,
-                            children: albums.map((album) {
-                              return AlbumCard(simpleAlbumToAlbum(album));
-                            }).toList(),
+                        Scrollbar(
+                          controller: albumController,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: albumController,
+                            child: Row(
+                              children: albums.map((album) {
+                                return AlbumCard(simpleAlbumToAlbum(album));
+                              }).toList(),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -151,13 +159,22 @@ class Search extends HookConsumerWidget {
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         const SizedBox(height: 10),
-                        Center(
-                          child: Wrap(
-                            spacing: 20,
-                            runSpacing: 20,
-                            children: artists.map((artist) {
-                              return ArtistCard(artist);
-                            }).toList(),
+                        Scrollbar(
+                          controller: artistController,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: artistController,
+                            child: Row(
+                              children: artists
+                                  .map(
+                                    (artist) => Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: ArtistCard(artist),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -167,13 +184,21 @@ class Search extends HookConsumerWidget {
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         const SizedBox(height: 10),
-                        Center(
-                          child: Wrap(
-                            spacing: 20,
-                            runSpacing: 20,
-                            children: playlists.map((playlist) {
-                              return PlaylistCard(playlist);
-                            }).toList(),
+                        Scrollbar(
+                          scrollbarOrientation: breakpoint > Breakpoints.md
+                              ? ScrollbarOrientation.bottom
+                              : ScrollbarOrientation.top,
+                          controller: playlistController,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: playlistController,
+                            child: Row(
+                              children: playlists
+                                  .map(
+                                    (playlist) => PlaylistCard(playlist),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                       ],

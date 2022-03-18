@@ -67,7 +67,7 @@ class RecordHotKeyDialog extends HookWidget {
         TextButton(
           child: const Text('Cancel'),
           onPressed: () {
-            GoRouter.of(context).pop();
+            Navigator.of(context).pop();
           },
         ),
         TextButton(
