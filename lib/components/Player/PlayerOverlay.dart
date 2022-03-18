@@ -53,10 +53,7 @@ class PlayerOverlay extends HookConsumerWidget {
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => GoRouter.of(context).push(
-                      "/player",
-                      extra: paletteColor,
-                    ),
+                    onTap: () => GoRouter.of(context).push("/player"),
                     child: PlayerTrackDetails(
                       albumArt: albumArt,
                       color: paletteColor.bodyTextColor,

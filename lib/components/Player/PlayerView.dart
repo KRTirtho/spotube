@@ -10,12 +10,11 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Playback.dart';
 
 class PlayerView extends HookConsumerWidget {
-  final PaletteColor paletteColor;
   const PlayerView({
-    required this.paletteColor,
     Key? key,
   }) : super(key: key);
 
@@ -42,6 +41,8 @@ class PlayerView extends HookConsumerWidget {
       ),
       [currentTrack?.album?.images],
     );
+
+    final PaletteColor paletteColor = usePaletteColor(context, albumArt);
 
     return SafeArea(
       child: Scaffold(

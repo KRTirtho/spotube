@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-PaletteColor usePaletteColor(BuildContext context, imageUrl) {
+PaletteColor usePaletteColor(BuildContext context, String imageUrl) {
   final paletteColor =
       useState<PaletteColor>(PaletteColor(Colors.grey[300]!, 0));
   final mounted = useIsMounted();

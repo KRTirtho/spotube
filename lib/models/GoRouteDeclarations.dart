@@ -61,11 +61,8 @@ GoRouter createGoRouter() => GoRouter(
         GoRoute(
           path: "/player",
           pageBuilder: (context, state) {
-            assert(state.extra is PaletteColor);
             return SpotubePage(
-              child: PlayerView(
-                paletteColor: state.extra as PaletteColor,
-              ),
+              child: const PlayerView(),
             );
           },
         )
