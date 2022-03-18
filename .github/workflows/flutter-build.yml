@@ -18,7 +18,7 @@ jobs:
           sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
       - run: flutter config --enable-linux-desktop
       - run: flutter pub get
-      - run: dart bin/create-secrets.dart ${{ secrets.SECRET }}
+      - run: dart bin/create-secrets.dart '${{ secrets.SECRET }}'
       - run: flutter clean
       - run: flutter build linux
       - run: make deb
@@ -45,10 +45,10 @@ jobs:
         with:
           cache: true
         env:
-          SECRET: ${{ secrets.SECRET }}
+          SECRET: '${{ secrets.SECRET }}'
       - run: flutter config --enable-windows-desktop
       - run: flutter pub get
-      - run: dart bin/create-secrets.dart ${{ secrets.SECRET }}
+      - run: dart bin/create-secrets.dart '${{ secrets.SECRET }}'
       - run: flutter build windows
       - run: choco install make -y
       - run: make innoinstall
@@ -68,10 +68,10 @@ jobs:
         with:
           cache: true
         env:
-          SECRET: ${{ secrets.SECRET }}
+          SECRET: '${{ secrets.SECRET }}'
       - run: flutter config --enable-macos-desktop
       - run: flutter pub get
-      - run: dart bin/create-secrets.dart ${{ secrets.SECRET }}
+      - run: dart bin/create-secrets.dart '${{ secrets.SECRET }}'
       - run: flutter build macos
       - run: du -sh build/macos/Build/Products/Release/spotube.app
       - run: npm install -g appdmg
