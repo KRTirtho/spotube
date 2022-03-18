@@ -3,7 +3,7 @@ description: A lightweight free Spotify desktop-client which handles playback ma
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -30,7 +30,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -55,6 +54,7 @@ dependencies:
   go_router: ^3.0.4
   palette_generator: ^0.3.3
   audio_session: ^0.1.6+1
+  just_audio_background: ^0.0.1-beta.5
 
 dev_dependencies:
   flutter_test:
@@ -67,13 +67,14 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+  flutter_launcher_icons: ^0.9.2
+  dotenv: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -117,3 +118,9 @@ msix_config:
   msix_version: 1.0.1.0
   logo_path: .\assets\spotube-logo.png
   capabilities: "internetClient,internetClientServer,backgroundMediaPlayback"
+
+flutter_icons:
+  android: true
+  image_path: "assets/spotube-logo.png"
+  adaptive_icon_foreground: "assets/spotube-logo-foreground.png"
+  adaptive_icon_background: "#ffffff"

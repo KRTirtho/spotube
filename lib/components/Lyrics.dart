@@ -3,8 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Settings.dart';
-import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -39,7 +37,9 @@ class Lyrics extends HookConsumerWidget {
     var lyricsSnapshot = useFuture(lyricsFuture);
 
     useEffect(() {
-      if (lyricsSnapshot.hasData && lyricsSnapshot.data != null) {
+      if (lyricsSnapshot.hasData &&
+          lyricsSnapshot.data != null &&
+          playback.currentTrack != null) {
         lyrics.value = {
           "lyrics": lyricsSnapshot.data,
           "id": playback.currentTrack!.id!

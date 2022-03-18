@@ -12,9 +12,16 @@ import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/ThemeProvider.dart';
 import 'package:spotube/provider/YouTube.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 void main() async {
-  if (!Platform.isAndroid && !Platform.isIOS) {
+  if (Platform.isAndroid || Platform.isIOS) {
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'oss.krtirtho.Spotube',
+      androidNotificationChannelName: 'Spotube',
+      androidNotificationOngoing: true,
+    );
+  } else {
     WidgetsFlutterBinding.ensureInitialized();
     await hotKeyManager.unregisterAll();
     doWhenWindowReady(() {

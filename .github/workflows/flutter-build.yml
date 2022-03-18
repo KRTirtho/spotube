@@ -16,6 +16,7 @@ jobs:
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+      - run: dart bin/create-secrets.dart
       - run: flutter config --enable-linux-desktop
       - run: flutter pub get
       - run: flutter clean
@@ -26,6 +27,8 @@ jobs:
       - run: chmod +x /usr/local/bin/appimagetool
       - run: pip3 install appimage-builder
       - run: make appimage
+      # Building Android Application
+      - run: flutter build apk
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Linux-Bundle
@@ -33,6 +36,7 @@ jobs:
             build/Spotube-linux-x86_64.deb
             build/Spotube-linux-x86_64.tar.xz
             build/Spotube-*-x86_64.AppImage
+            build/app/outputs/apk/release/app-release.apk
   build_windows:
     runs-on: windows-latest
     steps:
@@ -40,6 +44,7 @@ jobs:
       - uses: subosito/flutter-action@v2.2.0
         with:
           cache: true
+      - run: dart bin/create-secrets.dart
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
       - run: choco install make -y
@@ -59,6 +64,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+      - run: dart bin/create-secrets.dart
       - run: flutter config --enable-macos-desktop
       - run: flutter build macos
       - run: du -sh build/macos/Build/Products/Release/spotube.app

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
+import 'package:spotube/helpers/get-random-element.dart';
+import 'package:spotube/models/generated_secrets.dart';
 
 String getTitle(String title, String artist) {
   return "$title $artist"
@@ -47,16 +49,17 @@ Future<String?> extractLyrics(Uri url) async {
 Future<List?> searchSong(
   String title,
   String artist, {
-  String apiKey = "",
+  String? apiKey,
   bool optimizeQuery = false,
   bool authHeader = false,
 }) async {
   try {
+    if (apiKey == "" || apiKey == null) apiKey = getRandomElement(secrets);
     const searchUrl = 'https://api.genius.com/search?q=';
     String song = optimizeQuery ? getTitle(title, artist) : "$title $artist";
 
     String reqUrl = "$searchUrl${Uri.encodeComponent(song)}";
-    Map<String, String> headers = {"Authorization": 'Bearer ' + apiKey};
+    Map<String, String> headers = {"Authorization": 'Bearer $apiKey'};
     var response = await http.get(
       Uri.parse(authHeader ? reqUrl : "$reqUrl&access_token=$apiKey"),
       headers: authHeader ? headers : null,
@@ -100,5 +103,6 @@ Future<String?> getLyrics(
   } catch (e, stack) {
     print("[getLyrics] $e");
     print(stack);
+    return null;
   }
 }

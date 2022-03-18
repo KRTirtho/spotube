@@ -121,9 +121,15 @@ You need a spotify account & a developer app for
 - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields
   ![step-4](https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png)
 
-Also, you need a [genius](https://genius.com) account for **lyrics** & a API Client for
+**Setup Genius Lyrics (Optional)**
 
-- accessToken
+- Signup/Login into [genius](https://genius.com/signup) for **lyrics**
+- Go To [Genius Developer Portal](https://genius.com/api-clients/new) for creating an API client
+  ![Step 2](https://user-images.githubusercontent.com/61944859/158823216-b4942731-c4c5-46c8-8b60-82a372b51cc5.png)
+- Generate & copy access token
+  ![Step 3](https://user-images.githubusercontent.com/61944859/158822817-f04da060-3094-4a3b-8ace-a936d0cda8db.png)
+- Paste the copied access token in Spotube's Settings
+  ![Step 4](https://user-images.githubusercontent.com/61944859/158823984-17f08534-5c92-41bc-918a-23194aad00f5.png)
 
 > **Note!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself
 
