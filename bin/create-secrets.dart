@@ -7,6 +7,7 @@ void main() async {
   final env = Platform.environment;
   final bool hasKey = env.containsKey("SECRET");
   final val = hasKey ? jsonDecode(env["SECRET"]!) : null;
+  print("SECRET VALUE: ${env["SECRET"]}");
   if (!hasKey || (hasKey && val is! List)) {
     throw Exception(
         "'SECRET' Environmental Variable isn't configured properly");
