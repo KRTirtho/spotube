@@ -8,7 +8,8 @@ void main(List<String> args) async {
     throw ArgumentError("Expected an argument but none was passed");
   }
 
-  final val = jsonDecode(args.first);
+  var decodedSecret = utf8.decode(base64Decode(args.first));
+  final val = jsonDecode(decodedSecret);
   if (val is! List) {
     throw Exception(
         "'SECRET' Environmental Variable isn't configured properly");
@@ -16,5 +17,5 @@ void main(List<String> args) async {
 
   await File(path.join(
           Directory.current.path, "lib/models/generated_secrets.dart"))
-      .writeAsString("final List<String> secrets = ${args.first};");
+      .writeAsString("final List<String> secrets = $decodedSecret;");
 }

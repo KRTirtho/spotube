@@ -46,7 +46,7 @@ jobs:
           cache: true
       - run: flutter config --enable-windows-desktop
       - run: flutter pub get
-      - run: dart bin/create-secrets.dart "${{ secrets.SECRET }}"
+      - run: dart bin/create-secrets.dart '${{ secrets.SECRET }}'
       - run: flutter build windows
       - run: choco install make -y
       - run: make innoinstall
