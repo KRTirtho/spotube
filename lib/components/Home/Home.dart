@@ -11,18 +11,19 @@ import 'package:spotify/spotify.dart' hide Image, Player, Search;
 import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
-import 'package:spotube/components/Login.dart';
 import 'package:spotube/components/Lyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
+import 'package:spotube/helpers/get-random-element.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useHotKeys.dart';
 import 'package:spotube/hooks/usePagingController.dart';
 import 'package:spotube/hooks/useSharedPreferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
@@ -60,6 +61,32 @@ class Home extends HookConsumerWidget {
     // initializing global hot keys
     useHotKeys(ref);
 
+    final listener = useCallback((int pageKey) async {
+      final spotify = ref.read(spotifyProvider);
+      try {
+        Page<Category> categories =
+            await spotify.categories.list(country: "US").getPage(15, pageKey);
+
+        final items = categories.items!.toList();
+        if (pageKey == 0) {
+          Category category = Category();
+          category.id = "user-featured-playlists";
+          category.name = "Featured";
+          items.insert(0, category);
+        }
+
+        if (categories.isLast && categories.items != null) {
+          pagingController.appendLastPage(items);
+        } else if (categories.items != null) {
+          pagingController.appendPage(items, categories.nextOffset);
+        }
+      } catch (e, stack) {
+        pagingController.error = e;
+        print("[Home.pagingController.addPageRequestListener] $e");
+        print(stack);
+      }
+    }, []);
+
     useEffect(() {
       if (localStorage == null) return null;
       final String? clientId =
@@ -72,48 +99,30 @@ class Home extends HookConsumerWidget {
           localStorage.getString(LocalStorageKeys.refreshToken);
       final String? expirationStr =
           localStorage.getString(LocalStorageKeys.expiration);
-      listener(pageKey) async {
-        final spotify = ref.read(spotifyProvider);
-        try {
-          Page<Category> categories =
-              await spotify.categories.list(country: "US").getPage(15, pageKey);
-
-          var items = categories.items!.toList();
-          if (pageKey == 0) {
-            Category category = Category();
-            category.id = "user-featured-playlists";
-            category.name = "Featured";
-            items.insert(0, category);
-          }
-
-          if (categories.isLast && categories.items != null) {
-            pagingController.appendLastPage(items);
-          } else if (categories.items != null) {
-            pagingController.appendPage(items, categories.nextOffset);
-          }
-        } catch (e, stack) {
-          pagingController.error = e;
-          print("[Home.pagingController.addPageRequestListener] $e");
-          print(stack);
-        }
-      }
 
       try {
         final DateTime? expiration =
             expirationStr != null ? DateTime.parse(expirationStr) : null;
+        final anonCred = getRandomElement(spotifySecrets);
+        SpotifyApiCredentials apiCredentials =
+            clientId != null && clientSecret != null
+                ? SpotifyApiCredentials(
+                    clientId,
+                    clientSecret,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    expiration: expiration,
+                    scopes: spotifyScopes,
+                  )
+                : SpotifyApiCredentials(
+                    anonCred["clientId"],
+                    anonCred["clientSecret"],
+                  );
+
+        SpotifyApi spotify = SpotifyApi(apiCredentials);
         if (clientId != null && clientSecret != null) {
-          SpotifyApi spotify = SpotifyApi(
-            SpotifyApiCredentials(
-              clientId,
-              clientSecret,
-              accessToken: accessToken,
-              refreshToken: refreshToken,
-              expiration: expiration,
-              scopes: spotifyScopes,
-            ),
-          );
           spotify.getCredentials().then((credentials) {
-            if (credentials.accessToken?.isNotEmpty ?? false) {
+            if (credentials.accessToken?.isNotEmpty == true) {
               auth.setAuthState(
                 clientId: clientId,
                 clientSecret: clientSecret,
@@ -124,9 +133,11 @@ class Home extends HookConsumerWidget {
                 isLoggedIn: true,
               );
             }
-            return null;
-          }).then((_) {
             pagingController.addPageRequestListener(listener);
+            // the world is full of surprises and the previously working
+            // fine pageRequestListener now doesn't notify the listeners
+            // automatically after assigning a listener. So doing it manually
+            pagingController.notifyPageRequestListeners(0);
           }).catchError((e, stack) {
             if (e is AuthorizationException) {
               oauthLogin(
@@ -138,6 +149,9 @@ class Home extends HookConsumerWidget {
             print("[Home.useEffect.spotify.getCredentials]: $e");
             print(stack);
           });
+        } else {
+          pagingController.addPageRequestListener(listener);
+          pagingController.notifyPageRequestListeners(0);
         }
       } catch (e, stack) {
         print("[Home.initState]: $e");
@@ -147,10 +161,6 @@ class Home extends HookConsumerWidget {
         pagingController.removePageRequestListener(listener);
       };
     }, [localStorage]);
-
-    if (!auth.isLoggedIn) {
-      return const Login();
-    }
 
     return SafeArea(
       child: Scaffold(

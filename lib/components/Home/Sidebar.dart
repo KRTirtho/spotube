@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
-
-import '../../models/sideBarTiles.dart';
 
 class Sidebar extends HookConsumerWidget {
   final int selectedIndex;
@@ -98,7 +97,7 @@ class Sidebar extends HookConsumerWidget {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            snapshot.data?.displayName ?? "User's name",
+                            snapshot.data?.displayName ?? "Guest",
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),

@@ -16,6 +16,8 @@ class Auth with ChangeNotifier {
   String? get refreshToken => _refreshToken;
   DateTime? get expiration => _expiration;
   bool get isLoggedIn => _isLoggedIn;
+  bool get isAnonymous =>
+      !_isLoggedIn && _clientId == null && _clientSecret == null;
 
   void setAuthState({
     bool? isLoggedIn,

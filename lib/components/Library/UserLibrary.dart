@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart' hide Image;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Library/UserArtists.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
+import 'package:spotube/components/Shared/AnonymousFallback.dart';
+import 'package:spotube/provider/Auth.dart';
 
-class UserLibrary extends StatelessWidget {
+class UserLibrary extends ConsumerWidget {
   const UserLibrary({Key? key}) : super(key: key);
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final Auth auth = ref.watch(authProvider);
+
     return Expanded(
       child: DefaultTabController(
         length: 3,
@@ -20,11 +25,13 @@ class UserLibrary extends StatelessWidget {
               Tab(text: "Album"),
             ],
           ),
-          body: const TabBarView(children: [
-            UserPlaylists(),
-            UserArtists(),
-            Icon(Icons.ac_unit_outlined),
-          ]),
+          body: auth.isLoggedIn
+              ? const TabBarView(children: [
+                  UserPlaylists(),
+                  UserArtists(),
+                  Icon(Icons.ac_unit_outlined),
+                ])
+              : const AnonymousFallback(),
         ),
       ),
     );

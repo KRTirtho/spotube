@@ -18,8 +18,9 @@ class Settings extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    UserPreferences preferences = ref.watch(userPreferencesProvider);
-    ThemeMode theme = ref.watch(themeProvider);
+    final UserPreferences preferences = ref.watch(userPreferencesProvider);
+    final ThemeMode theme = ref.watch(themeProvider);
+    final Auth auth = ref.watch(authProvider);
     var geniusAccessToken = useState<String?>(null);
     TextEditingController textEditingController = useTextEditingController();
 
@@ -138,28 +139,50 @@ class Settings extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Builder(builder: (context) {
-                Auth auth = ref.watch(authProvider);
-                return Row(
+              if (auth.isAnonymous)
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Log out of this account"),
+                    const Text("Login with your Spotify"),
                     ElevatedButton(
-                      child: const Text("Logout"),
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.red),
-                      ),
-                      onPressed: () async {
-                        SharedPreferences localStorage =
-                            await SharedPreferences.getInstance();
-                        await localStorage.clear();
-                        auth.logout();
-                        GoRouter.of(context).pop();
+                      child: Text("Connect with Spotify".toUpperCase()),
+                      onPressed: () {
+                        GoRouter.of(context).push("/login");
                       },
-                    ),
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
-                );
-              }),
+                ),
+              if (auth.isLoggedIn)
+                Builder(builder: (context) {
+                  Auth auth = ref.watch(authProvider);
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Log out of this account"),
+                      ElevatedButton(
+                        child: const Text("Logout"),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.red),
+                        ),
+                        onPressed: () async {
+                          SharedPreferences localStorage =
+                              await SharedPreferences.getInstance();
+                          await localStorage.clear();
+                          auth.logout();
+                          GoRouter.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                }),
               const SizedBox(height: 40),
               const Text("Spotube v1.2.0"),
               const SizedBox(height: 10),

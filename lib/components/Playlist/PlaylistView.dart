@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
@@ -35,6 +36,7 @@ class PlaylistView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
+    final Auth auth = ref.watch(authProvider);
     SpotifyApi spotifyApi = ref.watch(spotifyProvider);
     var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
         playback.currentPlaylist?.id == playlist.id;
@@ -56,10 +58,11 @@ class PlaylistView extends ConsumerWidget {
                         // nav back
                         const BackButton(),
                         // heart playlist
-                        IconButton(
-                          icon: const Icon(Icons.favorite_outline_rounded),
-                          onPressed: () {},
-                        ),
+                        if (auth.isLoggedIn)
+                          IconButton(
+                            icon: const Icon(Icons.favorite_outline_rounded),
+                            onPressed: () {},
+                          ),
                         // play playlist
                         IconButton(
                           icon: Icon(

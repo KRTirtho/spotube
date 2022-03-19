@@ -54,7 +54,9 @@ Future<List?> searchSong(
   bool authHeader = false,
 }) async {
   try {
-    if (apiKey == "" || apiKey == null) apiKey = getRandomElement(secrets);
+    if (apiKey == "" || apiKey == null) {
+      apiKey = getRandomElement(lyricsSecrets);
+    }
     const searchUrl = 'https://api.genius.com/search?q=';
     String song = optimizeQuery ? getTitle(title, artist) : "$title $artist";
 

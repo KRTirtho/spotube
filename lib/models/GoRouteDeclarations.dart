@@ -5,6 +5,7 @@ import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Home/Home.dart';
+import 'package:spotube/components/Login.dart';
 import 'package:spotube/components/Player/PlayerView.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Settings.dart';
@@ -15,6 +16,12 @@ GoRouter createGoRouter() => GoRouter(
         GoRoute(
           path: "/",
           builder: (context, state) => const Home(),
+        ),
+        GoRoute(
+          path: "/login",
+          pageBuilder: (context, state) => SpotubePage(
+            child: const Login(),
+          ),
         ),
         GoRoute(
           path: "/settings",

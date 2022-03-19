@@ -5,11 +5,13 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
+import 'package:spotube/components/Shared/AnonymousFallback.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-album-to-album.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
@@ -18,13 +20,18 @@ class Search extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    SpotifyApi spotify = ref.watch(spotifyProvider);
+    final SpotifyApi spotify = ref.watch(spotifyProvider);
+    final Auth auth = ref.watch(authProvider);
     var controller = useTextEditingController();
     var searchTerm = useState("");
     final albumController = useScrollController();
     final playlistController = useScrollController();
     final artistController = useScrollController();
     final breakpoint = useBreakpoints();
+
+    if (auth.isAnonymous) {
+      return const Expanded(child: AnonymousFallback());
+    }
 
     return Expanded(
       child: Column(
