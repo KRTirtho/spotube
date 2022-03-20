@@ -18,7 +18,7 @@ class Lyrics extends HookConsumerWidget {
     var lyrics = useState({});
 
     bool hasToken = (userPreferences.geniusAccessToken != null ||
-        (userPreferences.geniusAccessToken?.isNotEmpty ?? false));
+        (userPreferences.geniusAccessToken.isNotEmpty));
     var lyricsFuture = useMemoized(() {
       if (playback.currentTrack == null ||
           !hasToken ||
@@ -29,7 +29,7 @@ class Lyrics extends HookConsumerWidget {
       return getLyrics(
         playback.currentTrack!.name!,
         artistsToString<Artist>(playback.currentTrack!.artists ?? []),
-        apiKey: userPreferences.geniusAccessToken!,
+        apiKey: userPreferences.geniusAccessToken,
         optimizeQuery: true,
       );
     }, [playback.currentTrack]);

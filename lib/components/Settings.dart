@@ -67,7 +67,7 @@ class Settings extends HookConsumerWidget {
                               SharedPreferences localStorage =
                                   await SharedPreferences.getInstance();
                               preferences.setGeniusAccessToken(
-                                  geniusAccessToken.value);
+                                  geniusAccessToken.value ?? "");
                               localStorage.setString(
                                   LocalStorageKeys.geniusAccessToken,
                                   geniusAccessToken.value ?? "");

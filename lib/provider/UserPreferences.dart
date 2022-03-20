@@ -7,15 +7,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 
 class UserPreferences extends ChangeNotifier {
-  String? geniusAccessToken;
+  String geniusAccessToken;
   HotKey? nextTrackHotKey;
   HotKey? prevTrackHotKey;
   HotKey? playPauseHotKey;
   UserPreferences({
+    required this.geniusAccessToken,
     this.nextTrackHotKey,
     this.prevTrackHotKey,
     this.playPauseHotKey,
-    this.geniusAccessToken,
   }) {
     onInit();
   }
@@ -38,7 +38,7 @@ class UserPreferences extends ChangeNotifier {
       String? accessToken =
           localStorage.getString(LocalStorageKeys.geniusAccessToken);
 
-      geniusAccessToken ??= accessToken;
+      if (accessToken != null) geniusAccessToken = accessToken;
 
       nextTrackHotKey ??= (await _getHotKeyFromLocalStorage(
             localStorage,
@@ -73,7 +73,7 @@ class UserPreferences extends ChangeNotifier {
     }
   }
 
-  setGeniusAccessToken(String? token) {
+  setGeniusAccessToken(String token) {
     geniusAccessToken = token;
     notifyListeners();
   }
@@ -112,4 +112,5 @@ class UserPreferences extends ChangeNotifier {
   }
 }
 
-var userPreferencesProvider = ChangeNotifierProvider((_) => UserPreferences());
+var userPreferencesProvider =
+    ChangeNotifierProvider((_) => UserPreferences(geniusAccessToken: ""));
