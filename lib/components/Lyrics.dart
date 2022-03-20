@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
@@ -50,6 +49,7 @@ class Lyrics extends HookConsumerWidget {
       if (lyrics.value["lyrics"] != null && playback.currentTrack == null) {
         lyrics.value = {};
       }
+      return null;
     }, [
       lyricsSnapshot.data,
       lyricsSnapshot.hasData,
@@ -60,25 +60,6 @@ class Lyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
 
     if (lyrics.value["lyrics"] == null && playback.currentTrack != null) {
-      if (!hasToken) {
-        return Expanded(
-            child: Column(
-          children: [
-            Text(
-              "Genius lyrics API access token isn't set",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline4
-                  ?.copyWith(color: Colors.red[400]),
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  GoRouter.of(context).push("/settings");
-                },
-                child: const Text("Add Access Token"))
-          ],
-        ));
-      }
       return const Expanded(
         child: Center(
           child: CircularProgressIndicator.adaptive(),
