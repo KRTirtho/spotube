@@ -162,32 +162,33 @@ class Home extends HookConsumerWidget {
       };
     }, [localStorage]);
 
+    final titleBarContents = Row(
+      children: [
+        Expanded(
+            child: Row(
+          children: [
+            Container(
+              constraints: BoxConstraints(
+                maxWidth: titleBarDragMaxWidth.toDouble(),
+              ),
+              color: Theme.of(context).navigationRailTheme.backgroundColor,
+              child: MoveWindow(),
+            ),
+            Expanded(child: MoveWindow()),
+            if (!Platform.isMacOS && !Platform.isAndroid && !Platform.isIOS)
+              const TitleBarActionButtons(),
+          ],
+        ))
+      ],
+    );
+
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
-            WindowTitleBarBox(
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Row(
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(
-                          maxWidth: titleBarDragMaxWidth.toDouble(),
-                        ),
-                        color: Theme.of(context)
-                            .navigationRailTheme
-                            .backgroundColor,
-                        child: MoveWindow(),
-                      ),
-                      Expanded(child: MoveWindow()),
-                      if (!Platform.isMacOS) const TitleBarActionButtons(),
-                    ],
-                  ))
-                ],
-              ),
-            ),
+            Platform.isAndroid || Platform.isIOS
+                ? titleBarContents
+                : WindowTitleBarBox(child: titleBarContents),
             Expanded(
               child: Row(
                 children: [

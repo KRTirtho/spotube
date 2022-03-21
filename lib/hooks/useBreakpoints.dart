@@ -79,16 +79,16 @@ BreakpointUtils useBreakpoints() {
         width <= 1920 &&
         breakpoint.value != Breakpoints.xl) {
       breakpoint.value = Breakpoints.xl;
-    } else if (width > 768 &&
+    } else if (width > 800 &&
         width <= 1366 &&
         breakpoint.value != Breakpoints.lg) {
       breakpoint.value = Breakpoints.lg;
-    } else if (width > 360 &&
-        width <= 768 &&
+    } else if (width > 414 &&
+        width <= 800 &&
         breakpoint.value != Breakpoints.md) {
       breakpoint.value = Breakpoints.md;
     } else if (width >= 250 &&
-        width <= 360 &&
+        width <= 414 &&
         breakpoint.value != Breakpoints.sm) {
       breakpoint.value = Breakpoints.sm;
     }
