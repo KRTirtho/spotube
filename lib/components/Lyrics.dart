@@ -17,8 +17,7 @@ class Lyrics extends HookConsumerWidget {
     UserPreferences userPreferences = ref.watch(userPreferencesProvider);
     var lyrics = useState({});
 
-    bool hasToken = (userPreferences.geniusAccessToken != null ||
-        (userPreferences.geniusAccessToken.isNotEmpty));
+    bool hasToken = userPreferences.geniusAccessToken.isNotEmpty;
     var lyricsFuture = useMemoized(() {
       if (playback.currentTrack == null ||
           !hasToken ||

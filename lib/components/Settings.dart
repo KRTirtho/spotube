@@ -140,10 +140,13 @@ class Settings extends HookConsumerWidget {
               ),
               const SizedBox(height: 10),
               if (auth.isAnonymous)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  runAlignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    const Text("Login with your Spotify"),
+                    const Text("Login with your Spotify account"),
+                    const SizedBox(width: 20),
                     ElevatedButton(
                       child: Text("Connect with Spotify".toUpperCase()),
                       onPressed: () {
