@@ -3,9 +3,11 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Home/Home.dart';
 import 'package:spotube/helpers/server_ipc.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
 
 const redirectUri = "http://localhost:4304/auth/spotify/callback";
+final logger = createLogger("OAuthLogin");
 
 Future<void> oauthLogin(Auth auth,
     {required String clientId, required String clientSecret}) async {
@@ -57,8 +59,7 @@ Future<void> oauthLogin(Auth auth,
       isLoggedIn: true,
     );
   } catch (e, stack) {
-    print("[oauthLogin()] $e");
-    print(stack);
+    logger.e("oauthLogin", e, stack);
     rethrow;
   }
 }

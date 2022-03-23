@@ -9,6 +9,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/YouTube.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -47,6 +48,7 @@ class CurrentPlaylist {
 }
 
 class Playback extends ChangeNotifier {
+  final _logger = createLogger(Playback);
   CurrentPlaylist? _currentPlaylist;
   Track? _currentTrack;
 
@@ -109,8 +111,7 @@ class Playback extends ChangeNotifier {
           movePlaylistPositionBy(1);
         }
       } catch (e, stack) {
-        print("[PrecessingStateStreamListener] $e");
-        print(stack);
+        _logger.e("PrecessingStateStreamListener", e, stack);
       }
     });
 
@@ -126,6 +127,7 @@ class Playback extends ChangeNotifier {
   CurrentPlaylist? get currentPlaylist => _currentPlaylist;
   Track? get currentTrack => _currentTrack;
   bool get isPlaying => _isPlaying;
+  AudioSession? get audioSession => _audioSession;
 
   /// this duration field is almost static & changes occasionally
   ///
@@ -258,8 +260,7 @@ class Playback extends ChangeNotifier {
         }
       }
     } catch (e, stack) {
-      print("[Playback.startPlaying] $e");
-      print(stack);
+      _logger.e("startPlaying", e, stack);
     }
   }
 }

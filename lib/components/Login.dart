@@ -8,11 +8,13 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
 class Login extends HookConsumerWidget {
-  const Login({Key? key}) : super(key: key);
+  Login({Key? key}) : super(key: key);
+  final log = createLogger(Login);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -37,7 +39,7 @@ class Login extends HookConsumerWidget {
           (value) => GoRouter.of(context).pop(),
         );
       } catch (e) {
-        print("[Login.handleLogin] $e");
+        log.e("[Login.handleLogin] $e");
       }
     }
 

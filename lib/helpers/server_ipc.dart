@@ -1,15 +1,18 @@
 import 'dart:io';
 
+import 'package:spotube/models/Logger.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+final logger = createLogger("ServerIPC");
 
 Future<String?> connectIpc(String authUri, String redirectUri) async {
   try {
-    print("[Launching]: $authUri");
+    logger.i("[Launching]: $authUri");
     await launch(authUri);
 
     HttpServer server =
         await HttpServer.bind(InternetAddress.loopbackIPv4, 4304);
-    print("Server started");
+    logger.i("Server started");
 
     await for (HttpRequest request in server) {
       if (request.uri.path == "/auth/spotify/callback" &&
@@ -30,9 +33,8 @@ Future<String?> connectIpc(String authUri, String redirectUri) async {
         }
       }
     }
-  } catch (error, stack) {
-    print("[connectIpc]: $error");
-    print(stack);
+  } catch (e, stack) {
+    logger.e("connectIpc", e, stack);
     rethrow;
   }
 }

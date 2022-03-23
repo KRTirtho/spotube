@@ -1,4 +1,7 @@
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
+
+final logger = createLogger("PlaybackHook");
 
 Future<void> Function() useNextTrack(Playback playback) {
   return () async {
@@ -7,8 +10,7 @@ Future<void> Function() useNextTrack(Playback playback) {
       await playback.player.seek(Duration.zero);
       playback.movePlaylistPositionBy(1);
     } catch (e, stack) {
-      print("[PlayerControls.onNext()] $e");
-      print(stack);
+      logger.e("useNextTrack", e, stack);
     }
   };
 }
@@ -20,8 +22,7 @@ Future<void> Function() usePreviousTrack(Playback playback) {
       await playback.player.seek(Duration.zero);
       playback.movePlaylistPositionBy(-1);
     } catch (e, stack) {
-      print("[PlayerControls.onPrevious()] $e");
-      print(stack);
+      logger.e("onPrevious", e, stack);
     }
   };
 }
@@ -34,8 +35,7 @@ Future<void> Function([dynamic]) useTogglePlayPause(Playback playback) {
           ? await playback.player.pause()
           : await playback.player.play();
     } catch (e, stack) {
-      print("[PlayPauseShortcut] $e");
-      print(stack);
+      logger.e("useTogglePlayPause", e, stack);
     }
   };
 }

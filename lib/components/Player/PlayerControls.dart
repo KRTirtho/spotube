@@ -4,14 +4,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/playback.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final Color? iconColor;
-  const PlayerControls({
+  PlayerControls({
     this.iconColor,
     Key? key,
   }) : super(key: key);
+
+  final logger = createLogger(PlayerControls);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -115,8 +118,7 @@ class PlayerControls extends HookConsumerWidget {
                           _shuffled.value = false;
                         }
                       } catch (e, stack) {
-                        print("[PlayerControls.onShuffle()] $e");
-                        print(stack);
+                        logger.e("onShuffle", e, stack);
                       }
                     }),
                 IconButton(
@@ -150,8 +152,7 @@ class PlayerControls extends HookConsumerWidget {
                             _shuffled.value = false;
                             playback.reset();
                           } catch (e, stack) {
-                            print("[PlayerControls.onStop()] $e");
-                            print(stack);
+                            logger.e("onStop", e, stack);
                           }
                         }
                       : null,

@@ -5,16 +5,19 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/hooks/usePagingController.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class CategoryCard extends HookWidget {
   final Category category;
   final Iterable<PlaylistSimple>? playlists;
-  const CategoryCard(
+  CategoryCard(
     this.category, {
     Key? key,
     this.playlists,
   }) : super(key: key);
+
+  final logger = createLogger(CategoryCard);
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +71,7 @@ class CategoryCard extends HookWidget {
                     if (!_error.value) _error.value = true;
                     pagingController.error = e;
                   }
-                  print(
-                      "[CategoryCard.pagingController.addPageRequestListener] $e");
-                  print(stack);
+                  logger.e("pagingController.addPageRequestListener", e, stack);
                 }
               }
 

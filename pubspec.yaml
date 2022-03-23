@@ -55,6 +55,7 @@ dependencies:
   palette_generator: ^0.3.3
   audio_session: ^0.1.6+1
   just_audio_background: ^0.0.1-beta.5
+  logger: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class UserArtists extends ConsumerStatefulWidget {
@@ -15,6 +16,7 @@ class UserArtists extends ConsumerStatefulWidget {
 class _UserArtistsState extends ConsumerState<UserArtists> {
   final PagingController<String, Artist> _pagingController =
       PagingController(firstPageKey: "");
+  final logger = createLogger(UserArtists);
 
   @override
   void initState() {
@@ -36,8 +38,7 @@ class _UserArtistsState extends ConsumerState<UserArtists> {
           }
         } catch (e, stack) {
           _pagingController.error = e;
-          print("[UserArtists.pagingController]: $e");
-          print(stack);
+          logger.e("pagingController", e, stack);
         }
       });
     });

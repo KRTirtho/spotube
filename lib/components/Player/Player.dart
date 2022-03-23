@@ -11,11 +11,14 @@ import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 
 class Player extends HookConsumerWidget {
-  const Player({Key? key}) : super(key: key);
+  Player({Key? key}) : super(key: key);
+
+  final logger = createLogger(Player);
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
@@ -37,7 +40,9 @@ class Player extends HookConsumerWidget {
       /// [disposeAllPlayers] method which is throwing
       /// [UnimplementedException] in the [PlatformInterface]
       /// implementation
-      player.setAsset("assets/warmer.mp3");
+      playback.audioSession
+          ?.setActive(true)
+          .then((_) => player.setAsset("assets/warmer.mp3"));
       return null;
     }, []);
 
@@ -65,8 +70,7 @@ class Player extends HookConsumerWidget {
         entryRef.value = null;
       } catch (e, stack) {
         if (e is! AssertionError) {
-          print("[Player.useEffect.cleanup] $e");
-          print(stack);
+          logger.e("useEffect.cleanup", e, stack);
         }
       }
     }
@@ -107,7 +111,7 @@ class Player extends HookConsumerWidget {
           children: [
             Expanded(child: PlayerTrackDetails(albumArt: albumArt)),
             // controls
-            const Expanded(
+            Expanded(
               flex: 3,
               child: PlayerControls(),
             ),
@@ -133,8 +137,7 @@ class Player extends HookConsumerWidget {
                             );
                           });
                         } catch (e, stack) {
-                          print("[VolumeSlider.onChange()] $e");
-                          print(stack);
+                          logger.e("onChange", e, stack);
                         }
                       },
                     ),

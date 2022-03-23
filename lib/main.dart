@@ -9,6 +9,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/GoRouteDeclarations.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/ThemeProvider.dart';
 import 'package:spotube/provider/YouTube.dart';
@@ -38,6 +39,7 @@ void main() async {
 
 class MyApp extends HookConsumerWidget {
   final GoRouter _router = createGoRouter();
+  final logger = createLogger(MyApp);
 
   MyApp({Key? key}) : super(key: key);
   @override

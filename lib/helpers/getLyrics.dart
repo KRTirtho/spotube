@@ -3,7 +3,10 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/helpers/get-random-element.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
+
+final logger = createLogger("GetLyrics");
 
 String getTitle(String title, String artist) {
   return "$title $artist"
@@ -40,8 +43,7 @@ Future<String?> extractLyrics(Uri url) async {
 
     return lyrics;
   } catch (e, stack) {
-    print("[extractLyrics] $e");
-    print(stack);
+    logger.e("extractLyrics", e, stack);
     rethrow;
   }
 }
@@ -78,8 +80,7 @@ Future<List?> searchSong(
     }).toList();
     return results;
   } catch (e, stack) {
-    print("[searchSong] $e");
-    print(stack);
+    logger.e("searchSong", e, stack);
     rethrow;
   }
 }
@@ -103,8 +104,7 @@ Future<String?> getLyrics(
     String? lyrics = await extractLyrics(Uri.parse(results.first["url"]));
     return lyrics;
   } catch (e, stack) {
-    print("[getLyrics] $e");
-    print(stack);
+    logger.e("getLyrics", e, stack);
     return null;
   }
 }

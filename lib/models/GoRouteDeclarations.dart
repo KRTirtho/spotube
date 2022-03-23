@@ -15,12 +15,12 @@ GoRouter createGoRouter() => GoRouter(
       routes: [
         GoRoute(
           path: "/",
-          builder: (context, state) => const Home(),
+          builder: (context, state) => Home(),
         ),
         GoRoute(
           path: "/login",
           pageBuilder: (context, state) => SpotubePage(
-            child: const Login(),
+            child: Login(),
           ),
         ),
         GoRoute(

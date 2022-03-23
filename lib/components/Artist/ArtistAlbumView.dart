@@ -4,6 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class ArtistAlbumView extends ConsumerStatefulWidget {
@@ -22,6 +23,8 @@ class ArtistAlbumView extends ConsumerStatefulWidget {
 class _ArtistAlbumViewState extends ConsumerState<ArtistAlbumView> {
   final PagingController<int, Album> _pagingController =
       PagingController<int, Album>(firstPageKey: 0);
+
+  final logger = createLogger(ArtistAlbumView);
 
   @override
   void initState() {
@@ -51,8 +54,7 @@ class _ArtistAlbumViewState extends ConsumerState<ArtistAlbumView> {
         _pagingController.appendPage(items, albums.nextOffset);
       }
     } catch (e, stack) {
-      print("[ArtistAlbumView._fetchPage] $e");
-      print(stack);
+      logger.e(e, null, stack);
       _pagingController.error = e;
     }
   }

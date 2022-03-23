@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/Logger.dart';
 
 class UserPreferences extends ChangeNotifier {
   String geniusAccessToken;
@@ -19,6 +20,8 @@ class UserPreferences extends ChangeNotifier {
   }) {
     onInit();
   }
+
+  final logger = createLogger(UserPreferences);
 
   Future<HotKey?> _getHotKeyFromLocalStorage(
       SharedPreferences preferences, String key) async {
@@ -68,8 +71,7 @@ class UserPreferences extends ChangeNotifier {
           );
       notifyListeners();
     } catch (e, stack) {
-      print("[UserPreferences.onInit]: $e");
-      print(stack);
+      logger.e("onInit", e, stack);
     }
   }
 

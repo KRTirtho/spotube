@@ -23,6 +23,7 @@ import 'package:spotube/hooks/useHotKeys.dart';
 import 'package:spotube/hooks/usePagingController.dart';
 import 'package:spotube/hooks/useSharedPreferences.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -38,7 +39,8 @@ List<String> spotifyScopes = [
 ];
 
 class Home extends HookConsumerWidget {
-  const Home({Key? key}) : super(key: key);
+  Home({Key? key}) : super(key: key);
+  final logger = createLogger(Home);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -82,8 +84,7 @@ class Home extends HookConsumerWidget {
         }
       } catch (e, stack) {
         pagingController.error = e;
-        print("[Home.pagingController.addPageRequestListener] $e");
-        print(stack);
+        logger.e("pagingController.addPageRequestListener", e, stack);
       }
     }, []);
 
@@ -146,16 +147,14 @@ class Home extends HookConsumerWidget {
                 clientSecret: clientSecret,
               );
             }
-            print("[Home.useEffect.spotify.getCredentials]: $e");
-            print(stack);
+            logger.e("useEffect.spotify.getCredentials", e, stack);
           });
         } else {
           pagingController.addPageRequestListener(listener);
           pagingController.notifyPageRequestListeners(0);
         }
       } catch (e, stack) {
-        print("[Home.initState]: $e");
-        print(stack);
+        logger.e("initState", e, stack);
       }
       return () {
         pagingController.removePageRequestListener(listener);
@@ -218,7 +217,7 @@ class Home extends HookConsumerWidget {
               ),
             ),
             // player itself
-            const Player(),
+            Player(),
             SpotubeNavigationBar(
               selectedIndex: _selectedIndex.value,
               onSelectedIndexChanged: _onSelectedIndexChanged,
