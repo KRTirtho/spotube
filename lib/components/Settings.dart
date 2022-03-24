@@ -190,7 +190,7 @@ class Settings extends HookConsumerWidget {
                   );
                 }),
               const SizedBox(height: 40),
-              const Text("Spotube v1.2.0"),
+              const Text("Spotube v2.0.0"),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

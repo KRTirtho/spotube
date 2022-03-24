@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Spotube"
-#define MyAppVersion "1.2.0"
+#define MyAppVersion "2.0.0"
 #define MyAppPublisher "KRTirtho, OSS"
 #define MyAppURL "https://github.com/KRTirtho/spotube"
 #define MyAppExeName "spotube.exe"

@@ -69,7 +69,7 @@ IDI_APP_ICON            ICON                    "resources\\icon.ico"
 #ifdef FLUTTER_BUILD_NAME
 #define VERSION_AS_STRING #FLUTTER_BUILD_NAME
 #else
-#define VERSION_AS_STRING "1.2.0"
+#define VERSION_AS_STRING "2.0.0"
 #endif
 
 VS_VERSION_INFO VERSIONINFO
