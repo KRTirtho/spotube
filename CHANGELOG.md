@@ -1,3 +1,30 @@
+# v2.0.0 
+
+### New
+- Android Support https://github.com/KRTirtho/spotube/issues/24
+- Responsive UI (Mobile, Tablet)
+- Anonymous/Guest Account
+- Mini floating player
+- Full page PlayerView for smaller devices
+- Horizontal CategoryCard Scroll & pagination for quicker access to Playlists
+- Bottom bar for smaller devices
+- Collapsed Sidebar for medium sized devices
+- Persists Volume level
+- Android NavigationPanel controls (OS media controls of Android)
+
+### Improved
+- Search - now scrolls & paginates for Playlists & Albums
+- Authentication - allows guest accounts making authentication optional
+- Lyrics - can be fetched without requiring GeniusAccessToken. This makes geniusAccessToken optional 
+- UI snappiness & faster load times
+- Simpler logic, faster calculations & better caching (flutter_hooks)
+- shared state management - uses riverpod & hooks combination
+
+### Bug fixes
+- Can't play any song in macos https://github.com/KRTirtho/spotube/issues/23
+- Downloaded tracks can't be played as they're WebAudio (.weba) instead of MP3
+- delay while changing Playlist/Single tracks
+
 # v1.2.0
 
 ### New

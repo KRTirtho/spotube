@@ -22,7 +22,7 @@
     <docsUrl>https://github.com/KRTirtho/spotube#readme</docsUrl>
     <bugTrackerUrl>https://github.com/KRTirtho/spotube/issues/new</bugTrackerUrl>
     <tags>spotube music audio spotify youtube flutter</tags>
-    <summary>A lightweight free Spotify 🎧 desktop-client 🖥 which handles playback manually, streams music using Youtube &amp; no Spotify premium account is needed 😱</summary>
+    <summary>A lightweight free Spotify 🎧 crossplatform-client 🖥📱 which handles playback manually, streams music using Youtube &amp; no Spotify premium account is needed 😱</summary>
     <description>
     Spotube is a Flutter based lightweight spotify client. It utilizes the power 
     of Spotify  &amp; Youtube's public API  &amp; creates a hazardless, performant  &amp; resource

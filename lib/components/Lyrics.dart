@@ -15,12 +15,11 @@ class Lyrics extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
     UserPreferences userPreferences = ref.watch(userPreferencesProvider);
-    var lyrics = useState({});
+    final lyrics = useState({});
 
-    bool hasToken = userPreferences.geniusAccessToken.isNotEmpty;
-    var lyricsFuture = useMemoized(() {
+    final lyricsFuture = useMemoized(() {
       if (playback.currentTrack == null ||
-          !hasToken ||
+          userPreferences.geniusAccessToken.isEmpty ||
           (playback.currentTrack?.id != null &&
               playback.currentTrack?.id == lyrics.value["id"])) {
         return null;
@@ -31,9 +30,9 @@ class Lyrics extends HookConsumerWidget {
         apiKey: userPreferences.geniusAccessToken,
         optimizeQuery: true,
       );
-    }, [playback.currentTrack]);
+    }, [playback.currentTrack, userPreferences.geniusAccessToken]);
 
-    var lyricsSnapshot = useFuture(lyricsFuture);
+    final lyricsSnapshot = useFuture(lyricsFuture);
 
     useEffect(() {
       if (lyricsSnapshot.hasData &&

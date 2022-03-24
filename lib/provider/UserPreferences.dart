@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/helpers/get-random-element.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
+import 'package:spotube/models/generated_secrets.dart';
 
 class UserPreferences extends ChangeNotifier {
   String geniusAccessToken;
@@ -33,15 +35,17 @@ class UserPreferences extends ChangeNotifier {
       }
       return HotKey.fromJson(json);
     }
+    return null;
   }
 
-  onInit() async {
+  Future<void> onInit() async {
     try {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       String? accessToken =
           localStorage.getString(LocalStorageKeys.geniusAccessToken);
-
-      if (accessToken != null) geniusAccessToken = accessToken;
+      geniusAccessToken = accessToken != null && accessToken.isNotEmpty
+          ? accessToken
+          : getRandomElement(lyricsSecrets);
 
       nextTrackHotKey ??= (await _getHotKeyFromLocalStorage(
             localStorage,
@@ -75,12 +79,12 @@ class UserPreferences extends ChangeNotifier {
     }
   }
 
-  setGeniusAccessToken(String token) {
+  void setGeniusAccessToken(String token) {
     geniusAccessToken = token;
     notifyListeners();
   }
 
-  setNextTrackHotKey(HotKey? value) {
+  void setNextTrackHotKey(HotKey? value) {
     nextTrackHotKey = value;
     SharedPreferences.getInstance().then((preferences) {
       preferences.setString(
@@ -91,7 +95,7 @@ class UserPreferences extends ChangeNotifier {
     notifyListeners();
   }
 
-  setPrevTrackHotKey(HotKey? value) {
+  void setPrevTrackHotKey(HotKey? value) {
     prevTrackHotKey = value;
     SharedPreferences.getInstance().then((preferences) {
       preferences.setString(
@@ -102,7 +106,7 @@ class UserPreferences extends ChangeNotifier {
     notifyListeners();
   }
 
-  setPlayPauseHotKey(HotKey? value) {
+  void setPlayPauseHotKey(HotKey? value) {
     playPauseHotKey = value;
     SharedPreferences.getInstance().then((preferences) {
       preferences.setString(
@@ -114,5 +118,5 @@ class UserPreferences extends ChangeNotifier {
   }
 }
 
-var userPreferencesProvider =
+final userPreferencesProvider =
     ChangeNotifierProvider((_) => UserPreferences(geniusAccessToken: ""));

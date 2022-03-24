@@ -107,8 +107,15 @@ class Playback extends ChangeNotifier {
     _processingStateStreamListener =
         player.processingStateStream.listen((event) async {
       try {
-        if (event == ProcessingState.completed && _currentTrack?.id != null) {
+        if (event != ProcessingState.completed) return;
+        if (_currentTrack?.id != null) {
           movePlaylistPositionBy(1);
+        } else {
+          await audioSession?.setActive(false);
+          _isPlaying = false;
+          _duration = null;
+          _callAllDurationListeners(null);
+          notifyListeners();
         }
       } catch (e, stack) {
         _logger.e("PrecessingStateStreamListener", e, stack);
@@ -167,6 +174,7 @@ class Playback extends ChangeNotifier {
     _callAllDurationListeners(null);
     _currentPlaylist = null;
     _currentTrack = null;
+    _audioSession?.setActive(false);
     notifyListeners();
   }
 
@@ -196,7 +204,7 @@ class Playback extends ChangeNotifier {
     super.dispose();
   }
 
-  movePlaylistPositionBy(int pos) {
+  void movePlaylistPositionBy(int pos) {
     if (_currentTrack != null && _currentPlaylist != null) {
       int index = _currentPlaylist!.trackIds.indexOf(_currentTrack!.id!) + pos;
 

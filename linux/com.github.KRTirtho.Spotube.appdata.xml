@@ -3,7 +3,7 @@
   <id>com.github.KRTirtho.Spotube</id>
   <name>Spotube</name>
   <summary>
-  A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube &amp; no Spotify premium account is needed
+  A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube &amp; no Spotify premium account is needed
   </summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-4-Clause</project_license>

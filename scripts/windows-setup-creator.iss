@@ -10,7 +10,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{80B901C8-D6FE-494E-8AF7-A2BD440E8644}
+AppId={80B901C8-D6FE-494E-8AF7-A2BD440E8644}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -43,6 +43,7 @@ Source: "..\build\windows\runner\Release\flutter_windows.dll"; DestDir: "{app}";
 Source: "..\build\windows\runner\Release\hotkey_manager_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\libwinmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\libwinmedia_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\build\windows\runner\Release\permission_handler_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\spotube.exp"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\spotube.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\url_launcher_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion

@@ -66,14 +66,17 @@ class Settings extends HookConsumerWidget {
                           ? () async {
                               SharedPreferences localStorage =
                                   await SharedPreferences.getInstance();
-                              preferences.setGeniusAccessToken(
-                                  geniusAccessToken.value ?? "");
-                              localStorage.setString(
-                                  LocalStorageKeys.geniusAccessToken,
-                                  geniusAccessToken.value ?? "");
+                              if (geniusAccessToken.value != null &&
+                                  geniusAccessToken.value!.isNotEmpty) {
+                                preferences.setGeniusAccessToken(
+                                  geniusAccessToken.value!,
+                                );
+                                localStorage.setString(
+                                    LocalStorageKeys.geniusAccessToken,
+                                    geniusAccessToken.value!);
+                              }
 
                               geniusAccessToken.value = null;
-
                               textEditingController.text = "";
                             }
                           : null,
@@ -141,12 +144,12 @@ class Settings extends HookConsumerWidget {
               const SizedBox(height: 10),
               if (auth.isAnonymous)
                 Wrap(
+                  spacing: 20,
+                  runSpacing: 20,
                   alignment: WrapAlignment.spaceBetween,
-                  runAlignment: WrapAlignment.center,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     const Text("Login with your Spotify account"),
-                    const SizedBox(width: 20),
                     ElevatedButton(
                       child: Text("Connect with Spotify".toUpperCase()),
                       onPressed: () {

@@ -1,5 +1,5 @@
 name: spotube
-description: A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
+description: A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -56,6 +56,7 @@ dependencies:
   audio_session: ^0.1.6+1
   just_audio_background: ^0.0.1-beta.5
   logger: ^1.1.0
+  permission_handler: ^9.2.0
 
 dev_dependencies:
   flutter_test:

@@ -88,7 +88,7 @@ Future<List?> searchSong(
 Future<String?> getLyrics(
   String title,
   String artist, {
-  String apiKey = "",
+  required String apiKey,
   bool optimizeQuery = false,
   bool authHeader = false,
 }) async {

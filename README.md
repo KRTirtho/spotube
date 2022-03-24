@@ -27,7 +27,9 @@ Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It
 Following are the features that currently spotube offers:
 
 - Open Source
-- No telementry, diagnostics or user data collection
+- Anonymous/Guest Login
+- Cross platform
+- No telemetry, diagnostics or user data collection
 - Lightweight & resource friendly
 - Native performance (Thanks to Flutter+Skia)
 - Playback control is on user's machine instead of server based
@@ -36,13 +38,17 @@ Following are the features that currently spotube offers:
 - Lyrics
 - Downloadable track
 
-<a href="https://www.producthunt.com/posts/spotube?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-spotube" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=327965&theme=dark" alt="Spotube - A lightweight+free Spotify desktop-client made with flutter | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+<a href="https://www.producthunt.com/posts/spotube?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-spotube" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=327965&theme=dark" alt="Spotube - A lightweight+free Spotify crossplatform-client made with flutter | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 # Installation
 
 I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
 
 All the binaries are located in the [releases](https://github.com/krtirtho/spotube/releases), just download
+
+## Android
+
+Download the [Android app](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-arm64-v8a.apk) & install it on your phone/tablet 
 
 ## Windows
 
@@ -98,30 +104,33 @@ Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube
 
 
 **I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey/homebrew stores or software centers or repositories**
-# Configuration
 
-There are some configurations that needs to be done to start using this software
+## Optional Configurations
+<details>
+  <summary>Login with <b>Spotify</b></summary>
 
-You need a spotify account & a developer app for
+  You need a spotify account & a developer app for
 
-- clientId
-- clientSecret
+  - clientId
+  - clientSecret
 
-**Grab credentials:**
+  **Grab credentials:**
 
-- Go to https://developer.spotify.com/dashboard/login & login with your spotify account (Skip if you're logged in)
-  ![Step 1](https://user-images.githubusercontent.com/61944859/111762106-d1d37680-88ca-11eb-9884-ec7a40c0dd27.png)
+  - Go to https://developer.spotify.com/dashboard/login & login with your spotify account (Skip if you're logged in)
+    ![Step 1](https://user-images.githubusercontent.com/61944859/111762106-d1d37680-88ca-11eb-9884-ec7a40c0dd27.png)
 
-- Create an web app for Spotify Public API
-  ![step 2](https://user-images.githubusercontent.com/61944859/111762507-473f4700-88cb-11eb-91f3-d480e9584883.png)
+  - Create an web app for Spotify Public API
+    ![step 2](https://user-images.githubusercontent.com/61944859/111762507-473f4700-88cb-11eb-91f3-d480e9584883.png)
 
-- Give the app a name & description. Then Edit settings & add **http://localhost:4304/auth/spotify/callback** as **Redirect URI** for the app. Its important for authenticating
-  ![setp-3](https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png)
+  - Give the app a name & description. Then Edit settings & add **http://localhost:4304/auth/spotify/callback** as **Redirect URI** for the app. Its important for authenticating
+    ![setp-3](https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png)
 
-- Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields
-  ![step-4](https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png)
+  - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields
+    ![step-4](https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png)
+</details>
 
-**Setup Genius Lyrics (Optional)**
+<details>
+<summary>Setup <b>Genius Lyrics</b></summary>
 
 - Signup/Login into [genius](https://genius.com/signup) for **lyrics**
 - Go To [Genius Developer Portal](https://genius.com/api-clients/new) for creating an API client
@@ -132,6 +141,7 @@ You need a spotify account & a developer app for
   ![Step 4](https://user-images.githubusercontent.com/61944859/158823984-17f08534-5c92-41bc-918a-23194aad00f5.png)
 
 > **Note!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself
+</details>
 
 # TODO:
 
@@ -140,6 +150,7 @@ You need a spotify account & a developer app for
 - [x] Track download
 - [ ] Support for playing/streaming podcasts/shows
 - [x] Artist, User & Album pages
+- [x] Android Support
 
 # Building from source
 
@@ -179,6 +190,16 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [bitsdojo_window](https://github.com/bitsdojo/bitsdojo_window) - A Flutter package that makes it easy to customize and work with your Flutter desktop app window on Windows, macOS and Linux
 - [hotkey_manager](https://github.com/leanflutter/hotkey_manager) - A flutter plugin that allow Flutter desktop apps to defines system/inapp wide hotkey
 - [Inno Setup](https://jrsoftware.org/isinfo.php) - Inno Setup is a free installer for Windows programs by Jordan Russell and Martijn Laan
+- [collection](https://github.com/dart-lang/collection) - The collection package for Dart contains a number of separate libraries with utility functions and classes that makes working with collections easier 
+- [flutter_riverpod](https://riverpod.dev/) - A Reactive Caching and Data-binding Framework
+- [flutter_hooks](https://github.com/rrousselGit/flutter_hooks) - React hooks for Flutter. Hooks are a new kind of object that manages a Widget life-cycles. They are used to increase code sharing between widgets and as a complete replacement for StatefulWidget
+- [hooks_riverpod](https://riverpod.dev/) - Riverpod with hooks
+- [go_router](https://github.com/flutter/packages/tree/main/packages/go_router) - A declarative router for Flutter based on Navigation 2 supporting deep linking, data-driven routes and more
+- [palette_generator](https://github.com/flutter/packages/tree/main/packages/palette_generator) - Flutter package for generating palette colors from a source image.
+- [audio_session](https://github.com/ryanheise/audio_session) - Sets the iOS audio session category and Android audio attributes for your app, and manages your app's audio focus, mixing and ducking behaviour.
+- [logger](https://github.com/leisim/logger) - Small, easy to use and extensible logger which prints beautiful logs
+- [flutter_launcher_icons](https://github.com/fluttercommunity/flutter_launcher_icons) - A package which simplifies the task of updating your Flutter app's launcher icon.
+- [permission_handler](https://github.com/baseflow/flutter-permission-handler) - Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions. 
 
 
 # Social handlers

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -40,9 +41,16 @@ class Player extends HookConsumerWidget {
       /// [disposeAllPlayers] method which is throwing
       /// [UnimplementedException] in the [PlatformInterface]
       /// implementation
-      playback.audioSession
-          ?.setActive(true)
-          .then((_) => player.setAsset("assets/warmer.mp3"));
+      if (Platform.isAndroid || Platform.isIOS) {
+        playback.audioSession
+            ?.setActive(true)
+            .then((_) => player.setAsset("assets/warmer.mp3"))
+            .catchError((e) {
+          logger.e("useEffect", e, StackTrace.current);
+        });
+      } else {
+        player.setAsset("assets/warmer.mp3");
+      }
       return null;
     }, []);
 
@@ -64,7 +72,7 @@ class Player extends HookConsumerWidget {
 
     final entryRef = useRef<OverlayEntry?>(null);
 
-    disposeOverlay() {
+    void disposeOverlay() {
       try {
         entryRef.value?.remove();
         entryRef.value = null;
@@ -76,25 +84,37 @@ class Player extends HookConsumerWidget {
     }
 
     useEffect(() {
-      // clearing the overlay-entry as passing the already available
-      // entry will result in splashing while resizing the window
-      if (entryRef.value != null) disposeOverlay();
-      if (breakpoint.isLessThanOrEqualTo(Breakpoints.md)) {
-        entryRef.value = OverlayEntry(
-          opaque: false,
-          builder: (context) => PlayerOverlay(albumArt: albumArt),
-        );
-        // I can't believe useEffect doesn't run Post Frame aka
-        // after rendering/painting the UI
-        // `My disappointment is immeasurable and my day is ruined` XD
-        WidgetsBinding.instance?.addPostFrameCallback((time) {
-          Overlay.of(context)?.insert(entryRef.value!);
-        });
-      }
+      // I can't believe useEffect doesn't run Post Frame aka
+      // after rendering/painting the UI
+      // `My disappointment is immeasurable and my day is ruined` XD
+      WidgetsBinding.instance?.addPostFrameCallback((time) {
+        // clearing the overlay-entry as passing the already available
+        // entry will result in splashing while resizing the window
+        if (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
+            entryRef.value == null &&
+            playback.currentTrack != null) {
+          entryRef.value = OverlayEntry(
+            opaque: false,
+            builder: (context) => PlayerOverlay(albumArt: albumArt),
+          );
+          try {
+            Overlay.of(context)?.insert(entryRef.value!);
+          } catch (e) {
+            if (e is AssertionError &&
+                e.message ==
+                    'The specified entry is already present in the Overlay.') {
+              disposeOverlay();
+              Overlay.of(context)?.insert(entryRef.value!);
+            }
+          }
+        } else {
+          disposeOverlay();
+        }
+      });
       return () {
         disposeOverlay();
       };
-    }, [breakpoint]);
+    }, [breakpoint, playback.currentTrack]);
 
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]

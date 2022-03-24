@@ -1,5 +1,5 @@
 pkgbase = spotube-bin
-	pkgdesc = A lightweight free Spotify desktop-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
+	pkgdesc = A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
 	pkgver = 1.2.0
 	pkgrel = 2
 	url = https://github.com/KRTirtho/spotube/
