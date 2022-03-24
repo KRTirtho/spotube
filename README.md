@@ -48,7 +48,12 @@ All the binaries are located in the [releases](https://github.com/krtirtho/spotu
 
 ## Android
 
-Download the [Android app](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-arm64-v8a.apk) & install it on your phone/tablet 
+Download the Android app according to your device's CPU architecture
+- [arm64-v8a (for 64 bit ARM)](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-arm64-v8a.apk)
+- [armeabi-v7a (for 32 bit ARM)](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-armeabi-v7a.apk)
+- [x86_64 (for 64 bit x86/amd64)](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-x86_64.apk)
+
+Then install it on your Android smartphone/tablet 
 
 ## Windows
 
