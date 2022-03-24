@@ -28,7 +28,7 @@
 
     </activity>
 
-    <service android:name="com.ryanheise.audioservice.AudioService">
+    <service android:name="com.ryanheise.audioservice.AudioService" android:exported="false">
       <intent-filter>
         <action android:name="android.media.browse.MediaBrowserService" />
       </intent-filter>
