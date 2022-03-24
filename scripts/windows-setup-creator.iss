@@ -43,7 +43,7 @@ Source: "..\build\windows\runner\Release\flutter_windows.dll"; DestDir: "{app}";
 Source: "..\build\windows\runner\Release\hotkey_manager_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\libwinmedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\libwinmedia_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\build\windows\runner\Release\permission_handler.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\build\windows\runner\Release\permission_handler_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\spotube.exp"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\spotube.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\runner\Release\url_launcher_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
