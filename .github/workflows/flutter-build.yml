@@ -28,8 +28,8 @@ jobs:
       - run: pip3 install appimage-builder
       - run: make appimage
       # Building Android Application
-      - run: flutter build apk
-      - run: mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-arm64-v8a.apk
+      - run: flutter build apk --split-per-abi
+      - run: make apk
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Linux-Bundle
@@ -38,6 +38,8 @@ jobs:
             build/Spotube-linux-x86_64.tar.xz
             build/Spotube-*-x86_64.AppImage
             build/Spotube-android-arm64-v8a.apk
+            build/Spotube-android-armeabi-v7a.apk
+            build/Spotube-android-x86_64.apk
   build_windows:
     runs-on: windows-latest
     steps:

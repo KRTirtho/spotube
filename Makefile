@@ -2,6 +2,7 @@ INNO_VERSION=6.2.0
 TEMP_DIR=/tmp/spotube-tar
 USR_SHARE=deb-struct/usr/share
 BUNDLE_DIR=build/linux/x64/release/bundle
+ANDROID_OUTPUT_DIR=build/app/outputs/apk/release
 MIRRORLIST=${PWD}/build/mirrorlist
 deb: 
 		mkdir -p ${USR_SHARE}/spotube\
@@ -49,6 +50,11 @@ inno:
 choco:
 			powershell cp build\installer\Spotube-windows-x86_64-setup.exe choco-struct\tools
 			powershell choco pack .\choco-struct\spotube.nuspec  --outputdirectory build
+
+apk:
+				mv ${ANDROID_OUTPUT_DIR}/app-arm64-v8a-release.apk build/Spotube-android-arm64-v8a.apk\
+				&& mv ${ANDROID_OUTPUT_DIR}/app-armeabi-v7a-release.apk build/Spotube-android-armeabi-v7a.apk\
+				&& mv ${ANDROID_OUTPUT_DIR}/app-x86_64-release.apk build/Spotube-android-x86_64.apk
 
 gensums:
 				sh -c scripts/gensums.sh
