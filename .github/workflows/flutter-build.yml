@@ -49,6 +49,7 @@ jobs:
       - run: flutter pub get
       - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
       - run: flutter build windows
+      - run: ls build/windows/runner/Release
       - run: choco install make -y
       - run: make innoinstall
       - run: make inno
