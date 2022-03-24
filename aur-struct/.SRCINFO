@@ -7,6 +7,6 @@ pkgbase = spotube-bin
 	license = BSD-4-Clause
 	depends = libkeybinder3
 	source = https://github.com/KRTirtho/spotube/releases/download/v2.0.0/Spotube-linux-x86_64.tar.xz
-	md5sums = f49d21ef00c7d43eb70e7e9b2a7103c1
+	md5sums = 55955fb42d7e3f960392d68d45e2030a
 
 pkgname = spotube-bin

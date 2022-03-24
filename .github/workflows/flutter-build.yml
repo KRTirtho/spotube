@@ -78,5 +78,4 @@ jobs:
         with:
           name: Spotube-Macos-Bundle
           path: |
-            build/macos/Build/Products/Release/spotube.app
             build/Spotube-macos-x86_64.dmg
