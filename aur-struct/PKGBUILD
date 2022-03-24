@@ -1,7 +1,7 @@
 # Maintainer: Kingkor Roy Tirtho <krtirho@gmail.com>
 pkgname=spotube-bin
 pkgver=2.0.0
-pkgrel=1
+pkgrel=2
 epoch=
 pkgdesc="A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed"
 arch=(x86_64)
