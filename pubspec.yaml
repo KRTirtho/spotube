@@ -123,5 +123,5 @@ msix_config:
 flutter_icons:
   android: true
   image_path: "assets/spotube-logo.png"
-  adaptive_icon_foreground: "assets/spotube-logo-foreground.png"
+  adaptive_icon_foreground: "assets/spotube-logo-foreground.jpg"
   adaptive_icon_background: "#ffffff"
