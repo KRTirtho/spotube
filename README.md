@@ -158,13 +158,34 @@ Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube
 - Install Development dependencies in linux
   - `libwebkit2gtk-4.0-dev`, `libkeybinder-3.0-0` & `libkeybinder-3.0-0-dev` (for Debian/Ubuntu)
   - `webkit2gtk` & `libkeybinder3` (for Arch/Manjaro)
-- Clone the Repo
-
+- Clone the Repo & run
+  ```bash
+  $ flutter pub get
+  ```
+- Create a `.env` file containing 2 secrets `LYRICS_SECRET` & `SPOTIFY_SECRET`. These secrets should be a **base64 encoded JSON string**
+  - Structure of `LYRICS_SECRET` json string:
+    ```jsonc
+    [
+      "<secret genius access tokens>",
+      // and so on...
+    ]
+    ```
+  - Structure of `SPOTIFY_SECRET` json string:
+    ```jsonc
+    [
+      {"clientId": "<Spotify Client Id>", "clientSecret": "<Spotify Client Secret>"},
+      // and so on ....
+    ]
+    ```
+  > You can base64 encode the JSON [here](https://www.base64encode.org/)
+- Run following in the terminal to generate secrets for your fork
+  ```bash
+  $ dart bin/create-secrets.dart --loadEnv
+  ```
+Finally, to start the app run:
 ```bash
-$ flutter pub get
-$ flutter run -d <window|macos|linux>
+$ flutter run -d <window|macos|linux|(android-device-id)>
 ```
-
 # Things that don't work
 
 - Shows & Podcasts aren't supported as it'd require premium anyway
