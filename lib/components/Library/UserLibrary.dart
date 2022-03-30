@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotube/components/Library/UserAlbums.dart';
 import 'package:spotube/components/Library/UserArtists.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
 import 'package:spotube/components/Shared/AnonymousFallback.dart';
@@ -29,7 +30,7 @@ class UserLibrary extends ConsumerWidget {
               ? const TabBarView(children: [
                   UserPlaylists(),
                   UserArtists(),
-                  Icon(Icons.ac_unit_outlined),
+                  UserAlbums(),
                 ])
               : const AnonymousFallback(),
         ),

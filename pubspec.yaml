@@ -37,7 +37,8 @@ dependencies:
   html: ^0.15.0
   http: ^0.13.4
   shared_preferences: ^2.0.11
-  spotify: ^0.6.0
+  spotify:
+    git: https://github.com/KRTirtho/spotify-dart.git
   url_launcher: ^6.0.17
   youtube_explode_dart: ^1.10.8
   infinite_scroll_pagination: ^3.1.0
@@ -70,7 +71,6 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
   flutter_launcher_icons: ^0.9.2
-  dotenv: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

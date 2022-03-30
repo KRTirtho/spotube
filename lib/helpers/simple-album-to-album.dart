@@ -1,6 +1,6 @@
 import 'package:spotify/spotify.dart';
 
-simpleAlbumToAlbum(AlbumSimple albumSimple) {
+Album simpleAlbumToAlbum(AlbumSimple albumSimple) {
   Album album = Album();
   album.albumType = albumSimple.albumType;
   album.artists = albumSimple.artists;

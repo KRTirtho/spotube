@@ -29,6 +29,8 @@ import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 List<String> spotifyScopes = [
+  "playlist-modify-public",
+  "playlist-modify-private",
   "user-library-read",
   "user-library-modify",
   "user-read-private",

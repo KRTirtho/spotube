@@ -114,11 +114,31 @@ Do the following:
 - Install Development dependencies in linux
   - `libwebkit2gtk-4.0-dev`, `libkeybinder-3.0-0` & `libkeybinder-3.0-0-dev` (for Debian/Ubuntu)
   - `webkit2gtk` & `libkeybinder3` (for Arch/Manjaro)
-- Clone the Repo
+- Clone the Repo & Run `flutter pub get` in the Terminal
+- Create a `secrets.json` in root of the project. The structure should be similar to the following example:
+  ```jsoc name="secrets.json"
+  {
+  "LYRICS_SECRET": [
+    "Bo3LQEMcL2xUAJ6yCfQowV6f8K78s9J9FLa67AsyWmvhkP9LWikkgcEyFrzvs7jsR",
+    "HiLHxLj8uv2VhBZfq9BQ9HVrWQk5Jc8aneMZX8RV4KjTmC387K692xrbNK35c8Qe4",
+    ],
+  "SPOTIFY_SECRET": [
+    {
+      "clientId": "9ed19daf-c7a2-4c28-91ac-2c5283ad86cf",
+      "clientSecret": "236d5822-820e-457e-b18c-10e258c9386b"
+    },
+    {
+      "clientId": "b4769027-e048-4485-8f0b-b8a336f2cd97",
+      "clientSecret": "41df6ea4-eba2-4d42-b7be-6f727555fccc"
+    },
+    ]
+  }
+  ```
+  > You can add more clientId/clientSecret/genius-access-token if you want. The credentials used in the example are dummy (fake). You've to use your own secrets
+- Finally run these following commands in the root of the project to start the Spotube Locally
+  ```bash
+  $ dart create-secrets.dart --local
+  $ flutter run -d <window|macos|linux|(<android-device-id>)>
+  ```
 
-```bash
-$ flutter pub get
-$ flutter run -d <window|macos|linux>
-```
-
-Do debugging/testing/build etc then submit to us with PR against the development branch (master) & we'll review your code. **DO NOT TOUCH `build` branch** as it is only for CI & releases
+Do debugging/testing/build etc then submit to us with PR against the development branch (master) & we'll review your code

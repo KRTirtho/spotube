@@ -95,7 +95,7 @@ class PlayerView extends HookConsumerWidget {
               );
             }),
             const Spacer(),
-            const PlayerActions(
+            PlayerActions(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
             PlayerControls(iconColor: paletteColor.bodyTextColor),

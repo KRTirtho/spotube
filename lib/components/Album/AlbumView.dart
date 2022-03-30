@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-track-to-track.dart';
+import 'package:spotube/hooks/useForceUpdate.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
-class AlbumView extends ConsumerWidget {
+class AlbumView extends HookConsumerWidget {
   final AlbumSimple album;
   const AlbumView(this.album, {Key? key}) : super(key: key);
 
@@ -36,8 +39,12 @@ class AlbumView extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
 
-    var isPlaylistPlaying = playback.currentPlaylist?.id == album.id;
-    SpotifyApi spotify = ref.watch(spotifyProvider);
+    final isPlaylistPlaying = playback.currentPlaylist?.id == album.id;
+    final SpotifyApi spotify = ref.watch(spotifyProvider);
+    final Auth auth = ref.watch(authProvider);
+
+    final update = useForceUpdate();
+
     return SafeArea(
       child: Scaffold(
         body: FutureBuilder<Iterable<TrackSimple>>(
@@ -55,10 +62,25 @@ class AlbumView extends ConsumerWidget {
                         // nav back
                         const BackButton(),
                         // heart playlist
-                        IconButton(
-                          icon: const Icon(Icons.favorite_outline_rounded),
-                          onPressed: () {},
-                        ),
+                        if (auth.isLoggedIn)
+                          FutureBuilder<List<bool>>(
+                              future: spotify.me.isSavedAlbums([album.id!]),
+                              builder: (context, snapshot) {
+                                final isSaved = snapshot.data?.first == true;
+                                return HeartButton(
+                                  isLiked: isSaved,
+                                  onPressed: () {
+                                    (isSaved
+                                            ? spotify.me.removeAlbums(
+                                                [album.id!],
+                                              )
+                                            : spotify.me.saveAlbums(
+                                                [album.id!],
+                                              ))
+                                        .then((_) => update());
+                                  },
+                                );
+                              }),
                         // play playlist
                         IconButton(
                           icon: Icon(

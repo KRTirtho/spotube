@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
-import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-track-to-track.dart';

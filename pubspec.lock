@@ -169,13 +169,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  dotenv:
-    dependency: "direct dev"
-    description:
-      name: dotenv
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -668,10 +661,12 @@ packages:
   spotify:
     dependency: "direct main"
     description:
-      name: spotify
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.0"
+      path: "."
+      ref: HEAD
+      resolved-ref: e36eb5884de44d39b310d0878779a697048061bd
+      url: "https://github.com/KRTirtho/spotify-dart.git"
+    source: git
+    version: "0.7.0"
   sqflite:
     dependency: transitive
     description:

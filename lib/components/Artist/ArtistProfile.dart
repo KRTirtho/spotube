@@ -14,12 +14,15 @@ import 'package:spotube/helpers/readable-number.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/hooks/useForceUpdate.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class ArtistProfile extends HookConsumerWidget {
   final String artistId;
-  const ArtistProfile(this.artistId, {Key? key}) : super(key: key);
+  final logger = createLogger(ArtistProfile);
+  ArtistProfile(this.artistId, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -44,6 +47,7 @@ class ArtistProfile extends HookConsumerWidget {
     );
 
     final breakpoint = useBreakpoints();
+    final update = useForceUpdate();
 
     return SafeArea(
       child: Scaffold(
@@ -106,19 +110,42 @@ class ArtistProfile extends HookConsumerWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // TODO: Implement check if user follows this artist
-                                // LIMITATION: spotify-dart lib
-                                FutureBuilder(
-                                    future: Future.value(true),
+                                FutureBuilder<List<bool>>(
+                                    future: spotify.me.isFollowing(
+                                      FollowingType.artist,
+                                      [artistId],
+                                    ),
                                     builder: (context, snapshot) {
+                                      final isFollowing =
+                                          snapshot.data?.first == true;
                                       return OutlinedButton(
                                         onPressed: () async {
-                                          // TODO: make `follow/unfollow` artists button work
-                                          // LIMITATION: spotify-dart lib
+                                          try {
+                                            isFollowing
+                                                ? await spotify.me.unfollow(
+                                                    FollowingType.artist,
+                                                    [artistId],
+                                                  )
+                                                : await spotify.me.follow(
+                                                    FollowingType.artist,
+                                                    [artistId],
+                                                  );
+                                          } catch (e, stack) {
+                                            logger.e(
+                                              "FollowButton.onPressed",
+                                              e,
+                                              stack,
+                                            );
+                                          } finally {
+                                            update();
+                                          }
                                         },
-                                        child: Text(snapshot.data == true
-                                            ? "Following"
-                                            : "Follow"),
+                                        child: snapshot.hasData
+                                            ? Text(isFollowing
+                                                ? "Following"
+                                                : "Follow")
+                                            : const CircularProgressIndicator
+                                                .adaptive(),
                                       );
                                     }),
                                 IconButton(

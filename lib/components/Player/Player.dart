@@ -162,7 +162,7 @@ class Player extends HookConsumerWidget {
                       },
                     ),
                   ),
-                  const PlayerActions()
+                  PlayerActions()
                 ],
               ),
             )
