@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 
 class PlaybuttonCard extends StatelessWidget {
   final void Function()? onTap;
@@ -82,7 +83,7 @@ class PlaybuttonCard extends StatelessWidget {
                 const SizedBox(height: 5),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Column(
                     children: [
                       Tooltip(
@@ -95,17 +96,47 @@ class PlaybuttonCard extends StatelessWidget {
                       ),
                       if (description != null) ...[
                         const SizedBox(height: 10),
-                        Text(
-                          description!,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Theme.of(context).textTheme.headline4?.color,
-                          ),
-                        )
+                        SizedBox(
+                          height: 30,
+                          child: description!.length > 30
+                              ? Marquee(
+                                  text: description!,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        ?.color,
+                                  ),
+                                  scrollAxis: Axis.horizontal,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  blankSpace: 60.0,
+                                  velocity: 30.0,
+                                  startAfter: const Duration(seconds: 2),
+                                  pauseAfterRound: const Duration(seconds: 2),
+                                  startPadding: 10.0,
+                                  accelerationDuration:
+                                      const Duration(seconds: 1),
+                                  accelerationCurve: Curves.linear,
+                                  decelerationDuration:
+                                      const Duration(milliseconds: 500),
+                                  decelerationCurve: Curves.easeOut,
+                                )
+                              : Text(
+                                  description!,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        ?.color,
+                                  ),
+                                ),
+                        ),
                       ]
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
