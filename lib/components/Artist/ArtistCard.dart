@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:marquee/marquee.dart';
 import 'package:spotify/spotify.dart';
 
 class ArtistCard extends StatelessWidget {
@@ -41,10 +42,29 @@ class ArtistCard extends StatelessWidget {
                 minRadius: 20,
                 backgroundImage: backgroundImage,
               ),
-              Text(
-                artist.name!,
-                style: Theme.of(context).textTheme.headline5,
-                overflow: TextOverflow.ellipsis,
+              SizedBox(
+                height: 30,
+                child: artist.name!.length > 15
+                    ? Marquee(
+                        text: artist.name!,
+                        style: Theme.of(context).textTheme.headline5,
+                        scrollAxis: Axis.horizontal,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        blankSpace: 60.0,
+                        velocity: 30.0,
+                        startAfter: const Duration(seconds: 2),
+                        pauseAfterRound: const Duration(seconds: 2),
+                        accelerationDuration: const Duration(seconds: 1),
+                        accelerationCurve: Curves.linear,
+                        decelerationDuration: const Duration(milliseconds: 500),
+                        decelerationCurve: Curves.easeOut,
+                        fadingEdgeStartFraction: 0.15,
+                        fadingEdgeEndFraction: 0.15,
+                      )
+                    : Text(
+                        artist.name!,
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
               ),
               Text(
                 "Artist",

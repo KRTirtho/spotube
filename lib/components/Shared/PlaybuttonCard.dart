@@ -114,13 +114,14 @@ class PlaybuttonCard extends StatelessWidget {
                                   velocity: 30.0,
                                   startAfter: const Duration(seconds: 2),
                                   pauseAfterRound: const Duration(seconds: 2),
-                                  startPadding: 10.0,
                                   accelerationDuration:
                                       const Duration(seconds: 1),
                                   accelerationCurve: Curves.linear,
                                   decelerationDuration:
                                       const Duration(milliseconds: 500),
                                   decelerationCurve: Curves.easeOut,
+                                  fadingEdgeStartFraction: 0.15,
+                                  fadingEdgeEndFraction: 0.15,
                                 )
                               : Text(
                                   description!,
