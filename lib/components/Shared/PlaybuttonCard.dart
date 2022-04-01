@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
+import 'package:spotube/components/Shared/SpotubeWidgets.dart';
 
 class PlaybuttonCard extends StatelessWidget {
   final void Function()? onTap;
@@ -88,10 +88,19 @@ class PlaybuttonCard extends StatelessWidget {
                     children: [
                       Tooltip(
                         message: title,
-                        child: Text(
-                          title,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
+                        child: SizedBox(
+                          height: 20,
+                          child: title.length > 25
+                              ? SpotubeMarqueeText(
+                                  text: title,
+                                  textStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                )
+                              : Text(
+                                  title,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                       if (description != null) ...[
@@ -99,29 +108,15 @@ class PlaybuttonCard extends StatelessWidget {
                         SizedBox(
                           height: 30,
                           child: description!.length > 30
-                              ? Marquee(
+                              ? SpotubeMarqueeText(
                                   text: description!,
-                                  style: TextStyle(
+                                  textStyle: TextStyle(
                                     fontSize: 13,
                                     color: Theme.of(context)
                                         .textTheme
                                         .headline4
                                         ?.color,
                                   ),
-                                  scrollAxis: Axis.horizontal,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  blankSpace: 60.0,
-                                  velocity: 30.0,
-                                  startAfter: const Duration(seconds: 2),
-                                  pauseAfterRound: const Duration(seconds: 2),
-                                  accelerationDuration:
-                                      const Duration(seconds: 1),
-                                  accelerationCurve: Curves.linear,
-                                  decelerationDuration:
-                                      const Duration(milliseconds: 500),
-                                  decelerationCurve: Curves.easeOut,
-                                  fadingEdgeStartFraction: 0.15,
-                                  fadingEdgeEndFraction: 0.15,
                                 )
                               : Text(
                                   description!,

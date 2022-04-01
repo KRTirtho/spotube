@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:marquee/marquee.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Shared/SpotubeWidgets.dart';
 
 class ArtistCard extends StatelessWidget {
   final Artist artist;
@@ -45,21 +46,9 @@ class ArtistCard extends StatelessWidget {
               SizedBox(
                 height: 30,
                 child: artist.name!.length > 15
-                    ? Marquee(
+                    ? SpotubeMarqueeText(
                         text: artist.name!,
-                        style: Theme.of(context).textTheme.headline5,
-                        scrollAxis: Axis.horizontal,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        blankSpace: 60.0,
-                        velocity: 30.0,
-                        startAfter: const Duration(seconds: 2),
-                        pauseAfterRound: const Duration(seconds: 2),
-                        accelerationDuration: const Duration(seconds: 1),
-                        accelerationCurve: Curves.linear,
-                        decelerationDuration: const Duration(milliseconds: 500),
-                        decelerationCurve: Curves.easeOut,
-                        fadingEdgeStartFraction: 0.15,
-                        fadingEdgeEndFraction: 0.15,
+                        textStyle: Theme.of(context).textTheme.headline5!,
                       )
                     : Text(
                         artist.name!,
