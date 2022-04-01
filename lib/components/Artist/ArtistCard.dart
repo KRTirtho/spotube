@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:marquee/marquee.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Shared/SpotubeWidgets.dart';
 
 class ArtistCard extends StatelessWidget {
   final Artist artist;
@@ -41,10 +43,17 @@ class ArtistCard extends StatelessWidget {
                 minRadius: 20,
                 backgroundImage: backgroundImage,
               ),
-              Text(
-                artist.name!,
-                style: Theme.of(context).textTheme.headline5,
-                overflow: TextOverflow.ellipsis,
+              SizedBox(
+                height: 30,
+                child: artist.name!.length > 15
+                    ? SpotubeMarqueeText(
+                        text: artist.name!,
+                        textStyle: Theme.of(context).textTheme.headline5!,
+                      )
+                    : Text(
+                        artist.name!,
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
               ),
               Text(
                 "Artist",

@@ -58,6 +58,7 @@ dependencies:
   just_audio_background: ^0.0.1-beta.5
   logger: ^1.1.0
   permission_handler: ^9.2.0
+  marquee: ^2.2.1
 
 dev_dependencies:
   flutter_test:

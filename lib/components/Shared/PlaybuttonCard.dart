@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/components/Shared/SpotubeWidgets.dart';
 
 class PlaybuttonCard extends StatelessWidget {
   final void Function()? onTap;
@@ -82,30 +83,56 @@ class PlaybuttonCard extends StatelessWidget {
                 const SizedBox(height: 5),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Column(
                     children: [
                       Tooltip(
                         message: title,
-                        child: Text(
-                          title,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
+                        child: SizedBox(
+                          height: 20,
+                          child: title.length > 25
+                              ? SpotubeMarqueeText(
+                                  text: title,
+                                  textStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                )
+                              : Text(
+                                  title,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                       if (description != null) ...[
                         const SizedBox(height: 10),
-                        Text(
-                          description!,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Theme.of(context).textTheme.headline4?.color,
-                          ),
-                        )
+                        SizedBox(
+                          height: 30,
+                          child: description!.length > 30
+                              ? SpotubeMarqueeText(
+                                  text: description!,
+                                  textStyle: TextStyle(
+                                    fontSize: 13,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        ?.color,
+                                  ),
+                                )
+                              : Text(
+                                  description!,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        ?.color,
+                                  ),
+                                ),
+                        ),
                       ]
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
