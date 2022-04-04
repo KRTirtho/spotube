@@ -163,6 +163,19 @@ class Settings extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Download lyrics along with the Track"),
+                  Switch.adaptive(
+                    value: preferences.saveTrackLyrics,
+                    onChanged: (state) {
+                      preferences.setSaveTrackLyrics(state);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
               if (auth.isAnonymous)
                 Wrap(
                   spacing: 20,

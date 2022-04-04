@@ -102,8 +102,8 @@ $ flatpak install flathub com.github.KRTirtho.Spotube
 ## Mac OS
 Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg) from the release & follow along the setup wizard
 
-
-**I'll/try to upload the package binaries to linux debian/arch/ubuntu/snap/flatpack/redhat/chocolatey/homebrew stores or software centers or repositories**
+## Nightly Builds
+Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/spotube/workflows/flutter-build/build)
 
 ## Optional Configurations
 <details>

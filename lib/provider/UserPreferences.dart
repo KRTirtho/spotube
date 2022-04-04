@@ -11,6 +11,7 @@ import 'package:spotube/models/generated_secrets.dart';
 
 class UserPreferences extends ChangeNotifier {
   String recommendationMarket;
+  bool saveTrackLyrics;
   String geniusAccessToken;
   HotKey? nextTrackHotKey;
   HotKey? prevTrackHotKey;
@@ -18,6 +19,7 @@ class UserPreferences extends ChangeNotifier {
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
+    this.saveTrackLyrics = false,
     this.nextTrackHotKey,
     this.prevTrackHotKey,
     this.playPauseHotKey,
@@ -45,6 +47,9 @@ class UserPreferences extends ChangeNotifier {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       String? accessToken =
           localStorage.getString(LocalStorageKeys.geniusAccessToken);
+
+      saveTrackLyrics =
+          localStorage.getBool(LocalStorageKeys.saveTrackLyrics) ?? false;
 
       recommendationMarket =
           localStorage.getString(LocalStorageKeys.recommendationMarket) ?? 'US';
@@ -82,6 +87,14 @@ class UserPreferences extends ChangeNotifier {
     } catch (e, stack) {
       logger.e("onInit", e, stack);
     }
+  }
+
+  void setSaveTrackLyrics(bool shouldSave) {
+    saveTrackLyrics = shouldSave;
+    SharedPreferences.getInstance().then((value) {
+      value.setBool(LocalStorageKeys.saveTrackLyrics, shouldSave);
+      notifyListeners();
+    });
   }
 
   void setRecommendationMarket(String country) {

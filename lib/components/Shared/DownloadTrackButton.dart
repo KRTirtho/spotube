@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
+import 'package:spotube/helpers/getLyrics.dart';
+import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:path/path.dart' as path;
@@ -11,12 +15,14 @@ import 'package:permission_handler/permission_handler.dart';
 
 enum TrackStatus { downloading, idle, done }
 
-class DownloadTrackButton extends HookWidget {
+class DownloadTrackButton extends HookConsumerWidget {
   final Track? track;
   const DownloadTrackButton({Key? key, this.track}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final UserPreferences preferences = ref.watch(userPreferencesProvider);
+    final Playback playback = ref.watch(playbackProvider);
     final status = useState<TrackStatus>(TrackStatus.idle);
     YoutubeExplode yt = useMemoized(() => YoutubeExplode());
 
@@ -44,8 +50,10 @@ class DownloadTrackButton extends HookWidget {
               : (await path_provider.getDownloadsDirectory())!.path,
           "Spotube");
       String fileName =
-          "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}.mp3";
-      File outputFile = File(path.join(downloadFolder, fileName));
+          "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}";
+      File outputFile = File(path.join(downloadFolder, "$fileName.mp3"));
+      File outputLyricsFile =
+          File(path.join(downloadFolder, "$fileName-lyrics.txt"));
 
       if (await outputFile.exists()) {
         final shouldReplace = await showDialog<bool>(
@@ -102,7 +110,26 @@ class DownloadTrackButton extends HookWidget {
         },
       );
 
-      if (!outputFile.existsSync()) outputFile.createSync(recursive: true);
+      if (!await outputFile.exists()) await outputFile.create(recursive: true);
+
+      if (preferences.saveTrackLyrics && playback.currentTrack != null) {
+        if (!await outputLyricsFile.exists()) {
+          await outputLyricsFile.create(recursive: true);
+        }
+        final lyrics = await getLyrics(
+          playback.currentTrack!.name!,
+          artistsToString<Artist>(playback.currentTrack!.artists ?? []),
+          apiKey: preferences.geniusAccessToken,
+          optimizeQuery: true,
+        );
+        if (lyrics != null) {
+          await outputLyricsFile.writeAsString(
+            "$lyrics\n\nPowered by genius.com",
+            mode: FileMode.writeOnly,
+          );
+        }
+      }
+
       IOSink outputFileStream = outputFile.openWrite();
       await audioStream.pipe(outputFileStream);
       await outputFileStream.flush();
@@ -120,7 +147,13 @@ class DownloadTrackButton extends HookWidget {
         }
         return statusCb.cancel();
       });
-    }, [track, status, yt]);
+    }, [
+      track,
+      status,
+      yt,
+      preferences.saveTrackLyrics,
+      playback.currentTrack,
+    ]);
 
     useEffect(() {
       return () => yt.close();
