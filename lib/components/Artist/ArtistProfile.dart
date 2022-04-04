@@ -21,7 +21,7 @@ import 'package:spotube/provider/SpotifyDI.dart';
 
 class ArtistProfile extends HookConsumerWidget {
   final String artistId;
-  final logger = createLogger(ArtistProfile);
+  final logger = getLogger(ArtistProfile);
   ArtistProfile(this.artistId, {Key? key}) : super(key: key);
 
   @override

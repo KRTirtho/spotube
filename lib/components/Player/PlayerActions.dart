@@ -15,7 +15,7 @@ class PlayerActions extends HookConsumerWidget {
     this.mainAxisAlignment = MainAxisAlignment.center,
     Key? key,
   }) : super(key: key);
-  final logger = createLogger(PlayerActions);
+  final logger = getLogger(PlayerActions);
 
   @override
   Widget build(BuildContext context, ref) {

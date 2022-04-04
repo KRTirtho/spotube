@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 class Player extends HookConsumerWidget {
   Player({Key? key}) : super(key: key);
 
-  final logger = createLogger(Player);
+  final logger = getLogger(Player);
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);

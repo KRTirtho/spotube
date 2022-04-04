@@ -17,7 +17,7 @@ class CategoryCard extends HookWidget {
     this.playlists,
   }) : super(key: key);
 
-  final logger = createLogger(CategoryCard);
+  final logger = getLogger(CategoryCard);
 
   @override
   Widget build(BuildContext context) {

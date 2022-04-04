@@ -14,7 +14,7 @@ class PlayerControls extends HookConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  final logger = createLogger(PlayerControls);
+  final logger = getLogger(PlayerControls);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -47,7 +47,9 @@ class PlayerControls extends HookConsumerWidget {
         child: Column(
           children: [
             StreamBuilder<Duration>(
-                stream: player.positionStream,
+                stream: player.positionStream.isBroadcast
+                    ? player.positionStream
+                    : player.positionStream.asBroadcastStream(),
                 builder: (context, snapshot) {
                   final totalMinutes =
                       zeroPadNumStr(duration.inMinutes.remainder(60));

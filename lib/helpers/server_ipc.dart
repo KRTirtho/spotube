@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:spotube/models/Logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final logger = createLogger("ServerIPC");
+final logger = getLogger("ServerIPC");
 
 Future<String?> connectIpc(String authUri, String redirectUri) async {
   try {

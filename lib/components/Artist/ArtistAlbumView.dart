@@ -24,7 +24,7 @@ class _ArtistAlbumViewState extends ConsumerState<ArtistAlbumView> {
   final PagingController<int, Album> _pagingController =
       PagingController<int, Album>(firstPageKey: 0);
 
-  final logger = createLogger(ArtistAlbumView);
+  final logger = getLogger(ArtistAlbumView);
 
   @override
   void initState() {

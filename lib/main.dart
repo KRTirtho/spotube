@@ -39,7 +39,7 @@ void main() async {
 
 class MyApp extends HookConsumerWidget {
   final GoRouter _router = createGoRouter();
-  final logger = createLogger(MyApp);
+  final logger = getLogger(MyApp);
 
   MyApp({Key? key}) : super(key: key);
   @override

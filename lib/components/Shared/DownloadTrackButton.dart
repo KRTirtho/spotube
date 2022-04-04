@@ -17,10 +17,10 @@ class DownloadTrackButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var status = useState<TrackStatus>(TrackStatus.idle);
+    final status = useState<TrackStatus>(TrackStatus.idle);
     YoutubeExplode yt = useMemoized(() => YoutubeExplode());
 
-    var _downloadTrack = useCallback(() async {
+    final _downloadTrack = useCallback(() async {
       if (track == null) return;
       if ((Platform.isAndroid || Platform.isIOS) &&
           !await Permission.storage.isGranted &&
@@ -37,6 +37,43 @@ class DownloadTrackButton extends HookWidget {
       }
       StreamManifest manifest =
           await yt.videos.streamsClient.getManifest(track?.href);
+
+      String downloadFolder = path.join(
+          Platform.isAndroid
+              ? "/storage/emulated/0/Download"
+              : (await path_provider.getDownloadsDirectory())!.path,
+          "Spotube");
+      String fileName =
+          "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}.mp3";
+      File outputFile = File(path.join(downloadFolder, fileName));
+
+      if (await outputFile.exists()) {
+        final shouldReplace = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Track Already Exists"),
+              content: const Text(
+                  "Do you want to replace the already downloaded track?"),
+              actions: [
+                TextButton(
+                  child: const Text("No"),
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                ),
+                TextButton(
+                  child: const Text("Yes"),
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                )
+              ],
+            );
+          },
+        );
+        if (shouldReplace != true) return;
+      }
 
       final audioStream = yt.videos.streamsClient
           .get(
@@ -65,34 +102,24 @@ class DownloadTrackButton extends HookWidget {
         },
       );
 
-      String downloadFolder = path.join(
-          Platform.isAndroid
-              ? "/storage/emulated/0/Download"
-              : (await path_provider.getDownloadsDirectory())!.path,
-          "Spotube");
-      String fileName =
-          "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}.mp3";
-      File outputFile = File(path.join(downloadFolder, fileName));
-      if (!outputFile.existsSync()) {
-        outputFile.createSync(recursive: true);
-        IOSink outputFileStream = outputFile.openWrite();
-        await audioStream.pipe(outputFileStream);
-        await outputFileStream.flush();
-        await outputFileStream.close().then((value) async {
-          if (status.value == TrackStatus.downloading) {
-            status.value = TrackStatus.done;
-            await Future.delayed(
-              const Duration(seconds: 3),
-              () {
-                if (status.value == TrackStatus.done) {
-                  status.value = TrackStatus.idle;
-                }
-              },
-            );
-          }
-          return statusCb.cancel();
-        });
-      }
+      if (!outputFile.existsSync()) outputFile.createSync(recursive: true);
+      IOSink outputFileStream = outputFile.openWrite();
+      await audioStream.pipe(outputFileStream);
+      await outputFileStream.flush();
+      await outputFileStream.close().then((value) async {
+        if (status.value == TrackStatus.downloading) {
+          status.value = TrackStatus.done;
+          await Future.delayed(
+            const Duration(seconds: 3),
+            () {
+              if (status.value == TrackStatus.done) {
+                status.value = TrackStatus.idle;
+              }
+            },
+          );
+        }
+        return statusCb.cancel();
+      });
     }, [track, status, yt]);
 
     useEffect(() {

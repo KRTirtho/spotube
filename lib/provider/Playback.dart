@@ -48,7 +48,8 @@ class CurrentPlaylist {
 }
 
 class Playback extends ChangeNotifier {
-  final _logger = createLogger(Playback);
+  AudioSource? _currentAudioSource;
+  final _logger = getLogger(Playback);
   CurrentPlaylist? _currentPlaylist;
   Track? _currentTrack;
 
@@ -67,6 +68,7 @@ class Playback extends ChangeNotifier {
   StreamSubscription<Duration?>? _durationStreamListener;
   StreamSubscription<ProcessingState>? _processingStateStreamListener;
   StreamSubscription<AudioInterruptionEvent>? _audioInterruptionEventListener;
+  StreamSubscription<Duration>? _positionStreamListener;
 
   AudioPlayer player;
   YoutubeExplode youtube;
@@ -97,15 +99,17 @@ class Playback extends ChangeNotifier {
           if (player.playing) await player.pause();
           await player.play();
         }
+
         _duration = duration;
-        _callAllDurationListeners(duration);
         // for avoiding unnecessary re-renders in other components that
         // doesn't need duration
+        _callAllDurationListeners(duration);
       }
     });
 
     _processingStateStreamListener =
         player.processingStateStream.listen((event) async {
+      _logger.v("[Processing State Change] $event");
       try {
         if (event != ProcessingState.completed) return;
         if (_currentTrack?.id != null) {
@@ -121,6 +125,11 @@ class Playback extends ChangeNotifier {
         _logger.e("PrecessingStateStreamListener", e, stack);
       }
     });
+
+    _positionStreamListener = (player.positionStream.isBroadcast
+            ? player.positionStream
+            : player.positionStream.asBroadcastStream())
+        .listen((position) async {});
 
     AudioSession.instance.then((session) async {
       _audioSession = session;
@@ -159,16 +168,19 @@ class Playback extends ChangeNotifier {
   }
 
   set setCurrentTrack(Track track) {
+    _logger.v("[Setting Current Track] ${track.name} - ${track.id}");
     _currentTrack = track;
     notifyListeners();
   }
 
   set setCurrentPlaylist(CurrentPlaylist playlist) {
+    _logger.v("[Current Playlist Changed] ${playlist.name} - ${playlist.id}");
     _currentPlaylist = playlist;
     notifyListeners();
   }
 
   void reset() {
+    _logger.v("Playback Reset");
     _isPlaying = false;
     _duration = null;
     _callAllDurationListeners(null);
@@ -200,11 +212,13 @@ class Playback extends ChangeNotifier {
     _durationStreamListener?.cancel();
     _playingStreamListener?.cancel();
     _audioInterruptionEventListener?.cancel();
+    _positionStreamListener?.cancel();
     _audioSession?.setActive(false);
     super.dispose();
   }
 
   void movePlaylistPositionBy(int pos) {
+    _logger.v("[Playlist Position Move] $pos");
     if (_currentTrack != null && _currentPlaylist != null) {
       int index = _currentPlaylist!.trackIds.indexOf(_currentTrack!.id!) + pos;
 
@@ -228,6 +242,7 @@ class Playback extends ChangeNotifier {
   }
 
   Future<void> startPlaying([Track? track]) async {
+    _logger.v("[Track Playing] ${track?.name} - ${track?.id}");
     try {
       // the track is already playing so no need to change that
       if (track != null && track.id == _currentTrack?.id) return;
@@ -242,9 +257,10 @@ class Playback extends ChangeNotifier {
           artUri: Uri.parse(imageToUrlString(track.album?.images)),
         );
         if (parsedUri != null && parsedUri.hasAbsolutePath) {
+          _currentAudioSource = AudioSource.uri(parsedUri, tag: tag);
           await player
               .setAudioSource(
-            AudioSource.uri(parsedUri, tag: tag),
+            _currentAudioSource!,
             preload: true,
           )
               .then((value) async {
@@ -256,9 +272,11 @@ class Playback extends ChangeNotifier {
         }
         final ytTrack = await toYoutubeTrack(youtube, track);
         if (setTrackUriById(track.id!, ytTrack.uri!)) {
+          _currentAudioSource =
+              AudioSource.uri(Uri.parse(ytTrack.uri!), tag: tag);
           await player
               .setAudioSource(
-            AudioSource.uri(Uri.parse(ytTrack.uri!), tag: tag),
+            _currentAudioSource!,
             preload: true,
           )
               .then((value) {

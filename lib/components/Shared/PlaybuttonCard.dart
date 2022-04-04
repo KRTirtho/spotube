@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:spotube/components/Shared/SpotubeWidgets.dart';
+import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 
 class PlaybuttonCard extends StatelessWidget {
   final void Function()? onTap;

@@ -12,7 +12,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class PlaylistView extends HookConsumerWidget {
-  final logger = createLogger(PlaylistView);
+  final logger = getLogger(PlaylistView);
   final PlaylistSimple playlist;
   PlaylistView(this.playlist, {Key? key}) : super(key: key);
 

@@ -6,7 +6,7 @@ import 'package:spotube/helpers/get-random-element.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
 
-final logger = createLogger("GetLyrics");
+final logger = getLogger("GetLyrics");
 
 String getTitle(String title, String artist) {
   return "$title $artist"

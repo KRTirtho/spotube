@@ -16,7 +16,7 @@ class UserArtists extends ConsumerStatefulWidget {
 class _UserArtistsState extends ConsumerState<UserArtists> {
   final PagingController<String, Artist> _pagingController =
       PagingController(firstPageKey: "");
-  final logger = createLogger(UserArtists);
+  final logger = getLogger(UserArtists);
 
   @override
   void initState() {

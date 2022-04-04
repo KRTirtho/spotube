@@ -23,7 +23,7 @@ class UserPreferences extends ChangeNotifier {
     onInit();
   }
 
-  final logger = createLogger(UserPreferences);
+  final logger = getLogger(UserPreferences);
 
   Future<HotKey?> _getHotKeyFromLocalStorage(
       SharedPreferences preferences, String key) async {

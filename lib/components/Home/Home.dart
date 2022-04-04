@@ -42,7 +42,7 @@ List<String> spotifyScopes = [
 
 class Home extends HookConsumerWidget {
   Home({Key? key}) : super(key: key);
-  final logger = createLogger(Home);
+  final logger = getLogger(Home);
 
   @override
   Widget build(BuildContext context, ref) {

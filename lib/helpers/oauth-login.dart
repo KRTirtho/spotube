@@ -7,7 +7,7 @@ import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
 
 const redirectUri = "http://localhost:4304/auth/spotify/callback";
-final logger = createLogger("OAuthLogin");
+final logger = getLogger("OAuthLogin");
 
 Future<void> oauthLogin(Auth auth,
     {required String clientId, required String clientSecret}) async {

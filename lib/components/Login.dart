@@ -14,7 +14,7 @@ import 'package:spotube/provider/UserPreferences.dart';
 
 class Login extends HookConsumerWidget {
   Login({Key? key}) : super(key: key);
-  final log = createLogger(Login);
+  final log = getLogger(Login);
 
   @override
   Widget build(BuildContext context, ref) {
