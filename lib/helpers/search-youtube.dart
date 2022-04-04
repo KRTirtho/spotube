@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:collection/collection.dart';
 import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 

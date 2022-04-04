@@ -27,6 +27,7 @@ import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 
 List<String> spotifyScopes = [
   "playlist-modify-public",
@@ -47,6 +48,9 @@ class Home extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Auth auth = ref.watch(authProvider);
+    String recommendationMarket = ref.watch(userPreferencesProvider.select(
+      (value) => (value.recommendationMarket),
+    ));
 
     final pagingController =
         usePagingController<int, Category>(firstPageKey: 0);
@@ -67,9 +71,11 @@ class Home extends HookConsumerWidget {
 
     final listener = useCallback((int pageKey) async {
       final spotify = ref.read(spotifyProvider);
+
       try {
-        Page<Category> categories =
-            await spotify.categories.list(country: "US").getPage(15, pageKey);
+        Page<Category> categories = await spotify.categories
+            .list(country: recommendationMarket)
+            .getPage(15, pageKey);
 
         final items = categories.items!.toList();
         if (pageKey == 0) {
@@ -88,7 +94,7 @@ class Home extends HookConsumerWidget {
         pagingController.error = e;
         logger.e("pagingController.addPageRequestListener", e, stack);
       }
-    }, []);
+    }, [recommendationMarket]);
 
     useEffect(() {
       if (localStorage == null) return null;

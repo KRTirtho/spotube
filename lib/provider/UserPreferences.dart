@@ -10,12 +10,14 @@ import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
 
 class UserPreferences extends ChangeNotifier {
+  String recommendationMarket;
   String geniusAccessToken;
   HotKey? nextTrackHotKey;
   HotKey? prevTrackHotKey;
   HotKey? playPauseHotKey;
   UserPreferences({
     required this.geniusAccessToken,
+    required this.recommendationMarket,
     this.nextTrackHotKey,
     this.prevTrackHotKey,
     this.playPauseHotKey,
@@ -43,6 +45,9 @@ class UserPreferences extends ChangeNotifier {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       String? accessToken =
           localStorage.getString(LocalStorageKeys.geniusAccessToken);
+
+      recommendationMarket =
+          localStorage.getString(LocalStorageKeys.recommendationMarket) ?? 'US';
       geniusAccessToken = accessToken != null && accessToken.isNotEmpty
           ? accessToken
           : getRandomElement(lyricsSecrets);
@@ -77,6 +82,14 @@ class UserPreferences extends ChangeNotifier {
     } catch (e, stack) {
       logger.e("onInit", e, stack);
     }
+  }
+
+  void setRecommendationMarket(String country) {
+    recommendationMarket = country;
+    SharedPreferences.getInstance().then((value) {
+      value.setString(LocalStorageKeys.recommendationMarket, country);
+      notifyListeners();
+    });
   }
 
   void setGeniusAccessToken(String token) {
@@ -118,5 +131,6 @@ class UserPreferences extends ChangeNotifier {
   }
 }
 
-final userPreferencesProvider =
-    ChangeNotifierProvider((_) => UserPreferences(geniusAccessToken: ""));
+final userPreferencesProvider = ChangeNotifierProvider(
+  (_) => UserPreferences(geniusAccessToken: "", recommendationMarket: 'US'),
+);

@@ -1,4 +1,5 @@
 abstract class LocalStorageKeys {
+  static String recommendationMarket = 'recommendation_market';
   static String clientId = 'client_id';
   static String clientSecret = 'client_secret';
   static String accessToken = 'access_token';

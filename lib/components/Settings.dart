@@ -9,6 +9,7 @@ import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
+import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/ThemeProvider.dart';
 import 'package:spotube/provider/UserPreferences.dart';
@@ -139,6 +140,26 @@ class Settings extends HookConsumerWidget {
                       }
                     },
                   )
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Market Place (Recommendation Country)"),
+                  DropdownButton(
+                    value: preferences.recommendationMarket,
+                    items: spotifyMarkets
+                        .map((country) => (DropdownMenuItem(
+                              child: Text(country),
+                              value: country,
+                            )))
+                        .toList(),
+                    onChanged: (value) {
+                      if (value == null) return;
+                      preferences.setRecommendationMarket(value as String);
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
