@@ -43,7 +43,7 @@ class PlayerControls extends HookConsumerWidget {
     final duration = _duration.value ?? Duration.zero;
 
     return Container(
-        constraints: const BoxConstraints(maxWidth: 700),
+        constraints: const BoxConstraints(maxWidth: 600),
         child: Column(
           children: [
             StreamBuilder<Duration>(

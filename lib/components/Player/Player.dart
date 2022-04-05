@@ -131,7 +131,7 @@ class Player extends HookConsumerWidget {
           children: [
             Expanded(child: PlayerTrackDetails(albumArt: albumArt)),
             // controls
-            Expanded(
+            Flexible(
               flex: 3,
               child: PlayerControls(),
             ),

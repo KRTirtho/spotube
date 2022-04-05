@@ -29,6 +29,7 @@ void main() async {
       appWindow.size = const Size(900, 700);
       appWindow.alignment = Alignment.center;
       appWindow.maximize();
+      appWindow.title = "Spotube";
       appWindow.show();
     });
   }

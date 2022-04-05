@@ -118,6 +118,7 @@ class UserPreferences extends ChangeNotifier {
   void setRecommendationMarket(String country) {
     recommendationMarket = country;
     localStorage?.setString(LocalStorageKeys.recommendationMarket, country);
+    notifyListeners();
   }
 
   void setGeniusAccessToken(String token) {
