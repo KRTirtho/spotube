@@ -1,14 +1,14 @@
 # Maintainer: Kingkor Roy Tirtho <krtirho@gmail.com>
 pkgname=spotube-bin
 pkgver=2.0.0
-pkgrel=2
+pkgrel=3
 epoch=
 pkgdesc="A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed"
 arch=(x86_64)
 url="https://github.com/KRTirtho/spotube/"
 license=('BSD-4-Clause')
 groups=()
-depends=('libkeybinder3')
+depends=('libkeybinder3' 'gst-plugins-good' 'webkit2gtk')
 makedepends=()
 checkdepends=()
 optdepends=()
