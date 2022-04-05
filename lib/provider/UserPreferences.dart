@@ -11,6 +11,7 @@ import 'package:spotube/models/generated_secrets.dart';
 
 class UserPreferences extends ChangeNotifier {
   ThemeMode themeMode;
+  String ytSearchFormat;
   String recommendationMarket;
   bool saveTrackLyrics;
   String geniusAccessToken;
@@ -22,6 +23,7 @@ class UserPreferences extends ChangeNotifier {
     required this.geniusAccessToken,
     required this.recommendationMarket,
     required this.themeMode,
+    required this.ytSearchFormat,
     this.saveTrackLyrics = false,
     this.nextTrackHotKey,
     this.prevTrackHotKey,
@@ -149,6 +151,12 @@ class UserPreferences extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void setYtSearchFormat(String format) {
+    ytSearchFormat = format;
+    localStorage?.setString(LocalStorageKeys.ytSearchFormate, format);
+    notifyListeners();
+  }
 }
 
 final userPreferencesProvider = ChangeNotifierProvider(
@@ -156,5 +164,6 @@ final userPreferencesProvider = ChangeNotifierProvider(
     geniusAccessToken: "",
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,
+    ytSearchFormat: "\$MAIN_ARTIST - \$TITLE \$FEATURED_ARTISTS",
   ),
 );

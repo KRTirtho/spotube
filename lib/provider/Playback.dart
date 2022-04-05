@@ -11,6 +11,7 @@ import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -48,6 +49,7 @@ class CurrentPlaylist {
 }
 
 class Playback extends ChangeNotifier {
+  ChangeNotifierProviderRef<Playback> ref;
   AudioSource? _currentAudioSource;
   final _logger = getLogger(Playback);
   CurrentPlaylist? _currentPlaylist;
@@ -76,6 +78,7 @@ class Playback extends ChangeNotifier {
   Playback({
     required this.player,
     required this.youtube,
+    required this.ref,
     CurrentPlaylist? currentPlaylist,
     Track? currentTrack,
   })  : _currentPlaylist = currentPlaylist,
@@ -270,7 +273,12 @@ class Playback extends ChangeNotifier {
             notifyListeners();
           });
         }
-        final ytTrack = await toYoutubeTrack(youtube, track);
+        final preferences = ref.read(userPreferencesProvider);
+        final ytTrack = await toYoutubeTrack(
+          youtube,
+          track,
+          preferences.ytSearchFormat,
+        );
         if (setTrackUriById(track.id!, ytTrack.uri!)) {
           _currentAudioSource =
               AudioSource.uri(Uri.parse(ytTrack.uri!), tag: tag);
@@ -294,5 +302,9 @@ class Playback extends ChangeNotifier {
 final playbackProvider = ChangeNotifierProvider<Playback>((ref) {
   final player = ref.watch(audioPlayerProvider);
   final youtube = ref.watch(youtubeProvider);
-  return Playback(player: player, youtube: youtube);
+  return Playback(
+    player: player,
+    youtube: youtube,
+    ref: ref,
+  );
 });

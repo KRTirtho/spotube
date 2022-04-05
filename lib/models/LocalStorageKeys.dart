@@ -1,6 +1,8 @@
 abstract class LocalStorageKeys {
   static String saveTrackLyrics = 'save_track_lyrics';
   static String recommendationMarket = 'recommendation_market';
+  static String ytSearchFormate = 'youtube_search_format';
+
   static String clientId = 'client_id';
   static String clientSecret = 'client_secret';
   static String accessToken = 'access_token';

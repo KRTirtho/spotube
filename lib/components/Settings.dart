@@ -20,11 +20,17 @@ class Settings extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
     final Auth auth = ref.watch(authProvider);
-    var geniusAccessToken = useState<String?>(null);
-    TextEditingController textEditingController = useTextEditingController();
+    final geniusAccessToken = useState<String?>(null);
+    TextEditingController geniusTokenController = useTextEditingController();
+    final ytSearchFormatController =
+        useTextEditingController(text: preferences.ytSearchFormat);
 
-    textEditingController.addListener(() {
-      geniusAccessToken.value = textEditingController.value.text;
+    geniusTokenController.addListener(() {
+      geniusAccessToken.value = geniusTokenController.value.text;
+    });
+
+    ytSearchFormatController.addListener(() {
+      preferences.setYtSearchFormat(ytSearchFormatController.value.text);
     });
 
     return SafeArea(
@@ -52,7 +58,7 @@ class Settings extends HookConsumerWidget {
                   Expanded(
                     flex: 1,
                     child: TextField(
-                      controller: textEditingController,
+                      controller: geniusTokenController,
                       decoration: InputDecoration(
                         hintText: preferences.geniusAccessToken,
                       ),
@@ -76,7 +82,7 @@ class Settings extends HookConsumerWidget {
                               }
 
                               geniusAccessToken.value = null;
-                              textEditingController.text = "";
+                              geniusTokenController.text = "";
                             }
                           : null,
                       child: const Text("Save"),
@@ -170,6 +176,23 @@ class Settings extends HookConsumerWidget {
                     onChanged: (state) {
                       preferences.setSaveTrackLyrics(state);
                     },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Expanded(
+                    flex: 2,
+                    child: Text(
+                        "Format of the YouTube Search term (Case sensitive)"),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: TextField(
+                      controller: ytSearchFormatController,
+                    ),
                   ),
                 ],
               ),
