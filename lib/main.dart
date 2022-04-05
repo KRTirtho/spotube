@@ -6,12 +6,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/GoRouteDeclarations.dart';
-import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
-import 'package:spotube/provider/ThemeProvider.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
@@ -44,25 +42,11 @@ class MyApp extends HookConsumerWidget {
   MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
-    var themeMode = ref.watch(themeProvider);
+    var themeMode =
+        ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     var player = ref.watch(audioPlayerProvider);
     var youtube = ref.watch(youtubeProvider);
     useEffect(() {
-      SharedPreferences.getInstance().then((localStorage) {
-        String? themeMode = localStorage.getString(LocalStorageKeys.themeMode);
-        var themeNotifier = ref.read(themeProvider.notifier);
-
-        switch (themeMode) {
-          case "light":
-            themeNotifier.state = ThemeMode.light;
-            break;
-          case "dark":
-            themeNotifier.state = ThemeMode.dark;
-            break;
-          default:
-            themeNotifier.state = ThemeMode.system;
-        }
-      });
       return () {
         player.dispose();
         youtube.close();

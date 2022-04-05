@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,15 +10,18 @@ import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
 
 class UserPreferences extends ChangeNotifier {
+  ThemeMode themeMode;
   String recommendationMarket;
   bool saveTrackLyrics;
   String geniusAccessToken;
+  SharedPreferences? localStorage;
   HotKey? nextTrackHotKey;
   HotKey? prevTrackHotKey;
   HotKey? playPauseHotKey;
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
+    required this.themeMode,
     this.saveTrackLyrics = false,
     this.nextTrackHotKey,
     this.prevTrackHotKey,
@@ -29,9 +32,8 @@ class UserPreferences extends ChangeNotifier {
 
   final logger = getLogger(UserPreferences);
 
-  Future<HotKey?> _getHotKeyFromLocalStorage(
-      SharedPreferences preferences, String key) async {
-    String? str = preferences.getString(key);
+  Future<HotKey?> _getHotKeyFromLocalStorage(String key) async {
+    String? str = localStorage?.getString(key);
     if (str != null) {
       Map<String, dynamic> json = await jsonDecode(str);
       if (json.isEmpty) {
@@ -44,21 +46,33 @@ class UserPreferences extends ChangeNotifier {
 
   Future<void> onInit() async {
     try {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage = await SharedPreferences.getInstance();
       String? accessToken =
-          localStorage.getString(LocalStorageKeys.geniusAccessToken);
+          localStorage?.getString(LocalStorageKeys.geniusAccessToken);
 
       saveTrackLyrics =
-          localStorage.getBool(LocalStorageKeys.saveTrackLyrics) ?? false;
+          localStorage?.getBool(LocalStorageKeys.saveTrackLyrics) ?? false;
+
+      final themeModeRaw = localStorage?.getString(LocalStorageKeys.themeMode);
+      switch (themeModeRaw) {
+        case "light":
+          themeMode = ThemeMode.light;
+          break;
+        case "dark":
+          themeMode = ThemeMode.dark;
+          break;
+        default:
+          themeMode = ThemeMode.system;
+      }
 
       recommendationMarket =
-          localStorage.getString(LocalStorageKeys.recommendationMarket) ?? 'US';
+          localStorage?.getString(LocalStorageKeys.recommendationMarket) ??
+              'US';
       geniusAccessToken = accessToken != null && accessToken.isNotEmpty
           ? accessToken
           : getRandomElement(lyricsSecrets);
 
       nextTrackHotKey ??= (await _getHotKeyFromLocalStorage(
-            localStorage,
             LocalStorageKeys.nextTrackHotKey,
           )) ??
           HotKey(
@@ -67,7 +81,6 @@ class UserPreferences extends ChangeNotifier {
           );
 
       prevTrackHotKey ??= (await _getHotKeyFromLocalStorage(
-            localStorage,
             LocalStorageKeys.prevTrackHotKey,
           )) ??
           HotKey(
@@ -76,7 +89,6 @@ class UserPreferences extends ChangeNotifier {
           );
 
       playPauseHotKey ??= (await _getHotKeyFromLocalStorage(
-            localStorage,
             LocalStorageKeys.playPauseHotKey,
           )) ??
           HotKey(
@@ -89,20 +101,21 @@ class UserPreferences extends ChangeNotifier {
     }
   }
 
+  void setThemeMode(ThemeMode mode) {
+    themeMode = mode;
+    localStorage?.setString(LocalStorageKeys.themeMode, mode.name);
+    notifyListeners();
+  }
+
   void setSaveTrackLyrics(bool shouldSave) {
     saveTrackLyrics = shouldSave;
-    SharedPreferences.getInstance().then((value) {
-      value.setBool(LocalStorageKeys.saveTrackLyrics, shouldSave);
-      notifyListeners();
-    });
+    localStorage?.setBool(LocalStorageKeys.saveTrackLyrics, shouldSave);
+    notifyListeners();
   }
 
   void setRecommendationMarket(String country) {
     recommendationMarket = country;
-    SharedPreferences.getInstance().then((value) {
-      value.setString(LocalStorageKeys.recommendationMarket, country);
-      notifyListeners();
-    });
+    localStorage?.setString(LocalStorageKeys.recommendationMarket, country);
   }
 
   void setGeniusAccessToken(String token) {
@@ -112,38 +125,36 @@ class UserPreferences extends ChangeNotifier {
 
   void setNextTrackHotKey(HotKey? value) {
     nextTrackHotKey = value;
-    SharedPreferences.getInstance().then((preferences) {
-      preferences.setString(
-        LocalStorageKeys.nextTrackHotKey,
-        jsonEncode(value?.toJson() ?? {}),
-      );
-    });
+    localStorage?.setString(
+      LocalStorageKeys.nextTrackHotKey,
+      jsonEncode(value?.toJson() ?? {}),
+    );
     notifyListeners();
   }
 
   void setPrevTrackHotKey(HotKey? value) {
     prevTrackHotKey = value;
-    SharedPreferences.getInstance().then((preferences) {
-      preferences.setString(
-        LocalStorageKeys.prevTrackHotKey,
-        jsonEncode(value?.toJson() ?? {}),
-      );
-    });
+    localStorage?.setString(
+      LocalStorageKeys.prevTrackHotKey,
+      jsonEncode(value?.toJson() ?? {}),
+    );
     notifyListeners();
   }
 
   void setPlayPauseHotKey(HotKey? value) {
     playPauseHotKey = value;
-    SharedPreferences.getInstance().then((preferences) {
-      preferences.setString(
-        LocalStorageKeys.playPauseHotKey,
-        jsonEncode(value?.toJson() ?? {}),
-      );
-    });
+    localStorage?.setString(
+      LocalStorageKeys.playPauseHotKey,
+      jsonEncode(value?.toJson() ?? {}),
+    );
     notifyListeners();
   }
 }
 
 final userPreferencesProvider = ChangeNotifierProvider(
-  (_) => UserPreferences(geniusAccessToken: "", recommendationMarket: 'US'),
+  (_) => UserPreferences(
+    geniusAccessToken: "",
+    recommendationMarket: 'US',
+    themeMode: ThemeMode.system,
+  ),
 );

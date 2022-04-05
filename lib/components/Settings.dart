@@ -11,7 +11,6 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/provider/Auth.dart';
-import 'package:spotube/provider/ThemeProvider.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
 class Settings extends HookConsumerWidget {
@@ -20,7 +19,6 @@ class Settings extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
-    final ThemeMode theme = ref.watch(themeProvider);
     final Auth auth = ref.watch(authProvider);
     var geniusAccessToken = useState<String?>(null);
     TextEditingController textEditingController = useTextEditingController();
@@ -115,7 +113,7 @@ class Settings extends HookConsumerWidget {
                 children: [
                   const Text("Theme"),
                   DropdownButton<ThemeMode>(
-                    value: theme,
+                    value: preferences.themeMode,
                     items: const [
                       DropdownMenuItem(
                         child: Text(
@@ -136,7 +134,7 @@ class Settings extends HookConsumerWidget {
                     ],
                     onChanged: (value) {
                       if (value != null) {
-                        ref.read(themeProvider.notifier).state = value;
+                        preferences.setThemeMode(value);
                       }
                     },
                   )
