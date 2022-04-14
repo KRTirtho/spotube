@@ -22,7 +22,7 @@ class PlaylistCard extends HookConsumerWidget {
     return PlaybuttonCard(
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       title: playlist.name!,
-      imageUrl: playlist.images![0].url!,
+      imageUrl: imageToUrlString(playlist.images),
       isPlaying: isPlaylistPlaying,
       onTap: () {
         GoRouter.of(context).push(

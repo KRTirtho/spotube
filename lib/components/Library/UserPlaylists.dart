@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
+import 'package:spotube/components/Playlist/PlaylistCreateDialog.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class UserPlaylists extends ConsumerWidget {
@@ -37,6 +38,7 @@ class UserPlaylists extends ConsumerWidget {
               runSpacing: 20, // gap between lines
               alignment: WrapAlignment.center,
               children: [
+                const PlaylistCreateDialog(),
                 PlaylistCard(likedTracksPlaylist),
                 ...snapshot.data!
                     .map((playlist) => PlaylistCard(playlist))
