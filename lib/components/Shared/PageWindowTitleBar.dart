@@ -70,17 +70,20 @@ class PageWindowTitleBar extends StatelessWidget
       );
     }
     return WindowTitleBarBox(
-      child: Row(
-        children: [
-          if (Platform.isMacOS)
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.045,
-            ),
-          if (leading != null) leading!,
-          Expanded(child: MoveWindow(child: Center(child: center))),
-          if (!Platform.isMacOS && !Platform.isIOS && !Platform.isAndroid)
-            const TitleBarActionButtons()
-        ],
+      child: Container(
+        color: Theme.of(context).backgroundColor,
+        child: Row(
+          children: [
+            if (Platform.isMacOS)
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.045,
+              ),
+            if (leading != null) leading!,
+            Expanded(child: MoveWindow(child: Center(child: center))),
+            if (!Platform.isMacOS && !Platform.isIOS && !Platform.isAndroid)
+              const TitleBarActionButtons()
+          ],
+        ),
       ),
     );
   }

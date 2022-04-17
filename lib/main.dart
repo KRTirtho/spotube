@@ -119,6 +119,7 @@ class MyApp extends HookConsumerWidget {
         scaffoldBackgroundColor: Colors.blueGrey[900],
         dialogBackgroundColor: Colors.blueGrey[800],
         shadowColor: Colors.black26,
+        popupMenuTheme: PopupMenuThemeData(color: Colors.blueGrey[800]),
         buttonTheme: const ButtonThemeData(
           buttonColor: Colors.green,
         ),

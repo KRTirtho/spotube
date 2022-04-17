@@ -8,7 +8,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/components/Shared/TracksTableView.dart';
+import 'package:spotube/components/Shared/TrackTile.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/readable-number.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';

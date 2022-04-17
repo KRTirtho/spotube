@@ -1,3 +1,4 @@
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -45,6 +46,12 @@ class PlaylistView extends HookConsumerWidget {
     final isPlaylistPlaying = playback.currentPlaylist?.id != null &&
         playback.currentPlaylist?.id == playlist.id;
     final update = useForceUpdate();
+    final getMe = useMemoized(() => spotify.me.get(), []);
+    final meSnapshot = useFuture<User>(getMe);
+
+    Future<List<bool>> isFollowing(User me) {
+      return spotify.playlists.followedBy(playlist.id!, [me.id!]);
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -64,17 +71,27 @@ class PlaylistView extends HookConsumerWidget {
                         // nav back
                         const BackButton(),
                         // heart playlist
-                        if (auth.isLoggedIn)
+                        if (auth.isLoggedIn && meSnapshot.hasData)
                           FutureBuilder<List<bool>>(
-                              future: spotify.me.get().then(
-                                    (me) => spotify.playlists
-                                        .followedBy(playlist.id!, [me.id!]),
-                                  ),
+                              future: isFollowing(meSnapshot.data!),
                               builder: (context, snapshot) {
                                 final isFollowing =
                                     snapshot.data?.first ?? false;
+
+                                if (!snapshot.hasData && !snapshot.hasError) {
+                                  return const SizedBox(
+                                    height: 25,
+                                    width: 25,
+                                    child: CircularProgressIndicator.adaptive(),
+                                  );
+                                }
                                 return HeartButton(
                                   isLiked: isFollowing,
+                                  icon: playlist.owner?.id != null &&
+                                          meSnapshot.data?.id ==
+                                              playlist.owner?.id
+                                      ? Icons.delete_outline_rounded
+                                      : null,
                                   onPressed: () async {
                                     try {
                                       isFollowing
@@ -124,6 +141,9 @@ class PlaylistView extends HookConsumerWidget {
                                 tracks,
                                 currentTrack: currentTrack,
                               ),
+                              playlistId: playlist.id,
+                              userPlaylist: playlist.owner?.id != null &&
+                                  playlist.owner!.id == meSnapshot.data?.id,
                             ),
                 ],
               );

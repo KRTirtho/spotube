@@ -67,6 +67,13 @@ class AlbumView extends HookConsumerWidget {
                               future: spotify.me.isSavedAlbums([album.id!]),
                               builder: (context, snapshot) {
                                 final isSaved = snapshot.data?.first == true;
+                                if (!snapshot.hasData && !snapshot.hasError) {
+                                  return const SizedBox(
+                                    height: 25,
+                                    width: 25,
+                                    child: CircularProgressIndicator.adaptive(),
+                                  );
+                                }
                                 return HeartButton(
                                   isLiked: isSaved,
                                   onPressed: () {
