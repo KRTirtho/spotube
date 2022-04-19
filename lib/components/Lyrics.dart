@@ -7,6 +7,7 @@ import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:collection/collection.dart';
 
 class Lyrics extends HookConsumerWidget {
   const Lyrics({Key? key}) : super(key: key);
@@ -26,7 +27,11 @@ class Lyrics extends HookConsumerWidget {
       }
       return getLyrics(
         playback.currentTrack!.name!,
-        artistsToString<Artist>(playback.currentTrack!.artists ?? []),
+        playback.currentTrack!.artists
+                ?.map((s) => s.name)
+                .whereNotNull()
+                .toList() ??
+            [],
         apiKey: userPreferences.geniusAccessToken,
         optimizeQuery: true,
       );

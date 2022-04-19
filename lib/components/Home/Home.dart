@@ -11,6 +11,7 @@ import 'package:spotify/spotify.dart' hide Image, Player, Search;
 import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
+import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
 import 'package:spotube/components/Lyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -170,7 +171,7 @@ class Home extends HookConsumerWidget {
     }, [localStorage]);
 
     final titleBarContents = Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
           children: [
             Expanded(
@@ -222,7 +223,7 @@ class Home extends HookConsumerWidget {
                     ),
                   if (_selectedIndex.value == 1) const Search(),
                   if (_selectedIndex.value == 2) const UserLibrary(),
-                  if (_selectedIndex.value == 3) const Lyrics(),
+                  if (_selectedIndex.value == 3) const SyncedLyrics(),
                 ],
               ),
             ),

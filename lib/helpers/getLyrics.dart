@@ -8,8 +8,14 @@ import 'package:spotube/models/generated_secrets.dart';
 
 final logger = getLogger("GetLyrics");
 
-String getTitle(String title, String artist) {
-  return "$title $artist"
+String clearArtistsOfTitle(String title, List<String> artists) {
+  return title
+      .replaceAll(RegExp(artists.join("|"), caseSensitive: false), "")
+      .trim();
+}
+
+String getTitle(String title, [List<String> artists = const []]) {
+  return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
       .toLowerCase()
       .replaceAll(RegExp(" *\\([^)]*\\) *"), '')
       .replaceAll(RegExp(" *\\[[^\\]]*]"), '')
@@ -50,7 +56,7 @@ Future<String?> extractLyrics(Uri url) async {
 
 Future<List?> searchSong(
   String title,
-  String artist, {
+  List<String> artist, {
   String? apiKey,
   bool optimizeQuery = false,
   bool authHeader = false,
@@ -60,7 +66,9 @@ Future<List?> searchSong(
       apiKey = getRandomElement(lyricsSecrets);
     }
     const searchUrl = 'https://api.genius.com/search?q=';
-    String song = optimizeQuery ? getTitle(title, artist) : "$title $artist";
+    String song = optimizeQuery
+        ? getTitle(clearArtistsOfTitle(title, artist), artist)
+        : "$title $artist";
 
     String reqUrl = "$searchUrl${Uri.encodeComponent(song)}";
     Map<String, String> headers = {"Authorization": 'Bearer $apiKey'};
@@ -87,13 +95,13 @@ Future<List?> searchSong(
 
 Future<String?> getLyrics(
   String title,
-  String artist, {
+  List<String> artist, {
   required String apiKey,
   bool optimizeQuery = false,
   bool authHeader = false,
 }) async {
   try {
-    var results = await searchSong(
+    final results = await searchSong(
       title,
       artist,
       apiKey: apiKey,

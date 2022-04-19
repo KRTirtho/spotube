@@ -12,6 +12,7 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:collection/collection.dart';
 
 enum TrackStatus { downloading, idle, done }
 
@@ -118,7 +119,11 @@ class DownloadTrackButton extends HookConsumerWidget {
         }
         final lyrics = await getLyrics(
           playback.currentTrack!.name!,
-          artistsToString<Artist>(playback.currentTrack!.artists ?? []),
+          playback.currentTrack!.artists
+                  ?.map((s) => s.name)
+                  .whereNotNull()
+                  .toList() ??
+              [],
           apiKey: preferences.geniusAccessToken,
           optimizeQuery: true,
         );

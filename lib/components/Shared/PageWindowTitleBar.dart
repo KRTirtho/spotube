@@ -71,7 +71,7 @@ class PageWindowTitleBar extends StatelessWidget
     }
     return WindowTitleBarBox(
       child: Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
           children: [
             if (Platform.isMacOS)
