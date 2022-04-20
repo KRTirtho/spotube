@@ -59,6 +59,7 @@ dependencies:
   logger: ^1.1.0
   permission_handler: ^9.2.0
   marquee: ^2.2.1
+  scroll_to_index: ^2.1.1
 
 dev_dependencies:
   flutter_test:

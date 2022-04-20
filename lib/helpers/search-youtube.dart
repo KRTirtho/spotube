@@ -16,7 +16,11 @@ Future<Track> toYoutubeTrack(
   final mainArtist = artistsName.first;
   final featuredArtists =
       artistsName.length > 1 ? "feat. " + artistsName.sublist(1).join(" ") : "";
-  final title = getTitle(clearArtistsOfTitle(track.name!, artistsName)).trim();
+  final title = getTitle(
+    track.name!,
+    artists: artistsName,
+    onlyCleanArtist: true,
+  ).trim();
   logger.v("[Track Search Title] $title");
   final queryString = format
       .replaceAll("\$MAIN_ARTIST", mainArtist)

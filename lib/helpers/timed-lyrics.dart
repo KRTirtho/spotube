@@ -32,8 +32,8 @@ Future<SubtitleSimple?> getTimedLyrics(Track track) async {
   final artistNames =
       track.artists?.map((artist) => artist.name!).toList() ?? [];
   final query = getTitle(
-    clearArtistsOfTitle(track.name!, artistNames),
-    artistNames,
+    track.name!,
+    artists: artistNames,
   );
   final searchUri = Uri.parse("$baseUri/subtitles4songs.aspx").replace(
     queryParameters: {"q": query},

@@ -14,10 +14,29 @@ String clearArtistsOfTitle(String title, List<String> artists) {
       .trim();
 }
 
-String getTitle(String title, [List<String> artists = const []]) {
+String getTitle(
+  String title, {
+  List<String> artists = const [],
+  bool onlyCleanArtist = false,
+}) {
+  final match = RegExp(r"(?<=\().+?(?=\))").firstMatch(title)?.group(0);
+  final artistInBracket =
+      artists.any((artist) => match?.contains(artist) ?? false);
+
+  if (artistInBracket) {
+    title = title.replaceAll(
+      RegExp(" *\\([^)]*\\) *"),
+      '',
+    );
+  }
+
+  title = clearArtistsOfTitle(title, artists);
+  if (onlyCleanArtist) {
+    artists = [];
+  }
+
   return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
       .toLowerCase()
-      .replaceAll(RegExp(" *\\([^)]*\\) *"), '')
       .replaceAll(RegExp(" *\\[[^\\]]*]"), '')
       .replaceAll(RegExp("feat.|ft."), '')
       .replaceAll(RegExp("\\s+"), ' ')
@@ -66,9 +85,8 @@ Future<List?> searchSong(
       apiKey = getRandomElement(lyricsSecrets);
     }
     const searchUrl = 'https://api.genius.com/search?q=';
-    String song = optimizeQuery
-        ? getTitle(clearArtistsOfTitle(title, artist), artist)
-        : "$title $artist";
+    String song =
+        optimizeQuery ? getTitle(title, artists: artist) : "$title $artist";
 
     String reqUrl = "$searchUrl${Uri.encodeComponent(song)}";
     Map<String, String> headers = {"Authorization": 'Bearer $apiKey'};
