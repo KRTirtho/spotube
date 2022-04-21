@@ -274,21 +274,21 @@ class Playback extends ChangeNotifier {
           });
         }
         final preferences = ref.read(userPreferencesProvider);
-        final ytTrack = await toYoutubeTrack(
+        final spotubeTrack = await toSpotubeTrack(
           youtube,
           track,
           preferences.ytSearchFormat,
         );
-        if (setTrackUriById(track.id!, ytTrack.uri!)) {
+        if (setTrackUriById(track.id!, spotubeTrack.ytUri)) {
           _currentAudioSource =
-              AudioSource.uri(Uri.parse(ytTrack.uri!), tag: tag);
+              AudioSource.uri(Uri.parse(spotubeTrack.ytUri), tag: tag);
           await player
               .setAudioSource(
             _currentAudioSource!,
             preload: true,
           )
               .then((value) {
-            _currentTrack = track;
+            _currentTrack = spotubeTrack;
             notifyListeners();
           });
         }

@@ -2,12 +2,13 @@ import 'dart:io';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/models/Logger.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:spotube/extensions/list-sort-multiple.dart';
 
-final logger = getLogger("toYoutubeTrack");
-Future<Track> toYoutubeTrack(
+final logger = getLogger("toSpotubeTrack");
+Future<SpotubeTrack> toSpotubeTrack(
     YoutubeExplode youtube, Track track, String format) async {
   final artistsName =
       track.artists?.map((ar) => ar.name).toList().whereNotNull().toList() ??
@@ -62,18 +63,22 @@ Future<Track> toYoutubeTrack(
 
   final trackManifest = await youtube.videos.streams.getManifest(ytVideo.id);
 
-  // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
-  // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
-  // codec/mimetype for those Platforms
-  track.uri = (Platform.isMacOS || Platform.isIOS
-          ? trackManifest.audioOnly
-              .where((info) => info.codec.mimeType == "audio/mp4")
-              .withHighestBitrate()
-          : trackManifest.audioOnly.withHighestBitrate())
-      .url
-      .toString();
-  track.href = ytVideo.url;
   logger.v(
-      "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${track.href}");
-  return track;
+    "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
+  );
+
+  return SpotubeTrack.fromTrack(
+    track: track,
+    ytTrack: ytVideo,
+    // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
+    // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
+    // codec/mimetype for those Platforms
+    ytUri: (Platform.isMacOS || Platform.isIOS
+            ? trackManifest.audioOnly
+                .where((info) => info.codec.mimeType == "audio/mp4")
+                .withHighestBitrate()
+            : trackManifest.audioOnly.withHighestBitrate())
+        .url
+        .toString(),
+  );
 }

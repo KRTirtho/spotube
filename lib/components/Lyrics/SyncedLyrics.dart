@@ -7,6 +7,7 @@ import 'package:spotube/helpers/timed-lyrics.dart';
 import 'package:spotube/hooks/useAutoScrollController.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useSyncedLyrics.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -19,15 +20,17 @@ class SyncedLyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
     final timedLyrics = useMemoized(() {
-      if (playback.currentTrack == null) return null;
-      return getTimedLyrics(playback.currentTrack!);
+      if (playback.currentTrack == null ||
+          playback.currentTrack is! SpotubeTrack) return null;
+      return getTimedLyrics(playback.currentTrack as SpotubeTrack);
     }, [playback.currentTrack]);
     final lyricsSnapshot = useFuture(timedLyrics);
     final lyricsMap = useMemoized(
       () =>
           lyricsSnapshot.data?.lyrics
               .map((lyric) => {lyric.time.inSeconds: lyric.text})
-              .reduce((a, b) => {...a, ...b}) ??
+              .reduce((accumulator, lyricSlice) =>
+                  {...accumulator, ...lyricSlice}) ??
           {},
       [lyricsSnapshot.data],
     );

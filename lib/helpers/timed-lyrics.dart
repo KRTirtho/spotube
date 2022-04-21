@@ -1,7 +1,9 @@
+import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
-import 'package:spotify/spotify.dart';
+import 'package:collection/collection.dart';
 import 'package:spotube/helpers/getLyrics.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
 
 class SubtitleSimple {
   Uri uri;
@@ -28,7 +30,7 @@ class LyricSlice {
 
 const baseUri = "https://www.rentanadviser.com/subtitles";
 
-Future<SubtitleSimple?> getTimedLyrics(Track track) async {
+Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
   final artistNames =
       track.artists?.map((artist) => artist.name!).toList() ?? [];
   final query = getTitle(
@@ -41,10 +43,27 @@ Future<SubtitleSimple?> getTimedLyrics(Track track) async {
 
   final res = await http.get(searchUri);
   final document = parse(res.body);
-  final topResult =
-      document.querySelector("#tablecontainer table tbody tr td a");
+  final results =
+      document.querySelectorAll("#tablecontainer table tbody tr td a");
 
-  if (topResult == null) return null;
+  final topResult = results
+      .map((result) {
+        final title = result.text.trim().toLowerCase();
+        int points = 0;
+        final hasAllArtists = track.artists
+                ?.map((artist) => artist.name!)
+                .every((artist) => title.contains(artist.toLowerCase())) ??
+            false;
+        final hasTrackName = title.contains(track.name!.toLowerCase());
+        final exactYtMatch = title == track.ytTrack.title.toLowerCase();
+        if (exactYtMatch) points = 8;
+        for (final criteria in [hasTrackName, hasAllArtists]) {
+          if (criteria) points++;
+        }
+        return {"result": result, "points": points};
+      })
+      .sorted((a, b) => (b["points"] as int).compareTo(a["points"] as int))
+      .first["result"] as Element;
 
   final subtitleUri =
       Uri.parse("$baseUri/${topResult.attributes["href"]}&type=lrc");

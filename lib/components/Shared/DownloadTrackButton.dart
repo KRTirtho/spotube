@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/getLyrics.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -42,8 +43,8 @@ class DownloadTrackButton extends HookConsumerWidget {
           return;
         }
       }
-      StreamManifest manifest =
-          await yt.videos.streamsClient.getManifest(track?.href);
+      StreamManifest manifest = await yt.videos.streamsClient
+          .getManifest((track as SpotubeTrack).ytTrack.url);
 
       String downloadFolder = path.join(
           Platform.isAndroid
@@ -177,10 +178,7 @@ class DownloadTrackButton extends HookConsumerWidget {
     }
     return IconButton(
       icon: const Icon(Icons.download_rounded),
-      onPressed: track != null &&
-              !(track!.href ?? "").startsWith("https://api.spotify.com")
-          ? _downloadTrack
-          : null,
+      onPressed: track != null && track is SpotubeTrack ? _downloadTrack : null,
     );
   }
 }
