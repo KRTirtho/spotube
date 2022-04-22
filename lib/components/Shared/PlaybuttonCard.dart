@@ -93,7 +93,7 @@ class PlaybuttonCard extends StatelessWidget {
                           child: title.length > 25
                               ? SpotubeMarqueeText(
                                   text: title,
-                                  textStyle: const TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 )
                               : Text(
@@ -110,7 +110,7 @@ class PlaybuttonCard extends StatelessWidget {
                           child: description!.length > 30
                               ? SpotubeMarqueeText(
                                   text: description!,
-                                  textStyle: TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
                                     color: Theme.of(context)
                                         .textTheme

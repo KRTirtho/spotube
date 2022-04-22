@@ -7,6 +7,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
@@ -48,6 +49,7 @@ class PlayerView extends HookConsumerWidget {
       child: Scaffold(
         appBar: const PageWindowTitleBar(
           leading: BackButton(),
+          transparent: true,
         ),
         backgroundColor: paletteColor.color,
         body: Column(
@@ -57,13 +59,22 @@ class PlayerView extends HookConsumerWidget {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Text(
-                    currentTrack?.name ?? "Not playing",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: paletteColor.titleTextColor,
-                        ),
+                  SizedBox(
+                    height: 30,
+                    child: currentTrack?.name != null &&
+                            currentTrack!.name!.length > 29
+                        ? SpotubeMarqueeText(
+                            text: currentTrack.name ?? "Not playing",
+                            style:
+                                Theme.of(context).textTheme.headline5?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: paletteColor.titleTextColor,
+                                    ),
+                          )
+                        : Text(
+                            currentTrack?.name ?? "Not Playing",
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
                   ),
                   artistsToClickableArtists(
                     currentTrack?.artists ?? [],

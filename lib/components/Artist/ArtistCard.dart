@@ -48,7 +48,7 @@ class ArtistCard extends StatelessWidget {
                 child: artist.name!.length > 15
                     ? SpotubeMarqueeText(
                         text: artist.name!,
-                        textStyle: Theme.of(context).textTheme.headline5!,
+                        style: Theme.of(context).textTheme.headline5!,
                       )
                     : Text(
                         artist.name!,

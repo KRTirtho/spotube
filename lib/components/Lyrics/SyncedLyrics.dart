@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Lyrics.dart';
+import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/timed-lyrics.dart';
 import 'package:spotube/hooks/useAutoScrollController.dart';
@@ -19,10 +21,20 @@ class SyncedLyrics extends HookConsumerWidget {
     Playback playback = ref.watch(playbackProvider);
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
-    final timedLyrics = useMemoized(() {
+    final failed = useState(false);
+    final timedLyrics = useMemoized(() async {
       if (playback.currentTrack == null ||
           playback.currentTrack is! SpotubeTrack) return null;
-      return getTimedLyrics(playback.currentTrack as SpotubeTrack);
+      try {
+        final lyrics =
+            await getTimedLyrics(playback.currentTrack as SpotubeTrack);
+        if (failed.value) failed.value = false;
+        return lyrics;
+      } catch (e) {
+        if (e == "Subtitle lookup failed") {
+          failed.value = true;
+        }
+      }
     }, [playback.currentTrack]);
     final lyricsSnapshot = useFuture(timedLyrics);
     final lyricsMap = useMemoized(
@@ -39,17 +51,37 @@ class SyncedLyrics extends HookConsumerWidget {
 
     final textTheme = Theme.of(context).textTheme;
 
+    useEffect(() {
+      controller.scrollToIndex(
+        0,
+        preferPosition: AutoScrollPosition.middle,
+      );
+      return null;
+    }, [playback.currentTrack]);
+
+    // when synced lyrics not found, fallback to GeniusLyrics
+    if (failed.value) return const Lyrics();
+
+    final headlineTextStyle = breakpoint >= Breakpoints.md
+        ? textTheme.headline3
+        : textTheme.headline4?.copyWith(fontSize: 25);
     return Expanded(
       child: Column(
         children: [
           Center(
-            child: Text(
-              playback.currentTrack?.name ?? "",
-              style: breakpoint >= Breakpoints.md
-                  ? textTheme.headline3
-                  : textTheme.headline4?.copyWith(fontSize: 25),
-            ),
-          ),
+              child: SizedBox(
+            height: breakpoint >= Breakpoints.md ? 50 : 30,
+            child: playback.currentTrack?.name != null &&
+                    playback.currentTrack!.name!.length > 29
+                ? SpotubeMarqueeText(
+                    text: playback.currentTrack?.name ?? "Not Playing",
+                    style: headlineTextStyle,
+                  )
+                : Text(
+                    playback.currentTrack?.name ?? "Not Playing",
+                    style: headlineTextStyle,
+                  ),
+          )),
           Center(
             child: Text(
               artistsToString<Artist>(playback.currentTrack?.artists ?? []),
@@ -86,6 +118,7 @@ class SyncedLyrics extends HookConsumerWidget {
                             fontWeight: isActive ? FontWeight.bold : null,
                             fontSize: 30,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),

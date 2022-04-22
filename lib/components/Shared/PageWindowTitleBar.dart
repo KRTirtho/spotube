@@ -49,8 +49,13 @@ class PageWindowTitleBar extends StatelessWidget
     implements PreferredSizeWidget {
   final Widget? leading;
   final Widget? center;
-  const PageWindowTitleBar({Key? key, this.leading, this.center})
-      : super(key: key);
+  final bool transparent;
+  const PageWindowTitleBar({
+    Key? key,
+    this.leading,
+    this.center,
+    this.transparent = false,
+  }) : super(key: key);
   @override
   Size get preferredSize => Size.fromHeight(
         !Platform.isIOS && !Platform.isAndroid ? appWindow.titleBarHeight : 35,
@@ -71,7 +76,7 @@ class PageWindowTitleBar extends StatelessWidget
     }
     return WindowTitleBarBox(
       child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: !transparent ? Theme.of(context).scaffoldBackgroundColor : null,
         child: Row(
           children: [
             if (Platform.isMacOS)

@@ -3,7 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:collection/collection.dart';
 import 'package:spotube/helpers/getLyrics.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
+
+final logger = getLogger("getTimedLyrics");
 
 class SubtitleSimple {
   Uri uri;
@@ -37,6 +40,9 @@ Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
     track.name!,
     artists: artistNames,
   );
+
+  logger.v("[Searching Subtitle] $query");
+
   final searchUri = Uri.parse("$baseUri/subtitles4songs.aspx").replace(
     queryParameters: {"q": query},
   );
@@ -46,27 +52,33 @@ Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
   final results =
       document.querySelectorAll("#tablecontainer table tbody tr td a");
 
-  final topResult = results
-      .map((result) {
-        final title = result.text.trim().toLowerCase();
-        int points = 0;
-        final hasAllArtists = track.artists
-                ?.map((artist) => artist.name!)
-                .every((artist) => title.contains(artist.toLowerCase())) ??
-            false;
-        final hasTrackName = title.contains(track.name!.toLowerCase());
-        final exactYtMatch = title == track.ytTrack.title.toLowerCase();
-        if (exactYtMatch) points = 8;
-        for (final criteria in [hasTrackName, hasAllArtists]) {
-          if (criteria) points++;
-        }
-        return {"result": result, "points": points};
-      })
-      .sorted((a, b) => (b["points"] as int).compareTo(a["points"] as int))
-      .first["result"] as Element;
+  final rateSortedResults = results.map((result) {
+    final title = result.text.trim().toLowerCase();
+    int points = 0;
+    final hasAllArtists = track.artists
+            ?.map((artist) => artist.name!)
+            .every((artist) => title.contains(artist.toLowerCase())) ??
+        false;
+    final hasTrackName = title.contains(track.name!.toLowerCase());
+    final exactYtMatch = title == track.ytTrack.title.toLowerCase();
+    if (exactYtMatch) points = 8;
+    for (final criteria in [hasTrackName, hasAllArtists]) {
+      if (criteria) points++;
+    }
+    return {"result": result, "points": points};
+  }).sorted((a, b) => (b["points"] as int).compareTo(a["points"] as int));
 
+  // not result was found at all
+  if (rateSortedResults.first["points"] == 0) {
+    logger.e("[Subtitle not found] ${track.name}");
+    return Future.error("Subtitle lookup failed", StackTrace.current);
+  }
+
+  final topResult = rateSortedResults.first["result"] as Element;
   final subtitleUri =
       Uri.parse("$baseUri/${topResult.attributes["href"]}&type=lrc");
+
+  logger.v("[Selected subtitle] ${topResult.text} | $subtitleUri");
 
   final lrcDocument = parse((await http.get(subtitleUri)).body);
   final lrcList = lrcDocument

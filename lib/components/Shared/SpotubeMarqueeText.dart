@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 
 class SpotubeMarqueeText extends StatelessWidget {
-  const SpotubeMarqueeText(
-      {Key? key, required this.text, required this.textStyle})
+  const SpotubeMarqueeText({Key? key, required this.text, this.style})
       : super(key: key);
-  final TextStyle textStyle;
+  final TextStyle? style;
   final String text;
 
   @override
   Widget build(BuildContext context) {
     return Marquee(
       text: text,
-      style: textStyle,
+      style: style,
       scrollAxis: Axis.horizontal,
       crossAxisAlignment: CrossAxisAlignment.start,
       blankSpace: 60.0,
