@@ -1,0 +1,8 @@
+app_id: 80B901C8-D6FE-494E-8AF7-A2BD440E8644
+publisher: KRTirtho, OSS
+publisher_url: https://github.com/KRTirtho/spotube
+display_name: Spotube
+create_desktop_icon: true
+install_dir_name: Spotube
+locales:
+  - en

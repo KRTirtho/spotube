@@ -1,0 +1,11 @@
+Package: Spotube
+Version: 2.0.0
+Section: sound
+Priority: optional
+Architecture: all
+Essential: no
+Installed-Size: 24400
+Depends: libkeybinder-3.0-0 (>= 0.3.2)
+Maintainer: Kingkor Roy Tirtho <krtirtho@gmail.com>
+Description: A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
+Homepage: https://github.com/KRTirtho/spotube

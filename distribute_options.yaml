@@ -1,0 +1,27 @@
+output: dist/
+
+releases:
+  - name: dev
+    jobs:
+      # Generating a debian binary
+      - name: release-dev-linux-zip
+        package:
+          platform: linux
+          target: zip
+          build_args:
+            dart-define:
+              APP_ENV: dev
+      - name: release-dev-linux-deb
+        package:
+          platform: linux
+          target: deb
+          build_args:
+            dart-define:
+              APP_ENV: dev
+      - name: release-dev-linux-appimage
+        package:
+          platform: linux
+          target: appimage
+          build_args:
+            dart-define:
+              APP_ENV: dev

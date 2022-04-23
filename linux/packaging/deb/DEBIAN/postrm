@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+echo Removing symlink
+
+rm /usr/bin/spotube
+
+exit 0

@@ -52,6 +52,7 @@ app.*.map.json
 /aur-struct/pkg
 
 /deb-struct/usr
+/linux/packaging/deb/usr
 
 /AppDir
 /appimage-builder-cache
@@ -70,3 +71,5 @@ installer.exe
 lib/models/generated_secrets.dart
 help.txt
 secrets.json
+
+dist
