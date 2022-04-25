@@ -12,7 +12,6 @@ import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
-import 'package:spotube/components/Lyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';

@@ -25,3 +25,17 @@ releases:
           build_args:
             dart-define:
               APP_ENV: dev
+      - name: release-dev-windows-exe
+        package:
+          platform: windows
+          target: exe
+          build_args:
+            dart-define:
+              APP_ENV: dev
+      - name: release-dev-macos-dmg
+        package:
+          platform: macos
+          target: dmg
+          build_args:
+            dart-define:
+              APP_ENV: dev

@@ -1,0 +1,27 @@
+display_name: Spotube
+package_name: spotube
+
+maintainer:
+  name: Kingkor Roy Tirtho
+  email: krtirtho@gmail.com
+
+priority: optional
+section: x11
+installed_size: 24400
+
+dependencies:
+  - libkeybinder-3.0-0 (>= 0.3.2)
+
+essential: false
+icon: assets/spotube-logo.png
+
+keywords:
+  - Music
+  - Spotify
+  - Media
+  - Streaming
+  - YouTube
+
+generic_name: Music Streaming Application
+categories:
+  - Music

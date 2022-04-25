@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Lyrics.dart';
+import 'package:spotube/components/Lyrics/Lyrics.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/timed-lyrics.dart';
@@ -26,9 +26,10 @@ class SyncedLyrics extends HookConsumerWidget {
       if (playback.currentTrack == null ||
           playback.currentTrack is! SpotubeTrack) return null;
       try {
+        if (failed.value) failed.value = false;
         final lyrics =
             await getTimedLyrics(playback.currentTrack as SpotubeTrack);
-        if (failed.value) failed.value = false;
+        if (lyrics == null) failed.value = true;
         return lyrics;
       } catch (e) {
         if (e == "Subtitle lookup failed") {
@@ -52,12 +53,41 @@ class SyncedLyrics extends HookConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     useEffect(() {
-      controller.scrollToIndex(
-        0,
-        preferPosition: AutoScrollPosition.middle,
-      );
+      controller.scrollToIndex(0);
       return null;
     }, [playback.currentTrack]);
+
+    useEffect(() {
+      if (lyricsSnapshot.data != null && lyricsSnapshot.data!.rating <= 2) {
+        Future.delayed(const Duration(seconds: 5), () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                actions: [
+                  TextButton(
+                    child: const Text("No"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text("Yes"),
+                    onPressed: () {
+                      failed.value = true;
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+                content: const Text(
+                    "The found lyrics might not be properly synced. Do you want to default to static (genius.com) lyrics?"),
+              );
+            },
+          );
+        });
+      }
+      return null;
+    }, [lyricsSnapshot.data]);
 
     // when synced lyrics not found, fallback to GeniusLyrics
     if (failed.value) return const Lyrics();

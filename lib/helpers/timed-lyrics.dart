@@ -2,6 +2,7 @@ import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:collection/collection.dart';
+import 'package:spotube/helpers/contains-text-in-bracket.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
@@ -12,10 +13,12 @@ class SubtitleSimple {
   Uri uri;
   String name;
   List<LyricSlice> lyrics;
+  int rating;
   SubtitleSimple({
     required this.uri,
     required this.name,
     required this.lyrics,
+    required this.rating,
   });
 }
 
@@ -60,9 +63,10 @@ Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
             .every((artist) => title.contains(artist.toLowerCase())) ??
         false;
     final hasTrackName = title.contains(track.name!.toLowerCase());
+    final isNotLive = !containsTextInBracket(title, "live");
     final exactYtMatch = title == track.ytTrack.title.toLowerCase();
-    if (exactYtMatch) points = 8;
-    for (final criteria in [hasTrackName, hasAllArtists]) {
+    if (exactYtMatch) points = 7;
+    for (final criteria in [hasTrackName, hasAllArtists, isNotLive]) {
       if (criteria) points++;
     }
     return {"result": result, "points": points};
@@ -111,6 +115,7 @@ Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
     name: topResult.text.trim(),
     uri: subtitleUri,
     lyrics: lrcList,
+    rating: rateSortedResults.first["points"] as int,
   );
 
   return subtitle;

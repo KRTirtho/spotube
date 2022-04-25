@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/helpers/contains-text-in-bracket.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
@@ -36,15 +37,40 @@ Future<SpotubeTrack> toSpotubeTrack(
         // the find should be lazy thus everything case insensitive
         final ytTitle = video.title.toLowerCase();
         final bool hasTitle = ytTitle.contains(title);
+        final bool hasYtTitle = title.contains(ytTitle);
         final bool hasAllArtists = track.artists?.every(
               (artist) => ytTitle.contains(artist.name!.toLowerCase()),
             ) ??
             false;
-        final bool authorIsArtist = track.artists
-                ?.any((artist) => artist.name?.toLowerCase() == video.author) ??
+        final bool authorIsArtist = track.artists?.any((artist) {
+              return artist.name?.toLowerCase() == video.author.toLowerCase();
+            }) ??
             false;
+
+        final bool hasNoLive = !containsTextInBracket(ytTitle, "live");
+        final bool hasOfficialVideo = [
+          "(official video)",
+          "[official video]",
+          "(official music video)",
+          "[official music video]"
+        ].any((v) => ytTitle.contains(v));
+
+        final bool hasOfficialAudio = [
+          "[official audio]",
+          "(official audio)",
+        ].any((v) => ytTitle.contains(v));
+
         int rate = 0;
-        for (final el in [hasTitle, hasAllArtists, authorIsArtist]) {
+        for (final el in [
+          hasTitle,
+          hasYtTitle,
+          hasAllArtists,
+          authorIsArtist,
+          hasNoLive,
+          !video.isLive,
+          hasOfficialAudio,
+          hasOfficialVideo,
+        ]) {
           if (el) rate++;
         }
         return {
