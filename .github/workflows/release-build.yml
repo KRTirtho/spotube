@@ -9,24 +9,23 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: release-test
       - uses: actions/checkout@v3
         with:
           repository: KRTirtho/flutter_distributor
           ref: deb-implementation
           path: build/flutter_distributor
-
-        # bump chocolatey related versions
-        env:
-          RELEASE_VERSION: ${{ github.event.release.tag_name }}
-
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          # Optionally strip `v` prefix
+          strip_v: true
       # Replace Version in files
       - run: |
           choco install sed make -y
-          sed -i "s/%{{SPOTUBE_VERSION}}%/$env:RELEASE_VERSION/" windows/runner/Runner.rc
-          sed -i "s/%{{SPOTUBE_VERSION}}%/$env:RELEASE_VERSION/" choco-struct/tools/VERIFICATION.txt
-          sed -i "s/%{{SPOTUBE_VERSION}}%/$env:RELEASE_VERSION/" choco-struct/spotube.nuspec
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" windows/runner/Runner.rc
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/tools/VERIFICATION.txt
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/spotube.nuspec
 
       # Build Windows Executable
       - uses: subosito/flutter-action@v2.2.0
@@ -38,36 +37,36 @@ jobs:
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           make innoinstall
           dart pub global activate --source path build/flutter_distributor/packages/flutter_distributor
-          flutter_distributor package --platform=windows --target=exe --skip-clean
+          flutter_distributor package --platform=windows --targets=exe --skip-clean
 
       # Create Chocolatey Package
       # setting the sha256 hash for new bundle
       - run: |
-          Set-Variable -Name HASH -Value (Get-FileHash dist\$env:RELEASE_VERSION\spotube-$env:RELEASE_VERSION-windows.exe).Hash
+          Set-Variable -Name HASH -Value (Get-FileHash dist\${{ steps.tag.outputs.tag }}\spotube-${{ steps.tag.outputs.tag }}-windows.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
-          make VERSION=$env:RELEASE_VERSION choco
+          make VERSION=${{ steps.tag.outputs.tag }} choco
 
       # Rename the artifacts
       - run: |
-          Rename-Item -Path dist/$env:RELEASE_VERSION/spotube.$env:RELEASE_VERSION.nupkg -NewName Spotube-windows-x86_64.nupkg
-          Rename-Item -Path dist/$env:RELEASE_VERSION/spotube-$env:RELEASE_VERSION-windows.exe Spotube-windows-x86_64-setup.exe
+          Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube.${{ steps.tag.outputs.tag }}.nupkg -NewName Spotube-windows-x86_64.nupkg
+          Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}-windows.exe Spotube-windows-x86_64-setup.exe
 
       # Upload release binary
       - uses: meeDamian/github-release@2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.event.release.tag_name }}
-          files: dist/${{ env.RELEASE_VERSION }}
+          files: dist/${{ steps.tag.outputs.tag }}
 
       # Publish to Chocolatey Repository
       - run: |
           choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
           echo 'published to community.chocolatey.org'
 
-        # choco push dist/$env:RELEASE_VERSION/Spotube-windows-x86_64.nupkg
+        # choco push dist/${{ steps.tag.outputs.tag }}/Spotube-windows-x86_64.nupkg
 
       # Upload artifacts
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Windows-Bundle
-          path: dist/${{ env.RELEASE_VERSION }}
+          path: dist/${{ steps.tag.outputs.tag }}
