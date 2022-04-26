@@ -42,20 +42,20 @@ jobs:
       # Create Chocolatey Package
       # setting the sha256 hash for new bundle
       - run: |
-          Set-Variable -Name HASH -Value (Get-FileHash dist\${{ steps.tag.outputs.tag }}\spotube-${{ steps.tag.outputs.tag }}-windows.exe).Hash
+          Set-Variable -Name HASH -Value (Get-FileHash dist\${{ steps.tag.outputs.tag }}\spotube-${{ steps.tag.outputs.tag }}+${{ steps.tag.outputs.tag }}-windows.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
           make VERSION=${{ steps.tag.outputs.tag }} choco
 
       # Rename the artifacts
       - run: |
           Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube.${{ steps.tag.outputs.tag }}.nupkg -NewName Spotube-windows-x86_64.nupkg
-          Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}-windows.exe Spotube-windows-x86_64-setup.exe
+          Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}+${{ steps.tag.outputs.tag }}-windows.exe Spotube-windows-x86_64-setup.exe
 
       # Upload release binary
       - uses: meeDamian/github-release@2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.event.release.tag_name }}
+          tag: v${{ steps.tag.outputs.tag }}
           files: dist/${{ steps.tag.outputs.tag }}
 
       # Publish to Chocolatey Repository
