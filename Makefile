@@ -47,7 +47,7 @@ inno:
 		 powershell build\iscc\iscc.exe scripts\windows-setup-creator.iss
 
 choco:
-			powershell cp dist\${VERSION}\spotube-${VERSION}-windows.exe choco-struct\tools
+			powershell cp dist\${VERSION}\spotube-${VERSION}+${VERSION}-windows-setup.exe choco-struct\tools
 			powershell choco pack .\choco-struct\spotube.nuspec  --outputdirectory dist\${VERSION}\
 
 apk:
