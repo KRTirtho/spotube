@@ -3,13 +3,10 @@ on:
   release:
     types:
       - published
-      - prereleased
 
 jobs:
   publish_chocolatey:
     runs-on: windows-latest
-    outputs:
-      tag: ${{ steps.tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
@@ -74,10 +71,16 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Spotube-Windows-Bundle
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
       # Upload release binary
-      - uses: meeDamian/github-release@2.0
+      - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v${{ needs.publish_chocolatey.outputs.tag }}
-          files: >
+          tag: ${{ steps.tag.outputs.tag }}
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          allowUpdates: true
+          artifacts: >
             Spotube-Windows-Bundle/
