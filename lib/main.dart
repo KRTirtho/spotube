@@ -43,10 +43,10 @@ class MyApp extends HookConsumerWidget {
   MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
-    var themeMode =
+    final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
-    var player = ref.watch(audioPlayerProvider);
-    var youtube = ref.watch(youtubeProvider);
+    final player = ref.watch(audioPlayerProvider);
+    final youtube = ref.watch(youtubeProvider);
     useEffect(() {
       return () {
         player.dispose();

@@ -18,14 +18,14 @@ class Lyrics extends HookConsumerWidget {
     UserPreferences userPreferences = ref.watch(userPreferencesProvider);
     final lyrics = useState({});
 
-    final lyricsFuture = useMemoized(() {
+    final lyricsFuture = useMemoized(() async {
       if (playback.currentTrack == null ||
           userPreferences.geniusAccessToken.isEmpty ||
           (playback.currentTrack?.id != null &&
               playback.currentTrack?.id == lyrics.value["id"])) {
         return null;
       }
-      return getLyrics(
+      final lyricsStr = await getLyrics(
         playback.currentTrack!.name!,
         playback.currentTrack!.artists
                 ?.map((s) => s.name)
@@ -35,6 +35,8 @@ class Lyrics extends HookConsumerWidget {
         apiKey: userPreferences.geniusAccessToken,
         optimizeQuery: true,
       );
+      if (lyricsStr == null) return Future.error("No lyrics found");
+      return lyricsStr;
     }, [playback.currentTrack, userPreferences.geniusAccessToken]);
 
     final lyricsSnapshot = useFuture(lyricsFuture);
@@ -63,6 +65,17 @@ class Lyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
 
     if (lyrics.value["lyrics"] == null && playback.currentTrack != null) {
+      if (lyricsSnapshot.hasError) {
+        return Expanded(
+          child: Center(
+            child: Text(
+              "Sorry, no Lyrics were found for `${playback.currentTrack?.name}` :'(",
+              style: Theme.of(context).textTheme.headline4,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
       return const Expanded(
         child: Center(
           child: CircularProgressIndicator.adaptive(),

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -44,6 +45,15 @@ class PlayerView extends HookConsumerWidget {
     );
 
     final PaletteColor paletteColor = usePaletteColor(context, albumArt);
+
+    useEffect(() {
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+          statusBarColor: paletteColor.color, // status bar color
+        ),
+      );
+      return null;
+    }, [paletteColor.color]);
 
     return SafeArea(
       child: Scaffold(

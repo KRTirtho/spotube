@@ -1,0 +1,73 @@
+name: Spotube Build & Release
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  publish_chocolatey:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: release-test
+      - uses: actions/checkout@v3
+        with:
+          repository: KRTirtho/flutter_distributor
+          ref: deb-implementation
+          path: build/flutter_distributor
+
+        # bump chocolatey related versions
+        env:
+          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+
+      - name: Replace Version in files
+        run: |
+          sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" windows/runner/Runner.rc
+          sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" choco-struct/tools/VERIFICATION.txt
+          sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" choco-struct/spotube.nuspec
+
+      - name: Build Windows Executable
+        uses: subosito/flutter-action@v2.2.0
+        with:
+          cache: true
+        run: |
+          choco install sed make -y
+          flutter config --enable-windows-desktop
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          make innoinstall
+          dart pub global activate --source path build/flutter_distributor/packages/flutter_distributor
+          flutter_distributor package --platform=windows --target=exe --skip-clean
+
+      - name: Create Chocolatey Package
+        # setting the sha256 hash for new bundle
+        run: |
+          Set-Variable -Name HASH -Value (Get-FileHash dist\$RELEASE_VERSION\spotube-$RELEASE_VERSION-windows.exe).Hash
+          sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
+          make VERSION=$RELEASE_VERSION choco
+
+      - name: Rename the artifacts
+        run: |
+          Rename-Item -Path dist/$RELEASE_VERSION/spotube.$RELEASE_VERSION.nupkg -NewName Spotube-windows-x86_64.nupkg
+          Rename-Item -Path dist/$RELEASE_VERSION/spotube-$RELEASE_VERSION-windows.exe Spotube-windows-x86_64-setup.exe
+
+      - name: Upload release binary
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.event.release.tag_name }}
+          files: dist/$RELEASE_VERSION
+
+      - name: Publish to Chocolatey Repository
+        run: |
+          choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
+          echo 'published to community.chocolatey.org'
+
+        # choco push dist/$RELEASE_VERSION/spotube.$RELEASE_VERSION.nupkg
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Windows-Bundle
+          path: dist/$RELEASE_VERSION

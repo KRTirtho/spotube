@@ -57,13 +57,11 @@ jobs:
       - run: choco install make -y
       - run: make innoinstall
       - run: make inno
-      - run: make choco
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Windows-Bundle
           path: |
             build/installer/Spotube-windows-x86_64-setup.exe
-            build/spotube.*.nupkg
   build_macos:
     runs-on: macos-11
     steps:

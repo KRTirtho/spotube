@@ -7,17 +7,17 @@ in verifying that this package's contents are trustworthy.
 Please go to releases page
 https://github.com/KRTirtho/spotube/releases
 
-Download same version as this choco package (example for v2.0.0)
-https://github.com/KRTirtho/spotube/releases/tag/v2.0.0
+Download same version as this choco package (example for v%{{SPOTUBE_VERSION}}%)
+https://github.com/KRTirtho/spotube/releases/tag/v%{{SPOTUBE_VERSION}}%
 
 1. get hashes. Run:
 powershell -command Get-FileHash tools\Spotube-windows-x86_64-setup.exe
 
 2. The checksums should match the following:
 --- 
-Version Hashes for v2.0.0
+Version Hashes for v%{{SPOTUBE_VERSION}}%
  
 
 Algorithm  Hash                                                              Path
 ---------  ----                                                              ----
-SHA256     0b60f232a8c17686b7751a36787c9490b35ff6f3139955c72a11c8db19317a91  tools\Spotube-windows-x86_64-setup.exe
+SHA256     %{{WIN_SHA256}}%  tools\Spotube-windows-x86_64-setup.exe

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart' hide Page;
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -190,6 +191,19 @@ class Home extends HookConsumerWidget {
             ))
           ],
         ));
+
+    final brightness = Theme.of(context).brightness;
+
+    useEffect(() {
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+          statusBarColor: brightness == Brightness.dark
+              ? Colors.blueGrey[900]
+              : Colors.white, // status bar color
+        ),
+      );
+      return null;
+    }, [brightness]);
 
     return SafeArea(
       child: Scaffold(
