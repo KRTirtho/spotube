@@ -28,7 +28,7 @@ jobs:
           sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" choco-struct/spotube.nuspec
 
       - name: Build Windows Executable
-      - uses: subosito/flutter-action@v2.2.0
+        uses: subosito/flutter-action@v2.2.0
         with:
           cache: true
       - run: |
@@ -53,7 +53,7 @@ jobs:
           Rename-Item -Path dist/$RELEASE_VERSION/spotube-$RELEASE_VERSION-windows.exe Spotube-windows-x86_64-setup.exe
 
       - name: Upload release binary
-      - uses: meeDamian/github-release@2.0
+        uses: meeDamian/github-release@2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.event.release.tag_name }}
@@ -67,7 +67,7 @@ jobs:
         # choco push dist/$RELEASE_VERSION/spotube.$RELEASE_VERSION.nupkg
 
       - name: Upload artifacts
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: Spotube-Windows-Bundle
           path: dist/$RELEASE_VERSION
