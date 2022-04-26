@@ -2,7 +2,7 @@ name: Spotube Build & Release
 on:
   release:
     types:
-      - published
+      - prereleased
 
 jobs:
   publish_chocolatey:
