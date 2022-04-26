@@ -24,9 +24,9 @@ jobs:
       # Replace Version in files
       - run: |
           choco install sed make -y
-          sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" windows/runner/Runner.rc
-          sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" choco-struct/tools/VERIFICATION.txt
-          sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" choco-struct/spotube.nuspec
+          sed -i "s/%{{SPOTUBE_VERSION}}%/$env:RELEASE_VERSION/" windows/runner/Runner.rc
+          sed -i "s/%{{SPOTUBE_VERSION}}%/$env:RELEASE_VERSION/" choco-struct/tools/VERIFICATION.txt
+          sed -i "s/%{{SPOTUBE_VERSION}}%/$env:RELEASE_VERSION/" choco-struct/spotube.nuspec
 
       # Build Windows Executable
       - uses: subosito/flutter-action@v2.2.0
@@ -43,31 +43,31 @@ jobs:
       # Create Chocolatey Package
       # setting the sha256 hash for new bundle
       - run: |
-          Set-Variable -Name HASH -Value (Get-FileHash dist\$RELEASE_VERSION\spotube-$RELEASE_VERSION-windows.exe).Hash
+          Set-Variable -Name HASH -Value (Get-FileHash dist\$env:RELEASE_VERSION\spotube-$env:RELEASE_VERSION-windows.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
-          make VERSION=$RELEASE_VERSION choco
+          make VERSION=$env:RELEASE_VERSION choco
 
       # Rename the artifacts
       - run: |
-          Rename-Item -Path dist/$RELEASE_VERSION/spotube.$RELEASE_VERSION.nupkg -NewName Spotube-windows-x86_64.nupkg
-          Rename-Item -Path dist/$RELEASE_VERSION/spotube-$RELEASE_VERSION-windows.exe Spotube-windows-x86_64-setup.exe
+          Rename-Item -Path dist/$env:RELEASE_VERSION/spotube.$env:RELEASE_VERSION.nupkg -NewName Spotube-windows-x86_64.nupkg
+          Rename-Item -Path dist/$env:RELEASE_VERSION/spotube-$env:RELEASE_VERSION-windows.exe Spotube-windows-x86_64-setup.exe
 
       # Upload release binary
       - uses: meeDamian/github-release@2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.event.release.tag_name }}
-          files: dist/$RELEASE_VERSION
+          files: dist/${{ env.RELEASE_VERSION }}
 
       # Publish to Chocolatey Repository
       - run: |
           choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
           echo 'published to community.chocolatey.org'
 
-        # choco push dist/$RELEASE_VERSION/spotube.$RELEASE_VERSION.nupkg
+        # choco push dist/$env:RELEASE_VERSION/Spotube-windows-x86_64.nupkg
 
       # Upload artifacts
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Windows-Bundle
-          path: dist/$RELEASE_VERSION
+          path: dist/${{ env.RELEASE_VERSION }}
