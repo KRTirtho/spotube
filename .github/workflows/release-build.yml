@@ -23,6 +23,7 @@ jobs:
 
       # Replace Version in files
       - run: |
+          choco install sed make -y
           sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" windows/runner/Runner.rc
           sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" choco-struct/tools/VERIFICATION.txt
           sed -i "s/%{{SPOTUBE_VERSION}}%/$RELEASE_VERSION/" choco-struct/spotube.nuspec
@@ -32,7 +33,6 @@ jobs:
         with:
           cache: true
       - run: |
-          choco install sed make -y
           flutter config --enable-windows-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
