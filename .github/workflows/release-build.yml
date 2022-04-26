@@ -3,10 +3,13 @@ on:
   release:
     types:
       - published
+      - prereleased
 
 jobs:
   publish_chocolatey:
     runs-on: windows-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
@@ -51,13 +54,6 @@ jobs:
           Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube.${{ steps.tag.outputs.tag }}.nupkg -NewName Spotube-windows-x86_64.nupkg
           Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}+${{ steps.tag.outputs.tag }}-windows-setup.exe Spotube-windows-x86_64-setup.exe
 
-      # Upload release binary
-      - uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v${{ steps.tag.outputs.tag }}
-          files: dist/${{ steps.tag.outputs.tag }}
-
       # Publish to Chocolatey Repository
       - run: |
           choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
@@ -70,3 +66,18 @@ jobs:
         with:
           name: Spotube-Windows-Bundle
           path: dist/${{ steps.tag.outputs.tag }}
+
+  update_release:
+    needs: publish_chocolatey
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Windows-Bundle
+      # Upload release binary
+      - uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ needs.publish_chocolatey.outputs.tag }}
+          files: >
+            Spotube-Windows-Bundle/
