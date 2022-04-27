@@ -64,23 +64,186 @@ jobs:
           name: Spotube-Windows-Bundle
           path: dist/${{ steps.tag.outputs.tag }}
 
-  update_release:
-    needs: publish_chocolatey
+  publish_macos:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: KRTirtho/flutter_distributor
+          ref: deb-implementation
+          path: build/flutter_distributor
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: |
+          flutter config --enable-macos-desktop
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          npm install -g appdmg
+          dart pub global activate --source path build/flutter_distributor/packages/flutter_distributor
+          flutter_distributor package --platform=macos --targets=dmg --skip-clean
+      - run: mv dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}-macos.dmg dist/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Spotube-Macos-Bundle
+          path: dist/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
+
+  publish_linux:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: KRTirtho/flutter_distributor
+          ref: deb-implementation
+          path: build/flutter_distributor
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+      - run: |
+          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.0-beta.1/appimage-builder-1.0.0-677acbd-x86_64.AppImage
+          chmod +x appimage-builder-x86_64.AppImage
+          mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+      # replacing & adding new release version with older version
+      - run: |
+          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ steps.tag.outputs.tag }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+
+      - run: |
+          flutter config --enable-linux-desktop
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          dart pub global activate --source path build/flutter_distributor/packages/flutter_distributor
+          flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
+          make tar
+      - run: |
+          mv build/Spotube-linux-x86_64.tar.xz dist/${{ steps.tag.outputs.tag }}
+          mv dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}+${{ steps.tag.outputs.tag }}-linux.deb dist/${{ steps.tag.outputs.tag }}/Spotube-linux-x86_64.deb
+          mv dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}-linux.AppImage dist/${{ steps.tag.outputs.tag }}/Spotube-linux-x86_64.AppImage
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Spotube-Linux-Bundle
+          path: dist/${{ steps.tag.outputs.tag }}
+
+  update_release:
+    needs:
+      - publish_chocolatey
+      - publish_macos
+      - publish_linux
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: Spotube-Windows-Bundle
+          path: ./Spotube-Windows-Bundle
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Macos-Bundle
+          path: ./Spotube-Macos-Bundle
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Linux-Bundle
+          path: ./Spotube-Linux-Bundle
       - name: Get latest tag
         id: tag
         uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      # generating checksums for all the binary
+      - run: |
+          md5sum ./**/*.{AppImage,deb,zip,dmg,exe,nupkg,apk} > RELEASE.md5sum
+          sha256sum build/**/*.{AppImage,deb,zip,dmg,exe,nupkg,apk} > RELEASE.sha256sum
+          sed -i 's|Spotube-.*-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
       # Upload release binary
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.tag.outputs.tag }}
+          tag: v${{ steps.tag.outputs.tag }}
           omitBodyDuringUpdate: true
           omitNameDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: >
-            Spotube-Windows-Bundle/
+          artifacts: Spotube-Windows-Bundle/dist/${{ steps.tag.outputs.tag }/*,Spotube-Macos-Bundle/dist/${{ steps.tag.outputs.tag }/*,Spotube-Linux-Bundle/dist/${{ steps.tag.outputs.tag }/*,RELEASE.sha256sum,RELEASE.md5sum
+
+  # publish_winget:
+  #   needs: update_release
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Get latest tag
+  #       id: tag
+  #       uses: dawidd6/action-get-tag@v1
+  #       with:
+  #         strip_v: true
+  #     - run: |
+  #         winget install wingetcreate --silent
+  #         choco install tree -y
+  #         wingetcreate update KRTirtho.Spotube --urls https://github.com/KRTirtho/spotube/releases/download/v${{ steps.tag.outputs.tag }}/Spotube-windows-x86_64-setup.exe https://github.com/KRTirtho/spotube/releases/download/v${{ steps.tag.outputs.tag }}/Spotube-windows-x86_64-setup.exe --version ${{ steps.tag.outputs.tag }} --token ${{ secrets.GITHUB_TOKEN  }} --submit
+
+  publish_flathub:
+    needs: update_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: spotube
+      - uses: actions/checkout@v3
+        with:
+          repository: flathub/com.github.KRTirtho.Spotube
+          token: ${{ secrets.FLATHUB_TOKEN }}
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      - run: |
+          python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: v${{ steps.tag.outputs.tag }} Update
+          # push: origin master
+          push: false
+
+  publish_aur:
+    needs: update_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Linux-Bundle
+          path: ./Spotube-Linux-Bundle
+      - run: |
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" aur-struct/PKGBUILD
+          sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
+          sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-Linux-Bundle/Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
+      # - uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
+      #   with:
+      #     pkgname: spotube-bin
+      #     pkgbuild: aur-struct/PKGBUILD
+      #     commit_username: ${{ secrets.AUR_USERNAME }}
+      #     commit_email: ${{ secrets.AUR_EMAIL }}
+      #     ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+      #     commit_message: Updated to v${{steps.tag.outputs.tag}}
