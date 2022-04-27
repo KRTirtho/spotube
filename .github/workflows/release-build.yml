@@ -168,6 +168,8 @@ jobs:
           strip_v: true
       # generating checksums for all the binary
       - run: |
+          apt-get install tree -y
+          tree .
           md5sum ./Spotube-Macos-Bundle/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg > RELEASE.md5sum
           md5sum ./Spotube-Windows-Bundle/${{ steps.tag.outputs.tag }}/*.{exe,nupkg} > RELEASE.md5sum
           md5sum ./Spotube-Linux-Bundle/${{ steps.tag.outputs.tag }}/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
