@@ -35,7 +35,7 @@ jobs:
           flutter config --enable-windows-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-          dart global activate melos
+          dart pub global activate melos
           cd build/flutter_distributor && melos bootstrap && cd ../..
           make innoinstall
           dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=windows --targets=exe --skip-clean
@@ -87,7 +87,7 @@ jobs:
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           npm install -g appdmg
-          dart global activate melos
+          dart pub global activate melos
           cd build/flutter_distributor && melos bootstrap && cd ../..
           dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=macos --targets=dmg --skip-clean
       - run: mv dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}-macos.dmg dist/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
@@ -131,7 +131,7 @@ jobs:
           flutter config --enable-linux-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-          dart global activate melos
+          dart pub global activate melos
           cd build/flutter_distributor && melos bootstrap && cd ../..
           dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=linux --targets=deb,appimage --skip-clean
           make tar
