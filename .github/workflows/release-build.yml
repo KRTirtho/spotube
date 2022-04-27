@@ -35,9 +35,10 @@ jobs:
           flutter config --enable-windows-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          dart global activate melos
+          cd build/flutter_distributor && melos bootstrap && cd ../..
           make innoinstall
-          dart pub global activate --source path build/flutter_distributor/packages/flutter_distributor
-          flutter_distributor package --platform=windows --targets=exe --skip-clean
+          dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=windows --targets=exe --skip-clean
 
       # Create Chocolatey Package
       # setting the sha256 hash for new bundle
@@ -86,8 +87,9 @@ jobs:
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           npm install -g appdmg
-          dart pub global activate --source path build/flutter_distributor/packages/flutter_distributor
-          flutter_distributor package --platform=macos --targets=dmg --skip-clean
+          dart global activate melos
+          cd build/flutter_distributor && melos bootstrap && cd ../..
+          dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=macos --targets=dmg --skip-clean
       - run: mv dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}-macos.dmg dist/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
       - uses: actions/upload-artifact@v2
         with:
@@ -129,8 +131,9 @@ jobs:
           flutter config --enable-linux-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-          dart pub global activate --source path build/flutter_distributor/packages/flutter_distributor
-          flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
+          dart global activate melos
+          cd build/flutter_distributor && melos bootstrap && cd ../..
+          dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=linux --targets=deb,appimage --skip-clean
           make tar
       - run: |
           mv build/Spotube-linux-x86_64.tar.xz dist/${{ steps.tag.outputs.tag }}
@@ -246,4 +249,4 @@ jobs:
       #     commit_username: ${{ secrets.AUR_USERNAME }}
       #     commit_email: ${{ secrets.AUR_EMAIL }}
       #     ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-      #     commit_message: Updated to v${{steps.tag.outputs.tag}}
+      #     commit_message: Updated to v${{ steps.tag.outputs.tag }}
