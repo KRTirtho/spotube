@@ -84,6 +84,7 @@ jobs:
       - run: du -sh build/macos/Build/Products/Release/spotube.app
       - run: npm install -g appdmg
       # using a versioned path for compatibility in gensums
+      - run: mkdir -p build/${{ steps.tag.outputs.tag }}
       - run: appdmg appdmg.json build/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
       - uses: actions/upload-artifact@v2
         with:
