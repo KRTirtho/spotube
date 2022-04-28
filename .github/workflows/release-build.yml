@@ -216,7 +216,7 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      - run: sudo apt-get tree -y
+      - run: sudo apt-get install tree -y
       - run: tree .
       - run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}

@@ -90,7 +90,7 @@ Future<List?> searchSong(
 
     String reqUrl = "$searchUrl${Uri.encodeComponent(song)}";
     Map<String, String> headers = {"Authorization": 'Bearer $apiKey'};
-    var response = await http.get(
+    final response = await http.get(
       Uri.parse(authHeader ? reqUrl : "$reqUrl&access_token=$apiKey"),
       headers: authHeader ? headers : null,
     );
