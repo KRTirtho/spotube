@@ -167,11 +167,9 @@ jobs:
         with:
           strip_v: true
       # generating checksums for all the binary
-      - run: sudo apt-get install tree -y
-      - run: tree .
       - run: |
-          md5sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.md5sum
           md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.md5sum
+          md5sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.md5sum
           md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
           sha256sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.sha256sum
           sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.sha256sum
@@ -186,7 +184,7 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Windows-Bundle/dist/${{ steps.tag.outputs.tag }}/*,Spotube-Macos-Bundle/*,Spotube-Linux-Bundle/dist/${{ steps.tag.outputs.tag }}/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Windows-Bundle/*,Spotube-Macos-Bundle/*,Spotube-Linux-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum
 
   # publish_winget:
   #   needs: update_release
@@ -208,18 +206,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          path: spotube
-      - uses: actions/checkout@v3
-        with:
           repository: flathub/com.github.KRTirtho.Spotube
           token: ${{ secrets.FLATHUB_TOKEN }}
+      - uses: actions/checkout@v3
+        with:
+          path: spotube
       - name: Get latest tag
         id: tag
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
+      - run: sudo apt-get tree -y
+      - run: tree .
       - run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
+      - run: cat com.github.KRTirtho.Spotube.yml
       - uses: EndBug/add-and-commit@v9
         with:
           message: v${{ steps.tag.outputs.tag }} Update
