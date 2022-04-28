@@ -60,6 +60,7 @@ dependencies:
   permission_handler: ^9.2.0
   marquee: ^2.2.1
   scroll_to_index: ^2.1.1
+  package_info_plus: ^1.4.2
 
 dev_dependencies:
   flutter_test:

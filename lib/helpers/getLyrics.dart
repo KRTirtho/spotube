@@ -130,7 +130,7 @@ Future<String?> getLyrics(
     if (results == null) return null;
     final worthyOne = results
         .map((result) {
-          final gTitle = (result["title"] as String).toLowerCase();
+          final gTitle = (result["full_title"] as String).toLowerCase();
           int points = 0;
           final hasTitle = gTitle.contains(title.toLowerCase());
           final hasAllArtists =
@@ -144,7 +144,7 @@ Future<String?> getLyrics(
         .sorted(
           (a, b) => ((b["points"] as int).compareTo(a["points"] as int)),
         )
-        .first;
+        .first["result"];
 
     String? lyrics = await extractLyrics(Uri.parse(worthyOne["url"]));
     return lyrics;

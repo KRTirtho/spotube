@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/hooks/usePackageInfo.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -32,6 +33,11 @@ class Settings extends HookConsumerWidget {
     ytSearchFormatController.addListener(() {
       preferences.setYtSearchFormat(ytSearchFormatController.value.text);
     });
+
+    final packageInfo = usePackageInfo(
+      appName: 'Spotube',
+      packageName: 'spotube',
+    );
 
     return SafeArea(
       child: Scaffold(
@@ -252,7 +258,9 @@ class Settings extends HookConsumerWidget {
                           );
                         }),
                       const SizedBox(height: 40),
-                      const Text("Spotube v2.0.0"),
+                      Text(
+                        "Spotube v${packageInfo.version}",
+                      ),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

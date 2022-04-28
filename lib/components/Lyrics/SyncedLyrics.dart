@@ -79,8 +79,18 @@ class SyncedLyrics extends HookConsumerWidget {
                     },
                   ),
                 ],
-                content: const Text(
-                    "The found lyrics might not be properly synced. Do you want to default to static (genius.com) lyrics?"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Text(
+                      "The found lyrics might not be properly synced. Do you want to default to static (genius.com) lyrics?",
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Hint: Wait for a moment to see if the lyric actually sync. Sometimes it may sync.",
+                    ),
+                  ],
+                ),
               );
             },
           );
