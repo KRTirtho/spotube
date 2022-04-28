@@ -216,11 +216,8 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      - run: sudo apt-get install tree -y
-      - run: tree .
       - run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
-      - run: cat com.github.KRTirtho.Spotube.yml
       - uses: EndBug/add-and-commit@v9
         with:
           message: v${{ steps.tag.outputs.tag }} Update

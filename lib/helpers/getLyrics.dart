@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:spotube/helpers/get-random-element.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
+import 'package:collection/collection.dart';
 
 final logger = getLogger("GetLyrics");
 
@@ -113,7 +114,7 @@ Future<List?> searchSong(
 
 Future<String?> getLyrics(
   String title,
-  List<String> artist, {
+  List<String> artists, {
   required String apiKey,
   bool optimizeQuery = false,
   bool authHeader = false,
@@ -121,13 +122,31 @@ Future<String?> getLyrics(
   try {
     final results = await searchSong(
       title,
-      artist,
+      artists,
       apiKey: apiKey,
       optimizeQuery: optimizeQuery,
       authHeader: authHeader,
     );
     if (results == null) return null;
-    String? lyrics = await extractLyrics(Uri.parse(results.first["url"]));
+    final worthyOne = results
+        .map((result) {
+          final gTitle = (result["title"] as String).toLowerCase();
+          int points = 0;
+          final hasTitle = gTitle.contains(title.toLowerCase());
+          final hasAllArtists =
+              artists.every((artist) => gTitle.contains(artist.toLowerCase()));
+
+          for (var criteria in [hasTitle, hasAllArtists]) {
+            if (criteria) points++;
+          }
+          return {"result": result, "points": points};
+        })
+        .sorted(
+          (a, b) => ((b["points"] as int).compareTo(a["points"] as int)),
+        )
+        .first;
+
+    String? lyrics = await extractLyrics(Uri.parse(worthyOne["url"]));
     return lyrics;
   } catch (e, stack) {
     logger.e("getLyrics", e, stack);
