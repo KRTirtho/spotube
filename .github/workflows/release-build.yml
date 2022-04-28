@@ -170,12 +170,12 @@ jobs:
       - run: sudo apt-get install tree -y
       - run: tree .
       - run: |
-          md5sum ./Spotube-Macos-Bundle/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg > RELEASE.md5sum
-          md5sum ./Spotube-Windows-Bundle/${{ steps.tag.outputs.tag }}/*.{exe,nupkg} > RELEASE.md5sum
-          md5sum ./Spotube-Linux-Bundle/${{ steps.tag.outputs.tag }}/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
-          sha256sum ./Spotube-Macos-Bundle/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg > RELEASE.sha256sum
-          sha256sum ./Spotube-Windows-Bundle/${{ steps.tag.outputs.tag }}/*.{exe,nupkg} > RELEASE.sha256sum
-          sha256sum ./Spotube-Linux-Bundle/${{ steps.tag.outputs.tag }}/*.{AppImage,tar.xz,deb} > RELEASE.sha256sum
+          md5sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.md5sum
+          md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.md5sum
+          md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
+          sha256sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.sha256sum
+          sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.sha256sum
+          sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.sha256sum
           sed -i 's|Spotube-.*-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
       # Upload release binary
       - uses: ncipollo/release-action@v1
