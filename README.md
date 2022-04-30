@@ -20,7 +20,13 @@
 
 
 Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
-![Application Screenshot](assets/spotube-screenshot.png)
+#### <p align="center">Desktop</p>
+
+![Application Desktop Screenshot](assets/spotube-screenshot.png)
+
+#### <p align="center">Mobile</p>
+
+![Application Mobile Screenshot](assets/mobile-screenshots/mobile-combined.jpg)
 
 # Features
 
