@@ -37,39 +37,36 @@ Future<SpotubeTrack> toSpotubeTrack(
         // the find should be lazy thus everything case insensitive
         final ytTitle = video.title.toLowerCase();
         final bool hasTitle = ytTitle.contains(title);
-        final bool hasYtTitle = title.contains(ytTitle);
         final bool hasAllArtists = track.artists?.every(
               (artist) => ytTitle.contains(artist.name!.toLowerCase()),
             ) ??
             false;
-        final bool authorIsArtist = track.artists?.any((artist) {
-              return artist.name?.toLowerCase() == video.author.toLowerCase();
-            }) ??
-            false;
+        final bool authorIsArtist = track.artists?.first.name?.toLowerCase() ==
+            video.author.toLowerCase();
 
-        final bool hasNoLive = !containsTextInBracket(ytTitle, "live");
-        final bool hasOfficialVideo = [
-          "(official video)",
-          "[official video]",
-          "(official music video)",
-          "[official music video]"
-        ].any((v) => ytTitle.contains(v));
+        final bool hasNoLiveInTitle = !containsTextInBracket(ytTitle, "live");
 
-        final bool hasOfficialAudio = [
-          "[official audio]",
-          "(official audio)",
-        ].any((v) => ytTitle.contains(v));
+        // final bool hasOfficialVideo = [
+        //   "(official video)",
+        //   "[official video]",
+        //   "(official music video)",
+        //   "[official music video]"
+        // ].any((v) => ytTitle.contains(v));
+
+        // final bool hasOfficialAudio = [
+        //   "[official audio]",
+        //   "(official audio)",
+        // ].any((v) => ytTitle.contains(v));
 
         int rate = 0;
         for (final el in [
           hasTitle,
-          hasYtTitle,
           hasAllArtists,
           authorIsArtist,
-          hasNoLive,
+          hasNoLiveInTitle,
           !video.isLive,
-          hasOfficialAudio,
-          hasOfficialVideo,
+          // hasOfficialVideo,
+          // hasOfficialAudio,
         ]) {
           if (el) rate++;
         }

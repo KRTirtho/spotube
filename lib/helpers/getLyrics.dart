@@ -102,7 +102,8 @@ Future<List?> searchSong(
         "id": val["result"]["id"],
         "full_title": val["result"]["full_title"],
         "albumArt": val["result"]["song_art_image_url"],
-        "url": val["result"]["url"]
+        "url": val["result"]["url"],
+        "author": val["result"]["primary_artist"]["name"],
       };
     }).toList();
     return results;
@@ -128,23 +129,33 @@ Future<String?> getLyrics(
       authHeader: authHeader,
     );
     if (results == null) return null;
-    final worthyOne = results
-        .map((result) {
-          final gTitle = (result["full_title"] as String).toLowerCase();
-          int points = 0;
-          final hasTitle = gTitle.contains(title.toLowerCase());
-          final hasAllArtists =
-              artists.every((artist) => gTitle.contains(artist.toLowerCase()));
+    title = getTitle(
+      title,
+      artists: artists,
+      onlyCleanArtist: true,
+    ).trim();
+    final ratedLyrics = results.map((result) {
+      final gTitle = (result["full_title"] as String).toLowerCase();
+      int points = 0;
+      final hasTitle = gTitle.contains(title);
+      final hasAllArtists =
+          artists.every((artist) => gTitle.contains(artist.toLowerCase()));
+      final String lyricAuthor = result["author"].toLowerCase();
+      final fromOriginalAuthor =
+          lyricAuthor.contains(artists.first.toLowerCase());
 
-          for (var criteria in [hasTitle, hasAllArtists]) {
-            if (criteria) points++;
-          }
-          return {"result": result, "points": points};
-        })
-        .sorted(
-          (a, b) => ((b["points"] as int).compareTo(a["points"] as int)),
-        )
-        .first["result"];
+      for (final criteria in [
+        hasTitle,
+        hasAllArtists,
+        fromOriginalAuthor,
+      ]) {
+        if (criteria) points++;
+      }
+      return {"result": result, "points": points};
+    }).sorted(
+      (a, b) => ((a["points"] as int).compareTo(a["points"] as int)),
+    );
+    final worthyOne = ratedLyrics.first["result"];
 
     String? lyrics = await extractLyrics(Uri.parse(worthyOne["url"]));
     return lyrics;

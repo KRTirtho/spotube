@@ -200,6 +200,9 @@ class Home extends HookConsumerWidget {
           statusBarColor: brightness == Brightness.dark
               ? Colors.blueGrey[900]
               : Colors.white, // status bar color
+          statusBarIconBrightness: brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
         ),
       );
       return null;

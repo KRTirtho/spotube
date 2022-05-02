@@ -46,14 +46,31 @@ class PlayerView extends HookConsumerWidget {
 
     final PaletteColor paletteColor = usePaletteColor(context, albumArt);
 
+    final brightness = Theme.of(context).brightness;
+
     useEffect(() {
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           statusBarColor: paletteColor.color, // status bar color
         ),
       );
-      return null;
+      return;
     }, [paletteColor.color]);
+
+    useEffect(() {
+      return () {
+        SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(
+            statusBarColor: brightness == Brightness.dark
+                ? Colors.blueGrey[900]
+                : Colors.white, // status bar color
+            statusBarIconBrightness: brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark,
+          ),
+        );
+      };
+    }, []);
 
     return SafeArea(
       child: Scaffold(
