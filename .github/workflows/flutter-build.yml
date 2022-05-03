@@ -60,7 +60,6 @@ jobs:
       - run: choco install innosetup -y
       - run: dart pub global activate melos
       - run: cd build/flutter_distributor && melos bootstrap && cd ../..
-      - run: ls build/windows/runner/Release
       - run: dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=windows --targets=exe --skip-clean
       - uses: actions/upload-artifact@v3
         with:
