@@ -1,1 +1,1 @@
-A lightweight spotify client that utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience without Spotify Premium
+Lightweight & resource friendly spotify client without requiring Spotify Premium
