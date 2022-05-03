@@ -57,20 +57,15 @@ class Playback extends ChangeNotifier {
 
   // states
   bool _isPlaying = false;
-  Duration? _duration;
-
-  // using custom listeners for duration as it changes super quickly
-  // which will cause re-renders in components that don't even need it
-  // thus only allowing to listen to change in duration through only
-  // a listener function
-  List<Function(Duration?)> _durationListeners = [];
+  Duration? duration;
 
   // listeners
   StreamSubscription<bool>? _playingStreamListener;
   StreamSubscription<Duration?>? _durationStreamListener;
-  StreamSubscription<ProcessingState>? _processingStateStreamListener;
   StreamSubscription<AudioInterruptionEvent>? _audioInterruptionEventListener;
   StreamSubscription<Duration>? _positionStreamListener;
+
+  Duration _prevPosition = Duration.zero;
 
   AudioPlayer player;
   YoutubeExplode youtube;
@@ -82,7 +77,9 @@ class Playback extends ChangeNotifier {
     CurrentPlaylist? currentPlaylist,
     Track? currentTrack,
   })  : _currentPlaylist = currentPlaylist,
-        _currentTrack = currentTrack {
+        _currentTrack = currentTrack;
+
+  void register() {
     _playingStreamListener = player.playingStream.listen(
       (playing) {
         _isPlaying = playing;
@@ -90,49 +87,47 @@ class Playback extends ChangeNotifier {
       },
     );
 
-    _durationStreamListener = player.durationStream.listen((duration) async {
-      if (duration != null) {
+    _durationStreamListener = player.durationStream.listen((event) async {
+      if (event != null) {
         // Actually things doesn't work all the time as they were
         // described. So instead of listening to a `_ready`
         // stream, it has to listen to duration stream since duration
         // is always added to the Stream sink after all icyMetadata has
         // been loaded thus indicating buffering started
-        if (duration != Duration.zero && duration != _duration) {
+        if (event != Duration.zero && event != duration) {
           // this line is for prev/next or already playing playlist
           if (player.playing) await player.pause();
           await player.play();
         }
-
-        _duration = duration;
-        // for avoiding unnecessary re-renders in other components that
-        // doesn't need duration
-        _callAllDurationListeners(duration);
+        duration = event;
+        notifyListeners();
       }
     });
 
-    _processingStateStreamListener =
-        player.processingStateStream.listen((event) async {
-      _logger.v("[Processing State Change] $event");
-      try {
-        if (event != ProcessingState.completed) return;
+    _positionStreamListener =
+        player.createPositionStream().listen((position) async {
+      // detecting multiple same call
+      if (_prevPosition.inSeconds == position.inSeconds) return;
+      _prevPosition = position;
+
+      /// Because of ProcessingState.complete never gets set bug using a
+      /// custom solution to know when the audio stops playing
+      ///
+      /// Details: https://github.com/KRTirtho/spotube/issues/46
+      if (duration != Duration.zero &&
+          duration?.isNegative == false &&
+          position.inSeconds == duration?.inSeconds) {
         if (_currentTrack?.id != null) {
+          await player.pause();
           movePlaylistPositionBy(1);
         } else {
           await audioSession?.setActive(false);
           _isPlaying = false;
-          _duration = null;
-          _callAllDurationListeners(null);
+          duration = null;
           notifyListeners();
         }
-      } catch (e, stack) {
-        _logger.e("PrecessingStateStreamListener", e, stack);
       }
     });
-
-    _positionStreamListener = (player.positionStream.isBroadcast
-            ? player.positionStream
-            : player.positionStream.asBroadcastStream())
-        .listen((position) async {});
 
     AudioSession.instance.then((session) async {
       _audioSession = session;
@@ -147,28 +142,6 @@ class Playback extends ChangeNotifier {
   Track? get currentTrack => _currentTrack;
   bool get isPlaying => _isPlaying;
   AudioSession? get audioSession => _audioSession;
-
-  /// this duration field is almost static & changes occasionally
-  ///
-  /// If you want realtime duration with state-update/re-render
-  /// use custom state & the [addDurationChangeListener] function to do so
-  Duration? get duration => _duration;
-
-  _callAllDurationListeners(Duration? arg) {
-    for (var listener in _durationListeners) {
-      listener(arg);
-    }
-  }
-
-  void addDurationChangeListener(void Function(Duration? duration) listener) {
-    _durationListeners.add(listener);
-  }
-
-  void removeDurationChangeListener(
-      void Function(Duration? duration) listener) {
-    _durationListeners =
-        _durationListeners.where((p) => p != listener).toList();
-  }
 
   set setCurrentTrack(Track track) {
     _logger.v("[Setting Current Track] ${track.name} - ${track.id}");
@@ -185,8 +158,7 @@ class Playback extends ChangeNotifier {
   void reset() {
     _logger.v("Playback Reset");
     _isPlaying = false;
-    _duration = null;
-    _callAllDurationListeners(null);
+    duration = null;
     _currentPlaylist = null;
     _currentTrack = null;
     _audioSession?.setActive(false);
@@ -211,7 +183,6 @@ class Playback extends ChangeNotifier {
 
   @override
   dispose() {
-    _processingStateStreamListener?.cancel();
     _durationStreamListener?.cancel();
     _playingStreamListener?.cancel();
     _audioInterruptionEventListener?.cancel();
@@ -234,8 +205,7 @@ class Playback extends ChangeNotifier {
           ? _currentPlaylist!.tracks.elementAt(safeIndex)
           : null;
       if (track != null) {
-        _duration = null;
-        _callAllDurationListeners(null);
+        duration = null;
         _currentTrack = track;
         notifyListeners();
         // starts to play the newly entered next/prev track
@@ -268,8 +238,6 @@ class Playback extends ChangeNotifier {
           )
               .then((value) async {
             _currentTrack = track;
-            _duration = value;
-            _callAllDurationListeners(value);
             notifyListeners();
           });
         }

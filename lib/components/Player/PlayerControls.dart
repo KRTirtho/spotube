@@ -22,17 +22,6 @@ class PlayerControls extends HookConsumerWidget {
     final AudioPlayer player = playback.player;
 
     final _shuffled = useState(false);
-    final _duration = useState<Duration?>(playback.duration);
-
-    useEffect(() {
-      listener(Duration? duration) {
-        _duration.value = duration;
-      }
-
-      playback.addDurationChangeListener(listener);
-
-      return () => playback.removeDurationChangeListener(listener);
-    }, []);
 
     final onNext = useNextTrack(playback);
 
@@ -40,7 +29,7 @@ class PlayerControls extends HookConsumerWidget {
 
     final _playOrPause = useTogglePlayPause(playback);
 
-    final duration = _duration.value ?? Duration.zero;
+    final duration = playback.duration ?? Duration.zero;
 
     return Container(
         constraints: const BoxConstraints(maxWidth: 600),

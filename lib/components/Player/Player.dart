@@ -36,6 +36,9 @@ class Player extends HookConsumerWidget {
         useFuture(future, initialData: null);
 
     useEffect(() {
+      // registering all the stream subscription listeners of player
+      playback.register();
+
       /// warm up the audio player before playing actual audio
       /// It's for resolving unresolved issue related to just_audio's
       /// [disposeAllPlayers] method which is throwing
@@ -51,7 +54,9 @@ class Player extends HookConsumerWidget {
       } else {
         player.setAsset("assets/warmer.mp3");
       }
-      return null;
+      return () {
+        playback.dispose();
+      };
     }, []);
 
     useEffect(() {
