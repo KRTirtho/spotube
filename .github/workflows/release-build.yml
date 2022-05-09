@@ -50,7 +50,7 @@ jobs:
       # Rename the artifacts
       - run: |
           Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube.${{ steps.tag.outputs.tag }}.nupkg -NewName Spotube-windows-x86_64.nupkg
-          Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}+${{ steps.tag.outputs.tag }}-windows-setup.exe Spotube-windows-x86_64-setup.exe
+          Rename-Item -Path dist/${{ steps.tag.outputs.tag }}/spotube-*-windows-setup.exe Spotube-windows-x86_64-setup.exe
 
       # Publish to Chocolatey Repository
       - run: |
@@ -133,11 +133,44 @@ jobs:
           make tar
       - run: |
           mv build/Spotube-linux-x86_64.tar.xz dist/${{ steps.tag.outputs.tag }}
-          mv dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}+${{ steps.tag.outputs.tag }}-linux.deb dist/${{ steps.tag.outputs.tag }}/Spotube-linux-x86_64.deb
-          mv dist/${{ steps.tag.outputs.tag }}/spotube-${{ steps.tag.outputs.tag }}-linux.AppImage dist/${{ steps.tag.outputs.tag }}/Spotube-linux-x86_64.AppImage
+          mv dist/${{ steps.tag.outputs.tag }}/spotube-*-linux.deb dist/${{ steps.tag.outputs.tag }}/Spotube-linux-x86_64.deb
+          mv dist/${{ steps.tag.outputs.tag }}/spotube-*-linux.AppImage dist/${{ steps.tag.outputs.tag }}/Spotube-linux-x86_64.AppImage
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Linux-Bundle
+          path: dist/${{ steps.tag.outputs.tag }}
+
+  publish_android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: KRTirtho/flutter_distributor
+          ref: deb-implementation
+          path: build/flutter_distributor
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+      - run: |
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          dart pub global activate melos
+          cd build/flutter_distributor && melos bootstrap && cd ../..
+          dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=android --targets=apk --skip-clean
+      - run: |
+          mv dist/${{ steps.tag.outputs.tag }}/spotube-*-android.apk dist/${{ steps.tag.outputs.tag }}/Spotube-android-all-arch.apk
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Spotube-Android-Bundle
           path: dist/${{ steps.tag.outputs.tag }}
 
   update_release:
@@ -171,9 +204,11 @@ jobs:
           md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.md5sum
           md5sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.md5sum
           md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
+          md5sum ./Spotube-Android-Bundle/*.apk > RELEASE.md5sum
           sha256sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.sha256sum
           sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.sha256sum
           sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.sha256sum
+          sha256sum ./Spotube-Android-Bundle/*.apk > RELEASE.sha256sum
           sed -i 's|Spotube-.*-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
       # Upload release binary
       - uses: ncipollo/release-action@v1
@@ -184,7 +219,7 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Windows-Bundle/*,Spotube-Macos-Bundle/*,Spotube-Linux-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Windows-Bundle/*,Spotube-Macos-Bundle/*,Spotube-Linux-Bundle/*,Spotube-Android-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum
 
   # publish_winget:
   #   needs: update_release

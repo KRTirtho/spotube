@@ -1,6 +1,7 @@
 bool containsTextInBracket(String matcher, String text) {
-  return RegExp(r"(?<=\().+?(?=\))")
-      .allMatches(matcher)
+  final allMatches = RegExp(r"(?<=\().+?(?=\))").allMatches(matcher);
+  if (allMatches.isEmpty) return false;
+  return allMatches
       .map((e) => e.group(0))
       .every((match) => match?.contains(text) ?? false);
 }
