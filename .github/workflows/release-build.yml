@@ -178,6 +178,7 @@ jobs:
       - publish_chocolatey
       - publish_macos
       - publish_linux
+      - publish_android
     runs-on: ubuntu-latest
     permissions:
       contents: write
