@@ -70,6 +70,8 @@ Future<SpotubeTrack> toSpotubeTrack(
         ]) {
           if (el) rate++;
         }
+        // can't let pass any non title matching track
+        if (!hasTitle) rate = rate - 2;
         return {
           "video": video,
           "points": rate,
