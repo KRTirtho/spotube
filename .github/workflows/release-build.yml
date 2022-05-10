@@ -167,7 +167,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Android-Bundle
-          path: dist/*.apk
+          path: dist/
 
   update_release:
     needs:
@@ -196,8 +196,10 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
+      - run: sudo apt-get install tree -y
       # generating checksums for all the binary
       - run: |
+          tree .
           md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.md5sum
           md5sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.md5sum
           md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
