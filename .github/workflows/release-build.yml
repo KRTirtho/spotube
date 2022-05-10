@@ -47,13 +47,14 @@ jobs:
           Set-Variable -Name HASH -Value (Get-FileHash dist\Spotube-windows-x86_64-setup.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
           make choco
+      
+      - run: mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg 
 
       # Publish to Chocolatey Repository
       - run: |
           choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
+          choco push dist/Spotube-windows-x86_64.nupkg
           echo 'published to community.chocolatey.org'
-
-        # choco push dist/${{ steps.tag.outputs.tag }}/Spotube-windows-x86_64.nupkg
 
       # Upload artifacts
       - uses: actions/upload-artifact@v3
@@ -259,8 +260,7 @@ jobs:
       - uses: EndBug/add-and-commit@v9
         with:
           message: v${{ steps.tag.outputs.tag }} Update
-          # push: origin master
-          push: false
+          push: origin master
 
   publish_aur:
     needs: update_release
@@ -280,11 +280,11 @@ jobs:
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
           sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-Linux-Bundle/Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
-      # - uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
-      #   with:
-      #     pkgname: spotube-bin
-      #     pkgbuild: aur-struct/PKGBUILD
-      #     commit_username: ${{ secrets.AUR_USERNAME }}
-      #     commit_email: ${{ secrets.AUR_EMAIL }}
-      #     ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-      #     commit_message: Updated to v${{ steps.tag.outputs.tag }}
+      - uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
+        with:
+          pkgname: spotube-bin
+          pkgbuild: aur-struct/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Updated to v${{ steps.tag.outputs.tag }}
