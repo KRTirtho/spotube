@@ -45,23 +45,27 @@ jobs:
   build_windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: KRTirtho/flutter_distributor
+          ref: deb-implementation
+          path: build/flutter_distributor
       - uses: subosito/flutter-action@v2.2.0
         with:
           cache: true
       - run: flutter config --enable-windows-desktop
       - run: flutter pub get
       - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-      - run: flutter build windows
-      - run: ls build/windows/runner/Release
-      - run: choco install make -y
-      - run: make innoinstall
-      - run: make inno
-      - uses: actions/upload-artifact@v2
+      - run: choco install innosetup -y
+      - run: dart pub global activate melos
+      - run: cd build/flutter_distributor && melos bootstrap && cd ../..
+      - run: dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=windows --targets=exe --skip-clean
+      - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Windows-Bundle
           path: |
-            build/installer/Spotube-windows-x86_64-setup.exe
+            dist/**/*.exe
   build_macos:
     runs-on: macos-11
     steps:
