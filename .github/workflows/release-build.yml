@@ -191,6 +191,10 @@ jobs:
         with:
           name: Spotube-Linux-Bundle
           path: ./Spotube-Linux-Bundle
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Android-Bundle
+          path: ./Spotube-Android-Bundle
       - name: Get latest tag
         id: tag
         uses: dawidd6/action-get-tag@v1
