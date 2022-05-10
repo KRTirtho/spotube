@@ -164,7 +164,7 @@ jobs:
           dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=android --targets=apk --skip-clean
       - run: |
           mv dist/**/spotube-*-android.apk dist/Spotube-android-all-arch.apk
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Android-Bundle
           path: dist/*.apk
