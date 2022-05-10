@@ -1,3 +1,26 @@
+# v2.1.0
+
+### New
+- Synced Lyrics (with fallback genius lyrics)
+- Playlist create/delete
+- Add/Remove tracks to own playlists
+- Custom YouTube track search term template
+- Downloading lyrics along with a track (can be toggled)
+- Customize Marketplace location
+
+### Improved
+- Spotify track to youtube track algorithm
+- Genius lyrics matching algorithm
+- Download track. Checks if already exists & replaces on user command
+- Wide screen responsiveness & adaptation
+- Bigger Title display (replaced word-break with Marquee Text for better visibility) (https://github.com/KRTirtho/spotube/pull/47)
+
+### Bug fixes
+- Sequential playlist playback not working with latest webkit2gtk (https://github.com/KRTirtho/spotube/issues/46)
+- Theme modification state doesn't persist (https://github.com/KRTirtho/spotube/issues/54)
+- Wrong URI path for "Login with Spotify" tutorial (https://github.com/KRTirtho/spotube/issues/69)
+- Card shadow showing in the background of TitleBar & Searchbar 
+
 # v2.0.0 
 
 ### New
