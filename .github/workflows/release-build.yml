@@ -59,7 +59,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Windows-Bundle
-          path: dist/*.{exe,nupkg}
+          path: dist/
 
   publish_macos:
     runs-on: macos-11
@@ -131,10 +131,10 @@ jobs:
           mv build/Spotube-linux-x86_64.tar.xz dist/
           mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64.deb
           mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Linux-Bundle
-          path: dist/*.{tar.xz,deb,AppImage}
+          path: dist/
 
   publish_android:
     runs-on: ubuntu-latest
