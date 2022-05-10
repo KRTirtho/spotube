@@ -47,8 +47,8 @@ inno:
 		 powershell .\build\iscc\iscc.exe scripts\windows-setup-creator.iss
 
 choco:
-			powershell cp dist\${VERSION}\spotube-${VERSION}+${VERSION}-windows-setup.exe choco-struct\tools
-			powershell choco pack .\choco-struct\spotube.nuspec  --outputdirectory dist\${VERSION}\
+			powershell cp dist\**\spotube-*-windows-setup.exe choco-struct\tools
+			powershell choco pack .\choco-struct\spotube.nuspec  --outputdirectory dist
 
 apk:
 		mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
