@@ -205,14 +205,14 @@ jobs:
       # generating checksums for all the binary
       - run: |
           tree .
-          md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.md5sum
-          md5sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.md5sum
-          md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
-          md5sum ./Spotube-Android-Bundle/*.apk > RELEASE.md5sum
-          sha256sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.sha256sum
-          sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.sha256sum
-          sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.sha256sum
-          sha256sum ./Spotube-Android-Bundle/*.apk > RELEASE.sha256sum
+          md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} >> RELEASE.md5sum
+          md5sum ./Spotube-Macos-Bundle/*.dmg >> RELEASE.md5sum
+          md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} >> RELEASE.md5sum
+          md5sum ./Spotube-Android-Bundle/*.apk >> RELEASE.md5sum
+          sha256sum ./Spotube-Macos-Bundle/*.dmg >> RELEASE.sha256sum
+          sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} >> RELEASE.sha256sum
+          sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} >> RELEASE.sha256sum
+          sha256sum ./Spotube-Android-Bundle/*.apk >> RELEASE.sha256sum
           sed -i 's|Spotube-.*-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
       # Upload release binary
       - uses: ncipollo/release-action@v1
@@ -257,6 +257,7 @@ jobs:
           strip_v: true
       - run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
+          rm -rf spotube
       - uses: EndBug/add-and-commit@v9
         with:
           message: v${{ steps.tag.outputs.tag }} Update
