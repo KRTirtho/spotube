@@ -21,7 +21,7 @@ Future<String?> connectIpc(String authUri, String redirectUri) async {
         if (code != null) {
           request.response
             ..statusCode = HttpStatus.ok
-            ..write("Authentication successful")
+            ..write("Authentication successful. Now Go back to Spotube")
             ..close();
           return "$redirectUri?code=$code";
         } else {
