@@ -31,20 +31,24 @@ class CurrentPlaylist {
 
   List<String> get trackIds => tracks.map((e) => e.id!).toList();
 
-  void shuffle() {
+  bool shuffle() {
     // won't shuffle if already shuffled
     if (_tempTrack == null) {
       _tempTrack = [...tracks];
       tracks.shuffle();
+      return true;
     }
+    return false;
   }
 
-  void unshuffle() {
+  bool unshuffle() {
     // without _tempTracks unshuffling can't be done
     if (_tempTrack != null) {
       tracks = [..._tempTrack!];
       _tempTrack = null;
+      return true;
     }
+    return false;
   }
 }
 
@@ -66,6 +70,7 @@ class Playback extends ChangeNotifier {
   StreamSubscription<Duration>? _positionStreamListener;
 
   Duration _prevPosition = Duration.zero;
+  bool _shuffled = false;
 
   AudioPlayer player;
   YoutubeExplode youtube;
@@ -138,6 +143,7 @@ class Playback extends ChangeNotifier {
     });
   }
 
+  bool get shuffled => _shuffled;
   CurrentPlaylist? get currentPlaylist => _currentPlaylist;
   Track? get currentTrack => _currentTrack;
   bool get isPlaying => _isPlaying;
@@ -158,6 +164,7 @@ class Playback extends ChangeNotifier {
   void reset() {
     _logger.v("Playback Reset");
     _isPlaying = false;
+    _shuffled = false;
     duration = null;
     _currentPlaylist = null;
     _currentTrack = null;
@@ -263,6 +270,20 @@ class Playback extends ChangeNotifier {
       }
     } catch (e, stack) {
       _logger.e("startPlaying", e, stack);
+    }
+  }
+
+  void shuffle() {
+    if (currentPlaylist?.shuffle() == true) {
+      _shuffled = true;
+      notifyListeners();
+    }
+  }
+
+  void unshuffle() {
+    if (currentPlaylist?.unshuffle() == true) {
+      _shuffled = false;
+      notifyListeners();
     }
   }
 }
