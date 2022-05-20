@@ -41,7 +41,7 @@ Following are the features that currently spotube offers:
 - Playback control is on user's machine instead of server based
 - Small size & less data hungry
 - No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
-- Lyrics
+- Synced Lyrics
 - Downloadable track
 
 <a href="https://www.producthunt.com/posts/spotube?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-spotube" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=327965&theme=dark" alt="Spotube - A lightweight+free Spotify crossplatform-client made with flutter | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
@@ -50,71 +50,26 @@ Following are the features that currently spotube offers:
 
 I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
 
-All the binaries are located in the [releases](https://github.com/krtirtho/spotube/releases), just download
+| Platform             | Package/Installation Method                                                                                                                                                                                                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Android              | [<img width='240' alt='Android Download' src='https://www.remcsteuben.com/sites/default/files/images/apkdaddy%20download.png'/>][android-dlink]                                                                                                                                                |
+| Debian/Ubuntu        | [<img width='240' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                     |
+| Flatpak              | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>                                                       |
+| Arch/Manjaro         | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin`                                                                                                                                                                                                                            |
+| AppImage             | [<img width='240' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note**: AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed |
+| Linux (tarball)      | [<img width='240' alt='Tarball Download' src='https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png'/>][linux-dlink]                                                                                                                           |
+| Windows              | [<img width='240' alt='Windows Download' src='https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg'/>][win32-dlink]                                                                                                                                                 |
+| Windows (Chocolatey) | `choco install spotube`                                                                                                                                                                                                                                                                        |
+| Windows (WinGet)     | `winget install --id KRTirtho.Spotube`                                                                                                                                                                                                                                                         |
+| MacOS                | [<img width='240' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink]                                                                                                                                                            |
 
-## Android
-
-Download the [Android app](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk) & then install it on your Android smartphone/tablet 
-
-## Windows
-
-Download the [setup file](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe) & follow along the installer
-
-### Chocolatey
-
-Run the following command to install Spotube with windows chocolatey package manager
-```powershell
-choco install spotube
-```
-
-### Winget
-Run the following command to install Spotube with new Windows Package Manager:
-```powershell
-winget install --id KRTirtho.Spotube
-```
-
-## Linux
-
-### Flatpak
-Run in terminal:
-```shell
-$ flatpak install flathub com.github.KRTirtho.Spotube
-```
-<a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
-
-### Ubuntu/Debian/Linux Mint/Pop_!OS:
-  Download the [Spotube-linux-x86_64.deb](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.deb) then double click it or run
-  ```bash
-  $ sudo apt install Spotube-linux-x86_64.deb
-  # or
-  $ sudo dpkg -i Spotube-linux-x86_64.deb
-  ```
-  in the directory where it was downloaded
-
-
-### Arch/Manjaro/Endeavour:
-  Run following terminal
-  ```bash
-  # for `yay` users
-  $ yay -S spotube-bin
-  # for `pamac` users
-  $ pamac install spotube-bin
-  ```
-
-
-### AppImage:
-   Download the [Spotube-linux-x86_64.AppImage](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage) file & double click to run it. AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed
-
-## Mac OS
-Download the [Mac OS Disk Image (.dmg) file](https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg) from the release & follow along the setup wizard
+> **Note!:** If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki
 
 ## Nightly Builds
 Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/spotube/workflows/flutter-build/build)
 
 ## Optional Configurations
-<details>
-  <summary>Login with <b>Spotify</b></summary>
-
+### Login with <b>Spotify</b>
   You need a spotify account & a developer app for
 
   - clientId
@@ -123,31 +78,28 @@ Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/sp
   **Grab credentials:**
 
   - Go to https://developer.spotify.com/dashboard/login & login with your spotify account (Skip if you're logged in)
-    ![Step 1](https://user-images.githubusercontent.com/61944859/111762106-d1d37680-88ca-11eb-9884-ec7a40c0dd27.png)
+    <img width='480' alt='Step 1' src='https://user-images.githubusercontent.com/61944859/111762106-d1d37680-88ca-11eb-9884-ec7a40c0dd27.png'/>
 
-  - Create an web app for Spotify Public API
-    ![step 2](https://user-images.githubusercontent.com/61944859/111762507-473f4700-88cb-11eb-91f3-d480e9584883.png)
+  - Create an web app for Spotify Public API<br/>
+    <img width='480' alt='step 2' src='https://user-images.githubusercontent.com/61944859/111762507-473f4700-88cb-11eb-91f3-d480e9584883.png'/>
 
-  - Give the app a name & description. Then Edit settings & add **http://localhost:4304/auth/spotify/callback** as **Redirect URI** for the app. Its important for authenticating
-    ![setp-3](https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png)
+  - **MOST IMPORTANT:** Give the app a name & description. Then Edit settings & add `http://localhost:4304/auth/spotify/callback` as **Redirect URI** for the app. Its important for authenticating<br/>
+    <img width='720' alt='setp-3' src='https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png'/>
 
-  - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields
-    ![step-4](https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png)
-</details>
+  - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields<br/>
+    <img width='480' alt='step-4' src='https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png'/>
 
-<details>
-<summary>Setup <b>Genius Lyrics</b></summary>
+### Setup <b>Genius Lyrics</b>
 
 - Signup/Login into [genius](https://genius.com/signup) for **lyrics**
-- Go To [Genius Developer Portal](https://genius.com/api-clients/new) for creating an API client
-  ![Step 2](https://user-images.githubusercontent.com/61944859/158823216-b4942731-c4c5-46c8-8b60-82a372b51cc5.png)
-- Generate & copy access token
-  ![Step 3](https://user-images.githubusercontent.com/61944859/158822817-f04da060-3094-4a3b-8ace-a936d0cda8db.png)
-- Paste the copied access token in Spotube's Settings
-  ![Step 4](https://user-images.githubusercontent.com/61944859/158823984-17f08534-5c92-41bc-918a-23194aad00f5.png)
+- Go To [Genius Developer Portal](https://genius.com/api-clients/new) for creating an API client<br/>
+  <img width='480' alt='Step 2' src='https://user-images.githubusercontent.com/61944859/158823216-b4942731-c4c5-46c8-8b60-82a372b51cc5.png' />
+- Generate & copy access token<br/>
+  <img width='480' alt='Step 3' src='https://user-images.githubusercontent.com/61944859/158822817-f04da060-3094-4a3b-8ace-a936d0cda8db.png' />
+- Paste the copied access token in Spotube's Settings<br/>
+  <img width='480' alt='Step 4' src='https://user-images.githubusercontent.com/61944859/158823984-17f08534-5c92-41bc-918a-23194aad00f5.png' />
 
 > **Note!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself
-</details>
 
 # TODO:
 
@@ -173,7 +125,7 @@ You can find the details [here](CONTRIBUTION.md#your-first-code-contribution)
 
 Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p)
 
-# Relevant Project/Tools Links
+# Library/Plugin/Framework Credits
 
 - [Flutter](https://flutter.dev/) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
 - [Linux](https://www.linux.org/) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
@@ -197,6 +149,9 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [logger](https://github.com/leisim/logger) - Small, easy to use and extensible logger which prints beautiful logs
 - [flutter_launcher_icons](https://github.com/fluttercommunity/flutter_launcher_icons) - A package which simplifies the task of updating your Flutter app's launcher icon.
 - [permission_handler](https://github.com/baseflow/flutter-permission-handler) - Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions. 
+- [marquee](https://github.com/MarcelGarus/marquee) - ⏩ A Flutter widget that scrolls text infinitely. Provides many customizations including custom scroll directions, durations, curves as well as pauses after every round
+- [scroll_to_index](https://github.com/quire-io/scroll-to-index) - scroll to index with fixed/variable row height inside Flutter scrollable widget 
+- [package_info_plus](https://github.com/fluttercommunity/plus_plugins/tree/main/packages/) - This Flutter plugin provides an API for querying information about an application package.
 
 
 # Social handlers
@@ -205,3 +160,14 @@ Follow me on [Twitter](https://twitter.com/@krtirtho) for newer updates about th
 
 
 <p align="center">&copy; 2022 Spotube</p>
+
+
+<!-- Variables/Text References -->
+[win32-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe
+[deb-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.deb
+[linux-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.tar.xz
+[appimage-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage
+[mac-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg
+[android-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk
+
+[wiki-installation-instructions]: https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions
