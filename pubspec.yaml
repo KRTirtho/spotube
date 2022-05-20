@@ -42,7 +42,7 @@ dependencies:
   url_launcher: ^6.0.17
   youtube_explode_dart: ^1.10.8
   infinite_scroll_pagination: ^3.1.0
-  bitsdojo_window: ^0.1.1+1
+  bitsdojo_window: ^0.1.2
   hotkey_manager: ^0.1.6
   just_audio: ^0.9.18
   just_audio_libwinmedia: ^0.0.4
