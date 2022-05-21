@@ -13,7 +13,7 @@ class RecordHotKeyDialog extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _hotKey = useState(HotKey(null));
+    final _hotKey = useState<HotKey?>(null);
     return AlertDialog(
       content: SingleChildScrollView(
         child: ListBody(
@@ -72,10 +72,10 @@ class RecordHotKeyDialog extends HookWidget {
         ),
         TextButton(
           child: const Text('OK'),
-          onPressed: !_hotKey.value.isSetted
+          onPressed: _hotKey.value == null
               ? null
               : () {
-                  onHotKeyRecorded(_hotKey.value);
+                  onHotKeyRecorded(_hotKey.value!);
                   GoRouter.of(context).pop();
                 },
         ),

@@ -21,7 +21,7 @@ class _UserArtistsState extends ConsumerState<UserArtists> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((timestamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       _pagingController.addPageRequestListener((pageKey) async {
         try {
           SpotifyApi spotifyApi = ref.read(spotifyProvider);

@@ -29,7 +29,7 @@ class PlayerView extends HookConsumerWidget {
 
     useEffect(() {
       if (breakpoint.isMoreThan(Breakpoints.md)) {
-        WidgetsBinding.instance?.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           GoRouter.of(context).pop();
         });
       }

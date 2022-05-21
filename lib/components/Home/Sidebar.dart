@@ -81,7 +81,7 @@ class Sidebar extends HookConsumerWidget {
       trailing: FutureBuilder<User>(
         future: spotify.me.get(),
         builder: (context, snapshot) {
-          var avatarImg = imageToUrlString(snapshot.data?.images,
+          final avatarImg = imageToUrlString(snapshot.data?.images,
               index: (snapshot.data?.images?.length ?? 1) - 1);
           return extended.value
               ? Padding(
