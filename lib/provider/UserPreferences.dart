@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/helpers/get-random-element.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
+import 'package:collection/collection.dart';
 
 class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
@@ -18,19 +20,19 @@ class UserPreferences extends PersistedChangeNotifier {
   HotKey? prevTrackHotKey;
   HotKey? playPauseHotKey;
 
-  MaterialColor? accentColorScheme;
-  MaterialColor? backgroundColorScheme;
+  MaterialColor accentColorScheme;
+  MaterialColor backgroundColorScheme;
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
     required this.themeMode,
     required this.ytSearchFormat,
     this.saveTrackLyrics = false,
+    this.accentColorScheme = Colors.green,
+    this.backgroundColorScheme = Colors.grey,
     this.nextTrackHotKey,
     this.prevTrackHotKey,
     this.playPauseHotKey,
-    this.accentColorScheme,
-    this.backgroundColorScheme,
   }) : super();
 
   void setThemeMode(ThemeMode mode) {
@@ -110,6 +112,12 @@ class UserPreferences extends PersistedChangeNotifier {
         : null;
     ytSearchFormat = map["ytSearchFormat"] ?? ytSearchFormat;
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
+    backgroundColorScheme = colorsMap.values
+            .firstWhereOrNull((e) => e.value == map["backgroundColorScheme"]) ??
+        backgroundColorScheme;
+    accentColorScheme = colorsMap.values
+            .firstWhereOrNull((e) => e.value == map["accentColorScheme"]) ??
+        accentColorScheme;
   }
 
   @override
@@ -123,6 +131,8 @@ class UserPreferences extends PersistedChangeNotifier {
       "playPauseHotKey": jsonEncode(playPauseHotKey?.toJson() ?? {}),
       "ytSearchFormat": ytSearchFormat,
       "themeMode": themeMode.index,
+      "backgroundColorScheme": backgroundColorScheme.value,
+      "accentColorScheme": accentColorScheme.value,
     };
   }
 }

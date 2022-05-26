@@ -1,14 +1,13 @@
 import 'package:go_router/go_router.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Home/Home.dart';
-import 'package:spotube/components/Login.dart';
+import 'package:spotube/components/Settings/Login.dart';
 import 'package:spotube/components/Player/PlayerView.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
-import 'package:spotube/components/Settings.dart';
+import 'package:spotube/components/Settings/Settings.dart';
 import 'package:spotube/components/Shared/SpotubePageRoute.dart';
 
 GoRouter createGoRouter() => GoRouter(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 ThemeData darkTheme({
-  MaterialColor accentMaterialColor = Colors.green,
-  MaterialColor backgroundMaterialColor = Colors.blueGrey,
+  required MaterialColor accentMaterialColor,
+  required MaterialColor backgroundMaterialColor,
 }) {
   return ThemeData(
     useMaterial3: true,

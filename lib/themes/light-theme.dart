@@ -14,10 +14,9 @@ final materialWhite = MaterialColor(Colors.white.value, {
 });
 
 ThemeData lightTheme({
-  MaterialColor accentMaterialColor = Colors.green,
-  MaterialColor? backgroundMaterialColor,
+  required MaterialColor accentMaterialColor,
+  required MaterialColor backgroundMaterialColor,
 }) {
-  backgroundMaterialColor ??= materialWhite;
   return ThemeData(
     useMaterial3: true,
     primaryColor: accentMaterialColor,

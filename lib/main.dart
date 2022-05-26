@@ -47,6 +47,10 @@ class MyApp extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
+    final accentMaterialColor =
+        ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+    final backgroundMaterialColor = ref
+        .watch(userPreferencesProvider.select((s) => s.backgroundColorScheme));
     final player = ref.watch(audioPlayerProvider);
     final youtube = ref.watch(youtubeProvider);
     useEffect(() {
@@ -62,12 +66,12 @@ class MyApp extends HookConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       theme: lightTheme(
-        accentMaterialColor: Colors.deepPurple,
-        backgroundMaterialColor: Colors.grey,
+        accentMaterialColor: accentMaterialColor,
+        backgroundMaterialColor: backgroundMaterialColor,
       ),
       darkTheme: darkTheme(
-        accentMaterialColor: Colors.purple,
-        backgroundMaterialColor: Colors.grey,
+        accentMaterialColor: accentMaterialColor,
+        backgroundMaterialColor: backgroundMaterialColor,
       ),
       themeMode: themeMode,
     );
