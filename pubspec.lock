@@ -724,9 +724,11 @@ packages:
   spotify:
     dependency: "direct main"
     description:
-      path: "../spotify-dart"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: ea313e2d21c38157cd8255d248bcd7897bf51360
+      url: "https://github.com/KRTirtho/spotify-dart.git"
+    source: git
     version: "0.7.0"
   sqflite:
     dependency: transitive
