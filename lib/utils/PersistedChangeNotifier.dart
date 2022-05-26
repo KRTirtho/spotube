@@ -14,13 +14,13 @@ abstract class PersistedChangeNotifier extends ChangeNotifier {
             .fold<Map<String, dynamic>>({}, (acc, entry) {
           if (entry.value != null) {
             if (entry.value is bool) {
-              acc[entry.key] = _localStorage.getBool(entry.key) ?? false;
+              acc[entry.key] = _localStorage.getBool(entry.key);
             } else if (entry.value is int) {
-              acc[entry.key] = _localStorage.getInt(entry.key) ?? -1;
+              acc[entry.key] = _localStorage.getInt(entry.key);
             } else if (entry.value is double) {
-              acc[entry.key] = _localStorage.getDouble(entry.key) ?? -1.0;
+              acc[entry.key] = _localStorage.getDouble(entry.key);
             } else if (entry.value is String) {
-              acc[entry.key] = _localStorage.getString(entry.key) ?? "";
+              acc[entry.key] = _localStorage.getString(entry.key);
             }
           } else {
             acc[entry.key] = _localStorage.get(entry.key);

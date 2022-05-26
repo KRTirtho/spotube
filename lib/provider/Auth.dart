@@ -68,8 +68,8 @@ class Auth extends PersistedChangeNotifier {
 
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
-    _clientId = map["clientId"].isNotEmpty ? map["clientId"] : null;
-    _clientSecret = map["clientSecret"].isNotEmpty ? map["clientSecret"] : null;
+    _clientId = map["clientId"];
+    _clientSecret = map["clientSecret"];
     _accessToken = map["accessToken"];
     _refreshToken = map["refreshToken"];
     _expiration = DateTime.tryParse(map["expiration"]);
