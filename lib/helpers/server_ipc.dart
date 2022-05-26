@@ -8,7 +8,7 @@ final logger = getLogger("ServerIPC");
 Future<String?> connectIpc(String authUri, String redirectUri) async {
   try {
     logger.i("[Launching]: $authUri");
-    await launch(authUri);
+    await launchUrl(Uri.parse(authUri));
 
     HttpServer server =
         await HttpServer.bind(InternetAddress.loopbackIPv4, 4304);

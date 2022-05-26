@@ -38,7 +38,8 @@ dependencies:
   http: ^0.13.4
   shared_preferences: ^2.0.11
   spotify:
-    git: https://github.com/KRTirtho/spotify-dart.git
+    # git: https://github.com/KRTirtho/spotify-dart.git
+    path: ../spotify-dart
   url_launcher: ^6.0.17
   youtube_explode_dart: ^1.10.8
   infinite_scroll_pagination: ^3.1.0
