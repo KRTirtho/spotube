@@ -8,7 +8,7 @@ final logger = getLogger("ServerIPC");
 Future<String?> connectIpc(String authUri, String redirectUri) async {
   try {
     logger.i("[Launching]: $authUri");
-    await launch(authUri);
+    await launchUrl(Uri.parse(authUri));
 
     HttpServer server =
         await HttpServer.bind(InternetAddress.loopbackIPv4, 4304);
@@ -21,7 +21,7 @@ Future<String?> connectIpc(String authUri, String redirectUri) async {
         if (code != null) {
           request.response
             ..statusCode = HttpStatus.ok
-            ..write("Authentication successful")
+            ..write("Authentication successful. Now Go back to Spotube")
             ..close();
           return "$redirectUri?code=$code";
         } else {

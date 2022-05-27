@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -38,6 +39,16 @@ class Settings extends HookConsumerWidget {
       appName: 'Spotube',
       packageName: 'spotube',
     );
+
+    final pickColorScheme = useCallback((ColorSchemeType schemeType) {
+      return () => showDialog(
+          context: context,
+          builder: (context) {
+            return ColorSchemePickerDialog(
+              schemeType: schemeType,
+            );
+          });
+    }, []);
 
     return SafeArea(
       child: Scaffold(
@@ -157,6 +168,27 @@ class Settings extends HookConsumerWidget {
                             },
                           )
                         ],
+                      ),
+                      const SizedBox(height: 10),
+                      ListTile(
+                        title: const Text("Accent Color Scheme"),
+                        trailing: ColorTile(
+                          color: preferences.accentColorScheme,
+                          onPressed: pickColorScheme(ColorSchemeType.accent),
+                          isActive: true,
+                        ),
+                        onTap: pickColorScheme(ColorSchemeType.accent),
+                      ),
+                      const SizedBox(height: 10),
+                      ListTile(
+                        title: const Text("Background Color Scheme"),
+                        trailing: ColorTile(
+                          color: preferences.backgroundColorScheme,
+                          onPressed:
+                              pickColorScheme(ColorSchemeType.background),
+                          isActive: true,
+                        ),
+                        onTap: pickColorScheme(ColorSchemeType.background),
                       ),
                       const SizedBox(height: 10),
                       Row(

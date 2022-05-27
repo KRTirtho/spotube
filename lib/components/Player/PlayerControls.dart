@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
@@ -20,8 +19,6 @@ class PlayerControls extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final Playback playback = ref.watch(playbackProvider);
     final AudioPlayer player = playback.player;
-
-    final _shuffled = useState(false);
 
     final onNext = useNextTrack(playback);
 
@@ -92,7 +89,7 @@ class PlayerControls extends HookConsumerWidget {
               children: [
                 IconButton(
                     icon: const Icon(Icons.shuffle_rounded),
-                    color: _shuffled.value
+                    color: playback.shuffled
                         ? Theme.of(context).primaryColor
                         : iconColor,
                     onPressed: () {
@@ -101,12 +98,10 @@ class PlayerControls extends HookConsumerWidget {
                         return;
                       }
                       try {
-                        if (!_shuffled.value) {
-                          playback.currentPlaylist!.shuffle();
-                          _shuffled.value = true;
+                        if (!playback.shuffled) {
+                          playback.shuffle();
                         } else {
-                          playback.currentPlaylist!.unshuffle();
-                          _shuffled.value = false;
+                          playback.unshuffle();
                         }
                       } catch (e, stack) {
                         logger.e("onShuffle", e, stack);
@@ -140,7 +135,6 @@ class PlayerControls extends HookConsumerWidget {
                           try {
                             await player.pause();
                             await player.seek(Duration.zero);
-                            _shuffled.value = false;
                             playback.reset();
                           } catch (e, stack) {
                             logger.e("onStop", e, stack);

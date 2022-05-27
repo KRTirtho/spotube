@@ -30,7 +30,7 @@ Future<SpotubeTrack> toSpotubeTrack(
       .replaceAll("\$FEATURED_ARTISTS", featuredArtists);
   logger.v("[Youtube Search Term] $queryString");
 
-  SearchList videos = await youtube.search.getVideos(queryString);
+  VideoSearchList videos = await youtube.search.search(queryString);
 
   List<Map> ratedRankedVideos = videos
       .map((video) {

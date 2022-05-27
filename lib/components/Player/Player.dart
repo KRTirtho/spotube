@@ -92,7 +92,7 @@ class Player extends HookConsumerWidget {
       // I can't believe useEffect doesn't run Post Frame aka
       // after rendering/painting the UI
       // `My disappointment is immeasurable and my day is ruined` XD
-      WidgetsBinding.instance?.addPostFrameCallback((time) {
+      WidgetsBinding.instance.addPostFrameCallback((time) {
         // clearing the overlay-entry as passing the already available
         // entry will result in splashing while resizing the window
         if (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&

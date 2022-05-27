@@ -1,162 +1,139 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/helpers/get-random-element.dart';
-import 'package:spotube/models/LocalStorageKeys.dart';
-import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/generated_secrets.dart';
+import 'package:spotube/utils/PersistedChangeNotifier.dart';
+import 'package:collection/collection.dart';
 
-class UserPreferences extends ChangeNotifier {
+class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
   String ytSearchFormat;
   String recommendationMarket;
   bool saveTrackLyrics;
   String geniusAccessToken;
-  SharedPreferences? localStorage;
   HotKey? nextTrackHotKey;
   HotKey? prevTrackHotKey;
   HotKey? playPauseHotKey;
+
+  MaterialColor accentColorScheme;
+  MaterialColor backgroundColorScheme;
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
     required this.themeMode,
     required this.ytSearchFormat,
     this.saveTrackLyrics = false,
+    this.accentColorScheme = Colors.green,
+    this.backgroundColorScheme = Colors.grey,
     this.nextTrackHotKey,
     this.prevTrackHotKey,
     this.playPauseHotKey,
-  }) {
-    onInit();
-  }
-
-  final logger = getLogger(UserPreferences);
-
-  Future<HotKey?> _getHotKeyFromLocalStorage(String key) async {
-    String? str = localStorage?.getString(key);
-    if (str != null) {
-      Map<String, dynamic> json = await jsonDecode(str);
-      if (json.isEmpty) {
-        return null;
-      }
-      return HotKey.fromJson(json);
-    }
-    return null;
-  }
-
-  Future<void> onInit() async {
-    try {
-      localStorage = await SharedPreferences.getInstance();
-      String? accessToken =
-          localStorage?.getString(LocalStorageKeys.geniusAccessToken);
-
-      saveTrackLyrics =
-          localStorage?.getBool(LocalStorageKeys.saveTrackLyrics) ?? false;
-
-      final themeModeRaw = localStorage?.getString(LocalStorageKeys.themeMode);
-      switch (themeModeRaw) {
-        case "light":
-          themeMode = ThemeMode.light;
-          break;
-        case "dark":
-          themeMode = ThemeMode.dark;
-          break;
-        default:
-          themeMode = ThemeMode.system;
-      }
-
-      recommendationMarket =
-          localStorage?.getString(LocalStorageKeys.recommendationMarket) ??
-              'US';
-      geniusAccessToken = accessToken != null && accessToken.isNotEmpty
-          ? accessToken
-          : getRandomElement(lyricsSecrets);
-
-      nextTrackHotKey ??= (await _getHotKeyFromLocalStorage(
-            LocalStorageKeys.nextTrackHotKey,
-          )) ??
-          HotKey(
-            KeyCode.slash,
-            modifiers: [KeyModifier.control, KeyModifier.alt],
-          );
-
-      prevTrackHotKey ??= (await _getHotKeyFromLocalStorage(
-            LocalStorageKeys.prevTrackHotKey,
-          )) ??
-          HotKey(
-            KeyCode.comma,
-            modifiers: [KeyModifier.control, KeyModifier.alt],
-          );
-
-      playPauseHotKey ??= (await _getHotKeyFromLocalStorage(
-            LocalStorageKeys.playPauseHotKey,
-          )) ??
-          HotKey(
-            KeyCode.period,
-            modifiers: [KeyModifier.control, KeyModifier.alt],
-          );
-      notifyListeners();
-    } catch (e, stack) {
-      logger.e("onInit", e, stack);
-    }
-  }
+  }) : super();
 
   void setThemeMode(ThemeMode mode) {
     themeMode = mode;
-    localStorage?.setString(LocalStorageKeys.themeMode, mode.name);
     notifyListeners();
+    updatePersistence();
   }
 
   void setSaveTrackLyrics(bool shouldSave) {
     saveTrackLyrics = shouldSave;
-    localStorage?.setBool(LocalStorageKeys.saveTrackLyrics, shouldSave);
     notifyListeners();
+    updatePersistence();
   }
 
   void setRecommendationMarket(String country) {
     recommendationMarket = country;
-    localStorage?.setString(LocalStorageKeys.recommendationMarket, country);
     notifyListeners();
+    updatePersistence();
   }
 
   void setGeniusAccessToken(String token) {
     geniusAccessToken = token;
     notifyListeners();
+    updatePersistence();
   }
 
   void setNextTrackHotKey(HotKey? value) {
     nextTrackHotKey = value;
-    localStorage?.setString(
-      LocalStorageKeys.nextTrackHotKey,
-      jsonEncode(value?.toJson() ?? {}),
-    );
     notifyListeners();
+    updatePersistence();
   }
 
   void setPrevTrackHotKey(HotKey? value) {
     prevTrackHotKey = value;
-    localStorage?.setString(
-      LocalStorageKeys.prevTrackHotKey,
-      jsonEncode(value?.toJson() ?? {}),
-    );
     notifyListeners();
+    updatePersistence();
   }
 
   void setPlayPauseHotKey(HotKey? value) {
     playPauseHotKey = value;
-    localStorage?.setString(
-      LocalStorageKeys.playPauseHotKey,
-      jsonEncode(value?.toJson() ?? {}),
-    );
     notifyListeners();
+    updatePersistence();
   }
 
   void setYtSearchFormat(String format) {
     ytSearchFormat = format;
-    localStorage?.setString(LocalStorageKeys.ytSearchFormate, format);
     notifyListeners();
+    updatePersistence();
+  }
+
+  void setAccentColorScheme(MaterialColor color) {
+    accentColorScheme = color;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setBackgroundColorScheme(MaterialColor color) {
+    backgroundColorScheme = color;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  @override
+  FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
+    saveTrackLyrics = map["saveTrackLyrics"] ?? false;
+    recommendationMarket = map["recommendationMarket"] ?? recommendationMarket;
+    geniusAccessToken =
+        map["geniusAccessToken"] ?? getRandomElement(lyricsSecrets);
+    nextTrackHotKey = map["nextTrackHotKey"] != null
+        ? HotKey.fromJson(jsonDecode(map["nextTrackHotKey"]))
+        : null;
+    prevTrackHotKey = map["prevTrackHotKey"] != null
+        ? HotKey.fromJson(jsonDecode(map["prevTrackHotKey"]))
+        : null;
+    playPauseHotKey = map["playPauseHotKey"] != null
+        ? HotKey.fromJson(jsonDecode(map["playPauseHotKey"]))
+        : null;
+    ytSearchFormat = map["ytSearchFormat"] ?? ytSearchFormat;
+    themeMode = ThemeMode.values[map["themeMode"] ?? 0];
+    backgroundColorScheme = colorsMap.values
+            .firstWhereOrNull((e) => e.value == map["backgroundColorScheme"]) ??
+        backgroundColorScheme;
+    accentColorScheme = colorsMap.values
+            .firstWhereOrNull((e) => e.value == map["accentColorScheme"]) ??
+        accentColorScheme;
+  }
+
+  @override
+  FutureOr<Map<String, dynamic>> toMap() {
+    return {
+      "saveTrackLyrics": saveTrackLyrics,
+      "recommendationMarket": recommendationMarket,
+      "geniusAccessToken": geniusAccessToken,
+      "nextTrackHotKey": jsonEncode(nextTrackHotKey?.toJson() ?? {}),
+      "prevTrackHotKey": jsonEncode(prevTrackHotKey?.toJson() ?? {}),
+      "playPauseHotKey": jsonEncode(playPauseHotKey?.toJson() ?? {}),
+      "ytSearchFormat": ytSearchFormat,
+      "themeMode": themeMode.index,
+      "backgroundColorScheme": backgroundColorScheme.value,
+      "accentColorScheme": accentColorScheme.value,
+    };
   }
 }
 

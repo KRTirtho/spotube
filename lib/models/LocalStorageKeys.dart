@@ -3,10 +3,10 @@ abstract class LocalStorageKeys {
   static String recommendationMarket = 'recommendation_market';
   static String ytSearchFormate = 'youtube_search_format';
 
-  static String clientId = 'client_id';
-  static String clientSecret = 'client_secret';
-  static String accessToken = 'access_token';
-  static String refreshToken = 'refresh_token';
+  static String clientId = 'clientId';
+  static String clientSecret = 'clientSecret';
+  static String accessToken = 'accessToken';
+  static String refreshToken = 'refreshToken';
   static String expiration = "expiration";
   static String geniusAccessToken = "genius_access_token";
 

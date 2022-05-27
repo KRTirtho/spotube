@@ -9,7 +9,7 @@ PaletteColor usePaletteColor(BuildContext context, String imageUrl) {
   final mounted = useIsMounted();
 
   useEffect(() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final palette = await PaletteGenerator.fromImageProvider(
         CachedNetworkImageProvider(
           imageUrl,

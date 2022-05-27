@@ -47,13 +47,14 @@ jobs:
           Set-Variable -Name HASH -Value (Get-FileHash dist\Spotube-windows-x86_64-setup.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
           make choco
+      
+      - run: mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg 
 
       # Publish to Chocolatey Repository
       - run: |
           choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
+          choco push dist/Spotube-windows-x86_64.nupkg
           echo 'published to community.chocolatey.org'
-
-        # choco push dist/${{ steps.tag.outputs.tag }}/Spotube-windows-x86_64.nupkg
 
       # Upload artifacts
       - uses: actions/upload-artifact@v3
@@ -191,6 +192,10 @@ jobs:
         with:
           name: Spotube-Linux-Bundle
           path: ./Spotube-Linux-Bundle
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Android-Bundle
+          path: ./Spotube-Android-Bundle
       - name: Get latest tag
         id: tag
         uses: dawidd6/action-get-tag@v1
@@ -200,14 +205,14 @@ jobs:
       # generating checksums for all the binary
       - run: |
           tree .
-          md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.md5sum
-          md5sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.md5sum
-          md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.md5sum
-          md5sum ./Spotube-Android-Bundle/*.apk > RELEASE.md5sum
-          sha256sum ./Spotube-Macos-Bundle/*.dmg > RELEASE.sha256sum
-          sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} > RELEASE.sha256sum
-          sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} > RELEASE.sha256sum
-          sha256sum ./Spotube-Android-Bundle/*.apk > RELEASE.sha256sum
+          md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} >> RELEASE.md5sum
+          md5sum ./Spotube-Macos-Bundle/*.dmg >> RELEASE.md5sum
+          md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} >> RELEASE.md5sum
+          md5sum ./Spotube-Android-Bundle/*.apk >> RELEASE.md5sum
+          sha256sum ./Spotube-Macos-Bundle/*.dmg >> RELEASE.sha256sum
+          sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} >> RELEASE.sha256sum
+          sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} >> RELEASE.sha256sum
+          sha256sum ./Spotube-Android-Bundle/*.apk >> RELEASE.sha256sum
           sed -i 's|Spotube-.*-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
       # Upload release binary
       - uses: ncipollo/release-action@v1
@@ -252,11 +257,11 @@ jobs:
           strip_v: true
       - run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
+          rm -rf spotube
       - uses: EndBug/add-and-commit@v9
         with:
           message: v${{ steps.tag.outputs.tag }} Update
-          # push: origin master
-          push: false
+          push: origin master
 
   publish_aur:
     needs: update_release
@@ -276,11 +281,11 @@ jobs:
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
           sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-Linux-Bundle/Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
-      # - uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
-      #   with:
-      #     pkgname: spotube-bin
-      #     pkgbuild: aur-struct/PKGBUILD
-      #     commit_username: ${{ secrets.AUR_USERNAME }}
-      #     commit_email: ${{ secrets.AUR_EMAIL }}
-      #     ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-      #     commit_message: Updated to v${{ steps.tag.outputs.tag }}
+      - uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
+        with:
+          pkgname: spotube-bin
+          pkgbuild: aur-struct/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Updated to v${{ steps.tag.outputs.tag }}

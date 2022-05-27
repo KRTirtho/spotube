@@ -12,6 +12,8 @@ import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:spotube/themes/dark-theme.dart';
+import 'package:spotube/themes/light-theme.dart';
 
 void main() async {
   if (Platform.isAndroid || Platform.isIOS) {
@@ -45,6 +47,10 @@ class MyApp extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
+    final accentMaterialColor =
+        ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+    final backgroundMaterialColor = ref
+        .watch(userPreferencesProvider.select((s) => s.backgroundColorScheme));
     final player = ref.watch(audioPlayerProvider);
     final youtube = ref.watch(youtubeProvider);
     useEffect(() {
@@ -59,98 +65,13 @@ class MyApp extends HookConsumerWidget {
       routerDelegate: _router.routerDelegate,
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
-      theme: ThemeData(
-        primaryColor: Colors.green,
-        primarySwatch: Colors.green,
-        buttonTheme: const ButtonThemeData(
-          buttonColor: Colors.green,
-        ),
-        shadowColor: Colors.grey[300],
-        backgroundColor: Colors.white,
-        textTheme: TextTheme(
-          bodyText1: TextStyle(color: Colors.grey[850]),
-          headline1: TextStyle(color: Colors.grey[850]),
-          headline2: TextStyle(color: Colors.grey[850]),
-          headline3: TextStyle(color: Colors.grey[850]),
-          headline4: TextStyle(color: Colors.grey[850]),
-          headline5: TextStyle(color: Colors.grey[850]),
-          headline6: TextStyle(color: Colors.grey[850]),
-        ),
-        listTileTheme: ListTileThemeData(
-          iconColor: Colors.grey[850],
-          horizontalTitleGap: 0,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.green[400]!,
-              width: 2.0,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey[800]!,
-            ),
-          ),
-        ),
-        navigationRailTheme: NavigationRailThemeData(
-          backgroundColor: Colors.blueGrey[50],
-          unselectedIconTheme:
-              IconThemeData(color: Colors.grey[850], opacity: 1),
-          unselectedLabelTextStyle: TextStyle(
-            color: Colors.grey[850],
-          ),
-        ),
-        navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: Colors.blueGrey[50],
-          height: 55,
-        ),
-        cardTheme: CardTheme(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          color: Colors.white,
-        ),
+      theme: lightTheme(
+        accentMaterialColor: accentMaterialColor,
+        backgroundMaterialColor: backgroundMaterialColor,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.green,
-        primarySwatch: Colors.green,
-        backgroundColor: Colors.blueGrey[900],
-        scaffoldBackgroundColor: Colors.blueGrey[900],
-        dialogBackgroundColor: Colors.blueGrey[800],
-        shadowColor: Colors.black26,
-        popupMenuTheme: PopupMenuThemeData(color: Colors.blueGrey[800]),
-        buttonTheme: const ButtonThemeData(
-          buttonColor: Colors.green,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.green[400]!,
-              width: 2.0,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey[800]!,
-            ),
-          ),
-        ),
-        navigationRailTheme: NavigationRailThemeData(
-          backgroundColor: Colors.blueGrey[800],
-          unselectedIconTheme: const IconThemeData(opacity: 1),
-        ),
-        navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: Colors.blueGrey[800],
-          height: 55,
-        ),
-        cardTheme: CardTheme(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          color: Colors.blueGrey[900],
-          elevation: 20,
-        ),
-        canvasColor: Colors.blueGrey[900],
+      darkTheme: darkTheme(
+        accentMaterialColor: accentMaterialColor,
+        backgroundMaterialColor: backgroundMaterialColor,
       ),
       themeMode: themeMode,
     );

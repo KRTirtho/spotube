@@ -26,7 +26,7 @@ Future<void> oauthLogin(Auth auth,
     if (responseUri != null) {
       final SpotifyApi spotify =
           SpotifyApi.fromAuthCodeGrant(grant, responseUri);
-      var credentials = await spotify.getCredentials();
+      final credentials = await spotify.getCredentials();
       if (credentials.accessToken != null) {
         accessToken = credentials.accessToken;
         await localStorage.setString(
@@ -56,7 +56,6 @@ Future<void> oauthLogin(Auth auth,
       accessToken: accessToken,
       refreshToken: refreshToken,
       expiration: expiration,
-      isLoggedIn: true,
     );
   } catch (e, stack) {
     logger.e("oauthLogin", e, stack);
