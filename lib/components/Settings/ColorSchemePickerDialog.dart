@@ -75,22 +75,24 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
       content: SizedBox(
         height: 200,
         width: 400,
-        child: Center(
-          child: Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: colorsMap.entries
-                .map(
-                  (e) => ColorTile(
-                    color: e.value,
-                    isActive: active.value == e.key,
-                    tooltip: e.key,
-                    onPressed: () {
-                      active.value = e.key;
-                    },
-                  ),
-                )
-                .toList(),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: colorsMap.entries
+                  .map(
+                    (e) => ColorTile(
+                      color: e.value,
+                      isActive: active.value == e.key,
+                      tooltip: e.key,
+                      onPressed: () {
+                        active.value = e.key;
+                      },
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ),
       ),
