@@ -8,13 +8,13 @@ PagingController<P, ItemType> usePaginatedFutureProvider<T, P, ItemType>(
   required P firstPageKey,
   required WidgetRef ref,
   void Function(
-    AsyncData<T>,
+    T,
     PagingController<P, ItemType> pagingController,
     P pageKey,
   )?
       onData,
-  void Function(AsyncError<T>)? onError,
-  void Function(AsyncLoading<T>)? onLoading,
+  void Function(Object)? onError,
+  void Function()? onLoading,
 }) {
   final currentPageKey = useState(firstPageKey);
   final snapshot = ref.watch(createSnapshot(currentPageKey.value));
@@ -32,10 +32,10 @@ PagingController<P, ItemType> usePaginatedFutureProvider<T, P, ItemType>(
   }, [snapshot, currentPageKey]);
 
   useEffect(() {
-    snapshot.mapOrNull(
+    snapshot.whenOrNull(
       data: (data) =>
           onData?.call(data, pagingController, currentPageKey.value),
-      error: (error) {
+      error: (error, _) {
         pagingController.error = error;
         return onError?.call(error);
       },

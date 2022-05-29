@@ -18,8 +18,7 @@ class UserArtists extends HookConsumerWidget {
       (pageKey) => currentUserFollowingArtistsQuery(pageKey),
       ref: ref,
       firstPageKey: "",
-      onData: (data, pagingController, pageKey) {
-        final artists = data.value;
+      onData: (artists, pagingController, pageKey) {
         final items = artists.items!.toList();
 
         if (artists.items != null && items.length < 15) {

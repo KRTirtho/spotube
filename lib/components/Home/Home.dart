@@ -114,8 +114,7 @@ class Home extends HookConsumerWidget {
                             (pageKey) => categoriesQuery(pageKey),
                             ref: ref,
                             firstPageKey: 0,
-                            onData: (data, pagingController, pageKey) {
-                              final categories = data.value;
+                            onData: (categories, pagingController, pageKey) {
                               final items = categories.items?.toList();
                               if (pageKey == 0) {
                                 Category category = Category();

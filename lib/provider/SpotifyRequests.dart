@@ -50,3 +50,44 @@ final currentUserFollowingArtistsQuery =
     return spotify.me.following(FollowingType.artist).getPage(15, pageKey);
   },
 );
+
+final artistProfileQuery = FutureProvider.autoDispose.family<Artist, String>(
+  (ref, id) {
+    final spotify = ref.watch(spotifyProvider);
+    return spotify.artists.get(id);
+  },
+);
+
+final currentUserFollowsArtistQuery =
+    FutureProvider.autoDispose.family<bool, String>(
+  (ref, artistId) async {
+    final spotify = ref.watch(spotifyProvider);
+    final result = await spotify.me.isFollowing(
+      FollowingType.artist,
+      [artistId],
+    );
+    return result.first;
+  },
+);
+
+final artistTopTracksQuery =
+    FutureProvider.autoDispose.family<Iterable<Track>, String>((ref, id) {
+  final spotify = ref.watch(spotifyProvider);
+  return spotify.artists.getTopTracks(id, "US");
+});
+
+final artistAlbumsQuery =
+    FutureProvider.autoDispose.family<Page<Album>, String>(
+  (ref, id) {
+    final spotify = ref.watch(spotifyProvider);
+    return spotify.artists.albums(id).getPage(5, 0);
+  },
+);
+
+final artistRelatedArtistsQuery =
+    FutureProvider.autoDispose.family<Iterable<Artist>, String>(
+  (ref, id) {
+    final spotify = ref.watch(spotifyProvider);
+    return spotify.artists.getRelatedArtists(id);
+  },
+);

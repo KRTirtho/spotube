@@ -34,11 +34,10 @@ class CategoryCard extends HookConsumerWidget {
       ),
       ref: ref,
       firstPageKey: 0,
-      onData: (data, pagingController, pageKey) {
+      onData: (page, pagingController, pageKey) {
         if (playlists != null && playlists?.isNotEmpty == true && mounted()) {
           return pagingController.appendLastPage(playlists!.toList());
         }
-        final page = data.value;
         if (page.isLast && page.items != null) {
           pagingController.appendLastPage(page.items!.toList());
         } else if (page.items != null) {
