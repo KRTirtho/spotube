@@ -18,11 +18,9 @@ import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useHotKeys.dart';
-import 'package:spotube/hooks/usePagingController.dart';
-import 'package:spotube/hooks/useSharedPreferences.dart';
+import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/models/Logger.dart';
-import 'package:spotube/provider/SpotifyDI.dart';
-import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
 
 List<String> spotifyScopes = [
   "playlist-modify-public",
@@ -42,12 +40,6 @@ class Home extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    String recommendationMarket = ref.watch(userPreferencesProvider.select(
-      (value) => (value.recommendationMarket),
-    ));
-
-    final pagingController =
-        usePagingController<int, Category>(firstPageKey: 0);
     final int titleBarDragMaxWidth = useBreakpointValue(
       md: 72,
       lg: 256,
@@ -58,52 +50,8 @@ class Home extends HookConsumerWidget {
     final _selectedIndex = useState(0);
     _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
 
-    final localStorage = useSharedPreferences();
-
     // initializing global hot keys
     useHotKeys(ref);
-
-    final listener = useCallback((int pageKey) async {
-      final spotify = ref.read(spotifyProvider);
-
-      try {
-        Page<Category> categories = await spotify.categories
-            .list(country: recommendationMarket)
-            .getPage(15, pageKey);
-
-        final items = categories.items!.toList();
-        if (pageKey == 0) {
-          Category category = Category();
-          category.id = "user-featured-playlists";
-          category.name = "Featured";
-          items.insert(0, category);
-        }
-
-        if (categories.isLast && categories.items != null) {
-          pagingController.appendLastPage(items);
-        } else if (categories.items != null) {
-          pagingController.appendPage(items, categories.nextOffset);
-        }
-      } catch (e, stack) {
-        pagingController.error = e;
-        logger.e("pagingController.addPageRequestListener", e, stack);
-      }
-    }, [recommendationMarket]);
-
-    useEffect(() {
-      try {
-        pagingController.addPageRequestListener(listener);
-        // the world is full of surprises and the previously working
-        // fine pageRequestListener now doesn't notify the listeners
-        // automatically after assigning a listener. So doing it manually
-        pagingController.notifyPageRequestListeners(0);
-      } catch (e, stack) {
-        logger.e("initState", e, stack);
-      }
-      return () {
-        pagingController.removePageRequestListener(listener);
-      };
-    }, [localStorage]);
 
     final titleBarContents = Container(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -160,14 +108,39 @@ class Home extends HookConsumerWidget {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: PagedListView(
-                          pagingController: pagingController,
-                          builderDelegate: PagedChildBuilderDelegate<Category>(
-                            itemBuilder: (context, item, index) {
-                              return CategoryCard(item);
+                        child: HookBuilder(builder: (context) {
+                          final pagingController = usePaginatedFutureProvider<
+                              Page<Category>, int, Category>(
+                            (pageKey) => categoriesQuery(pageKey),
+                            ref: ref,
+                            firstPageKey: 0,
+                            onData: (data, pagingController, pageKey) {
+                              final categories = data.value;
+                              final items = categories.items?.toList();
+                              if (pageKey == 0) {
+                                Category category = Category();
+                                category.id = "user-featured-playlists";
+                                category.name = "Featured";
+                                items?.insert(0, category);
+                              }
+                              if (categories.isLast && items != null) {
+                                pagingController.appendLastPage(items);
+                              } else if (categories.items != null) {
+                                pagingController.appendPage(
+                                    items!, categories.nextOffset);
+                              }
                             },
-                          ),
-                        ),
+                          );
+                          return PagedListView(
+                            pagingController: pagingController,
+                            builderDelegate:
+                                PagedChildBuilderDelegate<Category>(
+                              itemBuilder: (context, item, index) {
+                                return CategoryCard(item);
+                              },
+                            ),
+                          );
+                        }),
                       ),
                     ),
                   if (_selectedIndex.value == 1) const Search(),

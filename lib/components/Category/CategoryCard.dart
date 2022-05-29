@@ -4,11 +4,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
-import 'package:spotube/hooks/usePagingController.dart';
+import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/models/Logger.dart';
-import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
 
-class CategoryCard extends HookWidget {
+class CategoryCard extends HookConsumerWidget {
   final Category category;
   final Iterable<PlaylistSimple>? playlists;
   CategoryCard(
@@ -20,7 +20,33 @@ class CategoryCard extends HookWidget {
   final logger = getLogger(CategoryCard);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final scrollController = useScrollController();
+    final mounted = useIsMounted();
+
+    final pagingController =
+        usePaginatedFutureProvider<Page<PlaylistSimple>, int, PlaylistSimple>(
+      (pageKey) => categoryPlaylistsQuery(
+        [
+          category.id,
+          pageKey,
+        ].join("/"),
+      ),
+      ref: ref,
+      firstPageKey: 0,
+      onData: (data, pagingController, pageKey) {
+        if (playlists != null && playlists?.isNotEmpty == true && mounted()) {
+          return pagingController.appendLastPage(playlists!.toList());
+        }
+        final page = data.value;
+        if (page.isLast && page.items != null) {
+          pagingController.appendLastPage(page.items!.toList());
+        } else if (page.items != null) {
+          pagingController.appendPage(page.items!.toList(), page.nextOffset);
+        }
+      },
+    );
+
     return Column(
       children: [
         Padding(
@@ -34,73 +60,25 @@ class CategoryCard extends HookWidget {
             ],
           ),
         ),
-        HookConsumer(
-          builder: (context, ref, child) {
-            SpotifyApi spotifyApi = ref.watch(spotifyProvider);
-            final scrollController = useScrollController();
-            final pagingController =
-                usePagingController<int, PlaylistSimple>(firstPageKey: 0);
-
-            final _error = useState(false);
-            final mounted = useIsMounted();
-
-            useEffect(() {
-              listener(pageKey) async {
-                try {
-                  if (playlists != null &&
-                      playlists?.isNotEmpty == true &&
-                      mounted()) {
-                    return pagingController.appendLastPage(playlists!.toList());
-                  }
-                  final Page<PlaylistSimple> page = await (category.id !=
-                              "user-featured-playlists"
-                          ? spotifyApi.playlists.getByCategoryId(category.id!)
-                          : spotifyApi.playlists.featured)
-                      .getPage(3, pageKey);
-
-                  if (!mounted()) return;
-                  if (page.isLast && page.items != null) {
-                    pagingController.appendLastPage(page.items!.toList());
-                  } else if (page.items != null) {
-                    pagingController.appendPage(
-                        page.items!.toList(), page.nextOffset);
-                  }
-                  if (_error.value) _error.value = false;
-                } catch (e, stack) {
-                  if (mounted()) {
-                    if (!_error.value) _error.value = true;
-                    pagingController.error = e;
-                  }
-                  logger.e("pagingController.addPageRequestListener", e, stack);
-                }
-              }
-
-              pagingController.addPageRequestListener(listener);
-              return () {
-                pagingController.removePageRequestListener(listener);
-              };
-            }, [_error]);
-
-            if (_error.value) return const Text("Something Went Wrong");
-            return SizedBox(
-              height: 245,
-              child: Scrollbar(
-                controller: scrollController,
-                child: PagedListView<int, PlaylistSimple>(
-                  shrinkWrap: true,
-                  pagingController: pagingController,
-                  scrollController: scrollController,
-                  scrollDirection: Axis.horizontal,
-                  builderDelegate: PagedChildBuilderDelegate<PlaylistSimple>(
-                    itemBuilder: (context, playlist, index) {
-                      return PlaylistCard(playlist);
-                    },
+        pagingController.error != null
+            ? const Text("Something Went Wrong")
+            : SizedBox(
+                height: 245,
+                child: Scrollbar(
+                  controller: scrollController,
+                  child: PagedListView<int, PlaylistSimple>(
+                    shrinkWrap: true,
+                    pagingController: pagingController,
+                    scrollController: scrollController,
+                    scrollDirection: Axis.horizontal,
+                    builderDelegate: PagedChildBuilderDelegate<PlaylistSimple>(
+                      itemBuilder: (context, playlist, index) {
+                        return PlaylistCard(playlist);
+                      },
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        )
+              )
       ],
     );
   }
