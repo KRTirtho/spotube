@@ -27,10 +27,10 @@ class UserLibrary extends ConsumerWidget {
             ],
           ),
           body: auth.isLoggedIn
-              ? const TabBarView(children: [
-                  UserPlaylists(),
+              ? TabBarView(children: [
+                  const UserPlaylists(),
                   UserArtists(),
-                  UserAlbums(),
+                  const UserAlbums(),
                 ])
               : const AnonymousFallback(),
         ),
