@@ -61,6 +61,7 @@ dependencies:
   marquee: ^2.2.1
   scroll_to_index: ^2.1.1
   package_info_plus: ^1.4.2
+  version: ^2.0.0
 
 dev_dependencies:
   flutter_test:

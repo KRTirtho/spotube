@@ -217,6 +217,7 @@ class Settings extends HookConsumerWidget {
                         children: [
                           const Text("Download lyrics along with the Track"),
                           Switch.adaptive(
+                            activeColor: Theme.of(context).primaryColor,
                             value: preferences.saveTrackLyrics,
                             onChanged: (state) {
                               preferences.setSaveTrackLyrics(state);
@@ -265,6 +266,22 @@ class Settings extends HookConsumerWidget {
                             )
                           ],
                         ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Expanded(
+                            flex: 2,
+                            child: Text("Check for Update)"),
+                          ),
+                          Switch.adaptive(
+                            activeColor: Theme.of(context).primaryColor,
+                            value: preferences.checkUpdate,
+                            onChanged: (checked) =>
+                                preferences.setCheckUpdate(checked),
+                          )
+                        ],
+                      ),
                       if (auth.isLoggedIn)
                         Builder(builder: (context) {
                           Auth auth = ref.watch(authProvider);
