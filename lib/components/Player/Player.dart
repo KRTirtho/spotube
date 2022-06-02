@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerOverlay.dart';
@@ -15,6 +13,7 @@ import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/utils/AudioPlayerHandler.dart';
 
 class Player extends HookConsumerWidget {
   Player({Key? key}) : super(key: key);
@@ -28,7 +27,7 @@ class Player extends HookConsumerWidget {
 
     final breakpoint = useBreakpoints();
 
-    final AudioPlayer player = playback.player;
+    final AudioPlayerHandler player = playback.player;
 
     final Future<SharedPreferences> future =
         useMemoized(SharedPreferences.getInstance);
@@ -36,33 +35,19 @@ class Player extends HookConsumerWidget {
         useFuture(future, initialData: null);
 
     useEffect(() {
-      // registering all the stream subscription listeners of player
-      playback.register();
-
       /// warm up the audio player before playing actual audio
       /// It's for resolving unresolved issue related to just_audio's
       /// [disposeAllPlayers] method which is throwing
       /// [UnimplementedException] in the [PlatformInterface]
       /// implementation
-      if (Platform.isAndroid || Platform.isIOS) {
-        playback.audioSession
-            ?.setActive(true)
-            .then((_) => player.setAsset("assets/warmer.mp3"))
-            .catchError((e) {
-          logger.e("useEffect", e, StackTrace.current);
-        });
-      } else {
-        player.setAsset("assets/warmer.mp3");
-      }
-      return () {
-        playback.dispose();
-      };
+      player.core.setAsset("assets/warmer.mp3");
+      return null;
     }, []);
 
     useEffect(() {
       if (localStorage.hasData) {
         _volume.value = localStorage.data?.getDouble(LocalStorageKeys.volume) ??
-            player.volume;
+            player.core.volume;
       }
       return null;
     }, [localStorage.data]);
@@ -154,7 +139,7 @@ class Player extends HookConsumerWidget {
                       value: _volume.value,
                       onChanged: (value) async {
                         try {
-                          await player.setVolume(value).then((_) {
+                          await player.core.setVolume(value).then((_) {
                             _volume.value = value;
                             localStorage.data?.setDouble(
                               LocalStorageKeys.volume,

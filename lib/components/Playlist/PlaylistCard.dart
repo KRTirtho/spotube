@@ -5,6 +5,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
+import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 

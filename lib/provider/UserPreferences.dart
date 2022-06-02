@@ -20,6 +20,8 @@ class UserPreferences extends PersistedChangeNotifier {
   HotKey? prevTrackHotKey;
   HotKey? playPauseHotKey;
 
+  bool checkUpdate;
+
   MaterialColor accentColorScheme;
   MaterialColor backgroundColorScheme;
   UserPreferences({
@@ -33,6 +35,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.nextTrackHotKey,
     this.prevTrackHotKey,
     this.playPauseHotKey,
+    this.checkUpdate = true,
   }) : super();
 
   void setThemeMode(ThemeMode mode) {
@@ -95,10 +98,17 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setCheckUpdate(bool check) {
+    checkUpdate = check;
+    notifyListeners();
+    updatePersistence();
+  }
+
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
     saveTrackLyrics = map["saveTrackLyrics"] ?? false;
     recommendationMarket = map["recommendationMarket"] ?? recommendationMarket;
+    checkUpdate = map["checkUpdate"] ?? checkUpdate;
     geniusAccessToken =
         map["geniusAccessToken"] ?? getRandomElement(lyricsSecrets);
     nextTrackHotKey = map["nextTrackHotKey"] != null
@@ -133,6 +143,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "themeMode": themeMode.index,
       "backgroundColorScheme": backgroundColorScheme.value,
       "accentColorScheme": accentColorScheme.value,
+      "checkUpdate": checkUpdate,
     };
   }
 }

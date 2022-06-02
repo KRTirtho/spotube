@@ -19,12 +19,14 @@ import 'package:spotube/components/Library/UserLibrary.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useHotKeys.dart';
 import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
+import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
 List<String> spotifyScopes = [
   "playlist-modify-public",
   "playlist-modify-private",
+  "playlist-read-private",
   "user-library-read",
   "user-library-modify",
   "user-read-private",
@@ -52,6 +54,8 @@ class Home extends HookConsumerWidget {
 
     // initializing global hot keys
     useHotKeys(ref);
+    // checks for latest version of the application
+    useUpdateChecker(ref);
 
     final titleBarContents = Container(
         color: Theme.of(context).scaffoldBackgroundColor,
