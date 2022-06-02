@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
@@ -67,7 +68,7 @@ class Settings extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
+                  child: ListView(
                     children: [
                       Row(
                         children: [
@@ -307,42 +308,7 @@ class Settings extends HookConsumerWidget {
                           );
                         }),
                       const SizedBox(height: 40),
-                      Text(
-                        "Spotube v${packageInfo.version}",
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text("Author: "),
-                          Hyperlink(
-                            "Kingkor Roy Tirtho",
-                            "https://github.com/KRTirtho",
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        children: const [
-                          Hyperlink(
-                            "💚 Sponsor/Donate 💚",
-                            "https://opencollective.com/spotube",
-                          ),
-                          Text(" • "),
-                          Hyperlink(
-                            "BSD-4-Clause LICENSE",
-                            "https://github.com/KRTirtho/spotube/blob/master/LICENSE",
-                          ),
-                          Text(" • "),
-                          Hyperlink(
-                            "Bug Report",
-                            "https://github.com/KRTirtho/spotube/issues/new?assignees=&labels=bug&template=bug_report.md&title=",
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      const Text("© Spotube 2022. All rights reserved")
+                      const About(),
                     ],
                   ),
                 ),

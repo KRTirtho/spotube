@@ -51,7 +51,7 @@ packages:
     source: hosted
     version: "0.1.1"
   audio_session:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: audio_session
       url: "https://pub.dartlang.org"

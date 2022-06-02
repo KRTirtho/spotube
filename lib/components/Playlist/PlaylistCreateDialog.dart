@@ -60,8 +60,8 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                 content: Container(
                   width: MediaQuery.of(context).size.width,
                   constraints: const BoxConstraints(maxWidth: 500),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                  child: ListView(
+                    shrinkWrap: true,
                     children: [
                       TextField(
                         controller: playlistName,
