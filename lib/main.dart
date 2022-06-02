@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,20 +10,28 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/models/GoRouteDeclarations.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
+import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:spotube/themes/dark-theme.dart';
 import 'package:spotube/themes/light-theme.dart';
+import 'package:spotube/utils/AudioPlayerHandler.dart';
 
 void main() async {
-  if (Platform.isAndroid || Platform.isIOS) {
-    await JustAudioBackground.init(
-      androidNotificationChannelId: 'oss.krtirtho.Spotube',
+  // await JustAudioBackground.init(
+  //   androidNotificationChannelId: 'oss.krtirtho.Spotube',
+  //   androidNotificationChannelName: 'Spotube',
+  //   androidNotificationOngoing: true,
+  // );
+  AudioPlayerHandler audioPlayerHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.krtirtho.Spotube',
       androidNotificationChannelName: 'Spotube',
       androidNotificationOngoing: true,
-    );
-  } else {
+    ),
+  );
+  if (!Platform.isAndroid && !Platform.isIOS) {
     WidgetsFlutterBinding.ensureInitialized();
     await hotKeyManager.unregisterAll();
     doWhenWindowReady(() {
@@ -35,14 +44,29 @@ void main() async {
       appWindow.show();
     });
   }
-  runApp(ProviderScope(child: MyApp()));
+  runApp(ProviderScope(
+    child: Spotube(),
+    overrides: [
+      playbackProvider.overrideWithProvider(ChangeNotifierProvider(
+        (ref) {
+          final youtube = ref.watch(youtubeProvider);
+          final preferences = ref.watch(userPreferencesProvider);
+          return Playback(
+            player: audioPlayerHandler,
+            youtube: youtube,
+            preferences: preferences,
+          );
+        },
+      ))
+    ],
+  ));
 }
 
-class MyApp extends HookConsumerWidget {
+class Spotube extends HookConsumerWidget {
   final GoRouter _router = createGoRouter();
-  final logger = getLogger(MyApp);
+  final logger = getLogger(Spotube);
 
-  MyApp({Key? key}) : super(key: key);
+  Spotube({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
     final themeMode =

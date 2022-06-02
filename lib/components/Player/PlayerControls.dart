@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/AudioPlayerHandler.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final Color? iconColor;
@@ -18,7 +18,7 @@ class PlayerControls extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final Playback playback = ref.watch(playbackProvider);
-    final AudioPlayer player = playback.player;
+    final AudioPlayerHandler player = playback.player;
 
     final onNext = useNextTrack(playback);
 
@@ -33,9 +33,7 @@ class PlayerControls extends HookConsumerWidget {
         child: Column(
           children: [
             StreamBuilder<Duration>(
-                stream: player.positionStream.isBroadcast
-                    ? player.positionStream
-                    : player.positionStream.asBroadcastStream(),
+                stream: player.core.positionStream,
                 builder: (context, snapshot) {
                   final totalMinutes =
                       zeroPadNumStr(duration.inMinutes.remainder(60));

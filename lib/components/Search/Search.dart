@@ -11,6 +11,7 @@ import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-album-to-album.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';

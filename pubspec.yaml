@@ -54,14 +54,13 @@ dependencies:
   hooks_riverpod: ^1.0.3
   go_router: ^3.0.4
   palette_generator: ^0.3.3
-  audio_session: ^0.1.6+1
-  just_audio_background: ^0.0.1-beta.5
   logger: ^1.1.0
   permission_handler: ^9.2.0
   marquee: ^2.2.1
   scroll_to_index: ^2.1.1
   package_info_plus: ^1.4.2
   version: ^2.0.0
+  audio_service: ^0.18.4
 
 dev_dependencies:
   flutter_test:
