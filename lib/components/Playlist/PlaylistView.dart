@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
@@ -109,6 +110,27 @@ class PlaylistView extends HookConsumerWidget {
                                   },
                                 );
                               }),
+                        IconButton(
+                          icon: const Icon(Icons.share_rounded),
+                          onPressed: () {
+                            final data =
+                                "https://open.spotify.com/playlist/${playlist.id}";
+                            Clipboard.setData(
+                              ClipboardData(text: data),
+                            ).then((_) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  width: 300,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    "Copied $data to clipboard",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            });
+                          },
+                        ),
                         // play playlist
                         IconButton(
                           icon: Icon(

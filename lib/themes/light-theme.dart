@@ -81,6 +81,13 @@ ThemeData lightTheme({
         ),
       ),
     ),
+    popupMenuTheme: PopupMenuThemeData(
+      color: backgroundMaterialColor[100],
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+      ),
+    ),
     cardColor: backgroundMaterialColor[50],
     canvasColor: backgroundMaterialColor[50],
   );

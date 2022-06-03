@@ -13,7 +13,6 @@ ThemeData darkTheme({
     scaffoldBackgroundColor: backgroundMaterialColor[900],
     dialogBackgroundColor: backgroundMaterialColor[800],
     shadowColor: Colors.black26,
-    popupMenuTheme: PopupMenuThemeData(color: backgroundMaterialColor[800]),
     buttonTheme: ButtonThemeData(
       buttonColor: accentMaterialColor,
     ),
@@ -54,6 +53,13 @@ ThemeData darkTheme({
         textStyle: const TextStyle(
           fontWeight: FontWeight.bold,
         ),
+      ),
+    ),
+    popupMenuTheme: PopupMenuThemeData(
+      color: backgroundMaterialColor[800],
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
       ),
     ),
     cardColor: backgroundMaterialColor[800],
