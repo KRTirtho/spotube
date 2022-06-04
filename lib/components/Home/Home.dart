@@ -43,7 +43,7 @@ class Home extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final int titleBarDragMaxWidth = useBreakpointValue(
-      md: 72,
+      md: 80,
       lg: 256,
       sm: 0,
       xl: 0,

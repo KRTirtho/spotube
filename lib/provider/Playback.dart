@@ -48,15 +48,19 @@ class Playback extends ChangeNotifier {
     _init();
   }
 
+  StreamSubscription<Duration?>? _durationStream;
+  StreamSubscription<Duration>? _positionStream;
+  StreamSubscription<bool>? _playingStream;
+
   void _init() {
-    player.core.playingStream.listen(
+    _playingStream = player.core.playingStream.listen(
       (playing) {
         _isPlaying = playing;
         notifyListeners();
       },
     );
 
-    player.core.durationStream.listen((event) async {
+    _durationStream = player.core.durationStream.listen((event) async {
       if (event != null) {
         // Actually things doesn't work all the time as they were
         // described. So instead of listening to a `_ready`
@@ -73,7 +77,8 @@ class Playback extends ChangeNotifier {
       }
     });
 
-    player.core.createPositionStream().listen((position) async {
+    _positionStream =
+        player.core.createPositionStream().listen((position) async {
       // detecting multiple same call
       if (_prevPosition.inSeconds == position.inSeconds) return;
       _prevPosition = position;
@@ -95,6 +100,14 @@ class Playback extends ChangeNotifier {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _positionStream?.cancel();
+    _playingStream?.cancel();
+    _durationStream?.cancel();
+    super.dispose();
   }
 
   bool get shuffled => _shuffled;
@@ -194,9 +207,11 @@ class Playback extends ChangeNotifier {
           return;
         }
         final spotubeTrack = await toSpotubeTrack(
-          youtube,
-          track,
-          preferences.ytSearchFormat,
+          youtube: youtube,
+          track: track,
+          format: preferences.ytSearchFormat,
+          matchAlgorithm: preferences.trackMatchAlgorithm,
+          audioQuality: preferences.audioQuality,
         );
         if (setTrackUriById(track.id!, spotubeTrack.ytUri)) {
           _currentAudioSource = AudioSource.uri(Uri.parse(spotubeTrack.ytUri));
