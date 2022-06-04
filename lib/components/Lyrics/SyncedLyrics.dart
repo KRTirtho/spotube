@@ -5,47 +5,33 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Lyrics/Lyrics.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
-import 'package:spotube/helpers/timed-lyrics.dart';
 import 'package:spotube/hooks/useAutoScrollController.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useSyncedLyrics.dart';
-import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
 
 class SyncedLyrics extends HookConsumerWidget {
   const SyncedLyrics({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
+    final timedLyricsSnapshot = ref.watch(rentanadviserLyricsQuery);
+
     Playback playback = ref.watch(playbackProvider);
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
     final failed = useState(false);
-    final timedLyrics = useMemoized(() async {
-      if (playback.currentTrack == null ||
-          playback.currentTrack is! SpotubeTrack) return null;
-      try {
-        if (failed.value) failed.value = false;
-        final lyrics =
-            await getTimedLyrics(playback.currentTrack as SpotubeTrack);
-        if (lyrics == null) failed.value = true;
-        return lyrics;
-      } catch (e) {
-        if (e == "Subtitle lookup failed") {
-          failed.value = true;
-        }
-      }
-    }, [playback.currentTrack]);
-    final lyricsSnapshot = useFuture(timedLyrics);
+    final lyricValue = timedLyricsSnapshot.asData?.value;
     final lyricsMap = useMemoized(
       () =>
-          lyricsSnapshot.data?.lyrics
+          lyricValue?.lyrics
               .map((lyric) => {lyric.time.inSeconds: lyric.text})
               .reduce((accumulator, lyricSlice) =>
                   {...accumulator, ...lyricSlice}) ??
           {},
-      [lyricsSnapshot.data],
+      [lyricValue],
     );
 
     final currentTime = useSyncedLyrics(ref, lyricsMap);
@@ -54,11 +40,12 @@ class SyncedLyrics extends HookConsumerWidget {
 
     useEffect(() {
       controller.scrollToIndex(0);
+      failed.value = false;
       return null;
     }, [playback.currentTrack]);
 
     useEffect(() {
-      if (lyricsSnapshot.data != null && lyricsSnapshot.data!.rating <= 2) {
+      if (lyricValue != null && lyricValue.rating <= 2) {
         Future.delayed(const Duration(seconds: 5), () {
           showDialog(
             context: context,
@@ -97,7 +84,7 @@ class SyncedLyrics extends HookConsumerWidget {
         });
       }
       return null;
-    }, [lyricsSnapshot.data]);
+    }, [lyricValue]);
 
     // when synced lyrics not found, fallback to GeniusLyrics
     if (failed.value) return const Lyrics();
@@ -130,12 +117,12 @@ class SyncedLyrics extends HookConsumerWidget {
                   : textTheme.headline6,
             ),
           ),
-          if (lyricsSnapshot.hasData)
+          if (lyricValue != null)
             Expanded(
               child: ListView.builder(
                 controller: controller,
                 itemBuilder: (context, index) {
-                  final lyricSlice = lyricsSnapshot.data!.lyrics[index];
+                  final lyricSlice = lyricValue.lyrics[index];
                   final isActive = lyricSlice.time.inSeconds == currentTime;
                   if (isActive) {
                     controller.scrollToIndex(
@@ -164,7 +151,7 @@ class SyncedLyrics extends HookConsumerWidget {
                     ),
                   );
                 },
-                itemCount: lyricsSnapshot.data!.lyrics.length,
+                itemCount: lyricValue.lyrics.length,
               ),
             ),
         ],

@@ -6,11 +6,11 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-track-to-track.dart';
-import 'package:spotube/hooks/useForceUpdate.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
 
 class AlbumView extends HookConsumerWidget {
   final AlbumSimple album;
@@ -44,88 +44,88 @@ class AlbumView extends HookConsumerWidget {
     final SpotifyApi spotify = ref.watch(spotifyProvider);
     final Auth auth = ref.watch(authProvider);
 
-    final update = useForceUpdate();
+    final tracksSnapshot = ref.watch(albumTracksQuery(album.id!));
+    final albumSavedSnapshot =
+        ref.watch(albumIsSavedForCurrentUserQuery(album.id!));
 
     return SafeArea(
       child: Scaffold(
-        body: FutureBuilder<Iterable<TrackSimple>>(
-            future: spotify.albums.getTracks(album.id!).all(),
-            builder: (context, snapshot) {
-              List<Track> tracks = snapshot.data?.map((trackSmp) {
-                    return simpleTrackToTrack(trackSmp, album);
-                  }).toList() ??
-                  [];
-              return Column(
+        body: Column(
+          children: [
+            PageWindowTitleBar(
+              leading: Row(
                 children: [
-                  PageWindowTitleBar(
-                    leading: Row(
-                      children: [
-                        // nav back
-                        const BackButton(),
-                        // heart playlist
-                        if (auth.isLoggedIn)
-                          FutureBuilder<List<bool>>(
-                              future: spotify.me.isSavedAlbums([album.id!]),
-                              builder: (context, snapshot) {
-                                final isSaved = snapshot.data?.first == true;
-                                if (!snapshot.hasData && !snapshot.hasError) {
-                                  return const SizedBox(
-                                    height: 25,
-                                    width: 25,
-                                    child: CircularProgressIndicator.adaptive(),
-                                  );
-                                }
-                                return HeartButton(
-                                  isLiked: isSaved,
-                                  onPressed: () {
-                                    (isSaved
-                                            ? spotify.me.removeAlbums(
-                                                [album.id!],
-                                              )
-                                            : spotify.me.saveAlbums(
-                                                [album.id!],
-                                              ))
-                                        .then((_) => update());
-                                  },
+                  // nav back
+                  const BackButton(),
+                  // heart playlist
+                  if (auth.isLoggedIn)
+                    albumSavedSnapshot.when(
+                        data: (isSaved) {
+                          return HeartButton(
+                            isLiked: isSaved,
+                            onPressed: () {
+                              (isSaved
+                                      ? spotify.me.removeAlbums(
+                                          [album.id!],
+                                        )
+                                      : spotify.me.saveAlbums(
+                                          [album.id!],
+                                        ))
+                                  .whenComplete(() {
+                                ref.refresh(
+                                  albumIsSavedForCurrentUserQuery(
+                                    album.id!,
+                                  ),
                                 );
-                              }),
-                        // play playlist
-                        IconButton(
-                          icon: Icon(
-                            isPlaylistPlaying
-                                ? Icons.stop_rounded
-                                : Icons.play_arrow_rounded,
-                          ),
-                          onPressed: snapshot.hasData
-                              ? () => playPlaylist(playback, tracks)
-                              : null,
-                        )
-                      ],
+                                ref.refresh(currentUserAlbumsQuery);
+                              });
+                            },
+                          );
+                        },
+                        error: (error, _) => Text("Error $error"),
+                        loading: () => const CircularProgressIndicator()),
+                  // play playlist
+                  IconButton(
+                    icon: Icon(
+                      isPlaylistPlaying
+                          ? Icons.stop_rounded
+                          : Icons.play_arrow_rounded,
                     ),
-                  ),
-                  Center(
-                    child: Text(album.name!,
-                        style: Theme.of(context).textTheme.headline4),
-                  ),
-                  snapshot.hasError
-                      ? const Center(child: Text("Error occurred"))
-                      : !snapshot.hasData
-                          ? const Expanded(
-                              child: Center(
-                                  child: CircularProgressIndicator.adaptive()),
+                    onPressed: tracksSnapshot.asData?.value != null
+                        ? () => playPlaylist(
+                              playback,
+                              tracksSnapshot.asData!.value.map((trackSmp) {
+                                return simpleTrackToTrack(trackSmp, album);
+                              }).toList(),
                             )
-                          : TracksTableView(
-                              tracks,
-                              onTrackPlayButtonPressed: (currentTrack) =>
-                                  playPlaylist(
-                                playback,
-                                tracks,
-                                currentTrack: currentTrack,
-                              ),
-                            ),
+                        : null,
+                  )
                 ],
-              );
-            }),
+              ),
+            ),
+            Center(
+              child: Text(album.name!,
+                  style: Theme.of(context).textTheme.headline4),
+            ),
+            tracksSnapshot.when(
+              data: (data) {
+                List<Track> tracks = data.map((trackSmp) {
+                  return simpleTrackToTrack(trackSmp, album);
+                }).toList();
+                return TracksTableView(
+                  tracks,
+                  onTrackPlayButtonPressed: (currentTrack) => playPlaylist(
+                    playback,
+                    tracks,
+                    currentTrack: currentTrack,
+                  ),
+                );
+              },
+              error: (error, _) => Text("Error $error"),
+              loading: () => const CircularProgressIndicator(),
+            ),
+          ],
+        ),
       ),
     );
   }

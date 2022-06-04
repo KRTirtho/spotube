@@ -8,10 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
-import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/hooks/usePackageInfo.dart';
-import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
@@ -23,23 +20,12 @@ class Settings extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
     final Auth auth = ref.watch(authProvider);
-    final geniusAccessToken = useState<String?>(null);
-    TextEditingController geniusTokenController = useTextEditingController();
     final ytSearchFormatController =
         useTextEditingController(text: preferences.ytSearchFormat);
-
-    geniusTokenController.addListener(() {
-      geniusAccessToken.value = geniusTokenController.value.text;
-    });
 
     ytSearchFormatController.addListener(() {
       preferences.setYtSearchFormat(ytSearchFormatController.value.text);
     });
-
-    final packageInfo = usePackageInfo(
-      appName: 'Spotube',
-      packageName: 'spotube',
-    );
 
     final pickColorScheme = useCallback((ColorSchemeType schemeType) {
       return () => showDialog(
@@ -66,174 +52,119 @@ class Settings extends HookConsumerWidget {
             Flexible(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1366),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
+                child: ListView(
+                  children: [
+                    if (!Platform.isAndroid && !Platform.isIOS) ...[
+                      SettingsHotKeyTile(
+                        title: "Next track global shortcut",
+                        currentHotKey: preferences.nextTrackHotKey,
+                        onHotKeyRecorded: (value) {
+                          preferences.setNextTrackHotKey(value);
+                        },
+                      ),
+                      SettingsHotKeyTile(
+                        title: "Prev track global shortcut",
+                        currentHotKey: preferences.prevTrackHotKey,
+                        onHotKeyRecorded: (value) {
+                          preferences.setPrevTrackHotKey(value);
+                        },
+                      ),
+                      SettingsHotKeyTile(
+                        title: "Play/Pause global shortcut",
+                        currentHotKey: preferences.playPauseHotKey,
+                        onHotKeyRecorded: (value) {
+                          preferences.setPlayPauseHotKey(value);
+                        },
+                      ),
+                    ],
+                    ListTile(
+                      title: const Text("Theme"),
+                      trailing: DropdownButton<ThemeMode>(
+                        value: preferences.themeMode,
+                        items: const [
+                          DropdownMenuItem(
                             child: Text(
-                              "Genius Access Token",
-                              style: Theme.of(context).textTheme.subtitle1,
+                              "Dark",
                             ),
+                            value: ThemeMode.dark,
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: TextField(
-                              controller: geniusTokenController,
-                              decoration: InputDecoration(
-                                hintText: preferences.geniusAccessToken,
-                              ),
+                          DropdownMenuItem(
+                            child: Text(
+                              "Light",
                             ),
+                            value: ThemeMode.light,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: geniusAccessToken.value != null
-                                  ? () async {
-                                      SharedPreferences localStorage =
-                                          await SharedPreferences.getInstance();
-                                      if (geniusAccessToken.value != null &&
-                                          geniusAccessToken.value!.isNotEmpty) {
-                                        preferences.setGeniusAccessToken(
-                                          geniusAccessToken.value!,
-                                        );
-                                        localStorage.setString(
-                                            LocalStorageKeys.geniusAccessToken,
-                                            geniusAccessToken.value!);
-                                      }
-
-                                      geniusAccessToken.value = null;
-                                      geniusTokenController.text = "";
-                                    }
-                                  : null,
-                              child: const Text("Save"),
-                            ),
-                          )
+                          DropdownMenuItem(
+                            child: Text("System"),
+                            value: ThemeMode.system,
+                          ),
                         ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            preferences.setThemeMode(value);
+                          }
+                        },
                       ),
-                      const SizedBox(height: 10),
-                      if (!Platform.isAndroid && !Platform.isIOS) ...[
-                        SettingsHotKeyTile(
-                          title: "Next track global shortcut",
-                          currentHotKey: preferences.nextTrackHotKey,
-                          onHotKeyRecorded: (value) {
-                            preferences.setNextTrackHotKey(value);
-                          },
-                        ),
-                        SettingsHotKeyTile(
-                          title: "Prev track global shortcut",
-                          currentHotKey: preferences.prevTrackHotKey,
-                          onHotKeyRecorded: (value) {
-                            preferences.setPrevTrackHotKey(value);
-                          },
-                        ),
-                        SettingsHotKeyTile(
-                          title: "Play/Pause global shortcut",
-                          currentHotKey: preferences.playPauseHotKey,
-                          onHotKeyRecorded: (value) {
-                            preferences.setPlayPauseHotKey(value);
-                          },
-                        ),
-                      ],
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Theme"),
-                          DropdownButton<ThemeMode>(
-                            value: preferences.themeMode,
-                            items: const [
-                              DropdownMenuItem(
-                                child: Text(
-                                  "Dark",
-                                ),
-                                value: ThemeMode.dark,
-                              ),
-                              DropdownMenuItem(
-                                child: Text(
-                                  "Light",
-                                ),
-                                value: ThemeMode.light,
-                              ),
-                              DropdownMenuItem(
-                                child: Text("System"),
-                                value: ThemeMode.system,
-                              ),
-                            ],
-                            onChanged: (value) {
-                              if (value != null) {
-                                preferences.setThemeMode(value);
-                              }
-                            },
-                          )
-                        ],
+                    ),
+                    const SizedBox(height: 10),
+                    ListTile(
+                      title: const Text("Accent Color Scheme"),
+                      trailing: ColorTile(
+                        color: preferences.accentColorScheme,
+                        onPressed: pickColorScheme(ColorSchemeType.accent),
+                        isActive: true,
                       ),
-                      const SizedBox(height: 10),
-                      ListTile(
-                        title: const Text("Accent Color Scheme"),
-                        trailing: ColorTile(
-                          color: preferences.accentColorScheme,
-                          onPressed: pickColorScheme(ColorSchemeType.accent),
-                          isActive: true,
-                        ),
-                        onTap: pickColorScheme(ColorSchemeType.accent),
+                      onTap: pickColorScheme(ColorSchemeType.accent),
+                    ),
+                    const SizedBox(height: 10),
+                    ListTile(
+                      title: const Text("Background Color Scheme"),
+                      trailing: ColorTile(
+                        color: preferences.backgroundColorScheme,
+                        onPressed: pickColorScheme(ColorSchemeType.background),
+                        isActive: true,
                       ),
-                      const SizedBox(height: 10),
-                      ListTile(
-                        title: const Text("Background Color Scheme"),
-                        trailing: ColorTile(
-                          color: preferences.backgroundColorScheme,
-                          onPressed:
-                              pickColorScheme(ColorSchemeType.background),
-                          isActive: true,
-                        ),
-                        onTap: pickColorScheme(ColorSchemeType.background),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                      onTap: pickColorScheme(ColorSchemeType.background),
+                    ),
+                    const SizedBox(height: 10),
+                    ListTile(
+                      title:
                           const Text("Market Place (Recommendation Country)"),
-                          DropdownButton(
-                            value: preferences.recommendationMarket,
-                            items: spotifyMarkets
-                                .map((country) => (DropdownMenuItem(
-                                      child: Text(country),
-                                      value: country,
-                                    )))
-                                .toList(),
-                            onChanged: (value) {
-                              if (value == null) return;
-                              preferences
-                                  .setRecommendationMarket(value as String);
-                            },
-                          ),
-                        ],
+                      trailing: DropdownButton(
+                        value: preferences.recommendationMarket,
+                        items: spotifyMarkets
+                            .map((country) => (DropdownMenuItem(
+                                  child: Text(country),
+                                  value: country,
+                                )))
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          preferences.setRecommendationMarket(value as String);
+                        },
                       ),
-                      const SizedBox(height: 10),
-                      Row(
+                    ),
+                    ListTile(
+                      title: const Text("Download lyrics along with the Track"),
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.saveTrackLyrics,
+                        onChanged: (state) {
+                          preferences.setSaveTrackLyrics(state);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Download lyrics along with the Track"),
-                          Switch.adaptive(
-                            activeColor: Theme.of(context).primaryColor,
-                            value: preferences.saveTrackLyrics,
-                            onChanged: (state) {
-                              preferences.setSaveTrackLyrics(state);
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(
+                          Expanded(
                             flex: 2,
                             child: Text(
-                                "Format of the YouTube Search term (Case sensitive)"),
+                              "Format of the YouTube Search term (Case sensitive)",
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
                           ),
                           Expanded(
                             flex: 1,
@@ -243,74 +174,56 @@ class Settings extends HookConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      if (auth.isAnonymous)
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          alignment: WrapAlignment.spaceBetween,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            const Text("Login with your Spotify account"),
-                            ElevatedButton(
-                              child: Text("Connect with Spotify".toUpperCase()),
-                              onPressed: () {
-                                GoRouter.of(context).push("/login");
-                              },
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                ),
+                    ),
+                    if (auth.isAnonymous)
+                      ListTile(
+                        title: const Text("Login with your Spotify account"),
+                        trailing: ElevatedButton(
+                          child: Text("Connect with Spotify".toUpperCase()),
+                          onPressed: () {
+                            GoRouter.of(context).push("/login");
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
                               ),
-                            )
-                          ],
-                        ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(
-                            flex: 2,
-                            child: Text("Check for Update)"),
+                            ),
                           ),
-                          Switch.adaptive(
-                            activeColor: Theme.of(context).primaryColor,
-                            value: preferences.checkUpdate,
-                            onChanged: (checked) =>
-                                preferences.setCheckUpdate(checked),
-                          )
-                        ],
+                        ),
                       ),
-                      if (auth.isLoggedIn)
-                        Builder(builder: (context) {
-                          Auth auth = ref.watch(authProvider);
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Log out of this account"),
-                              ElevatedButton(
-                                child: const Text("Logout"),
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.red),
-                                ),
-                                onPressed: () async {
-                                  SharedPreferences localStorage =
-                                      await SharedPreferences.getInstance();
-                                  await localStorage.clear();
-                                  auth.logout();
-                                  GoRouter.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        }),
-                      const SizedBox(height: 40),
-                      const About(),
-                    ],
-                  ),
+                    ListTile(
+                      title: const Text("Check for Update"),
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.checkUpdate,
+                        onChanged: (checked) =>
+                            preferences.setCheckUpdate(checked),
+                      ),
+                    ),
+                    if (auth.isLoggedIn)
+                      Builder(builder: (context) {
+                        Auth auth = ref.watch(authProvider);
+                        return ListTile(
+                          title: const Text("Log out of this account"),
+                          trailing: ElevatedButton(
+                            child: const Text("Logout"),
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.red),
+                            ),
+                            onPressed: () async {
+                              SharedPreferences localStorage =
+                                  await SharedPreferences.getInstance();
+                              await localStorage.clear();
+                              auth.logout();
+                              GoRouter.of(context).pop();
+                            },
+                          ),
+                        );
+                      }),
+                    const About(),
+                  ],
                 ),
               ),
             ),

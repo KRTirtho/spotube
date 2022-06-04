@@ -14,17 +14,19 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
-import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
+
+final searchTermStateProvider = StateProvider<String>((ref) => "");
 
 class Search extends HookConsumerWidget {
   const Search({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
-    final SpotifyApi spotify = ref.watch(spotifyProvider);
     final Auth auth = ref.watch(authProvider);
-    final controller = useTextEditingController();
-    final searchTerm = useState("");
+    final searchTerm = ref.watch(searchTermStateProvider);
+    final controller =
+        useTextEditingController(text: ref.read(searchTermStateProvider));
     final albumController = useScrollController();
     final playlistController = useScrollController();
     final artistController = useScrollController();
@@ -33,6 +35,7 @@ class Search extends HookConsumerWidget {
     if (auth.isAnonymous) {
       return const Expanded(child: AnonymousFallback());
     }
+    final searchSnapshot = ref.watch(searchQuery(searchTerm));
 
     return Expanded(
       child: Container(
@@ -48,7 +51,8 @@ class Search extends HookConsumerWidget {
                       decoration: const InputDecoration(hintText: "Search..."),
                       controller: controller,
                       onSubmitted: (value) {
-                        searchTerm.value = controller.value.text;
+                        ref.read(searchTermStateProvider.notifier).state =
+                            controller.value.text;
                       },
                     ),
                   ),
@@ -61,31 +65,21 @@ class Search extends HookConsumerWidget {
                     textColor: Colors.white,
                     child: const Icon(Icons.search_rounded),
                     onPressed: () {
-                      searchTerm.value = controller.value.text;
+                      ref.read(searchTermStateProvider.notifier).state =
+                          controller.value.text;
                     },
                   ),
                 ],
               ),
             ),
-            FutureBuilder<List<Page>>(
-              future: searchTerm.value.isNotEmpty
-                  ? spotify.search.get(searchTerm.value).first(10)
-                  : null,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData && searchTerm.value.isNotEmpty) {
-                  return const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  );
-                } else if (!snapshot.hasData && searchTerm.value.isEmpty) {
-                  return Container();
-                }
+            searchSnapshot.when(
+              data: (data) {
                 Playback playback = ref.watch(playbackProvider);
                 List<AlbumSimple> albums = [];
                 List<Artist> artists = [];
                 List<Track> tracks = [];
                 List<PlaylistSimple> playlists = [];
-                for (MapEntry<int, Page> page
-                    in snapshot.data?.asMap().entries ?? []) {
+                for (MapEntry<int, Page> page in data.asMap().entries) {
                   for (var item in page.value.items ?? []) {
                     if (item is AlbumSimple) {
                       albums.add(item);
@@ -217,6 +211,8 @@ class Search extends HookConsumerWidget {
                   ),
                 );
               },
+              error: (error, __) => Text("Error $error"),
+              loading: () => const CircularProgressIndicator(),
             )
           ],
         ),

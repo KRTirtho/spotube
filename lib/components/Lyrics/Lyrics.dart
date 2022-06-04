@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
-import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
-import 'package:spotube/provider/UserPreferences.dart';
-import 'package:collection/collection.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
 
 class Lyrics extends HookConsumerWidget {
   const Lyrics({Key? key}) : super(key: key);
@@ -15,74 +12,8 @@ class Lyrics extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
-    UserPreferences userPreferences = ref.watch(userPreferencesProvider);
-    final lyrics = useState({});
-
-    final lyricsFuture = useMemoized(() async {
-      if (playback.currentTrack == null ||
-          userPreferences.geniusAccessToken.isEmpty ||
-          (playback.currentTrack?.id != null &&
-              playback.currentTrack?.id == lyrics.value["id"])) {
-        return null;
-      }
-      final lyricsStr = await getLyrics(
-        playback.currentTrack!.name!,
-        playback.currentTrack!.artists
-                ?.map((s) => s.name)
-                .whereNotNull()
-                .toList() ??
-            [],
-        apiKey: userPreferences.geniusAccessToken,
-        optimizeQuery: true,
-      );
-      if (lyricsStr == null) return Future.error("No lyrics found");
-      return lyricsStr;
-    }, [playback.currentTrack, userPreferences.geniusAccessToken]);
-
-    final lyricsSnapshot = useFuture(lyricsFuture);
-
-    useEffect(() {
-      if (lyricsSnapshot.hasData &&
-          lyricsSnapshot.data != null &&
-          playback.currentTrack != null) {
-        lyrics.value = {
-          "lyrics": lyricsSnapshot.data,
-          "id": playback.currentTrack!.id!
-        };
-      }
-
-      if (lyrics.value["lyrics"] != null && playback.currentTrack == null) {
-        lyrics.value = {};
-      }
-      return null;
-    }, [
-      lyricsSnapshot.data,
-      lyricsSnapshot.hasData,
-      lyrics.value,
-      playback.currentTrack,
-    ]);
-
+    final geniusLyricsSnapshot = ref.watch(geniusLyricsQuery);
     final breakpoint = useBreakpoints();
-
-    if (lyrics.value["lyrics"] == null && playback.currentTrack != null) {
-      if (lyricsSnapshot.hasError) {
-        return Expanded(
-          child: Center(
-            child: Text(
-              "Sorry, no Lyrics were found for `${playback.currentTrack?.name}` :'(",
-              style: Theme.of(context).textTheme.headline4,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
-      }
-      return const Expanded(
-        child: Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
-      );
-    }
-
     final textTheme = Theme.of(context).textTheme;
 
     return Expanded(
@@ -110,13 +41,19 @@ class Lyrics extends HookConsumerWidget {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    lyrics.value["lyrics"] == null &&
-                            playback.currentTrack == null
-                        ? "No Track being played currently"
-                        : lyrics.value["lyrics"]!,
-                    style: textTheme.headline6
-                        ?.copyWith(color: textTheme.headline1?.color),
+                  child: geniusLyricsSnapshot.when(
+                    data: (lyrics) {
+                      return Text(
+                        lyrics == null && playback.currentTrack == null
+                            ? "No Track being played currently"
+                            : lyrics!,
+                        style: textTheme.headline6
+                            ?.copyWith(color: textTheme.headline1?.color),
+                      );
+                    },
+                    error: (error, __) => Text(
+                        "Sorry, no Lyrics were found for `${playback.currentTrack?.name}` :'("),
+                    loading: () => const CircularProgressIndicator(),
                   ),
                 ),
               ),

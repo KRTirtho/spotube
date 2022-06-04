@@ -15,32 +15,26 @@ class SettingsHotKeyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return ListTile(
+      title: Text(title),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title),
-          Row(
-            children: [
-              if (currentHotKey != null)
-                HotKeyVirtualView(hotKey: currentHotKey!),
-              const SizedBox(width: 10),
-              ElevatedButton(
-                child: const Text("Set Shortcut"),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return RecordHotKeyDialog(
-                        onHotKeyRecorded: onHotKeyRecorded,
-                      );
-                    },
+          if (currentHotKey != null) HotKeyVirtualView(hotKey: currentHotKey!),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            child: const Text("Set Shortcut"),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return RecordHotKeyDialog(
+                    onHotKeyRecorded: onHotKeyRecorded,
                   );
                 },
-              ),
-            ],
-          )
+              );
+            },
+          ),
         ],
       ),
     );

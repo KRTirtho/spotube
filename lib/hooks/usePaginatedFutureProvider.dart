@@ -4,7 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotube/hooks/usePagingController.dart';
 
 PagingController<P, ItemType> usePaginatedFutureProvider<T, P, ItemType>(
-  AutoDisposeFutureProvider<T> Function(P pageKey) createSnapshot, {
+  FutureProvider<T> Function(P pageKey) createSnapshot, {
   required P firstPageKey,
   required WidgetRef ref,
   void Function(
