@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/oauth-login.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
-import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
-import 'package:spotube/provider/UserPreferences.dart';
 
 class Login extends HookConsumerWidget {
   Login({Key? key}) : super(key: key);
@@ -21,7 +18,6 @@ class Login extends HookConsumerWidget {
     Auth authState = ref.watch(authProvider);
     final clientIdController = useTextEditingController();
     final clientSecretController = useTextEditingController();
-    final accessTokenController = useTextEditingController();
     final fieldError = useState(false);
     final breakpoint = useBreakpoints();
 
@@ -90,31 +86,10 @@ class Login extends HookConsumerWidget {
                         ),
                         controller: clientSecretController,
                       ),
-                      const SizedBox(height: 10),
-                      const Divider(color: Colors.grey),
-                      const SizedBox(height: 10),
-                      TextField(
-                        decoration: const InputDecoration(
-                          label: Text("Genius Access Token (optional)"),
-                        ),
-                        controller: accessTokenController,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () async {
                           await handleLogin(authState);
-                          UserPreferences preferences =
-                              ref.read(userPreferencesProvider);
-                          SharedPreferences localStorage =
-                              await SharedPreferences.getInstance();
-                          preferences.setGeniusAccessToken(
-                              accessTokenController.value.text);
-                          await localStorage.setString(
-                              LocalStorageKeys.geniusAccessToken,
-                              accessTokenController.value.text);
-                          accessTokenController.text = "";
                         },
                         child: const Text("Submit"),
                       )

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -56,6 +57,22 @@ class TrackTile extends HookConsumerWidget {
       if (playlistId == null) return;
       return await spotify.playlists.removeTrack(track.value.uri!, playlistId!);
     }, [playlistId, spotify, track.value.uri]);
+
+    void actionShare(Track track) {
+      final data = "https://open.spotify.com/track/${track.id}";
+      Clipboard.setData(ClipboardData(text: data)).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            width: 300,
+            behavior: SnackBarBehavior.floating,
+            content: Text(
+              "Copied $data to clipboard",
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      });
+    }
 
     actionAddToPlaylist() async {
       showDialog(
@@ -252,6 +269,16 @@ class TrackTile extends HookConsumerWidget {
                           ],
                         ),
                         value: "favorite",
+                      ),
+                      PopupMenuItem(
+                        child: Row(
+                          children: const [
+                            Icon(Icons.share_rounded),
+                            SizedBox(width: 10),
+                            Text("Share")
+                          ],
+                        ),
+                        value: "share",
                       )
                     ];
                   },
@@ -265,6 +292,9 @@ class TrackTile extends HookConsumerWidget {
                         break;
                       case "remove-playlist":
                         actionRemoveFromPlaylist();
+                        break;
+                      case "share":
+                        actionShare(track.value);
                         break;
                     }
                   },

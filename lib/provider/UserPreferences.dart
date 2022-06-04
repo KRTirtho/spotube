@@ -136,9 +136,15 @@ class UserPreferences extends PersistedChangeNotifier {
       "saveTrackLyrics": saveTrackLyrics,
       "recommendationMarket": recommendationMarket,
       "geniusAccessToken": geniusAccessToken,
-      "nextTrackHotKey": jsonEncode(nextTrackHotKey?.toJson() ?? {}),
-      "prevTrackHotKey": jsonEncode(prevTrackHotKey?.toJson() ?? {}),
-      "playPauseHotKey": jsonEncode(playPauseHotKey?.toJson() ?? {}),
+      "nextTrackHotKey": nextTrackHotKey != null
+          ? jsonEncode(nextTrackHotKey?.toJson())
+          : null,
+      "prevTrackHotKey": prevTrackHotKey != null
+          ? jsonEncode(prevTrackHotKey?.toJson())
+          : null,
+      "playPauseHotKey": playPauseHotKey != null
+          ? jsonEncode(playPauseHotKey?.toJson())
+          : null,
       "ytSearchFormat": ytSearchFormat,
       "themeMode": themeMode.index,
       "backgroundColorScheme": backgroundColorScheme.value,
