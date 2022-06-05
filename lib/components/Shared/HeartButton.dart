@@ -19,7 +19,7 @@ class HeartButton extends StatelessWidget {
             (!isLiked
                 ? Icons.favorite_outline_rounded
                 : Icons.favorite_rounded),
-        color: isLiked ? Colors.green : null,
+        color: isLiked ? Theme.of(context).primaryColor : null,
       ),
       onPressed: onPressed,
     );

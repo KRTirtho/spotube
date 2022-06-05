@@ -47,8 +47,10 @@ void useUpdateChecker(WidgetRef ref) {
   useEffect(() {
     if (!isCheckUpdateEnabled) return null;
     checkUpdate().then((value) {
-      if (value.first == null) return;
-      if (value.first! <= value.last) return;
+      final currentVersion = value.first;
+      final latestVersion = value.last;
+      if (currentVersion == null || latestVersion == null) return;
+      if (latestVersion <= currentVersion) return;
       showDialog(
           context: context,
           builder: (context) {
