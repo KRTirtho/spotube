@@ -26,7 +26,7 @@ class About extends HookWidget {
     final info = usePackageInfo(
         appName: "Spotube",
         packageName: "oss.krtirtho.Spotube",
-        version: "2.1.0");
+        version: "2.2.0");
 
     return ListTile(
       title: const Text("About Spotube"),

@@ -14,6 +14,7 @@ import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class Settings extends HookConsumerWidget {
   const Settings({Key? key}) : super(key: key);
@@ -81,6 +82,7 @@ class Settings extends HookConsumerWidget {
                     ],
                     ListTile(
                       title: const Text("Theme"),
+                      horizontalTitleGap: 10,
                       trailing: DropdownButton<ThemeMode>(
                         value: preferences.themeMode,
                         items: const [
@@ -111,6 +113,7 @@ class Settings extends HookConsumerWidget {
                     const SizedBox(height: 10),
                     ListTile(
                       title: const Text("Accent Color Scheme"),
+                      horizontalTitleGap: 10,
                       trailing: ColorTile(
                         color: preferences.accentColorScheme,
                         onPressed: pickColorScheme(ColorSchemeType.accent),
@@ -121,6 +124,7 @@ class Settings extends HookConsumerWidget {
                     const SizedBox(height: 10),
                     ListTile(
                       title: const Text("Background Color Scheme"),
+                      horizontalTitleGap: 10,
                       trailing: ColorTile(
                         color: preferences.backgroundColorScheme,
                         onPressed: pickColorScheme(ColorSchemeType.background),
@@ -132,6 +136,7 @@ class Settings extends HookConsumerWidget {
                     ListTile(
                       title:
                           const Text("Market Place (Recommendation Country)"),
+                      horizontalTitleGap: 10,
                       trailing: DropdownButton(
                         value: preferences.recommendationMarket,
                         items: spotifyMarkets
@@ -148,6 +153,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     ListTile(
                       title: const Text("Download lyrics along with the Track"),
+                      horizontalTitleGap: 10,
                       trailing: Switch.adaptive(
                         activeColor: Theme.of(context).primaryColor,
                         value: preferences.saveTrackLyrics,
@@ -165,7 +171,7 @@ class Settings extends HookConsumerWidget {
                             flex: 2,
                             child: Text(
                               "Format of the YouTube Search term (Case sensitive)",
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ),
                           Expanded(
@@ -180,6 +186,7 @@ class Settings extends HookConsumerWidget {
                     if (auth.isAnonymous)
                       ListTile(
                         title: const Text("Login with your Spotify account"),
+                        horizontalTitleGap: 10,
                         trailing: ElevatedButton(
                           child: Text("Connect with Spotify".toUpperCase()),
                           onPressed: () {
@@ -196,6 +203,7 @@ class Settings extends HookConsumerWidget {
                       ),
                     ListTile(
                       title: const Text("Check for Update"),
+                      horizontalTitleGap: 10,
                       trailing: Switch.adaptive(
                         activeColor: Theme.of(context).primaryColor,
                         value: preferences.checkUpdate,
@@ -205,6 +213,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     ListTile(
                       title: const Text("Track Match Algorithm"),
+                      horizontalTitleGap: 10,
                       trailing: DropdownButton<SpotubeTrackMatchAlgorithm>(
                         value: preferences.trackMatchAlgorithm,
                         items: const [
@@ -234,6 +243,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     ListTile(
                       title: const Text("Audio Quality"),
+                      horizontalTitleGap: 10,
                       trailing: DropdownButton<AudioQuality>(
                         value: preferences.audioQuality,
                         items: const [
@@ -260,11 +270,14 @@ class Settings extends HookConsumerWidget {
                         Auth auth = ref.watch(authProvider);
                         return ListTile(
                           title: const Text("Log out of this account"),
+                          horizontalTitleGap: 10,
                           trailing: ElevatedButton(
                             child: const Text("Logout"),
                             style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.red),
+                              foregroundColor:
+                                  MaterialStateProperty.all(Colors.white),
                             ),
                             onPressed: () async {
                               SharedPreferences localStorage =
@@ -276,7 +289,30 @@ class Settings extends HookConsumerWidget {
                           ),
                         );
                       }),
-                    const About(),
+                    ListTile(
+                      title: const Text(
+                        "We know you Love Spotube",
+                        style: TextStyle(
+                          color: Colors.pink,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      horizontalTitleGap: 10,
+                      trailing: ElevatedButton.icon(
+                        icon: const Icon(Icons.favorite_outline_rounded),
+                        label: const Text("Please Sponsor/Donate"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red[100],
+                          onPrimary: Colors.pinkAccent,
+                          padding: const EdgeInsets.all(15),
+                        ),
+                        onPressed: () {
+                          launchUrlString("https://opencollective.com/spotube",
+                              mode: LaunchMode.externalApplication);
+                        },
+                      ),
+                    ),
+                    const About()
                   ],
                 ),
               ),

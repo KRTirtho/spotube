@@ -1,3 +1,26 @@
+# v2.2.0
+
+### New
+- Update checker
+- Share options for playlists & track
+- Android Skip to Next/Previous track from notification/lockscreen (https://github.com/KRTirtho/spotube/issues/91)
+- Custom Accent Color Scheme support (Dark + Light)
+- Custom Background Color Scheme support (Dark + Light)
+- User customizable Audio Quality Option
+- User customizable Track Matching Algorithm Option
+- Material 3 Design Language and Flutter 3.0
+- Caching in Playlists, Album, Search, Playlist Categories, Artist Profile & Lyrics
+- M1 Mac support via MacOS Universal Binary (untested) (https://github.com/KRTirtho/spotube/pull/87)
+
+### Improved
+- Authentication is now persistent (no more re-login) 
+- Settings Page. Shows application details in About Dialog
+- Playlist Create Dialog Scrollable
+### Bug fixes
+- private playlists of current user aren't shown fix (https://github.com/KRTirtho/spotube/issues/92)
+- refresh token error causing re-login (culprit: internal lib spotify-dart)
+- Typo in Login instructions URL
+
 # v2.1.0
 
 ### New
