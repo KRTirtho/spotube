@@ -9,7 +9,9 @@ import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
@@ -199,6 +201,58 @@ class Settings extends HookConsumerWidget {
                         value: preferences.checkUpdate,
                         onChanged: (checked) =>
                             preferences.setCheckUpdate(checked),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text("Track Match Algorithm"),
+                      trailing: DropdownButton<SpotubeTrackMatchAlgorithm>(
+                        value: preferences.trackMatchAlgorithm,
+                        items: const [
+                          DropdownMenuItem(
+                            child: Text(
+                              "Popular from Author",
+                            ),
+                            value: SpotubeTrackMatchAlgorithm.authenticPopular,
+                          ),
+                          DropdownMenuItem(
+                            child: Text(
+                              "Accurately Popular",
+                            ),
+                            value: SpotubeTrackMatchAlgorithm.popular,
+                          ),
+                          DropdownMenuItem(
+                            child: Text("YouTube's choice is my choice"),
+                            value: SpotubeTrackMatchAlgorithm.youtube,
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            preferences.setTrackMatchAlgorithm(value);
+                          }
+                        },
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text("Audio Quality"),
+                      trailing: DropdownButton<AudioQuality>(
+                        value: preferences.audioQuality,
+                        items: const [
+                          DropdownMenuItem(
+                            child: Text(
+                              "High",
+                            ),
+                            value: AudioQuality.high,
+                          ),
+                          DropdownMenuItem(
+                            child: Text("Low"),
+                            value: AudioQuality.low,
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            preferences.setAudioQuality(value);
+                          }
+                        },
                       ),
                     ),
                     if (auth.isLoggedIn)

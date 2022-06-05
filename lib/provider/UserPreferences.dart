@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/helpers/get-random-element.dart';
+import 'package:spotube/helpers/search-youtube.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
 import 'package:collection/collection.dart';
@@ -19,8 +21,9 @@ class UserPreferences extends PersistedChangeNotifier {
   HotKey? nextTrackHotKey;
   HotKey? prevTrackHotKey;
   HotKey? playPauseHotKey;
-
   bool checkUpdate;
+  SpotubeTrackMatchAlgorithm trackMatchAlgorithm;
+  AudioQuality audioQuality;
 
   MaterialColor accentColorScheme;
   MaterialColor backgroundColorScheme;
@@ -36,6 +39,8 @@ class UserPreferences extends PersistedChangeNotifier {
     this.prevTrackHotKey,
     this.playPauseHotKey,
     this.checkUpdate = true,
+    this.trackMatchAlgorithm = SpotubeTrackMatchAlgorithm.authenticPopular,
+    this.audioQuality = AudioQuality.high,
   }) : super();
 
   void setThemeMode(ThemeMode mode) {
@@ -104,6 +109,18 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setTrackMatchAlgorithm(SpotubeTrackMatchAlgorithm algorithm) {
+    trackMatchAlgorithm = algorithm;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setAudioQuality(AudioQuality quality) {
+    audioQuality = quality;
+    notifyListeners();
+    updatePersistence();
+  }
+
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
     saveTrackLyrics = map["saveTrackLyrics"] ?? false;
@@ -128,6 +145,12 @@ class UserPreferences extends PersistedChangeNotifier {
     accentColorScheme = colorsMap.values
             .firstWhereOrNull((e) => e.value == map["accentColorScheme"]) ??
         accentColorScheme;
+    trackMatchAlgorithm = map["trackMatchAlgorithm"] != null
+        ? SpotubeTrackMatchAlgorithm.values[map["trackMatchAlgorithm"]]
+        : trackMatchAlgorithm;
+    audioQuality = map["audioQuality"] != null
+        ? AudioQuality.values[map["audioQuality"]]
+        : audioQuality;
   }
 
   @override
@@ -150,6 +173,8 @@ class UserPreferences extends PersistedChangeNotifier {
       "backgroundColorScheme": backgroundColorScheme.value,
       "accentColorScheme": accentColorScheme.value,
       "checkUpdate": checkUpdate,
+      "trackMatchAlgorithm": trackMatchAlgorithm.index,
+      "audioQuality": audioQuality.index,
     };
   }
 }

@@ -1,6 +1,15 @@
 import 'package:spotify/spotify.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+enum SpotubeTrackMatchAlgorithm {
+  // selects the first result returned from YouTube
+  youtube,
+  // selects the most popular one
+  popular,
+  // selects the most popular one from the author of the track
+  authenticPopular,
+}
+
 class SpotubeTrack extends Track {
   Video ytTrack;
   String ytUri;
