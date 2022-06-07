@@ -37,10 +37,9 @@ void main() async {
     doWhenWindowReady(() {
       appWindow.minSize =
           Size(Platform.isAndroid || Platform.isIOS ? 280 : 359, 700);
-      appWindow.size = const Size(900, 700);
       appWindow.alignment = Alignment.center;
-      appWindow.maximize();
       appWindow.title = "Spotube";
+      appWindow.maximize();
       appWindow.show();
     });
   }
@@ -50,11 +49,10 @@ void main() async {
       playbackProvider.overrideWithProvider(ChangeNotifierProvider(
         (ref) {
           final youtube = ref.watch(youtubeProvider);
-          final preferences = ref.watch(userPreferencesProvider);
           return Playback(
             player: audioPlayerHandler,
             youtube: youtube,
-            preferences: preferences,
+            ref: ref,
           );
         },
       ))

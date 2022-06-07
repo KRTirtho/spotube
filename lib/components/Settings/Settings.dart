@@ -280,9 +280,6 @@ class Settings extends HookConsumerWidget {
                                   MaterialStateProperty.all(Colors.white),
                             ),
                             onPressed: () async {
-                              SharedPreferences localStorage =
-                                  await SharedPreferences.getInstance();
-                              await localStorage.clear();
                               auth.logout();
                               GoRouter.of(context).pop();
                             },

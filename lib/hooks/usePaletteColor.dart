@@ -1,11 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-PaletteColor usePaletteColor(BuildContext context, String imageUrl) {
-  final paletteColor =
-      useState<PaletteColor>(PaletteColor(Colors.grey[300]!, 0));
+final _paletteColorState = StateProvider<PaletteColor>(
+  (ref) {
+    return PaletteColor(Colors.grey[300]!, 0);
+  },
+);
+
+PaletteColor usePaletteColor(
+    BuildContext context, String imageUrl, WidgetRef ref) {
+  final paletteColor = ref.watch(_paletteColorState);
   final mounted = useIsMounted();
 
   useEffect(() {
@@ -23,11 +30,11 @@ PaletteColor usePaletteColor(BuildContext context, String imageUrl) {
           ? palette.lightMutedColor ?? palette.lightVibrantColor
           : palette.darkMutedColor ?? palette.darkVibrantColor;
       if (color != null) {
-        paletteColor.value = color;
+        ref.read(_paletteColorState.notifier).state = color;
       }
     });
     return null;
   }, [imageUrl]);
 
-  return paletteColor.value;
+  return paletteColor;
 }
