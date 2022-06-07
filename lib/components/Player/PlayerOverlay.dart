@@ -20,7 +20,7 @@ class PlayerOverlay extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
     final isCurrentRoute = useIsCurrentRoute("/");
-    final paletteColor = usePaletteColor(context, albumArt);
+    final paletteColor = usePaletteColor(context, albumArt, ref);
     final playback = ref.watch(playbackProvider);
 
     if (isCurrentRoute == false) {
@@ -37,7 +37,8 @@ class PlayerOverlay extends HookConsumerWidget {
       right: (breakpoint.isMd ? 10 : 5),
       left: (breakpoint.isSm ? 5 : 80),
       bottom: (breakpoint.isSm ? 63 : 10),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
         width: MediaQuery.of(context).size.width,
         height: 50,
         decoration: BoxDecoration(

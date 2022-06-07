@@ -51,7 +51,7 @@ class Auth extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  logout() {
+  void logout() {
     _clientId = null;
     _clientSecret = null;
     _accessToken = null;

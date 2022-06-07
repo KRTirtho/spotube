@@ -30,11 +30,11 @@ class Playback extends ChangeNotifier {
 
   AudioPlayerHandler player;
   YoutubeExplode youtube;
-  UserPreferences preferences;
+  Ref ref;
   Playback({
     required this.player,
     required this.youtube,
-    required this.preferences,
+    required this.ref,
     CurrentPlaylist? currentPlaylist,
     Track? currentTrack,
   })  : _currentPlaylist = currentPlaylist,
@@ -206,6 +206,7 @@ class Playback extends ChangeNotifier {
           // await player.play();
           return;
         }
+        final preferences = ref.read(userPreferencesProvider);
         final spotubeTrack = await toSpotubeTrack(
           youtube: youtube,
           track: track,
@@ -250,10 +251,9 @@ class Playback extends ChangeNotifier {
 final playbackProvider = ChangeNotifierProvider<Playback>((ref) {
   final player = AudioPlayerHandler();
   final youtube = ref.watch(youtubeProvider);
-  final preferences = ref.watch(userPreferencesProvider);
   return Playback(
     player: player,
     youtube: youtube,
-    preferences: preferences,
+    ref: ref,
   );
 });

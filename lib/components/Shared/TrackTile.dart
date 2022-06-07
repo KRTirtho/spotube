@@ -229,14 +229,14 @@ class TrackTile extends HookConsumerWidget {
           Text(duration),
         ],
         const SizedBox(width: 10),
-        if (auth.isLoggedIn)
-          FutureBuilder<bool>(
-              future: spotify.tracks.me.containsOne(track.value.id!),
-              builder: (context, snapshot) {
-                return PopupMenuButton(
-                  icon: const Icon(Icons.more_horiz_rounded),
-                  itemBuilder: (context) {
-                    return [
+        FutureBuilder<bool>(
+            future: spotify.tracks.me.containsOne(track.value.id!),
+            builder: (context, snapshot) {
+              return PopupMenuButton(
+                icon: const Icon(Icons.more_horiz_rounded),
+                itemBuilder: (context) {
+                  return [
+                    if (auth.isLoggedIn)
                       PopupMenuItem(
                         child: Row(
                           children: const [
@@ -247,17 +247,18 @@ class TrackTile extends HookConsumerWidget {
                         ),
                         value: "add-playlist",
                       ),
-                      if (userPlaylist)
-                        PopupMenuItem(
-                          child: Row(
-                            children: const [
-                              Icon(Icons.remove_circle_outline_rounded),
-                              SizedBox(width: 10),
-                              Text("Remove from Playlist"),
-                            ],
-                          ),
-                          value: "remove-playlist",
+                    if (userPlaylist && auth.isLoggedIn)
+                      PopupMenuItem(
+                        child: Row(
+                          children: const [
+                            Icon(Icons.remove_circle_outline_rounded),
+                            SizedBox(width: 10),
+                            Text("Remove from Playlist"),
+                          ],
                         ),
+                        value: "remove-playlist",
+                      ),
+                    if (auth.isLoggedIn)
                       PopupMenuItem(
                         child: Row(
                           children: [
@@ -270,36 +271,36 @@ class TrackTile extends HookConsumerWidget {
                         ),
                         value: "favorite",
                       ),
-                      PopupMenuItem(
-                        child: Row(
-                          children: const [
-                            Icon(Icons.share_rounded),
-                            SizedBox(width: 10),
-                            Text("Share")
-                          ],
-                        ),
-                        value: "share",
-                      )
-                    ];
-                  },
-                  onSelected: (value) {
-                    switch (value) {
-                      case "favorite":
-                        actionFavorite(snapshot.data == true);
-                        break;
-                      case "add-playlist":
-                        actionAddToPlaylist();
-                        break;
-                      case "remove-playlist":
-                        actionRemoveFromPlaylist();
-                        break;
-                      case "share":
-                        actionShare(track.value);
-                        break;
-                    }
-                  },
-                );
-              })
+                    PopupMenuItem(
+                      child: Row(
+                        children: const [
+                          Icon(Icons.share_rounded),
+                          SizedBox(width: 10),
+                          Text("Share")
+                        ],
+                      ),
+                      value: "share",
+                    )
+                  ];
+                },
+                onSelected: (value) {
+                  switch (value) {
+                    case "favorite":
+                      actionFavorite(snapshot.data == true);
+                      break;
+                    case "add-playlist":
+                      actionAddToPlaylist();
+                      break;
+                    case "remove-playlist":
+                      actionRemoveFromPlaylist();
+                      break;
+                    case "share":
+                      actionShare(track.value);
+                      break;
+                  }
+                },
+              );
+            })
       ],
     );
   }

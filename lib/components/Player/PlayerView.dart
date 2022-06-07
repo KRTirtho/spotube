@@ -44,7 +44,7 @@ class PlayerView extends HookConsumerWidget {
       [currentTrack?.album?.images],
     );
 
-    final PaletteColor paletteColor = usePaletteColor(context, albumArt);
+    final PaletteColor paletteColor = usePaletteColor(context, albumArt, ref);
 
     final backgroundColor = Theme.of(context).backgroundColor;
 

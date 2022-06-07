@@ -20,7 +20,7 @@ class TitleBarActionButtons extends StatelessWidget {
             ),
             child: const Icon(Icons.minimize_rounded)),
         TextButton(
-            onPressed: () {
+            onPressed: () async {
               appWindow.maximizeOrRestore();
             },
             style: ButtonStyle(

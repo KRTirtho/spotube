@@ -61,7 +61,7 @@ class Login extends HookConsumerWidget {
                 const Text(
                     "Don't worry, any of your credentials won't be collected or shared with anyone"),
                 const Hyperlink("How to get these client-id & client-secret?",
-                    "https://github.com/KRTirtho/spotube#configuration"),
+                    "https://github.com/KRTirtho/spotube#optional-configurations"),
                 const SizedBox(
                   height: 10,
                 ),
