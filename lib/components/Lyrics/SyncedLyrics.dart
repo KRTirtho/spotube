@@ -141,7 +141,9 @@ class SyncedLyrics extends HookConsumerWidget {
                           lyricSlice.text,
                           style: TextStyle(
                             // indicating the active state of that lyric slice
-                            color: isActive ? Colors.green : null,
+                            color: isActive
+                                ? Theme.of(context).primaryColor
+                                : null,
                             fontWeight: isActive ? FontWeight.bold : null,
                             fontSize: 30,
                           ),

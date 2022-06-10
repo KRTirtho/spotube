@@ -30,7 +30,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
                 return Container(
                   height: 50,
                   width: 50,
-                  color: Colors.green[400],
+                  color: Theme.of(context).primaryColor,
                 );
               },
             ),

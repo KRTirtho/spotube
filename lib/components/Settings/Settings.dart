@@ -133,22 +133,43 @@ class Settings extends HookConsumerWidget {
                       onTap: pickColorScheme(ColorSchemeType.background),
                     ),
                     const SizedBox(height: 10),
-                    ListTile(
-                      title:
-                          const Text("Market Place (Recommendation Country)"),
-                      horizontalTitleGap: 10,
-                      trailing: DropdownButton(
-                        value: preferences.recommendationMarket,
-                        items: spotifyMarkets
-                            .map((country) => (DropdownMenuItem(
-                                  child: Text(country),
-                                  value: country,
-                                )))
-                            .toList(),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          preferences.setRecommendationMarket(value as String);
-                        },
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Market Place",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              Text(
+                                "Recommendation Country",
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          DropdownButton(
+                            value: preferences.recommendationMarket,
+                            items: spotifyMarkets
+                                .map(
+                                  (country) => (DropdownMenuItem(
+                                    child: Text(country.last),
+                                    value: country.first,
+                                  )),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              if (value == null) return;
+                              preferences.setRecommendationMarket(
+                                value as String,
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
                     ListTile(
