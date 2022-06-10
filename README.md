@@ -90,7 +90,8 @@ Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/sp
     <img width='480' alt='step 2' src='https://user-images.githubusercontent.com/61944859/111762507-473f4700-88cb-11eb-91f3-d480e9584883.png'/>
 
   - **MOST IMPORTANT:** Give the app a name & description. Then Edit settings & add `http://localhost:4304/auth/spotify/callback` as **Redirect URI** for the app. Its important for authenticating<br/>
-    <img width='720' alt='setp-3' src='https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png'/>
+    <img width='720' alt='step-3-a' src='https://user-images.githubusercontent.com/61944859/172991668-fa40f247-1118-4aba-a749-e669b732fa4d.jpg' />
+    <img width='720' alt='setp-3-b' src='https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png'/>
 
   - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields<br/>
     <img width='480' alt='step-4' src='https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png'/>
