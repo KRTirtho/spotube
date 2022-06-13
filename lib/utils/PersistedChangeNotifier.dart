@@ -37,7 +37,7 @@ abstract class PersistedChangeNotifier extends ChangeNotifier {
 
   FutureOr<Map<String, dynamic>> toMap();
 
-  Future<void> updatePersistence() async {
+  Future<void> updatePersistence({bool clearNullEntries = false}) async {
     for (final entry in (await toMap()).entries) {
       if (entry.value is bool) {
         await _localStorage.setBool(entry.key, entry.value);
@@ -47,6 +47,8 @@ abstract class PersistedChangeNotifier extends ChangeNotifier {
         await _localStorage.setDouble(entry.key, entry.value);
       } else if (entry.value is String) {
         await _localStorage.setString(entry.key, entry.value);
+      } else if (entry.value == null && clearNullEntries) {
+        _localStorage.remove(entry.key);
       }
     }
   }

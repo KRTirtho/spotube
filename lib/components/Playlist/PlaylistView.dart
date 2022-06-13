@@ -23,7 +23,7 @@ class PlaylistView extends HookConsumerWidget {
   playPlaylist(Playback playback, List<Track> tracks,
       {Track? currentTrack}) async {
     currentTrack ??= tracks.first;
-    var isPlaylistPlaying = playback.currentPlaylist?.id != null &&
+    final isPlaylistPlaying = playback.currentPlaylist?.id != null &&
         playback.currentPlaylist?.id == playlist.id;
     if (!isPlaylistPlaying) {
       playback.setCurrentPlaylist = CurrentPlaylist(
