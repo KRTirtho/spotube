@@ -74,7 +74,7 @@ class PlayerView extends HookConsumerWidget {
       child: Scaffold(
         appBar: const PageWindowTitleBar(
           leading: BackButton(),
-          transparent: true,
+          backgroundColor: Colors.transparent,
         ),
         backgroundColor: paletteColor.color,
         body: Column(

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/helpers/getLyrics.dart';
+import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/timed-lyrics.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -118,9 +119,18 @@ final albumTracksQuery = FutureProvider.family<List<TrackSimple>, String>(
 );
 
 final currentUserQuery = FutureProvider<User>(
-  (ref) {
+  (ref) async {
     final spotify = ref.watch(spotifyProvider);
-    return spotify.me.get();
+    final me = await spotify.me.get();
+    if (me.images == null || me.images?.isEmpty == true) {
+      me.images = [
+        Image()
+          ..height = 50
+          ..width = 50
+          ..url = imageToUrlString(me.images),
+      ];
+    }
+    return me;
   },
 );
 

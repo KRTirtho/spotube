@@ -44,7 +44,13 @@ Following are the features that currently spotube offers:
 - Synced Lyrics
 - Downloadable track
 
-<a href="https://www.producthunt.com/posts/spotube?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-spotube" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=327965&theme=dark" alt="Spotube - A lightweight+free Spotify crossplatform-client made with flutter | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+# Support this project
+
+<a href="https://patreon.com/krtirtho"><img src="https://img.shields.io/endpoint.svg?url=https://moshef9.wixsite.com/patreon-badge/_functions/badge/?username=krtirtho" alt="Patreon donate button" /> </a>
+
+[!["Donate to out Collective"](https://opencollective.com/webpack/donate/button.png?color=blue)](https://opencollective.com/spotube)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/krtirtho)
+
 
 # Installation
 
@@ -84,22 +90,11 @@ Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/sp
     <img width='480' alt='step 2' src='https://user-images.githubusercontent.com/61944859/111762507-473f4700-88cb-11eb-91f3-d480e9584883.png'/>
 
   - **MOST IMPORTANT:** Give the app a name & description. Then Edit settings & add `http://localhost:4304/auth/spotify/callback` as **Redirect URI** for the app. Its important for authenticating<br/>
-    <img width='720' alt='setp-3' src='https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png'/>
+    <img width='720' alt='step-3-a' src='https://user-images.githubusercontent.com/61944859/172991668-fa40f247-1118-4aba-a749-e669b732fa4d.jpg' />
+    <img width='720' alt='setp-3-b' src='https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png'/>
 
   - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields<br/>
     <img width='480' alt='step-4' src='https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png'/>
-
-### Setup <b>Genius Lyrics</b>
-
-- Signup/Login into [genius](https://genius.com/signup) for **lyrics**
-- Go To [Genius Developer Portal](https://genius.com/api-clients/new) for creating an API client<br/>
-  <img width='480' alt='Step 2' src='https://user-images.githubusercontent.com/61944859/158823216-b4942731-c4c5-46c8-8b60-82a372b51cc5.png' />
-- Generate & copy access token<br/>
-  <img width='480' alt='Step 3' src='https://user-images.githubusercontent.com/61944859/158822817-f04da060-3094-4a3b-8ace-a936d0cda8db.png' />
-- Paste the copied access token in Spotube's Settings<br/>
-  <img width='480' alt='Step 4' src='https://user-images.githubusercontent.com/61944859/158823984-17f08534-5c92-41bc-918a-23194aad00f5.png' />
-
-> **Note!**: No personal data or any kind of sensitive information won't be collected from spotify. Don't believe? See the code for yourself
 
 # TODO:
 
@@ -151,6 +146,8 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [marquee](https://github.com/MarcelGarus/marquee) - ⏩ A Flutter widget that scrolls text infinitely. Provides many customizations including custom scroll directions, durations, curves as well as pauses after every round
 - [scroll_to_index](https://github.com/quire-io/scroll-to-index) - scroll to index with fixed/variable row height inside Flutter scrollable widget 
 - [package_info_plus](https://github.com/fluttercommunity/plus_plugins/tree/main/packages/) - This Flutter plugin provides an API for querying information about an application package.
+- [version](https://github.com/dartninja/version) - A dart library providing a Version class 
+- [audio_service](https://github.com/ryanheise/audio_service) - Flutter plugin to play audio in the background while the screen is off.
 
 
 # Social handlers

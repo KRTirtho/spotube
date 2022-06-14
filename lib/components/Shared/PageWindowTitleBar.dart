@@ -4,7 +4,11 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
 class TitleBarActionButtons extends StatelessWidget {
-  const TitleBarActionButtons({Key? key}) : super(key: key);
+  final Color? color;
+  const TitleBarActionButtons({
+    Key? key,
+    this.color,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,10 @@ class TitleBarActionButtons extends StatelessWidget {
               foregroundColor:
                   MaterialStateProperty.all(Theme.of(context).iconTheme.color),
             ),
-            child: const Icon(Icons.minimize_rounded)),
+            child: Icon(
+              Icons.minimize_rounded,
+              color: color,
+            )),
         TextButton(
             onPressed: () async {
               appWindow.maximizeOrRestore();
@@ -27,14 +34,14 @@ class TitleBarActionButtons extends StatelessWidget {
               foregroundColor:
                   MaterialStateProperty.all(Theme.of(context).iconTheme.color),
             ),
-            child: const Icon(Icons.crop_square_rounded)),
+            child: Icon(Icons.crop_square_rounded, color: color)),
         TextButton(
             onPressed: () {
               appWindow.close();
             },
             style: ButtonStyle(
-              foregroundColor:
-                  MaterialStateProperty.all(Theme.of(context).iconTheme.color),
+              foregroundColor: MaterialStateProperty.all(
+                  color ?? Theme.of(context).iconTheme.color),
               overlayColor: MaterialStateProperty.all(Colors.redAccent),
             ),
             child: const Icon(
@@ -49,12 +56,14 @@ class PageWindowTitleBar extends StatelessWidget
     implements PreferredSizeWidget {
   final Widget? leading;
   final Widget? center;
-  final bool transparent;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
   const PageWindowTitleBar({
     Key? key,
     this.leading,
     this.center,
-    this.transparent = false,
+    this.backgroundColor,
+    this.foregroundColor,
   }) : super(key: key);
   @override
   Size get preferredSize => Size.fromHeight(
@@ -76,7 +85,7 @@ class PageWindowTitleBar extends StatelessWidget
     }
     return WindowTitleBarBox(
       child: Container(
-        color: !transparent ? Theme.of(context).scaffoldBackgroundColor : null,
+        color: backgroundColor,
         child: Row(
           children: [
             if (Platform.isMacOS)
@@ -86,7 +95,7 @@ class PageWindowTitleBar extends StatelessWidget
             if (leading != null) leading!,
             Expanded(child: MoveWindow(child: Center(child: center))),
             if (!Platform.isMacOS && !Platform.isIOS && !Platform.isAndroid)
-              const TitleBarActionButtons()
+              TitleBarActionButtons(color: foregroundColor)
           ],
         ),
       ),

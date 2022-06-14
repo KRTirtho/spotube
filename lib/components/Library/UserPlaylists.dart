@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCreateDialog.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
@@ -13,8 +14,7 @@ class UserPlaylists extends ConsumerWidget {
     final playlists = ref.watch(currentUserPlaylistsQuery);
 
     return playlists.when(
-        loading: () =>
-            const Center(child: CircularProgressIndicator.adaptive()),
+        loading: () => const Center(child: ShimmerPlaybuttonCard(count: 7)),
         data: (data) {
           Image image = Image();
           image.height = 300;

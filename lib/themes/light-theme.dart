@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:spotube/extensions/ShimmerColorTheme.dart';
 
 final materialWhite = MaterialColor(Colors.white.value, {
   50: Colors.white,
   100: Colors.blueGrey[50]!,
   200: Colors.white,
   300: Colors.white,
-  400: Colors.white,
+  400: Colors.blueGrey[300]!,
   500: Colors.blueGrey,
   600: Colors.white,
-  700: Colors.white,
+  700: Colors.grey[700]!,
   800: Colors.white,
   900: Colors.white,
 });
@@ -19,6 +20,12 @@ ThemeData lightTheme({
 }) {
   return ThemeData(
     useMaterial3: true,
+    extensions: [
+      ShimmerColorTheme(
+        shimmerBackgroundColor: backgroundMaterialColor[200],
+        shimmerColor: backgroundMaterialColor[300],
+      )
+    ],
     primaryColor: accentMaterialColor,
     primarySwatch: accentMaterialColor,
     buttonTheme: ButtonThemeData(

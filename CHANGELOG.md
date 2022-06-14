@@ -1,3 +1,14 @@
+# v2.2.1
+
+### Improved
+- Page transitions defaulted to material you design
+
+### Bug fixes 
+- Mini Player flickering on random state updates
+- Track More Options not showing when not logged in
+- Wrong link to Client ID & Client Secret tutorial in Login page
+- Changing preferences in Settings resets the entire Playback
+
 # v2.2.0
 
 ### New

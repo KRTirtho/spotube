@@ -175,7 +175,7 @@ class TrackTile extends HookConsumerWidget {
                   return Container(
                     height: 40,
                     width: 40,
-                    color: Colors.green[300],
+                    color: Theme.of(context).primaryColor,
                   );
                 },
                 imageUrl: thumbnailUrl!,

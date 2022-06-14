@@ -58,7 +58,7 @@ class Auth extends PersistedChangeNotifier {
     _refreshToken = null;
     _expiration = null;
     notifyListeners();
-    updatePersistence();
+    updatePersistence(clearNullEntries: true);
   }
 
   @override
