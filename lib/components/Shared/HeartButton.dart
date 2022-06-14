@@ -4,9 +4,11 @@ class HeartButton extends StatelessWidget {
   final bool isLiked;
   final void Function() onPressed;
   final IconData? icon;
+  final Color? color;
   const HeartButton({
     required this.isLiked,
     required this.onPressed,
+    this.color,
     this.icon,
     Key? key,
   }) : super(key: key);
@@ -19,7 +21,7 @@ class HeartButton extends StatelessWidget {
             (!isLiked
                 ? Icons.favorite_outline_rounded
                 : Icons.favorite_rounded),
-        color: isLiked ? Theme.of(context).primaryColor : null,
+        color: isLiked ? Theme.of(context).primaryColor : color,
       ),
       onPressed: onPressed,
     );

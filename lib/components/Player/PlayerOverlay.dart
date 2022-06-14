@@ -37,56 +37,65 @@ class PlayerOverlay extends HookConsumerWidget {
       right: (breakpoint.isMd ? 10 : 5),
       left: (breakpoint.isSm ? 5 : 80),
       bottom: (breakpoint.isSm ? 63 : 10),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
-        width: MediaQuery.of(context).size.width,
-        height: 50,
-        decoration: BoxDecoration(
-          color: paletteColor.color,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Material(
-          type: MaterialType.transparency,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () => GoRouter.of(context).push("/player"),
-                    child: PlayerTrackDetails(
-                      albumArt: albumArt,
-                      color: paletteColor.bodyTextColor,
+      child: GestureDetector(
+        onVerticalDragEnd: (details) {
+          int sensitivity = 8;
+          if (details.primaryVelocity != null &&
+              details.primaryVelocity! < -sensitivity) {
+            GoRouter.of(context).push("/player");
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 500),
+          width: MediaQuery.of(context).size.width,
+          height: 50,
+          decoration: BoxDecoration(
+            color: paletteColor.color,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Material(
+            type: MaterialType.transparency,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => GoRouter.of(context).push("/player"),
+                      child: PlayerTrackDetails(
+                        albumArt: albumArt,
+                        color: paletteColor.bodyTextColor,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  IconButton(
-                      icon: const Icon(Icons.skip_previous_rounded),
+                Row(
+                  children: [
+                    IconButton(
+                        icon: const Icon(Icons.skip_previous_rounded),
+                        color: paletteColor.bodyTextColor,
+                        onPressed: () {
+                          onPrevious();
+                        }),
+                    IconButton(
+                      icon: Icon(
+                        playback.isPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                      ),
                       color: paletteColor.bodyTextColor,
-                      onPressed: () {
-                        onPrevious();
-                      }),
-                  IconButton(
-                    icon: Icon(
-                      playback.isPlaying
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
+                      onPressed: _playOrPause,
                     ),
-                    color: paletteColor.bodyTextColor,
-                    onPressed: _playOrPause,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.skip_next_rounded),
-                    onPressed: () => onNext(),
-                    color: paletteColor.bodyTextColor,
-                  ),
-                ],
-              ),
-            ],
+                    IconButton(
+                      icon: const Icon(Icons.skip_next_rounded),
+                      onPressed: () => onNext(),
+                      color: paletteColor.bodyTextColor,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

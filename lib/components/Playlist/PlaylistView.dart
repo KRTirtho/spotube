@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
-import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/components/Shared/TracksTableView.dart';
+import 'package:spotube/components/Shared/TrackCollectionView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
+import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -53,118 +53,90 @@ class PlaylistView extends HookConsumerWidget {
     final meSnapshot = ref.watch(currentUserQuery);
     final tracksSnapshot = ref.watch(playlistTracksQuery(playlist.id!));
 
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            PageWindowTitleBar(
-              leading: Row(
-                children: [
-                  // nav back
-                  const BackButton(),
-                  // heart playlist
-                  if (auth.isLoggedIn && playlist.id != "user-liked-tracks")
-                    meSnapshot.when(
-                      data: (me) {
-                        final query = playlistIsFollowedQuery(jsonEncode(
-                            {"playlistId": playlist.id, "userId": me.id!}));
-                        final followingSnapshot = ref.watch(query);
+    final titleImage =
+        useMemoized(() => imageToUrlString(playlist.images), [playlist.images]);
 
-                        return followingSnapshot.when(
-                          data: (isFollowing) {
-                            return HeartButton(
-                              isLiked: isFollowing,
-                              icon: playlist.owner?.id != null &&
-                                      me.id == playlist.owner?.id
-                                  ? Icons.delete_outline_rounded
-                                  : null,
-                              onPressed: () async {
-                                try {
-                                  isFollowing
-                                      ? spotify.playlists
-                                          .unfollowPlaylist(playlist.id!)
-                                      : spotify.playlists
-                                          .followPlaylist(playlist.id!);
-                                } catch (e, stack) {
-                                  logger.e("FollowButton.onPressed", e, stack);
-                                } finally {
-                                  ref.refresh(query);
-                                  ref.refresh(currentUserPlaylistsQuery);
-                                }
-                              },
-                            );
-                          },
-                          error: (error, _) => Text("Error $error"),
-                          loading: () => const CircularProgressIndicator(),
-                        );
-                      },
-                      error: (error, _) => Text("Error $error"),
-                      loading: () => const CircularProgressIndicator(),
-                    ),
+    final color = usePaletteGenerator(
+      context,
+      titleImage,
+    ).dominantColor;
 
-                  if (playlist.id != "user-liked-tracks")
-                    IconButton(
-                      icon: const Icon(Icons.share_rounded),
-                      onPressed: () {
-                        final data =
-                            "https://open.spotify.com/playlist/${playlist.id}";
-                        Clipboard.setData(
-                          ClipboardData(text: data),
-                        ).then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              width: 300,
-                              behavior: SnackBarBehavior.floating,
-                              content: Text(
-                                "Copied $data to clipboard",
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          );
-                        });
-                      },
-                    ),
-                  // play playlist
-                  IconButton(
-                    icon: Icon(
-                      isPlaylistPlaying
-                          ? Icons.stop_rounded
-                          : Icons.play_arrow_rounded,
-                    ),
-                    onPressed: tracksSnapshot.asData?.value != null
-                        ? () => playPlaylist(
-                              playback,
-                              tracksSnapshot.asData!.value,
-                            )
-                        : null,
-                  )
-                ],
+    return TrackCollectionView(
+      id: playlist.id!,
+      isPlaying: isPlaylistPlaying,
+      title: playlist.name!,
+      titleImage: titleImage,
+      tracksSnapshot: tracksSnapshot,
+      description: playlist.description,
+      isOwned: playlist.owner?.id != null &&
+          playlist.owner!.id == meSnapshot.asData?.value.id,
+      onPlay: ([track]) {
+        if (tracksSnapshot.asData?.value != null) {
+          playPlaylist(
+            playback,
+            tracksSnapshot.asData!.value,
+            currentTrack: track,
+          );
+        }
+      },
+      showShare: playlist.id != "user-liked-tracks",
+      onShare: () {
+        final data = "https://open.spotify.com/playlist/${playlist.id}";
+        Clipboard.setData(
+          ClipboardData(text: data),
+        ).then((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              width: 300,
+              behavior: SnackBarBehavior.floating,
+              content: Text(
+                "Copied $data to clipboard",
+                textAlign: TextAlign.center,
               ),
             ),
-            Center(
-              child: Text(playlist.name!,
-                  style: Theme.of(context).textTheme.headline4),
-            ),
-            tracksSnapshot.when(
-              data: (tracks) {
-                return TracksTableView(
-                  tracks,
-                  onTrackPlayButtonPressed: (currentTrack) => playPlaylist(
-                    playback,
-                    tracks,
-                    currentTrack: currentTrack,
-                  ),
-                  playlistId: playlist.id,
-                  userPlaylist: playlist.owner?.id != null &&
-                      playlist.owner!.id == meSnapshot.asData?.value.id,
+          );
+        });
+      },
+      heartBtn: (auth.isLoggedIn && playlist.id != "user-liked-tracks"
+          ? meSnapshot.when(
+              data: (me) {
+                final query = playlistIsFollowedQuery(
+                    jsonEncode({"playlistId": playlist.id, "userId": me.id!}));
+                final followingSnapshot = ref.watch(query);
+
+                return followingSnapshot.when(
+                  data: (isFollowing) {
+                    return HeartButton(
+                      isLiked: isFollowing,
+                      color: color?.titleTextColor,
+                      icon: playlist.owner?.id != null &&
+                              me.id == playlist.owner?.id
+                          ? Icons.delete_outline_rounded
+                          : null,
+                      onPressed: () async {
+                        try {
+                          isFollowing
+                              ? await spotify.playlists
+                                  .unfollowPlaylist(playlist.id!)
+                              : await spotify.playlists
+                                  .followPlaylist(playlist.id!);
+                        } catch (e, stack) {
+                          logger.e("FollowButton.onPressed", e, stack);
+                        } finally {
+                          ref.refresh(query);
+                          ref.refresh(currentUserPlaylistsQuery);
+                        }
+                      },
+                    );
+                  },
+                  error: (error, _) => Text("Error $error"),
+                  loading: () => const CircularProgressIndicator(),
                 );
               },
               error: (error, _) => Text("Error $error"),
-              loading: () => const ShimmerTrackTile(),
-            ),
-          ],
-        ),
-      ),
+              loading: () => const CircularProgressIndicator(),
+            )
+          : null),
     );
   }
 }

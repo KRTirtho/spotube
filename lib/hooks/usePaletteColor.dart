@@ -38,3 +38,30 @@ PaletteColor usePaletteColor(
 
   return paletteColor;
 }
+
+PaletteGenerator usePaletteGenerator(
+  BuildContext context,
+  String imageUrl,
+) {
+  final palette = useState(PaletteGenerator.fromColors([]));
+  final mounted = useIsMounted();
+
+  useEffect(() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final newPalette = await PaletteGenerator.fromImageProvider(
+        CachedNetworkImageProvider(
+          imageUrl,
+          cacheKey: imageUrl,
+          maxHeight: 50,
+          maxWidth: 50,
+        ),
+      );
+      if (!mounted()) return;
+
+      palette.value = newPalette;
+    });
+    return null;
+  }, [imageUrl]);
+
+  return palette.value;
+}

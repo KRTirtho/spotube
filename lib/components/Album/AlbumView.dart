@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
-import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/components/Shared/TracksTableView.dart';
+import 'package:spotube/components/Shared/TrackCollectionView.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/simple-track-to-track.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
@@ -41,7 +41,6 @@ class AlbumView extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
 
-    final isPlaylistPlaying = playback.currentPlaylist?.id == album.id;
     final SpotifyApi spotify = ref.watch(spotifyProvider);
     final Auth auth = ref.watch(authProvider);
 
@@ -49,85 +48,60 @@ class AlbumView extends HookConsumerWidget {
     final albumSavedSnapshot =
         ref.watch(albumIsSavedForCurrentUserQuery(album.id!));
 
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            PageWindowTitleBar(
-              leading: Row(
-                children: [
-                  // nav back
-                  const BackButton(),
-                  // heart playlist
-                  if (auth.isLoggedIn)
-                    albumSavedSnapshot.when(
-                        data: (isSaved) {
-                          return HeartButton(
-                            isLiked: isSaved,
-                            onPressed: () {
-                              (isSaved
-                                      ? spotify.me.removeAlbums(
-                                          [album.id!],
-                                        )
-                                      : spotify.me.saveAlbums(
-                                          [album.id!],
-                                        ))
-                                  .whenComplete(() {
-                                ref.refresh(
-                                  albumIsSavedForCurrentUserQuery(
-                                    album.id!,
-                                  ),
-                                );
-                                ref.refresh(currentUserAlbumsQuery);
-                              });
-                            },
-                          );
-                        },
-                        error: (error, _) => Text("Error $error"),
-                        loading: () => const CircularProgressIndicator()),
-                  // play playlist
-                  IconButton(
-                    icon: Icon(
-                      isPlaylistPlaying
-                          ? Icons.stop_rounded
-                          : Icons.play_arrow_rounded,
-                    ),
-                    onPressed: tracksSnapshot.asData?.value != null
-                        ? () => playPlaylist(
-                              playback,
-                              tracksSnapshot.asData!.value.map((trackSmp) {
-                                return simpleTrackToTrack(trackSmp, album);
-                              }).toList(),
-                            )
-                        : null,
-                  )
-                ],
-              ),
-            ),
-            Center(
-              child: Text(album.name!,
-                  style: Theme.of(context).textTheme.headline4),
-            ),
-            tracksSnapshot.when(
-              data: (data) {
-                List<Track> tracks = data.map((trackSmp) {
-                  return simpleTrackToTrack(trackSmp, album);
-                }).toList();
-                return TracksTableView(
-                  tracks,
-                  onTrackPlayButtonPressed: (currentTrack) => playPlaylist(
-                    playback,
-                    tracks,
-                    currentTrack: currentTrack,
-                  ),
+    final albumArt =
+        useMemoized(() => imageToUrlString(album.images), [album.images]);
+
+    return TrackCollectionView(
+      id: album.id!,
+      isPlaying: playback.currentPlaylist?.id != null &&
+          playback.currentPlaylist?.id == album.id,
+      title: album.name!,
+      titleImage: albumArt,
+      tracksSnapshot: tracksSnapshot,
+      album: album,
+      onPlay: ([track]) {
+        if (tracksSnapshot.asData?.value != null) {
+          playPlaylist(
+            playback,
+            tracksSnapshot.asData!.value
+                .map((track) => simpleTrackToTrack(track, album))
+                .toList(),
+            currentTrack: track,
+          );
+        }
+      },
+      onShare: () {
+        Clipboard.setData(
+          ClipboardData(text: "https://open.spotify.com/album/${album.id}"),
+        );
+      },
+      heartBtn: auth.isLoggedIn
+          ? albumSavedSnapshot.when(
+              data: (isSaved) {
+                return HeartButton(
+                  isLiked: isSaved,
+                  onPressed: () {
+                    (isSaved
+                            ? spotify.me.removeAlbums(
+                                [album.id!],
+                              )
+                            : spotify.me.saveAlbums(
+                                [album.id!],
+                              ))
+                        .whenComplete(() {
+                      ref.refresh(
+                        albumIsSavedForCurrentUserQuery(
+                          album.id!,
+                        ),
+                      );
+                      ref.refresh(currentUserAlbumsQuery);
+                    });
+                  },
                 );
               },
               error: (error, _) => Text("Error $error"),
-              loading: () => const ShimmerTrackTile(),
-            ),
-          ],
-        ),
-      ),
+              loading: () => const CircularProgressIndicator())
+          : null,
     );
   }
 }

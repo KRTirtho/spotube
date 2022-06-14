@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/helpers/simple-album-to-album.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
@@ -25,7 +26,7 @@ class UserAlbums extends ConsumerWidget {
           ),
         ),
       ),
-      loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+      loading: () => const Center(child: ShimmerPlaybuttonCard(count: 7)),
       error: (_, __) => const Text("Failure is the pillar of success"),
     );
   }

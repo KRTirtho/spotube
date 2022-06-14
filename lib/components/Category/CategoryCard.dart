@@ -5,6 +5,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
+import 'package:spotube/components/Shared/NotFound.dart';
 import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
@@ -72,6 +73,9 @@ class CategoryCard extends HookConsumerWidget {
                     scrollController: scrollController,
                     scrollDirection: Axis.horizontal,
                     builderDelegate: PagedChildBuilderDelegate<PlaylistSimple>(
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return const NotFound();
+                      },
                       firstPageProgressIndicatorBuilder: (context) {
                         return const ShimmerPlaybuttonCard();
                       },
