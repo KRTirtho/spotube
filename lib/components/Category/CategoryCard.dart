@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/models/Logger.dart';
@@ -71,6 +72,12 @@ class CategoryCard extends HookConsumerWidget {
                     scrollController: scrollController,
                     scrollDirection: Axis.horizontal,
                     builderDelegate: PagedChildBuilderDelegate<PlaylistSimple>(
+                      firstPageProgressIndicatorBuilder: (context) {
+                        return const ShimmerPlaybuttonCard();
+                      },
+                      newPageProgressIndicatorBuilder: (context) {
+                        return const ShimmerPlaybuttonCard();
+                      },
                       itemBuilder: (context, playlist, index) {
                         return PlaylistCard(playlist);
                       },

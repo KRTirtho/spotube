@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
@@ -122,7 +123,7 @@ class AlbumView extends HookConsumerWidget {
                 );
               },
               error: (error, _) => Text("Error $error"),
-              loading: () => const CircularProgressIndicator(),
+              loading: () => const ShimmerTrackTile(),
             ),
           ],
         ),

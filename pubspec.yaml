@@ -61,6 +61,7 @@ dependencies:
   version: ^2.0.0
   audio_service: ^0.18.4
   hookified_infinite_scroll_pagination: ^0.1.0
+  skeleton_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

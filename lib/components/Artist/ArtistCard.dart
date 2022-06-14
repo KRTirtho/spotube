@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:marquee/marquee.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 

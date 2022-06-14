@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotube/extensions/ShimmerColorTheme.dart';
 
 ThemeData darkTheme({
   required MaterialColor accentMaterialColor,
@@ -7,6 +8,12 @@ ThemeData darkTheme({
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
+    extensions: [
+      ShimmerColorTheme(
+        shimmerBackgroundColor: backgroundMaterialColor[700],
+        shimmerColor: backgroundMaterialColor[800],
+      )
+    ],
     primaryColor: accentMaterialColor,
     primarySwatch: accentMaterialColor,
     backgroundColor: backgroundMaterialColor[900],

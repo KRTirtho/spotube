@@ -11,6 +11,7 @@ import 'package:spotify/spotify.dart' hide Image, Player, Search;
 import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerCategories.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -138,6 +139,10 @@ class Home extends HookConsumerWidget {
                             pagingController: pagingController,
                             builderDelegate:
                                 PagedChildBuilderDelegate<Category>(
+                              firstPageProgressIndicatorBuilder: (_) =>
+                                  const ShimmerCategories(),
+                              newPageProgressIndicatorBuilder: (_) =>
+                                  const ShimmerCategories(),
                               itemBuilder: (context, item, index) {
                                 return CategoryCard(item);
                               },

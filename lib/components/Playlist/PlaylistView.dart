@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
@@ -62,7 +63,7 @@ class PlaylistView extends HookConsumerWidget {
                   // nav back
                   const BackButton(),
                   // heart playlist
-                  if (auth.isLoggedIn)
+                  if (auth.isLoggedIn && playlist.id != "user-liked-tracks")
                     meSnapshot.when(
                       data: (me) {
                         final query = playlistIsFollowedQuery(jsonEncode(
@@ -101,27 +102,28 @@ class PlaylistView extends HookConsumerWidget {
                       loading: () => const CircularProgressIndicator(),
                     ),
 
-                  IconButton(
-                    icon: const Icon(Icons.share_rounded),
-                    onPressed: () {
-                      final data =
-                          "https://open.spotify.com/playlist/${playlist.id}";
-                      Clipboard.setData(
-                        ClipboardData(text: data),
-                      ).then((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            width: 300,
-                            behavior: SnackBarBehavior.floating,
-                            content: Text(
-                              "Copied $data to clipboard",
-                              textAlign: TextAlign.center,
+                  if (playlist.id != "user-liked-tracks")
+                    IconButton(
+                      icon: const Icon(Icons.share_rounded),
+                      onPressed: () {
+                        final data =
+                            "https://open.spotify.com/playlist/${playlist.id}";
+                        Clipboard.setData(
+                          ClipboardData(text: data),
+                        ).then((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              width: 300,
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                "Copied $data to clipboard",
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                        );
-                      });
-                    },
-                  ),
+                          );
+                        });
+                      },
+                    ),
                   // play playlist
                   IconButton(
                     icon: Icon(
@@ -158,7 +160,7 @@ class PlaylistView extends HookConsumerWidget {
                 );
               },
               error: (error, _) => Text("Error $error"),
-              loading: () => const CircularProgressIndicator(),
+              loading: () => const ShimmerTrackTile(),
             ),
           ],
         ),
