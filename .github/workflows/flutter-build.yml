@@ -35,8 +35,8 @@ jobs:
             build/Spotube-linux-x86_64.tar.xz
             build/Spotube-*-x86_64.AppImage
       # Building Android Application
-      - run: echo ${{ secrets.KEYSTORE }} | base64 --decode > upload-keystore.jks
-      - run: echo ${{ secrets.KEY_PROPERTIES }} > android/key.properties
+      - run: echo '${{ secrets.KEYSTORE }}' | base64 --decode > upload-keystore.jks
+      - run: echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
       - run: flutter build apk
       - run: make apk
       - uses: actions/upload-artifact@v2
