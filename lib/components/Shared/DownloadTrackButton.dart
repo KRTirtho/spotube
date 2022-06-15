@@ -9,6 +9,7 @@ import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:path/path.dart' as path;
@@ -30,7 +31,7 @@ class DownloadTrackButton extends HookConsumerWidget {
 
     final _downloadTrack = useCallback(() async {
       if (track == null) return;
-      if ((Platform.isAndroid || Platform.isIOS) &&
+      if ((kIsMobile) &&
           !await Permission.storage.isGranted &&
           !await Permission.storage.isPermanentlyDenied) {
         final status = await Permission.storage.request();

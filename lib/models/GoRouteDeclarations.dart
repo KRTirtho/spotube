@@ -67,8 +67,8 @@ GoRouter createGoRouter() => GoRouter(
         GoRoute(
           path: "/player",
           pageBuilder: (context, state) {
-            return SpotubePage(
-              child: const PlayerView(),
+            return const SpotubePage(
+              child: PlayerView(),
             );
           },
         )

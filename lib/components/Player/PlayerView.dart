@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,6 +11,7 @@ import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/hooks/useCustomStatusBarColor.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Playback.dart';
 
@@ -46,29 +46,10 @@ class PlayerView extends HookConsumerWidget {
 
     final PaletteColor paletteColor = usePaletteColor(context, albumArt, ref);
 
-    final backgroundColor = Theme.of(context).backgroundColor;
-
-    useEffect(() {
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(
-          statusBarColor: paletteColor.color, // status bar color
-        ),
-      );
-      return;
-    }, [paletteColor.color]);
-
-    useEffect(() {
-      return () {
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(
-            statusBarColor: backgroundColor, // status bar color
-            statusBarIconBrightness: backgroundColor.computeLuminance() > 0.179
-                ? Brightness.dark
-                : Brightness.light,
-          ),
-        );
-      };
-    }, []);
+    useCustomStatusBarColor(
+      paletteColor.color,
+      GoRouter.of(context).location == "/player",
+    );
 
     return SafeArea(
       child: Scaffold(

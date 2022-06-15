@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
@@ -59,6 +60,7 @@ class AlbumView extends HookConsumerWidget {
       titleImage: albumArt,
       tracksSnapshot: tracksSnapshot,
       album: album,
+      routePath: "/album/${album.id}",
       onPlay: ([track]) {
         if (tracksSnapshot.asData?.value != null) {
           playPlaylist(

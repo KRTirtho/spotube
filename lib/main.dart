@@ -16,13 +16,9 @@ import 'package:spotube/provider/YouTube.dart';
 import 'package:spotube/themes/dark-theme.dart';
 import 'package:spotube/themes/light-theme.dart';
 import 'package:spotube/utils/AudioPlayerHandler.dart';
+import 'package:spotube/utils/platform.dart';
 
 void main() async {
-  // await JustAudioBackground.init(
-  //   androidNotificationChannelId: 'oss.krtirtho.Spotube',
-  //   androidNotificationChannelName: 'Spotube',
-  //   androidNotificationOngoing: true,
-  // );
   AudioPlayerHandler audioPlayerHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
@@ -31,12 +27,11 @@ void main() async {
       androidNotificationOngoing: true,
     ),
   );
-  if (!Platform.isAndroid && !Platform.isIOS) {
+  if (kIsDesktop) {
     WidgetsFlutterBinding.ensureInitialized();
     await hotKeyManager.unregisterAll();
     doWhenWindowReady(() {
-      appWindow.minSize =
-          Size(Platform.isAndroid || Platform.isIOS ? 280 : 359, 700);
+      appWindow.minSize = const Size(359, 700);
       appWindow.alignment = Alignment.center;
       appWindow.title = "Spotube";
       appWindow.maximize();
@@ -75,6 +70,7 @@ class Spotube extends HookConsumerWidget {
         .watch(userPreferencesProvider.select((s) => s.backgroundColorScheme));
     final player = ref.watch(audioPlayerProvider);
     final youtube = ref.watch(youtubeProvider);
+
     useEffect(() {
       return () {
         player.dispose();

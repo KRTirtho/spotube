@@ -13,6 +13,7 @@ import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class Settings extends HookConsumerWidget {
@@ -56,7 +57,7 @@ class Settings extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: ListView(
                   children: [
-                    if (!Platform.isAndroid && !Platform.isIOS) ...[
+                    if (!kIsMobile) ...[
                       SettingsHotKeyTile(
                         title: "Next track global shortcut",
                         currentHotKey: preferences.nextTrackHotKey,
