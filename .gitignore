@@ -45,7 +45,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-
 *.pkg.tar.zst
 /aur-struct/*.tar
 /aur-struct/src
@@ -74,3 +73,5 @@ secrets.json
 
 dist
 appimage-build
+
+android/key.properties
