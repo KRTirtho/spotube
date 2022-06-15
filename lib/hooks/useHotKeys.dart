@@ -7,6 +7,7 @@ import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/models/GlobalKeyActions.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 
 useHotKeys(WidgetRef ref) {
   final playback = ref.watch(playbackProvider);
@@ -20,7 +21,7 @@ useHotKeys(WidgetRef ref) {
   final _playOrPause = useTogglePlayPause(playback);
 
   useEffect(() {
-    if (Platform.isIOS || Platform.isAndroid) return null;
+    if (kIsMobile) return null;
     _hotKeys = [
       GlobalKeyActions(
         HotKey(KeyCode.space, scope: HotKeyScope.inapp),

@@ -72,7 +72,9 @@ class Auth extends PersistedChangeNotifier {
     _clientSecret = map["clientSecret"];
     _accessToken = map["accessToken"];
     _refreshToken = map["refreshToken"];
-    _expiration = DateTime.tryParse(map["expiration"]);
+    _expiration = map["expiration"] != null
+        ? DateTime.tryParse(map["expiration"])
+        : _expiration;
   }
 
   @override

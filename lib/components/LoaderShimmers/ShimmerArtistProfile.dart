@@ -44,7 +44,7 @@ class ShimmerArtistProfile extends HookWidget {
           ),
         ),
         const SizedBox(width: 10),
-        const Flexible(child: ShimmerTrackTile()),
+        const Flexible(child: ShimmerTrackTile(noSliver: true)),
       ],
     );
   }

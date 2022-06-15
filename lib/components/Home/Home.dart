@@ -23,6 +23,7 @@ import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/platform.dart';
 
 List<String> spotifyScopes = [
   "playlist-modify-public",
@@ -73,7 +74,7 @@ class Home extends HookConsumerWidget {
                   child: MoveWindow(),
                 ),
                 Expanded(child: MoveWindow()),
-                if (!Platform.isMacOS && !Platform.isAndroid && !Platform.isIOS)
+                if (!Platform.isMacOS && !kIsMobile)
                   const TitleBarActionButtons(),
               ],
             ))
@@ -98,7 +99,7 @@ class Home extends HookConsumerWidget {
       child: Scaffold(
         body: Column(
           children: [
-            Platform.isAndroid || Platform.isIOS
+            kIsMobile
                 ? titleBarContents
                 : WindowTitleBarBox(child: titleBarContents),
             Expanded(

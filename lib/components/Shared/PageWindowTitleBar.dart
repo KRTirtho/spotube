@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/utils/platform.dart';
 
 class TitleBarActionButtons extends StatelessWidget {
   final Color? color;
@@ -67,19 +68,22 @@ class PageWindowTitleBar extends StatelessWidget
   }) : super(key: key);
   @override
   Size get preferredSize => Size.fromHeight(
-        !Platform.isIOS && !Platform.isAndroid ? appWindow.titleBarHeight : 35,
+        (kIsDesktop ? appWindow.titleBarHeight : 35),
       );
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS || Platform.isAndroid) {
+    if (kIsMobile) {
       return PreferredSize(
         preferredSize: const Size.fromHeight(300),
-        child: Row(
-          children: [
-            if (leading != null) leading!,
-            Expanded(child: Center(child: center)),
-          ],
+        child: Container(
+          color: backgroundColor,
+          child: Row(
+            children: [
+              if (leading != null) leading!,
+              Expanded(child: Center(child: center)),
+            ],
+          ),
         ),
       );
     }
@@ -94,7 +98,7 @@ class PageWindowTitleBar extends StatelessWidget
               ),
             if (leading != null) leading!,
             Expanded(child: MoveWindow(child: Center(child: center))),
-            if (!Platform.isMacOS && !Platform.isIOS && !Platform.isAndroid)
+            if (!Platform.isMacOS && !kIsMobile)
               TitleBarActionButtons(color: foregroundColor)
           ],
         ),
