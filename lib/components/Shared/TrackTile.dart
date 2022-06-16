@@ -12,6 +12,7 @@ import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
 
 class TrackTile extends HookConsumerWidget {
   final Playback playback;
@@ -41,6 +42,13 @@ class TrackTile extends HookConsumerWidget {
     final spotify = ref.watch(spotifyProvider);
     final update = useForceUpdate();
 
+    final savedTracksSnapshot = ref.watch(currentUserSavedTracksQuery);
+
+    final isSaved = savedTracksSnapshot.asData?.value.any(
+          (e) => track.value.id! == e.id,
+        ) ??
+        false;
+
     final actionFavorite = useCallback((bool isLiked) async {
       try {
         isLiked
@@ -50,6 +58,8 @@ class TrackTile extends HookConsumerWidget {
         logger.e("FavoriteButton.onPressed", e, stack);
       } finally {
         update();
+        ref.refresh(currentUserSavedTracksQuery);
+        ref.refresh(playlistTracksQuery("user-liked-tracks"));
       }
     }, [track.value.id, spotify]);
 
@@ -229,78 +239,74 @@ class TrackTile extends HookConsumerWidget {
           Text(duration),
         ],
         const SizedBox(width: 10),
-        FutureBuilder<bool>(
-            future: spotify.tracks.me.containsOne(track.value.id!),
-            builder: (context, snapshot) {
-              return PopupMenuButton(
-                icon: const Icon(Icons.more_horiz_rounded),
-                itemBuilder: (context) {
-                  return [
-                    if (auth.isLoggedIn)
-                      PopupMenuItem(
-                        child: Row(
-                          children: const [
-                            Icon(Icons.add_box_rounded),
-                            SizedBox(width: 10),
-                            Text("Add to Playlist"),
-                          ],
-                        ),
-                        value: "add-playlist",
-                      ),
-                    if (userPlaylist && auth.isLoggedIn)
-                      PopupMenuItem(
-                        child: Row(
-                          children: const [
-                            Icon(Icons.remove_circle_outline_rounded),
-                            SizedBox(width: 10),
-                            Text("Remove from Playlist"),
-                          ],
-                        ),
-                        value: "remove-playlist",
-                      ),
-                    if (auth.isLoggedIn)
-                      PopupMenuItem(
-                        child: Row(
-                          children: [
-                            Icon(snapshot.data == true
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded),
-                            const SizedBox(width: 10),
-                            const Text("Favorite")
-                          ],
-                        ),
-                        value: "favorite",
-                      ),
-                    PopupMenuItem(
-                      child: Row(
-                        children: const [
-                          Icon(Icons.share_rounded),
-                          SizedBox(width: 10),
-                          Text("Share")
-                        ],
-                      ),
-                      value: "share",
-                    )
-                  ];
-                },
-                onSelected: (value) {
-                  switch (value) {
-                    case "favorite":
-                      actionFavorite(snapshot.data == true);
-                      break;
-                    case "add-playlist":
-                      actionAddToPlaylist();
-                      break;
-                    case "remove-playlist":
-                      actionRemoveFromPlaylist();
-                      break;
-                    case "share":
-                      actionShare(track.value);
-                      break;
-                  }
-                },
-              );
-            })
+        PopupMenuButton(
+          icon: const Icon(Icons.more_horiz_rounded),
+          itemBuilder: (context) {
+            return [
+              if (auth.isLoggedIn)
+                PopupMenuItem(
+                  child: Row(
+                    children: const [
+                      Icon(Icons.add_box_rounded),
+                      SizedBox(width: 10),
+                      Text("Add to Playlist"),
+                    ],
+                  ),
+                  value: "add-playlist",
+                ),
+              if (userPlaylist && auth.isLoggedIn)
+                PopupMenuItem(
+                  child: Row(
+                    children: const [
+                      Icon(Icons.remove_circle_outline_rounded),
+                      SizedBox(width: 10),
+                      Text("Remove from Playlist"),
+                    ],
+                  ),
+                  value: "remove-playlist",
+                ),
+              if (auth.isLoggedIn)
+                PopupMenuItem(
+                  child: Row(
+                    children: [
+                      Icon(isSaved
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded),
+                      const SizedBox(width: 10),
+                      const Text("Favorite")
+                    ],
+                  ),
+                  value: "favorite",
+                ),
+              PopupMenuItem(
+                child: Row(
+                  children: const [
+                    Icon(Icons.share_rounded),
+                    SizedBox(width: 10),
+                    Text("Share")
+                  ],
+                ),
+                value: "share",
+              )
+            ];
+          },
+          onSelected: (value) {
+            switch (value) {
+              case "favorite":
+                actionFavorite(isSaved);
+                break;
+              case "add-playlist":
+                actionAddToPlaylist();
+                break;
+              case "remove-playlist":
+                actionRemoveFromPlaylist();
+                break;
+              case "share":
+                actionShare(track.value);
+                break;
+            }
+          },
+        ),
       ],
     );
   }

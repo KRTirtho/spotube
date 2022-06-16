@@ -98,6 +98,13 @@ final artistRelatedArtistsQuery =
   },
 );
 
+final currentUserSavedTracksQuery = FutureProvider<List<Track>>((ref) {
+  final spotify = ref.watch(spotifyProvider);
+  return spotify.tracks.me.saved.all().then(
+        (tracks) => tracks.map((e) => e.track!).toList(),
+      );
+});
+
 final playlistTracksQuery = FutureProvider.family<List<Track>, String>(
   (ref, id) {
     final spotify = ref.watch(spotifyProvider);
