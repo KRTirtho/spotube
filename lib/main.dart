@@ -5,8 +5,10 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:spotube/entities/CacheTrack.dart';
 import 'package:spotube/models/GoRouteDeclarations.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
@@ -19,6 +21,9 @@ import 'package:spotube/utils/AudioPlayerHandler.dart';
 import 'package:spotube/utils/platform.dart';
 
 void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(CacheTrackAdapter());
+  Hive.registerAdapter(CacheTrackEngagementAdapter());
   AudioPlayerHandler audioPlayerHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(

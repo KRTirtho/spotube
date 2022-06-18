@@ -3,9 +3,10 @@ import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/entities/CacheTrack.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
@@ -33,6 +34,9 @@ class Playback extends PersistedChangeNotifier {
   AudioPlayerHandler player;
   YoutubeExplode youtube;
   Ref ref;
+
+  LazyBox<CacheTrack>? cacheTrackBox;
+
   Playback({
     required this.player,
     required this.youtube,
@@ -57,6 +61,8 @@ class Playback extends PersistedChangeNotifier {
   StreamSubscription<bool>? _playingStream;
 
   void _init() async {
+    cacheTrackBox = await Hive.openLazyBox<CacheTrack>("track-cache");
+
     _playingStream = player.core.playingStream.listen(
       (playing) {
         _isPlaying = playing;
@@ -111,6 +117,7 @@ class Playback extends PersistedChangeNotifier {
     _positionStream?.cancel();
     _playingStream?.cancel();
     _durationStream?.cancel();
+    cacheTrackBox?.close();
     super.dispose();
   }
 
@@ -213,7 +220,6 @@ class Playback extends PersistedChangeNotifier {
             notifyListeners();
             updatePersistence();
           });
-          // await player.play();
           return;
         }
         final preferences = ref.read(userPreferencesProvider);
@@ -223,6 +229,7 @@ class Playback extends PersistedChangeNotifier {
           format: preferences.ytSearchFormat,
           matchAlgorithm: preferences.trackMatchAlgorithm,
           audioQuality: preferences.audioQuality,
+          box: cacheTrackBox,
         );
         if (setTrackUriById(track.id!, spotubeTrack.ytUri)) {
           logger.v("[Track Direct Source] - ${spotubeTrack.ytUri}");
@@ -237,7 +244,6 @@ class Playback extends PersistedChangeNotifier {
             notifyListeners();
             updatePersistence();
           });
-          // await player.play();
         }
       }
     } catch (e, stack) {
