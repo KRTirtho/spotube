@@ -53,6 +53,12 @@ class AudioPlayerHandler extends BaseAudioHandler {
     await super.skipToPrevious();
   }
 
+  @override
+  Future<void> onTaskRemoved() {
+    _player.stop();
+    return super.onTaskRemoved();
+  }
+
   /// Transform a just_audio event into an audio_service state.
   ///
   /// This method is used from the constructor. Every event received from the
@@ -64,6 +70,7 @@ class AudioPlayerHandler extends BaseAudioHandler {
         MediaControl.skipToPrevious,
         if (_player.playing) MediaControl.pause else MediaControl.play,
         MediaControl.skipToNext,
+        MediaControl.stop,
       ],
       androidCompactActionIndices: const [0, 1, 2],
       processingState: const {
