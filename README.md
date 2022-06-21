@@ -165,6 +165,6 @@ Follow me on [Twitter](https://twitter.com/@krtirtho) for newer updates about th
 [appimage-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage
 [mac-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg
 [android-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk
-[fdroid-dlink]: https://f-droid.org/uk/packages/oss.krtirtho.spotube/index.html
+[fdroid-dlink]: https://f-droid.org/packages/oss.krtirtho.spotube/
 
 [wiki-installation-instructions]: https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions
