@@ -77,14 +77,16 @@ class Login extends HookConsumerWidget {
                           hintText: "Spotify Client ID",
                           label: Text("ClientID"),
                         ),
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                       const SizedBox(height: 10),
                       TextField(
+                        controller: clientSecretController,
                         decoration: const InputDecoration(
                           hintText: "Spotify Client Secret",
                           label: Text("Client Secret"),
                         ),
-                        controller: clientSecretController,
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(

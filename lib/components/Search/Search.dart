@@ -48,8 +48,8 @@ class Search extends HookConsumerWidget {
                 children: [
                   Expanded(
                     child: TextField(
-                      decoration: const InputDecoration(hintText: "Search..."),
                       controller: controller,
+                      decoration: const InputDecoration(hintText: "Search..."),
                       onSubmitted: (value) {
                         ref.read(searchTermStateProvider.notifier).state =
                             controller.value.text;
