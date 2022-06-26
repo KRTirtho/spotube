@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/components/Lyrics/Lyrics.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
@@ -117,10 +118,11 @@ class SyncedLyrics extends HookConsumerWidget {
                   : textTheme.headline6,
             ),
           ),
-          if (lyricValue != null)
+          if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
             Expanded(
               child: ListView.builder(
                 controller: controller,
+                itemCount: lyricValue.lyrics.length,
                 itemBuilder: (context, index) {
                   final lyricSlice = lyricValue.lyrics[index];
                   final isActive = lyricSlice.time.inSeconds == currentTime;
@@ -153,9 +155,11 @@ class SyncedLyrics extends HookConsumerWidget {
                     ),
                   );
                 },
-                itemCount: lyricValue.lyrics.length,
               ),
             ),
+          if (playback.currentTrack != null &&
+              (lyricValue == null || lyricValue.lyrics.isEmpty == true))
+            const Expanded(child: ShimmerLyrics()),
         ],
       ),
     );

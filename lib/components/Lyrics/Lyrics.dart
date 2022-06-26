@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -53,7 +54,7 @@ class Lyrics extends HookConsumerWidget {
                     },
                     error: (error, __) => Text(
                         "Sorry, no Lyrics were found for `${playback.currentTrack?.name}` :'("),
-                    loading: () => const CircularProgressIndicator(),
+                    loading: () => const ShimmerLyrics(),
                   ),
                 ),
               ),
