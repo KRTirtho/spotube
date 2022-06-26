@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:dbus/dbus.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
@@ -10,8 +13,11 @@ import 'package:spotube/entities/CacheTrack.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
+import 'package:spotube/interfaces/media_player2.dart';
+import 'package:spotube/interfaces/media_player2_player.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
+import 'package:spotube/provider/DBus.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
 import 'package:spotube/utils/AudioPlayerHandler.dart';
@@ -37,15 +43,23 @@ class Playback extends PersistedChangeNotifier {
 
   LazyBox<CacheTrack>? cacheTrackBox;
 
+  @protected
+  final DBusClient dbus;
+  final Media_Player _media_player;
+  late final Player_Interface _mpris;
+
   Playback({
     required this.player,
     required this.youtube,
     required this.ref,
+    required this.dbus,
     CurrentPlaylist? currentPlaylist,
     Track? currentTrack,
   })  : _currentPlaylist = currentPlaylist,
         _currentTrack = currentTrack,
+        _media_player = Media_Player(),
         super() {
+    _mpris = Player_Interface(player: player.core, playback: this);
     player.onNextRequest = () {
       movePlaylistPositionBy(1);
     };
@@ -61,6 +75,19 @@ class Playback extends PersistedChangeNotifier {
   StreamSubscription<bool>? _playingStream;
 
   void _init() async {
+    // dbus m.p.r.i.s stuff
+    try {
+      final nameStatus =
+          await dbus.requestName("org.mpris.MediaPlayer2.spotube");
+      if (nameStatus == DBusRequestNameReply.exists) {
+        await dbus.requestName("org.mpris.MediaPlayer2.spotube.instance$pid");
+      }
+      await dbus.registerObject(_media_player);
+      await dbus.registerObject(_mpris);
+    } catch (e) {
+      logger.e("[MPRIS initialization error]", e);
+    }
+
     cacheTrackBox = await Hive.openLazyBox<CacheTrack>("track-cache");
 
     _playingStream = player.core.playingStream.listen(
@@ -118,6 +145,8 @@ class Playback extends PersistedChangeNotifier {
     _playingStream?.cancel();
     _durationStream?.cancel();
     cacheTrackBox?.close();
+    dbus.unregisterObject(_media_player);
+    dbus.unregisterObject(_mpris);
     super.dispose();
   }
 
@@ -299,9 +328,11 @@ class Playback extends PersistedChangeNotifier {
 final playbackProvider = ChangeNotifierProvider<Playback>((ref) {
   final player = AudioPlayerHandler();
   final youtube = ref.watch(youtubeProvider);
+  final dbus = ref.watch(dbusClientProvider);
   return Playback(
     player: player,
     youtube: youtube,
     ref: ref,
+    dbus: dbus,
   );
 });

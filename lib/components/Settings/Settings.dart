@@ -1,19 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
-import 'package:spotube/components/Settings/SettingsHotkeyTile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class Settings extends HookConsumerWidget {
@@ -57,29 +53,6 @@ class Settings extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: ListView(
                   children: [
-                    if (!kIsMobile) ...[
-                      SettingsHotKeyTile(
-                        title: "Next track global shortcut",
-                        currentHotKey: preferences.nextTrackHotKey,
-                        onHotKeyRecorded: (value) {
-                          preferences.setNextTrackHotKey(value);
-                        },
-                      ),
-                      SettingsHotKeyTile(
-                        title: "Prev track global shortcut",
-                        currentHotKey: preferences.prevTrackHotKey,
-                        onHotKeyRecorded: (value) {
-                          preferences.setPrevTrackHotKey(value);
-                        },
-                      ),
-                      SettingsHotKeyTile(
-                        title: "Play/Pause global shortcut",
-                        currentHotKey: preferences.playPauseHotKey,
-                        onHotKeyRecorded: (value) {
-                          preferences.setPlayPauseHotKey(value);
-                        },
-                      ),
-                    ],
                     ListTile(
                       title: const Text("Theme"),
                       horizontalTitleGap: 10,

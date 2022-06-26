@@ -115,6 +115,24 @@ class DownloadTrackButton extends HookConsumerWidget {
 
       if (!await outputFile.exists()) await outputFile.create(recursive: true);
 
+      IOSink outputFileStream = outputFile.openWrite();
+      await audioStream.pipe(outputFileStream);
+      await outputFileStream.flush();
+      await outputFileStream.close().then((value) async {
+        if (status.value == TrackStatus.downloading) {
+          status.value = TrackStatus.done;
+          await Future.delayed(
+            const Duration(seconds: 3),
+            () {
+              if (status.value == TrackStatus.done) {
+                status.value = TrackStatus.idle;
+              }
+            },
+          );
+        }
+        return statusCb.cancel();
+      });
+
       if (preferences.saveTrackLyrics && playback.currentTrack != null) {
         if (!await outputLyricsFile.exists()) {
           await outputLyricsFile.create(recursive: true);
@@ -136,24 +154,6 @@ class DownloadTrackButton extends HookConsumerWidget {
           );
         }
       }
-
-      IOSink outputFileStream = outputFile.openWrite();
-      await audioStream.pipe(outputFileStream);
-      await outputFileStream.flush();
-      await outputFileStream.close().then((value) async {
-        if (status.value == TrackStatus.downloading) {
-          status.value = TrackStatus.done;
-          await Future.delayed(
-            const Duration(seconds: 3),
-            () {
-              if (status.value == TrackStatus.done) {
-                status.value = TrackStatus.idle;
-              }
-            },
-          );
-        }
-        return statusCb.cancel();
-      });
     }, [
       track,
       status,

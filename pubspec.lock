@@ -267,6 +267,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.3"
+  dbus:
+    dependency: "direct main"
+    description:
+      name: dbus
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.3"
   fading_edge_scrollview:
     dependency: transitive
     description:
@@ -429,13 +436,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  hotkey_manager:
-    dependency: "direct main"
-    description:
-      name: hotkey_manager
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.7"
   html:
     dependency: "direct main"
     description:

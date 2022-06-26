@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/helpers/get-random-element.dart';
 import 'package:spotube/helpers/search-youtube.dart';
@@ -18,9 +16,6 @@ class UserPreferences extends PersistedChangeNotifier {
   String recommendationMarket;
   bool saveTrackLyrics;
   String geniusAccessToken;
-  HotKey? nextTrackHotKey;
-  HotKey? prevTrackHotKey;
-  HotKey? playPauseHotKey;
   bool checkUpdate;
   SpotubeTrackMatchAlgorithm trackMatchAlgorithm;
   AudioQuality audioQuality;
@@ -35,9 +30,6 @@ class UserPreferences extends PersistedChangeNotifier {
     this.saveTrackLyrics = false,
     this.accentColorScheme = Colors.green,
     this.backgroundColorScheme = Colors.grey,
-    this.nextTrackHotKey,
-    this.prevTrackHotKey,
-    this.playPauseHotKey,
     this.checkUpdate = true,
     this.trackMatchAlgorithm = SpotubeTrackMatchAlgorithm.authenticPopular,
     this.audioQuality = AudioQuality.high,
@@ -63,24 +55,6 @@ class UserPreferences extends PersistedChangeNotifier {
 
   void setGeniusAccessToken(String token) {
     geniusAccessToken = token;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setNextTrackHotKey(HotKey? value) {
-    nextTrackHotKey = value;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setPrevTrackHotKey(HotKey? value) {
-    prevTrackHotKey = value;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setPlayPauseHotKey(HotKey? value) {
-    playPauseHotKey = value;
     notifyListeners();
     updatePersistence();
   }
@@ -128,15 +102,7 @@ class UserPreferences extends PersistedChangeNotifier {
     checkUpdate = map["checkUpdate"] ?? checkUpdate;
     geniusAccessToken =
         map["geniusAccessToken"] ?? getRandomElement(lyricsSecrets);
-    nextTrackHotKey = map["nextTrackHotKey"] != null
-        ? HotKey.fromJson(jsonDecode(map["nextTrackHotKey"]))
-        : null;
-    prevTrackHotKey = map["prevTrackHotKey"] != null
-        ? HotKey.fromJson(jsonDecode(map["prevTrackHotKey"]))
-        : null;
-    playPauseHotKey = map["playPauseHotKey"] != null
-        ? HotKey.fromJson(jsonDecode(map["playPauseHotKey"]))
-        : null;
+
     ytSearchFormat = map["ytSearchFormat"] ?? ytSearchFormat;
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
     backgroundColorScheme = colorsMap.values
@@ -159,15 +125,6 @@ class UserPreferences extends PersistedChangeNotifier {
       "saveTrackLyrics": saveTrackLyrics,
       "recommendationMarket": recommendationMarket,
       "geniusAccessToken": geniusAccessToken,
-      "nextTrackHotKey": nextTrackHotKey != null
-          ? jsonEncode(nextTrackHotKey?.toJson())
-          : null,
-      "prevTrackHotKey": prevTrackHotKey != null
-          ? jsonEncode(prevTrackHotKey?.toJson())
-          : null,
-      "playPauseHotKey": playPauseHotKey != null
-          ? jsonEncode(playPauseHotKey?.toJson())
-          : null,
       "ytSearchFormat": ytSearchFormat,
       "themeMode": themeMode.index,
       "backgroundColorScheme": backgroundColorScheme.value,
