@@ -43,9 +43,9 @@ class Playback extends PersistedChangeNotifier {
   LazyBox<CacheTrack>? cacheTrackBox;
 
   @protected
-  final DBusClient dbus;
-  final Media_Player _media_player;
-  late final Player_Interface _mpris;
+  final DBusClient? dbus;
+  Media_Player? _media_player;
+  Player_Interface? _mpris;
 
   double volume = 1;
 
@@ -58,9 +58,7 @@ class Playback extends PersistedChangeNotifier {
     Track? currentTrack,
   })  : _currentPlaylist = currentPlaylist,
         _currentTrack = currentTrack,
-        _media_player = Media_Player(),
         super() {
-    _mpris = Player_Interface(player: player.core, playback: this);
     player.onNextRequest = () {
       movePlaylistPositionBy(1);
     };
@@ -77,16 +75,21 @@ class Playback extends PersistedChangeNotifier {
 
   void _init() async {
     // dbus m.p.r.i.s stuff
-    try {
-      final nameStatus =
-          await dbus.requestName("org.mpris.MediaPlayer2.spotube");
-      if (nameStatus == DBusRequestNameReply.exists) {
-        await dbus.requestName("org.mpris.MediaPlayer2.spotube.instance$pid");
+    if (Platform.isLinux) {
+      try {
+        _media_player = Media_Player();
+        _mpris = Player_Interface(player: player.core, playback: this);
+        final nameStatus =
+            await dbus?.requestName("org.mpris.MediaPlayer2.spotube");
+        if (nameStatus == DBusRequestNameReply.exists) {
+          await dbus
+              ?.requestName("org.mpris.MediaPlayer2.spotube.instance$pid");
+        }
+        await dbus?.registerObject(_media_player!);
+        await dbus?.registerObject(_mpris!);
+      } catch (e) {
+        logger.e("[MPRIS initialization error]", e);
       }
-      await dbus.registerObject(_media_player);
-      await dbus.registerObject(_mpris);
-    } catch (e) {
-      logger.e("[MPRIS initialization error]", e);
     }
 
     cacheTrackBox = await Hive.openLazyBox<CacheTrack>("track-cache");
@@ -126,8 +129,10 @@ class Playback extends PersistedChangeNotifier {
     _durationStream?.cancel();
     _positionStream?.cancel();
     cacheTrackBox?.close();
-    dbus.unregisterObject(_media_player);
-    dbus.unregisterObject(_mpris);
+    if (Platform.isLinux && _media_player != null && _mpris != null) {
+      dbus?.unregisterObject(_media_player!);
+      dbus?.unregisterObject(_mpris!);
+    }
     super.dispose();
   }
 
