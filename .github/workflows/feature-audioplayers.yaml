@@ -2,7 +2,7 @@ name: audioplayers integration build
 on:
   push:
     branches:
-      - build
+      - audioplayers_integration
   workflow_dispatch:
 
 jobs:
