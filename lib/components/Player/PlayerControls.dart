@@ -33,7 +33,7 @@ class PlayerControls extends HookConsumerWidget {
         child: Column(
           children: [
             StreamBuilder<Duration>(
-                stream: player.core.positionStream,
+                stream: player.core.onPositionChanged,
                 builder: (context, snapshot) {
                   final totalMinutes =
                       zeroPadNumStr(duration.inMinutes.remainder(60));
@@ -48,23 +48,41 @@ class PlayerControls extends HookConsumerWidget {
 
                   final sliderMax = duration.inSeconds;
                   final sliderValue = snapshot.data?.inSeconds ?? 0;
+                  // final value = (sliderMax == 0 || sliderValue > sliderMax)
+                  //           ? 0
+                  //           : sliderValue / sliderMax;
+
+                  final _duration = playback.duration;
+                  final _position = snapshot.data;
+                  final value = (_position != null &&
+                          _duration != null &&
+                          _position.inMilliseconds > 0 &&
+                          _position.inMilliseconds < _duration.inMilliseconds)
+                      ? _position.inMilliseconds / _duration.inMilliseconds
+                      : 0.0;
                   return Column(
                     children: [
                       Slider.adaptive(
                         // cannot divide by zero
                         // there's an edge case for value being bigger
                         // than total duration. Keeping it resolved
-                        value: (sliderMax == 0 || sliderValue > sliderMax)
-                            ? 0
-                            : sliderValue / sliderMax,
-                        onChanged: (value) {},
-                        onChangeEnd: (value) {
-                          player.seek(
-                            Duration(
-                              seconds: (value * sliderMax).toInt(),
-                            ),
-                          );
+                        value: value,
+                        onChanged: (v) async {
+                          final duration = _duration;
+                          if (duration == null) {
+                            return;
+                          }
+                          final position = v * duration.inMilliseconds;
+                          await player
+                              .seek(Duration(milliseconds: position.round()));
                         },
+                        // onChangeEnd: (value) async {
+                        //   await player.seek(
+                        //     Duration(
+                        //       seconds: (value * sliderMax).toInt(),
+                        //     ),
+                        //   );
+                        // },
                         activeColor: iconColor,
                       ),
                       Padding(

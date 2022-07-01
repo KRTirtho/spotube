@@ -1,8 +1,8 @@
 // This file was generated using the following command and may be overwritten.
 // dart-dbus generate-object defs/org.mpris.MediaPlayer2.Player.xml
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dbus/dbus.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -19,7 +19,7 @@ class Player_Interface extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.PlaybackStatus
   Future<DBusMethodResponse> getPlaybackStatus() async {
-    final status = player.playing
+    final status = player.state == PlayerState.playing
         ? "Playing"
         : playback.currentPlaylist == null
             ? "Stopped"
@@ -40,12 +40,12 @@ class Player_Interface extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Rate
   Future<DBusMethodResponse> getRate() async {
-    return DBusMethodSuccessResponse([DBusDouble(player.speed)]);
+    return DBusMethodSuccessResponse([DBusDouble(1)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Rate
   Future<DBusMethodResponse> setRate(double value) async {
-    player.setSpeed(value);
+    player.setPlaybackRate(value);
     return DBusMethodSuccessResponse();
   }
 
@@ -104,19 +104,19 @@ class Player_Interface extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Volume
   Future<DBusMethodResponse> getVolume() async {
-    return DBusMethodSuccessResponse([DBusDouble(player.volume)]);
+    return DBusMethodSuccessResponse([DBusDouble(playback.volume)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Volume
   Future<DBusMethodResponse> setVolume(double value) async {
-    player.setVolume(value);
+    playback.setVolume(value);
     return DBusMethodSuccessResponse();
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Position
   Future<DBusMethodResponse> getPosition() async {
     return DBusMethodSuccessResponse([
-      DBusInt64(player.position.inMicroseconds),
+      DBusInt64((await player.getDuration())?.inMicroseconds ?? 0),
     ]);
   }
 
@@ -188,7 +188,7 @@ class Player_Interface extends DBusObject {
 
   /// Implementation of org.mpris.MediaPlayer2.Player.PlayPause()
   Future<DBusMethodResponse> doPlayPause() async {
-    player.playing ? player.pause() : player.play();
+    player.state == PlayerState.playing ? player.pause() : player.resume();
     return DBusMethodSuccessResponse();
   }
 
@@ -202,7 +202,7 @@ class Player_Interface extends DBusObject {
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Play()
   Future<DBusMethodResponse> doPlay() async {
-    player.play();
+    player.resume();
     return DBusMethodSuccessResponse();
   }
 

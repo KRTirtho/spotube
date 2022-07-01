@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dbus/dbus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/entities/CacheTrack.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
@@ -25,7 +25,7 @@ import 'package:spotube/utils/PersistedChangeNotifier.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class Playback extends PersistedChangeNotifier {
-  AudioSource? _currentAudioSource;
+  UrlSource? _currentAudioSource;
   final _logger = getLogger(Playback);
   CurrentPlaylist? _currentPlaylist;
   Track? _currentTrack;
@@ -34,7 +34,6 @@ class Playback extends PersistedChangeNotifier {
   bool _isPlaying = false;
   Duration? duration;
 
-  Duration _prevPosition = Duration.zero;
   bool _shuffled = false;
 
   AudioPlayerHandler player;
@@ -47,6 +46,8 @@ class Playback extends PersistedChangeNotifier {
   final DBusClient dbus;
   final Media_Player _media_player;
   late final Player_Interface _mpris;
+
+  double volume = 1;
 
   Playback({
     required this.player,
@@ -71,8 +72,8 @@ class Playback extends PersistedChangeNotifier {
   }
 
   StreamSubscription<Duration?>? _durationStream;
+  StreamSubscription<PlayerState>? _playingStream;
   StreamSubscription<Duration>? _positionStream;
-  StreamSubscription<bool>? _playingStream;
 
   void _init() async {
     // dbus m.p.r.i.s stuff
@@ -90,60 +91,40 @@ class Playback extends PersistedChangeNotifier {
 
     cacheTrackBox = await Hive.openLazyBox<CacheTrack>("track-cache");
 
-    _playingStream = player.core.playingStream.listen(
-      (playing) {
-        _isPlaying = playing;
+    _playingStream = player.core.onPlayerStateChanged.listen(
+      (state) async {
+        _isPlaying = state == PlayerState.playing;
+        if (state == PlayerState.completed) {
+          if (_currentTrack?.id != null) {
+            movePlaylistPositionBy(1);
+          } else {
+            _isPlaying = false;
+            duration = null;
+          }
+        }
         notifyListeners();
       },
     );
 
-    _durationStream = player.core.durationStream.listen((event) async {
-      if (event != null) {
-        // Actually things doesn't work all the time as they were
-        // described. So instead of listening to a `_ready`
-        // stream, it has to listen to duration stream since duration
-        // is always added to the Stream sink after all icyMetadata has
-        // been loaded thus indicating buffering started
-        if (event != Duration.zero && event != duration) {
-          // this line is for prev/next or already playing playlist
-          if (player.core.playing) await player.pause();
-          await player.play();
-        }
-        duration = event;
-        notifyListeners();
-      }
+    _durationStream = player.core.onDurationChanged.listen((event) {
+      duration = event;
+      notifyListeners();
     });
 
-    _positionStream =
-        player.core.createPositionStream().listen((position) async {
-      // detecting multiple same call
-      if (_prevPosition.inSeconds == position.inSeconds) return;
-      _prevPosition = position;
-
-      /// Because of ProcessingState.complete never gets set bug using a
-      /// custom solution to know when the audio stops playing
-      ///
-      /// Details: https://github.com/KRTirtho/spotube/issues/46
-      if (duration != Duration.zero &&
-          duration?.isNegative == false &&
-          position.inSeconds == duration?.inSeconds) {
-        if (_currentTrack?.id != null) {
-          await player.pause();
-          movePlaylistPositionBy(1);
-        } else {
-          _isPlaying = false;
-          duration = null;
-          notifyListeners();
-        }
+    _positionStream = player.core.onPositionChanged.listen((pos) async {
+      if (pos > Duration.zero &&
+          (duration == null || duration == Duration.zero)) {
+        duration = await player.core.getDuration();
+        notifyListeners();
       }
     });
   }
 
   @override
   void dispose() {
-    _positionStream?.cancel();
     _playingStream?.cancel();
     _durationStream?.cancel();
+    _positionStream?.cancel();
     cacheTrackBox?.close();
     dbus.unregisterObject(_media_player);
     dbus.unregisterObject(_mpris);
@@ -178,6 +159,12 @@ class Playback extends PersistedChangeNotifier {
     _currentTrack = null;
     notifyListeners();
     updatePersistence(clearNullEntries: true);
+  }
+
+  void setVolume(double newVolume) {
+    volume = newVolume;
+    notifyListeners();
+    updatePersistence();
   }
 
   /// sets the provided id matched track's uri\
@@ -238,11 +225,10 @@ class Playback extends PersistedChangeNotifier {
         );
         player.addItem(tag);
         if (parsedUri != null && parsedUri.hasAbsolutePath) {
-          _currentAudioSource = AudioSource.uri(parsedUri);
+          _currentAudioSource = UrlSource(parsedUri.toString());
           await player.core
-              .setAudioSource(
+              .play(
             _currentAudioSource!,
-            preload: true,
           )
               .then((value) async {
             _currentTrack = track;
@@ -262,11 +248,10 @@ class Playback extends PersistedChangeNotifier {
         );
         if (setTrackUriById(track.id!, spotubeTrack.ytUri)) {
           logger.v("[Track Direct Source] - ${spotubeTrack.ytUri}");
-          _currentAudioSource = AudioSource.uri(Uri.parse(spotubeTrack.ytUri));
+          _currentAudioSource = UrlSource(spotubeTrack.ytUri);
           await player.core
-              .setAudioSource(
+              .play(
             _currentAudioSource!,
-            preload: true,
           )
               .then((value) {
             _currentTrack = spotubeTrack;
@@ -304,13 +289,14 @@ class Playback extends PersistedChangeNotifier {
       _currentTrack = Track.fromJson(jsonDecode(map["currentTrack"]));
       startPlaying().then((_) {
         Timer.periodic(const Duration(milliseconds: 100), (timer) {
-          if (player.core.playing) {
+          if (player.core.state == PlayerState.playing) {
             player.pause();
             timer.cancel();
           }
         });
       });
     }
+    volume = map["volume"] ?? volume;
   }
 
   @override
@@ -321,6 +307,7 @@ class Playback extends PersistedChangeNotifier {
           : null,
       "currentTrack":
           currentTrack != null ? jsonEncode(currentTrack?.toJson()) : null,
+      "volume": volume,
     };
   }
 }

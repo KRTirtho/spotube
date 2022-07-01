@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,24 +34,6 @@ class Player extends HookConsumerWidget {
         useMemoized(SharedPreferences.getInstance);
     final AsyncSnapshot<SharedPreferences?> localStorage =
         useFuture(future, initialData: null);
-
-    useEffect(() {
-      /// warm up the audio player before playing actual audio
-      /// It's for resolving unresolved issue related to just_audio's
-      /// [disposeAllPlayers] method which is throwing
-      /// [UnimplementedException] in the [PlatformInterface]
-      /// implementation
-      player.core.setAsset("assets/warmer.mp3");
-      return null;
-    }, []);
-
-    useEffect(() {
-      if (localStorage.hasData) {
-        _volume.value = localStorage.data?.getDouble(LocalStorageKeys.volume) ??
-            player.core.volume;
-      }
-      return null;
-    }, [localStorage.data]);
 
     String albumArt = useMemoized(
       () => imageToUrlString(

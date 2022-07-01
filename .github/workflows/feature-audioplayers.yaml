@@ -1,0 +1,28 @@
+name: audioplayers integration build
+on:
+  push:
+    branches:
+      - build
+  workflow_dispatch:
+
+jobs:
+  build_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2.2.0
+        with:
+          cache: true
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+      - run: flutter config --enable-linux-desktop
+      - run: flutter pub get
+      - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+      - run: flutter clean
+      - run: flutter build linux
+      - run: make tar
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Spotube-Linux-Bundle
+          path: build/Spotube-linux-x86_64.tar.xz

@@ -107,10 +107,8 @@ Future<SpotubeTrack> toSpotubeTrack({
     "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
   );
 
-  final audioManifest = (Platform.isMacOS || Platform.isIOS)
-      ? trackManifest.audioOnly
-          .where((info) => info.codec.mimeType == "audio/mp4")
-      : trackManifest.audioOnly;
+  final audioManifest = trackManifest.audioOnly
+      .where((info) => info.codec.mimeType == "audio/mp4");
 
   final ytUri = (audioQuality == AudioQuality.high
           ? audioManifest.withHighestBitrate()
