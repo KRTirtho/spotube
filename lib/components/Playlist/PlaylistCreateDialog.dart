@@ -73,11 +73,11 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                       const SizedBox(height: 10),
                       TextField(
                         controller: description,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 5,
                         decoration: const InputDecoration(
                           hintText: "Description...",
                         ),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 5,
                       ),
                       const SizedBox(height: 10),
                       CheckboxListTile(

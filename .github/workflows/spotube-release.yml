@@ -1,4 +1,4 @@
-name: Spotube Build & Release
+name: Spotube Release
 on:
   release:
     types:
@@ -36,9 +36,8 @@ jobs:
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           dart pub global activate melos
-          cd build/flutter_distributor && melos bootstrap && cd ../..
           make innoinstall
-          dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=windows --targets=exe --skip-clean
+          flutter_distributor package --platform=windows --targets=exe --skip-clean
 
       # Create Chocolatey Package
       # setting the sha256 hash for new bundle
@@ -93,11 +92,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
-        with:
-          repository: KRTirtho/flutter_distributor
-          ref: deb-implementation
-          path: build/flutter_distributor
       - name: Get latest tag
         id: tag
         uses: dawidd6/action-get-tag@v1
@@ -111,7 +105,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
       - run: |
           wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.0-beta.1/appimage-builder-1.0.0-677acbd-x86_64.AppImage
           chmod +x appimage-builder-x86_64.AppImage
@@ -124,9 +118,8 @@ jobs:
           flutter config --enable-linux-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-          dart pub global activate melos
-          cd build/flutter_distributor && melos bootstrap && cd ../..
-          dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=linux --targets=deb,appimage --skip-clean
+          dart pub global activate flutter_distributor
+          flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
           make tar
       - run: |
           mv build/Spotube-linux-x86_64.tar.xz dist/
@@ -141,11 +134,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
-        with:
-          repository: KRTirtho/flutter_distributor
-          ref: deb-implementation
-          path: build/flutter_distributor
       - name: Get latest tag
         id: tag
         uses: dawidd6/action-get-tag@v1
@@ -156,13 +144,12 @@ jobs:
           cache: true
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make libwebkit2gtk-4.0-dev keybinder-3.0 python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
       - run: |
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-          dart pub global activate melos
-          cd build/flutter_distributor && melos bootstrap && cd ../..
-          dart build/flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=android --targets=apk --skip-clean
+          dart pub global activate flutter_distributor
+          flutter_distributor package --platform=android --targets=apk --skip-clean
       - run: |
           mv dist/**/spotube-*-android.apk dist/Spotube-android-all-arch.apk
       - uses: actions/upload-artifact@v3

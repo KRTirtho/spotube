@@ -23,7 +23,7 @@ class PlayerView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final currentTrack = ref.watch(playbackProvider.select(
-      (value) => value.currentTrack,
+      (value) => value.track,
     ));
     final breakpoint = useBreakpoints();
 
@@ -59,7 +59,6 @@ class PlayerView extends HookConsumerWidget {
         ),
         backgroundColor: paletteColor.color,
         body: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: const EdgeInsets.all(10),

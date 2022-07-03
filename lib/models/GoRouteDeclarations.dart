@@ -24,8 +24,8 @@ GoRouter createGoRouter() => GoRouter(
         ),
         GoRoute(
           path: "/settings",
-          pageBuilder: (context, state) => SpotubePage(
-            child: const Settings(),
+          pageBuilder: (context, state) => const SpotubePage(
+            child: Settings(),
           ),
         ),
         GoRoute(

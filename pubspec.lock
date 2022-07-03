@@ -71,6 +71,55 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.6+1"
+  audioplayers:
+    dependency: "direct main"
+    description:
+      name: audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  audioplayers_android:
+    dependency: transitive
+    description:
+      name: audioplayers_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  audioplayers_darwin:
+    dependency: transitive
+    description:
+      name: audioplayers_darwin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  audioplayers_linux:
+    dependency: transitive
+    description:
+      name: audioplayers_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  audioplayers_platform_interface:
+    dependency: transitive
+    description:
+      name: audioplayers_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  audioplayers_web:
+    dependency: transitive
+    description:
+      name: audioplayers_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  audioplayers_windows:
+    dependency: transitive
+    description:
+      name: audioplayers_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   bitsdojo_window:
     dependency: "direct main"
     description:
@@ -267,6 +316,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.3"
+  dbus:
+    dependency: "direct main"
+    description:
+      name: dbus
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.3"
   fading_edge_scrollview:
     dependency: transitive
     description:
@@ -429,13 +485,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  hotkey_manager:
-    dependency: "direct main"
-    description:
-      name: hotkey_manager
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.7"
   html:
     dependency: "direct main"
     description:
@@ -499,41 +548,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.5.0"
-  just_audio:
-    dependency: "direct main"
-    description:
-      name: just_audio
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.21"
-  just_audio_libwinmedia:
-    dependency: "direct main"
-    description:
-      name: just_audio_libwinmedia
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.4"
-  just_audio_platform_interface:
-    dependency: transitive
-    description:
-      name: just_audio_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.0"
-  just_audio_web:
-    dependency: transitive
-    description:
-      name: just_audio_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.7"
-  libwinmedia:
-    dependency: transitive
-    description:
-      name: libwinmedia
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.7"
   lints:
     dependency: transitive
     description:

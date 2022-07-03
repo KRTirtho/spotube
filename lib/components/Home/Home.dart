@@ -18,7 +18,6 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
-import 'package:spotube/hooks/useHotKeys.dart';
 import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/models/Logger.dart';
@@ -54,8 +53,6 @@ class Home extends HookConsumerWidget {
     final _selectedIndex = useState(0);
     _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
 
-    // initializing global hot keys
-    useHotKeys(ref);
     // checks for latest version of the application
     useUpdateChecker(ref);
 

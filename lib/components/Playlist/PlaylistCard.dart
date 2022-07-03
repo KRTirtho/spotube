@@ -15,8 +15,8 @@ class PlaylistCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
-    bool isPlaylistPlaying = playback.currentPlaylist != null &&
-        playback.currentPlaylist!.id == playlist.id;
+    bool isPlaylistPlaying =
+        playback.playlist != null && playback.playlist!.id == playlist.id;
 
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
@@ -46,14 +46,14 @@ class PlaylistCard extends HookConsumerWidget {
 
         if (tracks.isEmpty) return;
 
-        playback.setCurrentPlaylist = CurrentPlaylist(
-          tracks: tracks,
-          id: playlist.id!,
-          name: playlist.name!,
-          thumbnail: imageToUrlString(playlist.images),
+        await playback.playPlaylist(
+          CurrentPlaylist(
+            tracks: tracks,
+            id: playlist.id!,
+            name: playlist.name!,
+            thumbnail: imageToUrlString(playlist.images),
+          ),
         );
-        playback.setCurrentTrack = tracks.first;
-        await playback.startPlaying();
       },
     );
   }

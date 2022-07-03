@@ -1,0 +1,134 @@
+name:  Spotube Nightly
+on:
+  push:
+    branches:
+      - build
+  workflow_dispatch:
+
+jobs:
+  build_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+      - run: |
+          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.0-beta.1/appimage-builder-1.0.0-677acbd-x86_64.AppImage
+          chmod +x appimage-builder-x86_64.AppImage
+          mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+      # replacing & adding new release version with older version
+      - run: |
+          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ steps.tag.outputs.tag }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+
+      - run: |
+          flutter config --enable-linux-desktop
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          dart pub global activate flutter_distributor
+          flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
+          make tar
+      - run: |
+          mv build/Spotube-linux-x86_64.tar.xz dist/
+          mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64.deb
+          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Linux-Bundle
+          path: dist/
+
+  build_android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+      - run: |
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          dart pub global activate flutter_distributor
+          flutter_distributor package --platform=android --targets=apk --skip-clean
+      - run: |
+          mv dist/**/spotube-*-android.apk dist/Spotube-android-all-arch.apk
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Android-Bundle
+          path: dist/
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get latest tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          # Optionally strip `v` prefix
+          strip_v: true
+      # Replace Version in files
+      - run: |
+          choco install sed make -y
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" windows/runner/Runner.rc
+
+      # Build Windows Executable
+      - uses: subosito/flutter-action@v2.2.0
+        with:
+          cache: true
+      - run: |
+          flutter config --enable-windows-desktop
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          dart pub global activate flutter_distributor
+          make innoinstall
+          flutter_distributor package --platform=windows --targets=exe --skip-clean
+
+      # Create Chocolatey Package
+      # setting the sha256 hash for new bundle
+      - run: mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
+
+      # Upload artifacts
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Windows-Bundle
+          path: dist/
+
+
+  build_macos:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter config --enable-macos-desktop
+      - run: flutter pub get
+      - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+      - run: flutter build macos
+      - run: du -sh build/macos/Build/Products/Release/spotube.app
+      - run: npm install -g appdmg
+      - run: appdmg appdmg.json build/Spotube-macos-x86_64.dmg
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Spotube-Macos-Bundle
+          path: |
+            build/Spotube-macos-x86_64.dmg

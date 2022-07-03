@@ -58,7 +58,7 @@ I'm always releasing newer versions of binary of the software each 2-3 month wit
 
 | Platform             | Package/Installation Method                                                                                                                                                                                                                                                                    |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Android              | [<img width='240' alt='Android Download' src='https://www.remcsteuben.com/sites/default/files/images/apkdaddy%20download.png'/>][android-dlink]                                                                                                                                                |
+| Android              | [<img width='240' alt='Android Download' src='https://www.remcsteuben.com/sites/default/files/images/apkdaddy%20download.png'/>][android-dlink]<br/>[<img width='240' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink]|
 | Debian/Ubuntu        | [<img width='240' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                     |
 | Flatpak              | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>                                                       |
 | Arch/Manjaro         | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin`                                                                                                                                                                                                                            |
@@ -127,8 +127,7 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [AUR](https://aur.archlinux.org/) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users
 - [Flatpak](https://flatpak.org/) - Flatpak is a utility for software deployment and package management for Linux
 - [spotify (dart)](https://github.com/rinukkusu/spotify-dart) - A dart library for interfacing with the Spotify API
-- [just_audio](https://github.com/ryanheise/just_audio/tree/master/just_audio) - A feature-rich cross-platform audio player for Flutter that supports network audio streams too
-- [libwinmedia](https://github.com/harmonoid/libwinmedia) - A cross-platform media playback library for C/C++ with good number of features (only Windows & Linux)
+- [audioplayers](https://github.com/bluefireteam/audioplayers) - A Flutter plugin to play multiple audio files simultaneously (Android/iOS)
 - [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - YoutubeExplode is a library that provides an interface to query metadata of YouTube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks
 - [infinite_scroll_pagination](https://github.com/EdsonBueno/infinite_scroll_pagination) - Flutter package to help you lazily load and display pages of items as the user scrolls down your screen
 - [bitsdojo_window](https://github.com/bitsdojo/bitsdojo_window) - A Flutter package that makes it easy to customize and work with your Flutter desktop app window on Windows, macOS and Linux
@@ -165,5 +164,6 @@ Follow me on [Twitter](https://twitter.com/@krtirtho) for newer updates about th
 [appimage-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage
 [mac-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg
 [android-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk
+[fdroid-dlink]: https://f-droid.org/packages/oss.krtirtho.spotube/
 
 [wiki-installation-instructions]: https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions

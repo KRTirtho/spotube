@@ -24,22 +24,23 @@ class PlaylistView extends HookConsumerWidget {
   playPlaylist(Playback playback, List<Track> tracks,
       {Track? currentTrack}) async {
     currentTrack ??= tracks.first;
-    final isPlaylistPlaying = playback.currentPlaylist?.id != null &&
-        playback.currentPlaylist?.id == playlist.id;
+    final isPlaylistPlaying =
+        playback.playlist?.id != null && playback.playlist?.id == playlist.id;
     if (!isPlaylistPlaying) {
-      playback.setCurrentPlaylist = CurrentPlaylist(
-        tracks: tracks,
-        id: playlist.id!,
-        name: playlist.name!,
-        thumbnail: imageToUrlString(playlist.images),
+      await playback.playPlaylist(
+        CurrentPlaylist(
+          tracks: tracks,
+          id: playlist.id!,
+          name: playlist.name!,
+          thumbnail: imageToUrlString(playlist.images),
+        ),
+        tracks.indexWhere((s) => s.id == currentTrack?.id),
       );
-      playback.setCurrentTrack = currentTrack;
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
-        currentTrack.id != playback.currentTrack?.id) {
-      playback.setCurrentTrack = currentTrack;
+        currentTrack.id != playback.track?.id) {
+      await playback.play(currentTrack);
     }
-    await playback.startPlaying();
   }
 
   @override
@@ -47,8 +48,8 @@ class PlaylistView extends HookConsumerWidget {
     Playback playback = ref.watch(playbackProvider);
     final Auth auth = ref.watch(authProvider);
     SpotifyApi spotify = ref.watch(spotifyProvider);
-    final isPlaylistPlaying = playback.currentPlaylist?.id != null &&
-        playback.currentPlaylist?.id == playlist.id;
+    final isPlaylistPlaying =
+        playback.playlist?.id != null && playback.playlist?.id == playlist.id;
 
     final meSnapshot = ref.watch(currentUserQuery);
     final tracksSnapshot = ref.watch(playlistTracksQuery(playlist.id!));

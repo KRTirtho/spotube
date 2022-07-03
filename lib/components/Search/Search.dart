@@ -48,8 +48,8 @@ class Search extends HookConsumerWidget {
                 children: [
                   Expanded(
                     child: TextField(
-                      decoration: const InputDecoration(hintText: "Search..."),
                       controller: controller,
+                      decoration: const InputDecoration(hintText: "Search..."),
                       onSubmitted: (value) {
                         ref.read(searchTermStateProvider.notifier).state =
                             controller.value.text;
@@ -115,26 +115,24 @@ class Search extends HookConsumerWidget {
                               thumbnailUrl:
                                   imageToUrlString(track.value.album?.images),
                               onTrackPlayButtonPressed: (currentTrack) async {
-                                var isPlaylistPlaying =
-                                    playback.currentPlaylist?.id != null &&
-                                        playback.currentPlaylist?.id ==
-                                            currentTrack.id;
+                                var isPlaylistPlaying = playback.playlist?.id !=
+                                        null &&
+                                    playback.playlist?.id == currentTrack.id;
                                 if (!isPlaylistPlaying) {
-                                  playback.setCurrentPlaylist = CurrentPlaylist(
-                                    tracks: [currentTrack],
-                                    id: currentTrack.id!,
-                                    name: currentTrack.name!,
-                                    thumbnail: imageToUrlString(
-                                        currentTrack.album?.images),
+                                  playback.playPlaylist(
+                                    CurrentPlaylist(
+                                      tracks: [currentTrack],
+                                      id: currentTrack.id!,
+                                      name: currentTrack.name!,
+                                      thumbnail: imageToUrlString(
+                                          currentTrack.album?.images),
+                                    ),
                                   );
-                                  playback.setCurrentTrack = currentTrack;
                                 } else if (isPlaylistPlaying &&
                                     currentTrack.id != null &&
-                                    currentTrack.id !=
-                                        playback.currentTrack?.id) {
-                                  playback.setCurrentTrack = currentTrack;
+                                    currentTrack.id != playback.track?.id) {
+                                  playback.play(currentTrack);
                                 }
-                                await playback.startPlaying();
                               },
                             );
                           }),

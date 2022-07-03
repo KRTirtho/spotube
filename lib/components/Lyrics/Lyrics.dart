@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -22,7 +23,7 @@ class Lyrics extends HookConsumerWidget {
         children: [
           Center(
             child: Text(
-              playback.currentTrack?.name ?? "",
+              playback.track?.name ?? "",
               style: breakpoint >= Breakpoints.md
                   ? textTheme.headline3
                   : textTheme.headline4?.copyWith(fontSize: 25),
@@ -30,7 +31,7 @@ class Lyrics extends HookConsumerWidget {
           ),
           Center(
             child: Text(
-              artistsToString<Artist>(playback.currentTrack?.artists ?? []),
+              artistsToString<Artist>(playback.track?.artists ?? []),
               style: breakpoint >= Breakpoints.md
                   ? textTheme.headline5
                   : textTheme.headline6,
@@ -44,7 +45,7 @@ class Lyrics extends HookConsumerWidget {
                   child: geniusLyricsSnapshot.when(
                     data: (lyrics) {
                       return Text(
-                        lyrics == null && playback.currentTrack == null
+                        lyrics == null && playback.track == null
                             ? "No Track being played currently"
                             : lyrics!,
                         style: textTheme.headline6
@@ -52,8 +53,8 @@ class Lyrics extends HookConsumerWidget {
                       );
                     },
                     error: (error, __) => Text(
-                        "Sorry, no Lyrics were found for `${playback.currentTrack?.name}` :'("),
-                    loading: () => const CircularProgressIndicator(),
+                        "Sorry, no Lyrics were found for `${playback.track?.name}` :'("),
+                    loading: () => const ShimmerLyrics(),
                   ),
                 ),
               ),

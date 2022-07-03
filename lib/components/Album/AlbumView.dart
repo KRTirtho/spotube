@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
@@ -18,24 +17,25 @@ class AlbumView extends HookConsumerWidget {
   final AlbumSimple album;
   const AlbumView(this.album, {Key? key}) : super(key: key);
 
-  playPlaylist(Playback playback, List<Track> tracks,
+  Future<void> playPlaylist(Playback playback, List<Track> tracks,
       {Track? currentTrack}) async {
     currentTrack ??= tracks.first;
-    var isPlaylistPlaying = playback.currentPlaylist?.id == album.id;
+    final isPlaylistPlaying = playback.playlist?.id == album.id;
     if (!isPlaylistPlaying) {
-      playback.setCurrentPlaylist = CurrentPlaylist(
-        tracks: tracks,
-        id: album.id!,
-        name: album.name!,
-        thumbnail: imageToUrlString(album.images),
+      await playback.playPlaylist(
+        CurrentPlaylist(
+          tracks: tracks,
+          id: album.id!,
+          name: album.name!,
+          thumbnail: imageToUrlString(album.images),
+        ),
+        tracks.indexWhere((s) => s.id == currentTrack?.id),
       );
-      playback.setCurrentTrack = currentTrack;
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
-        currentTrack.id != playback.currentTrack?.id) {
-      playback.setCurrentTrack = currentTrack;
+        currentTrack.id != playback.track?.id) {
+      await playback.play(currentTrack);
     }
-    await playback.startPlaying();
   }
 
   @override
@@ -54,8 +54,8 @@ class AlbumView extends HookConsumerWidget {
 
     return TrackCollectionView(
       id: album.id!,
-      isPlaying: playback.currentPlaylist?.id != null &&
-          playback.currentPlaylist?.id == album.id,
+      isPlaying:
+          playback.playlist?.id != null && playback.playlist?.id == album.id,
       title: album.name!,
       titleImage: albumArt,
       tracksSnapshot: tracksSnapshot,
