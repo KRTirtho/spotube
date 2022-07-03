@@ -30,19 +30,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          # Optionally strip `v` prefix
-          strip_v: true
-      # Replace Version in files
-      - run: |
-          choco install sed make -y
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" windows/runner/Runner.rc
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/tools/VERIFICATION.txt
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/spotube.nuspec
-
       # Build Windows Executable
       - uses: subosito/flutter-action@v2.2.0
         with:
@@ -54,14 +41,7 @@ jobs:
           dart pub global activate flutter_distributor
           make innoinstall
           flutter_distributor package --platform=windows --targets=exe --skip-clean
-
-      # Create Chocolatey Package
-      # setting the sha256 hash for new bundle
-      - run: |
-          mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
-          Set-Variable -Name HASH -Value (Get-FileHash dist\Spotube-windows-x86_64-setup.exe).Hash
-          sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
-
+      - run: mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
       # Upload artifacts
       - uses: actions/upload-artifact@v3
         with:
