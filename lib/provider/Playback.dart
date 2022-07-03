@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:spotify/spotify.dart';
@@ -14,20 +14,20 @@ import 'package:spotube/helpers/contains-text-in-bracket.dart';
 import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
-import 'package:spotube/interfaces/media_player2.dart';
-import 'package:spotube/interfaces/media_player2_player.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
-import 'package:spotube/utils/AudioPlayerHandler.dart';
+import 'package:spotube/services/LinuxAudioService.dart';
+import 'package:spotube/services/MobileAudioService.dart';
+import 'package:spotube/utils/PersistedChangeNotifier.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
 import 'package:spotube/extensions/list-sort-multiple.dart';
 
-class Playback with ChangeNotifier {
+class Playback extends PersistedChangeNotifier {
   // player properties
   bool isShuffled;
   bool isPlaying;
@@ -35,9 +35,8 @@ class Playback with ChangeNotifier {
   double volume;
 
   // class dependencies
-  Media_Player? linuxMPRIS;
-  Player_Interface? linuxMPRIS_Player;
-  AudioPlayerHandler? mobileAudioService;
+  LinuxAudioService? _linuxAudioService;
+  MobileAudioService? mobileAudioService;
 
   // foreign/passed properties
   AudioPlayer player;
@@ -66,8 +65,7 @@ class Playback with ChangeNotifier {
         _subscriptions = [],
         super() {
     if (Platform.isLinux) {
-      linuxMPRIS = Media_Player();
-      linuxMPRIS_Player = Player_Interface(playback: this);
+      _linuxAudioService = LinuxAudioService(this);
     }
 
     (() async {
@@ -89,8 +87,10 @@ class Playback with ChangeNotifier {
           }
         }),
         player.onDurationChanged.listen((event) {
-          currentDuration = event;
-          notifyListeners();
+          if (event != currentDuration) {
+            currentDuration = event;
+            notifyListeners();
+          }
         }),
         player.onPositionChanged.listen((pos) async {
           if (pos > Duration.zero && currentDuration == Duration.zero) {
@@ -104,8 +104,7 @@ class Playback with ChangeNotifier {
 
   @override
   void dispose() {
-    linuxMPRIS?.dispose();
-    linuxMPRIS_Player?.dispose();
+    _linuxAudioService?.dispose();
     for (var subscription in _subscriptions) {
       subscription.cancel();
     }
@@ -151,6 +150,7 @@ class Playback with ChangeNotifier {
       await player.play(UrlSource(track.ytUri)).then((_) {
         this.track = track as SpotubeTrack;
         notifyListeners();
+        updatePersistence();
       });
     } catch (e, stack) {
       _logger.e("play", e, stack);
@@ -191,6 +191,7 @@ class Playback with ChangeNotifier {
     await player.setVolume(volume);
     volume = newVolume;
     notifyListeners();
+    updatePersistence();
   }
 
   Future<void> stop() async {
@@ -202,9 +203,13 @@ class Playback with ChangeNotifier {
     track = null;
     currentDuration = Duration.zero;
     notifyListeners();
+    updatePersistence(clearNullEntries: true);
   }
 
-  destroy() {}
+  void destroy() {
+    stop();
+    player.dispose();
+  }
 
   // playlist & track list methods
   Future<SpotubeTrack> toSpotubeTrack(Track track) async {
@@ -350,6 +355,26 @@ class Playback with ChangeNotifier {
     // checking if there's any track available behind
     if (prevTrackIndex < 0) return;
     await play(playlist!.tracks.elementAt(prevTrackIndex));
+  }
+
+  @override
+  FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
+    if (map["playlist"] != null) {
+      playlist = CurrentPlaylist.fromJson(jsonDecode(map["playlist"]));
+    }
+    if (map["track"] != null) {
+      track = SpotubeTrack.fromJson(jsonDecode(map["track"]));
+    }
+    volume = map["volume"] ?? volume;
+  }
+
+  @override
+  FutureOr<Map<String, dynamic>> toMap() {
+    return {
+      "playlist": playlist != null ? jsonEncode(playlist?.toJson()) : null,
+      "track": track != null ? jsonEncode(track?.toJson()) : null,
+      "volume": volume,
+    };
   }
 }
 

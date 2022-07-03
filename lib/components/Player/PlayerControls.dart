@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
-import 'package:spotube/utils/AudioPlayerHandler.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final Color? iconColor;
@@ -47,41 +47,56 @@ class PlayerControls extends HookConsumerWidget {
 
                   final sliderMax = duration.inSeconds;
                   final sliderValue = snapshot.data?.inSeconds ?? 0;
-                  final value = (sliderMax == 0 || sliderValue > sliderMax)
-                      ? 0
-                      : sliderValue / sliderMax;
 
-                  return Column(
-                    children: [
-                      Slider.adaptive(
-                        // cannot divide by zero
-                        // there's an edge case for value being bigger
-                        // than total duration. Keeping it resolved
-                        value: value.toDouble(),
-                        onChanged: (_) {},
-                        onChangeEnd: (value) async {
-                          await playback.seekPosition(
-                            Duration(
-                              seconds: (value * sliderMax).toInt(),
-                            ),
-                          );
-                        },
-                        activeColor: iconColor,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "$currentMinutes:$currentSeconds",
-                            ),
-                            Text("$totalMinutes:$totalSeconds"),
-                          ],
+                  return HookBuilder(builder: (context) {
+                    final progressStatic =
+                        (sliderMax == 0 || sliderValue > sliderMax)
+                            ? 0
+                            : sliderValue / sliderMax;
+
+                    final progress = useState<num>(
+                      useMemoized(() => progressStatic, []),
+                    );
+
+                    useEffect(() {
+                      progress.value = progressStatic;
+                      return null;
+                    }, [progressStatic]);
+
+                    return Column(
+                      children: [
+                        Slider.adaptive(
+                          // cannot divide by zero
+                          // there's an edge case for value being bigger
+                          // than total duration. Keeping it resolved
+                          value: progress.value.toDouble(),
+                          onChanged: (v) {
+                            progress.value = v;
+                          },
+                          onChangeEnd: (value) async {
+                            await playback.seekPosition(
+                              Duration(
+                                seconds: (value * sliderMax).toInt(),
+                              ),
+                            );
+                          },
+                          activeColor: iconColor,
                         ),
-                      ),
-                    ],
-                  );
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "$currentMinutes:$currentSeconds",
+                              ),
+                              Text("$totalMinutes:$totalSeconds"),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  });
                 }),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

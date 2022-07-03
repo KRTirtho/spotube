@@ -30,8 +30,15 @@ Future<void> Function() usePreviousTrack(Playback playback) {
 Future<void> Function([dynamic]) useTogglePlayPause(Playback playback) {
   return ([key]) async {
     try {
-      if (playback.track == null) return;
-      await playback.togglePlayPause();
+      if (playback.track == null) {
+        return;
+      } else if (playback.track != null &&
+          playback.currentDuration == Duration.zero &&
+          await playback.player.getCurrentPosition() == Duration.zero) {
+        await playback.play();
+      } else {
+        await playback.togglePlayPause();
+      }
     } catch (e, stack) {
       logger.e("useTogglePlayPause", e, stack);
     }

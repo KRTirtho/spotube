@@ -12,9 +12,9 @@ import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
+import 'package:spotube/services/MobileAudioService.dart';
 import 'package:spotube/themes/dark-theme.dart';
 import 'package:spotube/themes/light-theme.dart';
-import 'package:spotube/utils/AudioPlayerHandler.dart';
 import 'package:spotube/utils/platform.dart';
 
 void main() async {
@@ -33,7 +33,7 @@ void main() async {
       appWindow.show();
     });
   }
-  AudioPlayerHandler? audioServiceHandler;
+  MobileAudioService? audioServiceHandler;
   runApp(ProviderScope(
     child: Spotube(),
     overrides: [
@@ -50,7 +50,7 @@ void main() async {
 
           if (audioServiceHandler == null) {
             AudioService.init(
-              builder: () => AudioPlayerHandler(playback),
+              builder: () => MobileAudioService(playback),
               config: const AudioServiceConfig(
                 androidNotificationChannelId: 'com.krtirtho.Spotube',
                 androidNotificationChannelName: 'Spotube',
