@@ -114,13 +114,11 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/KRTirt
 ### Your First Code Contribution
 
 <!-- Download -->
-audioplayers requirement https://github.com/bluefireteam/audioplayers/blob/main/packages/audioplayers_linux/requirements.md
-
 Do the following:
 - Download the latest Flutter SDK (>=2.15.1) & enable desktop support
 - Install Development dependencies in linux
-  - `libwebkit2gtk-4.0-dev`, `libkeybinder-3.0-0` & `libkeybinder-3.0-dev` (for Debian/Ubuntu)
-  - `webkit2gtk` & `libkeybinder3` (for Arch/Manjaro)
+  - `libgstreamer1.0-dev` & `libgstreamer-plugins-base1.0-dev` (for Debian/Ubuntu)
+  - `gstreamer`, `gst-libav`, `gst-plugins-base` & `gst-plugins-good` (for Arch/Manjaro)
 - Clone the Repo & Run `flutter pub get` in the Terminal
 - Create a `secrets.json` in root of the project. The structure should be similar to the following example:
   ```jsoc name="secrets.json"
@@ -144,7 +142,7 @@ Do the following:
   > You can add more clientId/clientSecret/genius-access-token if you want. The credentials used in the example are dummy (fake). You've to use your own secrets
 - Finally run these following commands in the root of the project to start the Spotube Locally
   ```bash
-  $ dart create-secrets.dart --local
+  $ dart bin/create-secrets.dart --local
   $ flutter run -d <window|macos|linux|(<android-device-id>)>
   ```
 
