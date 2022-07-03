@@ -1,3 +1,6 @@
 {
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "cSpell.words": [
+      "Mpris"
+    ]
 }

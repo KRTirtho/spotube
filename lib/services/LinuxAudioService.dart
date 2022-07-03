@@ -1,27 +1,247 @@
-// This file was generated using the following command and may be overwritten.
-// dart-dbus generate-object defs/org.mpris.MediaPlayer2.Player.xml
+import 'dart:io';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dbus/dbus.dart';
-import 'package:just_audio/just_audio.dart';
+
+import 'package:spotube/provider/DBus.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 
-class Player_Interface extends DBusObject {
-  final AudioPlayer player;
+class _MprisMediaPlayer2 extends DBusObject {
+  /// Creates a new object to expose on [path].
+  _MprisMediaPlayer2() : super(DBusObjectPath('/org/mpris/MediaPlayer2')) {
+    dbus.registerObject(this);
+  }
+
+  void dispose() {
+    dbus.unregisterObject(this);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.CanQuit
+  Future<DBusMethodResponse> getCanQuit() async {
+    return DBusMethodSuccessResponse([const DBusBoolean(true)]);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.Fullscreen
+  Future<DBusMethodResponse> getFullscreen() async {
+    return DBusMethodSuccessResponse([const DBusBoolean(false)]);
+  }
+
+  /// Sets property org.mpris.MediaPlayer2.Fullscreen
+  Future<DBusMethodResponse> setFullscreen(bool value) async {
+    return DBusMethodSuccessResponse();
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.CanSetFullscreen
+  Future<DBusMethodResponse> getCanSetFullscreen() async {
+    return DBusMethodSuccessResponse([const DBusBoolean(false)]);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.CanRaise
+  Future<DBusMethodResponse> getCanRaise() async {
+    return DBusMethodSuccessResponse([const DBusBoolean(false)]);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.HasTrackList
+  Future<DBusMethodResponse> getHasTrackList() async {
+    return DBusMethodSuccessResponse([const DBusBoolean(false)]);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.Identity
+  Future<DBusMethodResponse> getIdentity() async {
+    return DBusMethodSuccessResponse([const DBusString("Spotube")]);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.DesktopEntry
+  Future<DBusMethodResponse> getDesktopEntry() async {
+    return DBusMethodSuccessResponse([const DBusString("spotube")]);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.SupportedUriSchemes
+  Future<DBusMethodResponse> getSupportedUriSchemes() async {
+    return DBusMethodSuccessResponse([
+      DBusArray.string(["http"])
+    ]);
+  }
+
+  /// Gets value of property org.mpris.MediaPlayer2.SupportedMimeTypes
+  Future<DBusMethodResponse> getSupportedMimeTypes() async {
+    return DBusMethodSuccessResponse([
+      DBusArray.string(["audio/mpeg"])
+    ]);
+  }
+
+  /// Implementation of org.mpris.MediaPlayer2.Raise()
+  Future<DBusMethodResponse> doRaise() async {
+    return DBusMethodSuccessResponse();
+  }
+
+  /// Implementation of org.mpris.MediaPlayer2.Quit()
+  Future<DBusMethodResponse> doQuit() async {
+    appWindow.close();
+    return DBusMethodSuccessResponse();
+  }
+
+  @override
+  List<DBusIntrospectInterface> introspect() {
+    return [
+      DBusIntrospectInterface('org.mpris.MediaPlayer2', methods: [
+        DBusIntrospectMethod('Raise'),
+        DBusIntrospectMethod('Quit')
+      ], properties: [
+        DBusIntrospectProperty('CanQuit', DBusSignature('b'),
+            access: DBusPropertyAccess.read),
+        DBusIntrospectProperty('Fullscreen', DBusSignature('b'),
+            access: DBusPropertyAccess.readwrite),
+        DBusIntrospectProperty('CanSetFullscreen', DBusSignature('b'),
+            access: DBusPropertyAccess.read),
+        DBusIntrospectProperty('CanRaise', DBusSignature('b'),
+            access: DBusPropertyAccess.read),
+        DBusIntrospectProperty('HasTrackList', DBusSignature('b'),
+            access: DBusPropertyAccess.read),
+        DBusIntrospectProperty('Identity', DBusSignature('s'),
+            access: DBusPropertyAccess.read),
+        DBusIntrospectProperty('DesktopEntry', DBusSignature('s'),
+            access: DBusPropertyAccess.read),
+        DBusIntrospectProperty('SupportedUriSchemes', DBusSignature('as'),
+            access: DBusPropertyAccess.read),
+        DBusIntrospectProperty('SupportedMimeTypes', DBusSignature('as'),
+            access: DBusPropertyAccess.read)
+      ])
+    ];
+  }
+
+  @override
+  Future<DBusMethodResponse> handleMethodCall(DBusMethodCall methodCall) async {
+    if (methodCall.interface == 'org.mpris.MediaPlayer2') {
+      if (methodCall.name == 'Raise') {
+        if (methodCall.values.isNotEmpty) {
+          return DBusMethodErrorResponse.invalidArgs();
+        }
+        return doRaise();
+      } else if (methodCall.name == 'Quit') {
+        if (methodCall.values.isNotEmpty) {
+          return DBusMethodErrorResponse.invalidArgs();
+        }
+        return doQuit();
+      } else {
+        return DBusMethodErrorResponse.unknownMethod();
+      }
+    } else {
+      return DBusMethodErrorResponse.unknownInterface();
+    }
+  }
+
+  @override
+  Future<DBusMethodResponse> getProperty(String interface, String name) async {
+    if (interface == 'org.mpris.MediaPlayer2') {
+      if (name == 'CanQuit') {
+        return getCanQuit();
+      } else if (name == 'Fullscreen') {
+        return getFullscreen();
+      } else if (name == 'CanSetFullscreen') {
+        return getCanSetFullscreen();
+      } else if (name == 'CanRaise') {
+        return getCanRaise();
+      } else if (name == 'HasTrackList') {
+        return getHasTrackList();
+      } else if (name == 'Identity') {
+        return getIdentity();
+      } else if (name == 'DesktopEntry') {
+        return getDesktopEntry();
+      } else if (name == 'SupportedUriSchemes') {
+        return getSupportedUriSchemes();
+      } else if (name == 'SupportedMimeTypes') {
+        return getSupportedMimeTypes();
+      } else {
+        return DBusMethodErrorResponse.unknownProperty();
+      }
+    } else {
+      return DBusMethodErrorResponse.unknownProperty();
+    }
+  }
+
+  @override
+  Future<DBusMethodResponse> setProperty(
+      String interface, String name, DBusValue value) async {
+    if (interface == 'org.mpris.MediaPlayer2') {
+      if (name == 'CanQuit') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else if (name == 'Fullscreen') {
+        if (value.signature != DBusSignature('b')) {
+          return DBusMethodErrorResponse.invalidArgs();
+        }
+        return setFullscreen((value as DBusBoolean).value);
+      } else if (name == 'CanSetFullscreen') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else if (name == 'CanRaise') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else if (name == 'HasTrackList') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else if (name == 'Identity') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else if (name == 'DesktopEntry') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else if (name == 'SupportedUriSchemes') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else if (name == 'SupportedMimeTypes') {
+        return DBusMethodErrorResponse.propertyReadOnly();
+      } else {
+        return DBusMethodErrorResponse.unknownProperty();
+      }
+    } else {
+      return DBusMethodErrorResponse.unknownProperty();
+    }
+  }
+
+  @override
+  Future<DBusMethodResponse> getAllProperties(String interface) async {
+    var properties = <String, DBusValue>{};
+    if (interface == 'org.mpris.MediaPlayer2') {
+      properties['CanQuit'] = (await getCanQuit()).returnValues[0];
+      properties['Fullscreen'] = (await getFullscreen()).returnValues[0];
+      properties['CanSetFullscreen'] =
+          (await getCanSetFullscreen()).returnValues[0];
+      properties['CanRaise'] = (await getCanRaise()).returnValues[0];
+      properties['HasTrackList'] = (await getHasTrackList()).returnValues[0];
+      properties['Identity'] = (await getIdentity()).returnValues[0];
+      properties['DesktopEntry'] = (await getDesktopEntry()).returnValues[0];
+      properties['SupportedUriSchemes'] =
+          (await getSupportedUriSchemes()).returnValues[0];
+      properties['SupportedMimeTypes'] =
+          (await getSupportedMimeTypes()).returnValues[0];
+    }
+    return DBusMethodSuccessResponse([DBusDict.stringVariant(properties)]);
+  }
+}
+
+class _MprisMediaPlayer2Player extends DBusObject {
   final Playback playback;
 
   /// Creates a new object to expose on [path].
-  Player_Interface({
-    required this.player,
+  _MprisMediaPlayer2Player({
     required this.playback,
-  }) : super(DBusObjectPath("/org/mpris/MediaPlayer2"));
+  }) : super(DBusObjectPath("/org/mpris/MediaPlayer2")) {
+    (() async {
+      final nameStatus =
+          await dbus.requestName("org.mpris.MediaPlayer2.spotube");
+      if (nameStatus == DBusRequestNameReply.exists) {
+        await dbus.requestName("org.mpris.MediaPlayer2.spotube.instance$pid");
+      }
+      await dbus.registerObject(this);
+    }());
+  }
+
+  void dispose() {
+    dbus.unregisterObject(this);
+  }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.PlaybackStatus
   Future<DBusMethodResponse> getPlaybackStatus() async {
-    final status = player.playing
+    final status = playback.isPlaying
         ? "Playing"
-        : playback.currentPlaylist == null
+        : playback.playlist == null
             ? "Stopped"
             : "Paused";
     return DBusMethodSuccessResponse([DBusString(status)]);
@@ -40,39 +260,34 @@ class Player_Interface extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Rate
   Future<DBusMethodResponse> getRate() async {
-    return DBusMethodSuccessResponse([DBusDouble(player.speed)]);
+    return DBusMethodSuccessResponse([DBusDouble(1)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Rate
   Future<DBusMethodResponse> setRate(double value) async {
-    player.setSpeed(value);
     return DBusMethodSuccessResponse();
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> getShuffle() async {
-    return DBusMethodSuccessResponse([DBusBoolean(playback.shuffled)]);
+    return DBusMethodSuccessResponse([DBusBoolean(playback.isShuffled)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> setShuffle(bool value) async {
-    if (value) {
-      playback.shuffle();
-    } else {
-      playback.unshuffle();
-    }
+    playback.toggleShuffle();
     return DBusMethodSuccessResponse();
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Metadata
   Future<DBusMethodResponse> getMetadata() async {
     try {
-      if (playback.currentTrack == null) {
+      if (playback.track == null) {
         return DBusMethodSuccessResponse([DBusDict.stringVariant({})]);
       }
-      final id = (playback.currentPlaylist != null
-              ? playback.currentPlaylist!.tracks.indexWhere(
-                  (track) => playback.currentTrack!.id == track.id!,
+      final id = (playback.playlist != null
+              ? playback.playlist!.tracks.indexWhere(
+                  (track) => playback.track!.id == track.id!,
                 )
               : 0)
           .abs();
@@ -80,18 +295,18 @@ class Player_Interface extends DBusObject {
       return DBusMethodSuccessResponse([
         DBusDict.stringVariant({
           "mpris:trackid": DBusString("${path.value}/Track/$id"),
-          "mpris:length": DBusInt32(playback.duration?.inMicroseconds ?? 0),
-          "mpris:artUrl": DBusString(
-              imageToUrlString(playback.currentTrack?.album?.images)),
-          "xesam:album": DBusString(playback.currentTrack!.album!.name!),
+          "mpris:length": DBusInt32(playback.currentDuration.inMicroseconds),
+          "mpris:artUrl":
+              DBusString(imageToUrlString(playback.track?.album?.images)),
+          "xesam:album": DBusString(playback.track!.album!.name!),
           "xesam:artist": DBusArray.string(
-            playback.currentTrack!.artists!.map((artist) => artist.name!),
+            playback.track!.artists!.map((artist) => artist.name!),
           ),
-          "xesam:title": DBusString(playback.currentTrack!.name!),
+          "xesam:title": DBusString(playback.track!.name!),
           "xesam:url": DBusString(
-            playback.currentTrack is SpotubeTrack
-                ? (playback.currentTrack as SpotubeTrack).ytUri
-                : playback.currentTrack!.previewUrl!,
+            playback.track is SpotubeTrack
+                ? (playback.track as SpotubeTrack).ytUri
+                : playback.track!.previewUrl!,
           ),
           "xesam:genre": const DBusString("Unknown"),
         }),
@@ -104,19 +319,19 @@ class Player_Interface extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Volume
   Future<DBusMethodResponse> getVolume() async {
-    return DBusMethodSuccessResponse([DBusDouble(player.volume)]);
+    return DBusMethodSuccessResponse([DBusDouble(playback.volume)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Volume
   Future<DBusMethodResponse> setVolume(double value) async {
-    player.setVolume(value);
+    playback.setVolume(value);
     return DBusMethodSuccessResponse();
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Position
   Future<DBusMethodResponse> getPosition() async {
     return DBusMethodSuccessResponse([
-      DBusInt64(player.position.inMicroseconds),
+      DBusInt64((await playback.player.getDuration())?.inMicroseconds ?? 0),
     ]);
   }
 
@@ -134,7 +349,7 @@ class Player_Interface extends DBusObject {
   Future<DBusMethodResponse> getCanGoNext() async {
     return DBusMethodSuccessResponse([
       DBusBoolean(
-        playback.currentPlaylist?.tracks.isNotEmpty == true,
+        playback.playlist?.tracks.isNotEmpty == true,
       )
     ]);
   }
@@ -143,7 +358,7 @@ class Player_Interface extends DBusObject {
   Future<DBusMethodResponse> getCanGoPrevious() async {
     return DBusMethodSuccessResponse([
       DBusBoolean(
-        playback.currentPlaylist?.tracks.isNotEmpty == true,
+        playback.playlist?.tracks.isNotEmpty == true,
       )
     ]);
   }
@@ -170,45 +385,43 @@ class Player_Interface extends DBusObject {
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Next()
   Future<DBusMethodResponse> doNext() async {
-    playback.movePlaylistPositionBy(1);
+    playback.seekForward();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Previous()
   Future<DBusMethodResponse> doPrevious() async {
-    playback.movePlaylistPositionBy(-1);
+    playback.seekBackward();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Pause()
   Future<DBusMethodResponse> doPause() async {
-    player.pause();
+    playback.pause();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.PlayPause()
   Future<DBusMethodResponse> doPlayPause() async {
-    player.playing ? player.pause() : player.play();
+    playback.isPlaying ? playback.pause() : playback.resume();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Stop()
   Future<DBusMethodResponse> doStop() async {
-    await player.pause();
-    await player.seek(Duration.zero);
-    playback.reset();
+    playback.stop();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Play()
   Future<DBusMethodResponse> doPlay() async {
-    player.play();
+    playback.resume();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Seek()
   Future<DBusMethodResponse> doSeek(int offset) async {
-    player.seek(Duration(microseconds: offset));
+    playback.seekPosition(Duration(microseconds: offset));
     return DBusMethodSuccessResponse();
   }
 
@@ -466,5 +679,19 @@ class Player_Interface extends DBusObject {
       properties['CanControl'] = (await getCanControl()).returnValues[0];
     }
     return DBusMethodSuccessResponse([DBusDict.stringVariant(properties)]);
+  }
+}
+
+class LinuxAudioService {
+  _MprisMediaPlayer2 mp2;
+  _MprisMediaPlayer2Player player;
+
+  LinuxAudioService(Playback playback)
+      : mp2 = _MprisMediaPlayer2(),
+        player = _MprisMediaPlayer2Player(playback: playback);
+
+  void dispose() {
+    mp2.dispose();
+    player.dispose();
   }
 }

@@ -133,16 +133,13 @@ class DownloadTrackButton extends HookConsumerWidget {
         return statusCb.cancel();
       });
 
-      if (preferences.saveTrackLyrics && playback.currentTrack != null) {
+      if (preferences.saveTrackLyrics && playback.track != null) {
         if (!await outputLyricsFile.exists()) {
           await outputLyricsFile.create(recursive: true);
         }
         final lyrics = await getLyrics(
-          playback.currentTrack!.name!,
-          playback.currentTrack!.artists
-                  ?.map((s) => s.name)
-                  .whereNotNull()
-                  .toList() ??
+          playback.track!.name!,
+          playback.track!.artists?.map((s) => s.name).whereNotNull().toList() ??
               [],
           apiKey: preferences.geniusAccessToken,
           optimizeQuery: true,
@@ -159,7 +156,7 @@ class DownloadTrackButton extends HookConsumerWidget {
       status,
       yt,
       preferences.saveTrackLyrics,
-      playback.currentTrack,
+      playback.track,
     ]);
 
     useEffect(() {

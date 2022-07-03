@@ -18,15 +18,15 @@ class AlbumCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
-    bool isPlaylistPlaying = playback.currentPlaylist != null &&
-        playback.currentPlaylist!.id == album.id;
+    bool isPlaylistPlaying =
+        playback.playlist != null && playback.playlist!.id == album.id;
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
     return PlaybuttonCard(
       imageUrl: imageToUrlString(album.images),
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
-      isPlaying: playback.currentPlaylist?.id != null &&
-          playback.currentPlaylist?.id == album.id,
+      isPlaying:
+          playback.playlist?.id != null && playback.playlist?.id == album.id,
       title: album.name!,
       description:
           "Album • ${artistsToString<ArtistSimple>(album.artists ?? [])}",
@@ -41,14 +41,12 @@ class AlbumCard extends HookConsumerWidget {
             .toList();
         if (tracks.isEmpty) return;
 
-        playback.setCurrentPlaylist = CurrentPlaylist(
+        await playback.playPlaylist(CurrentPlaylist(
           tracks: tracks,
           id: album.id!,
           name: album.name!,
           thumbnail: album.images!.first.url!,
-        );
-        playback.setCurrentTrack = tracks.first;
-        await playback.startPlaying();
+        ));
       },
     );
   }

@@ -43,7 +43,7 @@ class SyncedLyrics extends HookConsumerWidget {
       controller.scrollToIndex(0);
       failed.value = false;
       return null;
-    }, [playback.currentTrack]);
+    }, [playback.track]);
 
     useEffect(() {
       if (lyricValue != null && lyricValue.rating <= 2) {
@@ -99,20 +99,20 @@ class SyncedLyrics extends HookConsumerWidget {
           Center(
               child: SizedBox(
             height: breakpoint >= Breakpoints.md ? 50 : 30,
-            child: playback.currentTrack?.name != null &&
-                    playback.currentTrack!.name!.length > 29
+            child: playback.track?.name != null &&
+                    playback.track!.name!.length > 29
                 ? SpotubeMarqueeText(
-                    text: playback.currentTrack?.name ?? "Not Playing",
+                    text: playback.track?.name ?? "Not Playing",
                     style: headlineTextStyle,
                   )
                 : Text(
-                    playback.currentTrack?.name ?? "Not Playing",
+                    playback.track?.name ?? "Not Playing",
                     style: headlineTextStyle,
                   ),
           )),
           Center(
             child: Text(
-              artistsToString<Artist>(playback.currentTrack?.artists ?? []),
+              artistsToString<Artist>(playback.track?.artists ?? []),
               style: breakpoint >= Breakpoints.md
                   ? textTheme.headline5
                   : textTheme.headline6,
@@ -157,7 +157,7 @@ class SyncedLyrics extends HookConsumerWidget {
                 },
               ),
             ),
-          if (playback.currentTrack != null &&
+          if (playback.track != null &&
               (lyricValue == null || lyricValue.lyrics.isEmpty == true))
             const Expanded(child: ShimmerLyrics()),
         ],

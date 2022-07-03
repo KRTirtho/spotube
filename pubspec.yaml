@@ -42,8 +42,6 @@ dependencies:
   url_launcher: ^6.0.17
   youtube_explode_dart: ^1.10.8
   bitsdojo_window: ^0.1.2
-  just_audio: ^0.9.18
-  just_audio_libwinmedia: ^0.0.4
   path: ^1.8.0
   path_provider: ^2.0.8
   collection: ^1.15.0
@@ -64,6 +62,7 @@ dependencies:
   hive: ^2.2.2
   hive_flutter: ^1.1.0
   dbus: ^0.7.3
+  audioplayers: ^1.0.1
 
 dev_dependencies:
   flutter_test:

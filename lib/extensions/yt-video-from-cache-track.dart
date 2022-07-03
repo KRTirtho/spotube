@@ -30,3 +30,71 @@ extension VideoFromCacheTrackExtension on Video {
     );
   }
 }
+
+extension ThumbnailSetJson on ThumbnailSet {
+  static ThumbnailSet fromJson(Map<String, dynamic> map) {
+    return ThumbnailSet(map["videoId"]);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "videoId": videoId,
+    };
+  }
+}
+
+extension EngagementJson on Engagement {
+  static Engagement fromJson(Map<String, dynamic> map) {
+    return Engagement(
+      map["viewCount"],
+      map["likeCount"],
+      map["dislikeCount"],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "dislikeCount": dislikeCount,
+      "likeCount": likeCount,
+      "viewCount": viewCount,
+    };
+  }
+}
+
+extension VideoToJson on Video {
+  static Video fromJson(Map<String, dynamic> map) {
+    return Video(
+      VideoId(map["id"]),
+      map["title"],
+      map["author"],
+      ChannelId(map["channelId"]),
+      DateTime.tryParse(map["uploadDate"]),
+      DateTime.tryParse(map["publishDate"]),
+      map["description"],
+      parseDuration(map["duration"]),
+      ThumbnailSetJson.fromJson(map["thumbnails"]),
+      List.castFrom<dynamic, String>(map["keywords"]),
+      EngagementJson.fromJson(map["engagement"]),
+      map["isLive"],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "hasWatchPage": hasWatchPage,
+      "url": url,
+      "author": author,
+      "channelId": channelId.value,
+      "description": description,
+      "duration": duration.toString(),
+      "engagement": engagement.toJson(),
+      "id": id.value,
+      "isLive": isLive,
+      "keywords": keywords.toList(),
+      "publishDate": publishDate.toString(),
+      "thumbnails": thumbnails.toJson(),
+      "title": title,
+      "uploadDate": uploadDate.toString(),
+    };
+  }
+}

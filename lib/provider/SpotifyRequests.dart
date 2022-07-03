@@ -166,8 +166,7 @@ final searchQuery = FutureProvider.family<List<Page>, String>((ref, term) {
 
 final geniusLyricsQuery = FutureProvider<String?>(
   (ref) {
-    final currentTrack =
-        ref.watch(playbackProvider.select((s) => s.currentTrack));
+    final currentTrack = ref.watch(playbackProvider.select((s) => s.track));
     final geniusAccessToken =
         ref.watch(userPreferencesProvider.select((s) => s.geniusAccessToken));
     if (currentTrack == null) {
@@ -184,8 +183,7 @@ final geniusLyricsQuery = FutureProvider<String?>(
 
 final rentanadviserLyricsQuery = FutureProvider<SubtitleSimple?>(
   (ref) {
-    final currentTrack =
-        ref.watch(playbackProvider.select((s) => s.currentTrack));
+    final currentTrack = ref.watch(playbackProvider.select((s) => s.track));
     if (currentTrack == null) return null;
     return getTimedLyrics(currentTrack as SpotubeTrack);
   },

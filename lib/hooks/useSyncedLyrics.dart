@@ -6,7 +6,7 @@ useSyncedLyrics(WidgetRef ref, Map<int, String> lyricsMap) {
   final player = ref.watch(playbackProvider.select(
     (value) => (value.player),
   ));
-  final stream = player.core.positionStream;
+  final stream = player.onPositionChanged;
 
   final currentTime = useState(0);
 

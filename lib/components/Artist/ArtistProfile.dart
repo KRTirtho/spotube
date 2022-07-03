@@ -183,24 +183,25 @@ class ArtistProfile extends HookConsumerWidget {
                   topTracksSnapshot.when(
                     data: (topTracks) {
                       final isPlaylistPlaying =
-                          playback.currentPlaylist?.id == data.id;
+                          playback.playlist?.id == data.id;
                       playPlaylist(List<Track> tracks,
                           {Track? currentTrack}) async {
                         currentTrack ??= tracks.first;
                         if (!isPlaylistPlaying) {
-                          playback.setCurrentPlaylist = CurrentPlaylist(
-                            tracks: tracks,
-                            id: data.id!,
-                            name: "${data.name!} To Tracks",
-                            thumbnail: imageToUrlString(data.images),
+                          await playback.playPlaylist(
+                            CurrentPlaylist(
+                              tracks: tracks,
+                              id: data.id!,
+                              name: "${data.name!} To Tracks",
+                              thumbnail: imageToUrlString(data.images),
+                            ),
+                            tracks.indexWhere((s) => s.id == currentTrack?.id),
                           );
-                          playback.setCurrentTrack = currentTrack;
                         } else if (isPlaylistPlaying &&
                             currentTrack.id != null &&
-                            currentTrack.id != playback.currentTrack?.id) {
-                          playback.setCurrentTrack = currentTrack;
+                            currentTrack.id != playback.track?.id) {
+                          await playback.play(currentTrack);
                         }
-                        await playback.startPlaying();
                       }
 
                       return Column(children: [

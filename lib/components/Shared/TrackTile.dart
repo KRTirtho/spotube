@@ -84,7 +84,7 @@ class TrackTile extends HookConsumerWidget {
       });
     }
 
-    actionAddToPlaylist() async {
+    Future<void> actionAddToPlaylist() async {
       showDialog(
           context: context,
           builder: (context) {
@@ -196,8 +196,7 @@ class TrackTile extends HookConsumerWidget {
           ),
         IconButton(
           icon: Icon(
-            playback.currentTrack?.id != null &&
-                    playback.currentTrack?.id == track.value.id
+            playback.track?.id != null && playback.track?.id == track.value.id
                 ? Icons.pause_circle_rounded
                 : Icons.play_circle_rounded,
             color: Theme.of(context).primaryColor,
