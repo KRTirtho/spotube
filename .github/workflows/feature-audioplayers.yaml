@@ -26,3 +26,23 @@ jobs:
         with:
           name: Spotube-Linux-Bundle
           path: build/Spotube-linux-x86_64.tar.xz
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2.2.0
+        with:
+          cache: true
+      - run: flutter config --enable-windows-desktop
+      - run: flutter pub get
+      - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+      - run: flutter build windows
+      - run: ls build/windows/runner/Release
+      - run: choco install make -y
+      - run: make innoinstall
+      - run: make inno
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Spotube-Windows-Bundle
+          path: |
+            build/installer/Spotube-windows-x86_64-setup.exe
