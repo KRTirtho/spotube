@@ -126,15 +126,13 @@ class Playback extends PersistedChangeNotifier {
   }
 
   // player methods
-  Future<void> play([Track? track]) async {
-    _logger.v("[Track Playing] ${track?.name} - ${track?.id}");
+  Future<void> play(Track track) async {
+    _logger.v("[Track Playing] ${track.name} - ${track.id}");
     try {
       // the track is already playing so no need to change that
-      if ((track != null && track.id == this.track?.id) ||
-          (this.track == null && track == null)) return;
-      track ??= this.track;
+      if (track.id == this.track?.id) return;
       final tag = MediaItem(
-        id: track!.id!,
+        id: track.id!,
         title: track.name!,
         album: track.album?.name,
         artist: artistsToString(track.artists ?? <ArtistSimple>[]),
@@ -147,11 +145,10 @@ class Playback extends PersistedChangeNotifier {
         track = await toSpotubeTrack(track);
       }
       _logger.v("[Track Direct Source] - ${(track).ytUri}");
-      await player.play(UrlSource(track.ytUri)).then((_) {
-        this.track = track as SpotubeTrack;
-        notifyListeners();
-        updatePersistence();
-      });
+      this.track = track;
+      notifyListeners();
+      updatePersistence();
+      await player.play(UrlSource(track.ytUri));
     } catch (e, stack) {
       _logger.e("play", e, stack);
     }

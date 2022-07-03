@@ -35,7 +35,7 @@ Future<void> Function([dynamic]) useTogglePlayPause(Playback playback) {
       } else if (playback.track != null &&
           playback.currentDuration == Duration.zero &&
           await playback.player.getCurrentPosition() == Duration.zero) {
-        await playback.play();
+        await playback.play(playback.track!);
       } else {
         await playback.togglePlayPause();
       }
