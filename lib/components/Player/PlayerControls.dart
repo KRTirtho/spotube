@@ -18,7 +18,6 @@ class PlayerControls extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final Playback playback = ref.watch(playbackProvider);
-    final AudioPlayerHandler player = playback.player;
 
     final onNext = useNextTrack(playback);
 
@@ -26,14 +25,14 @@ class PlayerControls extends HookConsumerWidget {
 
     final _playOrPause = useTogglePlayPause(playback);
 
-    final duration = playback.duration ?? Duration.zero;
+    final duration = playback.currentDuration;
 
     return Container(
         constraints: const BoxConstraints(maxWidth: 600),
         child: Column(
           children: [
             StreamBuilder<Duration>(
-                stream: player.core.onPositionChanged,
+                stream: playback.player.onPositionChanged,
                 builder: (context, snapshot) {
                   final totalMinutes =
                       zeroPadNumStr(duration.inMinutes.remainder(60));
@@ -61,7 +60,7 @@ class PlayerControls extends HookConsumerWidget {
                         value: value.toDouble(),
                         onChanged: (_) {},
                         onChangeEnd: (value) async {
-                          await player.seek(
+                          await playback.seekPosition(
                             Duration(
                               seconds: (value * sliderMax).toInt(),
                             ),
@@ -89,20 +88,15 @@ class PlayerControls extends HookConsumerWidget {
               children: [
                 IconButton(
                     icon: const Icon(Icons.shuffle_rounded),
-                    color: playback.shuffled
+                    color: playback.isShuffled
                         ? Theme.of(context).primaryColor
                         : iconColor,
                     onPressed: () {
-                      if (playback.currentTrack == null ||
-                          playback.currentPlaylist == null) {
+                      if (playback.track == null || playback.playlist == null) {
                         return;
                       }
                       try {
-                        if (!playback.shuffled) {
-                          playback.shuffle();
-                        } else {
-                          playback.unshuffle();
-                        }
+                        playback.toggleShuffle();
                       } catch (e, stack) {
                         logger.e("onShuffle", e, stack);
                       }
@@ -130,12 +124,10 @@ class PlayerControls extends HookConsumerWidget {
                 IconButton(
                   icon: const Icon(Icons.stop_rounded),
                   color: iconColor,
-                  onPressed: playback.currentTrack != null
+                  onPressed: playback.track != null
                       ? () async {
                           try {
-                            await player.pause();
-                            await player.seek(Duration.zero);
-                            playback.reset();
+                            await playback.stop();
                           } catch (e, stack) {
                             logger.e("onStop", e, stack);
                           }

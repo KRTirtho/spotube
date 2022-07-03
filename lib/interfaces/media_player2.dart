@@ -3,10 +3,17 @@
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dbus/dbus.dart';
+import 'package:spotube/provider/DBus.dart';
 
 class Media_Player extends DBusObject {
   /// Creates a new object to expose on [path].
-  Media_Player() : super(DBusObjectPath('/org/mpris/MediaPlayer2'));
+  Media_Player() : super(DBusObjectPath('/org/mpris/MediaPlayer2')) {
+    dbus.registerObject(this);
+  }
+
+  void dispose() {
+    dbus.unregisterObject(this);
+  }
 
   /// Gets value of property org.mpris.MediaPlayer2.CanQuit
   Future<DBusMethodResponse> getCanQuit() async {

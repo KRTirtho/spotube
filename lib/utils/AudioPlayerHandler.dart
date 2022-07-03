@@ -1,17 +1,15 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:spotube/provider/Playback.dart';
 
 /// An [AudioHandler] for playing a single item.
 class AudioPlayerHandler extends BaseAudioHandler {
-  final _player = AudioPlayer();
-
-  FutureOr<void> Function()? onNextRequest;
-  FutureOr<void> Function()? onPreviousRequest;
+  final Playback playback;
 
   /// Initialise our audio handler.
-  AudioPlayerHandler() {
+  AudioPlayerHandler(this.playback) {
+    final _player = playback.player;
     // So that our clients (the Flutter UI and the system notification) know
     // what state to display, here we set up our audio handler to broadcast all
     // playback state changes as they happen via playbackState...
@@ -27,8 +25,6 @@ class AudioPlayerHandler extends BaseAudioHandler {
     });
   }
 
-  AudioPlayer get core => _player;
-
   void addItem(MediaItem item) {
     mediaItem.add(item);
   }
@@ -39,32 +35,32 @@ class AudioPlayerHandler extends BaseAudioHandler {
   // your audio playback logic in one place.
 
   @override
-  Future<void> play() => _player.resume();
+  Future<void> play() => playback.resume();
 
   @override
-  Future<void> pause() => _player.pause();
+  Future<void> pause() => playback.pause();
 
   @override
-  Future<void> seek(Duration position) => _player.seek(position);
+  Future<void> seek(Duration position) => playback.seekPosition(position);
 
   @override
-  Future<void> stop() => _player.stop();
+  Future<void> stop() => playback.stop();
 
   @override
   Future<void> skipToNext() async {
-    await onNextRequest?.call();
+    playback.seekForward();
     await super.skipToNext();
   }
 
   @override
   Future<void> skipToPrevious() async {
-    await onPreviousRequest?.call();
+    playback.seekBackward();
     await super.skipToPrevious();
   }
 
   @override
   Future<void> onTaskRemoved() {
-    _player.stop();
+    playback.destroy();
     return super.onTaskRemoved();
   }
 
@@ -77,16 +73,14 @@ class AudioPlayerHandler extends BaseAudioHandler {
     return PlaybackState(
       controls: [
         MediaControl.skipToPrevious,
-        if (_player.state == PlayerState.playing)
-          MediaControl.pause
-        else
-          MediaControl.play,
+        if (playback.isPlaying) MediaControl.pause else MediaControl.play,
         MediaControl.skipToNext,
         MediaControl.stop,
       ],
       androidCompactActionIndices: const [0, 1, 2],
-      playing: _player.state == PlayerState.playing,
-      updatePosition: (await _player.getCurrentPosition()) ?? Duration.zero,
+      playing: playback.isPlaying,
+      updatePosition:
+          (await playback.player.getCurrentPosition()) ?? Duration.zero,
     );
   }
 }

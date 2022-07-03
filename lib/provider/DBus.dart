@@ -8,3 +8,5 @@ final Provider<DBusClient?> dbusClientProvider = Provider<DBusClient?>((ref) {
     return DBusClient.session();
   }
 });
+
+final dbus = DBusClient.session();

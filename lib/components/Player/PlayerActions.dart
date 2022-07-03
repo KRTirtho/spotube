@@ -28,12 +28,12 @@ class PlayerActions extends HookConsumerWidget {
       mainAxisAlignment: mainAxisAlignment,
       children: [
         DownloadTrackButton(
-          track: playback.currentTrack,
+          track: playback.track,
         ),
         if (auth.isLoggedIn)
           FutureBuilder<bool>(
-              future: playback.currentTrack?.id != null
-                  ? spotifyApi.tracks.me.containsOne(playback.currentTrack!.id!)
+              future: playback.track?.id != null
+                  ? spotifyApi.tracks.me.containsOne(playback.track!.id!)
                   : Future.value(false),
               initialData: false,
               builder: (context, snapshot) {
@@ -42,12 +42,12 @@ class PlayerActions extends HookConsumerWidget {
                     isLiked: isLiked,
                     onPressed: () async {
                       try {
-                        if (playback.currentTrack?.id == null) return;
+                        if (playback.track?.id == null) return;
                         isLiked
                             ? await spotifyApi.tracks.me
-                                .removeOne(playback.currentTrack!.id!)
+                                .removeOne(playback.track!.id!)
                             : await spotifyApi.tracks.me
-                                .saveOne(playback.currentTrack!.id!);
+                                .saveOne(playback.track!.id!);
                       } catch (e, stack) {
                         logger.e("FavoriteButton.onPressed", e, stack);
                       } finally {

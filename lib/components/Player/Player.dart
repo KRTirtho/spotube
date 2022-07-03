@@ -24,11 +24,7 @@ class Player extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
 
-    final _volume = useState(0.0);
-
     final breakpoint = useBreakpoints();
-
-    final AudioPlayerHandler player = playback.player;
 
     final Future<SharedPreferences> future =
         useMemoized(SharedPreferences.getInstance);
@@ -37,10 +33,10 @@ class Player extends HookConsumerWidget {
 
     String albumArt = useMemoized(
       () => imageToUrlString(
-        playback.currentTrack?.album?.images,
-        index: (playback.currentTrack?.album?.images?.length ?? 1) - 1,
+        playback.track?.album?.images,
+        index: (playback.track?.album?.images?.length ?? 1) - 1,
       ),
-      [playback.currentTrack?.album?.images],
+      [playback.track?.album?.images],
     );
 
     final entryRef = useRef<OverlayEntry?>(null);
@@ -65,7 +61,7 @@ class Player extends HookConsumerWidget {
         // entry will result in splashing while resizing the window
         if (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
             entryRef.value == null &&
-            playback.currentTrack != null) {
+            playback.track != null) {
           entryRef.value = OverlayEntry(
             opaque: false,
             builder: (context) => PlayerOverlay(albumArt: albumArt),
@@ -87,7 +83,7 @@ class Player extends HookConsumerWidget {
       return () {
         disposeOverlay();
       };
-    }, [breakpoint, playback.currentTrack]);
+    }, [breakpoint, playback.track]);
 
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]
@@ -119,16 +115,10 @@ class Player extends HookConsumerWidget {
                     height: 20,
                     constraints: const BoxConstraints(maxWidth: 200),
                     child: Slider.adaptive(
-                      value: _volume.value,
+                      value: playback.volume,
                       onChanged: (value) async {
                         try {
-                          await player.core.setVolume(value).then((_) {
-                            _volume.value = value;
-                            localStorage.data?.setDouble(
-                              LocalStorageKeys.volume,
-                              value,
-                            );
-                          });
+                          await playback.setVolume(value);
                         } catch (e, stack) {
                           logger.e("onChange", e, stack);
                         }

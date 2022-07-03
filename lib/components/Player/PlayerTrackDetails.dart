@@ -38,7 +38,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
         if (breakpoint.isLessThanOrEqualTo(Breakpoints.md))
           Flexible(
             child: Text(
-              playback.currentTrack?.name ?? "Not playing",
+              playback.track?.name ?? "Not playing",
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context)
                   .textTheme
@@ -54,7 +54,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
             child: Column(
               children: [
                 Text(
-                  playback.currentTrack?.name ?? "Not playing",
+                  playback.track?.name ?? "Not playing",
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
@@ -62,7 +62,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
                       ?.copyWith(fontWeight: FontWeight.bold, color: color),
                 ),
                 artistsToClickableArtists(
-                  playback.currentTrack?.artists ?? [],
+                  playback.track?.artists ?? [],
                 )
               ],
             ),

@@ -1,330 +1,364 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dbus/dbus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/entities/CacheTrack.dart';
+import 'package:spotube/extensions/yt-video-from-cache-track.dart';
 import 'package:spotube/helpers/artist-to-string.dart';
+import 'package:spotube/helpers/contains-text-in-bracket.dart';
+import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/interfaces/media_player2.dart';
 import 'package:spotube/interfaces/media_player2_player.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
-import 'package:spotube/provider/DBus.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
+import 'package:spotube/provider/AudioPlayer.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
 import 'package:spotube/utils/AudioPlayerHandler.dart';
-import 'package:spotube/utils/PersistedChangeNotifier.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
+import 'package:collection/collection.dart';
+import 'package:spotube/extensions/list-sort-multiple.dart';
 
-class Playback extends PersistedChangeNotifier {
-  UrlSource? _currentAudioSource;
-  final _logger = getLogger(Playback);
-  CurrentPlaylist? _currentPlaylist;
-  Track? _currentTrack;
+class Playback with ChangeNotifier {
+  // player properties
+  bool isShuffled;
+  bool isPlaying;
+  Duration currentDuration;
+  double volume;
 
-  // states
-  bool _isPlaying = false;
-  Duration? duration;
+  // class dependencies
+  Media_Player? linuxMPRIS;
+  Player_Interface? linuxMPRIS_Player;
+  AudioPlayerHandler? mobileAudioService;
 
-  bool _shuffled = false;
-
-  AudioPlayerHandler player;
+  // foreign/passed properties
+  AudioPlayer player;
   YoutubeExplode youtube;
   Ref ref;
+  UserPreferences get preferences => ref.read(userPreferencesProvider);
 
-  LazyBox<CacheTrack>? cacheTrackBox;
+  // playlist & track list properties
+  late LazyBox<CacheTrack> cache;
+  CurrentPlaylist? playlist;
+  SpotubeTrack? track;
 
-  @protected
-  final DBusClient? dbus;
-  Media_Player? _media_player;
-  Player_Interface? _mpris;
-
-  double volume = 1;
+  // internal stuff
+  final List<StreamSubscription> _subscriptions;
+  final _logger = getLogger(Playback);
 
   Playback({
     required this.player,
     required this.youtube,
     required this.ref,
-    required this.dbus,
-    CurrentPlaylist? currentPlaylist,
-    Track? currentTrack,
-  })  : _currentPlaylist = currentPlaylist,
-        _currentTrack = currentTrack,
+    this.mobileAudioService,
+  })  : volume = 0,
+        isShuffled = false,
+        isPlaying = false,
+        currentDuration = Duration.zero,
+        _subscriptions = [],
         super() {
-    player.onNextRequest = () {
-      movePlaylistPositionBy(1);
-    };
-    player.onPreviousRequest = () {
-      movePlaylistPositionBy(-1);
-    };
-
-    _init();
-  }
-
-  StreamSubscription<Duration?>? _durationStream;
-  StreamSubscription<PlayerState>? _playingStream;
-  StreamSubscription<Duration>? _positionStream;
-
-  void _init() async {
-    // dbus m.p.r.i.s stuff
     if (Platform.isLinux) {
-      try {
-        _media_player = Media_Player();
-        _mpris = Player_Interface(player: player.core, playback: this);
-        final nameStatus =
-            await dbus?.requestName("org.mpris.MediaPlayer2.spotube");
-        if (nameStatus == DBusRequestNameReply.exists) {
-          await dbus
-              ?.requestName("org.mpris.MediaPlayer2.spotube.instance$pid");
-        }
-        await dbus?.registerObject(_media_player!);
-        await dbus?.registerObject(_mpris!);
-      } catch (e) {
-        logger.e("[MPRIS initialization error]", e);
-      }
+      linuxMPRIS = Media_Player();
+      linuxMPRIS_Player = Player_Interface(playback: this);
     }
 
-    cacheTrackBox = await Hive.openLazyBox<CacheTrack>("track-cache");
-
-    _playingStream = player.core.onPlayerStateChanged.listen(
-      (state) async {
-        _isPlaying = state == PlayerState.playing;
-        if (state == PlayerState.completed) {
-          if (_currentTrack?.id != null) {
-            movePlaylistPositionBy(1);
+    (() async {
+      cache = await Hive.openLazyBox<CacheTrack>("track-cache");
+      _subscriptions.addAll([
+        player.onPlayerStateChanged.listen(
+          (state) async {
+            isPlaying = state == PlayerState.playing;
+            notifyListeners();
+          },
+        ),
+        player.onPlayerComplete.listen((_) {
+          if (track?.id != null) {
+            seekForward();
           } else {
-            _isPlaying = false;
-            duration = null;
+            isPlaying = false;
+            currentDuration = Duration.zero;
+            notifyListeners();
           }
-        }
-        notifyListeners();
-      },
-    );
-
-    _durationStream = player.core.onDurationChanged.listen((event) {
-      duration = event;
-      notifyListeners();
-    });
-
-    _positionStream = player.core.onPositionChanged.listen((pos) async {
-      if (pos > Duration.zero &&
-          (duration == null || duration == Duration.zero)) {
-        duration = await player.core.getDuration();
-        notifyListeners();
-      }
-    });
+        }),
+        player.onDurationChanged.listen((event) {
+          currentDuration = event;
+          notifyListeners();
+        }),
+        player.onPositionChanged.listen((pos) async {
+          if (pos > Duration.zero && currentDuration == Duration.zero) {
+            currentDuration = await player.getDuration() ?? Duration.zero;
+            notifyListeners();
+          }
+        }),
+      ]);
+    }());
   }
 
   @override
   void dispose() {
-    _playingStream?.cancel();
-    _durationStream?.cancel();
-    _positionStream?.cancel();
-    cacheTrackBox?.close();
-    if (Platform.isLinux && _media_player != null && _mpris != null) {
-      dbus?.unregisterObject(_media_player!);
-      dbus?.unregisterObject(_mpris!);
+    linuxMPRIS?.dispose();
+    linuxMPRIS_Player?.dispose();
+    for (var subscription in _subscriptions) {
+      subscription.cancel();
     }
     super.dispose();
   }
 
-  bool get shuffled => _shuffled;
-  CurrentPlaylist? get currentPlaylist => _currentPlaylist;
-  Track? get currentTrack => _currentTrack;
-  bool get isPlaying => _isPlaying;
-
-  set setCurrentTrack(Track track) {
-    _logger.v("[Setting Current Track] ${track.name} - ${track.id}");
-    _currentTrack = track;
-    notifyListeners();
-    updatePersistence();
+  Future<void> playPlaylist(CurrentPlaylist playlist, [int index = 0]) async {
+    if (index < 0 || index > playlist.tracks.length - 1) return;
+    this.playlist = playlist;
+    final played = this.playlist!.tracks[index];
+    await play(played).then((_) {
+      int i = this
+          .playlist!
+          .tracks
+          .indexWhere((element) => element.id == played.id);
+      if (index == -1) return;
+      this.playlist!.tracks[i] = track!;
+    });
   }
 
-  set setCurrentPlaylist(CurrentPlaylist playlist) {
-    _logger.v("[Current Playlist Changed] ${playlist.name} - ${playlist.id}");
-    _currentPlaylist = playlist;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void reset() {
-    _logger.v("Playback Reset");
-    _isPlaying = false;
-    _shuffled = false;
-    duration = null;
-    _currentPlaylist = null;
-    _currentTrack = null;
-    notifyListeners();
-    updatePersistence(clearNullEntries: true);
-  }
-
-  void setVolume(double newVolume) {
-    volume = newVolume;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  /// sets the provided id matched track's uri\
-  /// Doesn't notify listeners\
-  /// @returns `bool` - `true` if succeed & `false` when failed
-  bool setTrackUriById(String id, String uri) {
-    if (_currentPlaylist == null) return false;
-    try {
-      int index =
-          _currentPlaylist!.tracks.indexWhere((element) => element.id == id);
-      if (index == -1) return false;
-      _currentPlaylist!.tracks[index].uri = uri;
-      updatePersistence();
-      return _currentPlaylist!.tracks[index].uri == uri;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  void movePlaylistPositionBy(int pos) {
-    _logger.v("[Playlist Position Move] $pos");
-    if (_currentTrack != null && _currentPlaylist != null) {
-      int index = _currentPlaylist!.trackIds.indexOf(_currentTrack!.id!) + pos;
-
-      var safeIndex = index > _currentPlaylist!.trackIds.length - 1
-          ? 0
-          : index < 0
-              ? _currentPlaylist!.trackIds.length
-              : index;
-      Track? track = _currentPlaylist!.tracks.asMap().containsKey(safeIndex)
-          ? _currentPlaylist!.tracks.elementAt(safeIndex)
-          : null;
-      if (track != null) {
-        duration = null;
-        _currentTrack = track;
-        notifyListeners();
-        updatePersistence();
-        // starts to play the newly entered next/prev track
-        startPlaying();
-      }
-    }
-  }
-
-  Future<void> startPlaying([Track? track]) async {
+  // player methods
+  Future<void> play([Track? track]) async {
     _logger.v("[Track Playing] ${track?.name} - ${track?.id}");
     try {
       // the track is already playing so no need to change that
-      if (track != null && track.id == _currentTrack?.id) return;
-      track ??= _currentTrack;
-      if (track != null) {
-        Uri? parsedUri = Uri.tryParse(track.uri ?? "");
-        final tag = MediaItem(
-          id: track.id!,
-          title: track.name!,
-          album: track.album?.name,
-          artist: artistsToString(track.artists ?? <ArtistSimple>[]),
-          artUri: Uri.parse(imageToUrlString(track.album?.images)),
-        );
-        player.addItem(tag);
-        if (parsedUri != null && parsedUri.hasAbsolutePath) {
-          _currentAudioSource = UrlSource(parsedUri.toString());
-          await player.core
-              .play(
-            _currentAudioSource!,
-          )
-              .then((value) async {
-            _currentTrack = track;
-            notifyListeners();
-            updatePersistence();
-          });
-          return;
-        }
-        final preferences = ref.read(userPreferencesProvider);
-        final spotubeTrack = await toSpotubeTrack(
-          youtube: youtube,
-          track: track,
-          format: preferences.ytSearchFormat,
-          matchAlgorithm: preferences.trackMatchAlgorithm,
-          audioQuality: preferences.audioQuality,
-          box: cacheTrackBox,
-        );
-        if (setTrackUriById(track.id!, spotubeTrack.ytUri)) {
-          logger.v("[Track Direct Source] - ${spotubeTrack.ytUri}");
-          _currentAudioSource = UrlSource(spotubeTrack.ytUri);
-          await player.core
-              .play(
-            _currentAudioSource!,
-          )
-              .then((value) {
-            _currentTrack = spotubeTrack;
-            notifyListeners();
-            updatePersistence();
-          });
-        }
+      if ((track != null && track.id == this.track?.id) ||
+          (this.track == null && track == null)) return;
+      track ??= this.track;
+      final tag = MediaItem(
+        id: track!.id!,
+        title: track.name!,
+        album: track.album?.name,
+        artist: artistsToString(track.artists ?? <ArtistSimple>[]),
+        artUri: Uri.parse(imageToUrlString(track.album?.images)),
+      );
+      mobileAudioService?.addItem(tag);
+
+      // the track is not a SpotubeTrack so turning it to one
+      if (track is! SpotubeTrack) {
+        track = await toSpotubeTrack(track);
       }
-    } catch (e, stack) {
-      _logger.e("startPlaying", e, stack);
-    }
-  }
-
-  void shuffle() {
-    if (currentPlaylist?.shuffle() == true) {
-      _shuffled = true;
-      notifyListeners();
-    }
-  }
-
-  void unshuffle() {
-    if (currentPlaylist?.unshuffle() == true) {
-      _shuffled = false;
-      notifyListeners();
-    }
-  }
-
-  @override
-  FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
-    if (map["currentPlaylist"] != null) {
-      _currentPlaylist =
-          CurrentPlaylist.fromJson(jsonDecode(map["currentPlaylist"]));
-    }
-    if (map["currentTrack"] != null) {
-      _currentTrack = Track.fromJson(jsonDecode(map["currentTrack"]));
-      startPlaying().then((_) {
-        Timer.periodic(const Duration(milliseconds: 100), (timer) {
-          if (player.core.state == PlayerState.playing) {
-            player.pause();
-            timer.cancel();
-          }
-        });
+      _logger.v("[Track Direct Source] - ${(track).ytUri}");
+      await player.play(UrlSource(track.ytUri)).then((_) {
+        this.track = track as SpotubeTrack;
+        notifyListeners();
       });
+    } catch (e, stack) {
+      _logger.e("play", e, stack);
     }
-    volume = map["volume"] ?? volume;
   }
 
-  @override
-  FutureOr<Map<String, dynamic>> toMap() {
-    return {
-      "currentPlaylist": currentPlaylist != null
-          ? jsonEncode(currentPlaylist?.toJson())
-          : null,
-      "currentTrack":
-          currentTrack != null ? jsonEncode(currentTrack?.toJson()) : null,
-      "volume": volume,
-    };
+  Future<void> resume() async {
+    if (isPlaying || (playlist == null && track == null)) return;
+    await player.resume();
+    isPlaying = true;
+    notifyListeners();
+  }
+
+  Future<void> pause() async {
+    if (!isPlaying || (playlist == null && track == null)) return;
+    await player.pause();
+    isPlaying = false;
+    notifyListeners();
+  }
+
+  Future<void> togglePlayPause() async {
+    isPlaying ? await pause() : await resume();
+  }
+
+  toggleShuffle() {
+    final result = isShuffled ? playlist?.unshuffle() : playlist?.shuffle();
+    if (result == true) {
+      isShuffled = !isShuffled;
+      notifyListeners();
+    }
+  }
+
+  Future<void> seekPosition(Duration position) {
+    return player.seek(position);
+  }
+
+  Future<void> setVolume(double newVolume) async {
+    await player.setVolume(volume);
+    volume = newVolume;
+    notifyListeners();
+  }
+
+  Future<void> stop() async {
+    await player.stop();
+    await player.release();
+    isPlaying = false;
+    isShuffled = false;
+    playlist = null;
+    track = null;
+    currentDuration = Duration.zero;
+    notifyListeners();
+  }
+
+  destroy() {}
+
+  // playlist & track list methods
+  Future<SpotubeTrack> toSpotubeTrack(Track track) async {
+    final format = preferences.ytSearchFormat;
+    final matchAlgorithm = preferences.trackMatchAlgorithm;
+    final artistsName =
+        track.artists?.map((ar) => ar.name).toList().whereNotNull().toList() ??
+            [];
+    final audioQuality = preferences.audioQuality;
+    _logger.v("[Track Search Artists] $artistsName");
+    final mainArtist = artistsName.first;
+    final featuredArtists = artistsName.length > 1
+        ? "feat. " + artistsName.sublist(1).join(" ")
+        : "";
+    final title = getTitle(
+      track.name!,
+      artists: artistsName,
+      onlyCleanArtist: true,
+    ).trim();
+    _logger.v("[Track Search Title] $title");
+    final queryString = format
+        .replaceAll("\$MAIN_ARTIST", mainArtist)
+        .replaceAll("\$TITLE", title)
+        .replaceAll("\$FEATURED_ARTISTS", featuredArtists);
+    _logger.v("[Youtube Search Term] $queryString");
+
+    Video ytVideo;
+    final cachedTrack = await cache.get(track.id);
+    if (cachedTrack != null && cachedTrack.mode == matchAlgorithm.name) {
+      _logger.v(
+        "[Playing track from cache] youtubeId: ${cachedTrack.id} mode: ${cachedTrack.mode}",
+      );
+      ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
+    } else {
+      VideoSearchList videos = await youtube.search.search(queryString);
+      if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
+        List<Map> ratedRankedVideos = videos
+            .map((video) {
+              // the find should be lazy thus everything case insensitive
+              final ytTitle = video.title.toLowerCase();
+              final bool hasTitle = ytTitle.contains(title);
+              final bool hasAllArtists = track.artists?.every(
+                    (artist) => ytTitle.contains(artist.name!.toLowerCase()),
+                  ) ??
+                  false;
+              final bool authorIsArtist =
+                  track.artists?.first.name?.toLowerCase() ==
+                      video.author.toLowerCase();
+
+              final bool hasNoLiveInTitle =
+                  !containsTextInBracket(ytTitle, "live");
+
+              int rate = 0;
+              for (final el in [
+                hasTitle,
+                hasAllArtists,
+                if (matchAlgorithm ==
+                    SpotubeTrackMatchAlgorithm.authenticPopular)
+                  authorIsArtist,
+                hasNoLiveInTitle,
+                !video.isLive,
+              ]) {
+                if (el) rate++;
+              }
+              // can't let pass any non title matching track
+              if (!hasTitle) rate = rate - 2;
+              return {
+                "video": video,
+                "points": rate,
+                "views": video.engagement.viewCount,
+              };
+            })
+            .toList()
+            .sortByProperties(
+              [false, false],
+              ["points", "views"],
+            );
+
+        ytVideo = ratedRankedVideos.first["video"] as Video;
+      } else {
+        ytVideo = videos.where((video) => !video.isLive).first;
+      }
+    }
+
+    final trackManifest = await youtube.videos.streams.getManifest(ytVideo.id);
+
+    _logger.v(
+      "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
+    );
+
+    final audioManifest = trackManifest.audioOnly.where((info) {
+      final isMp4a = info.codec.mimeType == "audio/mp4";
+      if (Platform.isLinux) {
+        return !isMp4a;
+      } else if (Platform.isMacOS || Platform.isIOS) {
+        return isMp4a;
+      } else {
+        return true;
+      }
+    });
+
+    final ytUri = (audioQuality == AudioQuality.high
+            ? audioManifest.withHighestBitrate()
+            : audioManifest.sortByBitrate().last)
+        .url
+        .toString();
+
+    // only save when the track isn't available in the cache with same
+    // matchAlgorithm
+    if (cachedTrack == null || cachedTrack.mode != matchAlgorithm.name) {
+      await cache.put(
+          track.id!, CacheTrack.fromVideo(ytVideo, matchAlgorithm.name));
+    }
+
+    return SpotubeTrack.fromTrack(
+      track: track,
+      ytTrack: ytVideo,
+      // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
+      // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
+      // codec/mimetype for those Platforms
+      ytUri: ytUri,
+    );
+  }
+
+  Future<void> setPlaylistPosition(int position) async {
+    if (playlist == null) return;
+    await playPlaylist(playlist!, position);
+  }
+
+  Future<void> seekForward() async {
+    if (playlist == null || track == null) return;
+    final int nextTrackIndex =
+        (playlist!.trackIds.indexOf(track!.id!) + 1).toInt();
+    // checking if there's any track available forward
+    if (nextTrackIndex > (playlist?.tracks.length ?? 0) - 1) return;
+    await play(playlist!.tracks.elementAt(nextTrackIndex));
+  }
+
+  Future<void> seekBackward() async {
+    if (playlist == null || track == null) return;
+    final int prevTrackIndex =
+        (playlist!.trackIds.indexOf(track!.id!) - 1).toInt();
+    // checking if there's any track available behind
+    if (prevTrackIndex < 0) return;
+    await play(playlist!.tracks.elementAt(prevTrackIndex));
   }
 }
 
 final playbackProvider = ChangeNotifierProvider<Playback>((ref) {
-  final player = AudioPlayerHandler();
   final youtube = ref.watch(youtubeProvider);
-  final dbus = ref.watch(dbusClientProvider);
+  final player = ref.watch(audioPlayerProvider);
   return Playback(
     player: player,
     youtube: youtube,
     ref: ref,
-    dbus: dbus,
   );
 });
