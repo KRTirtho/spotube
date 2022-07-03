@@ -10,11 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
       - uses: subosito/flutter-action@v2
         with:
           cache: true
@@ -28,9 +23,6 @@ jobs:
           wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.0-beta.1/appimage-builder-1.0.0-677acbd-x86_64.AppImage
           chmod +x appimage-builder-x86_64.AppImage
           mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
-      # replacing & adding new release version with older version
-      - run: |
-          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ steps.tag.outputs.tag }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
 
       - run: |
           flutter config --enable-linux-desktop
@@ -52,11 +44,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
       - uses: subosito/flutter-action@v2
         with:
           cache: true
@@ -79,17 +66,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          # Optionally strip `v` prefix
-          strip_v: true
-      # Replace Version in files
-      - run: |
-          choco install sed make -y
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" windows/runner/Runner.rc
-
       # Build Windows Executable
       - uses: subosito/flutter-action@v2.2.0
         with:
