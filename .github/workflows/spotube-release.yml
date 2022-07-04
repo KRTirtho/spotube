@@ -46,8 +46,8 @@ jobs:
           Set-Variable -Name HASH -Value (Get-FileHash dist\Spotube-windows-x86_64-setup.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
           make choco
-      
-      - run: mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg 
+
+      - run: mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
 
       # Publish to Chocolatey Repository
       - run: |
@@ -145,17 +145,16 @@ jobs:
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
-      - run: |
-          flutter pub get
-          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-          dart pub global activate flutter_distributor
-          flutter_distributor package --platform=android --targets=apk --skip-clean
-      - run: |
-          mv dist/**/spotube-*-android.apk dist/Spotube-android-all-arch.apk
-      - uses: actions/upload-artifact@v3
+
+      - run: echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
+      - run: echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
+      - run: flutter build apk
+      - run: make apk
+      - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Android-Bundle
-          path: dist/
+          path: |
+            build/Spotube-android-all-arch.apk
 
   update_release:
     needs:
