@@ -25,8 +25,9 @@ class AlbumCard extends HookConsumerWidget {
     return PlaybuttonCard(
       imageUrl: imageToUrlString(album.images),
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
-      isPlaying:
-          playback.playlist?.id != null && playback.playlist?.id == album.id,
+      isPlaying: playback.playlist?.id == album.id,
+      isLoading: playback.status == PlaybackStatus.loading &&
+          playback.playlist?.id == album.id,
       title: album.name!,
       description:
           "Album • ${artistsToString<ArtistSimple>(album.artists ?? [])}",

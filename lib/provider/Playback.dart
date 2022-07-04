@@ -27,6 +27,12 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
 import 'package:spotube/extensions/list-sort-multiple.dart';
 
+enum PlaybackStatus {
+  playing,
+  loading,
+  idle,
+}
+
 class Playback extends PersistedChangeNotifier {
   // player properties
   bool isShuffled;
@@ -53,6 +59,8 @@ class Playback extends PersistedChangeNotifier {
   final List<StreamSubscription> _subscriptions;
   final _logger = getLogger(Playback);
 
+  PlaybackStatus status;
+
   Playback({
     required this.player,
     required this.youtube,
@@ -63,6 +71,7 @@ class Playback extends PersistedChangeNotifier {
         isPlaying = false,
         currentDuration = Duration.zero,
         _subscriptions = [],
+        status = PlaybackStatus.idle,
         super() {
     if (Platform.isLinux) {
       _linuxAudioService = LinuxAudioService(this);
@@ -82,6 +91,7 @@ class Playback extends PersistedChangeNotifier {
             seekForward();
           } else {
             isPlaying = false;
+            status = PlaybackStatus.idle;
             currentDuration = Duration.zero;
             notifyListeners();
           }
@@ -115,6 +125,8 @@ class Playback extends PersistedChangeNotifier {
     if (index < 0 || index > playlist.tracks.length - 1) return;
     this.playlist = playlist;
     final played = this.playlist!.tracks[index];
+    status = PlaybackStatus.loading;
+    notifyListeners();
     await play(played).then((_) {
       int i = this
           .playlist!
@@ -131,6 +143,10 @@ class Playback extends PersistedChangeNotifier {
     try {
       // the track is already playing so no need to change that
       if (track.id == this.track?.id) return;
+      if (status != PlaybackStatus.loading) {
+        status = PlaybackStatus.loading;
+        notifyListeners();
+      }
       final tag = MediaItem(
         id: track.id!,
         title: track.name!,
@@ -149,6 +165,8 @@ class Playback extends PersistedChangeNotifier {
       notifyListeners();
       updatePersistence();
       await player.play(UrlSource(track.ytUri));
+      status = PlaybackStatus.playing;
+      notifyListeners();
     } catch (e, stack) {
       _logger.e("play", e, stack);
     }
@@ -198,6 +216,7 @@ class Playback extends PersistedChangeNotifier {
     isShuffled = false;
     playlist = null;
     track = null;
+    status = PlaybackStatus.idle;
     currentDuration = Duration.zero;
     notifyListeners();
     updatePersistence(clearNullEntries: true);

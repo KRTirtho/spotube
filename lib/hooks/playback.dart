@@ -1,3 +1,4 @@
+import 'package:spotify/spotify.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 
@@ -35,7 +36,9 @@ Future<void> Function([dynamic]) useTogglePlayPause(Playback playback) {
       } else if (playback.track != null &&
           playback.currentDuration == Duration.zero &&
           await playback.player.getCurrentPosition() == Duration.zero) {
-        await playback.play(playback.track!);
+        final track = Track.fromJson(playback.track!.toJson());
+        playback.track = null;
+        await playback.play(track);
       } else {
         await playback.togglePlayPause();
       }

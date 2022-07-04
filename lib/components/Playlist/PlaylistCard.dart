@@ -25,6 +25,7 @@ class PlaylistCard extends HookConsumerWidget {
       title: playlist.name!,
       imageUrl: imageToUrlString(playlist.images),
       isPlaying: isPlaylistPlaying,
+      isLoading: playback.status == PlaybackStatus.loading && isPlaylistPlaying,
       onTap: () {
         GoRouter.of(context).push(
           "/playlist/${playlist.id}",

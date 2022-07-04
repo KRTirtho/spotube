@@ -9,10 +9,12 @@ class PlaybuttonCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final String imageUrl;
   final bool isPlaying;
+  final bool isLoading;
   final String title;
   const PlaybuttonCard({
     required this.imageUrl,
     required this.isPlaying,
+    required this.isLoading,
     required this.title,
     this.margin,
     this.description,
@@ -62,11 +64,17 @@ class PlaybuttonCard extends StatelessWidget {
                       child: Builder(builder: (context) {
                         return ElevatedButton(
                           onPressed: onPlaybuttonPressed,
-                          child: Icon(
-                            isPlaying
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 23,
+                                  width: 23,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Icon(
+                                  isPlaying
+                                      ? Icons.pause_rounded
+                                      : Icons.play_arrow_rounded,
+                                ),
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(
                               const CircleBorder(),

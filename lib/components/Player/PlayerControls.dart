@@ -123,11 +123,13 @@ class PlayerControls extends HookConsumerWidget {
                       onPrevious();
                     }),
                 IconButton(
-                  icon: Icon(
-                    playback.isPlaying
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                  ),
+                  icon: playback.status == PlaybackStatus.loading
+                      ? const CircularProgressIndicator()
+                      : Icon(
+                          playback.isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                        ),
                   color: iconColor,
                   onPressed: _playOrPause,
                 ),
