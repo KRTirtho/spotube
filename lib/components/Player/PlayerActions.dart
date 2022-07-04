@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Player/PlayerQueue.dart';
 import 'package:spotube/components/Shared/DownloadTrackButton.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/hooks/useForceUpdate.dart';
@@ -27,6 +28,29 @@ class PlayerActions extends HookConsumerWidget {
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       children: [
+        IconButton(
+          icon: const Icon(Icons.queue_music_rounded),
+          onPressed: playback.playlist != null
+              ? () {
+                  showModalBottomSheet(
+                    context: context,
+                    isDismissible: true,
+                    enableDrag: true,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * .7,
+                    ),
+                    builder: (context) {
+                      return const PlayerQueue();
+                    },
+                  );
+                }
+              : null,
+        ),
         DownloadTrackButton(
           track: playback.track,
         ),

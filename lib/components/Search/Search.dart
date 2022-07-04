@@ -114,6 +114,7 @@ class Search extends HookConsumerWidget {
                               duration: duration,
                               thumbnailUrl:
                                   imageToUrlString(track.value.album?.images),
+                              isActive: playback.track?.id == track.value.id,
                               onTrackPlayButtonPressed: (currentTrack) async {
                                 var isPlaylistPlaying = playback.playlist?.id !=
                                         null &&

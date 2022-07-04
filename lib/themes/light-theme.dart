@@ -3,7 +3,7 @@ import 'package:spotube/extensions/ShimmerColorTheme.dart';
 
 final materialWhite = MaterialColor(Colors.white.value, {
   50: Colors.white,
-  100: Colors.blueGrey[50]!,
+  100: Colors.blueGrey[100]!,
   200: Colors.white,
   300: Colors.white,
   400: Colors.blueGrey[300]!,

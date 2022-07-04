@@ -92,6 +92,7 @@ class TracksTableView extends HookConsumerWidget {
             duration: duration,
             thumbnailUrl: thumbnailUrl,
             userPlaylist: userPlaylist,
+            isActive: playback.track?.id == track.value.id,
             onTrackPlayButtonPressed: onTrackPlayButtonPressed,
           );
         }).toList()

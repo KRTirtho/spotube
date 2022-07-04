@@ -240,6 +240,7 @@ class ArtistProfile extends HookConsumerWidget {
                             duration: duration,
                             track: track,
                             thumbnailUrl: thumbnailUrl,
+                            isActive: playback.track?.id == track.value.id,
                             onTrackPlayButtonPressed: (currentTrack) =>
                                 playPlaylist(
                               topTracks.toList(),
