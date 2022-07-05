@@ -13,42 +13,60 @@ class TitleBarActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        TextButton(
-            onPressed: () {
-              appWindow.minimize();
-            },
-            style: ButtonStyle(
-              foregroundColor:
-                  MaterialStateProperty.all(Theme.of(context).iconTheme.color),
-            ),
-            child: Icon(
-              Icons.minimize_rounded,
-              color: color,
-            )),
-        TextButton(
-            onPressed: () async {
-              appWindow.maximizeOrRestore();
-            },
-            style: ButtonStyle(
-              foregroundColor:
-                  MaterialStateProperty.all(Theme.of(context).iconTheme.color),
-            ),
-            child: Icon(Icons.crop_square_rounded, color: color)),
-        TextButton(
-            onPressed: () {
-              appWindow.close();
-            },
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(
-                  color ?? Theme.of(context).iconTheme.color),
-              overlayColor: MaterialStateProperty.all(Colors.redAccent),
-            ),
-            child: const Icon(
-              Icons.close_rounded,
-            )),
-      ],
+    return TextButtonTheme(
+      data: TextButtonThemeData(
+        style: ButtonStyle(
+          splashFactory: NoSplash.splashFactory,
+          shape: MaterialStateProperty.all(const RoundedRectangleBorder()),
+          overlayColor: MaterialStateProperty.all(Colors.black12),
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+          minimumSize: MaterialStateProperty.all(const Size(50, 40)),
+          maximumSize: MaterialStateProperty.all(const Size(50, 40)),
+        ),
+      ),
+      child: IconTheme(
+        data: const IconThemeData(size: 16),
+        child: Row(
+          children: [
+            TextButton(
+                onPressed: () {
+                  appWindow.minimize();
+                },
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(
+                      Theme.of(context).iconTheme.color),
+                ),
+                child: Icon(
+                  Icons.minimize_rounded,
+                  color: color,
+                )),
+            TextButton(
+                onPressed: () async {
+                  appWindow.maximizeOrRestore();
+                },
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(
+                      Theme.of(context).iconTheme.color),
+                ),
+                child: Icon(
+                  Icons.crop_square_rounded,
+                  color: color,
+                )),
+            TextButton(
+                onPressed: () {
+                  appWindow.close();
+                },
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(
+                      color ?? Theme.of(context).iconTheme.color),
+                  overlayColor: MaterialStateProperty.all(Colors.redAccent),
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                )),
+          ],
+        ),
+      ),
     );
   }
 }

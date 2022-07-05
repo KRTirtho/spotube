@@ -13,8 +13,10 @@ import 'package:spotube/provider/SpotifyRequests.dart';
 
 class PlayerActions extends HookConsumerWidget {
   final MainAxisAlignment mainAxisAlignment;
+  final bool floatingQueue;
   PlayerActions({
     this.mainAxisAlignment = MainAxisAlignment.center,
+    this.floatingQueue = true,
     Key? key,
   }) : super(key: key);
   final logger = getLogger(PlayerActions);
@@ -37,7 +39,8 @@ class PlayerActions extends HookConsumerWidget {
                     isDismissible: true,
                     enableDrag: true,
                     isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: Colors.black12,
+                    barrierColor: Colors.black12,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -45,7 +48,7 @@ class PlayerActions extends HookConsumerWidget {
                       maxHeight: MediaQuery.of(context).size.height * .7,
                     ),
                     builder: (context) {
-                      return const PlayerQueue();
+                      return PlayerQueue(floating: floatingQueue);
                     },
                   );
                 }

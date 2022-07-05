@@ -1,73 +1,119 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/components/Shared/NotFound.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
+import 'package:spotube/hooks/useAutoScrollController.dart';
 import 'package:spotube/provider/Playback.dart';
-import 'package:collection/collection.dart';
 
 class PlayerQueue extends HookConsumerWidget {
-  const PlayerQueue({Key? key}) : super(key: key);
+  final bool floating;
+  const PlayerQueue({
+    this.floating = true,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
     final playback = ref.watch(playbackProvider);
+    final controller = useAutoScrollController();
     final tracks = playback.playlist?.tracks ?? [];
 
     if (tracks.isEmpty) {
       return const NotFound(vertical: true);
     }
 
+    final borderRadius = floating
+        ? BorderRadius.circular(10)
+        : const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          );
+    final headlineColor = Theme.of(context).textTheme.headline4?.color;
+
+    useEffect(() {
+      if (playback.track == null || playback.playlist == null) return null;
+      final index = playback.playlist!.tracks
+          .indexWhere((track) => track.id == playback.track!.id);
+      if (index < 0) return;
+      controller.scrollToIndex(
+        index,
+        preferPosition: AutoScrollPosition.middle,
+      );
+      return null;
+    }, []);
+
     return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+      filter: ImageFilter.blur(
+        sigmaX: 12.0,
+        sigmaY: 12.0,
+      ),
       child: Container(
+        margin: EdgeInsets.all(floating ? 8.0 : 0),
+        padding: const EdgeInsets.only(
+          top: 5.0,
+        ),
         decoration: BoxDecoration(
           color: Theme.of(context)
               .navigationRailTheme
               .backgroundColor
               ?.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.only(
-          top: 5.0,
+          borderRadius: borderRadius,
         ),
         child: Column(
           children: [
+            Container(
+              height: 5,
+              width: 100,
+              margin: const EdgeInsets.only(bottom: 5, top: 2),
+              decoration: BoxDecoration(
+                color: headlineColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
             Text(
               "Queue (${playback.playlist?.name})",
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headline4?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
               overflow: TextOverflow.ellipsis,
             ),
+            const SizedBox(height: 10),
             Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  ...tracks.asMap().entries.mapIndexed((i, track) {
+              child: ListView.builder(
+                  controller: controller,
+                  itemCount: tracks.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, i) {
+                    final track = tracks.asMap().entries.elementAt(i);
                     String duration =
                         "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: TrackTile(
-                        playback,
-                        track: track,
-                        duration: duration,
-                        thumbnailUrl:
-                            imageToUrlString(track.value.album?.images),
-                        isActive: playback.track?.id == track.value.id,
-                        onTrackPlayButtonPressed: (currentTrack) async {
-                          if (playback.track?.id == track.value.id) return;
-                          await playback.setPlaylistPosition(i);
-                        },
+                    return AutoScrollTag(
+                      key: ValueKey(i),
+                      controller: controller,
+                      index: i,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TrackTile(
+                          playback,
+                          track: track,
+                          duration: duration,
+                          thumbnailUrl:
+                              imageToUrlString(track.value.album?.images),
+                          isActive: playback.track?.id == track.value.id,
+                          onTrackPlayButtonPressed: (currentTrack) async {
+                            if (playback.track?.id == track.value.id) return;
+                            await playback.setPlaylistPosition(i);
+                          },
+                        ),
                       ),
                     );
                   }),
-                ],
-              ),
             ),
           ],
         ),

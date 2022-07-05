@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,7 +22,7 @@ class PlayerOverlay extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
     final isCurrentRoute = useIsCurrentRoute("/");
-    final paletteColor = usePaletteColor(context, albumArt, ref);
+    final paletteColor = usePaletteColor(albumArt, ref);
     final playback = ref.watch(playbackProvider);
 
     if (isCurrentRoute == false) {
@@ -45,56 +47,66 @@ class PlayerOverlay extends HookConsumerWidget {
             GoRouter.of(context).push("/player");
           }
         },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
-          width: MediaQuery.of(context).size.width,
-          height: 50,
-          decoration: BoxDecoration(
-            color: paletteColor.color,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Material(
-            type: MaterialType.transparency,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () => GoRouter.of(context).push("/player"),
-                      child: PlayerTrackDetails(
-                        albumArt: albumArt,
-                        color: paletteColor.bodyTextColor,
-                      ),
-                    ),
-                  ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+              decoration: BoxDecoration(
+                color: paletteColor.color.withOpacity(.7),
+                border: Border.all(
+                  color: paletteColor.titleTextColor,
+                  width: 2,
                 ),
-                Row(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Material(
+                type: MaterialType.transparency,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                        icon: const Icon(Icons.skip_previous_rounded),
-                        color: paletteColor.bodyTextColor,
-                        onPressed: () {
-                          onPrevious();
-                        }),
-                    IconButton(
-                      icon: Icon(
-                        playback.isPlaying
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
+                    Expanded(
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () => GoRouter.of(context).push("/player"),
+                          child: PlayerTrackDetails(
+                            albumArt: albumArt,
+                            color: paletteColor.bodyTextColor,
+                          ),
+                        ),
                       ),
-                      color: paletteColor.bodyTextColor,
-                      onPressed: _playOrPause,
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.skip_next_rounded),
-                      onPressed: () => onNext(),
-                      color: paletteColor.bodyTextColor,
+                    Row(
+                      children: [
+                        IconButton(
+                            icon: const Icon(Icons.skip_previous_rounded),
+                            color: paletteColor.bodyTextColor,
+                            onPressed: () {
+                              onPrevious();
+                            }),
+                        IconButton(
+                          icon: Icon(
+                            playback.isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                          ),
+                          color: paletteColor.bodyTextColor,
+                          onPressed: _playOrPause,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.skip_next_rounded),
+                          onPressed: () => onNext(),
+                          color: paletteColor.bodyTextColor,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

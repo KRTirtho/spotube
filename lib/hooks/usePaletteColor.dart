@@ -10,8 +10,8 @@ final _paletteColorState = StateProvider<PaletteColor>(
   },
 );
 
-PaletteColor usePaletteColor(
-    BuildContext context, String imageUrl, WidgetRef ref) {
+PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
+  final context = useContext();
   final paletteColor = ref.watch(_paletteColorState);
   final mounted = useIsMounted();
 

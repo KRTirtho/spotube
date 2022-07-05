@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-void useCustomStatusBarColor(Color color, bool isCurrentRoute) {
+void useCustomStatusBarColor(
+  Color color,
+  bool isCurrentRoute, {
+  bool noSetBGColor = false,
+}) {
   final context = useContext();
   final backgroundColor = Theme.of(context).backgroundColor;
   resetStatusbar() => SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
-          statusBarColor: backgroundColor, // status bar color
+          statusBarColor:
+              !noSetBGColor ? backgroundColor : null, // status bar color
           statusBarIconBrightness: backgroundColor.computeLuminance() > 0.179
               ? Brightness.dark
               : Brightness.light,

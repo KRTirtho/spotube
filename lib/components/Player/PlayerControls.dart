@@ -8,6 +8,7 @@ import 'package:spotube/provider/Playback.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final Color? iconColor;
+
   PlayerControls({
     this.iconColor,
     Key? key,

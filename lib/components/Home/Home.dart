@@ -57,11 +57,11 @@ class Home extends HookConsumerWidget {
     useUpdateChecker(ref);
 
     final titleBarContents = Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Row(
-          children: [
-            Expanded(
-                child: Row(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
               children: [
                 Container(
                   constraints: BoxConstraints(
@@ -74,9 +74,11 @@ class Home extends HookConsumerWidget {
                 if (!Platform.isMacOS && !kIsMobile)
                   const TitleBarActionButtons(),
               ],
-            ))
-          ],
-        ));
+            ),
+          )
+        ],
+      ),
+    );
 
     final backgroundColor = Theme.of(context).backgroundColor;
 
@@ -96,9 +98,10 @@ class Home extends HookConsumerWidget {
       child: Scaffold(
         body: Column(
           children: [
-            kIsMobile
-                ? titleBarContents
-                : WindowTitleBarBox(child: titleBarContents),
+            if (_selectedIndex.value != 3)
+              kIsMobile
+                  ? titleBarContents
+                  : WindowTitleBarBox(child: titleBarContents),
             Expanded(
               child: Row(
                 children: [
@@ -110,7 +113,11 @@ class Home extends HookConsumerWidget {
                   if (_selectedIndex.value == 0)
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(
+                          bottom: 8.0,
+                          top: 8.0,
+                          left: 8.0,
+                        ),
                         child: HookBuilder(builder: (context) {
                           final pagingController = usePaginatedFutureProvider<
                               Page<Category>, int, Category>(
