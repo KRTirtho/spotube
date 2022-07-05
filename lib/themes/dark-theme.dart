@@ -69,6 +69,7 @@ ThemeData darkTheme({
         borderRadius: BorderRadius.circular(18.0),
       ),
     ),
+    dialogTheme: DialogTheme(backgroundColor: backgroundMaterialColor[900]),
     cardColor: backgroundMaterialColor[800],
     canvasColor: backgroundMaterialColor[900],
   );

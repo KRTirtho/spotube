@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
+import 'package:spotube/components/Lyrics/LyricDelayAdjustDialog.dart';
 import 'package:spotube/components/Lyrics/Lyrics.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
@@ -21,12 +22,19 @@ import 'package:spotube/provider/Playback.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
+final lyricDelayState = StateProvider<Duration>(
+  (ref) {
+    return Duration.zero;
+  },
+);
+
 class SyncedLyrics extends HookConsumerWidget {
   const SyncedLyrics({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
     final timedLyricsSnapshot = ref.watch(rentanadviserLyricsQuery);
+    final lyricDelay = ref.watch(lyricDelayState);
 
     Playback playback = ref.watch(playbackProvider);
     final breakpoint = useBreakpoints();
@@ -43,12 +51,15 @@ class SyncedLyrics extends HookConsumerWidget {
       [lyricValue],
     );
 
-    final currentTime = useSyncedLyrics(ref, lyricsMap);
+    final currentTime = useSyncedLyrics(ref, lyricsMap, lyricDelay);
 
     final textTheme = Theme.of(context).textTheme;
 
     useEffect(() {
       controller.scrollToIndex(0);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(lyricDelayState.notifier).state = Duration.zero;
+      });
       failed.value = false;
       return null;
     }, [playback.track]);
@@ -130,7 +141,7 @@ class SyncedLyrics extends HookConsumerWidget {
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: Container(
             color: palette.color.withOpacity(.7),
             child: SafeArea(
@@ -141,20 +152,50 @@ class SyncedLyrics extends HookConsumerWidget {
                         PageWindowTitleBar(
                           foregroundColor: palette.bodyTextColor,
                         ),
-                        Center(
-                            child: SizedBox(
+                        SizedBox(
                           height: breakpoint >= Breakpoints.md ? 50 : 30,
-                          child: playback.track?.name != null &&
-                                  playback.track!.name!.length > 29
-                              ? SpotubeMarqueeText(
-                                  text: playback.track?.name ?? "Not Playing",
-                                  style: headlineTextStyle,
-                                )
-                              : Text(
-                                  playback.track?.name ?? "Not Playing",
-                                  style: headlineTextStyle,
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: playback.track?.name != null &&
+                                          playback.track!.name!.length > 29
+                                      ? SpotubeMarqueeText(
+                                          text: playback.track?.name ??
+                                              "Not Playing",
+                                          style: headlineTextStyle,
+                                        )
+                                      : Text(
+                                          playback.track?.name ?? "Not Playing",
+                                          style: headlineTextStyle,
+                                        ),
                                 ),
-                        )),
+                                Positioned.fill(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: IconButton(
+                                      tooltip: "Lyrics Delay",
+                                      icon: const Icon(Icons.av_timer_rounded),
+                                      onPressed: () async {
+                                        final delay = await showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              const LyricDelayAdjustDialog(),
+                                        );
+                                        if (delay != null) {
+                                          ref
+                                              .read(lyricDelayState.notifier)
+                                              .state = delay;
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                         Center(
                           child: Text(
                             artistsToString<Artist>(
@@ -173,6 +214,7 @@ class SyncedLyrics extends HookConsumerWidget {
                                 final lyricSlice = lyricValue.lyrics[index];
                                 final isActive =
                                     lyricSlice.time.inSeconds == currentTime;
+
                                 if (isActive) {
                                   controller.scrollToIndex(
                                     index,

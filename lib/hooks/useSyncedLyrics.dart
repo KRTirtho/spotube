@@ -2,7 +2,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/provider/Playback.dart';
 
-useSyncedLyrics(WidgetRef ref, Map<int, String> lyricsMap) {
+int useSyncedLyrics(
+  WidgetRef ref,
+  Map<int, String> lyricsMap,
+  Duration delay,
+) {
   final player = ref.watch(playbackProvider.select(
     (value) => (value.player),
   ));
@@ -19,5 +23,5 @@ useSyncedLyrics(WidgetRef ref, Map<int, String> lyricsMap) {
     return () => lol.cancel();
   }, [lyricsMap]);
 
-  return currentTime.value;
+  return (Duration(seconds: currentTime.value) + delay).inSeconds;
 }
