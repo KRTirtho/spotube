@@ -177,151 +177,155 @@ class TrackTile extends HookConsumerWidget {
             : Colors.transparent,
         borderRadius: BorderRadius.circular(isActive ? 10 : 0),
       ),
-      child: Row(
-        children: [
-          SizedBox(
-            height: 20,
-            width: 25,
-            child: Text(
-              (track.key + 1).toString(),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          if (thumbnailUrl != null)
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: breakpoint.isMoreThan(Breakpoints.md) ? 8.0 : 0,
-                vertical: 8.0,
+      child: Material(
+        type: MaterialType.transparency,
+        child: Row(
+          children: [
+            SizedBox(
+              height: 20,
+              width: 25,
+              child: Text(
+                (track.key + 1).toString(),
+                textAlign: TextAlign.center,
               ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
-                child: CachedNetworkImage(
-                  placeholder: (context, url) {
-                    return Container(
-                      height: 40,
-                      width: 40,
-                      color: Theme.of(context).primaryColor,
-                    );
-                  },
-                  imageUrl: thumbnailUrl!,
-                  maxHeightDiskCache: 40,
-                  maxWidthDiskCache: 40,
+            ),
+            if (thumbnailUrl != null)
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: breakpoint.isMoreThan(Breakpoints.md) ? 8.0 : 0,
+                  vertical: 8.0,
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) {
+                      return Container(
+                        height: 40,
+                        width: 40,
+                        color: Theme.of(context).primaryColor,
+                      );
+                    },
+                    imageUrl: thumbnailUrl!,
+                    maxHeightDiskCache: 40,
+                    maxWidthDiskCache: 40,
+                  ),
                 ),
               ),
+            IconButton(
+              icon: Icon(
+                playback.track?.id != null &&
+                        playback.track?.id == track.value.id
+                    ? Icons.pause_circle_rounded
+                    : Icons.play_circle_rounded,
+                color: Theme.of(context).primaryColor,
+              ),
+              onPressed: () => onTrackPlayButtonPressed?.call(
+                track.value,
+              ),
             ),
-          IconButton(
-            icon: Icon(
-              playback.track?.id != null && playback.track?.id == track.value.id
-                  ? Icons.pause_circle_rounded
-                  : Icons.play_circle_rounded,
-              color: Theme.of(context).primaryColor,
-            ),
-            onPressed: () => onTrackPlayButtonPressed?.call(
-              track.value,
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  track.value.name ?? "",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: breakpoint.isSm ? 14 : 17,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    track.value.name ?? "",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: breakpoint.isSm ? 14 : 17,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  artistsToClickableArtists(track.value.artists ?? [],
+                      textStyle: TextStyle(
+                          fontSize:
+                              breakpoint.isLessThan(Breakpoints.lg) ? 12 : 14)),
+                ],
+              ),
+            ),
+            if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
+              Expanded(
+                child: LinkText(
+                  track.value.album!.name!,
+                  "/album/${track.value.album?.id}",
+                  extra: track.value.album,
                   overflow: TextOverflow.ellipsis,
                 ),
-                artistsToClickableArtists(track.value.artists ?? [],
-                    textStyle: TextStyle(
-                        fontSize:
-                            breakpoint.isLessThan(Breakpoints.lg) ? 12 : 14)),
-              ],
-            ),
-          ),
-          if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
-            Expanded(
-              child: LinkText(
-                track.value.album!.name!,
-                "/album/${track.value.album?.id}",
-                extra: track.value.album,
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          if (!breakpoint.isSm) ...[
+            if (!breakpoint.isSm) ...[
+              const SizedBox(width: 10),
+              Text(duration),
+            ],
             const SizedBox(width: 10),
-            Text(duration),
+            PopupMenuButton(
+              icon: const Icon(Icons.more_horiz_rounded),
+              itemBuilder: (context) {
+                return [
+                  if (auth.isLoggedIn)
+                    PopupMenuItem(
+                      child: Row(
+                        children: const [
+                          Icon(Icons.add_box_rounded),
+                          SizedBox(width: 10),
+                          Text("Add to Playlist"),
+                        ],
+                      ),
+                      value: "add-playlist",
+                    ),
+                  if (userPlaylist && auth.isLoggedIn)
+                    PopupMenuItem(
+                      child: Row(
+                        children: const [
+                          Icon(Icons.remove_circle_outline_rounded),
+                          SizedBox(width: 10),
+                          Text("Remove from Playlist"),
+                        ],
+                      ),
+                      value: "remove-playlist",
+                    ),
+                  if (auth.isLoggedIn)
+                    PopupMenuItem(
+                      child: Row(
+                        children: [
+                          Icon(isSaved
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded),
+                          const SizedBox(width: 10),
+                          const Text("Favorite")
+                        ],
+                      ),
+                      value: "favorite",
+                    ),
+                  PopupMenuItem(
+                    child: Row(
+                      children: const [
+                        Icon(Icons.share_rounded),
+                        SizedBox(width: 10),
+                        Text("Share")
+                      ],
+                    ),
+                    value: "share",
+                  )
+                ];
+              },
+              onSelected: (value) {
+                switch (value) {
+                  case "favorite":
+                    actionFavorite(isSaved);
+                    break;
+                  case "add-playlist":
+                    actionAddToPlaylist();
+                    break;
+                  case "remove-playlist":
+                    actionRemoveFromPlaylist();
+                    break;
+                  case "share":
+                    actionShare(track.value);
+                    break;
+                }
+              },
+            ),
           ],
-          const SizedBox(width: 10),
-          PopupMenuButton(
-            icon: const Icon(Icons.more_horiz_rounded),
-            itemBuilder: (context) {
-              return [
-                if (auth.isLoggedIn)
-                  PopupMenuItem(
-                    child: Row(
-                      children: const [
-                        Icon(Icons.add_box_rounded),
-                        SizedBox(width: 10),
-                        Text("Add to Playlist"),
-                      ],
-                    ),
-                    value: "add-playlist",
-                  ),
-                if (userPlaylist && auth.isLoggedIn)
-                  PopupMenuItem(
-                    child: Row(
-                      children: const [
-                        Icon(Icons.remove_circle_outline_rounded),
-                        SizedBox(width: 10),
-                        Text("Remove from Playlist"),
-                      ],
-                    ),
-                    value: "remove-playlist",
-                  ),
-                if (auth.isLoggedIn)
-                  PopupMenuItem(
-                    child: Row(
-                      children: [
-                        Icon(isSaved
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded),
-                        const SizedBox(width: 10),
-                        const Text("Favorite")
-                      ],
-                    ),
-                    value: "favorite",
-                  ),
-                PopupMenuItem(
-                  child: Row(
-                    children: const [
-                      Icon(Icons.share_rounded),
-                      SizedBox(width: 10),
-                      Text("Share")
-                    ],
-                  ),
-                  value: "share",
-                )
-              ];
-            },
-            onSelected: (value) {
-              switch (value) {
-                case "favorite":
-                  actionFavorite(isSaved);
-                  break;
-                case "add-playlist":
-                  actionAddToPlaylist();
-                  break;
-                case "remove-playlist":
-                  actionRemoveFromPlaylist();
-                  break;
-                case "share":
-                  actionShare(track.value);
-                  break;
-              }
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

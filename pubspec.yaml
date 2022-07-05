@@ -64,6 +64,7 @@ dependencies:
   dbus: ^0.7.3
   audioplayers: ^1.0.1
   resizable_widget: ^1.0.5
+  async: ^2.8.2
 
 dev_dependencies:
   flutter_test:

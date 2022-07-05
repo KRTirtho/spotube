@@ -37,8 +37,8 @@ class Search extends HookConsumerWidget {
     }
     final searchSnapshot = ref.watch(searchQuery(searchTerm));
 
-    return SafeArea(
-      child: Expanded(
+    return Expanded(
+      child: SafeArea(
         child: Container(
           color: Theme.of(context).backgroundColor,
           child: Column(

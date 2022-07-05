@@ -67,7 +67,7 @@ class PlayerView extends HookConsumerWidget {
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
+          child: Material(
             color: paletteColor.color.withOpacity(.5),
             child: SafeArea(
               child: Column(

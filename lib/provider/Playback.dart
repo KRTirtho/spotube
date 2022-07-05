@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -227,6 +228,27 @@ class Playback extends PersistedChangeNotifier {
     player.dispose();
   }
 
+  Future<T> retryingOperation<T>(
+    Future<T> Function() inner, {
+    Duration? timeout,
+  }) async {
+    T result;
+    try {
+      final operation = CancelableOperation.fromFuture(inner());
+      result = await operation.value;
+      await Future.delayed(timeout ?? const Duration(seconds: 5), () async {
+        if (!operation.isCompleted) {
+          operation.cancel();
+          result = await inner();
+        }
+      });
+      return result;
+    } catch (e) {
+      result = await inner();
+      return result;
+    }
+  }
+
   // playlist & track list methods
   Future<SpotubeTrack> toSpotubeTrack(Track track) async {
     final format = preferences.ytSearchFormat;
@@ -260,7 +282,8 @@ class Playback extends PersistedChangeNotifier {
       );
       ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
     } else {
-      VideoSearchList videos = await youtube.search.search(queryString);
+      VideoSearchList videos =
+          await retryingOperation(() => youtube.search.search(queryString));
       if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
         List<Map> ratedRankedVideos = videos
             .map((video) {
@@ -310,7 +333,9 @@ class Playback extends PersistedChangeNotifier {
       }
     }
 
-    final trackManifest = await youtube.videos.streams.getManifest(ytVideo.id);
+    StreamManifest trackManifest = await retryingOperation(
+      () => youtube.videos.streams.getManifest(ytVideo.id),
+    );
 
     _logger.v(
       "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
