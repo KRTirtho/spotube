@@ -11,8 +11,7 @@ void useCustomStatusBarColor(
   final backgroundColor = Theme.of(context).backgroundColor;
   resetStatusbar() => SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
-          statusBarColor:
-              !noSetBGColor ? backgroundColor : null, // status bar color
+          statusBarColor: backgroundColor, // status bar color
           statusBarIconBrightness: backgroundColor.computeLuminance() > 0.179
               ? Brightness.dark
               : Brightness.light,
@@ -25,7 +24,8 @@ void useCustomStatusBarColor(
     if (isCurrentRoute && statusBarColor != color) {
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
-          statusBarColor: color, // status bar color
+          statusBarColor:
+              noSetBGColor ? Colors.transparent : color, // status bar color
           statusBarIconBrightness: color.computeLuminance() > 0.179
               ? Brightness.dark
               : Brightness.light,

@@ -54,23 +54,22 @@ class PlayerView extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    return SafeArea(
-      child: Scaffold(
-        // backgroundColor: paletteColor.color,
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(
-                albumArt,
-                cacheKey: albumArt,
-              ),
-              fit: BoxFit.cover,
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: CachedNetworkImageProvider(
+              albumArt,
+              cacheKey: albumArt,
             ),
+            fit: BoxFit.cover,
           ),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Container(
-              color: paletteColor.color.withOpacity(.5),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            color: paletteColor.color.withOpacity(.5),
+            child: SafeArea(
               child: Column(
                 children: [
                   PageWindowTitleBar(
