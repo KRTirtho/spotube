@@ -15,24 +15,27 @@ class UserLibrary extends ConsumerWidget {
     return Expanded(
       child: DefaultTabController(
         length: 3,
-        child: Scaffold(
-          appBar: TabBar(
-            indicator: const BoxDecoration(color: Colors.transparent),
-            labelColor: Theme.of(context).primaryColor,
-            unselectedLabelColor: Theme.of(context).textTheme.bodyText1?.color,
-            tabs: const [
-              Tab(text: "Playlist"),
-              Tab(text: "Artists"),
-              Tab(text: "Album"),
-            ],
+        child: SafeArea(
+          child: Scaffold(
+            appBar: TabBar(
+              indicator: const BoxDecoration(color: Colors.transparent),
+              labelColor: Theme.of(context).primaryColor,
+              unselectedLabelColor:
+                  Theme.of(context).textTheme.bodyText1?.color,
+              tabs: const [
+                Tab(text: "Playlist"),
+                Tab(text: "Artists"),
+                Tab(text: "Album"),
+              ],
+            ),
+            body: auth.isLoggedIn
+                ? TabBarView(children: [
+                    const UserPlaylists(),
+                    UserArtists(),
+                    const UserAlbums(),
+                  ])
+                : const AnonymousFallback(),
           ),
-          body: auth.isLoggedIn
-              ? TabBarView(children: [
-                  const UserPlaylists(),
-                  UserArtists(),
-                  const UserAlbums(),
-                ])
-              : const AnonymousFallback(),
         ),
       ),
     );

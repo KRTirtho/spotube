@@ -52,7 +52,7 @@ class Lyrics extends HookConsumerWidget {
                     return Text(
                       lyrics == null && playback.track == null
                           ? "No Track being played currently"
-                          : lyrics!,
+                          : lyrics ?? "",
                       style: textTheme.headline6
                           ?.copyWith(color: textTheme.headline1?.color),
                     );

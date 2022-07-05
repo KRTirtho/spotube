@@ -37,183 +37,188 @@ class Search extends HookConsumerWidget {
     }
     final searchSnapshot = ref.watch(searchQuery(searchTerm));
 
-    return Expanded(
-      child: Container(
-        color: Theme.of(context).backgroundColor,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: controller,
-                      decoration: const InputDecoration(hintText: "Search..."),
-                      onSubmitted: (value) {
+    return SafeArea(
+      child: Expanded(
+        child: Container(
+          color: Theme.of(context).backgroundColor,
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controller,
+                        decoration:
+                            const InputDecoration(hintText: "Search..."),
+                        onSubmitted: (value) {
+                          ref.read(searchTermStateProvider.notifier).state =
+                              controller.value.text;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    MaterialButton(
+                      elevation: 3,
+                      splashColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 21),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      child: const Icon(Icons.search_rounded),
+                      onPressed: () {
                         ref.read(searchTermStateProvider.notifier).state =
                             controller.value.text;
                       },
                     ),
-                  ),
-                  const SizedBox(width: 5),
-                  MaterialButton(
-                    elevation: 3,
-                    splashColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 21),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    child: const Icon(Icons.search_rounded),
-                    onPressed: () {
-                      ref.read(searchTermStateProvider.notifier).state =
-                          controller.value.text;
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            searchSnapshot.when(
-              data: (data) {
-                Playback playback = ref.watch(playbackProvider);
-                List<AlbumSimple> albums = [];
-                List<Artist> artists = [];
-                List<Track> tracks = [];
-                List<PlaylistSimple> playlists = [];
-                for (MapEntry<int, Page> page in data.asMap().entries) {
-                  for (var item in page.value.items ?? []) {
-                    if (item is AlbumSimple) {
-                      albums.add(item);
-                    } else if (item is PlaylistSimple) {
-                      playlists.add(item);
-                    } else if (item is Artist) {
-                      artists.add(item);
-                    } else if (item is Track) {
-                      tracks.add(item);
+              searchSnapshot.when(
+                data: (data) {
+                  Playback playback = ref.watch(playbackProvider);
+                  List<AlbumSimple> albums = [];
+                  List<Artist> artists = [];
+                  List<Track> tracks = [];
+                  List<PlaylistSimple> playlists = [];
+                  for (MapEntry<int, Page> page in data.asMap().entries) {
+                    for (var item in page.value.items ?? []) {
+                      if (item is AlbumSimple) {
+                        albums.add(item);
+                      } else if (item is PlaylistSimple) {
+                        playlists.add(item);
+                      } else if (item is Artist) {
+                        artists.add(item);
+                      } else if (item is Track) {
+                        tracks.add(item);
+                      }
                     }
                   }
-                }
-                return Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (tracks.isNotEmpty)
-                            Text(
-                              "Songs",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          ...tracks.asMap().entries.map((track) {
-                            String duration =
-                                "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                            return TrackTile(
-                              playback,
-                              track: track,
-                              duration: duration,
-                              thumbnailUrl:
-                                  imageToUrlString(track.value.album?.images),
-                              isActive: playback.track?.id == track.value.id,
-                              onTrackPlayButtonPressed: (currentTrack) async {
-                                var isPlaylistPlaying = playback.playlist?.id !=
-                                        null &&
-                                    playback.playlist?.id == currentTrack.id;
-                                if (!isPlaylistPlaying) {
-                                  playback.playPlaylist(
-                                    CurrentPlaylist(
-                                      tracks: [currentTrack],
-                                      id: currentTrack.id!,
-                                      name: currentTrack.name!,
-                                      thumbnail: imageToUrlString(
-                                          currentTrack.album?.images),
-                                    ),
-                                  );
-                                } else if (isPlaylistPlaying &&
-                                    currentTrack.id != null &&
-                                    currentTrack.id != playback.track?.id) {
-                                  playback.play(currentTrack);
-                                }
-                              },
-                            );
-                          }),
-                          if (albums.isNotEmpty)
-                            Text(
-                              "Albums",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          const SizedBox(height: 10),
-                          Scrollbar(
-                            controller: albumController,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              controller: albumController,
-                              child: Row(
-                                children: albums.map((album) {
-                                  return AlbumCard(simpleAlbumToAlbum(album));
-                                }).toList(),
+                  return Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (tracks.isNotEmpty)
+                              Text(
+                                "Songs",
+                                style: Theme.of(context).textTheme.headline5,
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          if (artists.isNotEmpty)
-                            Text(
-                              "Artists",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          const SizedBox(height: 10),
-                          Scrollbar(
-                            controller: artistController,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              controller: artistController,
-                              child: Row(
-                                children: artists
-                                    .map(
-                                      (artist) => Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 15),
-                                        child: ArtistCard(artist),
+                            ...tracks.asMap().entries.map((track) {
+                              String duration =
+                                  "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                              return TrackTile(
+                                playback,
+                                track: track,
+                                duration: duration,
+                                thumbnailUrl:
+                                    imageToUrlString(track.value.album?.images),
+                                isActive: playback.track?.id == track.value.id,
+                                onTrackPlayButtonPressed: (currentTrack) async {
+                                  var isPlaylistPlaying =
+                                      playback.playlist?.id != null &&
+                                          playback.playlist?.id ==
+                                              currentTrack.id;
+                                  if (!isPlaylistPlaying) {
+                                    playback.playPlaylist(
+                                      CurrentPlaylist(
+                                        tracks: [currentTrack],
+                                        id: currentTrack.id!,
+                                        name: currentTrack.name!,
+                                        thumbnail: imageToUrlString(
+                                            currentTrack.album?.images),
                                       ),
-                                    )
-                                    .toList(),
+                                    );
+                                  } else if (isPlaylistPlaying &&
+                                      currentTrack.id != null &&
+                                      currentTrack.id != playback.track?.id) {
+                                    playback.play(currentTrack);
+                                  }
+                                },
+                              );
+                            }),
+                            if (albums.isNotEmpty)
+                              Text(
+                                "Albums",
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                            const SizedBox(height: 10),
+                            Scrollbar(
+                              controller: albumController,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                controller: albumController,
+                                child: Row(
+                                  children: albums.map((album) {
+                                    return AlbumCard(simpleAlbumToAlbum(album));
+                                  }).toList(),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          if (playlists.isNotEmpty)
-                            Text(
-                              "Playlists",
-                              style: Theme.of(context).textTheme.headline5,
+                            const SizedBox(height: 20),
+                            if (artists.isNotEmpty)
+                              Text(
+                                "Artists",
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                            const SizedBox(height: 10),
+                            Scrollbar(
+                              controller: artistController,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                controller: artistController,
+                                child: Row(
+                                  children: artists
+                                      .map(
+                                        (artist) => Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                          child: ArtistCard(artist),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
                             ),
-                          const SizedBox(height: 10),
-                          Scrollbar(
-                            scrollbarOrientation: breakpoint > Breakpoints.md
-                                ? ScrollbarOrientation.bottom
-                                : ScrollbarOrientation.top,
-                            controller: playlistController,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
+                            const SizedBox(height: 20),
+                            if (playlists.isNotEmpty)
+                              Text(
+                                "Playlists",
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                            const SizedBox(height: 10),
+                            Scrollbar(
+                              scrollbarOrientation: breakpoint > Breakpoints.md
+                                  ? ScrollbarOrientation.bottom
+                                  : ScrollbarOrientation.top,
                               controller: playlistController,
-                              child: Row(
-                                children: playlists
-                                    .map(
-                                      (playlist) => PlaylistCard(playlist),
-                                    )
-                                    .toList(),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                controller: playlistController,
+                                child: Row(
+                                  children: playlists
+                                      .map(
+                                        (playlist) => PlaylistCard(playlist),
+                                      )
+                                      .toList(),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-              error: (error, __) => Text("Error $error"),
-              loading: () => const CircularProgressIndicator(),
-            )
-          ],
+                  );
+                },
+                error: (error, __) => Text("Error $error"),
+                loading: () => const CircularProgressIndicator(),
+              )
+            ],
+          ),
         ),
       ),
     );

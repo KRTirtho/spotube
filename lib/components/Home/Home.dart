@@ -94,82 +94,79 @@ class Home extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            if (_selectedIndex.value != 3)
-              kIsMobile
-                  ? titleBarContents
-                  : WindowTitleBarBox(child: titleBarContents),
-            Expanded(
-              child: Row(
-                children: [
-                  Sidebar(
-                    selectedIndex: _selectedIndex.value,
-                    onSelectedIndexChanged: _onSelectedIndexChanged,
-                  ),
-                  // contents of the spotify
-                  if (_selectedIndex.value == 0)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 8.0,
-                          top: 8.0,
-                          left: 8.0,
-                        ),
-                        child: HookBuilder(builder: (context) {
-                          final pagingController = usePaginatedFutureProvider<
-                              Page<Category>, int, Category>(
-                            (pageKey) => categoriesQuery(pageKey),
-                            ref: ref,
-                            firstPageKey: 0,
-                            onData: (categories, pagingController, pageKey) {
-                              final items = categories.items?.toList();
-                              if (pageKey == 0) {
-                                Category category = Category();
-                                category.id = "user-featured-playlists";
-                                category.name = "Featured";
-                                items?.insert(0, category);
-                              }
-                              if (categories.isLast && items != null) {
-                                pagingController.appendLastPage(items);
-                              } else if (categories.items != null) {
-                                pagingController.appendPage(
-                                    items!, categories.nextOffset);
-                              }
-                            },
-                          );
-                          return PagedListView(
-                            pagingController: pagingController,
-                            builderDelegate:
-                                PagedChildBuilderDelegate<Category>(
-                              firstPageProgressIndicatorBuilder: (_) =>
-                                  const ShimmerCategories(),
-                              newPageProgressIndicatorBuilder: (_) =>
-                                  const ShimmerCategories(),
-                              itemBuilder: (context, item, index) {
-                                return CategoryCard(item);
-                              },
-                            ),
-                          );
-                        }),
+    return Scaffold(
+      body: Column(
+        children: [
+          if (_selectedIndex.value != 3)
+            kIsMobile
+                ? titleBarContents
+                : WindowTitleBarBox(child: titleBarContents),
+          Expanded(
+            child: Row(
+              children: [
+                Sidebar(
+                  selectedIndex: _selectedIndex.value,
+                  onSelectedIndexChanged: _onSelectedIndexChanged,
+                ),
+                // contents of the spotify
+                if (_selectedIndex.value == 0)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 8.0,
+                        top: 8.0,
+                        left: 8.0,
                       ),
+                      child: HookBuilder(builder: (context) {
+                        final pagingController = usePaginatedFutureProvider<
+                            Page<Category>, int, Category>(
+                          (pageKey) => categoriesQuery(pageKey),
+                          ref: ref,
+                          firstPageKey: 0,
+                          onData: (categories, pagingController, pageKey) {
+                            final items = categories.items?.toList();
+                            if (pageKey == 0) {
+                              Category category = Category();
+                              category.id = "user-featured-playlists";
+                              category.name = "Featured";
+                              items?.insert(0, category);
+                            }
+                            if (categories.isLast && items != null) {
+                              pagingController.appendLastPage(items);
+                            } else if (categories.items != null) {
+                              pagingController.appendPage(
+                                  items!, categories.nextOffset);
+                            }
+                          },
+                        );
+                        return PagedListView(
+                          pagingController: pagingController,
+                          builderDelegate: PagedChildBuilderDelegate<Category>(
+                            firstPageProgressIndicatorBuilder: (_) =>
+                                const ShimmerCategories(),
+                            newPageProgressIndicatorBuilder: (_) =>
+                                const ShimmerCategories(),
+                            itemBuilder: (context, item, index) {
+                              return CategoryCard(item);
+                            },
+                          ),
+                        );
+                      }),
                     ),
-                  if (_selectedIndex.value == 1) const Search(),
-                  if (_selectedIndex.value == 2) const UserLibrary(),
-                  if (_selectedIndex.value == 3) const SyncedLyrics(),
-                ],
-              ),
+                  ),
+                if (_selectedIndex.value == 1) const Search(),
+                if (_selectedIndex.value == 2) const UserLibrary(),
+                if (_selectedIndex.value == 3) const SyncedLyrics(),
+              ],
             ),
-            // player itself
-            Player(),
-            SpotubeNavigationBar(
-              selectedIndex: _selectedIndex.value,
-              onSelectedIndexChanged: _onSelectedIndexChanged,
-            ),
-          ],
-        ),
+          ),
+          // player itself
+          Player(),
+          SpotubeNavigationBar(
+            selectedIndex: _selectedIndex.value,
+            onSelectedIndexChanged: _onSelectedIndexChanged,
+          ),
+        ],
       ),
     );
   }

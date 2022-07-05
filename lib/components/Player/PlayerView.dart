@@ -120,13 +120,22 @@ class PlayerView extends HookConsumerWidget {
                     )..repeat();
                     return RotationTransition(
                       turns: Tween(begin: 0.0, end: 1.0).animate(controller),
-                      child: CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                          albumArt,
-                          cacheKey: albumArt,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: paletteColor.titleTextColor,
+                            width: 2,
+                          ),
+                          shape: BoxShape.circle,
                         ),
-                        radius: MediaQuery.of(context).size.width *
-                            (breakpoint.isSm ? 0.4 : 0.3),
+                        child: CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            albumArt,
+                            cacheKey: albumArt,
+                          ),
+                          radius: MediaQuery.of(context).size.width *
+                              (breakpoint.isSm ? 0.4 : 0.3),
+                        ),
                       ),
                     );
                   }),
