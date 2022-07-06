@@ -8,6 +8,7 @@ import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
 class Sidebar extends HookConsumerWidget {
@@ -38,6 +39,7 @@ class Sidebar extends HookConsumerWidget {
     if (breakpoints.isSm) return Container();
     final extended = useState(false);
     final meSnapshot = ref.watch(currentUserQuery);
+    final auth = ref.watch(authProvider);
 
     final int titleBarDragMaxWidth = useBreakpointValue(
       md: 80,
@@ -104,31 +106,38 @@ class Sidebar extends HookConsumerWidget {
           ),
           SizedBox(
             width: titleBarDragMaxWidth.toDouble(),
-            child: meSnapshot.when(
-              data: (data) {
-                final avatarImg = imageToUrlString(data.images,
-                    index: (data.images?.length ?? 1) - 1);
+            child: Builder(
+              builder: (context) {
+                final data = meSnapshot.asData?.value;
+
+                final avatarImg = imageToUrlString(data?.images,
+                    index: (data?.images?.length ?? 1) - 1);
                 if (extended.value) {
                   return Padding(
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    CachedNetworkImageProvider(avatarImg),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                data.displayName ?? "Guest",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                          if (auth.isLoggedIn && data == null)
+                            const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          else if (data != null)
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      CachedNetworkImageProvider(avatarImg),
                                 ),
-                              ),
-                            ],
-                          ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  data.displayName ?? "Guest",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           IconButton(
                               icon: const Icon(Icons.settings_outlined),
                               onPressed: () => goToSettings(context)),
@@ -146,8 +155,6 @@ class Sidebar extends HookConsumerWidget {
                   );
                 }
               },
-              error: (e, _) => Text("Error $e"),
-              loading: () => const CircularProgressIndicator(),
             ),
           )
         ],

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:async/async.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -123,19 +122,23 @@ class Playback extends PersistedChangeNotifier {
   }
 
   Future<void> playPlaylist(CurrentPlaylist playlist, [int index = 0]) async {
-    if (index < 0 || index > playlist.tracks.length - 1) return;
-    this.playlist = playlist;
-    final played = this.playlist!.tracks[index];
-    status = PlaybackStatus.loading;
-    notifyListeners();
-    await play(played).then((_) {
-      int i = this
-          .playlist!
-          .tracks
-          .indexWhere((element) => element.id == played.id);
-      if (index == -1) return;
-      this.playlist!.tracks[i] = track!;
-    });
+    try {
+      if (index < 0 || index > playlist.tracks.length - 1) return;
+      this.playlist = playlist;
+      final played = this.playlist!.tracks[index];
+      status = PlaybackStatus.loading;
+      notifyListeners();
+      await play(played).then((_) {
+        int i = this
+            .playlist!
+            .tracks
+            .indexWhere((element) => element.id == played.id);
+        if (index == -1) return;
+        this.playlist!.tracks[i] = track!;
+      });
+    } catch (e) {
+      _logger.e("[playPlaylist] $e");
+    }
   }
 
   // player methods
@@ -228,25 +231,20 @@ class Playback extends PersistedChangeNotifier {
     player.dispose();
   }
 
-  Future<T> retryingOperation<T>(
+  Future<T> raceMultiple<T>(
     Future<T> Function() inner, {
-    Duration? timeout,
+    Duration timeout = const Duration(milliseconds: 2500),
+    int retryCount = 4,
   }) async {
-    T result;
-    try {
-      final operation = CancelableOperation.fromFuture(inner());
-      result = await operation.value;
-      await Future.delayed(timeout ?? const Duration(seconds: 5), () async {
-        if (!operation.isCompleted) {
-          operation.cancel();
-          result = await inner();
-        }
-      });
-      return result;
-    } catch (e) {
-      result = await inner();
-      return result;
-    }
+    return Future.any(
+      List.generate(retryCount, (i) {
+        if (i == 0) return inner();
+        return Future.delayed(
+          Duration(milliseconds: timeout.inMilliseconds * i),
+          inner,
+        );
+      }),
+    );
   }
 
   // playlist & track list methods
@@ -283,7 +281,7 @@ class Playback extends PersistedChangeNotifier {
       ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
     } else {
       VideoSearchList videos =
-          await retryingOperation(() => youtube.search.search(queryString));
+          await raceMultiple(() => youtube.search.search(queryString));
       if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
         List<Map> ratedRankedVideos = videos
             .map((video) {
@@ -333,7 +331,7 @@ class Playback extends PersistedChangeNotifier {
       }
     }
 
-    StreamManifest trackManifest = await retryingOperation(
+    StreamManifest trackManifest = await raceMultiple(
       () => youtube.videos.streams.getManifest(ytVideo.id),
     );
 

@@ -104,9 +104,14 @@ class Player extends HookConsumerWidget {
                     height: 20,
                     constraints: const BoxConstraints(maxWidth: 200),
                     child: HookBuilder(builder: (context) {
-                      final volume = useState(
-                        useMemoized(() => playback.volume, []),
-                      );
+                      final volume = useState(playback.volume);
+
+                      useEffect(() {
+                        if (volume.value != playback.volume) {
+                          volume.value = playback.volume;
+                        }
+                        return null;
+                      }, [playback.volume]);
                       return Slider.adaptive(
                         min: 0,
                         max: 1,
