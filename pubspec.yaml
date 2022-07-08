@@ -93,7 +93,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-  #   - images/a_dot_ham.jpeg
+    - assets/images/
+    - assets/tutorial/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -120,14 +121,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-msix_config:
-  display_name: Spotube
-  publisher_display_name: KRTirtho
-  identity_name: oss.krtirtho.spotube
-  msix_version: 1.0.1.0
-  logo_path: .\assets\spotube-logo.png
-  capabilities: "internetClient,internetClientServer,backgroundMediaPlayback"
 
 flutter_icons:
   android: true

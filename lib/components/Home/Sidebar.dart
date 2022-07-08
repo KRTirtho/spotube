@@ -23,7 +23,7 @@ class Sidebar extends HookConsumerWidget {
 
   Widget _buildSmallLogo() {
     return Image.asset(
-      "assets/spotube-logo.png",
+      "assets/images/spotube-logo.png",
       height: 50,
       width: 50,
     );

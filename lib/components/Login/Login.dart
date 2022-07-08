@@ -27,7 +27,7 @@ class Login extends HookConsumerWidget {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/spotube-logo.png",
+                  "assets/images/spotube-logo.png",
                   width: MediaQuery.of(context).size.width *
                       (breakpoint <= Breakpoints.md ? .5 : .3),
                 ),

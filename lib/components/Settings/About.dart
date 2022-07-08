@@ -33,8 +33,8 @@ class About extends HookWidget {
       onTap: () {
         showAboutDialog(
             context: context,
-            applicationIcon:
-                CircleAvatar(child: Image.asset("assets/spotube-logo.png")),
+            applicationIcon: CircleAvatar(
+                child: Image.asset("assets/images/spotube-logo.png")),
             applicationName: "Spotube",
             applicationVersion: info.version,
             applicationLegalese: licenseText,

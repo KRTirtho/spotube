@@ -54,7 +54,7 @@ class PlaybuttonCard extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: imageUrl,
                         placeholder: (context, url) =>
-                            Image.asset("assets/placeholder.png"),
+                            Image.asset("assets/images/placeholder.png"),
                       ),
                     ),
                     Positioned.directional(

@@ -39,7 +39,7 @@ class Search extends HookConsumerWidget {
 
     return Expanded(
       child: SafeArea(
-        child: Container(
+        child: Material(
           color: Theme.of(context).backgroundColor,
           child: Column(
             children: [
