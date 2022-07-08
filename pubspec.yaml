@@ -63,6 +63,7 @@ dependencies:
   hive_flutter: ^1.1.0
   dbus: ^0.7.3
   audioplayers: ^1.0.1
+  introduction_screen: ^3.0.2
 
 dev_dependencies:
   flutter_test:

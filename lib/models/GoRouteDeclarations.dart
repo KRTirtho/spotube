@@ -4,7 +4,8 @@ import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Home/Home.dart';
-import 'package:spotube/components/Settings/Login.dart';
+import 'package:spotube/components/Login/Login.dart';
+import 'package:spotube/components/Login/LoginTutorial.dart';
 import 'package:spotube/components/Player/PlayerView.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Settings/Settings.dart';
@@ -20,6 +21,12 @@ GoRouter createGoRouter() => GoRouter(
           path: "/login",
           pageBuilder: (context, state) => SpotubePage(
             child: Login(),
+          ),
+        ),
+        GoRoute(
+          path: "/login-tutorial",
+          pageBuilder: (context, state) => const SpotubePage(
+            child: LoginTutorial(),
           ),
         ),
         GoRoute(
@@ -71,6 +78,6 @@ GoRouter createGoRouter() => GoRouter(
               child: PlayerView(),
             );
           },
-        )
+        ),
       ],
     );
