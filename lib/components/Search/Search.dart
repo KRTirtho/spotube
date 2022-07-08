@@ -44,29 +44,29 @@ class Search extends HookConsumerWidget {
           child: Column(
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 color: Theme.of(context).backgroundColor,
-                child: Expanded(
-                  child: TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      suffix: ElevatedButton(
-                        child: const Icon(Icons.search_rounded),
-                        onPressed: () {
-                          ref.read(searchTermStateProvider.notifier).state =
-                              controller.value.text;
-                        },
-                      ),
-                      hintStyle: const TextStyle(height: 2),
-                      hintText: "Search...",
+                child: TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    suffix: ElevatedButton(
+                      child: const Icon(Icons.search_rounded),
+                      onPressed: () {
+                        ref.read(searchTermStateProvider.notifier).state =
+                            controller.value.text;
+                      },
                     ),
-                    onSubmitted: (value) {
-                      ref.read(searchTermStateProvider.notifier).state =
-                          controller.value.text;
-                    },
+                    hintStyle: const TextStyle(height: 2),
+                    hintText: "Search...",
                   ),
+                  onSubmitted: (value) {
+                    ref.read(searchTermStateProvider.notifier).state =
+                        controller.value.text;
+                  },
                 ),
               ),
               searchSnapshot.when(

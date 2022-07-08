@@ -10,7 +10,7 @@ class NotFound extends StatelessWidget {
       SizedBox(
         height: 150,
         width: 150,
-        child: Image.asset("assets/images/empty_box.png"),
+        child: Image.asset("assets/empty_box.png"),
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

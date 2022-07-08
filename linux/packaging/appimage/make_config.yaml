@@ -2,4 +2,5 @@ appId: oss.krtirtho.spotube
 icon: assets/spotube-logo.png
 
 include:
-  - libkeybinder-3.0-0
+  - libgstreamer1.0-dev
+  - libgstreamer-plugins-base1.0-dev

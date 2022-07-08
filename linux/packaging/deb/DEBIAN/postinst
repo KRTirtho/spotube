@@ -1,8 +1,0 @@
-#!/usr/bin/env sh
-
-echo Creating symlink
-
-ln -s /usr/share/spotube/spotube /usr/bin
-chmod +x /usr/bin/spotube
-
-exit 0

@@ -11,6 +11,7 @@ import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:collection/collection.dart';
 
 class Settings extends HookConsumerWidget {
   const Settings({Key? key}) : super(key: key);
@@ -19,12 +20,6 @@ class Settings extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
     final Auth auth = ref.watch(authProvider);
-    final ytSearchFormatController =
-        useTextEditingController(text: preferences.ytSearchFormat);
-
-    ytSearchFormatController.addListener(() {
-      preferences.setYtSearchFormat(ytSearchFormatController.value.text);
-    });
 
     final pickColorScheme = useCallback((ColorSchemeType schemeType) {
       return () => showDialog(
@@ -36,6 +31,9 @@ class Settings extends HookConsumerWidget {
           });
     }, []);
 
+    var ytSearchFormatController = useTextEditingController(
+      text: preferences.ytSearchFormat,
+    );
     return SafeArea(
       child: Scaffold(
         appBar: PageWindowTitleBar(
@@ -83,10 +81,13 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    const SizedBox(height: 10),
                     ListTile(
                       title: const Text("Accent Color Scheme"),
                       horizontalTitleGap: 10,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 5,
+                      ),
                       trailing: ColorTile(
                         color: preferences.accentColorScheme,
                         onPressed: pickColorScheme(ColorSchemeType.accent),
@@ -94,10 +95,13 @@ class Settings extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(ColorSchemeType.accent),
                     ),
-                    const SizedBox(height: 10),
                     ListTile(
                       title: const Text("Background Color Scheme"),
                       horizontalTitleGap: 10,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 5,
+                      ),
                       trailing: ColorTile(
                         color: preferences.backgroundColorScheme,
                         onPressed: pickColorScheme(ColorSchemeType.background),
@@ -105,7 +109,6 @@ class Settings extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(ColorSchemeType.background),
                     ),
-                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(15),
                       child: Wrap(
@@ -145,19 +148,11 @@ class Settings extends HookConsumerWidget {
                         ],
                       ),
                     ),
-                    ListTile(
-                      title: const Text("Download lyrics along with the Track"),
-                      horizontalTitleGap: 10,
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: preferences.saveTrackLyrics,
-                        onChanged: (state) {
-                          preferences.setSaveTrackLyrics(state);
-                        },
-                      ),
-                    ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0,
+                        vertical: 5,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -172,9 +167,34 @@ class Settings extends HookConsumerWidget {
                             flex: 1,
                             child: TextField(
                               controller: ytSearchFormatController,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                suffix: ElevatedButton(
+                                  child: const Icon(Icons.save_rounded),
+                                  onPressed: () {
+                                    preferences.setYtSearchFormat(
+                                      ytSearchFormatController.value.text,
+                                    );
+                                  },
+                                ),
+                              ),
+                              onSubmitted: (value) {
+                                preferences.setYtSearchFormat(value);
+                              },
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text("Download lyrics along with the Track"),
+                      horizontalTitleGap: 10,
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.saveTrackLyrics,
+                        onChanged: (state) {
+                          preferences.setSaveTrackLyrics(state);
+                        },
                       ),
                     ),
                     if (auth.isAnonymous)
@@ -304,7 +324,14 @@ class Settings extends HookConsumerWidget {
                       ),
                     ),
                     const About()
-                  ],
+                  ].mapIndexed((i, child) {
+                    return Container(
+                      color: i % 2 == 1
+                          ? Theme.of(context).primaryColor.withOpacity(.1)
+                          : null,
+                      child: child,
+                    );
+                  }).toList(),
                 ),
               ),
             ),

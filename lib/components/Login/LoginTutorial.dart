@@ -153,7 +153,7 @@ class LoginTutorial extends ConsumerWidget {
                 bodyAlignment: Alignment.center,
               ),
               title: "Success🥳",
-              image: Image.asset("assets/images/success.png"),
+              image: Image.asset("assets/success.png"),
               body:
                   "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
             )

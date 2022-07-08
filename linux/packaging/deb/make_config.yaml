@@ -10,7 +10,8 @@ section: x11
 installed_size: 24400
 
 dependencies:
-  - libkeybinder-3.0-0 (>= 0.3.2)
+  - libgstreamer1.0-dev
+  - libgstreamer-plugins-base1.0-dev
 
 essential: false
 icon: assets/spotube-logo.png
