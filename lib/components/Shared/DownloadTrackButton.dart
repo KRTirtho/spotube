@@ -29,8 +29,29 @@ class DownloadTrackButton extends HookConsumerWidget {
     final status = useState<TrackStatus>(TrackStatus.idle);
     YoutubeExplode yt = useMemoized(() => YoutubeExplode());
 
+    final outputFile = useState<File?>(null);
+    final downloadFolder = useState<String?>(null);
+    String fileName =
+        "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}";
+
+    useEffect(() {
+      (() async {
+        downloadFolder.value = path.join(
+            Platform.isAndroid
+                ? "/storage/emulated/0/Download"
+                : (await path_provider.getDownloadsDirectory())!.path,
+            "Spotube");
+
+        outputFile.value =
+            File(path.join(downloadFolder.value!, "$fileName.mp3"));
+      }());
+      return null;
+    }, [fileName, track]);
+
     final _downloadTrack = useCallback(() async {
-      if (track == null) return;
+      if (track == null ||
+          outputFile.value == null ||
+          downloadFolder.value == null) return;
       if ((kIsMobile) &&
           !await Permission.storage.isGranted &&
           !await Permission.storage.isPermanentlyDenied) {
@@ -47,18 +68,10 @@ class DownloadTrackButton extends HookConsumerWidget {
       StreamManifest manifest = await yt.videos.streamsClient
           .getManifest((track as SpotubeTrack).ytTrack.url);
 
-      String downloadFolder = path.join(
-          Platform.isAndroid
-              ? "/storage/emulated/0/Download"
-              : (await path_provider.getDownloadsDirectory())!.path,
-          "Spotube");
-      String fileName =
-          "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}";
-      File outputFile = File(path.join(downloadFolder, "$fileName.mp3"));
       File outputLyricsFile =
-          File(path.join(downloadFolder, "$fileName-lyrics.txt"));
+          File(path.join(downloadFolder.value!, "$fileName-lyrics.txt"));
 
-      if (await outputFile.exists()) {
+      if (await outputFile.value!.exists()) {
         final shouldReplace = await showDialog<bool>(
           context: context,
           builder: (context) {
@@ -113,9 +126,11 @@ class DownloadTrackButton extends HookConsumerWidget {
         },
       );
 
-      if (!await outputFile.exists()) await outputFile.create(recursive: true);
+      if (!await outputFile.value!.exists()) {
+        await outputFile.value!.create(recursive: true);
+      }
 
-      IOSink outputFileStream = outputFile.openWrite();
+      IOSink outputFileStream = outputFile.value!.openWrite();
       await audioStream.pipe(outputFileStream);
       await outputFileStream.flush();
       await outputFileStream.close().then((value) async {
@@ -157,11 +172,19 @@ class DownloadTrackButton extends HookConsumerWidget {
       yt,
       preferences.saveTrackLyrics,
       playback.track,
+      outputFile.value,
+      downloadFolder.value,
+      fileName
     ]);
 
     useEffect(() {
       return () => yt.close();
     }, []);
+
+    final outputFileExists = useMemoized(
+      () => outputFile.value?.existsSync() == true,
+      [outputFile.value, status.value, track],
+    );
 
     if (status.value == TrackStatus.downloading) {
       return const SizedBox(
@@ -175,7 +198,9 @@ class DownloadTrackButton extends HookConsumerWidget {
       return const Icon(Icons.download_done_rounded);
     }
     return IconButton(
-      icon: const Icon(Icons.download_rounded),
+      icon: Icon(
+        outputFileExists ? Icons.download_done_rounded : Icons.download_rounded,
+      ),
       onPressed: track != null && track is SpotubeTrack ? _downloadTrack : null,
     );
   }

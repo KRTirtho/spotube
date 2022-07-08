@@ -43,36 +43,30 @@ class Search extends HookConsumerWidget {
           color: Theme.of(context).backgroundColor,
           child: Column(
             children: [
-              Padding(
+              Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: controller,
-                        decoration:
-                            const InputDecoration(hintText: "Search..."),
-                        onSubmitted: (value) {
+                color: Theme.of(context).backgroundColor,
+                child: Expanded(
+                  child: TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      suffix: ElevatedButton(
+                        child: const Icon(Icons.search_rounded),
+                        onPressed: () {
                           ref.read(searchTermStateProvider.notifier).state =
                               controller.value.text;
                         },
                       ),
+                      hintStyle: const TextStyle(height: 2),
+                      hintText: "Search...",
                     ),
-                    const SizedBox(width: 5),
-                    MaterialButton(
-                      elevation: 3,
-                      splashColor: Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 21),
-                      color: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      child: const Icon(Icons.search_rounded),
-                      onPressed: () {
-                        ref.read(searchTermStateProvider.notifier).state =
-                            controller.value.text;
-                      },
-                    ),
-                  ],
+                    onSubmitted: (value) {
+                      ref.read(searchTermStateProvider.notifier).state =
+                          controller.value.text;
+                    },
+                  ),
                 ),
               ),
               searchSnapshot.when(

@@ -29,6 +29,7 @@ class PlaybuttonCard extends StatelessWidget {
       margin: margin,
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 200),
           child: Ink(
@@ -37,10 +38,11 @@ class PlaybuttonCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                    spreadRadius: 5,
-                    color: Theme.of(context).shadowColor)
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                  spreadRadius: 5,
+                  color: Theme.of(context).shadowColor,
+                )
               ],
             ),
             child: Column(
