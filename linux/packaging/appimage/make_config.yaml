@@ -1,6 +1,2 @@
 appId: oss.krtirtho.spotube
 icon: assets/spotube-logo.png
-
-include:
-  - libgstreamer1.0-dev
-  - libgstreamer-plugins-base1.0-dev
