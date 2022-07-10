@@ -23,6 +23,7 @@ import 'package:spotube/provider/YouTube.dart';
 import 'package:spotube/services/LinuxAudioService.dart';
 import 'package:spotube/services/MobileAudioService.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
 import 'package:spotube/extensions/list-sort-multiple.dart';
@@ -73,7 +74,7 @@ class Playback extends PersistedChangeNotifier {
         _subscriptions = [],
         status = PlaybackStatus.idle,
         super() {
-    if (Platform.isLinux) {
+    if (Platform.isLinux && !kIsFlatpak) {
       _linuxAudioService = LinuxAudioService(this);
     }
 
@@ -151,19 +152,21 @@ class Playback extends PersistedChangeNotifier {
         status = PlaybackStatus.loading;
         notifyListeners();
       }
+
+      // the track is not a SpotubeTrack so turning it to one
+      if (track is! SpotubeTrack) {
+        track = await toSpotubeTrack(track);
+      }
+
       final tag = MediaItem(
         id: track.id!,
         title: track.name!,
         album: track.album?.name,
         artist: artistsToString(track.artists ?? <ArtistSimple>[]),
         artUri: Uri.parse(imageToUrlString(track.album?.images)),
+        duration: track.ytTrack.duration,
       );
       mobileAudioService?.addItem(tag);
-
-      // the track is not a SpotubeTrack so turning it to one
-      if (track is! SpotubeTrack) {
-        track = await toSpotubeTrack(track);
-      }
       _logger.v("[Track Direct Source] - ${(track).ytUri}");
       this.track = track;
       notifyListeners();

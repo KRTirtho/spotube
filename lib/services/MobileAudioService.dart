@@ -15,6 +15,10 @@ class MobileAudioService extends BaseAudioHandler {
       }
     });
 
+    _player.onPositionChanged.listen((pos) async {
+      playbackState.add(await _transformEvent());
+    });
+
     _player.onPlayerComplete.listen((_) {
       if (playback.playlist == null && playback.track == null) {
         playbackState.add(
@@ -70,6 +74,9 @@ class MobileAudioService extends BaseAudioHandler {
         MediaControl.skipToNext,
         MediaControl.stop,
       ],
+      systemActions: {
+        MediaAction.seek,
+      },
       androidCompactActionIndices: const [0, 1, 2],
       playing: playback.player.state == PlayerState.playing,
       updatePosition:
