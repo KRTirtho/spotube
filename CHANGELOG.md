@@ -1,3 +1,32 @@
+# v2.3.0
+
+### New
+- Playback Cache Support. So unfinished playlist and tracks remains cached & starts automatically when application is launched again
+- Signed Android Application so now longer need to uninstall the old version for installing the new one
+- OS Media controls for Linux. Keyboard media keys now work in Linux
+- New better, consistent & predictable Audio engine with proper event firing support (https://github.com/KRTirtho/spotube/pull/131)
+- Custom Lyrics delay time. Can be used to delay negative amount of time too
+- Playback Queue View support. Currently playing tracks or playlist can be viewed or changed from it or for doing other actions too (https://github.com/KRTirtho/spotube/issues/126)
+- Android SeekBar support in Notification Panel & Lock Screen
+- New Blur background design adapted to multiple components including Floating Player, Player View & Lyrics Tab
+- New HighContrast Color Scheme addition which reduces battery consumption on OLED or AMOLED display devices (https://github.com/KRTirtho/spotube/issues/137)
+
+
+### Improved
+- Loading screens & animations. Now uses Skeleton Loading
+- Playlist & Album Pages now show Album Art & extra metadata as Header with vibrant gradient background in a Sliver
+- Playback is now more consistent & the API is simpler. Also its the single source of truth for AudioPlayback instead of the AudioServiceHandler
+- Android Statusbar background color is now adaptive & less glitchy
+- Home Genre playlists can be scrolled horizontally by dragging with mouse even in Desktop edition
+- Track match Cache support for previously played tracks. This dramatically reduces track change latency & load on the YouTube search engine too
+
+### Bug Fixes
+- API rate limits inside TrackTile for multiple Follow queries at once
+- Player doesn't stop when Application is exits or closed
+- First Track of Playlist doesn't load sometimes
+- Download Button doesn't show done symbol when track is already saved (https://github.com/KRTirtho/spotube/issues/138)
+- Downloaded Music is 0kb sized when lyrics are downloaded alongside (https://github.com/KRTirtho/spotube/issues/122)
+
 # v2.2.1
 
 ### Improved
