@@ -10,6 +10,7 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/platform.dart';
 
 class Sidebar extends HookConsumerWidget {
   final int selectedIndex;
@@ -59,105 +60,110 @@ class Sidebar extends HookConsumerWidget {
       return null;
     });
 
-    return Material(
-      color: Theme.of(context).navigationRailTheme.backgroundColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (selectedIndex == 3)
-            SizedBox(
-              height: appWindow.titleBarHeight,
-              width: titleBarDragMaxWidth.toDouble(),
-              child: MoveWindow(),
+    return SafeArea(
+      child: Material(
+        color: Theme.of(context).navigationRailTheme.backgroundColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (selectedIndex == 3 && kIsDesktop)
+              SizedBox(
+                height: appWindow.titleBarHeight,
+                width: titleBarDragMaxWidth.toDouble(),
+                child: MoveWindow(),
+              ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: (extended.value)
+                  ? Row(
+                      children: [
+                        _buildSmallLogo(),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text("Spotube",
+                            style: Theme.of(context).textTheme.headline4),
+                      ],
+                    )
+                  : _buildSmallLogo(),
             ),
-          extended.value
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Row(children: [
-                    _buildSmallLogo(),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text("Spotube",
-                        style: Theme.of(context).textTheme.headline4),
-                  ]),
-                )
-              : _buildSmallLogo(),
-          Expanded(
-            child: NavigationRail(
-              destinations: sidebarTileList
-                  .map(
-                    (e) => NavigationRailDestination(
-                      icon: Icon(e.icon),
-                      label: Text(
-                        e.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+            Expanded(
+              child: NavigationRail(
+                destinations: sidebarTileList
+                    .map(
+                      (e) => NavigationRailDestination(
+                        icon: Icon(e.icon),
+                        label: Text(
+                          e.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                  .toList(),
-              selectedIndex: selectedIndex,
-              onDestinationSelected: onSelectedIndexChanged,
-              extended: extended.value,
+                    )
+                    .toList(),
+                selectedIndex: selectedIndex,
+                onDestinationSelected: onSelectedIndexChanged,
+                extended: extended.value,
+              ),
             ),
-          ),
-          SizedBox(
-            width: titleBarDragMaxWidth.toDouble(),
-            child: Builder(
-              builder: (context) {
-                final data = meSnapshot.asData?.value;
+            SizedBox(
+              width: titleBarDragMaxWidth.toDouble(),
+              child: Builder(
+                builder: (context) {
+                  final data = meSnapshot.asData?.value;
 
-                final avatarImg = imageToUrlString(data?.images,
-                    index: (data?.images?.length ?? 1) - 1);
-                if (extended.value) {
-                  return Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (auth.isLoggedIn && data == null)
-                            const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          else if (data != null)
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      CachedNetworkImageProvider(avatarImg),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  data.displayName ?? "Guest",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                  final avatarImg = imageToUrlString(data?.images,
+                      index: (data?.images?.length ?? 1) - 1);
+                  if (extended.value) {
+                    return Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (auth.isLoggedIn && data == null)
+                              const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            else if (data != null)
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        CachedNetworkImageProvider(avatarImg),
                                   ),
-                                ),
-                              ],
-                            ),
-                          IconButton(
-                              icon: const Icon(Icons.settings_outlined),
-                              onPressed: () => goToSettings(context)),
-                        ],
-                      ));
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () => goToSettings(context),
-                      child: CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(avatarImg),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    data.displayName ?? "Guest",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            IconButton(
+                                icon: const Icon(Icons.settings_outlined),
+                                onPressed: () => goToSettings(context)),
+                          ],
+                        ));
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () => goToSettings(context),
+                        child: CircleAvatar(
+                          backgroundImage:
+                              CachedNetworkImageProvider(avatarImg),
+                        ),
                       ),
-                    ),
-                  );
-                }
-              },
-            ),
-          )
-        ],
+                    );
+                  }
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
