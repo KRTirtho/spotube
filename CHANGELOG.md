@@ -2,6 +2,7 @@
 
 ### New
 - Playback Cache Support. So unfinished playlist and tracks remains cached & starts automatically when application is launched again
+- Login Screen guided tutorial about how to obtain Client ID & Client Secret
 - Signed Android Application so now longer need to uninstall the old version for installing the new one
 - OS Media controls for Linux. Keyboard media keys now work in Linux
 - New better, consistent & predictable Audio engine with proper event firing support (https://github.com/KRTirtho/spotube/pull/131)
