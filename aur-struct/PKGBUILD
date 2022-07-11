@@ -8,7 +8,7 @@ arch=(x86_64)
 url="https://github.com/KRTirtho/spotube/"
 license=('BSD-4-Clause')
 groups=()
-depends=('gstreamer' 'gst-libav', 'gst-plugins-base' 'gst-plugins-good')
+depends=('gstreamer' 'gst-libav' 'gst-plugins-base' 'gst-plugins-good')
 makedepends=()
 checkdepends=()
 optdepends=()
@@ -24,7 +24,7 @@ noextract=()
 md5sums=(%{{LINUX_MD5}}%)
 validpgpkeys=()
 
-package(){
+package() {
   install -dm755 "${pkgdir}/usr/share/icons/spotube"
   install -dm755 "${pkgdir}/usr/share/applications"
   install -dm755 "${pkgdir}/usr/share/appdata"
