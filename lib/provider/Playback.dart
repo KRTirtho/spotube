@@ -23,7 +23,6 @@ import 'package:spotube/provider/YouTube.dart';
 import 'package:spotube/services/LinuxAudioService.dart';
 import 'package:spotube/services/MobileAudioService.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
 import 'package:spotube/extensions/list-sort-multiple.dart';
@@ -80,6 +79,9 @@ class Playback extends PersistedChangeNotifier {
 
     (() async {
       cache = await Hive.openLazyBox<CacheTrack>("track-cache");
+
+      await player.setVolume(volume);
+
       _subscriptions.addAll([
         player.onPlayerStateChanged.listen(
           (state) async {

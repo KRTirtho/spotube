@@ -64,6 +64,7 @@ dependencies:
   dbus: ^0.7.3
   audioplayers: ^1.0.1
   introduction_screen: ^3.0.2
+  audio_session: ^0.1.9
 
 dev_dependencies:
   flutter_test:

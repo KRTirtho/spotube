@@ -1,13 +1,23 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:spotube/provider/Playback.dart';
 
 class MobileAudioService extends BaseAudioHandler {
   final Playback playback;
+  AudioSession? session;
 
   MobileAudioService(this.playback) {
+    AudioSession.instance.then((s) {
+      session = s;
+      s.interruptionEventStream.listen((event) {
+        if (event.type != AudioInterruptionType.duck) {
+          playback.pause();
+        }
+      });
+    });
     final _player = playback.player;
     _player.onPlayerStateChanged.listen((state) async {
       if (state != PlayerState.completed) {
@@ -31,6 +41,7 @@ class MobileAudioService extends BaseAudioHandler {
   }
 
   void addItem(MediaItem item) {
+    session?.setActive(true);
     mediaItem.add(item);
   }
 
@@ -44,7 +55,10 @@ class MobileAudioService extends BaseAudioHandler {
   Future<void> seek(Duration position) => playback.seekPosition(position);
 
   @override
-  Future<void> stop() => playback.stop();
+  Future<void> stop() async {
+    await session?.setActive(true);
+    await playback.stop();
+  }
 
   @override
   Future<void> skipToNext() async {
