@@ -3,6 +3,7 @@ on:
   release:
     types:
       - published
+  workflow_dispatch:
 
 jobs:
   publish_chocolatey:
@@ -35,7 +36,7 @@ jobs:
           flutter config --enable-windows-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-          dart pub global activate melos
+          dart pub global activate flutter_distributor
           make innoinstall
           flutter_distributor package --platform=windows --targets=exe --skip-clean
 
