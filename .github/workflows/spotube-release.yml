@@ -1,9 +1,10 @@
 name: Spotube Release
 on:
-  release:
-    types:
-      - published
   workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to release
+        required: true
 
 jobs:
   publish_chocolatey:
@@ -15,18 +16,18 @@ jobs:
           repository: KRTirtho/flutter_distributor
           ref: deb-implementation
           path: build/flutter_distributor
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          # Optionally strip `v` prefix
-          strip_v: true
+      # - name: Get latest tag
+      #   id: tag
+      #   uses: dawidd6/action-get-tag@v1
+      #   with:
+      #     # Optionally strip `v` prefix
+      #     strip_v: true
       # Replace Version in files
       - run: |
           choco install sed make -y
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" windows/runner/Runner.rc
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/tools/VERIFICATION.txt
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/spotube.nuspec
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ github.event.inputs.tag }}/" windows/runner/Runner.rc
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ github.event.inputs.tag }}/" choco-struct/tools/VERIFICATION.txt
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ github.event.inputs.tag }}/" choco-struct/spotube.nuspec
 
       # Build Windows Executable
       - uses: subosito/flutter-action@v2.2.0
@@ -66,11 +67,11 @@ jobs:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
-      - name: Get latest tag
-        uses: dawidd6/action-get-tag@v1
-        id: tag
-        with:
-          strip_v: true
+      # - name: Get latest tag
+      #   uses: dawidd6/action-get-tag@v1
+      #   id: tag
+      #   with:
+      #     strip_v: true
       - uses: subosito/flutter-action@v2
         with:
           cache: true
@@ -81,23 +82,23 @@ jobs:
       - run: du -sh build/macos/Build/Products/Release/spotube.app
       - run: npm install -g appdmg
       # using a versioned path for compatibility in gensums
-      - run: mkdir -p build/${{ steps.tag.outputs.tag }}
-      - run: appdmg appdmg.json build/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
+      - run: mkdir -p build/${{ github.event.inputs.tag }}
+      - run: appdmg appdmg.json build/${{ github.event.inputs.tag }}/Spotube-macos-x86_64.dmg
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Macos-Bundle
           path: |
-            build/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
+            build/${{ github.event.inputs.tag }}/Spotube-macos-x86_64.dmg
 
   publish_linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
+      # - name: Get latest tag
+      #   id: tag
+      #   uses: dawidd6/action-get-tag@v1
+      #   with:
+      #     strip_v: true
       - uses: subosito/flutter-action@v2
         with:
           cache: true
@@ -113,7 +114,7 @@ jobs:
           mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
       # replacing & adding new release version with older version
       - run: |
-          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ steps.tag.outputs.tag }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ github.event.inputs.tag }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
 
       - run: |
           flutter config --enable-linux-desktop
@@ -135,11 +136,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
+      # - name: Get latest tag
+      #   id: tag
+      #   uses: dawidd6/action-get-tag@v1
+      #   with:
+      #     strip_v: true
       - uses: subosito/flutter-action@v2
         with:
           cache: true
@@ -186,11 +187,11 @@ jobs:
         with:
           name: Spotube-Android-Bundle
           path: ./Spotube-Android-Bundle
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
+      # - name: Get latest tag
+      #   id: tag
+      #   uses: dawidd6/action-get-tag@v1
+      #   with:
+      #     strip_v: true
       - run: sudo apt-get install tree -y
       # generating checksums for all the binary
       - run: |
@@ -208,7 +209,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v${{ steps.tag.outputs.tag }}
+          tag: v${{ github.event.inputs.tag }}
           omitBodyDuringUpdate: true
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
@@ -227,7 +228,7 @@ jobs:
   #     - run: |
   #         winget install wingetcreate --silent
   #         choco install tree -y
-  #         wingetcreate update KRTirtho.Spotube --urls https://github.com/KRTirtho/spotube/releases/download/v${{ steps.tag.outputs.tag }}/Spotube-windows-x86_64-setup.exe https://github.com/KRTirtho/spotube/releases/download/v${{ steps.tag.outputs.tag }}/Spotube-windows-x86_64-setup.exe --version ${{ steps.tag.outputs.tag }} --token ${{ secrets.GITHUB_TOKEN  }} --submit
+  #         wingetcreate update KRTirtho.Spotube --urls https://github.com/KRTirtho/spotube/releases/download/v${{ github.event.inputs.tag }}/Spotube-windows-x86_64-setup.exe https://github.com/KRTirtho/spotube/releases/download/v${{ github.event.inputs.tag }}/Spotube-windows-x86_64-setup.exe --version ${{ github.event.inputs.tag }} --token ${{ secrets.GITHUB_TOKEN  }} --submit
 
   publish_flathub:
     needs: update_release
@@ -240,17 +241,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           path: spotube
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
+      # - name: Get latest tag
+      #   id: tag
+      #   uses: dawidd6/action-get-tag@v1
+      #   with:
+      #     strip_v: true
       - run: |
-          python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
+          python3 spotube/scripts/update_flathub_version.py ${{ github.event.inputs.tag }}
           rm -rf spotube
       - uses: EndBug/add-and-commit@v9
         with:
-          message: v${{ steps.tag.outputs.tag }} Update
+          message: v${{ github.event.inputs.tag }} Update
           push: origin master
 
   publish_aur:
@@ -258,17 +259,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
+      # - name: Get latest tag
+      #   id: tag
+      #   uses: dawidd6/action-get-tag@v1
+      #   with:
+      #     strip_v: true
       - uses: actions/download-artifact@v3
         with:
           name: Spotube-Linux-Bundle
           path: ./Spotube-Linux-Bundle
       - run: |
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" aur-struct/PKGBUILD
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ github.event.inputs.tag }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
           sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-Linux-Bundle/Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
       - uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
@@ -278,4 +279,4 @@ jobs:
           commit_username: ${{ secrets.AUR_USERNAME }}
           commit_email: ${{ secrets.AUR_EMAIL }}
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: Updated to v${{ steps.tag.outputs.tag }}
+          commit_message: Updated to v${{ github.event.inputs.tag }}
