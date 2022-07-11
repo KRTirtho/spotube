@@ -23,7 +23,7 @@ for chunk in tar.iter_content():
     if chunk:
         tar_sha256.update(chunk)
 
-tar_source = config["modules"][1]["sources"][0]
+tar_source = config["modules"][0]["sources"][0]
 tar_source["url"] = tar_url
 tar_source["sha256"] = tar_sha256.hexdigest()
 

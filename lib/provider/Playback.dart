@@ -74,7 +74,7 @@ class Playback extends PersistedChangeNotifier {
         _subscriptions = [],
         status = PlaybackStatus.idle,
         super() {
-    if (Platform.isLinux && !kIsFlatpak) {
+    if (Platform.isLinux) {
       _linuxAudioService = LinuxAudioService(this);
     }
 

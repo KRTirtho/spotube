@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/components/Shared/NotFound.dart';
-import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
 import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/helpers/zero-pad-num-str.dart';
