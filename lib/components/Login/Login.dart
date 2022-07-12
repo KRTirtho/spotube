@@ -51,7 +51,7 @@ class Login extends HookConsumerWidget {
                     const Text("Don't know how to do this?"),
                     TextButton(
                       child: const Text(
-                        "Follow along the Step by Step guid",
+                        "Follow along the Step by Step guide",
                       ),
                       onPressed: () => GoRouter.of(context).push(
                         "/login-tutorial",
