@@ -47,8 +47,8 @@ class Home extends HookConsumerWidget {
       md: 80,
       lg: 256,
       sm: 0,
-      xl: 0,
-      xxl: 0,
+      xl: 256,
+      xxl: 256,
     );
     final _selectedIndex = useState(0);
     _onSelectedIndexChanged(int index) => _selectedIndex.value = index;

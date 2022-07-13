@@ -37,7 +37,6 @@ class Sidebar extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final breakpoints = useBreakpoints();
-    if (breakpoints.isSm) return Container();
     final extended = useState(false);
     final meSnapshot = ref.watch(currentUserQuery);
     final auth = ref.watch(authProvider);
@@ -46,8 +45,8 @@ class Sidebar extends HookConsumerWidget {
       md: 80,
       lg: 256,
       sm: 0,
-      xl: 0,
-      xxl: 0,
+      xl: 256,
+      xxl: 256,
     );
 
     useEffect(() {
@@ -59,6 +58,8 @@ class Sidebar extends HookConsumerWidget {
       }
       return null;
     });
+
+    if (breakpoints.isSm) return Container();
 
     return SafeArea(
       child: Material(

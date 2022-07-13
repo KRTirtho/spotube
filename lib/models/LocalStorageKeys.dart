@@ -16,4 +16,6 @@ abstract class LocalStorageKeys {
   static String playPauseHotKey = "play_pause_hot_key";
 
   static String volume = "volume";
+
+  static String windowSizeInfo = "window_size_info";
 }
