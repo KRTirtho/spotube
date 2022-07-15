@@ -22,7 +22,7 @@
 Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
 #### <p align="center">Desktop</p>
 
-![Application Desktop Screenshot](assets/spotube-screenshot.png)
+![Application Desktop Screenshot](assets/spotube-screenshot.jpg)
 
 #### <p align="center">Mobile</p>
 
@@ -97,13 +97,10 @@ Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/sp
     <img width='480' alt='step-4' src='https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png'/>
 
 # TODO:
-
-- [x] Compile, Debug & Build for **MacOS**
-- [x] Add support for show Lyric of currently playing track
-- [x] Track download
-- [ ] Support for playing/streaming podcasts/shows
-- [x] Artist, User & Album pages
-- [x] Android Support
+- [ ] Windows OS Media Control & Media Keys Support
+- [ ] Spotify Listen Along
+- [ ] Skip non-music sections from Audio Track
+- [ ] Language Translations/Localization
 
 # Building from source
 
@@ -112,7 +109,6 @@ You can find the details [here](CONTRIBUTION.md#your-first-code-contribution)
 # Things that don't work
 
 - Shows & Podcasts aren't supported as it'd require premium anyway
-- OS Media Controls
 
 # License
 
@@ -131,7 +127,6 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - YoutubeExplode is a library that provides an interface to query metadata of YouTube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks
 - [infinite_scroll_pagination](https://github.com/EdsonBueno/infinite_scroll_pagination) - Flutter package to help you lazily load and display pages of items as the user scrolls down your screen
 - [bitsdojo_window](https://github.com/bitsdojo/bitsdojo_window) - A Flutter package that makes it easy to customize and work with your Flutter desktop app window on Windows, macOS and Linux
-- [hotkey_manager](https://github.com/leanflutter/hotkey_manager) - A flutter plugin that allow Flutter desktop apps to defines system/inapp wide hotkey
 - [Inno Setup](https://jrsoftware.org/isinfo.php) - Inno Setup is a free installer for Windows programs by Jordan Russell and Martijn Laan
 - [collection](https://github.com/dart-lang/collection) - The collection package for Dart contains a number of separate libraries with utility functions and classes that makes working with collections easier 
 - [flutter_riverpod](https://riverpod.dev/) - A Reactive Caching and Data-binding Framework
@@ -147,6 +142,11 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [package_info_plus](https://github.com/fluttercommunity/plus_plugins/tree/main/packages/) - This Flutter plugin provides an API for querying information about an application package.
 - [version](https://github.com/dartninja/version) - A dart library providing a Version class 
 - [audio_service](https://github.com/ryanheise/audio_service) - Flutter plugin to play audio in the background while the screen is off.
+- [skeleton_text](https://github.com/101Loop/Skeleton-Text) - Flutter package for Skeleton Text Animation
+- [hive](https://github.com/hivedb/hive) - Lightweight and blazing fast key-value database written in pure Dart. 
+- [dbus](https://github.com/canonical/dbus.dart) - Native Dart client library to use DBus
+- [introduction_screen](https://github.com/pyozer/introduction_screen) - Add easily to your app an introduction screen to provide informations to new users
+- [audio_session](https://github.com/ryanheise/audio_session) - Sets the iOS audio session category and Android audio attributes for your app, and manages your app's audio focus, mixing and ducking behaviour.
 
 
 # Social handlers

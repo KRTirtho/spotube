@@ -22,6 +22,104 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  app_package_maker:
+    dependency: transitive
+    description:
+      name: app_package_maker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_maker_aab:
+    dependency: transitive
+    description:
+      name: app_package_maker_aab
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_maker_apk:
+    dependency: transitive
+    description:
+      name: app_package_maker_apk
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_maker_deb:
+    dependency: transitive
+    description:
+      name: app_package_maker_deb
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_maker_dmg:
+    dependency: transitive
+    description:
+      name: app_package_maker_dmg
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_maker_exe:
+    dependency: transitive
+    description:
+      name: app_package_maker_exe
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_maker_ipa:
+    dependency: transitive
+    description:
+      name: app_package_maker_ipa
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_maker_zip:
+    dependency: transitive
+    description:
+      name: app_package_maker_zip
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_parser:
+    dependency: transitive
+    description:
+      name: app_package_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
+  app_package_parser_apk:
+    dependency: transitive
+    description:
+      name: app_package_parser_apk
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
+  app_package_parser_ipa:
+    dependency: transitive
+    description:
+      name: app_package_parser_ipa
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
+  app_package_publisher:
+    dependency: transitive
+    description:
+      name: app_package_publisher
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_publisher_fir:
+    dependency: transitive
+    description:
+      name: app_package_publisher_fir
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  app_package_publisher_pgyer:
+    dependency: transitive
+    description:
+      name: app_package_publisher_pgyer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
   archive:
     dependency: transitive
     description:
@@ -281,6 +379,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  colorize:
+    dependency: transitive
+    description:
+      name: colorize
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
+  console_bars:
+    dependency: transitive
+    description:
+      name: console_bars
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   convert:
     dependency: transitive
     description:
@@ -323,6 +435,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.3"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.6"
   dots_indicator:
     dependency: transitive
     description:
@@ -370,6 +489,27 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_app_builder:
+    dependency: transitive
+    description:
+      name: flutter_app_builder
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  flutter_app_packager:
+    dependency: transitive
+    description:
+      name: flutter_app_packager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
+  flutter_app_publisher:
+    dependency: transitive
+    description:
+      name: flutter_app_publisher
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -384,6 +524,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_distributor:
+    dependency: "direct dev"
+    description:
+      name: flutter_distributor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
   flutter_hooks:
     dependency: "direct main"
     description:
@@ -695,6 +842,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.3"
+  parse_app_package:
+    dependency: transitive
+    description:
+      name: parse_app_package
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
   path:
     dependency: "direct main"
     description:
