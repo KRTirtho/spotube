@@ -16,10 +16,15 @@
   },
   "dependencies": {
     "@hope-ui/solid": "^0.6.2",
+    "@octokit/rest": "^19.0.3",
     "@stitches/core": "^1.2.8",
+    "isomorphic-fetch": "^3.0.0",
+    "remark-gfm": "^3.0.1",
     "solid-app-router": "^0.4.1",
+    "solid-cached-resource": "^0.3.0",
     "solid-icons": "^0.5.0",
     "solid-js": "^1.4.7",
+    "solid-markdown": "^1.2.0",
     "solid-transition-group": "^0.0.10"
   }
 }

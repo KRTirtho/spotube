@@ -6,6 +6,11 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  resolve: {
+    alias: {
+      "node-fetch": "isomorphic-fetch",
+    },
+  },
   build: {
     target: "esnext",
   },
