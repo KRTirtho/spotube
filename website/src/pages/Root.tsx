@@ -9,8 +9,10 @@ import {
   MenuContent,
   MenuItem,
   VStack,
+  hope,
 } from "@hope-ui/solid";
 import { FaSolidCaretDown } from "solid-icons/fa";
+import { DisplayAd } from "../components/special";
 import { Platform, usePlatform } from "../hooks/usePlatform";
 
 const baseURL = "https://github.com/KRTirtho/spotube/releases/latest/download/";
@@ -48,36 +50,50 @@ export const Root = () => {
 
   const currentPlatform = DownloadLinks[platform][0];
   return (
-    <VStack alignSelf="center" spacing="$4">
-      <Heading size="5xl">Spotube</Heading>
-      <Heading size="2xl">
-        A fast, modern, lightweight & efficient Spotify Music Client for every
-        platform
-      </Heading>
-      <Menu placement="bottom-end">
-        <ButtonGroup spacing="$0_5">
-          <Button
-            variant="subtle"
-            as={Anchor}
-            href={currentPlatform.url}
-            _hover={{ textDecoration: "none" }}
-          >
-            Download for {platform} (.{currentPlatform.name})
-          </Button>
-          <MenuTrigger as={IconButton} variant="subtle">
-            <FaSolidCaretDown />
-          </MenuTrigger>
-        </ButtonGroup>
-        <MenuContent>
-          {allPlatforms.map(({ name, url }) => {
-            return (
-              <MenuItem as={Anchor} href={url}>
-                {name}
-              </MenuItem>
-            );
-          })}
-        </MenuContent>
-      </Menu>
+    <VStack spacing="$4" alignItems="stretch">
+      <hope.section
+        h="60vh"
+        backgroundColor="#f5f5f5"
+        style={{
+          "background-image": "url(/src/assets/spotube-screenshot-web.jpg)",
+          "background-repeat": "no-repeat",
+          "background-size": "contain",
+          "background-position": "right",
+        }}
+      >
+        <VStack mt="$10" mx="$6" spacing="$4" alignItems="flex-start">
+          <Heading color="#212121" size="5xl">Spotube</Heading>
+          <Heading color="#212121" size="2xl" textAlign="justify" maxW="500px">
+            A fast, modern, lightweight & efficient Spotify Music Client for
+            every platform
+          </Heading>
+          <Menu placement="bottom-end">
+            <ButtonGroup spacing="$0_5">
+              <Button
+                variant="subtle"
+                as={Anchor}
+                href={currentPlatform.url}
+                _hover={{ textDecoration: "none" }}
+              >
+                Download for {platform} (.{currentPlatform.name})
+              </Button>
+              <MenuTrigger as={IconButton} variant="subtle">
+                <FaSolidCaretDown />
+              </MenuTrigger>
+            </ButtonGroup>
+            <MenuContent>
+              {allPlatforms.map(({ name, url }) => {
+                return (
+                  <MenuItem as={Anchor} href={url}>
+                    {name}
+                  </MenuItem>
+                );
+              })}
+            </MenuContent>
+          </Menu>
+        </VStack>
+      </hope.section>
+      <DisplayAd />
     </VStack>
   );
 };
