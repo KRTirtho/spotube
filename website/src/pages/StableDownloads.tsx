@@ -27,8 +27,8 @@ enum AssetTypes {
   android = "android",
 }
 
-const octokit = new Octokit();
-const AllVersions = () => {
+export const octokit = new Octokit();
+function StableDownloads() {
   const [data] = createCachedResource("gh-releases", () => {
     return octokit.repos.listReleases({
       owner: "KRTirtho",
@@ -139,14 +139,14 @@ const AllVersions = () => {
           })}
         </VStack>
         <VStack id="Ad">
-          <DisplayAd />
-          <DisplayAd />
-          <DisplayAd />
-          <DisplayAd />
+          <DisplayAd slot="1391349310" />
+          <DisplayAd slot="6452104301" />
+          <DisplayAd slot="1199777626" />
+          <DisplayAd slot="2001723409" />
         </VStack>
       </HStack>
     </VStack>
   );
-};
+}
 
-export default AllVersions;
+export default StableDownloads;

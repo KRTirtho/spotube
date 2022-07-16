@@ -17,7 +17,7 @@ import { Platform, usePlatform } from "../hooks/usePlatform";
 
 const baseURL = "https://github.com/KRTirtho/spotube/releases/latest/download/";
 
-const DownloadLinks = {
+const DownloadLinks = Object.freeze({
   [Platform.linux]: [
     { name: "deb", url: baseURL + "Spotube-linux-x86_64.deb" },
     { name: "tar", url: baseURL + "Spotube-linux-x86_64.tar.xz" },
@@ -34,7 +34,7 @@ const DownloadLinks = {
     { name: "exe", url: baseURL + "Spotube-windows-x86_64-setup.exe" },
     { name: "nupkg", url: baseURL + "Spotube-windows-x86_64.nupkg " },
   ],
-};
+});
 
 export const Root = () => {
   const platform = usePlatform();
@@ -62,7 +62,9 @@ export const Root = () => {
         }}
       >
         <VStack mt="$10" mx="$6" spacing="$4" alignItems="flex-start">
-          <Heading color="#212121" size="5xl">Spotube</Heading>
+          <Heading color="#212121" size="5xl">
+            Spotube
+          </Heading>
           <Heading color="#212121" size="2xl" textAlign="justify" maxW="500px">
             A fast, modern, lightweight & efficient Spotify Music Client for
             every platform
@@ -93,7 +95,7 @@ export const Root = () => {
           </Menu>
         </VStack>
       </hope.section>
-      <DisplayAd />
+      <DisplayAd slot="9501208974" />
     </VStack>
   );
 };

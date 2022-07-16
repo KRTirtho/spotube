@@ -13,16 +13,21 @@ import { FiSun } from "solid-icons/fi";
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <HStack justifyContent="space-between" as="nav" w="$full">
+    <HStack py="$2" justifyContent="space-between" as="nav" w="$full">
       <section>
         <Heading p="$2" size="3xl" mr="$2" as={NavLink} href="/">
           Spotube
         </Heading>
         <ButtonGroup>
-          <Button variant="ghost" size="sm" as={NavLink} href="/all-versions">
-            All Versions
+          <Button
+            variant="ghost"
+            size="sm"
+            as={NavLink}
+            href="/other-downloads"
+          >
+            Other Downloads
           </Button>
-          <Button variant="ghost" size="sm" as={NavLink} href="/all-versions">
+          <Button variant="ghost" size="sm" as={NavLink} href="/about">
             About
           </Button>
         </ButtonGroup>
