@@ -13,6 +13,7 @@ import * as gtag from "configurations/gtag";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import AdDetector from "components/AdDetector";
+import Footer from "components/Footer";
 
 const customTheme = extendTheme(
   {
@@ -116,6 +117,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AdDetector>
           <Navbar />
           <Component {...pageProps} />
+          <Footer />
         </AdDetector>
       </ChakraProvider>
     </>
