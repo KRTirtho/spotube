@@ -4,20 +4,20 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Anchor,
+  Link as Anchor,
   Heading,
   HStack,
-  Skeleton,
   Text,
   VStack,
-} from "@hope-ui/solid";
+  chakra,
+} from "@chakra-ui/react";
 import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
-import { createCachedResource } from "solid-cached-resource";
-import SolidMarkdown from "solid-markdown";
-import { Platform } from "../hooks/usePlatform";
+import ReactMarkdown from "react-markdown";
+import { Platform } from "hooks/usePlatform";
 import gfm from "remark-gfm";
-import { MarkdownComponentDefs } from "../misc/MarkdownComponentDefs";
-import { DisplayAd } from "../components/special";
+import { DisplayAd, InFeedAd } from "components/special";
+import { GetServerSideProps, NextPage } from "next";
+import { MarkdownComponentDefs } from "misc/MarkdownComponentDefs";
 
 enum AssetTypes {
   sums = "sums",
@@ -27,30 +27,73 @@ enum AssetTypes {
   android = "android",
 }
 
-export const octokit = new Octokit();
-function StableDownloads() {
-  const [data] = createCachedResource("gh-releases", () => {
-    return octokit.repos.listReleases({
-      owner: "KRTirtho",
-      repo: "spotube",
-    });
-  });
+export const octokit: Octokit = new Octokit();
 
+type ReleaseResponse = {
+  id: number;
+  body: string | null | undefined;
+  tag_name: string;
+  assets: {
+    id: number;
+    name: string;
+    browser_download_url: string;
+  }[];
+}[];
+
+type Props = {
+  data: ReleaseResponse;
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  res,
+}) => {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+  const { data } = await octokit.repos.listReleases({
+    owner: "KRTirtho",
+    repo: "spotube",
+  });
+  const releaseResponse: ReleaseResponse = data.map((data) => {
+    return {
+      tag_name: data.tag_name,
+      id: data.id,
+      body: data.body,
+      assets: data.assets.map((asset) => ({
+        id: asset.id,
+        name: asset.name,
+        browser_download_url: asset.browser_download_url,
+      })),
+    };
+  });
+  return {
+    props: {
+      data: releaseResponse,
+    },
+  };
+};
+
+const StableDownloads: NextPage<Props> = ({ data }) => {
   return (
-    <VStack alignItems="stretch" m="$3">
-      <Heading size="3xl">Previous Versions</Heading>
-      <Text my="$5">
+    <VStack alignItems="stretch" m="3">
+      <Heading size="xl">Previous Versions</Heading>
+      <Text my="5">
         If any of your version is not working correctly than you can download &
         use previous versions of Spotube too
       </Text>
-      <HStack alignItems="flex-start">
-        <VStack alignItems="stretch" spacing="$3" mr="$1">
-          {data.loading &&
-            !data.latest && [
-              <Skeleton h="$6" w="$56" />,
-              ...Array.from({ length: 8 }, () => <Skeleton h="$6" w="$96" />),
-            ]}
-          {(data.latest ?? data())?.data.map((release, i) => {
+      <HStack alignItems="flex-start" wrap="wrap">
+        <VStack
+          alignItems="stretch"
+          w={{
+            base: "full",
+            sm: "70%",
+            md: "60%",
+          }}
+          spacing="3"
+          mr="1"
+        >
+          {data.map((release, i) => {
             const releaseSome = release.assets
               .map((asset) => {
                 const platform =
@@ -70,46 +113,53 @@ function StableDownloads() {
             };
             return (
               <VStack
-                py="$3"
+                key={release.id}
+                py="3"
                 alignItems="flex-start"
                 borderBottom="1px solid grey"
                 _last={{ borderBottom: "none" }}
               >
-                <Heading size="xl">
+                <Heading size="md">
                   Version{" "}
-                  <Text as="span" color="$success8">
+                  <Text as="span" color="green.500">
                     {release.tag_name}
                   </Text>{" "}
                   {i == 0 && "(Latest)"}
                 </Heading>
-                {Object.entries(releaseSome).map(([type, assets]) => {
+                {Object.entries(releaseSome).map(([type, assets], i) => {
                   return (
-                    <HStack py="$2" alignItems="flex-start">
+                    <HStack key={i} spacing={0} py="2" alignItems="flex-start">
                       <Heading
                         w={90}
-                        p="$2"
-                        color="$info12"
-                        border={`2px solid #404040`}
+                        p="2"
+                        colorScheme="blue"
+                        border="2px solid"
+                        borderColor="gray"
                         borderRadius="5px 0 0 5px"
                         borderRight="none"
+                        size="sm"
                       >
                         {type[0].toUpperCase() + type.slice(1)}
                       </Heading>
                       <VStack
                         alignItems="flex-start"
-                        border={`2px solid #404040`}
+                        border="2px solid"
+                        borderColor="gray"
                         borderRadius={`0 5px 5px ${
                           assets.length !== 1 ? 5 : 0
                         }px`}
-                        w="$72"
+                        w="72"
                       >
                         {assets.map((asset) => {
                           return (
                             <Anchor
-                              color="$info11"
-                              width="$full"
-                              p="$2"
-                              href={asset.name}
+                              key={asset.id}
+                              color="blue.500"
+                              width="full"
+                              p="1.5"
+                              href={asset.browser_download_url}
+                              target="_blank"
+                              referrerPolicy="no-referrer"
                             >
                               {asset.name}
                             </Anchor>
@@ -119,18 +169,18 @@ function StableDownloads() {
                     </HStack>
                   );
                 })}
-                <Accordion defaultIndex={i}>
+                <Accordion defaultIndex={i} allowToggle>
                   <AccordionItem>
                     <AccordionButton>
                       Release Notes <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel>
-                      <SolidMarkdown
+                      <ReactMarkdown
                         components={MarkdownComponentDefs}
                         remarkPlugins={[gfm]}
                       >
                         {release.body ?? ""}
-                      </SolidMarkdown>
+                      </ReactMarkdown>
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -138,15 +188,22 @@ function StableDownloads() {
             );
           })}
         </VStack>
-        <VStack id="Ad">
+        <chakra.div
+          id="Ad"
+          w={{
+            base: "full",
+            sm: "25%",
+            md: "35%",
+          }}
+        >
           <DisplayAd slot="1391349310" />
           <DisplayAd slot="6452104301" />
           <DisplayAd slot="1199777626" />
           <DisplayAd slot="2001723409" />
-        </VStack>
+        </chakra.div>
       </HStack>
     </VStack>
   );
-}
+};
 
 export default StableDownloads;
