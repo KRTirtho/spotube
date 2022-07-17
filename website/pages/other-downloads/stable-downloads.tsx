@@ -18,6 +18,7 @@ import gfm from "remark-gfm";
 import { DisplayAd, InFeedAd } from "components/special";
 import { GetServerSideProps, NextPage } from "next";
 import { MarkdownComponentDefs } from "misc/MarkdownComponentDefs";
+import { octokit } from "configurations/ocotokit";
 
 enum AssetTypes {
   sums = "sums",
@@ -26,8 +27,6 @@ enum AssetTypes {
   windows = "windows",
   android = "android",
 }
-
-export const octokit: Octokit = new Octokit();
 
 type ReleaseResponse = {
   id: number;

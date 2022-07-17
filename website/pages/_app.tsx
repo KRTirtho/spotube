@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import AdDetector from "components/AdDetector";
 import Footer from "components/Footer";
+import NextNProgress from "nextjs-progressbar";
 
 const customTheme = extendTheme(
   {
@@ -115,6 +116,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <title>Spotube</title>
         </Head>
         <AdDetector>
+          <NextNProgress color="#45cd74" />
           <Navbar />
           <Component {...pageProps} />
           <Footer />

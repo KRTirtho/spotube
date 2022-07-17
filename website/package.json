@@ -9,18 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/core": "^7.18.6",
     "@chakra-ui/react": "^2.2.4",
+    "@chakra-ui/system": "^2.2.2",
     "@chakra-ui/theme-tools": "^2.0.5",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@octokit/rest": "^19.0.3",
+    "@types/progress": "^2.0.5",
     "framer-motion": "^6",
     "next": "12.2.2",
+    "nextjs-progressbar": "^0.0.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "react-markdown": "^8.0.3",
-    "remark-gfm": "^3.0.1"
+    "remark-gfm": "^3.0.1",
+    "swr": "^1.3.0"
   },
   "devDependencies": {
     "@types/node": "18.0.5",
