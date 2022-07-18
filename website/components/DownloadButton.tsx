@@ -55,7 +55,7 @@ const DownloadButton = () => {
           href={currentPlatform.url}
           _hover={{ textDecoration: "none" }}
         >
-          Download for {platform} (.{currentPlatform.name})
+          Download for {platform} (.{currentPlatform.name}) Binary
         </Button>
         <MenuButton
           aria-label="Show More Downloads"

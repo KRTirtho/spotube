@@ -19,6 +19,7 @@ import { DisplayAd, InFeedAd } from "components/special";
 import { GetServerSideProps, NextPage } from "next";
 import { MarkdownComponentDefs } from "misc/MarkdownComponentDefs";
 import { octokit } from "configurations/ocotokit";
+import gemoji from "remark-gemoji"
 
 enum AssetTypes {
   sums = "sums",
@@ -176,7 +177,7 @@ const StableDownloads: NextPage<Props> = ({ data }) => {
                     <AccordionPanel>
                       <ReactMarkdown
                         components={MarkdownComponentDefs}
-                        remarkPlugins={[gfm]}
+                        remarkPlugins={[gfm, gemoji]}
                       >
                         {release.body ?? ""}
                       </ReactMarkdown>

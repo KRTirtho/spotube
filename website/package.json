@@ -24,6 +24,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "react-markdown": "^8.0.3",
+    "remark-gemoji": "^7.0.1",
     "remark-gfm": "^3.0.1",
     "swr": "^1.3.0"
   },
