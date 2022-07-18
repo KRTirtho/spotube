@@ -16,6 +16,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import Head from "next/head";
 
 interface Props {
   metadata: BlogMetadata;
@@ -28,10 +29,24 @@ const BlogPost: NextPage<Props> = ({
 }) => {
   return (
     <VStack>
+      <Head>
+        <title>Spotube - {title}</title>
+      </Head>
       <Box w="full" maxH="xl" overflow="hidden" mb="5">
         <Image fit="cover" src={cover_image} alt={title} />
       </Box>
-      <VStack align="flex-start" py="5" px="10" w="full">
+      <VStack
+      align="start"
+      spacing="4"
+        maxW={{
+          base: "full",
+          lg: "70%",
+          xl: "60%",
+        }}
+        py="5"
+        px="10"
+        w="full"
+      >
         <Flex alignItems="center">
           <Image
             h="12"
@@ -64,7 +79,6 @@ const BlogPost: NextPage<Props> = ({
           </VStack>
         </Flex>
         <Heading>{title}</Heading>
-
         <ReactMarkdown
           components={MarkdownComponentDefs}
           remarkPlugins={[gfm, gemoji]}

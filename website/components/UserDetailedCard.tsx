@@ -19,9 +19,10 @@ import useSWR from "swr";
 
 interface UserDetailedCardProps {
   username: string;
+  emoji: string;
 }
 
-const UserDetailedCard: FC<UserDetailedCardProps> = ({ username }) => {
+const UserDetailedCard: FC<UserDetailedCardProps> = ({ username, emoji }) => {
   const { data } = useSWR(`user-${username}}`, () =>
     octokit.users.getByUsername({ username })
   );
@@ -35,7 +36,7 @@ const UserDetailedCard: FC<UserDetailedCardProps> = ({ username }) => {
       w="xs"
       bg="white"
       _dark={{
-        bg: "gray.800",
+        bg: "#212121",
       }}
       shadow="xl"
       rounded="lg"
@@ -54,27 +55,16 @@ const UserDetailedCard: FC<UserDetailedCardProps> = ({ username }) => {
         alignItems="center"
         px={6}
         py={3}
-        bg="gray.900"
+        bg="#1c1c1c"
         _light={{ bg: "gray.50" }}
       >
-        <span>⚡</span>
+        <span>{emoji}</span>
         <chakra.h1 mx={3} fontWeight="bold" fontSize="lg">
-          Swinging
+          {data.data.name ?? data.data.login}
         </chakra.h1>
       </Flex>
 
       <Box py={4} px={6}>
-        <chakra.h1
-          fontSize="xl"
-          fontWeight="bold"
-          color="gray.800"
-          _dark={{
-            color: "white",
-          }}
-        >
-          {data.data.name ?? data.data.login}
-        </chakra.h1>
-
         <chakra.p
           py={2}
           color="gray.700"

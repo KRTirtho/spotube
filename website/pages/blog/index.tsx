@@ -4,6 +4,7 @@ import { GetStaticProps, NextPage } from "next";
 import matter from "gray-matter";
 import ArticleCard from "components/ArticleCard";
 import { VStack } from "@chakra-ui/react";
+import Head from "next/head";
 
 export interface BlogMetadata {
   title: string;
@@ -24,24 +25,6 @@ interface Props {
   posts: BlogPost[];
 }
 
-const Blog: NextPage<Props> = ({ posts }) => {
-  return (
-    <VStack mx="5" my="5" spacing="7">
-      {posts.map((post) => {
-        return (
-          <ArticleCard
-            key={post.slug}
-            metadata={post.metadata}
-            slug={post.slug}
-          />
-        );
-      })}
-    </VStack>
-  );
-};
-
-export default Blog;
-
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const posts = fs.readdirSync("posts").map((file) => {
     return {
@@ -60,3 +43,24 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     },
   };
 };
+
+const Blog: NextPage<Props> = ({ posts }) => {
+  return (
+    <VStack mx="5" my="5" spacing="7">
+      <Head>
+        <title>Spotube - Blogs</title>
+      </Head>
+      {posts.map((post) => {
+        return (
+          <ArticleCard
+            key={post.slug}
+            metadata={post.metadata}
+            slug={post.slug}
+          />
+        );
+      })}
+    </VStack>
+  );
+};
+
+export default Blog;

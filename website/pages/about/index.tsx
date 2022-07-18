@@ -20,7 +20,7 @@ const About = () => {
   );
 
   return (
-    <VStack my="20" mx="10" >
+    <VStack my="20" mx="10">
       <Heading>Maintainers</Heading>
 
       <HStack pb="20" gap="40px" wrap="wrap" justify="center" align="start">
@@ -30,6 +30,7 @@ const About = () => {
             return (
               <UserDetailedCard
                 key={contributor.id}
+                emoji="⚡"
                 username={contributor.login!}
               />
             );
@@ -49,6 +50,7 @@ const About = () => {
             return (
               <UserDetailedCard
                 key={contributor.id}
+                emoji="💪💝"
                 username={contributor.login!}
               />
             );

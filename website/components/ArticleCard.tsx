@@ -22,7 +22,7 @@ const ArticleCard: FC<BlogPost> = ({
       shadow="md"
       bg="white"
       _dark={{
-        bg: "gray.800",
+        bg: "#212121",
       }}
       maxW="2xl"
     >

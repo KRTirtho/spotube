@@ -23,56 +23,10 @@ import React from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsHeartFill } from "react-icons/bs";
 
-const ExNavbar = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
-  return (
-    <HStack justifyContent="space-between" as="nav" w="full">
-      <HStack alignItems="center" pl="3">
-        <Image
-          src="/spotube-logo.svg"
-          alt="Logo"
-          height="40"
-          width="40"
-          layout="fixed"
-        />
-        <NavLink href="/" passHref>
-          <Heading p="2" as="a" size="lg" mr="2">
-            Spotube
-          </Heading>
-        </NavLink>
-        <ButtonGroup>
-          <NavLink href="/other-downloads" passHref>
-            <Button as="a" colorScheme="gray" variant="ghost">
-              Downloads
-            </Button>
-          </NavLink>
-          <NavLink href="/blog" passHref>
-            <Button as="a" variant="ghost" colorScheme="gray">
-              Blog
-            </Button>
-          </NavLink>
-          <NavLink href="/about" passHref>
-            <Button as="a" variant="ghost" colorScheme="gray">
-              About
-            </Button>
-          </NavLink>
-        </ButtonGroup>
-      </HStack>
-      <IconButton
-        variant="ghost"
-        icon={colorMode == "light" ? <GoLightBulb /> : <FiSun />}
-        aria-label="Dark Mode Toggle"
-        onClick={() => {
-          toggleColorMode();
-        }}
-      />
-    </HStack>
-  );
-};
-
 const Navbar = () => {
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <React.Fragment>
       <chakra.header
@@ -84,15 +38,18 @@ const Navbar = () => {
         }}
         py={2}
         shadow="md"
+        _dark={{
+          bgColor: "#212121",
+        }}
       >
-        <Flex alignItems="center" justifyContent="space-between" mx="auto">
+        <Flex alignItems="center" justifyContent="space-between">
           <Flex align="center">
             <NavLink href="/">
               <Image
                 src="/spotube-logo.svg"
                 alt="Logo"
-                height="45"
-                width="45"
+                height="40"
+                width="40"
                 layout="fixed"
               />
             </NavLink>
@@ -166,8 +123,16 @@ const Navbar = () => {
               rightIcon={<BsHeartFill />}
               target="_blank"
             >
-              Donate/Sponsor us
+              Donate us
             </Button>
+            <IconButton
+              variant="ghost"
+              icon={colorMode == "light" ? <GoLightBulb /> : <FiSun />}
+              aria-label="Dark Mode Toggle"
+              onClick={() => {
+                toggleColorMode();
+              }}
+            />
             <Box
               display={{
                 base: "inline-flex",
