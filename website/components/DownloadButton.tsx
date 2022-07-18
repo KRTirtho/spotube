@@ -10,26 +10,60 @@ import {
 } from "@chakra-ui/react";
 import { Platform, usePlatform } from "hooks/usePlatform";
 import React from "react";
-import { FaCaretDown } from "react-icons/fa";
+import {
+  FaApple,
+  FaCaretDown,
+  FaUbuntu,
+  FaLinux,
+  FaWindows,
+  FaAndroid,
+} from "react-icons/fa";
 
 const baseURL = "https://github.com/KRTirtho/spotube/releases/latest/download/";
 
 const DownloadLinks = Object.freeze({
   [Platform.linux]: [
-    { name: "deb", url: baseURL + "Spotube-linux-x86_64.deb" },
-    { name: "tar", url: baseURL + "Spotube-linux-x86_64.tar.xz" },
-    { name: "AppImage", url: baseURL + "Spotube-linux-x86_64.AppImage" },
+    {
+      name: "deb",
+      url: baseURL + "Spotube-linux-x86_64.deb",
+      icon: <FaUbuntu />,
+    },
+    {
+      name: "tar",
+      url: baseURL + "Spotube-linux-x86_64.tar.xz",
+      icon: <FaLinux />,
+    },
+    {
+      name: "AppImage",
+      url: baseURL + "Spotube-linux-x86_64.AppImage",
+      icon: <FaLinux />,
+    },
   ],
   [Platform.android]: [
     {
       name: "apk",
       url: baseURL + "Spotube-android-all-arch.apk",
+      icon: <FaAndroid />,
     },
   ],
-  [Platform.mac]: [{ name: "dmg", url: baseURL + "Spotube-macos-x86_64.dmg" }],
+  [Platform.mac]: [
+    {
+      name: "dmg",
+      url: baseURL + "Spotube-macos-x86_64.dmg",
+      icon: <FaApple />,
+    },
+  ],
   [Platform.windows]: [
-    { name: "exe", url: baseURL + "Spotube-windows-x86_64-setup.exe" },
-    { name: "nupkg", url: baseURL + "Spotube-windows-x86_64.nupkg " },
+    {
+      name: "exe",
+      url: baseURL + "Spotube-windows-x86_64-setup.exe",
+      icon: <FaWindows />,
+    },
+    {
+      name: "nupkg",
+      url: baseURL + "Spotube-windows-x86_64.nupkg ",
+      icon: <FaWindows />,
+    },
   ],
 });
 
@@ -55,7 +89,7 @@ const DownloadButton = () => {
           href={currentPlatform.url}
           _hover={{ textDecoration: "none" }}
         >
-          Download for {platform} (.{currentPlatform.name}) Binary
+          Download for {platform} (.{currentPlatform.name})
         </Button>
         <MenuButton
           aria-label="Show More Downloads"
@@ -65,9 +99,9 @@ const DownloadButton = () => {
         />
       </ButtonGroup>
       <MenuList>
-        {allPlatforms.map(({ name, url }) => {
+        {allPlatforms.map(({ name, url, icon }) => {
           return (
-            <MenuItem key={url} as={Anchor} href={url}>
+            <MenuItem key={url} as={Anchor} href={url} icon={icon}>
               {name}
             </MenuItem>
           );
