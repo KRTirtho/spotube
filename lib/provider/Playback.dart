@@ -58,6 +58,8 @@ class Playback extends PersistedChangeNotifier {
   // internal stuff
   final List<StreamSubscription> _subscriptions;
   final _logger = getLogger(Playback);
+  // state of preSearch used inside [onPositionChanged]
+  bool _isPreSearching = false;
 
   PlaybackStatus status;
 
@@ -109,6 +111,26 @@ class Playback extends PersistedChangeNotifier {
           if (pos > Duration.zero && currentDuration == Duration.zero) {
             currentDuration = await player.getDuration() ?? Duration.zero;
             notifyListeners();
+          }
+
+          final currentTrackIndex =
+              playlist!.tracks.indexWhere((t) => t.id == track?.id);
+
+          // when the track progress is above 80%, track isn't the last
+          // and is not already fetch and nothing is fetching currently
+          if (pos.inSeconds > currentDuration.inSeconds * .8 &&
+              playlist != null &&
+              currentTrackIndex != playlist!.tracks.length - 1 &&
+              playlist!.tracks.elementAt(currentTrackIndex + 1)
+                  is! SpotubeTrack &&
+              !_isPreSearching) {
+            _isPreSearching = true;
+            playlist!.tracks[currentTrackIndex + 1] = await toSpotubeTrack(
+              playlist!.tracks[currentTrackIndex + 1],
+            ).then((v) {
+              _isPreSearching = false;
+              return v;
+            });
           }
         }),
       ]);
@@ -389,7 +411,9 @@ class Playback extends PersistedChangeNotifier {
         (playlist!.trackIds.indexOf(track!.id!) + 1).toInt();
     // checking if there's any track available forward
     if (nextTrackIndex > (playlist?.tracks.length ?? 0) - 1) return;
-    await play(playlist!.tracks.elementAt(nextTrackIndex));
+    await play(playlist!.tracks.elementAt(nextTrackIndex)).then((_) {
+      playlist!.tracks[nextTrackIndex] = track!;
+    });
   }
 
   Future<void> seekBackward() async {
@@ -398,7 +422,9 @@ class Playback extends PersistedChangeNotifier {
         (playlist!.trackIds.indexOf(track!.id!) - 1).toInt();
     // checking if there's any track available behind
     if (prevTrackIndex < 0) return;
-    await play(playlist!.tracks.elementAt(prevTrackIndex));
+    await play(playlist!.tracks.elementAt(prevTrackIndex)).then((_) {
+      playlist!.tracks[prevTrackIndex] = track!;
+    });
   }
 
   @override

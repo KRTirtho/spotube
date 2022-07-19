@@ -54,8 +54,8 @@ void useUpdateChecker(WidgetRef ref) {
       showDialog(
           context: context,
           builder: (context) {
-            final url =
-                "https://github.com/KRTirtho/spotube/releases/tag/v${value.last}";
+            const url =
+                "https://spotube.netlify.app/other-downloads/stable-downloads";
             return AlertDialog(
               title: const Text("Spotube has an update"),
               actions: [
