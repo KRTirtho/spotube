@@ -4,15 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/components/Lyrics/LyricDelayAdjustDialog.dart';
 import 'package:spotube/components/Lyrics/Lyrics.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
-import 'package:spotube/helpers/artist-to-string.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useAutoScrollController.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
@@ -21,6 +18,7 @@ import 'package:spotube/hooks/useSyncedLyrics.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 final lyricDelayState = StateProvider<Duration>(
   (ref) {
@@ -109,7 +107,7 @@ class SyncedLyrics extends HookConsumerWidget {
     // when synced lyrics not found, fallback to GeniusLyrics
 
     String albumArt = useMemoized(
-      () => imageToUrlString(
+      () => TypeConversionUtils.image_X_UrlString(
         playback.track?.album?.images,
         index: (playback.track?.album?.images?.length ?? 1) - 1,
       ),
@@ -198,7 +196,7 @@ class SyncedLyrics extends HookConsumerWidget {
                         ),
                         Center(
                           child: Text(
-                            artistsToString<Artist>(
+                            TypeConversionUtils.artists_X_String<Artist>(
                                 playback.track?.artists ?? []),
                             style: breakpoint >= Breakpoints.md
                                 ? textTheme.headline5

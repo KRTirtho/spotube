@@ -5,10 +5,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
+import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:collection/collection.dart';
@@ -184,6 +184,19 @@ class Settings extends HookConsumerWidget {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text(
+                        "Skip non-music segments (SponsorBlock)",
+                      ),
+                      horizontalTitleGap: 10,
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.skipSponsorSegments,
+                        onChanged: (state) {
+                          preferences.setSkipSponsorSegments(state);
+                        },
                       ),
                     ),
                     ListTile(

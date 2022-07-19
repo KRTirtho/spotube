@@ -9,11 +9,6 @@ import 'package:hive/hive.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/entities/CacheTrack.dart';
 import 'package:spotube/extensions/yt-video-from-cache-track.dart';
-import 'package:spotube/helpers/artist-to-string.dart';
-import 'package:spotube/helpers/contains-text-in-bracket.dart';
-import 'package:spotube/helpers/getLyrics.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
-import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
@@ -23,14 +18,23 @@ import 'package:spotube/provider/YouTube.dart';
 import 'package:spotube/services/LinuxAudioService.dart';
 import 'package:spotube/services/MobileAudioService.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
+import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/service_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
 import 'package:spotube/extensions/list-sort-multiple.dart';
+import 'package:http/http.dart' as http;
 
 enum PlaybackStatus {
   playing,
   loading,
   idle,
+}
+
+enum AudioQuality {
+  high,
+  low,
 }
 
 class Playback extends PersistedChangeNotifier {
@@ -114,14 +118,14 @@ class Playback extends PersistedChangeNotifier {
           }
 
           final currentTrackIndex =
-              playlist!.tracks.indexWhere((t) => t.id == track?.id);
+              playlist?.tracks.indexWhere((t) => t.id == track?.id);
 
           // when the track progress is above 80%, track isn't the last
           // and is not already fetch and nothing is fetching currently
           if (pos.inSeconds > currentDuration.inSeconds * .8 &&
               playlist != null &&
               currentTrackIndex != playlist!.tracks.length - 1 &&
-              playlist!.tracks.elementAt(currentTrackIndex + 1)
+              playlist!.tracks.elementAt(currentTrackIndex! + 1)
                   is! SpotubeTrack &&
               !_isPreSearching) {
             _isPreSearching = true;
@@ -131,6 +135,15 @@ class Playback extends PersistedChangeNotifier {
               _isPreSearching = false;
               return v;
             });
+          }
+          if (track != null && preferences.skipSponsorSegments) {
+            for (final segment in track!.skipSegments) {
+              if (pos.inSeconds == segment["start"] ||
+                  (pos.inSeconds > segment["start"]! &&
+                      pos.inSeconds < segment["end"]!)) {
+                seekPosition(Duration(seconds: segment["end"]!));
+              }
+            }
           }
         }),
       ]);
@@ -186,8 +199,10 @@ class Playback extends PersistedChangeNotifier {
         id: track.id!,
         title: track.name!,
         album: track.album?.name,
-        artist: artistsToString(track.artists ?? <ArtistSimple>[]),
-        artUri: Uri.parse(imageToUrlString(track.album?.images)),
+        artist: TypeConversionUtils.artists_X_String(
+            track.artists ?? <ArtistSimple>[]),
+        artUri: Uri.parse(
+            TypeConversionUtils.image_X_UrlString(track.album?.images)),
         duration: track.ytTrack.duration,
       );
       mobileAudioService?.addItem(tag);
@@ -274,130 +289,192 @@ class Playback extends PersistedChangeNotifier {
     );
   }
 
+  Future<List<Map<String, int>>> getSkipSegments(String id) async {
+    if (!preferences.skipSponsorSegments) return [];
+    try {
+      final res = await http.get(Uri(
+        scheme: "https",
+        host: "sponsor.ajay.app",
+        path: "/api/skipSegments",
+        queryParameters: {
+          "videoID": id,
+          "category": [
+            'sponsor',
+            'selfpromo',
+            'interaction',
+            'intro',
+            'outro',
+            'music_offtopic'
+          ],
+          "actionType": 'skip'
+        },
+      ));
+
+      final data = jsonDecode(res.body);
+      final segments = data.map((obj) {
+        return Map.castFrom<String, dynamic, String, int>({
+          "start": obj["segment"].first.toInt(),
+          "end": obj["segment"].last.toInt(),
+        });
+      }).toList();
+      _logger.v(
+        "[SponsorBlock] successfully fetched skip segments for ${track?.name} | ${track?.ytTrack.id.value}",
+      );
+      return List.castFrom<dynamic, Map<String, int>>(segments);
+    } catch (e, stack) {
+      _logger.e("[getSkipSegments]", e, stack);
+      return List.castFrom<dynamic, Map<String, int>>([]);
+    }
+  }
+
   // playlist & track list methods
   Future<SpotubeTrack> toSpotubeTrack(Track track) async {
-    final format = preferences.ytSearchFormat;
-    final matchAlgorithm = preferences.trackMatchAlgorithm;
-    final artistsName =
-        track.artists?.map((ar) => ar.name).toList().whereNotNull().toList() ??
-            [];
-    final audioQuality = preferences.audioQuality;
-    _logger.v("[Track Search Artists] $artistsName");
-    final mainArtist = artistsName.first;
-    final featuredArtists = artistsName.length > 1
-        ? "feat. " + artistsName.sublist(1).join(" ")
-        : "";
-    final title = getTitle(
-      track.name!,
-      artists: artistsName,
-      onlyCleanArtist: true,
-    ).trim();
-    _logger.v("[Track Search Title] $title");
-    final queryString = format
-        .replaceAll("\$MAIN_ARTIST", mainArtist)
-        .replaceAll("\$TITLE", title)
-        .replaceAll("\$FEATURED_ARTISTS", featuredArtists);
-    _logger.v("[Youtube Search Term] $queryString");
+    try {
+      final format = preferences.ytSearchFormat;
+      final matchAlgorithm = preferences.trackMatchAlgorithm;
+      final artistsName = track.artists
+              ?.map((ar) => ar.name)
+              .toList()
+              .whereNotNull()
+              .toList() ??
+          [];
+      final audioQuality = preferences.audioQuality;
+      _logger.v("[Track Search Artists] $artistsName");
+      final mainArtist = artistsName.first;
+      final featuredArtists = artistsName.length > 1
+          ? "feat. " + artistsName.sublist(1).join(" ")
+          : "";
+      final title = ServiceUtils.getTitle(
+        track.name!,
+        artists: artistsName,
+        onlyCleanArtist: true,
+      ).trim();
+      _logger.v("[Track Search Title] $title");
+      final queryString = format
+          .replaceAll("\$MAIN_ARTIST", mainArtist)
+          .replaceAll("\$TITLE", title)
+          .replaceAll("\$FEATURED_ARTISTS", featuredArtists);
+      _logger.v("[Youtube Search Term] $queryString");
 
-    Video ytVideo;
-    final cachedTrack = await cache.get(track.id);
-    if (cachedTrack != null && cachedTrack.mode == matchAlgorithm.name) {
-      _logger.v(
-        "[Playing track from cache] youtubeId: ${cachedTrack.id} mode: ${cachedTrack.mode}",
+      Video ytVideo;
+      final cachedTrack = await cache.get(track.id);
+      if (cachedTrack != null && cachedTrack.mode == matchAlgorithm.name) {
+        _logger.v(
+          "[Playing track from cache] youtubeId: ${cachedTrack.id} mode: ${cachedTrack.mode}",
+        );
+        ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
+      } else {
+        VideoSearchList videos =
+            await raceMultiple(() => youtube.search.search(queryString));
+        if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
+          List<Map> ratedRankedVideos = videos
+              .map((video) {
+                // the find should be lazy thus everything case insensitive
+                final ytTitle = video.title.toLowerCase();
+                final bool hasTitle = ytTitle.contains(title);
+                final bool hasAllArtists = track.artists?.every(
+                      (artist) => ytTitle.contains(artist.name!.toLowerCase()),
+                    ) ??
+                    false;
+                final bool authorIsArtist =
+                    track.artists?.first.name?.toLowerCase() ==
+                        video.author.toLowerCase();
+
+                final bool hasNoLiveInTitle =
+                    !PrimitiveUtils.containsTextInBracket(ytTitle, "live");
+
+                int rate = 0;
+                for (final el in [
+                  hasTitle,
+                  hasAllArtists,
+                  if (matchAlgorithm ==
+                      SpotubeTrackMatchAlgorithm.authenticPopular)
+                    authorIsArtist,
+                  hasNoLiveInTitle,
+                  !video.isLive,
+                ]) {
+                  if (el) rate++;
+                }
+                // can't let pass any non title matching track
+                if (!hasTitle) rate = rate - 2;
+                return {
+                  "video": video,
+                  "points": rate,
+                  "views": video.engagement.viewCount,
+                };
+              })
+              .toList()
+              .sortByProperties(
+                [false, false],
+                ["points", "views"],
+              );
+
+          ytVideo = ratedRankedVideos.first["video"] as Video;
+        } else {
+          ytVideo = videos.where((video) => !video.isLive).first;
+        }
+      }
+
+      StreamManifest trackManifest = await raceMultiple(
+        () => youtube.videos.streams.getManifest(ytVideo.id),
       );
-      ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
-    } else {
-      VideoSearchList videos =
-          await raceMultiple(() => youtube.search.search(queryString));
-      if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
-        List<Map> ratedRankedVideos = videos
-            .map((video) {
-              // the find should be lazy thus everything case insensitive
-              final ytTitle = video.title.toLowerCase();
-              final bool hasTitle = ytTitle.contains(title);
-              final bool hasAllArtists = track.artists?.every(
-                    (artist) => ytTitle.contains(artist.name!.toLowerCase()),
-                  ) ??
-                  false;
-              final bool authorIsArtist =
-                  track.artists?.first.name?.toLowerCase() ==
-                      video.author.toLowerCase();
 
-              final bool hasNoLiveInTitle =
-                  !containsTextInBracket(ytTitle, "live");
+      _logger.v(
+        "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
+      );
 
-              int rate = 0;
-              for (final el in [
-                hasTitle,
-                hasAllArtists,
-                if (matchAlgorithm ==
-                    SpotubeTrackMatchAlgorithm.authenticPopular)
-                  authorIsArtist,
-                hasNoLiveInTitle,
-                !video.isLive,
-              ]) {
-                if (el) rate++;
-              }
-              // can't let pass any non title matching track
-              if (!hasTitle) rate = rate - 2;
-              return {
-                "video": video,
-                "points": rate,
-                "views": video.engagement.viewCount,
-              };
-            })
-            .toList()
-            .sortByProperties(
-              [false, false],
-              ["points", "views"],
-            );
+      final audioManifest = trackManifest.audioOnly.where((info) {
+        final isMp4a = info.codec.mimeType == "audio/mp4";
+        if (Platform.isLinux) {
+          return !isMp4a;
+        } else if (Platform.isMacOS || Platform.isIOS) {
+          return isMp4a;
+        } else {
+          return true;
+        }
+      });
 
-        ytVideo = ratedRankedVideos.first["video"] as Video;
-      } else {
-        ytVideo = videos.where((video) => !video.isLive).first;
+      final ytUri = (audioQuality == AudioQuality.high
+              ? audioManifest.withHighestBitrate()
+              : audioManifest.sortByBitrate().last)
+          .url
+          .toString();
+
+      final skipSegments = cachedTrack?.skipSegments != null &&
+              cachedTrack!.skipSegments!.isNotEmpty
+          ? cachedTrack.skipSegments!
+              .map(
+                (segment) => segment.toJson(),
+              )
+              .toList()
+          : await getSkipSegments(ytVideo.id.value);
+
+      // only save when the track isn't available in the cache with same
+      // matchAlgorithm
+      if (cachedTrack == null || cachedTrack.mode != matchAlgorithm.name) {
+        await cache.put(
+          track.id!,
+          CacheTrack.fromVideo(
+            ytVideo,
+            matchAlgorithm.name,
+            skipSegments: skipSegments,
+          ),
+        );
       }
+
+      return SpotubeTrack.fromTrack(
+        track: track,
+        ytTrack: ytVideo,
+        // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
+        // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
+        // codec/mimetype for those Platforms
+        ytUri: ytUri,
+        skipSegments: skipSegments,
+      );
+    } catch (e, stack) {
+      _logger.e("topSpotubeTrack", e, stack);
+      rethrow;
     }
-
-    StreamManifest trackManifest = await raceMultiple(
-      () => youtube.videos.streams.getManifest(ytVideo.id),
-    );
-
-    _logger.v(
-      "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
-    );
-
-    final audioManifest = trackManifest.audioOnly.where((info) {
-      final isMp4a = info.codec.mimeType == "audio/mp4";
-      if (Platform.isLinux) {
-        return !isMp4a;
-      } else if (Platform.isMacOS || Platform.isIOS) {
-        return isMp4a;
-      } else {
-        return true;
-      }
-    });
-
-    final ytUri = (audioQuality == AudioQuality.high
-            ? audioManifest.withHighestBitrate()
-            : audioManifest.sortByBitrate().last)
-        .url
-        .toString();
-
-    // only save when the track isn't available in the cache with same
-    // matchAlgorithm
-    if (cachedTrack == null || cachedTrack.mode != matchAlgorithm.name) {
-      await cache.put(
-          track.id!, CacheTrack.fromVideo(ytVideo, matchAlgorithm.name));
-    }
-
-    return SpotubeTrack.fromTrack(
-      track: track,
-      ytTrack: ytVideo,
-      // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
-      // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
-      // codec/mimetype for those Platforms
-      ytUri: ytUri,
-    );
   }
 
   Future<void> setPlaylistPosition(int position) async {
@@ -429,13 +506,24 @@ class Playback extends PersistedChangeNotifier {
 
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
-    if (map["playlist"] != null) {
-      playlist = CurrentPlaylist.fromJson(jsonDecode(map["playlist"]));
+    try {
+      if (map["playlist"] != null) {
+        playlist = CurrentPlaylist.fromJson(jsonDecode(map["playlist"]));
+      }
+      if (map["track"] != null) {
+        final Map<String, dynamic> trackMap = jsonDecode(map["track"]);
+        // for backwards compatibility
+        if (!trackMap.containsKey("skipSegments")) {
+          trackMap["skipSegments"] = await getSkipSegments(
+            trackMap["id"],
+          );
+        }
+        track = SpotubeTrack.fromJson(trackMap);
+      }
+      volume = map["volume"] ?? volume;
+    } catch (e) {
+      _logger.e("loadFromLocal", e);
     }
-    if (map["track"] != null) {
-      track = SpotubeTrack.fromJson(jsonDecode(map["track"]));
-    }
-    volume = map["volume"] ?? volume;
   }
 
   @override

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
-import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class TracksTableView extends HookConsumerWidget {
   final void Function(Track currentTrack)? onTrackPlayButtonPressed;
@@ -79,12 +79,12 @@ class TracksTableView extends HookConsumerWidget {
           ],
         ),
         ...tracks.asMap().entries.map((track) {
-          String? thumbnailUrl = imageToUrlString(
+          String? thumbnailUrl = TypeConversionUtils.image_X_UrlString(
             track.value.album?.images,
             index: (track.value.album?.images?.length ?? 1) - 1,
           );
           String duration =
-              "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+              "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
           return TrackTile(
             playback,
             playlistId: playlistId,

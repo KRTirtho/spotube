@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
-import 'package:spotube/helpers/simple-track-to-track.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/models/Logger.dart';
@@ -225,7 +225,9 @@ class TrackCollectionView extends HookConsumerWidget {
                   return TracksTableView(
                     tracks is! List<Track>
                         ? tracks
-                            .map((track) => simpleTrackToTrack(track, album!))
+                            .map((track) =>
+                                TypeConversionUtils.simpleTrack_X_Track(
+                                    track, album!))
                             .toList()
                         : tracks,
                     onTrackPlayButtonPressed: onPlay,

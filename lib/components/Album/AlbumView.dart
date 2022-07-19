@@ -5,8 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/TrackCollectionView.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
-import 'package:spotube/helpers/simple-track-to-track.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -27,7 +26,7 @@ class AlbumView extends HookConsumerWidget {
           tracks: tracks,
           id: album.id!,
           name: album.name!,
-          thumbnail: imageToUrlString(album.images),
+          thumbnail: TypeConversionUtils.image_X_UrlString(album.images),
         ),
         tracks.indexWhere((s) => s.id == currentTrack?.id),
       );
@@ -49,8 +48,9 @@ class AlbumView extends HookConsumerWidget {
     final albumSavedSnapshot =
         ref.watch(albumIsSavedForCurrentUserQuery(album.id!));
 
-    final albumArt =
-        useMemoized(() => imageToUrlString(album.images), [album.images]);
+    final albumArt = useMemoized(
+        () => TypeConversionUtils.image_X_UrlString(album.images),
+        [album.images]);
 
     return TrackCollectionView(
       id: album.id!,
@@ -66,7 +66,8 @@ class AlbumView extends HookConsumerWidget {
           playPlaylist(
             playback,
             tracksSnapshot.asData!.value
-                .map((track) => simpleTrackToTrack(track, album))
+                .map((track) =>
+                    TypeConversionUtils.simpleTrack_X_Track(track, album))
                 .toList(),
             currentTrack: track,
           );

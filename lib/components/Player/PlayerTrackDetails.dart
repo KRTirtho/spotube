@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
   final String? albumArt;
@@ -61,7 +61,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
                       .bodyText1
                       ?.copyWith(fontWeight: FontWeight.bold, color: color),
                 ),
-                artistsToClickableArtists(
+                TypeConversionUtils.artists_X_ClickableArtists(
                   playback.track?.artists ?? [],
                 )
               ],

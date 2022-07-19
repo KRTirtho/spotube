@@ -3,10 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
-import 'package:spotube/helpers/artist-to-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Lyrics extends HookConsumerWidget {
   final Color? titleBarForegroundColor;
@@ -36,7 +36,8 @@ class Lyrics extends HookConsumerWidget {
         ),
         Center(
           child: Text(
-            artistsToString<Artist>(playback.track?.artists ?? []),
+            TypeConversionUtils.artists_X_String<Artist>(
+                playback.track?.artists ?? []),
             style: breakpoint >= Breakpoints.md
                 ? textTheme.headline5
                 : textTheme.headline6,

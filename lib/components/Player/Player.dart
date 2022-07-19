@@ -4,11 +4,11 @@ import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerOverlay.dart';
 import 'package:spotube/components/Player/PlayerTrackDetails.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Player extends HookConsumerWidget {
   Player({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class Player extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
 
     String albumArt = useMemoized(
-      () => imageToUrlString(
+      () => TypeConversionUtils.image_X_UrlString(
         playback.track?.album?.images,
         index: (playback.track?.album?.images?.length ?? 1) - 1,
       ),

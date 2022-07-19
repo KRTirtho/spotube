@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
-import 'package:spotube/helpers/get-random-element.dart';
-import 'package:spotube/helpers/search-youtube.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/models/generated_secrets.dart';
+import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
 import 'package:collection/collection.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 
 class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
@@ -22,6 +22,7 @@ class UserPreferences extends PersistedChangeNotifier {
 
   MaterialColor accentColorScheme;
   MaterialColor backgroundColorScheme;
+  bool skipSponsorSegments;
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
@@ -33,6 +34,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.checkUpdate = true,
     this.trackMatchAlgorithm = SpotubeTrackMatchAlgorithm.authenticPopular,
     this.audioQuality = AudioQuality.high,
+    this.skipSponsorSegments = true,
   }) : super();
 
   void setThemeMode(ThemeMode mode) {
@@ -95,13 +97,19 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setSkipSponsorSegments(bool should) {
+    skipSponsorSegments = should;
+    notifyListeners();
+    updatePersistence();
+  }
+
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
     saveTrackLyrics = map["saveTrackLyrics"] ?? false;
     recommendationMarket = map["recommendationMarket"] ?? recommendationMarket;
     checkUpdate = map["checkUpdate"] ?? checkUpdate;
-    geniusAccessToken =
-        map["geniusAccessToken"] ?? getRandomElement(lyricsSecrets);
+    geniusAccessToken = map["geniusAccessToken"] ??
+        PrimitiveUtils.getRandomElement(lyricsSecrets);
 
     ytSearchFormat = map["ytSearchFormat"] ?? ytSearchFormat;
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
@@ -117,6 +125,7 @@ class UserPreferences extends PersistedChangeNotifier {
     audioQuality = map["audioQuality"] != null
         ? AudioQuality.values[map["audioQuality"]]
         : audioQuality;
+    skipSponsorSegments = map["skipSponsorSegments"] ?? skipSponsorSegments;
   }
 
   @override
@@ -132,6 +141,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "checkUpdate": checkUpdate,
       "trackMatchAlgorithm": trackMatchAlgorithm.index,
       "audioQuality": audioQuality.index,
+      "skipSponsorSegments": skipSponsorSegments,
     };
   }
 }

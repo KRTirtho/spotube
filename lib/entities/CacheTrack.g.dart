@@ -45,6 +45,42 @@ class CacheTrackEngagementAdapter extends TypeAdapter<CacheTrackEngagement> {
           typeId == other.typeId;
 }
 
+class CacheTrackSkipSegmentAdapter extends TypeAdapter<CacheTrackSkipSegment> {
+  @override
+  final int typeId = 3;
+
+  @override
+  CacheTrackSkipSegment read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CacheTrackSkipSegment()
+      ..start = fields[0] as int
+      ..end = fields[1] as int;
+  }
+
+  @override
+  void write(BinaryWriter writer, CacheTrackSkipSegment obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.start)
+      ..writeByte(1)
+      ..write(obj.end);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CacheTrackSkipSegmentAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 class CacheTrackAdapter extends TypeAdapter<CacheTrack> {
   @override
   final int typeId = 1;
@@ -66,13 +102,14 @@ class CacheTrackAdapter extends TypeAdapter<CacheTrack> {
       ..keywords = (fields[7] as List?)?.cast<String>()
       ..engagement = fields[8] as CacheTrackEngagement
       ..mode = fields[9] as String
-      ..author = fields[10] as String;
+      ..author = fields[10] as String
+      ..skipSegments = (fields[11] as List?)?.cast<CacheTrackSkipSegment>();
   }
 
   @override
   void write(BinaryWriter writer, CacheTrack obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -94,7 +131,9 @@ class CacheTrackAdapter extends TypeAdapter<CacheTrack> {
       ..writeByte(9)
       ..write(obj.mode)
       ..writeByte(10)
-      ..write(obj.author);
+      ..write(obj.author)
+      ..writeByte(11)
+      ..write(obj.skipSegments);
   }
 
   @override

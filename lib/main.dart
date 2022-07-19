@@ -25,6 +25,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
+  Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
   if (kIsDesktop) {
     WidgetsFlutterBinding.ensureInitialized();
     doWhenWindowReady(() async {
@@ -46,7 +47,7 @@ void main() async {
   }
   MobileAudioService? audioServiceHandler;
   runApp(ProviderScope(
-    child: Spotube(),
+    child: const Spotube(),
     overrides: [
       playbackProvider.overrideWithProvider(ChangeNotifierProvider(
         (ref) {

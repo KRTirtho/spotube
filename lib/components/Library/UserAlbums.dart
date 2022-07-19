@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
-import 'package:spotube/helpers/simple-album-to-album.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class UserAlbums extends ConsumerWidget {
   const UserAlbums({Key? key}) : super(key: key);
@@ -21,7 +21,8 @@ class UserAlbums extends ConsumerWidget {
             runSpacing: 20, // gap between lines
             alignment: WrapAlignment.center,
             children: data
-                .map((album) => AlbumCard(simpleAlbumToAlbum(album)))
+                .map((album) =>
+                    AlbumCard(TypeConversionUtils.simpleAlbum_X_Album(album)))
                 .toList(),
           ),
         ),

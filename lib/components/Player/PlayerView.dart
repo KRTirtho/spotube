@@ -10,12 +10,11 @@ import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
-import 'package:spotube/helpers/artists-to-clickable-artists.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
   const PlayerView({
@@ -39,7 +38,7 @@ class PlayerView extends HookConsumerWidget {
     }, [breakpoint]);
 
     String albumArt = useMemoized(
-      () => imageToUrlString(
+      () => TypeConversionUtils.image_X_UrlString(
         currentTrack?.album?.images,
         index: (currentTrack?.album?.images?.length ?? 1) - 1,
       ),
@@ -100,7 +99,7 @@ class PlayerView extends HookConsumerWidget {
                                   style: Theme.of(context).textTheme.headline5,
                                 ),
                         ),
-                        artistsToClickableArtists(
+                        TypeConversionUtils.artists_X_ClickableArtists(
                           currentTrack?.artists ?? [],
                           textStyle:
                               Theme.of(context).textTheme.headline6!.copyWith(

@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Home/Home.dart';
-import 'package:spotube/helpers/get-random-element.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/provider/Auth.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 
 final spotifyProvider = Provider<SpotifyApi>((ref) {
   Auth authState = ref.watch(authProvider);
-  final anonCred = getRandomElement(spotifySecrets);
+  final anonCred = PrimitiveUtils.getRandomElement(spotifySecrets);
   SpotifyApiCredentials apiCredentials = authState.isAnonymous
       ? SpotifyApiCredentials(
           anonCred["clientId"],

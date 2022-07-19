@@ -1,15 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotube/helpers/getLyrics.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
-import 'package:spotube/helpers/timed-lyrics.dart';
-import 'package:spotube/models/SpotubeTrack.dart';
+import 'package:spotube/models/LyricsModels.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:collection/collection.dart';
+import 'package:spotube/utils/service_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 final categoriesQuery = FutureProvider.family<Page<Category>, int>(
   (ref, pageKey) {
@@ -134,7 +133,7 @@ final currentUserQuery = FutureProvider<User>(
         Image()
           ..height = 50
           ..width = 50
-          ..url = imageToUrlString(me.images),
+          ..url = TypeConversionUtils.image_X_UrlString(me.images),
       ];
     }
     return me;
@@ -172,7 +171,7 @@ final geniusLyricsQuery = FutureProvider<String?>(
     if (currentTrack == null) {
       return "“Give this player a track to play”\n- S'Challa";
     }
-    return getLyrics(
+    return ServiceUtils.getLyrics(
       currentTrack.name!,
       currentTrack.artists?.map((s) => s.name).whereNotNull().toList() ?? [],
       apiKey: geniusAccessToken,
@@ -185,6 +184,6 @@ final rentanadviserLyricsQuery = FutureProvider<SubtitleSimple?>(
   (ref) {
     final currentTrack = ref.watch(playbackProvider.select((s) => s.track));
     if (currentTrack == null) return null;
-    return getTimedLyrics(currentTrack as SpotubeTrack);
+    return ServiceUtils.getTimedLyrics(currentTrack);
   },
 );

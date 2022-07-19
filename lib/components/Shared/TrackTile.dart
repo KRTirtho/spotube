@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
-import 'package:spotube/helpers/artists-to-clickable-artists.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useForceUpdate.dart';
 import 'package:spotube/models/Logger.dart';
@@ -13,6 +12,7 @@ import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
   final Playback playback;
@@ -235,7 +235,8 @@ class TrackTile extends HookConsumerWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  artistsToClickableArtists(track.value.artists ?? [],
+                  TypeConversionUtils.artists_X_ClickableArtists(
+                      track.value.artists ?? [],
                       textStyle: TextStyle(
                           fontSize:
                               breakpoint.isLessThan(Breakpoints.lg) ? 12 : 14)),

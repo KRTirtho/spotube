@@ -22,6 +22,25 @@ class CacheTrackEngagement {
         dislikeCount = engagement.dislikeCount;
 }
 
+@HiveType(typeId: 3)
+class CacheTrackSkipSegment {
+  @HiveField(0)
+  late int start;
+  @HiveField(1)
+  late int end;
+
+  CacheTrackSkipSegment();
+
+  CacheTrackSkipSegment.fromJson(Map map)
+      : start = map["start"].toInt(),
+        end = map["end"].toInt();
+
+  Map<String, int> toJson() {
+    return Map.castFrom<String, dynamic, String, int>(
+        {"start": start, "end": end});
+  }
+}
+
 @HiveType(typeId: 1)
 class CacheTrack extends HiveObject {
   @HiveField(0)
@@ -57,10 +76,16 @@ class CacheTrack extends HiveObject {
   @HiveField(10)
   late String author;
 
+  @HiveField(11)
+  late List<CacheTrackSkipSegment>? skipSegments;
+
   CacheTrack();
 
-  CacheTrack.fromVideo(Video video, this.mode)
-      : id = video.id.value,
+  CacheTrack.fromVideo(
+    Video video,
+    this.mode, {
+    required List<Map<String, int>> skipSegments,
+  })  : id = video.id.value,
         title = video.title,
         author = video.author,
         channelId = video.channelId.value,
@@ -69,5 +94,8 @@ class CacheTrack extends HiveObject {
         description = video.description,
         duration = video.duration.toString(),
         keywords = video.keywords,
-        engagement = CacheTrackEngagement.fromEngagement(video.engagement);
+        engagement = CacheTrackEngagement.fromEngagement(video.engagement),
+        skipSegments = skipSegments
+            .map((segment) => CacheTrackSkipSegment.fromJson(segment))
+            .toList();
 }

@@ -10,9 +10,6 @@ import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerArtistProfile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
-import 'package:spotube/helpers/readable-number.dart';
-import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
@@ -20,6 +17,8 @@ import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistProfile extends HookConsumerWidget {
   final String artistId;
@@ -80,7 +79,7 @@ class ArtistProfile extends HookConsumerWidget {
                       CircleAvatar(
                         radius: avatarWidth,
                         backgroundImage: CachedNetworkImageProvider(
-                          imageToUrlString(data.images),
+                          TypeConversionUtils.image_X_UrlString(data.images),
                         ),
                       ),
                       Padding(
@@ -106,7 +105,7 @@ class ArtistProfile extends HookConsumerWidget {
                                   : textTheme.headline2,
                             ),
                             Text(
-                              "${toReadableNumber(data.followers!.total!.toDouble())} followers",
+                              "${PrimitiveUtils.toReadableNumber(data.followers!.total!.toDouble())} followers",
                               style: breakpoint.isSm
                                   ? textTheme.bodyText1
                                   : textTheme.headline5,
@@ -193,7 +192,8 @@ class ArtistProfile extends HookConsumerWidget {
                               tracks: tracks,
                               id: data.id!,
                               name: "${data.name!} To Tracks",
-                              thumbnail: imageToUrlString(data.images),
+                              thumbnail: TypeConversionUtils.image_X_UrlString(
+                                  data.images),
                             ),
                             tracks.indexWhere((s) => s.id == currentTrack?.id),
                           );
@@ -230,11 +230,13 @@ class ArtistProfile extends HookConsumerWidget {
                         ),
                         ...topTracks.toList().asMap().entries.map((track) {
                           String duration =
-                              "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                          String? thumbnailUrl = imageToUrlString(
-                              track.value.album?.images,
-                              index:
-                                  (track.value.album?.images?.length ?? 1) - 1);
+                              "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                          String? thumbnailUrl =
+                              TypeConversionUtils.image_X_UrlString(
+                                  track.value.album?.images,
+                                  index:
+                                      (track.value.album?.images?.length ?? 1) -
+                                          1);
                           return TrackTile(
                             playback,
                             duration: duration,

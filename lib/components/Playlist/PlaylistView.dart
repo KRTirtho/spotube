@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/TrackCollectionView.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
@@ -15,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistView extends HookConsumerWidget {
   final logger = getLogger(PlaylistView);
@@ -32,7 +32,7 @@ class PlaylistView extends HookConsumerWidget {
           tracks: tracks,
           id: playlist.id!,
           name: playlist.name!,
-          thumbnail: imageToUrlString(playlist.images),
+          thumbnail: TypeConversionUtils.image_X_UrlString(playlist.images),
         ),
         tracks.indexWhere((s) => s.id == currentTrack?.id),
       );
@@ -54,8 +54,9 @@ class PlaylistView extends HookConsumerWidget {
     final meSnapshot = ref.watch(currentUserQuery);
     final tracksSnapshot = ref.watch(playlistTracksQuery(playlist.id!));
 
-    final titleImage =
-        useMemoized(() => imageToUrlString(playlist.images), [playlist.images]);
+    final titleImage = useMemoized(
+        () => TypeConversionUtils.image_X_UrlString(playlist.images),
+        [playlist.images]);
 
     final color = usePaletteGenerator(
       context,

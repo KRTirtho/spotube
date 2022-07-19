@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final Color? iconColor;
@@ -35,15 +35,17 @@ class PlayerControls extends HookConsumerWidget {
             StreamBuilder<Duration>(
                 stream: playback.player.onPositionChanged,
                 builder: (context, snapshot) {
-                  final totalMinutes =
-                      zeroPadNumStr(duration.inMinutes.remainder(60));
-                  final totalSeconds =
-                      zeroPadNumStr(duration.inSeconds.remainder(60));
+                  final totalMinutes = PrimitiveUtils.zeroPadNumStr(
+                      duration.inMinutes.remainder(60));
+                  final totalSeconds = PrimitiveUtils.zeroPadNumStr(
+                      duration.inSeconds.remainder(60));
                   final currentMinutes = snapshot.hasData
-                      ? zeroPadNumStr(snapshot.data!.inMinutes.remainder(60))
+                      ? PrimitiveUtils.zeroPadNumStr(
+                          snapshot.data!.inMinutes.remainder(60))
                       : "00";
                   final currentSeconds = snapshot.hasData
-                      ? zeroPadNumStr(snapshot.data!.inSeconds.remainder(60))
+                      ? PrimitiveUtils.zeroPadNumStr(
+                          snapshot.data!.inSeconds.remainder(60))
                       : "00";
 
                   final sliderMax = duration.inSeconds;

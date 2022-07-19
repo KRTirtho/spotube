@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/helpers/artist-to-string.dart';
-import 'package:spotube/helpers/getLyrics.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/utils/service_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:path/path.dart' as path;
@@ -32,7 +32,7 @@ class DownloadTrackButton extends HookConsumerWidget {
     final outputFile = useState<File?>(null);
     final downloadFolder = useState<String?>(null);
     String fileName =
-        "${track?.name} - ${artistsToString<Artist>(track?.artists ?? [])}";
+        "${track?.name} - ${TypeConversionUtils.artists_X_String<Artist>(track?.artists ?? [])}";
 
     useEffect(() {
       (() async {
@@ -152,7 +152,7 @@ class DownloadTrackButton extends HookConsumerWidget {
         if (!await outputLyricsFile.exists()) {
           await outputLyricsFile.create(recursive: true);
         }
-        final lyrics = await getLyrics(
+        final lyrics = await ServiceUtils.getLyrics(
           playback.track!.name!,
           playback.track!.artists?.map((s) => s.name).whereNotNull().toList() ??
               [],

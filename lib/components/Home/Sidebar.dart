@@ -4,13 +4,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
   final int selectedIndex;
@@ -115,7 +115,8 @@ class Sidebar extends HookConsumerWidget {
                 builder: (context) {
                   final data = meSnapshot.asData?.value;
 
-                  final avatarImg = imageToUrlString(data?.images,
+                  final avatarImg = TypeConversionUtils.image_X_UrlString(
+                      data?.images,
                       index: (data?.images?.length ?? 1) - 1);
                   if (extended.value) {
                     return Padding(

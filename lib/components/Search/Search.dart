@@ -7,14 +7,13 @@ import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Shared/AnonymousFallback.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
-import 'package:spotube/helpers/simple-album-to-album.dart';
-import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 final searchTermStateProvider = StateProvider<String>((ref) => "");
 
@@ -104,13 +103,14 @@ class Search extends HookConsumerWidget {
                               ),
                             ...tracks.asMap().entries.map((track) {
                               String duration =
-                                  "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                                  "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
                               return TrackTile(
                                 playback,
                                 track: track,
                                 duration: duration,
                                 thumbnailUrl:
-                                    imageToUrlString(track.value.album?.images),
+                                    TypeConversionUtils.image_X_UrlString(
+                                        track.value.album?.images),
                                 isActive: playback.track?.id == track.value.id,
                                 onTrackPlayButtonPressed: (currentTrack) async {
                                   var isPlaylistPlaying =
@@ -123,8 +123,10 @@ class Search extends HookConsumerWidget {
                                         tracks: [currentTrack],
                                         id: currentTrack.id!,
                                         name: currentTrack.name!,
-                                        thumbnail: imageToUrlString(
-                                            currentTrack.album?.images),
+                                        thumbnail: TypeConversionUtils
+                                            .image_X_UrlString(
+                                          currentTrack.album?.images,
+                                        ),
                                       ),
                                     );
                                   } else if (isPlaylistPlaying &&
@@ -148,7 +150,11 @@ class Search extends HookConsumerWidget {
                                 controller: albumController,
                                 child: Row(
                                   children: albums.map((album) {
-                                    return AlbumCard(simpleAlbumToAlbum(album));
+                                    return AlbumCard(
+                                      TypeConversionUtils.simpleAlbum_X_Album(
+                                        album,
+                                      ),
+                                    );
                                   }).toList(),
                                 ),
                               ),

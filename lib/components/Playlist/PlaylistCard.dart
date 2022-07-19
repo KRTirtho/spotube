@@ -3,11 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistCard extends HookConsumerWidget {
   final PlaylistSimple playlist;
@@ -23,7 +23,7 @@ class PlaylistCard extends HookConsumerWidget {
     return PlaybuttonCard(
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       title: playlist.name!,
-      imageUrl: imageToUrlString(playlist.images),
+      imageUrl: TypeConversionUtils.image_X_UrlString(playlist.images),
       isPlaying: isPlaylistPlaying,
       isLoading: playback.status == PlaybackStatus.loading && isPlaylistPlaying,
       onTap: () {
@@ -52,7 +52,7 @@ class PlaylistCard extends HookConsumerWidget {
             tracks: tracks,
             id: playlist.id!,
             name: playlist.name!,
-            thumbnail: imageToUrlString(playlist.images),
+            thumbnail: TypeConversionUtils.image_X_UrlString(playlist.images),
           ),
         );
       },

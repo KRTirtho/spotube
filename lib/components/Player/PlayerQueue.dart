@@ -6,10 +6,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/components/Shared/NotFound.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
-import 'package:spotube/helpers/zero-pad-num-str.dart';
 import 'package:spotube/hooks/useAutoScrollController.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
@@ -100,7 +100,7 @@ class PlayerQueue extends HookConsumerWidget {
                   itemBuilder: (context, i) {
                     final track = tracks.asMap().entries.elementAt(i);
                     String duration =
-                        "${track.value.duration?.inMinutes.remainder(60)}:${zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                        "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
                     return AutoScrollTag(
                       key: ValueKey(i),
                       controller: controller,
@@ -111,8 +111,9 @@ class PlayerQueue extends HookConsumerWidget {
                           playback,
                           track: track,
                           duration: duration,
-                          thumbnailUrl:
-                              imageToUrlString(track.value.album?.images),
+                          thumbnailUrl: TypeConversionUtils.image_X_UrlString(
+                            track.value.album?.images,
+                          ),
                           isActive: playback.track?.id == track.value.id,
                           onTrackPlayButtonPressed: (currentTrack) async {
                             if (playback.track?.id == track.value.id) return;

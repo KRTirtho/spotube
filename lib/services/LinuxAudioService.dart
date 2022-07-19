@@ -4,9 +4,9 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dbus/dbus.dart';
 
 import 'package:spotube/provider/DBus.dart';
-import 'package:spotube/helpers/image-to-url-string.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class _MprisMediaPlayer2 extends DBusObject {
   /// Creates a new object to expose on [path].
@@ -296,8 +296,10 @@ class _MprisMediaPlayer2Player extends DBusObject {
         DBusDict.stringVariant({
           "mpris:trackid": DBusString("${path.value}/Track/$id"),
           "mpris:length": DBusInt32(playback.currentDuration.inMicroseconds),
-          "mpris:artUrl":
-              DBusString(imageToUrlString(playback.track?.album?.images)),
+          "mpris:artUrl": DBusString(
+            TypeConversionUtils.image_X_UrlString(
+                playback.track?.album?.images),
+          ),
           "xesam:album": DBusString(playback.track!.album!.name!),
           "xesam:artist": DBusArray.string(
             playback.track!.artists!.map((artist) => artist.name!),

@@ -15,16 +15,19 @@ enum SpotubeTrackMatchAlgorithm {
 class SpotubeTrack extends Track {
   Video ytTrack;
   String ytUri;
+  List<Map<String, int>> skipSegments;
 
   SpotubeTrack(
     this.ytTrack,
     this.ytUri,
+    this.skipSegments,
   ) : super();
 
   SpotubeTrack.fromTrack({
     required Track track,
     required this.ytTrack,
     required this.ytUri,
+    required this.skipSegments,
   }) : super() {
     album = track.album;
     artists = track.artists;
@@ -51,6 +54,8 @@ class SpotubeTrack extends Track {
       track: Track.fromJson(map),
       ytTrack: VideoToJson.fromJson(map["ytTrack"]),
       ytUri: map["ytUri"],
+      skipSegments:
+          List.castFrom<dynamic, Map<String, int>>(map["skipSegments"]),
     );
   }
 
@@ -74,6 +79,7 @@ class SpotubeTrack extends Track {
       "uri": uri,
       "ytTrack": ytTrack.toJson(),
       "ytUri": ytUri,
+      "skipSegments": skipSegments
     };
   }
 }
