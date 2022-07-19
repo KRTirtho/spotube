@@ -99,7 +99,7 @@ Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/sp
 # TODO:
 - [ ] Windows OS Media Control & Media Keys Support
 - [ ] Spotify Listen Along
-- [ ] Skip non-music sections from Audio Track
+- [x] Skip non-music sections from Audio Track
 - [ ] Language Translations/Localization
 
 # Building from source
