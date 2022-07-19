@@ -19,7 +19,7 @@ import { DisplayAd, InFeedAd } from "components/special";
 import { GetServerSideProps, NextPage } from "next";
 import { MarkdownComponentDefs } from "misc/MarkdownComponentDefs";
 import { octokit } from "configurations/ocotokit";
-import gemoji from "remark-gemoji"
+import gemoji from "remark-gemoji";
 
 enum AssetTypes {
   sums = "sums",
@@ -148,7 +148,10 @@ const StableDownloads: NextPage<Props> = ({ data }) => {
                         borderRadius={`0 5px 5px ${
                           assets.length !== 1 ? 5 : 0
                         }px`}
-                        w="72"
+                        w={{
+                          base: "full",
+                          sm: "72",
+                        }}
                       >
                         {assets.map((asset) => {
                           return (

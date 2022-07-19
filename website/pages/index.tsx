@@ -16,13 +16,22 @@ const Root = () => {
           bgPos="right"
         >
           <VStack mt="10" mx="6" spacing="4" alignItems="flex-start">
-            <Heading color="#212121" size="2xl">
-              Spotube
-            </Heading>
-            <Heading color="#212121" size="lg" maxW="500px">
-              A fast, modern, lightweight & efficient Spotify Music Client for
-              every platform
-            </Heading>
+            <chakra.section
+              p={{ base: "5", md: "0" }}
+              borderRadius="2xl"
+              bgColor={{
+                base: "#f5f5f599",
+                md: "transparent",
+              }}
+            >
+              <Heading color="#212121" size="2xl">
+                Spotube
+              </Heading>
+              <Heading color="#212121" size="lg" maxW="500px">
+                A fast, modern, lightweight & efficient Spotify Music Client for
+                every platform
+              </Heading>
+            </chakra.section>
             <DownloadButton />
           </VStack>
         </chakra.section>

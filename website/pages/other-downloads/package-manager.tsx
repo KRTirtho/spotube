@@ -17,7 +17,7 @@ import { DisplayAd } from "components/special";
 export default function PackageManagerPage() {
   return (
     <VStack p="5" spacing="5">
-      <VStack align="start" maxW="2xl">
+      <VStack align="start" w="full" maxW="2xl">
         <Heading>Installation using Package Managers</Heading>
         <Text>
           If you don&apos;t want to download the binary of Spotube, you can use
