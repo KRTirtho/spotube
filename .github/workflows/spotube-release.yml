@@ -216,19 +216,14 @@ jobs:
           allowUpdates: true
           artifacts: Spotube-Windows-Bundle/*,Spotube-Macos-Bundle/*,Spotube-Linux-Bundle/*,Spotube-Android-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum
 
-  # publish_winget:
-  #   needs: update_release
-  #   runs-on: windows-latest
-  #   steps:
-  #     - name: Get latest tag
-  #       id: tag
-  #       uses: dawidd6/action-get-tag@v1
-  #       with:
-  #         strip_v: true
-  #     - run: |
-  #         winget install wingetcreate --silent
-  #         choco install tree -y
-  #         wingetcreate update KRTirtho.Spotube --urls https://github.com/KRTirtho/spotube/releases/download/v${{ github.event.inputs.tag }}/Spotube-windows-x86_64-setup.exe https://github.com/KRTirtho/spotube/releases/download/v${{ github.event.inputs.tag }}/Spotube-windows-x86_64-setup.exe --version ${{ github.event.inputs.tag }} --token ${{ secrets.GITHUB_TOKEN  }} --submit
+  publish_winget:
+    needs: update_release
+    runs-on: windows-latest # action can only be run on windows
+    steps:
+      - uses: vedantmgoyal2009/winget-releaser@latest
+        with:
+          identifier: KRTirtho.Spotube
+          token: ${{ secrets.WINGET_TOKEN }}
 
   publish_flathub:
     needs: update_release

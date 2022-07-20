@@ -86,7 +86,12 @@ class Playback extends PersistedChangeNotifier {
     (() async {
       cache = await Hive.openLazyBox<CacheTrack>("track-cache");
 
-      await player.setVolume(volume);
+      if (Platform.isAndroid) {
+        await player.setVolume(1);
+        volume = 1;
+      } else {
+        await player.setVolume(volume);
+      }
 
       _subscriptions.addAll([
         player.onPlayerStateChanged.listen(
