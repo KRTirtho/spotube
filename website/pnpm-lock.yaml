@@ -13,6 +13,7 @@ specifiers:
   '@types/react': 18.0.15
   '@types/react-dom': 18.0.6
   '@types/react-syntax-highlighter': ^15.5.3
+  detect-browser: ^5.3.0
   eslint: 8.20.0
   eslint-config-next: 12.2.2
   eslint-config-prettier: ^8.5.0
@@ -38,6 +39,7 @@ dependencies:
   '@emotion/styled': 11.9.3_xorl7rqfpn4gtnla4dfecagcw4
   '@octokit/rest': 19.0.3
   '@types/progress': 2.0.5
+  detect-browser: 5.3.0
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   gray-matter: 4.0.3
   next: 12.2.2_beenoklgwfttvph5dgxj7na7aq
@@ -2094,6 +2096,10 @@ packages:
   /dequal/2.0.3:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
+    dev: false
+
+  /detect-browser/5.3.0:
+    resolution: {integrity: sha512-53rsFbGdwMwlF7qvCt0ypLM5V5/Mbl0szB7GPN8y9NCcbknYOeVVXdrXEq+90IwAfrrzt6Hd+u2E2ntakICU8w==}
     dev: false
 
   /detect-node-es/1.1.0:

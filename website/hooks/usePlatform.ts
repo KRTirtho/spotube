@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { detectOS } from "detect-browser";
 
 export enum Platform {
   linux = "Linux",
@@ -11,15 +12,14 @@ export function usePlatform(): Platform {
   const [platform, setPlatform] = useState(Platform.linux);
 
   useEffect(() => {
-    const platform = (
-      ((navigator as unknown as any).userAgentData?.platform as
-        | string
-        | undefined) ?? navigator.platform
-    ).toLowerCase();
+    const detectedPlatform = detectOS(navigator.userAgent)?.toLowerCase();
 
-    if (platform.includes("windows")) setPlatform(Platform.windows);
-    else if (platform.includes("mac")) setPlatform(Platform.mac);
-    else if (platform.includes("android")) setPlatform(Platform.android);
+    if (!detectedPlatform) return;
+
+    if (detectedPlatform.includes("windows")) setPlatform(Platform.windows);
+    else if (detectedPlatform.includes("mac")) setPlatform(Platform.mac);
+    else if (detectedPlatform.includes("android"))
+      setPlatform(Platform.android);
   }, []);
 
   return platform;
