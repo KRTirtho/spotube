@@ -1,5 +1,6 @@
 import {
   Button,
+  CloseButton,
   Heading,
   Modal,
   ModalBody,
@@ -9,6 +10,7 @@ import {
   ModalOverlay,
   Stack,
   Text,
+  Tooltip,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -76,8 +78,16 @@ const AdDetector: FC<{ children: ReactNode }> = ({ children }) => {
           justifyContent="space-between"
           alignItems="center"
           p="5"
+          pos="relative"
         >
-          <Heading></Heading>
+          <Tooltip label="You made me sad 😢">
+            <CloseButton
+              pos="absolute"
+              right="5"
+              variant="ghost"
+              onClick={() => setAdBlockEnabled(false)}
+            />
+          </Tooltip>
           <VStack spacing="2" alignItems="flex-start">
             <Heading size="sm">Here&apos;s something interesting:</Heading>
             <Heading size="md">
