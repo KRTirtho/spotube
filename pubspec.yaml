@@ -65,6 +65,7 @@ dependencies:
   audioplayers: ^1.0.1
   introduction_screen: ^3.0.2
   audio_session: ^0.1.9
+  file_picker: ^4.6.1
 
 dev_dependencies:
   flutter_test:

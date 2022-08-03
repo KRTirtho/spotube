@@ -11,7 +11,6 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
-import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:collection/collection.dart';
@@ -30,141 +29,146 @@ class DownloadTrackButton extends HookConsumerWidget {
     YoutubeExplode yt = useMemoized(() => YoutubeExplode());
 
     final outputFile = useState<File?>(null);
-    final downloadFolder = useState<String?>(null);
     String fileName =
         "${track?.name} - ${TypeConversionUtils.artists_X_String<Artist>(track?.artists ?? [])}";
 
     useEffect(() {
       (() async {
-        downloadFolder.value = path.join(
-            Platform.isAndroid
-                ? "/storage/emulated/0/Download"
-                : (await path_provider.getDownloadsDirectory())!.path,
-            "Spotube");
-
         outputFile.value =
-            File(path.join(downloadFolder.value!, "$fileName.mp3"));
+            File(path.join(preferences.downloadLocation, "$fileName.mp3"));
       }());
       return null;
-    }, [fileName, track]);
+    }, [fileName, track, preferences.downloadLocation]);
 
     final _downloadTrack = useCallback(() async {
-      if (track == null ||
-          outputFile.value == null ||
-          downloadFolder.value == null) return;
-      if ((kIsMobile) &&
-          !await Permission.storage.isGranted &&
-          !await Permission.storage.isPermanentlyDenied) {
-        final status = await Permission.storage.request();
-        if (!status.isGranted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Couldn't download track. Not enough permissions"),
-            ),
-          );
-          return;
+      try {
+        if (track == null || outputFile.value == null) return;
+        if ((kIsMobile) &&
+            !await Permission.storage.isGranted &&
+            !await Permission.storage.isPermanentlyDenied) {
+          final status = await Permission.storage.request();
+          if (!status.isGranted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content:
+                    Text("Couldn't download track. Not enough permissions"),
+              ),
+            );
+            return;
+          }
         }
-      }
-      StreamManifest manifest = await yt.videos.streamsClient
-          .getManifest((track as SpotubeTrack).ytTrack.url);
+        StreamManifest manifest = await yt.videos.streamsClient
+            .getManifest((track as SpotubeTrack).ytTrack.url);
 
-      File outputLyricsFile =
-          File(path.join(downloadFolder.value!, "$fileName-lyrics.txt"));
+        File outputLyricsFile = File(
+            path.join(preferences.downloadLocation, "$fileName-lyrics.txt"));
 
-      if (await outputFile.value!.exists()) {
-        final shouldReplace = await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text("Track Already Exists"),
-              content: const Text(
-                  "Do you want to replace the already downloaded track?"),
-              actions: [
-                TextButton(
-                  child: const Text("No"),
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                ),
-                TextButton(
-                  child: const Text("Yes"),
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  },
-                )
-              ],
+        if (await outputFile.value!.exists()) {
+          final shouldReplace = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Track Already Exists"),
+                content: const Text(
+                    "Do you want to replace the already downloaded track?"),
+                actions: [
+                  TextButton(
+                    child: const Text("No"),
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text("Yes"),
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          if (shouldReplace != true) return;
+        }
+
+        final audioStream = yt.videos.streamsClient
+            .get(
+              manifest.audioOnly
+                  .where((audio) => audio.codec.mimeType == "audio/mp4")
+                  .withHighestBitrate(),
+            )
+            .asBroadcastStream();
+
+        final statusCb = audioStream.listen(
+          (event) {
+            if (status.value != TrackStatus.downloading) {
+              status.value = TrackStatus.downloading;
+            }
+          },
+          onDone: () async {
+            status.value = TrackStatus.done;
+            await Future.delayed(
+              const Duration(seconds: 3),
+              () {
+                if (status.value == TrackStatus.done) {
+                  status.value = TrackStatus.idle;
+                }
+              },
             );
           },
         );
-        if (shouldReplace != true) return;
-      }
 
-      final audioStream = yt.videos.streamsClient
-          .get(
-            manifest.audioOnly
-                .where((audio) => audio.codec.mimeType == "audio/mp4")
-                .withHighestBitrate(),
-          )
-          .asBroadcastStream();
+        if (!await outputFile.value!.exists()) {
+          await outputFile.value!.create(recursive: true);
+        }
 
-      final statusCb = audioStream.listen(
-        (event) {
-          if (status.value != TrackStatus.downloading) {
-            status.value = TrackStatus.downloading;
+        IOSink outputFileStream = outputFile.value!.openWrite();
+        await audioStream.pipe(outputFileStream);
+        await outputFileStream.flush();
+        await outputFileStream.close().then((value) async {
+          if (status.value == TrackStatus.downloading) {
+            status.value = TrackStatus.done;
+            await Future.delayed(
+              const Duration(seconds: 3),
+              () {
+                if (status.value == TrackStatus.done) {
+                  status.value = TrackStatus.idle;
+                }
+              },
+            );
           }
-        },
-        onDone: () async {
-          status.value = TrackStatus.done;
-          await Future.delayed(
-            const Duration(seconds: 3),
-            () {
-              if (status.value == TrackStatus.done) {
-                status.value = TrackStatus.idle;
-              }
-            },
+          return statusCb.cancel();
+        });
+
+        if (preferences.saveTrackLyrics && playback.track != null) {
+          if (!await outputLyricsFile.exists()) {
+            await outputLyricsFile.create(recursive: true);
+          }
+          final lyrics = await ServiceUtils.getLyrics(
+            playback.track!.name!,
+            playback.track!.artists
+                    ?.map((s) => s.name)
+                    .whereNotNull()
+                    .toList() ??
+                [],
+            apiKey: preferences.geniusAccessToken,
+            optimizeQuery: true,
           );
-        },
-      );
-
-      if (!await outputFile.value!.exists()) {
-        await outputFile.value!.create(recursive: true);
-      }
-
-      IOSink outputFileStream = outputFile.value!.openWrite();
-      await audioStream.pipe(outputFileStream);
-      await outputFileStream.flush();
-      await outputFileStream.close().then((value) async {
-        if (status.value == TrackStatus.downloading) {
-          status.value = TrackStatus.done;
-          await Future.delayed(
-            const Duration(seconds: 3),
-            () {
-              if (status.value == TrackStatus.done) {
-                status.value = TrackStatus.idle;
-              }
-            },
-          );
+          if (lyrics != null) {
+            await outputLyricsFile.writeAsString(
+              "$lyrics\n\nPowered by genius.com",
+              mode: FileMode.writeOnly,
+            );
+          }
         }
-        return statusCb.cancel();
-      });
-
-      if (preferences.saveTrackLyrics && playback.track != null) {
-        if (!await outputLyricsFile.exists()) {
-          await outputLyricsFile.create(recursive: true);
-        }
-        final lyrics = await ServiceUtils.getLyrics(
-          playback.track!.name!,
-          playback.track!.artists?.map((s) => s.name).whereNotNull().toList() ??
-              [],
-          apiKey: preferences.geniusAccessToken,
-          optimizeQuery: true,
+      } on FileSystemException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+            content: Text("Download Failed. ${e.message} ${e.path}"),
+          ),
         );
-        if (lyrics != null) {
-          await outputLyricsFile.writeAsString(
-            "$lyrics\n\nPowered by genius.com",
-            mode: FileMode.writeOnly,
-          );
-        }
       }
     }, [
       track,
@@ -173,7 +177,7 @@ class DownloadTrackButton extends HookConsumerWidget {
       preferences.saveTrackLyrics,
       playback.track,
       outputFile.value,
-      downloadFolder.value,
+      preferences.downloadLocation,
       fileName
     ]);
 

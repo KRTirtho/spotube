@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/models/generated_secrets.dart';
@@ -9,6 +11,7 @@ import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
 import 'package:collection/collection.dart';
 import 'package:spotube/utils/primitive_utils.dart';
+import 'package:path/path.dart' as path;
 
 class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
@@ -23,6 +26,9 @@ class UserPreferences extends PersistedChangeNotifier {
   MaterialColor accentColorScheme;
   MaterialColor backgroundColorScheme;
   bool skipSponsorSegments;
+
+  String downloadLocation;
+
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
@@ -35,7 +41,16 @@ class UserPreferences extends PersistedChangeNotifier {
     this.trackMatchAlgorithm = SpotubeTrackMatchAlgorithm.authenticPopular,
     this.audioQuality = AudioQuality.high,
     this.skipSponsorSegments = true,
-  }) : super();
+    this.downloadLocation = "",
+  }) : super() {
+    if (downloadLocation.isEmpty) {
+      _getDefaultDownloadDirectory().then(
+        (value) {
+          downloadLocation = value;
+        },
+      );
+    }
+  }
 
   void setThemeMode(ThemeMode mode) {
     themeMode = mode;
@@ -103,8 +118,22 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setDownloadLocation(String downloadDir) {
+    if (downloadDir.isEmpty) return;
+    downloadLocation = downloadDir;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  Future<String> _getDefaultDownloadDirectory() async {
+    if (Platform.isAndroid) return "/storage/emulated/0/Download/Spotube";
+    return getDownloadsDirectory().then((dir) {
+      return path.join(dir!.path, "Spotube");
+    });
+  }
+
   @override
-  FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
+  FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
     saveTrackLyrics = map["saveTrackLyrics"] ?? false;
     recommendationMarket = map["recommendationMarket"] ?? recommendationMarket;
     checkUpdate = map["checkUpdate"] ?? checkUpdate;
@@ -126,6 +155,8 @@ class UserPreferences extends PersistedChangeNotifier {
         ? AudioQuality.values[map["audioQuality"]]
         : audioQuality;
     skipSponsorSegments = map["skipSponsorSegments"] ?? skipSponsorSegments;
+    downloadLocation =
+        map["downloadLocation"] ?? await _getDefaultDownloadDirectory();
   }
 
   @override
@@ -142,6 +173,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "trackMatchAlgorithm": trackMatchAlgorithm.index,
       "audioQuality": audioQuality.index,
       "skipSponsorSegments": skipSponsorSegments,
+      "downloadLocation": downloadLocation,
     };
   }
 }

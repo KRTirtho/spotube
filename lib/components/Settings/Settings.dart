@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -31,9 +34,18 @@ class Settings extends HookConsumerWidget {
           });
     }, []);
 
+    final pickDownloadLocation = useCallback(() async {
+      final dirStr = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: "Download Location",
+      );
+      if (dirStr == null) return;
+      preferences.setDownloadLocation(dirStr);
+    }, [preferences.downloadLocation]);
+
     var ytSearchFormatController = useTextEditingController(
       text: preferences.ytSearchFormat,
     );
+
     return SafeArea(
       child: Scaffold(
         appBar: PageWindowTitleBar(
@@ -147,6 +159,24 @@ class Settings extends HookConsumerWidget {
                           ),
                         ],
                       ),
+                    ),
+                    ListTile(
+                      title: const Text("Download Location"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            preferences.downloadLocation,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(width: 5),
+                          ElevatedButton(
+                            child: const Icon(Icons.folder_rounded),
+                            onPressed: pickDownloadLocation,
+                          ),
+                        ],
+                      ),
+                      onTap: pickDownloadLocation,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
