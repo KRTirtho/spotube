@@ -213,10 +213,17 @@ class Settings extends HookConsumerWidget {
                       ),
                     ),
                     if (auth.isAnonymous)
-                      ListTile(
-                        leading: const Icon(Icons.login_rounded),
-                        title: const Text("Login with your Spotify account"),
-                        horizontalTitleGap: 10,
+                      AdaptiveListTile(
+                        leading: Icon(
+                          Icons.login_rounded,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        title: Text(
+                          "Login with your Spotify account",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                         trailing: ElevatedButton(
                           child: Text("Connect with Spotify".toUpperCase()),
                           onPressed: () {

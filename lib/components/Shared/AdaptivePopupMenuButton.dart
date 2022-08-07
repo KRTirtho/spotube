@@ -83,7 +83,7 @@ class AdaptiveActions extends HookWidget {
                     .toList(),
               );
             },
-            backgroundColor: Theme.of(context).dialogTheme.backgroundColor!,
+            backgroundColor: Theme.of(context).cardColor,
           );
         },
       );
