@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,14 +5,15 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
+import 'package:spotube/components/Shared/AdaptiveListTile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
+import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:collection/collection.dart';
 
 class Settings extends HookConsumerWidget {
   const Settings({Key? key}) : super(key: key);
@@ -63,9 +62,9 @@ class Settings extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: ListView(
                   children: [
-                    ListTile(
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.dark_mode_outlined),
                       title: const Text("Theme"),
-                      horizontalTitleGap: 10,
                       trailing: DropdownButton<ThemeMode>(
                         value: preferences.themeMode,
                         items: const [
@@ -94,8 +93,8 @@ class Settings extends HookConsumerWidget {
                       ),
                     ),
                     ListTile(
+                      leading: const Icon(Icons.palette_outlined),
                       title: const Text("Accent Color Scheme"),
-                      horizontalTitleGap: 10,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5,
@@ -108,8 +107,8 @@ class Settings extends HookConsumerWidget {
                       onTap: pickColorScheme(ColorSchemeType.accent),
                     ),
                     ListTile(
+                      leading: const Icon(Icons.format_color_fill_rounded),
                       title: const Text("Background Color Scheme"),
-                      horizontalTitleGap: 10,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5,
@@ -121,106 +120,79 @@ class Settings extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(ColorSchemeType.background),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Market Place",
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
-                              Text(
-                                "Recommendation Country",
-                                style: Theme.of(context).textTheme.caption,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          DropdownButton(
-                            value: preferences.recommendationMarket,
-                            items: spotifyMarkets
-                                .map(
-                                  (country) => (DropdownMenuItem(
-                                    child: Text(country.last),
-                                    value: country.first,
-                                  )),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              if (value == null) return;
-                              preferences.setRecommendationMarket(
-                                value as String,
-                              );
-                            },
-                          ),
-                        ],
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.shopping_bag_rounded),
+                      title: Text(
+                        "Market Place",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      subtitle: Text(
+                        "Recommendation Country",
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                      trailing: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 250),
+                        child: DropdownButton(
+                          isExpanded: true,
+                          value: preferences.recommendationMarket,
+                          items: spotifyMarkets
+                              .map(
+                                (country) => (DropdownMenuItem(
+                                  child: Text(country.last),
+                                  value: country.first,
+                                )),
+                              )
+                              .toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            preferences.setRecommendationMarket(
+                              value as String,
+                            );
+                          },
+                        ),
                       ),
                     ),
                     ListTile(
+                      leading: const Icon(Icons.file_download_outlined),
                       title: const Text("Download Location"),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            preferences.downloadLocation,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const SizedBox(width: 5),
-                          ElevatedButton(
-                            child: const Icon(Icons.folder_rounded),
-                            onPressed: pickDownloadLocation,
-                          ),
-                        ],
+                      subtitle: Text(preferences.downloadLocation),
+                      trailing: ElevatedButton(
+                        child: const Icon(Icons.folder_rounded),
+                        onPressed: pickDownloadLocation,
                       ),
                       onTap: pickDownloadLocation,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15.0,
-                        vertical: 5,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              "Format of the YouTube Search term (Case sensitive)",
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: TextField(
-                              controller: ytSearchFormatController,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                suffix: ElevatedButton(
-                                  child: const Icon(Icons.save_rounded),
-                                  onPressed: () {
-                                    preferences.setYtSearchFormat(
-                                      ytSearchFormatController.value.text,
-                                    );
-                                  },
-                                ),
-                              ),
-                              onSubmitted: (value) {
-                                preferences.setYtSearchFormat(value);
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.screen_search_desktop_rounded),
+                      title: const Text("Format of the YouTube Search term"),
+                      subtitle: const Text("(Case sensitive)"),
+                      breakOn: Breakpoints.lg,
+                      trailing: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 450),
+                        child: TextField(
+                          controller: ytSearchFormatController,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            suffix: ElevatedButton(
+                              child: const Icon(Icons.save_rounded),
+                              onPressed: () {
+                                preferences.setYtSearchFormat(
+                                  ytSearchFormatController.value.text,
+                                );
                               },
                             ),
                           ),
-                        ],
+                          onSubmitted: (value) {
+                            preferences.setYtSearchFormat(value);
+                          },
+                        ),
                       ),
                     ),
                     ListTile(
+                      leading: const Icon(Icons.fast_forward_rounded),
                       title: const Text(
                         "Skip non-music segments (SponsorBlock)",
                       ),
-                      horizontalTitleGap: 10,
                       trailing: Switch.adaptive(
                         activeColor: Theme.of(context).primaryColor,
                         value: preferences.skipSponsorSegments,
@@ -230,8 +202,8 @@ class Settings extends HookConsumerWidget {
                       ),
                     ),
                     ListTile(
+                      leading: const Icon(Icons.lyrics_rounded),
                       title: const Text("Download lyrics along with the Track"),
-                      horizontalTitleGap: 10,
                       trailing: Switch.adaptive(
                         activeColor: Theme.of(context).primaryColor,
                         value: preferences.saveTrackLyrics,
@@ -242,6 +214,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     if (auth.isAnonymous)
                       ListTile(
+                        leading: const Icon(Icons.login_rounded),
                         title: const Text("Login with your Spotify account"),
                         horizontalTitleGap: 10,
                         trailing: ElevatedButton(
@@ -259,8 +232,8 @@ class Settings extends HookConsumerWidget {
                         ),
                       ),
                     ListTile(
+                      leading: const Icon(Icons.update_rounded),
                       title: const Text("Check for Update"),
-                      horizontalTitleGap: 10,
                       trailing: Switch.adaptive(
                         activeColor: Theme.of(context).primaryColor,
                         value: preferences.checkUpdate,
@@ -268,9 +241,9 @@ class Settings extends HookConsumerWidget {
                             preferences.setCheckUpdate(checked),
                       ),
                     ),
-                    ListTile(
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.low_priority_rounded),
                       title: const Text("Track Match Algorithm"),
-                      horizontalTitleGap: 10,
                       trailing: DropdownButton<SpotubeTrackMatchAlgorithm>(
                         value: preferences.trackMatchAlgorithm,
                         items: const [
@@ -298,9 +271,9 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    ListTile(
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.multitrack_audio_rounded),
                       title: const Text("Audio Quality"),
-                      horizontalTitleGap: 10,
                       trailing: DropdownButton<AudioQuality>(
                         value: preferences.audioQuality,
                         items: const [
@@ -326,8 +299,8 @@ class Settings extends HookConsumerWidget {
                       Builder(builder: (context) {
                         Auth auth = ref.watch(authProvider);
                         return ListTile(
+                          leading: const Icon(Icons.logout_rounded),
                           title: const Text("Log out of this account"),
-                          horizontalTitleGap: 10,
                           trailing: ElevatedButton(
                             child: const Text("Logout"),
                             style: ButtonStyle(
@@ -343,7 +316,11 @@ class Settings extends HookConsumerWidget {
                           ),
                         );
                       }),
-                    ListTile(
+                    AdaptiveListTile(
+                      leading: const Icon(
+                        Icons.favorite_border_rounded,
+                        color: Colors.pink,
+                      ),
                       title: const Text(
                         "We know you Love Spotube",
                         style: TextStyle(
@@ -351,7 +328,6 @@ class Settings extends HookConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      horizontalTitleGap: 10,
                       trailing: ElevatedButton.icon(
                         icon: const Icon(Icons.favorite_outline_rounded),
                         label: const Text("Please Sponsor/Donate"),
@@ -367,14 +343,7 @@ class Settings extends HookConsumerWidget {
                       ),
                     ),
                     const About()
-                  ].mapIndexed((i, child) {
-                    return Container(
-                      color: i % 2 == 1
-                          ? Theme.of(context).primaryColor.withOpacity(.1)
-                          : null,
-                      child: child,
-                    );
-                  }).toList(),
+                  ],
                 ),
               ),
             ),

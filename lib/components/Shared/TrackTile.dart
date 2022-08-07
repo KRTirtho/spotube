@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Action;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Shared/AdaptivePopupMenuButton.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useForceUpdate.dart';
@@ -257,73 +258,38 @@ class TrackTile extends HookConsumerWidget {
               Text(duration),
             ],
             const SizedBox(width: 10),
-            PopupMenuButton(
-              icon: const Icon(Icons.more_horiz_rounded),
-              itemBuilder: (context) {
-                return [
-                  if (auth.isLoggedIn)
-                    PopupMenuItem(
-                      child: Row(
-                        children: const [
-                          Icon(Icons.add_box_rounded),
-                          SizedBox(width: 10),
-                          Text("Add to Playlist"),
-                        ],
-                      ),
-                      value: "add-playlist",
-                    ),
-                  if (userPlaylist && auth.isLoggedIn)
-                    PopupMenuItem(
-                      child: Row(
-                        children: const [
-                          Icon(Icons.remove_circle_outline_rounded),
-                          SizedBox(width: 10),
-                          Text("Remove from Playlist"),
-                        ],
-                      ),
-                      value: "remove-playlist",
-                    ),
-                  if (auth.isLoggedIn)
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          Icon(isSaved
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded),
-                          const SizedBox(width: 10),
-                          const Text("Favorite")
-                        ],
-                      ),
-                      value: "favorite",
-                    ),
-                  PopupMenuItem(
-                    child: Row(
-                      children: const [
-                        Icon(Icons.share_rounded),
-                        SizedBox(width: 10),
-                        Text("Share")
-                      ],
-                    ),
-                    value: "share",
-                  )
-                ];
-              },
-              onSelected: (value) {
-                switch (value) {
-                  case "favorite":
-                    actionFavorite(isSaved);
-                    break;
-                  case "add-playlist":
-                    actionAddToPlaylist();
-                    break;
-                  case "remove-playlist":
-                    actionRemoveFromPlaylist();
-                    break;
-                  case "share":
+            AdaptiveActions(
+              actions: [
+                if (auth.isLoggedIn)
+                  Action(
+                    icon: const Icon(Icons.add_box_rounded),
+                    text: const Text("Add To playlist"),
+                    onPressed: actionAddToPlaylist,
+                  ),
+                if (userPlaylist && auth.isLoggedIn)
+                  Action(
+                    icon: const Icon(Icons.remove_circle_outline_rounded),
+                    text: const Text("Remove from playlist"),
+                    onPressed: actionRemoveFromPlaylist,
+                  ),
+                if (auth.isLoggedIn)
+                  Action(
+                    icon: Icon(isSaved
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded),
+                    text: const Text("Save as favorite"),
+                    onPressed: () {
+                      actionFavorite(isSaved);
+                    },
+                  ),
+                Action(
+                  icon: const Icon(Icons.share_rounded),
+                  text: const Text("Share"),
+                  onPressed: () {
                     actionShare(track.value);
-                    break;
-                }
-              },
+                  },
+                )
+              ],
             ),
           ],
         ),

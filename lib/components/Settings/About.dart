@@ -29,6 +29,7 @@ class About extends HookWidget {
         version: "2.3.0");
 
     return ListTile(
+      leading: Icon(Icons.info_outline_rounded),
       title: const Text("About Spotube"),
       onTap: () {
         showAboutDialog(

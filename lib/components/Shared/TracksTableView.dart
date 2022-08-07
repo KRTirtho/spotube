@@ -75,7 +75,9 @@ class TracksTableView extends HookConsumerWidget {
               Text("Time", style: tableHeadStyle),
               const SizedBox(width: 10),
             ],
-            const SizedBox(width: 40),
+            SizedBox(
+              width: breakpoint.isLessThan(Breakpoints.lg) ? 40 : 110,
+            ),
           ],
         ),
         ...tracks.asMap().entries.map((track) {

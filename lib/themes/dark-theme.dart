@@ -72,5 +72,6 @@ ThemeData darkTheme({
     dialogTheme: DialogTheme(backgroundColor: backgroundMaterialColor[900]),
     cardColor: backgroundMaterialColor[800],
     canvasColor: backgroundMaterialColor[900],
+    listTileTheme: const ListTileThemeData(horizontalTitleGap: 0),
   );
 }
