@@ -30,6 +30,10 @@ class TrackTile extends HookConsumerWidget {
 
   final bool isActive;
 
+  final bool isChecked;
+  final bool showCheck;
+  final void Function(bool?)? onCheckChange;
+
   TrackTile(
     this.playback, {
     required this.track,
@@ -40,6 +44,9 @@ class TrackTile extends HookConsumerWidget {
     this.thumbnailUrl,
     this.onTrackPlayButtonPressed,
     this.showAlbum = true,
+    this.isChecked = false,
+    this.showCheck = false,
+    this.onCheckChange,
     Key? key,
   }) : super(key: key);
 
@@ -182,6 +189,11 @@ class TrackTile extends HookConsumerWidget {
         type: MaterialType.transparency,
         child: Row(
           children: [
+            if (showCheck)
+              Checkbox(
+                value: isChecked,
+                onChanged: (s) => onCheckChange?.call(s),
+              ),
             SizedBox(
               height: 20,
               width: 25,
