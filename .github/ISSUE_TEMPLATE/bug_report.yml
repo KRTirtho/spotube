@@ -86,6 +86,9 @@ body:
     validations:
       required: true
 
-  - type: markdown
+  - type: textarea
     attributes:
-      value: Additional information
+      label: Additional information
+      description: Anything else you'd like to add?
+    validations:
+      required: false
