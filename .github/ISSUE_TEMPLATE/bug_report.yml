@@ -1,0 +1,91 @@
+name: 🐛 Bug
+description: Report a bug or incorrect behavior
+title: "[Bug] <title>"
+labels:
+  - bug
+  - good first issue
+assignees:
+  - KRTirtho
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true
+  - type: textarea
+    attributes:
+      label: Current Behavior
+      description: Tell us what you're experiencing concisely.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: Let us know what you expected to happen concisely.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. In this environment...
+        2. With this config...
+        3. Run '...'
+        4. See error...
+    validations:
+      required: false
+  - type: input
+    attributes:
+      label: Spotube Version
+      description: In which version of Spotube did you encounter this bug?
+      placeholder: e.g. v2.3.0
+  - type: dropdown
+    attributes:
+      label: Operating System
+      description: In which OS you're experiencing the bug?
+      multiple: false
+      options:
+        - "Android"
+        - "Linux"
+        - "Windows"
+        - "Mac OS"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Linux Distribution (if applicable)
+      description: Tell us in what Linux Distribution you're experiencing the bug.
+      placeholder: Arch Linux
+    validations:
+      required: false
+  - type: input
+    attributes:
+      label: Operating System Version
+      description: In which version of your OS you're experiencing the bug?
+      placeholder: e.g. Android 10
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Installation Source
+      description: How did you install Spotube?
+      multiple: false
+      options:
+        - "Official Website (spotube.netlify.app)"
+        - "Github Release (Binary)"
+        - "Github Actions (Nightly Binary)"
+        - "F-Droid (Android)"
+        - "Arch User Repository (AUR)"
+        - "Flathub (Flatpak)"
+        - "chocolatey (Windows)"
+        - "WinGet (Windows)"
+        - "Scoop (Windows)"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: Additional information
