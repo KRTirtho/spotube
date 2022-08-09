@@ -46,7 +46,7 @@ body:
     attributes:
       label: Operating System
       description: In which OS you're experiencing the bug?
-      multiple: false
+      multiple: true
       options:
         - "Android"
         - "Linux"
@@ -72,7 +72,7 @@ body:
     attributes:
       label: Installation Source
       description: How did you install Spotube?
-      multiple: false
+      multiple: true
       options:
         - "Official Website (spotube.netlify.app)"
         - "Github Release (Binary)"
