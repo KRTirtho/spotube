@@ -333,7 +333,10 @@ class Playback extends PersistedChangeNotifier {
   }
 
   // playlist & track list methods
-  Future<SpotubeTrack> toSpotubeTrack(Track track) async {
+  Future<SpotubeTrack> toSpotubeTrack(
+    Track track, {
+    bool noSponsorBlock = false,
+  }) async {
     try {
       final format = preferences.ytSearchFormat;
       final matchAlgorithm = preferences.trackMatchAlgorithm;
@@ -452,7 +455,9 @@ class Playback extends PersistedChangeNotifier {
                 (segment) => segment.toJson(),
               )
               .toList()
-          : await getSkipSegments(ytVideo.id.value);
+          : noSponsorBlock
+              ? List.castFrom<dynamic, Map<String, int>>([])
+              : await getSkipSegments(ytVideo.id.value);
 
       // only save when the track isn't available in the cache with same
       // matchAlgorithm

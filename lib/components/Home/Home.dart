@@ -14,6 +14,7 @@ import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerCategories.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
+import 'package:spotube/components/Shared/DownloadTrackButton.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
@@ -21,6 +22,7 @@ import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/models/Logger.dart';
+import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/utils/platform.dart';
 
@@ -52,6 +54,23 @@ class Home extends HookConsumerWidget {
     );
     final _selectedIndex = useState(0);
     _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
+
+    final downloader = ref.watch(downloaderProvider);
+    final isMounted = useIsMounted();
+
+    useEffect(() {
+      downloader.onFileExists = (track) async {
+        if (!isMounted()) return false;
+        return await showDialog<bool>(
+              context: context,
+              builder: (context) => ReplaceDownloadedFileDialog(
+                track: track,
+              ),
+            ) ??
+            false;
+      };
+      return null;
+    }, [downloader]);
 
     // checks for latest version of the application
     useUpdateChecker(ref);

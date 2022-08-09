@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:queue/queue.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Shared/DownloadConfirmationDialog.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Downloader.dart';
@@ -50,6 +52,7 @@ class TracksTableView extends HookConsumerWidget {
                   selected.value = tracks.map((s) => s.id!).toList();
                 } else {
                   selected.value = [];
+                  showCheck.value = false;
                 }
               },
             ),
@@ -96,31 +99,48 @@ class TracksTableView extends HookConsumerWidget {
               itemBuilder: (context) {
                 return [
                   PopupMenuItem(
+                    enabled: selected.value.isNotEmpty,
                     child: Row(
                       children: const [
                         Icon(Icons.file_download_outlined),
                         Text("Download"),
                       ],
                     ),
-                    onTap: () async {
-                      final spotubeTracks = await Future.wait(
-                        tracks
-                            .where(
-                          (track) => selected.value.contains(track.id),
-                        )
-                            .map((track) {
-                          return Future.delayed(const Duration(seconds: 2),
-                              () => playback.toSpotubeTrack(track));
-                        }),
-                      );
-
-                      for (var spotubeTrack in spotubeTracks) {
-                        downloader.addToQueue(spotubeTrack);
-                      }
-                    },
                     value: "download",
                   ),
                 ];
+              },
+              onSelected: (action) async {
+                switch (action) {
+                  case "download":
+                    {
+                      final isConfirmed = await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const DownloadConfirmationDialog();
+                          });
+                      if (isConfirmed != true) return;
+                      final queue = Queue(
+                        delay: const Duration(seconds: 5),
+                      );
+                      final selectedTracks = tracks.where(
+                        (track) => selected.value.contains(track.id),
+                      );
+                      for (final selectedTrack in selectedTracks) {
+                        queue.add(() async {
+                          downloader.addToQueue(
+                            await playback.toSpotubeTrack(
+                              selectedTrack,
+                              noSponsorBlock: true,
+                            ),
+                          );
+                        });
+                      }
+                      await queue.onComplete;
+                      break;
+                    }
+                  default:
+                }
               },
             ),
           ],
@@ -132,10 +152,17 @@ class TracksTableView extends HookConsumerWidget {
           );
           String duration =
               "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-          return GestureDetector(
-            onDoubleTap: () {
+          return InkWell(
+            onLongPress: () {
               showCheck.value = true;
               selected.value = [...selected.value, track.value.id!];
+            },
+            onTap: () {
+              if (showCheck.value) {
+                selected.value = [...selected.value, track.value.id!];
+              } else {
+                onTrackPlayButtonPressed?.call(track.value);
+              }
             },
             child: TrackTile(
               playback,

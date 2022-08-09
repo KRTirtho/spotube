@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
@@ -9,29 +10,35 @@ import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-Queue _queueInstance = Queue(delay: const Duration(seconds: 1));
+Queue _queueInstance = Queue(delay: const Duration(seconds: 5));
 
 class Downloader with ChangeNotifier {
   Queue _queue;
   YoutubeExplode yt;
   String downloadPath;
+  FutureOr<bool> Function(SpotubeTrack track)? onFileExists;
   Downloader(
     this._queue, {
     required this.downloadPath,
     required this.yt,
+    this.onFileExists,
   });
 
   int currentlyRunning = 0;
+  Set<String> inQueue = {};
 
   void addToQueue(SpotubeTrack track) {
+    if (inQueue.contains(track.id!)) return;
     currentlyRunning++;
+    inQueue.add(track.id!);
     notifyListeners();
     _queue.add(() async {
       try {
         final file =
             File(path.join(downloadPath, '${track.ytTrack.title}.mp3'));
-        // TODO find a way to let the UI know there's already provided file is available
-        if (file.existsSync()) return;
+        if (file.existsSync() && await onFileExists?.call(track) != true) {
+          return;
+        }
         file.createSync(recursive: true);
         StreamManifest manifest =
             await yt.videos.streamsClient.getManifest(track.ytTrack.url);
@@ -48,6 +55,7 @@ class Downloader with ChangeNotifier {
         await outputFileStream.flush();
       } finally {
         currentlyRunning--;
+        inQueue.remove(track.id);
         notifyListeners();
       }
     });
