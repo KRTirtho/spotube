@@ -196,7 +196,7 @@ class TrackTile extends HookConsumerWidget {
               ),
             SizedBox(
               height: 20,
-              width: 25,
+              width: 15,
               child: Text(
                 (track.key + 1).toString(),
                 textAlign: TextAlign.center,

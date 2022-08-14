@@ -39,6 +39,13 @@ class TracksTableView extends HookConsumerWidget {
     final selected = useState<List<String>>([]);
     final showCheck = useState<bool>(false);
 
+    final selectedTracks = useMemoized(
+      () => tracks.where(
+        (track) => selected.value.contains(track.id),
+      ),
+      [tracks],
+    );
+
     return SliverList(
       delegate: SliverChildListDelegate([
         if (heading != null) heading!,
@@ -101,9 +108,11 @@ class TracksTableView extends HookConsumerWidget {
                   PopupMenuItem(
                     enabled: selected.value.isNotEmpty,
                     child: Row(
-                      children: const [
-                        Icon(Icons.file_download_outlined),
-                        Text("Download"),
+                      children: [
+                        const Icon(Icons.file_download_outlined),
+                        Text(
+                          "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
+                        ),
                       ],
                     ),
                     value: "download",
@@ -123,9 +132,6 @@ class TracksTableView extends HookConsumerWidget {
                       final queue = Queue(
                         delay: const Duration(seconds: 5),
                       );
-                      final selectedTracks = tracks.where(
-                        (track) => selected.value.contains(track.id),
-                      );
                       for (final selectedTrack in selectedTracks) {
                         queue.add(() async {
                           downloader.addToQueue(
@@ -136,6 +142,9 @@ class TracksTableView extends HookConsumerWidget {
                           );
                         });
                       }
+
+                      selected.value = [];
+                      showCheck.value = false;
                       await queue.onComplete;
                       break;
                     }

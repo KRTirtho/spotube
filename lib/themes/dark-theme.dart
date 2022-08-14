@@ -73,5 +73,12 @@ ThemeData darkTheme({
     cardColor: backgroundMaterialColor[800],
     canvasColor: backgroundMaterialColor[900],
     listTileTheme: const ListTileThemeData(horizontalTitleGap: 0),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return accentMaterialColor[500];
+        }
+      }),
+    ),
   );
 }

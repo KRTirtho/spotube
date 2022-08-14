@@ -97,5 +97,12 @@ ThemeData lightTheme({
     ),
     cardColor: backgroundMaterialColor[50],
     canvasColor: backgroundMaterialColor[50],
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return accentMaterialColor[500];
+        }
+      }),
+    ),
   );
 }
