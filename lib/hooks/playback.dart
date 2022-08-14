@@ -1,12 +1,14 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 
 final logger = getLogger("PlaybackHook");
 
-Future<void> Function() useNextTrack(Playback playback) {
+Future<void> Function() useNextTrack(WidgetRef ref) {
   return () async {
     try {
+      final playback = ref.read(playbackProvider);
       await playback.player.pause();
       await playback.player.seek(Duration.zero);
       playback.seekForward();
@@ -16,9 +18,10 @@ Future<void> Function() useNextTrack(Playback playback) {
   };
 }
 
-Future<void> Function() usePreviousTrack(Playback playback) {
+Future<void> Function() usePreviousTrack(WidgetRef ref) {
   return () async {
     try {
+      final playback = ref.read(playbackProvider);
       await playback.player.pause();
       await playback.player.seek(Duration.zero);
       playback.seekBackward();
@@ -28,9 +31,10 @@ Future<void> Function() usePreviousTrack(Playback playback) {
   };
 }
 
-Future<void> Function([dynamic]) useTogglePlayPause(Playback playback) {
+Future<void> Function([dynamic]) useTogglePlayPause(WidgetRef ref) {
   return ([key]) async {
     try {
+      final playback = ref.read(playbackProvider);
       if (playback.track == null) {
         return;
       } else if (playback.track != null &&

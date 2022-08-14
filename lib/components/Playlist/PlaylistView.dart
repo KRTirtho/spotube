@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/TrackCollectionView.dart';
+import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
@@ -51,6 +52,8 @@ class PlaylistView extends HookConsumerWidget {
     final isPlaylistPlaying =
         playback.playlist?.id != null && playback.playlist?.id == playlist.id;
 
+    final breakpoint = useBreakpoints();
+
     final meSnapshot = ref.watch(currentUserQuery);
     final tracksSnapshot = ref.watch(playlistTracksQuery(playlist.id!));
 
@@ -81,6 +84,7 @@ class PlaylistView extends HookConsumerWidget {
           );
         }
       },
+      bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
       showShare: playlist.id != "user-liked-tracks",
       routePath: "/playlist/${playlist.id}",
       onShare: () {

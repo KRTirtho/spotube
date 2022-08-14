@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Player/PlayerTrackDetails.dart';
 import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
-import 'package:spotube/hooks/useIsCurrentRoute.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Playback.dart';
 
@@ -21,24 +20,24 @@ class PlayerOverlay extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
-    final isCurrentRoute = useIsCurrentRoute("/");
     final paletteColor = usePaletteColor(albumArt, ref);
-    final playback = ref.watch(playbackProvider);
 
-    if (isCurrentRoute == false) {
-      return Container();
-    }
+    var isHome = GoRouter.of(context).location == "/";
+    final isAllowedPage = ["/playlist/", "/album/"].any(
+      (el) => GoRouter.of(context).location.startsWith(el),
+    );
 
-    final onNext = useNextTrack(playback);
+    final onNext = useNextTrack(ref);
+    final onPrevious = usePreviousTrack(ref);
+    final _playOrPause = useTogglePlayPause(ref);
 
-    final onPrevious = usePreviousTrack(playback);
+    if (!isHome && !isAllowedPage) return Container();
 
-    final _playOrPause = useTogglePlayPause(playback);
-
-    return Positioned(
-      right: (breakpoint.isMd ? 10 : 5),
-      left: (breakpoint.isSm ? 5 : 80),
-      bottom: (breakpoint.isSm ? 63 : 10),
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 2500),
+      right: (breakpoint.isMd && !isAllowedPage ? 10 : 5),
+      left: (breakpoint.isSm || isAllowedPage ? 5 : 90),
+      bottom: (breakpoint.isSm && !isAllowedPage ? 63 : 10),
       child: GestureDetector(
         onVerticalDragEnd: (details) {
           int sensitivity = 8;
@@ -88,14 +87,18 @@ class PlayerOverlay extends HookConsumerWidget {
                             onPressed: () {
                               onPrevious();
                             }),
-                        IconButton(
-                          icon: Icon(
-                            playback.isPlaying
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                          ),
-                          color: paletteColor.bodyTextColor,
-                          onPressed: _playOrPause,
+                        Consumer(
+                          builder: (context, ref, _) {
+                            return IconButton(
+                              icon: Icon(
+                                ref.read(playbackProvider).isPlaying
+                                    ? Icons.pause_rounded
+                                    : Icons.play_arrow_rounded,
+                              ),
+                              color: paletteColor.bodyTextColor,
+                              onPressed: _playOrPause,
+                            );
+                          },
                         ),
                         IconButton(
                           icon: const Icon(Icons.skip_next_rounded),

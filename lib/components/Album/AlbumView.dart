@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/TrackCollectionView.dart';
+import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -52,6 +53,8 @@ class AlbumView extends HookConsumerWidget {
         () => TypeConversionUtils.image_X_UrlString(album.images),
         [album.images]);
 
+    final breakpoint = useBreakpoints();
+
     return TrackCollectionView(
       id: album.id!,
       isPlaying:
@@ -61,6 +64,7 @@ class AlbumView extends HookConsumerWidget {
       tracksSnapshot: tracksSnapshot,
       album: album,
       routePath: "/album/${album.id}",
+      bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
       onPlay: ([track]) {
         if (tracksSnapshot.asData?.value != null) {
           playPlaylist(

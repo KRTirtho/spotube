@@ -28,6 +28,7 @@ class TrackCollectionView extends HookConsumerWidget {
 
   final bool showShare;
   final bool isOwned;
+  final bool bottomSpace;
 
   final String routePath;
   TrackCollectionView({
@@ -44,6 +45,7 @@ class TrackCollectionView extends HookConsumerWidget {
     this.description,
     this.showShare = true,
     this.isOwned = false,
+    this.bottomSpace = false,
     Key? key,
   }) : super(key: key);
 
@@ -233,6 +235,7 @@ class TrackCollectionView extends HookConsumerWidget {
                     onTrackPlayButtonPressed: onPlay,
                     playlistId: id,
                     userPlaylist: isOwned,
+                    bottomSpace: bottomSpace,
                   );
                 },
                 error: (error, _) =>

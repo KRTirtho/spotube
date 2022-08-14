@@ -20,11 +20,9 @@ class PlayerControls extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final Playback playback = ref.watch(playbackProvider);
 
-    final onNext = useNextTrack(playback);
-
-    final onPrevious = usePreviousTrack(playback);
-
-    final _playOrPause = useTogglePlayPause(playback);
+    final onNext = useNextTrack(ref);
+    final onPrevious = usePreviousTrack(ref);
+    final _playOrPause = useTogglePlayPause(ref);
 
     final duration = playback.currentDuration;
 
