@@ -46,7 +46,7 @@ void main() async {
       }
       appWindow.show();
     });
-  } else {
+  } else if (kIsMobile) {
     await FlutterDownloader.initialize(
       debug: kDebugMode,
       ignoreSsl: true,

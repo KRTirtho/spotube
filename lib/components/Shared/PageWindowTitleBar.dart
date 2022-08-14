@@ -110,13 +110,13 @@ class PageWindowTitleBar extends StatelessWidget
         color: backgroundColor,
         child: Row(
           children: [
-            if (Platform.isMacOS)
+            if (kIsMacOS)
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.045,
               ),
             if (leading != null) leading!,
             Expanded(child: MoveWindow(child: Center(child: center))),
-            if (!Platform.isMacOS && !kIsMobile)
+            if (!kIsMacOS && !kIsMobile)
               TitleBarActionButtons(color: foregroundColor)
           ],
         ),

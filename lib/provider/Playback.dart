@@ -18,6 +18,7 @@ import 'package:spotube/provider/YouTube.dart';
 import 'package:spotube/services/LinuxAudioService.dart';
 import 'package:spotube/services/MobileAudioService.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -79,14 +80,14 @@ class Playback extends PersistedChangeNotifier {
         _subscriptions = [],
         status = PlaybackStatus.idle,
         super() {
-    if (Platform.isLinux) {
+    if (kIsLinux) {
       _linuxAudioService = LinuxAudioService(this);
     }
 
     (() async {
       cache = await Hive.openLazyBox<CacheTrack>("track-cache");
 
-      if (Platform.isAndroid) {
+      if (kIsAndroid) {
         await player.setVolume(1);
         volume = 1;
       } else {
@@ -433,9 +434,9 @@ class Playback extends PersistedChangeNotifier {
 
       final audioManifest = trackManifest.audioOnly.where((info) {
         final isMp4a = info.codec.mimeType == "audio/mp4";
-        if (Platform.isLinux) {
+        if (kIsLinux) {
           return !isMp4a;
-        } else if (Platform.isMacOS || Platform.isIOS) {
+        } else if (kIsMacOS || kIsIOS) {
           return isMp4a;
         } else {
           return true;

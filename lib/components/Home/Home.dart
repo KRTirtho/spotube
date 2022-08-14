@@ -90,8 +90,7 @@ class Home extends HookConsumerWidget {
                   child: MoveWindow(),
                 ),
                 Expanded(child: MoveWindow()),
-                if (!Platform.isMacOS && !kIsMobile)
-                  const TitleBarActionButtons(),
+                if (!kIsMacOS && !kIsMobile) const TitleBarActionButtons(),
               ],
             ),
           )

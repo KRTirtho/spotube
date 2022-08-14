@@ -10,6 +10,7 @@ import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/PersistedChangeNotifier.dart';
 import 'package:collection/collection.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:path/path.dart' as path;
 
@@ -126,7 +127,7 @@ class UserPreferences extends PersistedChangeNotifier {
   }
 
   Future<String> _getDefaultDownloadDirectory() async {
-    if (Platform.isAndroid) return "/storage/emulated/0/Download/Spotube";
+    if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
     return getDownloadsDirectory().then((dir) {
       return path.join(dir!.path, "Spotube");
     });

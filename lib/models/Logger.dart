@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -31,7 +32,7 @@ class _SpotubeLogger extends Logger {
 class _SpotubeLogFilter extends DevelopmentFilter {
   @override
   bool shouldLog(LogEvent event) {
-    final env = Platform.environment;
+    final env = kIsWeb ? {} : Platform.environment;
     if ((env["DEBUG"] == "true" && event.level == Level.debug) ||
         (env["VERBOSE"] == "true" && event.level == Level.verbose) ||
         (env["ERROR"] == "true" && event.level == Level.error)) {

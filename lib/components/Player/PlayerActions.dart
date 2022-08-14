@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -54,9 +55,10 @@ class PlayerActions extends HookConsumerWidget {
                 }
               : null,
         ),
-        DownloadTrackButton(
-          track: playback.track,
-        ),
+        if (!kIsWeb)
+          DownloadTrackButton(
+            track: playback.track,
+          ),
         if (auth.isLoggedIn)
           FutureBuilder<bool>(
               future: playback.track?.id != null
