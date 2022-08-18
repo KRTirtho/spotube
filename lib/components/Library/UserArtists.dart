@@ -31,8 +31,8 @@ class UserArtists extends HookConsumerWidget {
 
     return PagedGridView(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 250,
-        childAspectRatio: 9 / 11,
+        maxCrossAxisExtent: 200,
+        mainAxisExtent: 250,
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
       ),

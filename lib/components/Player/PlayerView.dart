@@ -82,22 +82,16 @@ class PlayerView extends HookConsumerWidget {
                       children: [
                         SizedBox(
                           height: 30,
-                          child: currentTrack?.name != null &&
-                                  currentTrack!.name!.length > 29
-                              ? SpotubeMarqueeText(
-                                  text: currentTrack.name ?? "Not playing",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: paletteColor.titleTextColor,
-                                      ),
-                                )
-                              : Text(
-                                  currentTrack?.name ?? "Not Playing",
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
+                          child: SpotubeMarqueeText(
+                            text: currentTrack?.name ?? "Not playing",
+                            style:
+                                Theme.of(context).textTheme.headline5?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: paletteColor.titleTextColor,
+                                    ),
+                            isHovering: true,
+                            minStartLength: 29,
+                          ),
                         ),
                         TypeConversionUtils.artists_X_ClickableArtists(
                           currentTrack?.artists ?? [],

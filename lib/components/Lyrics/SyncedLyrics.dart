@@ -157,17 +157,12 @@ class SyncedLyrics extends HookConsumerWidget {
                             child: Stack(
                               children: [
                                 Center(
-                                  child: playback.track?.name != null &&
-                                          playback.track!.name!.length > 29
-                                      ? SpotubeMarqueeText(
-                                          text: playback.track?.name ??
-                                              "Not Playing",
-                                          style: headlineTextStyle,
-                                        )
-                                      : Text(
-                                          playback.track?.name ?? "Not Playing",
-                                          style: headlineTextStyle,
-                                        ),
+                                  child: SpotubeMarqueeText(
+                                    text: playback.track?.name ?? "Not Playing",
+                                    style: headlineTextStyle,
+                                    minStartLength: 29,
+                                    isHovering: true,
+                                  ),
                                 ),
                                 Positioned.fill(
                                   child: Align(
