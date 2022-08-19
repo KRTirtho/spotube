@@ -47,16 +47,12 @@ class ArtistCard extends StatelessWidget {
                     minRadius: 20,
                     backgroundImage: backgroundImage,
                   ),
-                  SizedBox(
-                    height: 20,
-                    child: SpotubeMarqueeText(
-                      text: artist.name!,
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                      minStartLength: 15,
-                      isHovering: isHovering,
-                    ),
+                  SpotubeMarqueeText(
+                    text: artist.name!,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    isHovering: isHovering,
                   ),
                   Text(
                     "Artist",

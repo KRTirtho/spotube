@@ -104,5 +104,13 @@ ThemeData lightTheme({
         }
       }),
     ),
+    tabBarTheme: TabBarTheme(
+      indicator: const BoxDecoration(color: Colors.transparent),
+      labelColor: accentMaterialColor[500],
+      unselectedLabelColor: Colors.grey[850],
+      labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      unselectedLabelStyle:
+          const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+    ),
   );
 }

@@ -4,13 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:marquee/marquee.dart';
 
 class SpotubeMarqueeText extends HookWidget {
-  final int? minStartLength;
   final bool? isHovering;
   const SpotubeMarqueeText({
     Key? key,
     required this.text,
     this.style,
-    this.minStartLength,
     this.isHovering,
   }) : super(key: key);
   final TextStyle? style;
@@ -29,6 +27,7 @@ class SpotubeMarqueeText extends HookWidget {
       text,
       minFontSize: 13,
       style: style,
+      maxLines: 1,
       overflowReplacement: Marquee(
         key: uKey.value,
         text: text,

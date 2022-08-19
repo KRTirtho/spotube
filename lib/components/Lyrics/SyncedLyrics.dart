@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -160,7 +161,6 @@ class SyncedLyrics extends HookConsumerWidget {
                                   child: SpotubeMarqueeText(
                                     text: playback.track?.name ?? "Not Playing",
                                     style: headlineTextStyle,
-                                    minStartLength: 29,
                                     isHovering: true,
                                   ),
                                 ),
@@ -218,24 +218,31 @@ class SyncedLyrics extends HookConsumerWidget {
                                   key: ValueKey(index),
                                   index: index,
                                   controller: controller,
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        lyricSlice.text,
-                                        style: TextStyle(
-                                          // indicating the active state of that lyric slice
-                                          color: isActive
-                                              ? Theme.of(context).primaryColor
-                                              : palette.bodyTextColor,
-                                          fontWeight:
-                                              isActive ? FontWeight.bold : null,
-                                          fontSize: 30,
+                                  child: lyricSlice.text.isEmpty
+                                      ? Container()
+                                      : Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: AutoSizeText(
+                                              lyricSlice.text,
+                                              maxLines: 2,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4
+                                                  ?.copyWith(
+                                                    color: isActive
+                                                        ? Theme.of(context)
+                                                            .backgroundColor
+                                                        : palette.bodyTextColor,
+                                                    // indicating the active state of that lyric slice
+                                                    fontWeight: isActive
+                                                        ? FontWeight.bold
+                                                        : null,
+                                                  ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
                                         ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
                                 );
                               },
                             ),

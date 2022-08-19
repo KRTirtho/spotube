@@ -90,7 +90,6 @@ class PlayerView extends HookConsumerWidget {
                                       color: paletteColor.titleTextColor,
                                     ),
                             isHovering: true,
-                            minStartLength: 29,
                           ),
                         ),
                         TypeConversionUtils.artists_X_ClickableArtists(

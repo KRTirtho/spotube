@@ -18,12 +18,9 @@ class UserLibrary extends ConsumerWidget {
         length: 4,
         child: SafeArea(
           child: Scaffold(
-            appBar: TabBar(
-              indicator: const BoxDecoration(color: Colors.transparent),
-              labelColor: Theme.of(context).primaryColor,
-              unselectedLabelColor:
-                  Theme.of(context).textTheme.bodyText1?.color,
-              tabs: const [
+            appBar: const TabBar(
+              isScrollable: true,
+              tabs: [
                 Tab(text: "Playlist"),
                 Tab(text: "Artists"),
                 Tab(text: "Album"),

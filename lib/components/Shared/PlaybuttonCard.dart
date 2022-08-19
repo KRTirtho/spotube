@@ -106,7 +106,6 @@ class PlaybuttonCard extends StatelessWidget {
                               text: title,
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
-                              minStartLength: 20,
                               isHovering: isHovering,
                             ),
                           ),
@@ -125,7 +124,6 @@ class PlaybuttonCard extends StatelessWidget {
                                     ?.color,
                               ),
                               isHovering: isHovering,
-                              minStartLength: 30,
                             ),
                           ),
                         ]

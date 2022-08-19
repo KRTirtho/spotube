@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -164,7 +165,10 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.screen_search_desktop_rounded),
-                      title: const Text("Format of the YouTube Search term"),
+                      title: const AutoSizeText(
+                        "Format of the YouTube Search term",
+                        maxLines: 2,
+                      ),
                       subtitle: const Text("(Case sensitive)"),
                       breakOn: Breakpoints.lg,
                       trailing: ConstrainedBox(
@@ -218,7 +222,7 @@ class Settings extends HookConsumerWidget {
                           Icons.login_rounded,
                           color: Theme.of(context).primaryColor,
                         ),
-                        title: Text(
+                        title: AutoSizeText(
                           "Login with your Spotify account",
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
@@ -250,7 +254,10 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.low_priority_rounded),
-                      title: const Text("Track Match Algorithm"),
+                      title: const AutoSizeText(
+                        "Track Match Algorithm",
+                        maxLines: 1,
+                      ),
                       trailing: DropdownButton<SpotubeTrackMatchAlgorithm>(
                         value: preferences.trackMatchAlgorithm,
                         items: const [
@@ -307,7 +314,10 @@ class Settings extends HookConsumerWidget {
                         Auth auth = ref.watch(authProvider);
                         return ListTile(
                           leading: const Icon(Icons.logout_rounded),
-                          title: const Text("Log out of this account"),
+                          title: const AutoSizeText(
+                            "Log out of this account",
+                            maxLines: 1,
+                          ),
                           trailing: ElevatedButton(
                             child: const Text("Logout"),
                             style: ButtonStyle(
@@ -328,8 +338,9 @@ class Settings extends HookConsumerWidget {
                         Icons.favorite_border_rounded,
                         color: Colors.pink,
                       ),
-                      title: const Text(
+                      title: const AutoSizeText(
                         "We know you Love Spotube",
+                        maxLines: 1,
                         style: TextStyle(
                           color: Colors.pink,
                           fontWeight: FontWeight.bold,
