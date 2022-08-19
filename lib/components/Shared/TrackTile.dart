@@ -193,15 +193,15 @@ class TrackTile extends HookConsumerWidget {
               Checkbox(
                 value: isChecked,
                 onChanged: (s) => onCheckChange?.call(s),
+              )
+            else
+              SizedBox(
+                height: 20,
+                width: 25,
+                child: Center(
+                  child: Text((track.key + 1).toString()),
+                ),
               ),
-            SizedBox(
-              height: 20,
-              width: 15,
-              child: Text(
-                (track.key + 1).toString(),
-                textAlign: TextAlign.center,
-              ),
-            ),
             if (thumbnailUrl != null)
               Padding(
                 padding: EdgeInsets.symmetric(

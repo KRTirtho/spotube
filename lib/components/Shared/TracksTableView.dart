@@ -132,23 +132,11 @@ class TracksTableView extends HookConsumerWidget {
                               return const DownloadConfirmationDialog();
                             });
                         if (isConfirmed != true) return;
-                        final queue = Queue(
-                          delay: const Duration(seconds: 5),
-                        );
                         for (final selectedTrack in selectedTracks) {
-                          queue.add(() async {
-                            downloader.addToQueue(
-                              await playback.toSpotubeTrack(
-                                selectedTrack,
-                                noSponsorBlock: true,
-                              ),
-                            );
-                          });
+                          downloader.addToQueue(selectedTrack);
                         }
-
                         selected.value = [];
                         showCheck.value = false;
-                        await queue.onComplete;
                         break;
                       }
                     default:
@@ -171,7 +159,15 @@ class TracksTableView extends HookConsumerWidget {
               },
               onTap: () {
                 if (showCheck.value) {
-                  selected.value = [...selected.value, track.value.id!];
+                  final alreadyChecked =
+                      selected.value.contains(track.value.id);
+                  if (alreadyChecked) {
+                    selected.value = selected.value
+                        .where((id) => id != track.value.id)
+                        .toList();
+                  } else {
+                    selected.value = [...selected.value, track.value.id!];
+                  }
                 } else {
                   onTrackPlayButtonPressed?.call(track.value);
                 }

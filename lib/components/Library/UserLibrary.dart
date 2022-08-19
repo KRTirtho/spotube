@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Library/UserAlbums.dart';
 import 'package:spotube/components/Library/UserArtists.dart';
+import 'package:spotube/components/Library/UserDownloads.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
 import 'package:spotube/components/Shared/AnonymousFallback.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -14,7 +15,7 @@ class UserLibrary extends ConsumerWidget {
 
     return Expanded(
       child: DefaultTabController(
-        length: 3,
+        length: 4,
         child: SafeArea(
           child: Scaffold(
             appBar: TabBar(
@@ -26,6 +27,7 @@ class UserLibrary extends ConsumerWidget {
                 Tab(text: "Playlist"),
                 Tab(text: "Artists"),
                 Tab(text: "Album"),
+                Tab(text: "Downloads"),
               ],
             ),
             body: auth.isLoggedIn
@@ -33,6 +35,7 @@ class UserLibrary extends ConsumerWidget {
                     const UserPlaylists(),
                     UserArtists(),
                     const UserAlbums(),
+                    const UserDownloads(),
                   ])
                 : const AnonymousFallback(),
           ),

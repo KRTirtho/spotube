@@ -106,7 +106,7 @@ class PlaybuttonCard extends StatelessWidget {
                               text: title,
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
-                              minStartLength: 25,
+                              minStartLength: 20,
                               isHovering: isHovering,
                             ),
                           ),
