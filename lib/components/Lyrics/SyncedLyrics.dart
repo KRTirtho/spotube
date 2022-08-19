@@ -231,8 +231,7 @@ class SyncedLyrics extends HookConsumerWidget {
                                                   .headline4
                                                   ?.copyWith(
                                                     color: isActive
-                                                        ? Theme.of(context)
-                                                            .backgroundColor
+                                                        ? Colors.white
                                                         : palette.bodyTextColor,
                                                     // indicating the active state of that lyric slice
                                                     fontWeight: isActive
