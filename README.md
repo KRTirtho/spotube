@@ -122,6 +122,14 @@ You can find the details [here](CONTRIBUTION.md#your-first-code-contribution)
 
 Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p)
 
+# Financial Contributors
+## Backers
+![Backers](https://opencollective.com/spotube/backer.svg?button=false)
+![Donors](https://opencollective.com/spotube/tiers/donor.svg?button=false)
+
+## Sponsors
+![Donors](https://opencollective.com/spotube/tiers/sponsor.svg)
+
 # Library/Plugin/Framework Credits
 
 - [Flutter](https://flutter.dev/) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
