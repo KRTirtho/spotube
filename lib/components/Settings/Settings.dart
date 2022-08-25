@@ -66,7 +66,7 @@ class Settings extends HookConsumerWidget {
                     AdaptiveListTile(
                       leading: const Icon(Icons.dark_mode_outlined),
                       title: const Text("Theme"),
-                      trailing: DropdownButton<ThemeMode>(
+                      trailing: (context, update) => DropdownButton<ThemeMode>(
                         value: preferences.themeMode,
                         items: const [
                           DropdownMenuItem(
@@ -89,6 +89,7 @@ class Settings extends HookConsumerWidget {
                         onChanged: (value) {
                           if (value != null) {
                             preferences.setThemeMode(value);
+                            update?.call(() {});
                           }
                         },
                       ),
@@ -131,7 +132,7 @@ class Settings extends HookConsumerWidget {
                         "Recommendation Country",
                         style: Theme.of(context).textTheme.caption,
                       ),
-                      trailing: ConstrainedBox(
+                      trailing: (context, update) => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 250),
                         child: DropdownButton(
                           isExpanded: true,
@@ -149,6 +150,7 @@ class Settings extends HookConsumerWidget {
                             preferences.setRecommendationMarket(
                               value as String,
                             );
+                            update?.call(() {});
                           },
                         ),
                       ),
@@ -171,7 +173,7 @@ class Settings extends HookConsumerWidget {
                       ),
                       subtitle: const Text("(Case sensitive)"),
                       breakOn: Breakpoints.lg,
-                      trailing: ConstrainedBox(
+                      trailing: (context, update) => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 450),
                         child: TextField(
                           controller: ytSearchFormatController,
@@ -188,6 +190,7 @@ class Settings extends HookConsumerWidget {
                           ),
                           onSubmitted: (value) {
                             preferences.setYtSearchFormat(value);
+                            update?.call(() {});
                           },
                         ),
                       ),
@@ -228,7 +231,7 @@ class Settings extends HookConsumerWidget {
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        trailing: ElevatedButton(
+                        trailing: (context, update) => ElevatedButton(
                           child: Text("Connect with Spotify".toUpperCase()),
                           onPressed: () {
                             GoRouter.of(context).push("/login");
@@ -258,7 +261,8 @@ class Settings extends HookConsumerWidget {
                         "Track Match Algorithm",
                         maxLines: 1,
                       ),
-                      trailing: DropdownButton<SpotubeTrackMatchAlgorithm>(
+                      trailing: (context, update) =>
+                          DropdownButton<SpotubeTrackMatchAlgorithm>(
                         value: preferences.trackMatchAlgorithm,
                         items: const [
                           DropdownMenuItem(
@@ -281,6 +285,7 @@ class Settings extends HookConsumerWidget {
                         onChanged: (value) {
                           if (value != null) {
                             preferences.setTrackMatchAlgorithm(value);
+                            update?.call(() {});
                           }
                         },
                       ),
@@ -288,7 +293,8 @@ class Settings extends HookConsumerWidget {
                     AdaptiveListTile(
                       leading: const Icon(Icons.multitrack_audio_rounded),
                       title: const Text("Audio Quality"),
-                      trailing: DropdownButton<AudioQuality>(
+                      trailing: (context, update) =>
+                          DropdownButton<AudioQuality>(
                         value: preferences.audioQuality,
                         items: const [
                           DropdownMenuItem(
@@ -305,6 +311,7 @@ class Settings extends HookConsumerWidget {
                         onChanged: (value) {
                           if (value != null) {
                             preferences.setAudioQuality(value);
+                            update?.call(() {});
                           }
                         },
                       ),
@@ -346,7 +353,7 @@ class Settings extends HookConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      trailing: ElevatedButton.icon(
+                      trailing: (context, update) => ElevatedButton.icon(
                         icon: const Icon(Icons.favorite_outline_rounded),
                         label: const Text("Please Sponsor/Donate"),
                         style: ElevatedButton.styleFrom(
@@ -355,8 +362,10 @@ class Settings extends HookConsumerWidget {
                           padding: const EdgeInsets.all(15),
                         ),
                         onPressed: () {
-                          launchUrlString("https://opencollective.com/spotube",
-                              mode: LaunchMode.externalApplication);
+                          launchUrlString(
+                            "https://opencollective.com/spotube",
+                            mode: LaunchMode.externalApplication,
+                          );
                         },
                       ),
                     ),

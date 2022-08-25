@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 
 class AdaptiveListTile extends HookWidget {
-  final Widget? trailing;
+  final Widget Function(BuildContext, StateSetter?)? trailing;
   final Widget? title;
   final Widget? subtitle;
   final Widget? leading;
@@ -27,7 +27,8 @@ class AdaptiveListTile extends HookWidget {
     return ListTile(
       title: title,
       subtitle: subtitle,
-      trailing: breakpoint.isLessThan(breakOn) ? null : trailing,
+      trailing:
+          breakpoint.isLessThan(breakOn) ? null : trailing?.call(context, null),
       leading: leading,
       onTap: breakpoint.isLessThan(breakOn)
           ? () {
@@ -35,20 +36,22 @@ class AdaptiveListTile extends HookWidget {
               showDialog(
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    title: title != null
-                        ? Row(
-                            children: [
-                              if (leading != null) ...[
-                                leading!,
-                                const SizedBox(width: 5)
+                  return StatefulBuilder(builder: (context, update) {
+                    return AlertDialog(
+                      title: title != null
+                          ? Row(
+                              children: [
+                                if (leading != null) ...[
+                                  leading!,
+                                  const SizedBox(width: 5)
+                                ],
+                                Flexible(child: title!),
                               ],
-                              Flexible(child: title!),
-                            ],
-                          )
-                        : null,
-                    content: trailing,
-                  );
+                            )
+                          : null,
+                      content: trailing?.call(context, update),
+                    );
+                  });
                 },
               );
             }
