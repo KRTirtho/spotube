@@ -552,13 +552,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.9"
-  flutter_downloader:
-    dependency: "direct main"
-    description:
-      name: flutter_downloader
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.8.1"
   flutter_hooks:
     dependency: "direct main"
     description:

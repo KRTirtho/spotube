@@ -13,7 +13,6 @@ class UserDownloads extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final downloader = ref.watch(downloaderProvider);
 
-    final inQueue = downloader.inQueue.toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -43,39 +42,40 @@ class UserDownloads extends HookConsumerWidget {
             ],
           ),
         ),
-        ListView.builder(
-          itemCount: inQueue.length,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            final track = inQueue[index];
-            return ListTile(
-              title: Text(track.name!),
-              leading: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: CachedNetworkImage(
-                    height: 40,
-                    width: 40,
-                    imageUrl: TypeConversionUtils.image_X_UrlString(
-                      track.album?.images,
+        Expanded(
+          child: ListView.builder(
+            itemCount: downloader.inQueue.length,
+            itemBuilder: (context, index) {
+              final track = downloader.inQueue.elementAt(index);
+              return ListTile(
+                title: Text(track.name!),
+                leading: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImage(
+                      height: 40,
+                      width: 40,
+                      imageUrl: TypeConversionUtils.image_X_UrlString(
+                        track.album?.images,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              trailing: const SizedBox(
-                width: 30,
-                height: 30,
-                child: CircularProgressIndicator.adaptive(),
-              ),
-              horizontalTitleGap: 5,
-              subtitle: Text(
-                TypeConversionUtils.artists_X_String<Artist>(
-                  track.artists ?? [],
+                trailing: const SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator.adaptive(),
                 ),
-              ),
-            );
-          },
+                horizontalTitleGap: 5,
+                subtitle: Text(
+                  TypeConversionUtils.artists_X_String<Artist>(
+                    track.artists ?? [],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );

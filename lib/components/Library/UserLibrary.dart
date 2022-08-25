@@ -5,14 +5,11 @@ import 'package:spotube/components/Library/UserArtists.dart';
 import 'package:spotube/components/Library/UserDownloads.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
 import 'package:spotube/components/Shared/AnonymousFallback.dart';
-import 'package:spotube/provider/Auth.dart';
 
 class UserLibrary extends ConsumerWidget {
   const UserLibrary({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
-    final Auth auth = ref.watch(authProvider);
-
     return Expanded(
       child: DefaultTabController(
         length: 4,
@@ -27,14 +24,12 @@ class UserLibrary extends ConsumerWidget {
                 Tab(text: "Downloads"),
               ],
             ),
-            body: auth.isLoggedIn
-                ? TabBarView(children: [
-                    const UserPlaylists(),
-                    UserArtists(),
-                    const UserAlbums(),
-                    const UserDownloads(),
-                  ])
-                : const AnonymousFallback(),
+            body: TabBarView(children: [
+              const AnonymousFallback(child: UserPlaylists()),
+              AnonymousFallback(child: UserArtists()),
+              const AnonymousFallback(child: UserAlbums()),
+              const UserDownloads(),
+            ]),
           ),
         ),
       ),

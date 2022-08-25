@@ -68,7 +68,6 @@ dependencies:
   file_picker: ^4.6.1
   popover: ^0.2.6+3
   queue: ^3.1.0+1
-  flutter_downloader: ^1.8.1
   auto_size_text: ^3.0.0
   badges: ^2.0.3
 

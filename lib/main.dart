@@ -2,9 +2,7 @@ import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -48,11 +46,6 @@ void main() async {
       }
       appWindow.show();
     });
-  } else if (kIsMobile) {
-    await FlutterDownloader.initialize(
-      debug: kDebugMode,
-      ignoreSsl: true,
-    );
   }
   MobileAudioService? audioServiceHandler;
   runApp(
@@ -155,12 +148,7 @@ class _SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     super.initState();
     SharedPreferences.getInstance().then(((value) => localStorage = value));
     WidgetsBinding.instance.addObserver(this);
-    if (kIsMobile) FlutterDownloader.registerCallback(downloadCallback);
   }
-
-  @pragma('vm:entry-point')
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {}
 
   @override
   void dispose() {
