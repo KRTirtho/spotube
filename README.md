@@ -1,6 +1,10 @@
 ![Spotube](assets/spotube_banner.png)
 
 <p align="center">
+  <a href="https://spotube.netlify.app/">spotube.netlify.app</a>
+</p>
+
+<p align="center">
   <a href="https://github.com/KRTirtho/spotube/actions/workflows/flutter-build.yml">
     <img alt="GitHub Action Status" src="https://img.shields.io/github/workflow/status/KRTirtho/spotube/Flutter%20Cross%20Build/build?color=%2316ba58&style=flat-square"/>
   </a>
@@ -15,6 +19,9 @@
   </a>
   <a href="https://opencollective.com/spotube">
     <img alt="Open Collective backers and sponsors" src="https://img.shields.io/opencollective/all/spotube?color=%2316ba58&style=flat-square"/>
+  </a>
+  <a href="https://discord.com/invite/PsWgsxqV3W">
+    <img alt="Discord" src="https://img.shields.io/discord/1012234096237350943?color=%2316ba58&label=Discord%20Server&logoColor=%2316ba58&style=flat-square">
   </a>
 </p>
 
@@ -46,29 +53,27 @@ Following are the features that currently spotube offers:
 
 # Support this project
 
-<a href="https://patreon.com/krtirtho"><img src="https://img.shields.io/endpoint.svg?url=https://moshef9.wixsite.com/patreon-badge/_functions/badge/?username=krtirtho" alt="Patreon donate button" /> </a>
-
+<a href="https://patreon.com/krtirtho"><img src="https://user-images.githubusercontent.com/61944859/180249027-678b01b8-c336-451e-b147-6d84a5b9d0e7.png" width="250"/></a>
 [!["Donate to out Collective"](https://opencollective.com/webpack/donate/button.png?color=blue)](https://opencollective.com/spotube)
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/krtirtho)
-
 
 # Installation
 
 I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
 
-| Platform             | Package/Installation Method                                                                                                                                                                                                                                                                    |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Android              | [<img width='240' alt='Android Download' src='https://www.remcsteuben.com/sites/default/files/images/apkdaddy%20download.png'/>][android-dlink]<br/>[<img width='240' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink]|
-| Debian/Ubuntu        | [<img width='240' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                     |
-| Flatpak              | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>                                                       |
-| Arch/Manjaro         | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin`                                                                                                                                                                                                                            |
-| AppImage             | [<img width='240' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note**: AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed |
-| Linux (tarball)      | [<img width='240' alt='Tarball Download' src='https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png'/>][linux-dlink]                                                                                                                           |
-| Windows              | [<img width='240' alt='Windows Download' src='https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg'/>][win32-dlink]                                                                                                                                                 |
-| Windows (Chocolatey) | `choco install spotube`                                                                                                                                                                                                                                                                        |
-| Windows (<a href="https://scoop.sh/">Scoop</a>)     | `scoop bucket add extras`  <br/> `scoop install spotube`
-| Windows (WinGet)     | `winget install --id KRTirtho.Spotube`                                                                                                                                                                                                                                                         |
-| MacOS                | [<img width='240' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink]                                                                                                                                                            |
+| Platform                                        | Package/Installation Method                                                                                                                                                                                                                                                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Android                                         | [<img width='240' alt='Android Download' src='https://www.remcsteuben.com/sites/default/files/images/apkdaddy%20download.png'/>][android-dlink]<br/>[<img width='240' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink] |
+| Debian/Ubuntu                                   | [<img width='240' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                                                |
+| Flatpak                                         | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>                                                                                  |
+| Arch/Manjaro                                    | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin`                                                                                                                                                                                                                                                       |
+| AppImage                                        | [<img width='240' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note**: AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed                            |
+| Linux (tarball)                                 | [<img width='240' alt='Tarball Download' src='https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png'/>][linux-dlink]                                                                                                                                                      |
+| Windows                                         | [<img width='240' alt='Windows Download' src='https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg'/>][win32-dlink]                                                                                                                                                                            |
+| Windows (Chocolatey)                            | `choco install spotube`                                                                                                                                                                                                                                                                                                   |
+| Windows (<a href="https://scoop.sh/">Scoop</a>) | `scoop bucket add extras`  <br/> `scoop install spotube`                                                                                                                                                                                                                                                                  |
+| Windows (WinGet)                                | `winget install --id KRTirtho.Spotube`                                                                                                                                                                                                                                                                                    |
+| MacOS                                           | [<img width='240' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink]                                                                                                                                                                                       |
 
 > **Note!:** If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki
 
