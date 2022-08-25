@@ -274,6 +274,16 @@ class TrackTile extends HookConsumerWidget {
               actions: [
                 if (auth.isLoggedIn)
                   Action(
+                    icon: Icon(isSaved
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded),
+                    text: const Text("Save as favorite"),
+                    onPressed: () {
+                      actionFavorite(isSaved);
+                    },
+                  ),
+                if (auth.isLoggedIn)
+                  Action(
                     icon: const Icon(Icons.add_box_rounded),
                     text: const Text("Add To playlist"),
                     onPressed: actionAddToPlaylist,
@@ -283,16 +293,6 @@ class TrackTile extends HookConsumerWidget {
                     icon: const Icon(Icons.remove_circle_outline_rounded),
                     text: const Text("Remove from playlist"),
                     onPressed: actionRemoveFromPlaylist,
-                  ),
-                if (auth.isLoggedIn)
-                  Action(
-                    icon: Icon(isSaved
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded),
-                    text: const Text("Save as favorite"),
-                    onPressed: () {
-                      actionFavorite(isSaved);
-                    },
                   ),
                 Action(
                   icon: const Icon(Icons.share_rounded),

@@ -39,7 +39,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.accentColorScheme = Colors.green,
     this.backgroundColorScheme = Colors.grey,
     this.checkUpdate = true,
-    this.trackMatchAlgorithm = SpotubeTrackMatchAlgorithm.authenticPopular,
+    this.trackMatchAlgorithm = SpotubeTrackMatchAlgorithm.youtube,
     this.audioQuality = AudioQuality.high,
     this.skipSponsorSegments = true,
     this.downloadLocation = "",

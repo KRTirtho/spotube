@@ -77,11 +77,15 @@ class PlaylistView extends HookConsumerWidget {
           playlist.owner!.id == meSnapshot.asData?.value.id,
       onPlay: ([track]) {
         if (tracksSnapshot.asData?.value != null) {
-          playPlaylist(
-            playback,
-            tracksSnapshot.asData!.value,
-            currentTrack: track,
-          );
+          if (!isPlaylistPlaying) {
+            playPlaylist(
+              playback,
+              tracksSnapshot.asData!.value,
+              currentTrack: track,
+            );
+          } else {
+            playback.stop();
+          }
         }
       },
       bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),

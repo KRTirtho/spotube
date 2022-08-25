@@ -23,7 +23,7 @@ class AlbumCard extends HookConsumerWidget {
     return PlaybuttonCard(
       imageUrl: TypeConversionUtils.image_X_UrlString(album.images),
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
-      isPlaying: playback.playlist?.id == album.id,
+      isPlaying: isPlaylistPlaying && playback.isPlaying,
       isLoading: playback.status == PlaybackStatus.loading &&
           playback.playlist?.id == album.id,
       title: album.name!,
@@ -34,7 +34,11 @@ class AlbumCard extends HookConsumerWidget {
       },
       onPlaybuttonPressed: () async {
         SpotifyApi spotify = ref.read(spotifyProvider);
-        if (isPlaylistPlaying) return;
+        if (isPlaylistPlaying && playback.isPlaying) {
+          return playback.pause();
+        } else if (isPlaylistPlaying && !playback.isPlaying) {
+          return playback.resume();
+        }
         List<Track> tracks = (await spotify.albums.getTracks(album.id!).all())
             .map((track) =>
                 TypeConversionUtils.simpleTrack_X_Track(track, album))

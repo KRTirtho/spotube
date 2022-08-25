@@ -55,10 +55,11 @@ class AlbumView extends HookConsumerWidget {
 
     final breakpoint = useBreakpoints();
 
+    final isAlbumPlaying =
+        playback.playlist?.id != null && playback.playlist?.id == album.id;
     return TrackCollectionView(
       id: album.id!,
-      isPlaying:
-          playback.playlist?.id != null && playback.playlist?.id == album.id,
+      isPlaying: isAlbumPlaying,
       title: album.name!,
       titleImage: albumArt,
       tracksSnapshot: tracksSnapshot,
@@ -67,14 +68,18 @@ class AlbumView extends HookConsumerWidget {
       bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
       onPlay: ([track]) {
         if (tracksSnapshot.asData?.value != null) {
-          playPlaylist(
-            playback,
-            tracksSnapshot.asData!.value
-                .map((track) =>
-                    TypeConversionUtils.simpleTrack_X_Track(track, album))
-                .toList(),
-            currentTrack: track,
-          );
+          if (!isAlbumPlaying) {
+            playPlaylist(
+              playback,
+              tracksSnapshot.asData!.value
+                  .map((track) =>
+                      TypeConversionUtils.simpleTrack_X_Track(track, album))
+                  .toList(),
+              currentTrack: track,
+            );
+          } else {
+            playback.stop();
+          }
         }
       },
       onShare: () {

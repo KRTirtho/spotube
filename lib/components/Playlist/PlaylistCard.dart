@@ -24,7 +24,7 @@ class PlaylistCard extends HookConsumerWidget {
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       title: playlist.name!,
       imageUrl: TypeConversionUtils.image_X_UrlString(playlist.images),
-      isPlaying: isPlaylistPlaying,
+      isPlaying: isPlaylistPlaying && playback.isPlaying,
       isLoading: playback.status == PlaybackStatus.loading && isPlaylistPlaying,
       onTap: () {
         GoRouter.of(context).push(
@@ -33,7 +33,11 @@ class PlaylistCard extends HookConsumerWidget {
         );
       },
       onPlaybuttonPressed: () async {
-        if (isPlaylistPlaying) return;
+        if (isPlaylistPlaying && playback.isPlaying) {
+          return playback.pause();
+        } else if (isPlaylistPlaying && !playback.isPlaying) {
+          return playback.resume();
+        }
         SpotifyApi spotifyApi = ref.read(spotifyProvider);
 
         List<Track> tracks = (playlist.id != "user-liked-tracks"
