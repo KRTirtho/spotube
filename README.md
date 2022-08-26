@@ -20,13 +20,14 @@
   <a href="https://opencollective.com/spotube">
     <img alt="Open Collective backers and sponsors" src="https://img.shields.io/opencollective/all/spotube?color=%2316ba58&style=flat-square"/>
   </a>
-  <a href="https://discord.com/invite/PsWgsxqV3W">
+  <a href="https://discord.gg/uJ94vxB6vg">
     <img alt="Discord" src="https://img.shields.io/discord/1012234096237350943?color=%2316ba58&label=Discord%20Server&logoColor=%2316ba58&style=flat-square">
   </a>
 </p>
 
 
 Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
+
 #### <p align="center">Desktop</p>
 
 ![Application Desktop Screenshot](assets/spotube-screenshot.jpg)
@@ -34,6 +35,12 @@ Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It
 #### <p align="center">Mobile</p>
 
 ![Application Mobile Screenshot](assets/mobile-screenshots/mobile-combined.jpg)
+
+<p align="center">
+  <a href="https://discord.gg/uJ94vxB6vg">
+    <img src="https://discord.com/api/guilds/1012234096237350943/widget.png?style=banner2">
+  </a>
+</p>
 
 # Features
 
