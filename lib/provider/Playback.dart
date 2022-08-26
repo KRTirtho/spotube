@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -168,6 +167,7 @@ class Playback extends PersistedChangeNotifier {
   Future<void> playPlaylist(CurrentPlaylist playlist, [int index = 0]) async {
     try {
       if (index < 0 || index > playlist.tracks.length - 1) return;
+      if (isPlaying || status == PlaybackStatus.playing) await stop();
       this.playlist = playlist;
       final played = this.playlist!.tracks[index];
       status = PlaybackStatus.loading;
