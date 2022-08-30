@@ -126,7 +126,7 @@ class Playback extends PersistedChangeNotifier {
               playlist?.tracks.indexWhere((t) => t.id == track?.id);
 
           // when the track progress is above 80%, track isn't the last
-          // and is not already fetch and nothing is fetching currently
+          // and is not already fetched and nothing is fetching currently
           if (pos.inSeconds > currentDuration.inSeconds * .8 &&
               playlist != null &&
               currentTrackIndex != playlist!.tracks.length - 1 &&

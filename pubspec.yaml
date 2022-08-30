@@ -70,6 +70,9 @@ dependencies:
   queue: ^3.1.0+1
   auto_size_text: ^3.0.0
   badges: ^2.0.3
+  mime: ^1.0.2
+  flutter_media_metadata:
+    path: ../flutter_media_metadata
 
 dev_dependencies:
   flutter_test:

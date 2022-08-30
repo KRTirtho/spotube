@@ -1,6 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:io';
+
 import 'package:flutter/widgets.dart' hide Image;
+import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -79,6 +82,35 @@ abstract class TypeConversionUtils {
     track.trackNumber = trackSmp.trackNumber;
     track.type = trackSmp.type;
     track.uri = trackSmp.uri;
+    return track;
+  }
+
+  static Track localTrack_X_Track(Metadata metadata, File file) {
+    final track = Track();
+    track.album = Album()
+      ..name = metadata.albumName
+      ..genres = [if (metadata.genre != null) metadata.genre!]
+      ..artists = [
+        Artist()
+          ..name = metadata.albumArtistName
+          ..id = metadata.albumArtistName
+          ..type = "artist",
+      ]
+      ..id = "${metadata.albumName}${metadata.albumLength}";
+    track.artists = metadata.trackArtistNames
+        ?.map((name) => Artist()
+          ..name = name
+          ..id = name)
+        .toList();
+
+    track.discNumber = metadata.discNumber;
+    track.durationMs = metadata.trackDuration;
+    track.id = "${metadata.trackName}${metadata.trackDuration}";
+    track.name = metadata.trackName;
+    track.trackNumber = metadata.trackNumber;
+    track.type = "track";
+    track.uri = file.path;
+
     return track;
   }
 }

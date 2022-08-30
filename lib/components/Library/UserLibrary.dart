@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/components/Library/UserAlbums.dart';
 import 'package:spotube/components/Library/UserArtists.dart';
 import 'package:spotube/components/Library/UserDownloads.dart';
+import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
 import 'package:spotube/components/Shared/AnonymousFallback.dart';
 
@@ -12,7 +13,7 @@ class UserLibrary extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     return Expanded(
       child: DefaultTabController(
-        length: 4,
+        length: 5,
         child: SafeArea(
           child: Scaffold(
             appBar: const TabBar(
@@ -22,6 +23,7 @@ class UserLibrary extends ConsumerWidget {
                 Tab(text: "Artists"),
                 Tab(text: "Album"),
                 Tab(text: "Downloads"),
+                Tab(text: "Local"),
               ],
             ),
             body: TabBarView(children: [
@@ -29,6 +31,7 @@ class UserLibrary extends ConsumerWidget {
               AnonymousFallback(child: UserArtists()),
               const AnonymousFallback(child: UserAlbums()),
               const UserDownloads(),
+              const UserLocalTracks(),
             ]),
           ),
         ),

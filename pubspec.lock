@@ -573,6 +573,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  flutter_media_metadata:
+    dependency: "direct main"
+    description:
+      path: "../flutter_media_metadata"
+      relative: true
+    source: path
+    version: "1.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -787,7 +794,7 @@ packages:
     source: hosted
     version: "1.7.0"
   mime:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mime
       url: "https://pub.dartlang.org"
@@ -1389,5 +1396,5 @@ packages:
     source: hosted
     version: "1.11.0"
 sdks:
-  dart: ">=2.17.1 <3.0.0"
+  dart: ">=2.17.5 <3.0.0"
   flutter: ">=3.0.0"
