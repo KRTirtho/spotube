@@ -154,11 +154,19 @@ class Sidebar extends HookConsumerWidget {
                                     backgroundImage:
                                         CachedNetworkImageProvider(avatarImg),
                                   ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    data.displayName ?? "Guest",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Text(
+                                      data.displayName ?? "Guest",
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      overflow: TextOverflow.fade,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ],
