@@ -148,28 +148,31 @@ class Sidebar extends HookConsumerWidget {
                                 child: CircularProgressIndicator(),
                               )
                             else if (data != null)
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        CachedNetworkImageProvider(avatarImg),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      data.displayName ?? "Guest",
-                                      maxLines: 1,
-                                      softWrap: false,
-                                      overflow: TextOverflow.fade,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
+                              Flexible(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(avatarImg),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        data.displayName ?? "Guest",
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        overflow: TextOverflow.fade,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             IconButton(
                                 icon: const Icon(Icons.settings_outlined),
