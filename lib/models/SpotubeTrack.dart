@@ -10,6 +10,8 @@ enum SpotubeTrackMatchAlgorithm {
   popular,
   // selects the most popular one from the author of the track
   authenticPopular,
+  // selects song that most closely matches the actual song's duration
+  duration,
 }
 
 class SpotubeTrack extends Track {
