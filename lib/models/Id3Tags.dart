@@ -64,6 +64,20 @@ class Id3Tags {
         "genre": genre,
         "picture": picture,
       };
+
+  String? get artist => tpe2;
+  String? get year => tdrc;
+
+  Map<String, String> toAndroidJson(String artwork) {
+    return {
+      "title": title ?? "Unknown",
+      "artist": artist ?? "Unknown",
+      "album": album ?? "Unknown",
+      "genre": genre ?? "Unknown",
+      "artwork": artwork,
+      "year": year ?? "Unknown",
+    };
+  }
 }
 
 extension CommentJson on Comment {
