@@ -155,7 +155,7 @@ class Sidebar extends HookConsumerWidget {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage:
-                                          CachedNetworkImageProvider("asdasd"),
+                                          CachedNetworkImageProvider(avatarImg),
                                       onBackgroundImageError:
                                           (exception, stackTrace) =>
                                               Image.asset(
