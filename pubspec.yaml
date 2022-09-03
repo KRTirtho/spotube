@@ -71,8 +71,9 @@ dependencies:
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   mime: ^1.0.2
-  flutter_media_metadata:
-    path: ../flutter_media_metadata
+  dart_tags: ^0.4.0
+  id3: ^1.0.2
+  mp3_info: ^0.2.0
 
 dev_dependencies:
   flutter_test:
