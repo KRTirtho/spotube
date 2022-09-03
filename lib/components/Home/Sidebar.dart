@@ -156,6 +156,13 @@ class Sidebar extends HookConsumerWidget {
                                     CircleAvatar(
                                       backgroundImage:
                                           CachedNetworkImageProvider(avatarImg),
+                                      onBackgroundImageError:
+                                          (exception, stackTrace) =>
+                                              Image.asset(
+                                        "assets/user-placeholder.png",
+                                        height: 16,
+                                        width: 16,
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 10,
@@ -187,6 +194,12 @@ class Sidebar extends HookConsumerWidget {
                         child: CircleAvatar(
                           backgroundImage:
                               CachedNetworkImageProvider(avatarImg),
+                          onBackgroundImageError: (exception, stackTrace) =>
+                              Image.asset(
+                            "assets/user-placeholder.png",
+                            height: 16,
+                            width: 16,
+                          ),
                         ),
                       ),
                     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 
 final _paletteColorState = StateProvider<PaletteColor>(
   (ref) {
@@ -18,11 +19,10 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final palette = await PaletteGenerator.fromImageProvider(
-        CachedNetworkImageProvider(
+        UniversalImage.imageProvider(
           imageUrl,
-          cacheKey: imageUrl,
-          maxHeight: 50,
-          maxWidth: 50,
+          height: 50,
+          width: 50,
         ),
       );
       if (!mounted()) return;
@@ -49,11 +49,10 @@ PaletteGenerator usePaletteGenerator(
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final newPalette = await PaletteGenerator.fromImageProvider(
-        CachedNetworkImageProvider(
+        UniversalImage.imageProvider(
           imageUrl,
-          cacheKey: imageUrl,
-          maxHeight: 50,
-          maxWidth: 50,
+          height: 50,
+          width: 50,
         ),
       );
       if (!mounted()) return;

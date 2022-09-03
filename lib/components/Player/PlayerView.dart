@@ -10,6 +10,7 @@ import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
@@ -57,10 +58,7 @@ class PlayerView extends HookConsumerWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: CachedNetworkImageProvider(
-              albumArt,
-              cacheKey: albumArt,
-            ),
+            image: UniversalImage.imageProvider(albumArt),
             fit: BoxFit.cover,
           ),
         ),
@@ -121,10 +119,8 @@ class PlayerView extends HookConsumerWidget {
                           shape: BoxShape.circle,
                         ),
                         child: CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                            albumArt,
-                            cacheKey: albumArt,
-                          ),
+                          backgroundImage:
+                              UniversalImage.imageProvider(albumArt),
                           radius: MediaQuery.of(context).size.width *
                               (breakpoint.isSm ? 0.4 : 0.3),
                         ),
