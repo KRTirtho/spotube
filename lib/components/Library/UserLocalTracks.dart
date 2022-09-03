@@ -39,74 +39,96 @@ const imgMimeToExt = {
 };
 
 final localTracksProvider = FutureProvider<List<Track>>((ref) async {
-  final downloadDir = Directory(
-    ref.watch(userPreferencesProvider.select((s) => s.downloadLocation)),
-  );
-  if (!await downloadDir.exists()) {
-    await downloadDir.create(recursive: true);
+  try {
+    final downloadDir = Directory(
+      ref.watch(userPreferencesProvider.select((s) => s.downloadLocation)),
+    );
+    if (!await downloadDir.exists()) {
+      await downloadDir.create(recursive: true);
+      return [];
+    }
+    final entities = downloadDir.listSync(recursive: true);
+
+    final filesWithMetadata = (await Future.wait(
+      entities.map((e) => File(e.path)).where((file) {
+        final mimetype = lookupMimeType(file.path);
+        return mimetype != null && supportedAudioTypes.contains(mimetype);
+      }).map(
+        (f) async {
+          try {
+            final bytes = f.readAsBytes();
+            final mp3Instance = MP3Instance(await bytes);
+
+            bool isParsed = false;
+            try {
+              isParsed = mp3Instance.parseTagsSync();
+            } catch (e, stack) {
+              getLogger(MP3Instance).e("[parseTagsSync]", e, stack);
+            }
+
+            final imageFile = isParsed
+                ? File(join(
+                    (await getTemporaryDirectory()).path,
+                    "spotube",
+                    basenameWithoutExtension(f.path) +
+                        imgMimeToExt[mp3Instance.metaTags["APIC"]?["mime"] ??
+                            "image/jpeg"]!,
+                  ))
+                : null;
+            if (imageFile != null &&
+                !await imageFile.exists() &&
+                mp3Instance.metaTags["APIC"]?["base64"] != null) {
+              await imageFile.create(recursive: true);
+              await imageFile.writeAsBytes(
+                base64Decode(
+                  mp3Instance.metaTags["APIC"]["base64"],
+                ),
+                mode: FileMode.writeOnly,
+              );
+            }
+            Duration duration;
+            try {
+              duration = MP3Processor.fromBytes(await bytes).duration;
+            } catch (e, stack) {
+              getLogger(MP3Processor).e("[Parsing Mp3]", e, stack);
+              duration = Duration.zero;
+            }
+
+            final metadata = await tagProcessor.getTagsFromByteArray(bytes);
+            return {
+              "metadata": metadata,
+              "file": f,
+              "art": imageFile?.path,
+              "duration": duration,
+            };
+          } catch (e, stack) {
+            getLogger(FutureProvider).e("[Fetching metadata]", e, stack);
+            return {
+              "metadata": <Tag>[],
+              "file": f,
+              "duration": Duration.zero,
+            };
+          }
+        },
+      ),
+    ));
+
+    final tracks = filesWithMetadata
+        .map(
+          (fileWithMetadata) => TypeConversionUtils.localTrack_X_Track(
+            fileWithMetadata["metadata"] as List<Tag>,
+            fileWithMetadata["file"] as File,
+            fileWithMetadata["duration"] as Duration,
+            fileWithMetadata["art"] as String?,
+          ),
+        )
+        .toList();
+
+    return tracks;
+  } catch (e, stack) {
+    getLogger(FutureProvider).e("[LocalTracksProvider]", e, stack);
     return [];
   }
-  final entities = downloadDir.listSync(recursive: true);
-  final filesWithMetadata = (await Future.wait(
-    entities.map((e) => File(e.path)).where((file) {
-      final mimetype = lookupMimeType(file.path);
-      return mimetype != null && supportedAudioTypes.contains(mimetype);
-    }).map(
-      (f) async {
-        final bytes = f.readAsBytes();
-        final mp3Instance = MP3Instance(await bytes);
-
-        final imageFile = mp3Instance.parseTagsSync()
-            ? File(join(
-                (await getTemporaryDirectory()).path,
-                "spotube",
-                basenameWithoutExtension(f.path) +
-                    imgMimeToExt[
-                        mp3Instance.metaTags["APIC"]?["mime"] ?? "image/jpeg"]!,
-              ))
-            : null;
-        if (imageFile != null &&
-            !await imageFile.exists() &&
-            mp3Instance.metaTags["APIC"]?["base64"] != null) {
-          await imageFile.create(recursive: true);
-          await imageFile.writeAsBytes(
-            base64Decode(
-              mp3Instance.metaTags["APIC"]["base64"],
-            ),
-            mode: FileMode.writeOnly,
-          );
-        }
-        Duration duration;
-        try {
-          duration = MP3Processor.fromBytes(await bytes).duration;
-        } catch (e, stack) {
-          getLogger(MP3Processor).e("[Parsing Mp3]", e, stack);
-          duration = Duration.zero;
-        }
-
-        final metadata = await tagProcessor.getTagsFromByteArray(bytes);
-        return {
-          "metadata": metadata,
-          "file": f,
-          "art": imageFile?.path,
-          "duration": duration,
-        };
-      },
-    ),
-  ));
-
-  final tracks = filesWithMetadata
-      .map(
-        (fileWithMetadata) => TypeConversionUtils.localTrack_X_Track(
-          fileWithMetadata["metadata"] as List<Tag>,
-          fileWithMetadata["file"] as File,
-          fileWithMetadata["duration"] as Duration,
-          fileWithMetadata["art"] as String?,
-        ),
-      )
-      .toList();
-
-  return tracks;
 });
 
 class UserLocalTracks extends HookConsumerWidget {

@@ -16,6 +16,7 @@ import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Comment;
 
@@ -96,11 +97,15 @@ class Downloader with ChangeNotifier {
             "[addToQueue] Download of ${file.path} is done successfully",
           );
 
+          // Tagging isn't supported in Android currently
+          if (kIsAndroid) return;
+
+          final imageUri = TypeConversionUtils.image_X_UrlString(
+            track.album?.images ?? [],
+          );
           final response = await get(
             Uri.parse(
-              TypeConversionUtils.image_X_UrlString(
-                track.album?.images ?? [],
-              ),
+              imageUri,
             ),
           );
           final picture = AttachedPicture.base64(
