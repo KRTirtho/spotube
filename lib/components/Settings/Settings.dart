@@ -63,35 +63,6 @@ class Settings extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: ListView(
                   children: [
-                    AdaptiveListTile(
-                      leading: const Icon(
-                        Icons.favorite_border_rounded,
-                        color: Colors.pink,
-                      ),
-                      title: const AutoSizeText(
-                        "We know you Love Spotube",
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: Colors.pink,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      trailing: (context, update) => ElevatedButton.icon(
-                        icon: const Icon(Icons.favorite_outline_rounded),
-                        label: const Text("Please Sponsor/Donate"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red[100],
-                          onPrimary: Colors.pinkAccent,
-                          padding: const EdgeInsets.all(15),
-                        ),
-                        onPressed: () {
-                          launchUrlString(
-                            "https://opencollective.com/spotube",
-                            mode: LaunchMode.externalApplication,
-                          );
-                        },
-                      ),
-                    ),
                     const Text(
                       " Account",
                       style:
@@ -388,6 +359,35 @@ class Settings extends HookConsumerWidget {
                       " About",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    AdaptiveListTile(
+                      leading: const Icon(
+                        Icons.favorite_border_rounded,
+                        color: Colors.pink,
+                      ),
+                      title: const AutoSizeText(
+                        "We know you Love Spotube",
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Colors.pink,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      trailing: (context, update) => ElevatedButton.icon(
+                        icon: const Icon(Icons.favorite_outline_rounded),
+                        label: const Text("Please Sponsor/Donate"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red[100],
+                          onPrimary: Colors.pinkAccent,
+                          padding: const EdgeInsets.all(15),
+                        ),
+                        onPressed: () {
+                          launchUrlString(
+                            "https://opencollective.com/spotube",
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
+                      ),
                     ),
                     ListTile(
                       leading: const Icon(Icons.update_rounded),
