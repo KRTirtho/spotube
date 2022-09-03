@@ -63,6 +63,66 @@ class Settings extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: ListView(
                   children: [
+                    const Text(
+                      " Account",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    if (auth.isAnonymous)
+                      AdaptiveListTile(
+                        leading: Icon(
+                          Icons.login_rounded,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        title: AutoSizeText(
+                          "Login with your Spotify account",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        trailing: (context, update) => ElevatedButton(
+                          child: Text("Connect with Spotify".toUpperCase()),
+                          onPressed: () {
+                            GoRouter.of(context).push("/login");
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (auth.isLoggedIn)
+                      Builder(builder: (context) {
+                        Auth auth = ref.watch(authProvider);
+                        return ListTile(
+                          leading: const Icon(Icons.logout_rounded),
+                          title: const AutoSizeText(
+                            "Log out of this account",
+                            maxLines: 1,
+                          ),
+                          trailing: ElevatedButton(
+                            child: const Text("Logout"),
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.red),
+                              foregroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                            ),
+                            onPressed: () async {
+                              auth.logout();
+                              GoRouter.of(context).pop();
+                            },
+                          ),
+                        );
+                      }),
+                    const Text(
+                      " Appearance",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.dark_mode_outlined),
                       title: const Text("Theme"),
@@ -122,6 +182,55 @@ class Settings extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(ColorSchemeType.background),
                     ),
+                    const Text(
+                      " Playback",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.multitrack_audio_rounded),
+                      title: const Text("Audio Quality"),
+                      trailing: (context, update) =>
+                          DropdownButton<AudioQuality>(
+                        value: preferences.audioQuality,
+                        items: const [
+                          DropdownMenuItem(
+                            child: Text(
+                              "High",
+                            ),
+                            value: AudioQuality.high,
+                          ),
+                          DropdownMenuItem(
+                            child: Text("Low"),
+                            value: AudioQuality.low,
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            preferences.setAudioQuality(value);
+                            update?.call(() {});
+                          }
+                        },
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.fast_forward_rounded),
+                      title: const Text(
+                        "Skip non-music segments (SponsorBlock)",
+                      ),
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.skipSponsorSegments,
+                        onChanged: (state) {
+                          preferences.setSkipSponsorSegments(state);
+                        },
+                      ),
+                    ),
+                    const Text(
+                      " Search",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.shopping_bag_rounded),
                       title: Text(
@@ -155,16 +264,6 @@ class Settings extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.file_download_outlined),
-                      title: const Text("Download Location"),
-                      subtitle: Text(preferences.downloadLocation),
-                      trailing: ElevatedButton(
-                        child: const Icon(Icons.folder_rounded),
-                        onPressed: pickDownloadLocation,
-                      ),
-                      onTap: pickDownloadLocation,
-                    ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.screen_search_desktop_rounded),
                       title: const AutoSizeText(
@@ -193,66 +292,6 @@ class Settings extends HookConsumerWidget {
                             update?.call(() {});
                           },
                         ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.fast_forward_rounded),
-                      title: const Text(
-                        "Skip non-music segments (SponsorBlock)",
-                      ),
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: preferences.skipSponsorSegments,
-                        onChanged: (state) {
-                          preferences.setSkipSponsorSegments(state);
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.lyrics_rounded),
-                      title: const Text("Download lyrics along with the Track"),
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: preferences.saveTrackLyrics,
-                        onChanged: (state) {
-                          preferences.setSaveTrackLyrics(state);
-                        },
-                      ),
-                    ),
-                    if (auth.isAnonymous)
-                      AdaptiveListTile(
-                        leading: Icon(
-                          Icons.login_rounded,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        title: AutoSizeText(
-                          "Login with your Spotify account",
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        trailing: (context, update) => ElevatedButton(
-                          child: Text("Connect with Spotify".toUpperCase()),
-                          onPressed: () {
-                            GoRouter.of(context).push("/login");
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ListTile(
-                      leading: const Icon(Icons.update_rounded),
-                      title: const Text("Check for Update"),
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: preferences.checkUpdate,
-                        onChanged: (checked) =>
-                            preferences.setCheckUpdate(checked),
                       ),
                     ),
                     AdaptiveListTile(
@@ -290,56 +329,37 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    AdaptiveListTile(
-                      leading: const Icon(Icons.multitrack_audio_rounded),
-                      title: const Text("Audio Quality"),
-                      trailing: (context, update) =>
-                          DropdownButton<AudioQuality>(
-                        value: preferences.audioQuality,
-                        items: const [
-                          DropdownMenuItem(
-                            child: Text(
-                              "High",
-                            ),
-                            value: AudioQuality.high,
-                          ),
-                          DropdownMenuItem(
-                            child: Text("Low"),
-                            value: AudioQuality.low,
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            preferences.setAudioQuality(value);
-                            update?.call(() {});
-                          }
+                    const Text(
+                      " Downloads",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.file_download_outlined),
+                      title: const Text("Download Location"),
+                      subtitle: Text(preferences.downloadLocation),
+                      trailing: ElevatedButton(
+                        child: const Icon(Icons.folder_rounded),
+                        onPressed: pickDownloadLocation,
+                      ),
+                      onTap: pickDownloadLocation,
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.lyrics_rounded),
+                      title: const Text("Download lyrics along with the Track"),
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.saveTrackLyrics,
+                        onChanged: (state) {
+                          preferences.setSaveTrackLyrics(state);
                         },
                       ),
                     ),
-                    if (auth.isLoggedIn)
-                      Builder(builder: (context) {
-                        Auth auth = ref.watch(authProvider);
-                        return ListTile(
-                          leading: const Icon(Icons.logout_rounded),
-                          title: const AutoSizeText(
-                            "Log out of this account",
-                            maxLines: 1,
-                          ),
-                          trailing: ElevatedButton(
-                            child: const Text("Logout"),
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.red),
-                              foregroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                            ),
-                            onPressed: () async {
-                              auth.logout();
-                              GoRouter.of(context).pop();
-                            },
-                          ),
-                        );
-                      }),
+                    const Text(
+                      " About",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
                     AdaptiveListTile(
                       leading: const Icon(
                         Icons.favorite_border_rounded,
@@ -367,6 +387,16 @@ class Settings extends HookConsumerWidget {
                             mode: LaunchMode.externalApplication,
                           );
                         },
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.update_rounded),
+                      title: const Text("Check for Update"),
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.checkUpdate,
+                        onChanged: (checked) =>
+                            preferences.setCheckUpdate(checked),
                       ),
                     ),
                     const About()
