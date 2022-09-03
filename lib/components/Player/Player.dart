@@ -21,10 +21,12 @@ class Player extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
 
     String albumArt = useMemoized(
-      () => TypeConversionUtils.image_X_UrlString(
-        playback.track?.album?.images,
-        index: (playback.track?.album?.images?.length ?? 1) - 1,
-      ),
+      () => playback.track?.album?.images?.isNotEmpty == true
+          ? TypeConversionUtils.image_X_UrlString(
+              playback.track?.album?.images,
+              index: (playback.track?.album?.images?.length ?? 1) - 1,
+            )
+          : "assets/album-placeholder.png",
       [playback.track?.album?.images],
     );
 

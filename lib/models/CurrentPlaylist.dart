@@ -61,12 +61,14 @@ class CurrentPlaylist {
   String id;
   String name;
   String thumbnail;
+  bool isLocal;
 
   CurrentPlaylist({
     required this.tracks,
     required this.id,
     required this.name,
     required this.thumbnail,
+    this.isLocal = false,
   });
 
   static CurrentPlaylist fromJson(Map<String, dynamic> map) {
@@ -76,6 +78,7 @@ class CurrentPlaylist {
           map["tracks"].map((track) => Track.fromJson(track)).toList()),
       name: map["name"],
       thumbnail: map["thumbnail"],
+      isLocal: map["isLocal"],
     );
   }
 
@@ -107,6 +110,7 @@ class CurrentPlaylist {
       "name": name,
       "tracks": tracks.map((track) => track.toJson()).toList(),
       "thumbnail": thumbnail,
+      "isLocal": isLocal,
     };
   }
 }

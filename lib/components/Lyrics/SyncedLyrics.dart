@@ -11,6 +11,7 @@ import 'package:spotube/components/Lyrics/LyricDelayAdjustDialog.dart';
 import 'package:spotube/components/Lyrics/Lyrics.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useAutoScrollController.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
@@ -132,10 +133,7 @@ class SyncedLyrics extends HookConsumerWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: CachedNetworkImageProvider(
-              albumArt,
-              cacheKey: albumArt,
-            ),
+            image: UniversalImage.imageProvider(albumArt),
             fit: BoxFit.cover,
           ),
         ),

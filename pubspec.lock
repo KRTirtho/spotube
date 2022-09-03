@@ -140,7 +140,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.2"
+    version: "2.9.0"
   audio_service:
     dependency: "direct main"
     description:
@@ -357,14 +357,7 @@ packages:
       name: characters
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
-  charcode:
-    dependency: transitive
-    description:
-      name: charcode
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.3.1"
+    version: "1.2.1"
   checked_yaml:
     dependency: transitive
     description:
@@ -378,7 +371,7 @@ packages:
       name: clock
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   code_builder:
     dependency: transitive
     description:
@@ -442,6 +435,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.3"
+  dart_tags:
+    dependency: "direct main"
+    description:
+      name: dart_tags
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   dbus:
     dependency: "direct main"
     description:
@@ -463,6 +463,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  eztags:
+    dependency: "direct main"
+    description:
+      name: eztags
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   fading_edge_scrollview:
     dependency: transitive
     description:
@@ -476,7 +483,7 @@ packages:
       name: fake_async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.0"
+    version: "1.3.1"
   ffi:
     dependency: transitive
     description:
@@ -573,13 +580,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  flutter_media_metadata:
-    dependency: "direct main"
-    description:
-      path: "../flutter_media_metadata"
-      relative: true
-    source: path
-    version: "1.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -702,6 +702,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
+  id3:
+    dependency: "direct main"
+    description:
+      name: id3
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   image:
     dependency: transitive
     description:
@@ -778,21 +785,21 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.11"
+    version: "0.12.12"
   material_color_utilities:
     dependency: transitive
     description:
       name: material_color_utilities
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.5"
   meta:
     dependency: transitive
     description:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "1.8.0"
   mime:
     dependency: "direct main"
     description:
@@ -800,6 +807,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  mp3_info:
+    dependency: "direct main"
+    description:
+      name: mp3_info
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   msix:
     dependency: "direct dev"
     description:
@@ -890,7 +904,7 @@ packages:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.1"
+    version: "1.8.2"
   path_provider:
     dependency: "direct main"
     description:
@@ -1175,7 +1189,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.2"
+    version: "1.9.0"
   spotify:
     dependency: "direct main"
     description:
@@ -1233,7 +1247,7 @@ packages:
       name: string_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   synchronized:
     dependency: transitive
     description:
@@ -1247,14 +1261,14 @@ packages:
       name: term_glyph
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.9"
+    version: "0.4.12"
   timing:
     dependency: transitive
     description:
@@ -1325,6 +1339,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  utf_convert:
+    dependency: transitive
+    description:
+      name: utf_convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.0+1"
   uuid:
     dependency: transitive
     description:

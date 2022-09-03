@@ -1,17 +1,23 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_tags/dart_tags.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:queue/queue.dart';
 import 'package:path/path.dart' as path;
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Library/UserLocalTracks.dart';
+import 'package:spotube/models/Id3Tags.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Comment;
 
 Queue queueInstance = Queue(delay: const Duration(seconds: 5));
 Queue grabberQueue = Queue(delay: const Duration(seconds: 5));
@@ -88,6 +94,54 @@ class Downloader with ChangeNotifier {
           await outputFileStream.flush();
           logger.v(
             "[addToQueue] Download of ${file.path} is done successfully",
+          );
+
+          final response = await get(
+            Uri.parse(
+              TypeConversionUtils.image_X_UrlString(
+                track.album?.images ?? [],
+              ),
+            ),
+          );
+          final picture = AttachedPicture.base64(
+            response.headers["Content-Type"] ?? "image/jpeg",
+            3,
+            track.name!,
+            base64Encode(response.bodyBytes),
+          );
+          // write id3 metadata
+          final tag = Id3Tags(
+            album: track.album?.name,
+            picture: picture,
+            title: track.name,
+            genre: "Spotube",
+            tcop: track.ytTrack.uploadDate?.year.toString(),
+            tdrc: track.ytTrack.uploadDate?.year.toString(),
+            tpe2: TypeConversionUtils.artists_X_String<Artist>(
+              track.artists ?? [],
+            ),
+            tsse: "",
+            comment: Comment(
+              "eng",
+              track.ytTrack.description,
+              track.ytTrack.title,
+            ),
+          );
+
+          logger.v("[addToQueue] Writing metadata to ${file.path}");
+
+          final taggedMp3 = await tagProcessor.putTagsToByteArray(
+            file.readAsBytes(),
+            [
+              Tag()
+                ..type = "ID3"
+                ..version = "2.4.0"
+                ..tags = tag.toJson()
+            ],
+          );
+          await file.writeAsBytes(taggedMp3);
+          logger.v(
+            "[addToQueue] Writing metadata to ${file.path} is successful",
           );
         } catch (e, stack) {
           logger.e(

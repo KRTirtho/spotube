@@ -1,11 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/Shared/AdaptivePopupMenuButton.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useForceUpdate.dart';
 import 'package:spotube/models/Logger.dart';
@@ -32,6 +32,8 @@ class TrackTile extends HookConsumerWidget {
 
   final bool isChecked;
   final bool showCheck;
+
+  final bool isLocal;
   final void Function(bool?)? onCheckChange;
 
   TrackTile(
@@ -46,12 +48,17 @@ class TrackTile extends HookConsumerWidget {
     this.showAlbum = true,
     this.isChecked = false,
     this.showCheck = false,
+    this.isLocal = false,
     this.onCheckChange,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
+    final isReallyLocal = isLocal ||
+        ref.watch(
+          playbackProvider.select((s) => s.playlist?.isLocal == true),
+        );
     final breakpoint = useBreakpoints();
     final auth = ref.watch(authProvider);
     final spotify = ref.watch(spotifyProvider);
@@ -60,7 +67,7 @@ class TrackTile extends HookConsumerWidget {
     final savedTracksSnapshot = ref.watch(currentUserSavedTracksQuery);
 
     final isSaved = savedTracksSnapshot.asData?.value.any(
-          (e) => track.value.id! == e.id,
+          (e) => track.value.id == e.id,
         ) ??
         false;
 
@@ -210,17 +217,17 @@ class TrackTile extends HookConsumerWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  child: CachedNetworkImage(
+                  child: UniversalImage(
+                    path: thumbnailUrl!,
+                    height: 40,
+                    width: 40,
                     placeholder: (context, url) {
-                      return Container(
+                      return Image.asset(
+                        "assets/album-placeholder.png",
                         height: 40,
                         width: 40,
-                        color: Theme.of(context).primaryColor,
                       );
                     },
-                    imageUrl: thumbnailUrl!,
-                    maxHeightDiskCache: 40,
-                    maxWidthDiskCache: 40,
                   ),
                 ),
               ),
@@ -248,61 +255,70 @@ class TrackTile extends HookConsumerWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  TypeConversionUtils.artists_X_ClickableArtists(
-                      track.value.artists ?? [],
-                      textStyle: TextStyle(
-                          fontSize:
-                              breakpoint.isLessThan(Breakpoints.lg) ? 12 : 14)),
+                  isReallyLocal
+                      ? Text(
+                          TypeConversionUtils.artists_X_String<Artist>(
+                              track.value.artists ?? []),
+                        )
+                      : TypeConversionUtils.artists_X_ClickableArtists(
+                          track.value.artists ?? [],
+                          textStyle: TextStyle(
+                              fontSize: breakpoint.isLessThan(Breakpoints.lg)
+                                  ? 12
+                                  : 14)),
                 ],
               ),
             ),
             if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
               Expanded(
-                child: LinkText(
-                  track.value.album!.name!,
-                  "/album/${track.value.album?.id}",
-                  extra: track.value.album,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                child: isReallyLocal
+                    ? Text(track.value.album?.name ?? "")
+                    : LinkText(
+                        track.value.album!.name!,
+                        "/album/${track.value.album?.id}",
+                        extra: track.value.album,
+                        overflow: TextOverflow.ellipsis,
+                      ),
               ),
             if (!breakpoint.isSm) ...[
               const SizedBox(width: 10),
               Text(duration),
             ],
             const SizedBox(width: 10),
-            AdaptiveActions(
-              actions: [
-                if (auth.isLoggedIn)
+            if (!isReallyLocal)
+              AdaptiveActions(
+                actions: [
+                  if (auth.isLoggedIn)
+                    Action(
+                      icon: Icon(isSaved
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded),
+                      text: const Text("Save as favorite"),
+                      onPressed: () {
+                        actionFavorite(isSaved);
+                      },
+                    ),
+                  if (auth.isLoggedIn)
+                    Action(
+                      icon: const Icon(Icons.add_box_rounded),
+                      text: const Text("Add To playlist"),
+                      onPressed: actionAddToPlaylist,
+                    ),
+                  if (userPlaylist && auth.isLoggedIn)
+                    Action(
+                      icon: const Icon(Icons.remove_circle_outline_rounded),
+                      text: const Text("Remove from playlist"),
+                      onPressed: actionRemoveFromPlaylist,
+                    ),
                   Action(
-                    icon: Icon(isSaved
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded),
-                    text: const Text("Save as favorite"),
+                    icon: const Icon(Icons.share_rounded),
+                    text: const Text("Share"),
                     onPressed: () {
-                      actionFavorite(isSaved);
+                      actionShare(track.value);
                     },
-                  ),
-                if (auth.isLoggedIn)
-                  Action(
-                    icon: const Icon(Icons.add_box_rounded),
-                    text: const Text("Add To playlist"),
-                    onPressed: actionAddToPlaylist,
-                  ),
-                if (userPlaylist && auth.isLoggedIn)
-                  Action(
-                    icon: const Icon(Icons.remove_circle_outline_rounded),
-                    text: const Text("Remove from playlist"),
-                    onPressed: actionRemoveFromPlaylist,
-                  ),
-                Action(
-                  icon: const Icon(Icons.share_rounded),
-                  text: const Text("Share"),
-                  onPressed: () {
-                    actionShare(track.value);
-                  },
-                )
-              ],
-            ),
+                  )
+                ],
+              ),
           ],
         ),
       ),

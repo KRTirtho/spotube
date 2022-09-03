@@ -69,8 +69,8 @@ class UserDownloads extends HookConsumerWidget {
                 ),
                 horizontalTitleGap: 5,
                 subtitle: Text(
-                  TypeConversionUtils.artists_X_String<Artist>(
-                    track.artists ?? [],
+                  TypeConversionUtils.artists_X_String(
+                    track.artists ?? <Artist>[],
                   ),
                 ),
               );
