@@ -153,6 +153,12 @@ class Sidebar extends HookConsumerWidget {
                                   CircleAvatar(
                                     backgroundImage:
                                         CachedNetworkImageProvider(avatarImg),
+                                    onBackgroundImageError:
+                                        (exception, stackTrace) => Container(
+                                      height: 16,
+                                      width: 16,
+                                      color: Theme.of(context).cardColor,
+                                    ),
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
@@ -176,6 +182,12 @@ class Sidebar extends HookConsumerWidget {
                         child: CircleAvatar(
                           backgroundImage:
                               CachedNetworkImageProvider(avatarImg),
+                          onBackgroundImageError: (exception, stackTrace) =>
+                              Container(
+                            height: 16,
+                            width: 16,
+                            color: Theme.of(context).cardColor,
+                          ),
                         ),
                       ),
                     );

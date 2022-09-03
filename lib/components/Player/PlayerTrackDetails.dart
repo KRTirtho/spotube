@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -21,16 +21,15 @@ class PlayerTrackDetails extends HookConsumerWidget {
         if (albumArt != null)
           Padding(
             padding: const EdgeInsets.all(5.0),
-            child: CachedNetworkImage(
-              imageUrl: albumArt!,
-              maxHeightDiskCache: 50,
-              maxWidthDiskCache: 50,
-              cacheKey: albumArt,
+            child: UniversalImage(
+              path: albumArt!,
+              height: 50,
+              width: 50,
               placeholder: (context, url) {
-                return Container(
+                return Image.asset(
+                  "assets/album-placeholder.png",
                   height: 50,
                   width: 50,
-                  color: Theme.of(context).primaryColor,
                 );
               },
             ),

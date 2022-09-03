@@ -208,7 +208,10 @@ class Playback extends PersistedChangeNotifier {
         artist: TypeConversionUtils.artists_X_String(
             track.artists ?? <ArtistSimple>[]),
         artUri: Uri.parse(
-            TypeConversionUtils.image_X_UrlString(track.album?.images)),
+          TypeConversionUtils.image_X_UrlString(
+            track.album?.images,
+          ),
+        ),
         duration: track.ytTrack.duration,
       );
       mobileAudioService?.addItem(tag);
@@ -216,7 +219,11 @@ class Playback extends PersistedChangeNotifier {
       this.track = track;
       notifyListeners();
       updatePersistence();
-      await player.play(UrlSource(track.ytUri));
+      await player.play(
+        track.ytUri.startsWith("http")
+            ? UrlSource(track.ytUri)
+            : DeviceFileSource(track.ytUri),
+      );
       status = PlaybackStatus.playing;
       notifyListeners();
     } catch (e, stack) {
