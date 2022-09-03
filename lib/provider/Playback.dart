@@ -382,25 +382,7 @@ class Playback extends PersistedChangeNotifier {
       } else {
         VideoSearchList videos =
             await raceMultiple(() => youtube.search.search(queryString));
-
-        if (matchAlgorithm == SpotubeTrackMatchAlgorithm.duration) {
-          //Actual duration of desired song
-          int targetDuration = track.duration!.inSeconds;
-          //start with the first result
-          Video bestVideoMatch = videos[0];
-          int minDurationDifference =
-              (targetDuration - videos[0].duration!.inSeconds).abs();
-          //Check if any other results are closer to the actual song duration and prefer those
-          for (int i = 1; i < videos.length; i++) {
-            int durationDifference =
-                (targetDuration - videos[i].duration!.inSeconds).abs();
-            if (durationDifference < minDurationDifference) {
-              minDurationDifference = durationDifference;
-              bestVideoMatch = videos[i];
-            }
-          }
-          ytVideo = bestVideoMatch;
-        } else if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
+        if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
           List<Map> ratedRankedVideos = videos
               .map((video) {
                 // the find should be lazy thus everything case insensitive
@@ -416,6 +398,10 @@ class Playback extends PersistedChangeNotifier {
 
                 final bool hasNoLiveInTitle =
                     !PrimitiveUtils.containsTextInBracket(ytTitle, "live");
+                final bool hasCloseDuration =
+                    (track.duration!.inSeconds - video.duration!.inSeconds)
+                            .abs() <=
+                        10; //Duration matching threshold
 
                 int rate = 0;
                 for (final el in [
@@ -425,12 +411,14 @@ class Playback extends PersistedChangeNotifier {
                       SpotubeTrackMatchAlgorithm.authenticPopular)
                     authorIsArtist,
                   hasNoLiveInTitle,
+                  hasCloseDuration,
                   !video.isLive,
                 ]) {
                   if (el) rate++;
                 }
                 // can't let pass any non title matching track
                 if (!hasTitle) rate = rate - 2;
+
                 return {
                   "video": video,
                   "points": rate,

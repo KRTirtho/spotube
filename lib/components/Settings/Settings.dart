@@ -317,10 +317,6 @@ class Settings extends HookConsumerWidget {
                             value: SpotubeTrackMatchAlgorithm.popular,
                           ),
                           DropdownMenuItem(
-                            child: Text("Match Song Duration"),
-                            value: SpotubeTrackMatchAlgorithm.duration,
-                          ),
-                          DropdownMenuItem(
                             child: Text("YouTube's Top choice"),
                             value: SpotubeTrackMatchAlgorithm.youtube,
                           ),
