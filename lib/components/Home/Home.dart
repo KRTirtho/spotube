@@ -111,6 +111,10 @@ class Home extends HookConsumerWidget {
     }, [backgroundColor]);
 
     return Scaffold(
+      bottomNavigationBar: SpotubeNavigationBar(
+        selectedIndex: _selectedIndex.value,
+        onSelectedIndexChanged: _onSelectedIndexChanged,
+      ),
       body: Column(
         children: [
           if (_selectedIndex.value != 3)
@@ -178,10 +182,6 @@ class Home extends HookConsumerWidget {
           ),
           // player itself
           Player(),
-          SpotubeNavigationBar(
-            selectedIndex: _selectedIndex.value,
-            onSelectedIndexChanged: _onSelectedIndexChanged,
-          ),
         ],
       ),
     );

@@ -36,7 +36,7 @@ class DownloadTrackButton extends HookConsumerWidget {
     useEffect(() {
       (() async {
         outputFile.value =
-            File(path.join(preferences.downloadLocation, "$fileName.mp3"));
+            File(path.join(preferences.downloadLocation, "$fileName.m4a"));
       }());
       return null;
     }, [fileName, track, preferences.downloadLocation]);

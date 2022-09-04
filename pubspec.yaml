@@ -37,11 +37,10 @@ dependencies:
   html: ^0.15.0
   http: ^0.13.4
   shared_preferences: ^2.0.11
-  spotify:
-    git: https://github.com/KRTirtho/spotify-dart.git
+  spotify: ^0.8.0
   url_launcher: ^6.0.17
   youtube_explode_dart: ^1.10.8
-  bitsdojo_window: ^0.1.2
+  bitsdojo_window: 0.1.4
   path: ^1.8.0
   path_provider: ^2.0.8
   collection: ^1.15.0
@@ -54,7 +53,7 @@ dependencies:
   permission_handler: ^9.2.0
   marquee: ^2.2.1
   scroll_to_index: ^2.1.1
-  package_info_plus: ^1.4.2
+  package_info_plus: ^1.4.3
   version: ^2.0.0
   audio_service: ^0.18.4
   hookified_infinite_scroll_pagination: ^0.1.0
@@ -65,15 +64,23 @@ dependencies:
   audioplayers: ^1.0.1
   introduction_screen: ^3.0.2
   audio_session: ^0.1.9
-  file_picker: ^4.6.1
+  # This is temporary until the win32v3 update PR is merged and released
+  file_picker:
+    git:
+      url: https://github.com/KRTirtho/flutter_file_picker.git
   popover: ^0.2.6+3
   queue: ^3.1.0+1
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   mime: ^1.0.2
-  dart_tags: ^0.4.0
-  id3: ^1.0.2
-  mp3_info: ^0.2.0
+  metadata_god:
+    git:
+      url: https://github.com/KRTirtho/metadata_god.git
+
+# Temporary before [package_info_plus_windows] is updated to support 
+# win32v3
+dependency_overrides:
+  win32: 3.0.0
 
 dev_dependencies:
   flutter_test:

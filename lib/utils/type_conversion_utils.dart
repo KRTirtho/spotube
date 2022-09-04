@@ -2,15 +2,13 @@
 
 import 'dart:io';
 
-import 'package:dart_tags/dart_tags.dart';
 import 'package:flutter/widgets.dart' hide Image;
+import 'package:metadata_god/bridge_generated.dart' hide Image;
 import 'package:path/path.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/Id3Tags.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 abstract class TypeConversionUtils {
@@ -91,30 +89,23 @@ abstract class TypeConversionUtils {
   }
 
   static SpotubeTrack localTrack_X_Track(
-    List<Tag> metadatas,
+    Metadata metadata,
     File file,
-    Duration duration,
     String? art,
   ) {
-    final v2Tags =
-        metadatas.firstWhereOrNull((s) => s.version == "2.4.0")?.tags;
-    final v1Tags =
-        metadatas.firstWhereOrNull((s) => s.version != "2.4.0")?.tags;
-    final metadata = v2Tags != null
-        ? Id3Tags.fromJson(v2Tags)
-        : Id3Tags.fromId3v1Tags(Id3v1Tags.fromJson(v1Tags ?? {}));
     final track = SpotubeTrack(
       Video(
         VideoId("dQw4w9WgXcQ"),
         basenameWithoutExtension(file.path),
-        metadata.tpe2 ?? "",
+        metadata.artist ?? "",
         ChannelId(
           "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
         ),
         DateTime.now(),
+        "",
         DateTime.now(),
         "",
-        duration,
+        Duration(milliseconds: metadata.durationMs?.toInt() ?? 0),
         ThumbnailSet(metadata.title ?? ""),
         [],
         const Engagement(0, 0, 0),
@@ -129,22 +120,23 @@ abstract class TypeConversionUtils {
       ..genres = [if (metadata.genre != null) metadata.genre!]
       ..artists = [
         Artist()
-          ..name = metadata.tpe2 ?? "Spotube"
-          ..id = metadata.tpe2 ?? "Spotube"
+          ..name = metadata.albumArtist ?? "Spotube"
+          ..id = metadata.albumArtist ?? "Spotube"
           ..type = "artist",
       ]
-      ..id = metadata.album;
+      ..id = metadata.album
+      ..releaseDate = metadata.year?.toString();
     track.artists = [
       Artist()
-        ..name = metadata.tpe2 ?? "Spotube"
-        ..id = metadata.tpe2 ?? "Spotube"
+        ..name = metadata.artist ?? "Spotube"
+        ..id = metadata.artist ?? "Spotube"
     ];
 
     track.id = metadata.title ?? basenameWithoutExtension(file.path);
     track.name = metadata.title ?? basenameWithoutExtension(file.path);
     track.type = "track";
     track.uri = file.path;
-    track.durationMs = duration.inMilliseconds;
+    track.durationMs = metadata.durationMs?.toInt();
 
     return track;
   }
