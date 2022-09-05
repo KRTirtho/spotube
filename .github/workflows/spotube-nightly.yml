@@ -29,13 +29,6 @@ jobs:
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           dart pub global activate flutter_distributor
-
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-          limit-access-to-actor: true
-
-      - run: |
           flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
           make tar
       - run: |
