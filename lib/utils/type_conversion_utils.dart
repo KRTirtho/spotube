@@ -3,7 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart' hide Image;
-import 'package:metadata_god/bridge_generated.dart' hide Image;
+import 'package:metadata_god/metadata_god.dart' hide Image;
 import 'package:path/path.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotify/spotify.dart';

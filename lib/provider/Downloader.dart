@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/widgets.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:metadata_god/bridge_generated.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:queue/queue.dart';
 import 'package:path/path.dart' as path;

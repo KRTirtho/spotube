@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:metadata_god/bridge_generated.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
