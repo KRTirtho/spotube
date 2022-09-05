@@ -723,7 +723,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "27531a9444f1ded56052b145db605ccd259ccc70"
+      resolved-ref: "7f7f52c1f2cfdea4479abb7d1ca519dfa4206c8e"
       url: "https://github.com/KRTirtho/metadata_god.git"
     source: git
     version: "0.0.1"
