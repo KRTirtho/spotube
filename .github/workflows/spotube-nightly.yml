@@ -39,6 +39,11 @@ jobs:
         with:
           name: Spotube-Linux-Bundle
           path: dist/
+      - name: Setup upterm session
+        if: ${{ failure() }}
+        uses: lhotari/action-upterm@v1
+        with:
+          limit-access-to-actor: true
 
   build_android:
     runs-on: ubuntu-latest
@@ -63,6 +68,11 @@ jobs:
           name: Spotube-Android-Bundle
           path: |
             build/Spotube-android-all-arch.apk
+      - name: Setup upterm session
+        if: ${{ failure() }}
+        uses: lhotari/action-upterm@v1
+        with:
+          limit-access-to-actor: true
 
   build_windows:
     runs-on: windows-latest
@@ -100,11 +110,6 @@ jobs:
       - run: flutter config --enable-macos-desktop
       - run: flutter pub get
       - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-          limit-access-to-actor: true
-
       - run: flutter build macos
       - run: du -sh build/macos/Build/Products/Release/spotube.app
       - run: npm install -g appdmg
@@ -114,3 +119,8 @@ jobs:
           name: Spotube-Macos-Bundle
           path: |
             build/Spotube-macos-x86_64.dmg
+      - name: Setup upterm session
+        if: ${{ failure() }}
+        uses: lhotari/action-upterm@v1
+        with:
+          limit-access-to-actor: true
