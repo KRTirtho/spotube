@@ -133,7 +133,10 @@ final currentUserQuery = FutureProvider<User>(
         Image()
           ..height = 50
           ..width = 50
-          ..url = TypeConversionUtils.image_X_UrlString(me.images),
+          ..url = TypeConversionUtils.image_X_UrlString(
+            me.images,
+            placeholder: ImagePlaceholder.artist,
+          ),
       ];
     }
     return me;

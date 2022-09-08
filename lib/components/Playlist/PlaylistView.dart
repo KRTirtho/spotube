@@ -33,7 +33,10 @@ class PlaylistView extends HookConsumerWidget {
           tracks: tracks,
           id: playlist.id!,
           name: playlist.name!,
-          thumbnail: TypeConversionUtils.image_X_UrlString(playlist.images),
+          thumbnail: TypeConversionUtils.image_X_UrlString(
+            playlist.images,
+            placeholder: ImagePlaceholder.collection,
+          ),
         ),
         tracks.indexWhere((s) => s.id == currentTrack?.id),
       );
@@ -58,7 +61,10 @@ class PlaylistView extends HookConsumerWidget {
     final tracksSnapshot = ref.watch(playlistTracksQuery(playlist.id!));
 
     final titleImage = useMemoized(
-        () => TypeConversionUtils.image_X_UrlString(playlist.images),
+        () => TypeConversionUtils.image_X_UrlString(
+              playlist.images,
+              placeholder: ImagePlaceholder.collection,
+            ),
         [playlist.images]);
 
     final color = usePaletteGenerator(

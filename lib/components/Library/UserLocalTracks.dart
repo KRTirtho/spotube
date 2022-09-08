@@ -108,7 +108,10 @@ class UserLocalTracks extends HookConsumerWidget {
           tracks: tracks,
           id: "local",
           name: "Local Tracks",
-          thumbnail: TypeConversionUtils.image_X_UrlString(null),
+          thumbnail: TypeConversionUtils.image_X_UrlString(
+            null,
+            placeholder: ImagePlaceholder.collection,
+          ),
           isLocal: true,
         ),
         tracks.indexWhere((s) => s.id == currentTrack?.id),

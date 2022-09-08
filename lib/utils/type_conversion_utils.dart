@@ -11,11 +11,29 @@ import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+enum ImagePlaceholder {
+  albumArt,
+  artist,
+  collection,
+  online,
+}
+
 abstract class TypeConversionUtils {
-  static String image_X_UrlString(List<Image>? images, {int index = 0}) {
+  static String image_X_UrlString(
+    List<Image>? images, {
+    int index = 0,
+    required ImagePlaceholder placeholder,
+  }) {
+    final String placeholderUrl = {
+      ImagePlaceholder.albumArt: "assets/album-placeholder.png",
+      ImagePlaceholder.artist: "assets/user-placeholder.png",
+      ImagePlaceholder.collection: "assets/placeholder.png",
+      ImagePlaceholder.online:
+          "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png",
+    }[placeholder]!;
     return images != null && images.isNotEmpty
         ? images[0].url!
-        : "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png";
+        : placeholderUrl;
   }
 
   static String artists_X_String<T extends ArtistSimple>(List<T> artists) {

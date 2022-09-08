@@ -27,7 +27,10 @@ class AlbumView extends HookConsumerWidget {
           tracks: tracks,
           id: album.id!,
           name: album.name!,
-          thumbnail: TypeConversionUtils.image_X_UrlString(album.images),
+          thumbnail: TypeConversionUtils.image_X_UrlString(
+            album.images,
+            placeholder: ImagePlaceholder.collection,
+          ),
         ),
         tracks.indexWhere((s) => s.id == currentTrack?.id),
       );
@@ -50,7 +53,10 @@ class AlbumView extends HookConsumerWidget {
         ref.watch(albumIsSavedForCurrentUserQuery(album.id!));
 
     final albumArt = useMemoized(
-        () => TypeConversionUtils.image_X_UrlString(album.images),
+        () => TypeConversionUtils.image_X_UrlString(
+              album.images,
+              placeholder: ImagePlaceholder.albumArt,
+            ),
         [album.images]);
 
     final breakpoint = useBreakpoints();

@@ -98,12 +98,9 @@ class Downloader with ChangeNotifier {
           );
           final imageUri = TypeConversionUtils.image_X_UrlString(
             track.album?.images ?? [],
+            placeholder: ImagePlaceholder.online,
           );
-          final response = await get(
-            Uri.parse(
-              imageUri,
-            ),
-          );
+          final response = await get(Uri.parse(imageUri));
 
           await MetadataGod.writeMetadata(
             file,

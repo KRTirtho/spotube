@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HoverBuilder.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistCard extends StatelessWidget {
   final Artist artist;
@@ -11,11 +13,11 @@ class ArtistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundImage = CachedNetworkImageProvider((artist
-                .images?.isNotEmpty ??
-            false)
-        ? artist.images!.first.url!
-        : "https://avatars.dicebear.com/api/open-peeps/${artist.id}.png?b=%231ed760&r=50&flip=1&translateX=3&translateY=-6");
+    final backgroundImage =
+        UniversalImage.imageProvider(TypeConversionUtils.image_X_UrlString(
+      artist.images,
+      placeholder: ImagePlaceholder.artist,
+    ));
     return SizedBox(
       height: 240,
       width: 200,

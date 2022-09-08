@@ -42,6 +42,7 @@ class PlayerView extends HookConsumerWidget {
       () => TypeConversionUtils.image_X_UrlString(
         currentTrack?.album?.images,
         index: (currentTrack?.album?.images?.length ?? 1) - 1,
+        placeholder: ImagePlaceholder.albumArt,
       ),
       [currentTrack?.album?.images],
     );

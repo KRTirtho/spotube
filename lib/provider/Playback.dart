@@ -210,6 +210,7 @@ class Playback extends PersistedChangeNotifier {
         artUri: Uri.parse(
           TypeConversionUtils.image_X_UrlString(
             track.album?.images,
+            placeholder: ImagePlaceholder.online,
           ),
         ),
         duration: track.ytTrack.duration,

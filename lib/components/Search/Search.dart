@@ -110,7 +110,9 @@ class Search extends HookConsumerWidget {
                                 duration: duration,
                                 thumbnailUrl:
                                     TypeConversionUtils.image_X_UrlString(
-                                        track.value.album?.images),
+                                  track.value.album?.images,
+                                  placeholder: ImagePlaceholder.albumArt,
+                                ),
                                 isActive: playback.track?.id == track.value.id,
                                 onTrackPlayButtonPressed: (currentTrack) async {
                                   var isPlaylistPlaying =
@@ -126,6 +128,8 @@ class Search extends HookConsumerWidget {
                                         thumbnail: TypeConversionUtils
                                             .image_X_UrlString(
                                           currentTrack.album?.images,
+                                          placeholder:
+                                              ImagePlaceholder.albumArt,
                                         ),
                                       ),
                                     );

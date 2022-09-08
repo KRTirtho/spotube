@@ -112,6 +112,7 @@ class SyncedLyrics extends HookConsumerWidget {
       () => TypeConversionUtils.image_X_UrlString(
         playback.track?.album?.images,
         index: (playback.track?.album?.images?.length ?? 1) - 1,
+        placeholder: ImagePlaceholder.albumArt,
       ),
       [playback.track?.album?.images],
     );

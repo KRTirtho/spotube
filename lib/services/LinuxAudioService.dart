@@ -298,7 +298,9 @@ class _MprisMediaPlayer2Player extends DBusObject {
           "mpris:length": DBusInt32(playback.currentDuration.inMicroseconds),
           "mpris:artUrl": DBusString(
             TypeConversionUtils.image_X_UrlString(
-                playback.track?.album?.images),
+              playback.track?.album?.images,
+              placeholder: ImagePlaceholder.albumArt,
+            ),
           ),
           "xesam:album": DBusString(playback.track!.album!.name!),
           "xesam:artist": DBusArray.string(

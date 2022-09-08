@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,6 +9,7 @@ import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerArtistProfile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
@@ -78,8 +78,11 @@ class ArtistProfile extends HookConsumerWidget {
                       const SizedBox(width: 50),
                       CircleAvatar(
                         radius: avatarWidth,
-                        backgroundImage: CachedNetworkImageProvider(
-                          TypeConversionUtils.image_X_UrlString(data.images),
+                        backgroundImage: UniversalImage.imageProvider(
+                          TypeConversionUtils.image_X_UrlString(
+                            data.images,
+                            placeholder: ImagePlaceholder.artist,
+                          ),
                         ),
                       ),
                       Padding(
@@ -193,7 +196,9 @@ class ArtistProfile extends HookConsumerWidget {
                               id: data.id!,
                               name: "${data.name!} To Tracks",
                               thumbnail: TypeConversionUtils.image_X_UrlString(
-                                  data.images),
+                                data.images,
+                                placeholder: ImagePlaceholder.artist,
+                              ),
                             ),
                             tracks.indexWhere((s) => s.id == currentTrack?.id),
                           );
@@ -233,10 +238,10 @@ class ArtistProfile extends HookConsumerWidget {
                               "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
                           String? thumbnailUrl =
                               TypeConversionUtils.image_X_UrlString(
-                                  track.value.album?.images,
-                                  index:
-                                      (track.value.album?.images?.length ?? 1) -
-                                          1);
+                            track.value.album?.images,
+                            index: (track.value.album?.images?.length ?? 1) - 1,
+                            placeholder: ImagePlaceholder.albumArt,
+                          );
                           return TrackTile(
                             playback,
                             duration: duration,

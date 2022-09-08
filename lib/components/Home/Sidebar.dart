@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
@@ -135,8 +136,10 @@ class Sidebar extends HookConsumerWidget {
                   final data = meSnapshot.asData?.value;
 
                   final avatarImg = TypeConversionUtils.image_X_UrlString(
-                      data?.images,
-                      index: (data?.images?.length ?? 1) - 1);
+                    data?.images,
+                    index: (data?.images?.length ?? 1) - 1,
+                    placeholder: ImagePlaceholder.artist,
+                  );
                   if (extended.value) {
                     return Padding(
                         padding: const EdgeInsets.all(16),
@@ -155,7 +158,8 @@ class Sidebar extends HookConsumerWidget {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage:
-                                          CachedNetworkImageProvider(avatarImg),
+                                          UniversalImage.imageProvider(
+                                              avatarImg),
                                       onBackgroundImageError:
                                           (exception, stackTrace) =>
                                               Image.asset(
@@ -193,7 +197,7 @@ class Sidebar extends HookConsumerWidget {
                         onTap: () => goToSettings(context),
                         child: CircleAvatar(
                           backgroundImage:
-                              CachedNetworkImageProvider(avatarImg),
+                              UniversalImage.imageProvider(avatarImg),
                           onBackgroundImageError: (exception, stackTrace) =>
                               Image.asset(
                             "assets/user-placeholder.png",

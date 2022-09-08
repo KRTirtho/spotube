@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/components/Shared/HoverBuilder.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 
 class PlaybuttonCard extends StatelessWidget {
   final void Function()? onTap;
@@ -55,8 +56,8 @@ class PlaybuttonCard extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: CachedNetworkImage(
-                          imageUrl: imageUrl,
+                        child: UniversalImage(
+                          path: imageUrl,
                           placeholder: (context, url) =>
                               Image.asset("assets/placeholder.png"),
                         ),

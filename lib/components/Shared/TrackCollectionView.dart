@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
@@ -175,9 +176,7 @@ class TrackCollectionView extends HookConsumerWidget {
                                     const BoxConstraints(maxHeight: 200),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: CachedNetworkImage(
-                                    imageUrl: titleImage,
-                                  ),
+                                  child: UniversalImage(path: titleImage),
                                 ),
                               ),
                               Column(

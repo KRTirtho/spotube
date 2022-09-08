@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 
 class DownloadConfirmationDialog extends StatelessWidget {
   const DownloadConfirmationDialog({Key? key}) : super(key: key);
@@ -9,11 +9,11 @@ class DownloadConfirmationDialog extends StatelessWidget {
     return AlertDialog(
       contentPadding: const EdgeInsets.all(15),
       title: Row(
-        children: [
-          const Text("Are you sure?"),
-          const SizedBox(width: 10),
-          CachedNetworkImage(
-            imageUrl:
+        children: const [
+          Text("Are you sure?"),
+          SizedBox(width: 10),
+          UniversalImage(
+            path:
                 "https://c.tenor.com/kHcmsxlKHEAAAAAM/rock-one-eyebrow-raised-rock-staring.gif",
             height: 40,
             width: 40,

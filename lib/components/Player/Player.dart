@@ -25,6 +25,7 @@ class Player extends HookConsumerWidget {
           ? TypeConversionUtils.image_X_UrlString(
               playback.track?.album?.images,
               index: (playback.track?.album?.images?.length ?? 1) - 1,
+              placeholder: ImagePlaceholder.albumArt,
             )
           : "assets/album-placeholder.png",
       [playback.track?.album?.images],
