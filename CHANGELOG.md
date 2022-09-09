@@ -1,3 +1,39 @@
+## [2.4.0](https://github.com/KRTirtho/spotube/compare/v2.3.0...v2.4.0) (2022-09-09)
+
+
+### Features
+
+* Ability to change download location added ([816707c](https://github.com/KRTirtho/spotube/commit/816707c643f8d60d25bc08fd4c8005daa2ba9e63))
+* add download multi tracks support for mobile platform ([0476bf7](https://github.com/KRTirtho/spotube/commit/0476bf7ceece034a927d1df6099d8b33036f8a9b))
+* add download queue for desktop & initial playlist download support ([08f913e](https://github.com/KRTirtho/spotube/commit/08f913e9761d0f5c447af9dfb6eedb44b675498c))
+* add download tab on library ([8d77b69](https://github.com/KRTirtho/spotube/commit/8d77b6900a81aab020e19397e788964b0ac499ff))
+* add web support although nothing works just as expected ([2818ed5](https://github.com/KRTirtho/spotube/commit/2818ed5c9dadb9185a52762599c1dd0acd81e6bf))
+* **broken:** Broken Warning! Initial Local Audio Player ([c3bf511](https://github.com/KRTirtho/spotube/commit/c3bf5119ebb7c17e8c32f149598508674b0acd39))
+* **download:** track table view multi select improvement, tap to play track support, existing track replace confirmation dialog and bulk download confirmation dialog ([e217553](https://github.com/KRTirtho/spotube/commit/e21755322f2cd5f1fba00c5c8cd5c5d1f79e459d))
+* **local-tracks:** complete support for local tracks ([e206f16](https://github.com/KRTirtho/spotube/commit/e206f16723ac989ad58006c1b3c90c6691d8cab3))
+* **mpris:** MPRIS metadata are now updated in realtime ([d9addcd](https://github.com/KRTirtho/spotube/commit/d9addcda8e9562803bd73016148fab22560ee050))
+* **playback:** add repeat track support [#166](https://github.com/KRTirtho/spotube/issues/166) ([cae9993](https://github.com/KRTirtho/spotube/commit/cae99934299bd197c68f626d6c10158d449770b9))
+* **synced-lyrics:** animated active text size ([531fae6](https://github.com/KRTirtho/spotube/commit/531fae64f94b21551a7a0da363a9ab0d44f5d3b1))
+* **ui:** adaptive TrackTile actions & Setting ListTile ([615d5ce](https://github.com/KRTirtho/spotube/commit/615d5ce901eb0512e84a120b7309c9053238ee36))
+
+
+### Bug Fixes
+
+* **adaptive-list-tile:** dialog content not updating when content has changed ([a1d4230](https://github.com/KRTirtho/spotube/commit/a1d423090c854ebe319a0fa03fd6e5c4007b1387))
+* album & playlist card, player view and album view play button logic ([55852bd](https://github.com/KRTirtho/spotube/commit/55852bd15bc709d61fbba8cbea01ceca791d154c))
+* **docs:** indentions ([4a291d5](https://github.com/KRTirtho/spotube/commit/4a291d5f20dabe68f3ed64071624dcbed8327329))
+* **downloader:** downloaded track is corrupted for tagging ([2ab1fba](https://github.com/KRTirtho/spotube/commit/2ab1fba3d64147e3c5cf34756dce1cf6046d410a))
+* **downloader:** flutter downloader exception on desktop platform and too much width of TrackTile index no. ([d668760](https://github.com/KRTirtho/spotube/commit/d6687603d148ad936530cca4d09e128a59b79b19))
+* dropped flutter_downloader deps due to slow download speed and UserDownloads not showing for anonymous ([307a8e2](https://github.com/KRTirtho/spotube/commit/307a8e21df1e39123a1dca4c1b063eab50359581))
+* flutter_downloader manifest configuration breaking android support ([f3a0f78](https://github.com/KRTirtho/spotube/commit/f3a0f78fb92ff7ee38b5a9ef9954575d4282f954))
+* login screen not using safearea and no dialog bg-color found on light mode in AdaptivePopupMenuButton ([92bc611](https://github.com/KRTirtho/spotube/commit/92bc611c5e901dcabf34086be9287ac20317259a))
+* **performance:** always running marquee text causes high GPU usage [#175](https://github.com/KRTirtho/spotube/issues/175) and UserArtist overflow on smaller displays ([a23ce61](https://github.com/KRTirtho/spotube/commit/a23ce614467b4297f495b824f0958ff07c21ae92))
+* **playback:** shuffle button sometimes gets stuck and stops working [#183](https://github.com/KRTirtho/spotube/issues/183) ([4240433](https://github.com/KRTirtho/spotube/commit/4240433e3dde6ab948d2674e07e41c27c1f6eac8))
+* **player-overlay:** flickering when a track is changed or navigated to another page ([e48b67c](https://github.com/KRTirtho/spotube/commit/e48b67cd47ae54ad9268aead268e444836a67b0d))
+* **sidebar:** user image url ([747efc6](https://github.com/KRTirtho/spotube/commit/747efc6ee66bc6c7c917cc02bd134968a0781701))
+* **synced-lyrics:** active lyrics contrast ratio ([aba1ba9](https://github.com/KRTirtho/spotube/commit/aba1ba932592923720a36395c057f78820dafecf))
+* tabbar overflow in small screen, artist card too small title and synced lyrics contrast increased ([585de8c](https://github.com/KRTirtho/spotube/commit/585de8c1def9750826568317109b242a5e18f28c))
+
 # v2.3.0
 
 ### New
