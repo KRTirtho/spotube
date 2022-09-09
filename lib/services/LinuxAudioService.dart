@@ -275,7 +275,9 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Sets property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> setShuffle(bool value) async {
-    playback.toggleShuffle();
+    playback.setPlaybackMode(
+      value ? PlaybackMode.shuffle : PlaybackMode.normal,
+    );
     return DBusMethodSuccessResponse();
   }
 

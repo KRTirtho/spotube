@@ -37,9 +37,15 @@ enum AudioQuality {
   low,
 }
 
+enum PlaybackMode {
+  repeat,
+  shuffle,
+  normal,
+}
+
 class Playback extends PersistedChangeNotifier {
   // player properties
-  bool isShuffled;
+  PlaybackMode playbackMode;
   bool isPlaying;
   Duration currentDuration;
   double volume;
@@ -72,9 +78,9 @@ class Playback extends PersistedChangeNotifier {
     required this.youtube,
     required this.ref,
     this.mobileAudioService,
-  })  : volume = 0,
-        isShuffled = false,
+  })  : volume = 1,
         isPlaying = false,
+        playbackMode = PlaybackMode.normal,
         currentDuration = Duration.zero,
         _subscriptions = [],
         status = PlaybackStatus.idle,
@@ -102,7 +108,13 @@ class Playback extends PersistedChangeNotifier {
         ),
         player.onPlayerComplete.listen((_) {
           if (track?.id != null) {
-            seekForward();
+            if (isLoop) {
+              final prevTrack = track;
+              track = null;
+              play(prevTrack!);
+            } else if (playlist != null) {
+              seekForward();
+            }
           } else {
             isPlaying = false;
             status = PlaybackStatus.idle;
@@ -250,12 +262,26 @@ class Playback extends PersistedChangeNotifier {
     isPlaying ? await pause() : await resume();
   }
 
-  toggleShuffle() {
-    final result = isShuffled ? playlist?.unshuffle() : playlist?.shuffle();
-    if (result == true) {
-      isShuffled = !isShuffled;
-      notifyListeners();
+  void cyclePlaybackMode() {
+    switch (playbackMode) {
+      case PlaybackMode.normal:
+        playbackMode = PlaybackMode.shuffle;
+        playlist?.shuffle();
+        break;
+      case PlaybackMode.shuffle:
+        playbackMode = PlaybackMode.repeat;
+        playlist?.unshuffle();
+        break;
+      case PlaybackMode.repeat:
+        playbackMode = PlaybackMode.normal;
+        break;
     }
+    notifyListeners();
+  }
+
+  void setPlaybackMode(PlaybackMode mode) {
+    playbackMode = mode;
+    notifyListeners();
   }
 
   Future<void> seekPosition(Duration position) {
@@ -273,7 +299,7 @@ class Playback extends PersistedChangeNotifier {
     await player.stop();
     await player.release();
     isPlaying = false;
-    isShuffled = false;
+    playbackMode = PlaybackMode.normal;
     playlist = null;
     track = null;
     status = PlaybackStatus.idle;
@@ -553,6 +579,10 @@ class Playback extends PersistedChangeNotifier {
       "volume": volume,
     };
   }
+
+  bool get isLoop => playbackMode == PlaybackMode.repeat;
+  bool get isShuffled => playbackMode == PlaybackMode.shuffle;
+  bool get isNormal => playbackMode == PlaybackMode.normal;
 }
 
 final playbackProvider = ChangeNotifierProvider<Playback>((ref) {

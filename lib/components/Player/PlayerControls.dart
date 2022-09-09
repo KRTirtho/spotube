@@ -103,20 +103,17 @@ class PlayerControls extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
-                    icon: const Icon(Icons.shuffle_rounded),
-                    color: playback.isShuffled
-                        ? Theme.of(context).primaryColor
-                        : iconColor,
-                    onPressed: () {
-                      if (playback.track == null || playback.playlist == null) {
-                        return;
-                      }
-                      try {
-                        playback.toggleShuffle();
-                      } catch (e, stack) {
-                        logger.e("onShuffle", e, stack);
-                      }
-                    }),
+                  icon: Icon(
+                    playback.isLoop
+                        ? Icons.repeat_one_rounded
+                        : playback.isShuffled
+                            ? Icons.shuffle_rounded
+                            : Icons.repeat_rounded,
+                  ),
+                  onPressed: playback.track == null || playback.playlist == null
+                      ? null
+                      : playback.cyclePlaybackMode,
+                ),
                 IconButton(
                     icon: const Icon(Icons.skip_previous_rounded),
                     color: iconColor,
