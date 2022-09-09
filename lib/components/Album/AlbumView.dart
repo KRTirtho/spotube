@@ -81,6 +81,14 @@ class AlbumView extends HookConsumerWidget {
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
                   .toList(),
+            );
+          } else if (isAlbumPlaying && track != null) {
+            playPlaylist(
+              playback,
+              tracksSnapshot.asData!.value
+                  .map((track) =>
+                      TypeConversionUtils.simpleTrack_X_Track(track, album))
+                  .toList(),
               currentTrack: track,
             );
           } else {

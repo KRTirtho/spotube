@@ -13,6 +13,7 @@ import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -43,6 +44,17 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
       return [];
     }
     final entities = downloadDir.listSync(recursive: true);
+
+    // TODO: Add MacOS audiotag reading support
+    if (kIsMacOS) {
+      return entities
+          .map(
+            (entity) => TypeConversionUtils.localTrack_X_Track(
+              File(entity.path),
+            ),
+          )
+          .toList();
+    }
 
     final filesWithMetadata = (await Future.wait(
       entities.map((e) => File(e.path)).where((file) {
@@ -81,9 +93,9 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
     final tracks = filesWithMetadata
         .map(
           (fileWithMetadata) => TypeConversionUtils.localTrack_X_Track(
-            fileWithMetadata["metadata"] as Metadata,
-            fileWithMetadata["file"] as File,
-            fileWithMetadata["art"] as String?,
+            fileWithMetadata["file"],
+            metadata: fileWithMetadata["metadata"],
+            art: fileWithMetadata["art"],
           ),
         )
         .toList();
@@ -184,17 +196,11 @@ class UserLocalTracks extends HookConsumerWidget {
                         : "assets/album-placeholder.png",
                     isLocal: true,
                     onTrackPlayButtonPressed: (currentTrack) {
-                      if (tracks.isNotEmpty) {
-                        if (!isPlaylistPlaying) {
-                          playLocalTracks(
-                            playback,
-                            tracks,
-                            currentTrack: track,
-                          );
-                        } else {
-                          playback.stop();
-                        }
-                      }
+                      return playLocalTracks(
+                        playback,
+                        tracks,
+                        currentTrack: track,
+                      );
                     },
                   );
                 },

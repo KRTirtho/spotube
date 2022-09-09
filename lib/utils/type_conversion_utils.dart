@@ -107,15 +107,15 @@ abstract class TypeConversionUtils {
   }
 
   static SpotubeTrack localTrack_X_Track(
-    Metadata metadata,
-    File file,
+    File file, {
+    Metadata? metadata,
     String? art,
-  ) {
+  }) {
     final track = SpotubeTrack(
       Video(
         VideoId("dQw4w9WgXcQ"),
         basenameWithoutExtension(file.path),
-        metadata.artist ?? "",
+        metadata?.artist ?? "",
         ChannelId(
           "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
         ),
@@ -123,8 +123,8 @@ abstract class TypeConversionUtils {
         "",
         DateTime.now(),
         "",
-        Duration(milliseconds: metadata.durationMs?.toInt() ?? 0),
-        ThumbnailSet(metadata.title ?? ""),
+        Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
+        ThumbnailSet(metadata?.title ?? ""),
         [],
         const Engagement(0, 0, 0),
         false,
@@ -133,28 +133,28 @@ abstract class TypeConversionUtils {
       [],
     );
     track.album = Album()
-      ..name = metadata.album ?? "Spotube"
+      ..name = metadata?.album ?? "Spotube"
       ..images = [if (art != null) Image()..url = art]
-      ..genres = [if (metadata.genre != null) metadata.genre!]
+      ..genres = [if (metadata?.genre != null) metadata!.genre!]
       ..artists = [
         Artist()
-          ..name = metadata.albumArtist ?? "Spotube"
-          ..id = metadata.albumArtist ?? "Spotube"
+          ..name = metadata?.albumArtist ?? "Spotube"
+          ..id = metadata?.albumArtist ?? "Spotube"
           ..type = "artist",
       ]
-      ..id = metadata.album
-      ..releaseDate = metadata.year?.toString();
+      ..id = metadata?.album
+      ..releaseDate = metadata?.year?.toString();
     track.artists = [
       Artist()
-        ..name = metadata.artist ?? "Spotube"
-        ..id = metadata.artist ?? "Spotube"
+        ..name = metadata?.artist ?? "Spotube"
+        ..id = metadata?.artist ?? "Spotube"
     ];
 
-    track.id = metadata.title ?? basenameWithoutExtension(file.path);
-    track.name = metadata.title ?? basenameWithoutExtension(file.path);
+    track.id = metadata?.title ?? basenameWithoutExtension(file.path);
+    track.name = metadata?.title ?? basenameWithoutExtension(file.path);
     track.type = "track";
     track.uri = file.path;
-    track.durationMs = metadata.durationMs?.toInt();
+    track.durationMs = metadata?.durationMs?.toInt();
 
     return track;
   }

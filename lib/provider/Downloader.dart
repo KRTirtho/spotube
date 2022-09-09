@@ -13,6 +13,7 @@ import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Comment;
 
@@ -92,6 +93,9 @@ class Downloader with ChangeNotifier {
           logger.v(
             "[addToQueue] Download of ${file.path} is done successfully",
           );
+
+          // TODO: Add MacOS audiotag writing support
+          if (kIsMacOS) return;
 
           logger.v(
             "[addToQueue] Writing metadata to ${file.path}",

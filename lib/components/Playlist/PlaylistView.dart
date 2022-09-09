@@ -87,6 +87,11 @@ class PlaylistView extends HookConsumerWidget {
             playPlaylist(
               playback,
               tracksSnapshot.asData!.value,
+            );
+          } else if (isPlaylistPlaying && track != null) {
+            playPlaylist(
+              playback,
+              tracksSnapshot.asData!.value,
               currentTrack: track,
             );
           } else {
