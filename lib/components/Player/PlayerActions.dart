@@ -1,16 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/components/Player/PlayerQueue.dart';
-import 'package:spotube/components/Shared/DownloadTrackButton.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/hooks/useForceUpdate.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
+import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerActions extends HookConsumerWidget {
   final MainAxisAlignment mainAxisAlignment;
@@ -27,7 +30,25 @@ class PlayerActions extends HookConsumerWidget {
     final SpotifyApi spotifyApi = ref.watch(spotifyProvider);
     final Playback playback = ref.watch(playbackProvider);
     final Auth auth = ref.watch(authProvider);
+    final downloader = ref.watch(downloaderProvider);
     final update = useForceUpdate();
+    final isInQueue =
+        downloader.inQueue.any((element) => element.id == playback.track?.id);
+    final localTracks = ref.watch(localTracksProvider).value;
+
+    final isDownloaded = useMemoized(() {
+      return localTracks?.any(
+            (element) =>
+                element.name == playback.track?.name &&
+                element.album?.name == playback.track?.album?.name &&
+                TypeConversionUtils.artists_X_String<Artist>(
+                        element.artists ?? []) ==
+                    TypeConversionUtils.artists_X_String<Artist>(
+                        playback.track?.artists ?? []),
+          ) ==
+          true;
+    }, [localTracks, playback.track]);
+
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       children: [
@@ -56,9 +77,25 @@ class PlayerActions extends HookConsumerWidget {
               : null,
         ),
         if (!kIsWeb)
-          DownloadTrackButton(
-            track: playback.track,
-          ),
+          if (isInQueue)
+            const SizedBox(
+              child: CircularProgressIndicator.adaptive(
+                strokeWidth: 2,
+              ),
+              height: 20,
+              width: 20,
+            )
+          else
+            IconButton(
+              icon: Icon(
+                isDownloaded
+                    ? Icons.download_done_rounded
+                    : Icons.download_rounded,
+              ),
+              onPressed: playback.track != null
+                  ? () => downloader.addToQueue(playback.track!)
+                  : null,
+            ),
         if (auth.isLoggedIn)
           FutureBuilder<bool>(
               future: playback.track?.id != null

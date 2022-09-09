@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/components/Shared/DownloadTrackButton.dart';
+import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/entities/CacheTrack.dart';
 import 'package:spotube/models/GoRouteDeclarations.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';

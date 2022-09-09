@@ -99,6 +99,10 @@ class Playback extends PersistedChangeNotifier {
         await player.setVolume(volume);
       }
 
+      addListener(() {
+        _linuxAudioService?.player.updateProperties(this);
+      });
+
       _subscriptions.addAll([
         player.onPlayerStateChanged.listen(
           (state) async {

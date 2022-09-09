@@ -12,7 +12,7 @@ import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerCategories.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
-import 'package:spotube/components/Shared/DownloadTrackButton.dart';
+import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
