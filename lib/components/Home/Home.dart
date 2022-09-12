@@ -43,13 +43,14 @@ class Home extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final int titleBarDragMaxWidth = useBreakpointValue(
-      md: 80,
-      lg: 256,
-      sm: 0,
-      xl: 256,
-      xxl: 256,
+    final double titleBarWidth = useBreakpointValue(
+      sm: 0.0,
+      md: 80.0,
+      lg: 256.0,
+      xl: 256.0,
+      xxl: 256.0,
     );
+    final extended = ref.watch(sidebarExtendedStateProvider);
     final _selectedIndex = useState(0);
     _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
 
@@ -82,7 +83,9 @@ class Home extends HookConsumerWidget {
               children: [
                 Container(
                   constraints: BoxConstraints(
-                    maxWidth: titleBarDragMaxWidth.toDouble(),
+                    maxWidth: extended == null
+                        ? titleBarWidth
+                        : (extended ? 256 : 80),
                   ),
                   color: Theme.of(context).navigationRailTheme.backgroundColor,
                   child: MoveWindow(),

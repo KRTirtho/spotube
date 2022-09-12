@@ -8,6 +8,7 @@ import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 
 class PlayerOverlay extends HookConsumerWidget {
   final String albumArt;
@@ -21,6 +22,9 @@ class PlayerOverlay extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
     final paletteColor = usePaletteColor(albumArt, ref);
+    final layoutMode = ref.watch(
+      userPreferencesProvider.select((s) => s.layoutMode),
+    );
 
     var isHome = GoRouter.of(context).location == "/";
     final isAllowedPage = ["/playlist/", "/album/"].any(
@@ -36,8 +40,17 @@ class PlayerOverlay extends HookConsumerWidget {
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 2500),
       right: (breakpoint.isMd && !isAllowedPage ? 10 : 5),
-      left: (breakpoint.isSm || isAllowedPage ? 5 : 90),
-      bottom: (breakpoint.isSm && !isAllowedPage ? 63 : 10),
+      left: (layoutMode == LayoutMode.compact ||
+              (breakpoint.isSm && layoutMode == LayoutMode.adaptive) ||
+              isAllowedPage
+          ? 5
+          : 90),
+      bottom: (layoutMode == LayoutMode.compact && !isAllowedPage) ||
+              (breakpoint.isSm &&
+                  layoutMode == LayoutMode.adaptive &&
+                  !isAllowedPage)
+          ? 63
+          : 10,
       child: GestureDetector(
         onVerticalDragEnd: (details) {
           int sensitivity = 8;

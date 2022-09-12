@@ -8,6 +8,7 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Player extends HookConsumerWidget {
@@ -17,6 +18,8 @@ class Player extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
+    final layoutMode =
+        ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
     final breakpoint = useBreakpoints();
 
@@ -51,7 +54,9 @@ class Player extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((time) {
         // clearing the overlay-entry as passing the already available
         // entry will result in splashing while resizing the window
-        if (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
+        if ((layoutMode == LayoutMode.compact ||
+                (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
+                    layoutMode == LayoutMode.adaptive)) &&
             entryRef.value == null &&
             playback.track != null) {
           entryRef.value = OverlayEntry(
@@ -75,11 +80,13 @@ class Player extends HookConsumerWidget {
       return () {
         disposeOverlay();
       };
-    }, [breakpoint, playback.track]);
+    }, [breakpoint, playback.track, layoutMode]);
 
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]
-    if (breakpoint.isLessThanOrEqualTo(Breakpoints.md)) {
+    if (layoutMode == LayoutMode.compact ||
+        (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
+            layoutMode == LayoutMode.adaptive)) {
       return Container();
     }
 

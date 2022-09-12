@@ -5,6 +5,7 @@ import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Downloader.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 
 class SpotubeNavigationBar extends HookConsumerWidget {
   final int selectedIndex;
@@ -22,8 +23,12 @@ class SpotubeNavigationBar extends HookConsumerWidget {
       downloaderProvider.select((s) => s.currentlyRunning),
     );
     final breakpoint = useBreakpoints();
+    final layoutMode =
+        ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
-    if (breakpoint.isMoreThan(Breakpoints.sm)) return const SizedBox();
+    if (layoutMode == LayoutMode.extended ||
+        (breakpoint.isMoreThan(Breakpoints.sm) &&
+            layoutMode == LayoutMode.adaptive)) return const SizedBox();
     return NavigationBar(
       destinations: [
         ...sidebarTileList.map(
