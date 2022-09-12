@@ -13,7 +13,6 @@ import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -44,17 +43,6 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
       return [];
     }
     final entities = downloadDir.listSync(recursive: true);
-
-    // TODO: Add MacOS audiotag reading support
-    if (kIsMacOS) {
-      return entities
-          .map(
-            (entity) => TypeConversionUtils.localTrack_X_Track(
-              File(entity.path),
-            ),
-          )
-          .toList();
-    }
 
     final filesWithMetadata = (await Future.wait(
       entities.map((e) => File(e.path)).where((file) {
