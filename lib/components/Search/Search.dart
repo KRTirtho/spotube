@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -147,19 +148,28 @@ class Search extends HookConsumerWidget {
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                             const SizedBox(height: 10),
-                            Scrollbar(
-                              controller: albumController,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
+                            ScrollConfiguration(
+                              behavior:
+                                  ScrollConfiguration.of(context).copyWith(
+                                dragDevices: {
+                                  PointerDeviceKind.touch,
+                                  PointerDeviceKind.mouse,
+                                },
+                              ),
+                              child: Scrollbar(
                                 controller: albumController,
-                                child: Row(
-                                  children: albums.map((album) {
-                                    return AlbumCard(
-                                      TypeConversionUtils.simpleAlbum_X_Album(
-                                        album,
-                                      ),
-                                    );
-                                  }).toList(),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  controller: albumController,
+                                  child: Row(
+                                    children: albums.map((album) {
+                                      return AlbumCard(
+                                        TypeConversionUtils.simpleAlbum_X_Album(
+                                          album,
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -170,21 +180,30 @@ class Search extends HookConsumerWidget {
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                             const SizedBox(height: 10),
-                            Scrollbar(
-                              controller: artistController,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
+                            ScrollConfiguration(
+                              behavior:
+                                  ScrollConfiguration.of(context).copyWith(
+                                dragDevices: {
+                                  PointerDeviceKind.touch,
+                                  PointerDeviceKind.mouse,
+                                },
+                              ),
+                              child: Scrollbar(
                                 controller: artistController,
-                                child: Row(
-                                  children: artists
-                                      .map(
-                                        (artist) => Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 15),
-                                          child: ArtistCard(artist),
-                                        ),
-                                      )
-                                      .toList(),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  controller: artistController,
+                                  child: Row(
+                                    children: artists
+                                        .map(
+                                          (artist) => Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 15),
+                                            child: ArtistCard(artist),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -195,20 +214,30 @@ class Search extends HookConsumerWidget {
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                             const SizedBox(height: 10),
-                            Scrollbar(
-                              scrollbarOrientation: breakpoint > Breakpoints.md
-                                  ? ScrollbarOrientation.bottom
-                                  : ScrollbarOrientation.top,
-                              controller: playlistController,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
+                            ScrollConfiguration(
+                              behavior:
+                                  ScrollConfiguration.of(context).copyWith(
+                                dragDevices: {
+                                  PointerDeviceKind.touch,
+                                  PointerDeviceKind.mouse,
+                                },
+                              ),
+                              child: Scrollbar(
+                                scrollbarOrientation:
+                                    breakpoint > Breakpoints.md
+                                        ? ScrollbarOrientation.bottom
+                                        : ScrollbarOrientation.top,
                                 controller: playlistController,
-                                child: Row(
-                                  children: playlists
-                                      .map(
-                                        (playlist) => PlaylistCard(playlist),
-                                      )
-                                      .toList(),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  controller: playlistController,
+                                  child: Row(
+                                    children: playlists
+                                        .map(
+                                          (playlist) => PlaylistCard(playlist),
+                                        )
+                                        .toList(),
+                                  ),
                                 ),
                               ),
                             ),
