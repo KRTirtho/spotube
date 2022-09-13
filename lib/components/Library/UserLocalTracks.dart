@@ -35,9 +35,11 @@ const imgMimeToExt = {
 
 final localTracksProvider = FutureProvider<List<Track>>((ref) async {
   try {
-    final downloadDir = Directory(
-      ref.watch(userPreferencesProvider.select((s) => s.downloadLocation)),
+    final downloadLocation = ref.watch(
+      userPreferencesProvider.select((s) => s.downloadLocation),
     );
+    if (downloadLocation.isEmpty) return [];
+    final downloadDir = Directory(downloadLocation);
     if (!await downloadDir.exists()) {
       await downloadDir.create(recursive: true);
       return [];
