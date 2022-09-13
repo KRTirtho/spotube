@@ -1,3 +1,23 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [2.4.1](https://github.com/KRTirtho/spotube/compare/v2.4.0...v2.4.1) (2022-09-13)
+
+
+### Features
+
+* add macos audio metadata tags support ([5866b0f](https://github.com/KRTirtho/spotube/commit/5866b0fcd661cf32060bb1485ea81634fbb9b90a))
+* remove macos bounds for reading and writing audio metadata ([16064f6](https://github.com/KRTirtho/spotube/commit/16064f68e882b091401ace4b895e387f46635800))
+* **search:** horizontal swipe scroll support for Desktop platform ([d5ff927](https://github.com/KRTirtho/spotube/commit/d5ff927c7273b6e72c5d775ee777f2cbd0d6d05c))
+
+
+### Bug Fixes
+
+* **artist-page:**   SpotubeMarqueeText used in ArtistCard crashes the app ([4279541](https://github.com/KRTirtho/spotube/commit/427954150ab65b250e79fc844fc864abff5b6972))
+* **layout:** Fix adaptive UI not working correctly by providing a overriding option ([8c7adde](https://github.com/KRTirtho/spotube/commit/8c7adde890105e0267b71994b7928277f84553e5))
+* **local-track:** throwing exception when downloadLocation is empty ([1a3556d](https://github.com/KRTirtho/spotube/commit/1a3556d39e8473cadb6143192c48465dc6485599))
+
 ## [2.4.0](https://github.com/KRTirtho/spotube/compare/v2.3.0...v2.4.0) (2022-09-09)
 
 
