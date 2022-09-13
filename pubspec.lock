@@ -719,7 +719,7 @@ packages:
       name: metadata_god
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   mime:
     dependency: "direct main"
     description:
