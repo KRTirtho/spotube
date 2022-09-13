@@ -56,9 +56,7 @@ dependencies:
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   mime: ^1.0.2
-  metadata_god:
-    git:
-      url: https://github.com/KRTirtho/metadata_god.git
+  metadata_god: ^0.1.0
 
 # Temporary before [package_info_plus_windows] is updated to support 
 # win32v3
