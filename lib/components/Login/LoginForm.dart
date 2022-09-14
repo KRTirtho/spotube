@@ -62,6 +62,16 @@ class LoginForm extends HookConsumerWidget {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
+              if (clientSecretController.text.isEmpty ||
+                  clientIdController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Please fill in all fields"),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+                return;
+              }
               await handleLogin(authState);
             },
             child: const Text("Submit"),

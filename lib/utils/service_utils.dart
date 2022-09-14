@@ -184,8 +184,12 @@ abstract class ServiceUtils {
         mode: LaunchMode.externalApplication,
       );
 
-      HttpServer server =
-          await HttpServer.bind(InternetAddress.loopbackIPv4, 4304);
+      HttpServer server = await HttpServer.bind(
+        InternetAddress.loopbackIPv4,
+        4304,
+        shared: true,
+      );
+
       logger.i("[connectIpc] Server started");
 
       await for (HttpRequest request in server) {
