@@ -65,8 +65,7 @@ class Settings extends HookConsumerWidget {
                   children: [
                     const Text(
                       " Account",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     if (auth.isAnonymous)
                       AdaptiveListTile(
@@ -106,22 +105,60 @@ class Settings extends HookConsumerWidget {
                           trailing: ElevatedButton(
                             child: const Text("Logout"),
                             style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.red),
-                              foregroundColor:
-                                  MaterialStateProperty.all(Colors.white),
+                              backgroundColor: MaterialStateProperty.all(Colors.red),
+                              foregroundColor: MaterialStateProperty.all(Colors.white),
                             ),
-                            onPressed: () async {
-                              auth.logout();
-                              GoRouter.of(context).pop();
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => Dialog(
+                                  child: Container(
+                                    height: 200,
+                                    width: 400,
+                                    decoration: BoxDecoration(color: Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white)),
+                                    child: Column(
+                                      children: [
+                                        Expanded(child: Center(child: Text("Are you sure you want to log out?", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)))),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                                decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(20)),
+                                                child: TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: AutoSizeText("NO", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold))),
+                                              ),
+                                              SizedBox(width: 30),
+                                              Container(
+                                                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                                decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.red)),
+                                                child: TextButton(
+                                                    onPressed: () async {
+                                                      Navigator.of(context).pop();
+                                                      auth.logout();
+                                                      GoRouter.of(context).pop();
+                                                    },
+                                                    child: AutoSizeText("YES", style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold))),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         );
                       }),
                     const Text(
                       " Appearance",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.dashboard_rounded),
@@ -218,14 +255,12 @@ class Settings extends HookConsumerWidget {
                     ),
                     const Text(
                       " Playback",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.multitrack_audio_rounded),
                       title: const Text("Audio Quality"),
-                      trailing: (context, update) =>
-                          DropdownButton<AudioQuality>(
+                      trailing: (context, update) => DropdownButton<AudioQuality>(
                         value: preferences.audioQuality,
                         items: const [
                           DropdownMenuItem(
@@ -262,8 +297,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     const Text(
                       " Search",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.shopping_bag_rounded),
@@ -334,8 +368,7 @@ class Settings extends HookConsumerWidget {
                         "Track Match Algorithm",
                         maxLines: 1,
                       ),
-                      trailing: (context, update) =>
-                          DropdownButton<SpotubeTrackMatchAlgorithm>(
+                      trailing: (context, update) => DropdownButton<SpotubeTrackMatchAlgorithm>(
                         value: preferences.trackMatchAlgorithm,
                         items: const [
                           DropdownMenuItem(
@@ -365,8 +398,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     const Text(
                       " Downloads",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     ListTile(
                       leading: const Icon(Icons.file_download_outlined),
@@ -391,8 +423,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     const Text(
                       " About",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(
@@ -429,8 +460,7 @@ class Settings extends HookConsumerWidget {
                       trailing: Switch.adaptive(
                         activeColor: Theme.of(context).primaryColor,
                         value: preferences.checkUpdate,
-                        onChanged: (checked) =>
-                            preferences.setCheckUpdate(checked),
+                        onChanged: (checked) => preferences.setCheckUpdate(checked),
                       ),
                     ),
                     const About()
