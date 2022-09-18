@@ -394,7 +394,7 @@ packages:
       name: fading_edge_scrollview
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "3.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -691,7 +691,7 @@ packages:
       name: marquee
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.2"
+    version: "2.2.3"
   matcher:
     dependency: transitive
     description:
