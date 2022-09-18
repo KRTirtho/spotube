@@ -1,18 +1,20 @@
 import 'package:badges/badges.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:spotube/hooks/useBreakpointValue.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+
+final sidebarExtendedStateProvider = StateProvider<bool?>((ref) => null);
 
 class Sidebar extends HookConsumerWidget {
   final int selectedIndex;
@@ -45,16 +47,15 @@ class Sidebar extends HookConsumerWidget {
     final downloadCount = ref.watch(
       downloaderProvider.select((s) => s.currentlyRunning),
     );
-
-    final int titleBarDragMaxWidth = useBreakpointValue(
-      md: 80,
-      lg: 256,
-      sm: 0,
-      xl: 256,
-      xxl: 256,
-    );
+    final forceExtended = ref.watch(sidebarExtendedStateProvider);
 
     useEffect(() {
+      if (forceExtended != null) {
+        if (extended.value != forceExtended) {
+          extended.value = forceExtended;
+        }
+        return;
+      }
       if (breakpoints.isMd && extended.value) {
         extended.value = false;
       } else if (breakpoints.isMoreThanOrEqualTo(Breakpoints.lg) &&
@@ -64,7 +65,17 @@ class Sidebar extends HookConsumerWidget {
       return null;
     });
 
-    if (breakpoints.isSm) return Container();
+    final layoutMode =
+        ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
+
+    if (layoutMode == LayoutMode.compact ||
+        (breakpoints.isSm && layoutMode == LayoutMode.adaptive)) {
+      return Container();
+    }
+
+    void toggleExtended() =>
+        ref.read(sidebarExtendedStateProvider.notifier).state =
+            !(forceExtended ?? extended.value);
 
     return SafeArea(
       child: Material(
@@ -75,11 +86,11 @@ class Sidebar extends HookConsumerWidget {
             if (selectedIndex == 3 && kIsDesktop)
               SizedBox(
                 height: appWindow.titleBarHeight,
-                width: titleBarDragMaxWidth.toDouble(),
+                width: extended.value ? 256 : 80,
                 child: MoveWindow(),
               ),
             Padding(
-              padding: const EdgeInsets.only(left: 15),
+              padding: const EdgeInsets.only(left: 10),
               child: (extended.value)
                   ? Row(
                       children: [
@@ -87,11 +98,25 @@ class Sidebar extends HookConsumerWidget {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text("Spotube",
-                            style: Theme.of(context).textTheme.headline4),
+                        Text(
+                          "Spotube",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.menu_rounded),
+                          onPressed: toggleExtended,
+                        ),
                       ],
                     )
-                  : _buildSmallLogo(),
+                  : Column(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.menu_rounded),
+                          onPressed: toggleExtended,
+                        ),
+                        _buildSmallLogo(),
+                      ],
+                    ),
             ),
             Expanded(
               child: NavigationRail(
@@ -129,14 +154,16 @@ class Sidebar extends HookConsumerWidget {
               ),
             ),
             SizedBox(
-              width: titleBarDragMaxWidth.toDouble(),
+              width: extended.value ? 256 : 80,
               child: Builder(
                 builder: (context) {
                   final data = meSnapshot.asData?.value;
 
                   final avatarImg = TypeConversionUtils.image_X_UrlString(
-                      data?.images,
-                      index: (data?.images?.length ?? 1) - 1);
+                    data?.images,
+                    index: (data?.images?.length ?? 1) - 1,
+                    placeholder: ImagePlaceholder.artist,
+                  );
                   if (extended.value) {
                     return Padding(
                         padding: const EdgeInsets.all(16),
@@ -155,7 +182,8 @@ class Sidebar extends HookConsumerWidget {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage:
-                                          CachedNetworkImageProvider(avatarImg),
+                                          UniversalImage.imageProvider(
+                                              avatarImg),
                                       onBackgroundImageError:
                                           (exception, stackTrace) =>
                                               Image.asset(
@@ -193,7 +221,7 @@ class Sidebar extends HookConsumerWidget {
                         onTap: () => goToSettings(context),
                         child: CircleAvatar(
                           backgroundImage:
-                              CachedNetworkImageProvider(avatarImg),
+                              UniversalImage.imageProvider(avatarImg),
                           onBackgroundImageError: (exception, stackTrace) =>
                               Image.asset(
                             "assets/user-placeholder.png",

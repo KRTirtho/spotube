@@ -149,6 +149,7 @@ class TracksTableView extends HookConsumerWidget {
         String? thumbnailUrl = TypeConversionUtils.image_X_UrlString(
           track.value.album?.images,
           index: (track.value.album?.images?.length ?? 1) - 1,
+          placeholder: ImagePlaceholder.albumArt,
         );
         String duration =
             "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";

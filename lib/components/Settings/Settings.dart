@@ -124,6 +124,40 @@ class Settings extends HookConsumerWidget {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     AdaptiveListTile(
+                      leading: const Icon(Icons.dashboard_rounded),
+                      title: const Text("Layout Mode"),
+                      subtitle: const Text(
+                        "Override responsive layout mode settings",
+                      ),
+                      trailing: (context, update) => DropdownButton<LayoutMode>(
+                        value: preferences.layoutMode,
+                        items: const [
+                          DropdownMenuItem(
+                            child: Text(
+                              "Adaptive",
+                            ),
+                            value: LayoutMode.adaptive,
+                          ),
+                          DropdownMenuItem(
+                            child: Text(
+                              "Compact",
+                            ),
+                            value: LayoutMode.compact,
+                          ),
+                          DropdownMenuItem(
+                            child: Text("Extended"),
+                            value: LayoutMode.extended,
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            preferences.setLayoutMode(value);
+                            update?.call(() {});
+                          }
+                        },
+                      ),
+                    ),
+                    AdaptiveListTile(
                       leading: const Icon(Icons.dark_mode_outlined),
                       title: const Text("Theme"),
                       trailing: (context, update) => DropdownButton<ThemeMode>(

@@ -12,7 +12,7 @@ import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerCategories.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
 import 'package:spotube/components/Search/Search.dart';
-import 'package:spotube/components/Shared/DownloadTrackButton.dart';
+import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
@@ -43,13 +43,14 @@ class Home extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final int titleBarDragMaxWidth = useBreakpointValue(
-      md: 80,
-      lg: 256,
-      sm: 0,
-      xl: 256,
-      xxl: 256,
+    final double titleBarWidth = useBreakpointValue(
+      sm: 0.0,
+      md: 80.0,
+      lg: 256.0,
+      xl: 256.0,
+      xxl: 256.0,
     );
+    final extended = ref.watch(sidebarExtendedStateProvider);
     final _selectedIndex = useState(0);
     _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
 
@@ -82,7 +83,9 @@ class Home extends HookConsumerWidget {
               children: [
                 Container(
                   constraints: BoxConstraints(
-                    maxWidth: titleBarDragMaxWidth.toDouble(),
+                    maxWidth: extended == null
+                        ? titleBarWidth
+                        : (extended ? 256 : 80),
                   ),
                   color: Theme.of(context).navigationRailTheme.backgroundColor,
                   child: MoveWindow(),
@@ -111,6 +114,10 @@ class Home extends HookConsumerWidget {
     }, [backgroundColor]);
 
     return Scaffold(
+      bottomNavigationBar: SpotubeNavigationBar(
+        selectedIndex: _selectedIndex.value,
+        onSelectedIndexChanged: _onSelectedIndexChanged,
+      ),
       body: Column(
         children: [
           if (_selectedIndex.value != 3)
@@ -178,10 +185,6 @@ class Home extends HookConsumerWidget {
           ),
           // player itself
           Player(),
-          SpotubeNavigationBar(
-            selectedIndex: _selectedIndex.value,
-            onSelectedIndexChanged: _onSelectedIndexChanged,
-          ),
         ],
       ),
     );

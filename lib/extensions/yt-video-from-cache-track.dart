@@ -12,6 +12,7 @@ extension VideoFromCacheTrackExtension on Video {
       cacheTrack.uploadDate != null
           ? DateTime.tryParse(cacheTrack.uploadDate!)
           : null,
+      cacheTrack.uploadDate,
       cacheTrack.publishDate != null
           ? DateTime.tryParse(cacheTrack.publishDate!)
           : null,
@@ -69,6 +70,7 @@ extension VideoToJson on Video {
       map["author"],
       ChannelId(map["channelId"]),
       DateTime.tryParse(map["uploadDate"]),
+      map["uploadDate"],
       DateTime.tryParse(map["publishDate"]),
       map["description"],
       parseDuration(map["duration"]),

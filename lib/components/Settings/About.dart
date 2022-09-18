@@ -24,9 +24,10 @@ class About extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final info = usePackageInfo(
-        appName: "Spotube",
-        packageName: "oss.krtirtho.Spotube",
-        version: "2.3.0");
+      appName: "Spotube",
+      packageName: "oss.krtirtho.Spotube",
+      version: "2.4.1",
+    );
 
     return ListTile(
       leading: Icon(Icons.info_outline_rounded),

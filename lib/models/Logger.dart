@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:spotube/utils/platform.dart';
 
 final _loggerFactory = _SpotubeLogger();
 
@@ -18,8 +19,11 @@ class _SpotubeLogger extends Logger {
 
   @override
   void log(Level level, message, [error, StackTrace? stackTrace]) {
-    getApplicationDocumentsDirectory().then((dir) async {
-      final file = File(path.join(dir.path, ".spotube_logs"));
+    (kIsAndroid
+            ? getExternalStorageDirectory()
+            : getApplicationDocumentsDirectory())
+        .then((dir) async {
+      final file = File(path.join(dir!.path, ".spotube_logs"));
       if (level == Level.error) {
         await file.writeAsString("[${DateTime.now()}]\n$message\n$stackTrace",
             mode: FileMode.writeOnlyAppend);

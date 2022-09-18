@@ -2,22 +2,38 @@
 
 import 'dart:io';
 
-import 'package:dart_tags/dart_tags.dart';
 import 'package:flutter/widgets.dart' hide Image;
+import 'package:metadata_god/metadata_god.dart' hide Image;
 import 'package:path/path.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/Id3Tags.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+enum ImagePlaceholder {
+  albumArt,
+  artist,
+  collection,
+  online,
+}
+
 abstract class TypeConversionUtils {
-  static String image_X_UrlString(List<Image>? images, {int index = 0}) {
+  static String image_X_UrlString(
+    List<Image>? images, {
+    int index = 0,
+    required ImagePlaceholder placeholder,
+  }) {
+    final String placeholderUrl = {
+      ImagePlaceholder.albumArt: "assets/album-placeholder.png",
+      ImagePlaceholder.artist: "assets/user-placeholder.png",
+      ImagePlaceholder.collection: "assets/placeholder.png",
+      ImagePlaceholder.online:
+          "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png",
+    }[placeholder]!;
     return images != null && images.isNotEmpty
         ? images[0].url!
-        : "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png";
+        : placeholderUrl;
   }
 
   static String artists_X_String<T extends ArtistSimple>(List<T> artists) {
@@ -91,31 +107,24 @@ abstract class TypeConversionUtils {
   }
 
   static SpotubeTrack localTrack_X_Track(
-    List<Tag> metadatas,
-    File file,
-    Duration duration,
+    File file, {
+    Metadata? metadata,
     String? art,
-  ) {
-    final v2Tags =
-        metadatas.firstWhereOrNull((s) => s.version == "2.4.0")?.tags;
-    final v1Tags =
-        metadatas.firstWhereOrNull((s) => s.version != "2.4.0")?.tags;
-    final metadata = v2Tags != null
-        ? Id3Tags.fromJson(v2Tags)
-        : Id3Tags.fromId3v1Tags(Id3v1Tags.fromJson(v1Tags ?? {}));
+  }) {
     final track = SpotubeTrack(
       Video(
         VideoId("dQw4w9WgXcQ"),
         basenameWithoutExtension(file.path),
-        metadata.tpe2 ?? "",
+        metadata?.artist ?? "",
         ChannelId(
           "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
         ),
         DateTime.now(),
+        "",
         DateTime.now(),
         "",
-        duration,
-        ThumbnailSet(metadata.title ?? ""),
+        Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
+        ThumbnailSet(metadata?.title ?? ""),
         [],
         const Engagement(0, 0, 0),
         false,
@@ -124,27 +133,28 @@ abstract class TypeConversionUtils {
       [],
     );
     track.album = Album()
-      ..name = metadata.album ?? "Spotube"
+      ..name = metadata?.album ?? "Spotube"
       ..images = [if (art != null) Image()..url = art]
-      ..genres = [if (metadata.genre != null) metadata.genre!]
+      ..genres = [if (metadata?.genre != null) metadata!.genre!]
       ..artists = [
         Artist()
-          ..name = metadata.tpe2 ?? "Spotube"
-          ..id = metadata.tpe2 ?? "Spotube"
+          ..name = metadata?.albumArtist ?? "Spotube"
+          ..id = metadata?.albumArtist ?? "Spotube"
           ..type = "artist",
       ]
-      ..id = metadata.album;
+      ..id = metadata?.album
+      ..releaseDate = metadata?.year?.toString();
     track.artists = [
       Artist()
-        ..name = metadata.tpe2 ?? "Spotube"
-        ..id = metadata.tpe2 ?? "Spotube"
+        ..name = metadata?.artist ?? "Spotube"
+        ..id = metadata?.artist ?? "Spotube"
     ];
 
-    track.id = metadata.title ?? basenameWithoutExtension(file.path);
-    track.name = metadata.title ?? basenameWithoutExtension(file.path);
+    track.id = metadata?.title ?? basenameWithoutExtension(file.path);
+    track.name = metadata?.title ?? basenameWithoutExtension(file.path);
     track.type = "track";
     track.uri = file.path;
-    track.durationMs = duration.inMilliseconds;
+    track.durationMs = metadata?.durationMs?.toInt();
 
     return track;
   }

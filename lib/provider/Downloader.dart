@@ -1,22 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:dart_tags/dart_tags.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:metadata_god/metadata_god.dart';
 import 'package:queue/queue.dart';
 import 'package:path/path.dart' as path;
-import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Library/UserLocalTracks.dart';
-import 'package:spotube/models/Id3Tags.dart';
+import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/provider/YouTube.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Comment;
 
@@ -63,7 +59,7 @@ class Downloader with ChangeNotifier {
           RegExp(r'[/\\?%*:|"<>]'),
           "",
         );
-        final filename = '$cleanTitle.mp3';
+        final filename = '$cleanTitle.m4a';
         final file = File(path.join(downloadPath, filename));
         try {
           logger.v("[addToQueue] Download starting for ${file.path}");
@@ -97,54 +93,38 @@ class Downloader with ChangeNotifier {
             "[addToQueue] Download of ${file.path} is done successfully",
           );
 
-          // Tagging isn't supported in Android currently
-          if (kIsAndroid) return;
-
+          logger.v(
+            "[addToQueue] Writing metadata to ${file.path}",
+          );
           final imageUri = TypeConversionUtils.image_X_UrlString(
             track.album?.images ?? [],
+            placeholder: ImagePlaceholder.online,
           );
-          final response = await get(
-            Uri.parse(
-              imageUri,
-            ),
-          );
-          final picture = AttachedPicture.base64(
-            response.headers["Content-Type"] ?? "image/jpeg",
-            3,
-            track.name!,
-            base64Encode(response.bodyBytes),
-          );
-          // write id3 metadata
-          final tag = Id3Tags(
-            album: track.album?.name,
-            picture: picture,
-            title: track.name,
-            genre: "Spotube",
-            tcop: track.ytTrack.uploadDate?.year.toString(),
-            tdrc: track.ytTrack.uploadDate?.year.toString(),
-            tpe2: TypeConversionUtils.artists_X_String<Artist>(
-              track.artists ?? [],
-            ),
-            tsse: "",
-            comment: Comment(
-              "eng",
-              track.ytTrack.description,
-              track.ytTrack.title,
-            ),
-          );
+          final response = await get(Uri.parse(imageUri));
 
-          logger.v("[addToQueue] Writing metadata to ${file.path}");
-
-          final taggedMp3 = await tagProcessor.putTagsToByteArray(
-            file.readAsBytes(),
-            [
-              Tag()
-                ..type = "ID3"
-                ..version = "2.4.0"
-                ..tags = tag.toJson()
-            ],
+          await MetadataGod.writeMetadata(
+            file,
+            Metadata(
+              title: track.name,
+              artist: track.artists?.map((a) => a.name).join(", "),
+              album: track.album?.name,
+              albumArtist: track.artists?.map((a) => a.name).join(", "),
+              year: track.album?.releaseDate != null
+                  ? int.tryParse(track.album!.releaseDate!)
+                  : null,
+              trackNumber: track.trackNumber,
+              discNumber: track.discNumber,
+              durationMs: track.durationMs?.toDouble(),
+              fileSize: file.lengthSync(),
+              trackTotal: track.album?.tracks?.length,
+              picture: response.headers['content-type'] != null
+                  ? Image(
+                      data: response.bodyBytes,
+                      mimeType: response.headers['content-type']!,
+                    )
+                  : null,
+            ),
           );
-          await file.writeAsBytes(taggedMp3);
           logger.v(
             "[addToQueue] Writing metadata to ${file.path} is successful",
           );

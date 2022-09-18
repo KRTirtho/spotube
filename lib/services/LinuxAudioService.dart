@@ -217,7 +217,7 @@ class _MprisMediaPlayer2 extends DBusObject {
 }
 
 class _MprisMediaPlayer2Player extends DBusObject {
-  final Playback playback;
+  Playback playback;
 
   /// Creates a new object to expose on [path].
   _MprisMediaPlayer2Player({
@@ -275,7 +275,9 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Sets property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> setShuffle(bool value) async {
-    playback.toggleShuffle();
+    playback.setPlaybackMode(
+      value ? PlaybackMode.shuffle : PlaybackMode.normal,
+    );
     return DBusMethodSuccessResponse();
   }
 
@@ -298,7 +300,9 @@ class _MprisMediaPlayer2Player extends DBusObject {
           "mpris:length": DBusInt32(playback.currentDuration.inMicroseconds),
           "mpris:artUrl": DBusString(
             TypeConversionUtils.image_X_UrlString(
-                playback.track?.album?.images),
+              playback.track?.album?.images,
+              placeholder: ImagePlaceholder.albumArt,
+            ),
           ),
           "xesam:album": DBusString(playback.track!.album!.name!),
           "xesam:artist": DBusArray.string(
@@ -441,6 +445,30 @@ class _MprisMediaPlayer2Player extends DBusObject {
   Future<void> emitSeeked(int Position) async {
     await emitSignal(
         'org.mpris.MediaPlayer2.Player', 'Seeked', [DBusInt64(Position)]);
+  }
+
+  Future<void> updateProperties(Playback playback) async {
+    this.playback = playback;
+    return emitPropertiesChanged(
+      "org.mpris.MediaPlayer2.Player",
+      changedProperties: {
+        "PlaybackStatus": (await getPlaybackStatus()).returnValues.first,
+        "LoopStatus": (await getLoopStatus()).returnValues.first,
+        "Rate": (await getRate()).returnValues.first,
+        "Shuffle": (await getShuffle()).returnValues.first,
+        "Metadata": (await getMetadata()).returnValues.first,
+        "Volume": (await getVolume()).returnValues.first,
+        "Position": (await getPosition()).returnValues.first,
+        "MinimumRate": (await getMinimumRate()).returnValues.first,
+        "MaximumRate": (await getMaximumRate()).returnValues.first,
+        "CanGoNext": (await getCanGoNext()).returnValues.first,
+        "CanGoPrevious": (await getCanGoPrevious()).returnValues.first,
+        "CanPlay": (await getCanPlay()).returnValues.first,
+        "CanPause": (await getCanPause()).returnValues.first,
+        "CanSeek": (await getCanSeek()).returnValues.first,
+        "CanControl": (await getCanControl()).returnValues.first,
+      },
+    );
   }
 
   @override

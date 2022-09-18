@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -53,11 +54,12 @@ class UserDownloads extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
+                    child: UniversalImage(
                       height: 40,
                       width: 40,
-                      imageUrl: TypeConversionUtils.image_X_UrlString(
+                      path: TypeConversionUtils.image_X_UrlString(
                         track.album?.images,
+                        placeholder: ImagePlaceholder.albumArt,
                       ),
                     ),
                   ),

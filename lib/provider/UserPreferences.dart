@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +12,12 @@ import 'package:collection/collection.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:path/path.dart' as path;
+
+enum LayoutMode {
+  compact,
+  extended,
+  adaptive,
+}
 
 class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
@@ -30,11 +35,14 @@ class UserPreferences extends PersistedChangeNotifier {
 
   String downloadLocation;
 
+  LayoutMode layoutMode;
+
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
     required this.themeMode,
     required this.ytSearchFormat,
+    required this.layoutMode,
     this.saveTrackLyrics = false,
     this.accentColorScheme = Colors.green,
     this.backgroundColorScheme = Colors.grey,
@@ -126,6 +134,12 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setLayoutMode(LayoutMode mode) {
+    layoutMode = mode;
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
     return getDownloadsDirectory().then((dir) {
@@ -158,6 +172,11 @@ class UserPreferences extends PersistedChangeNotifier {
     skipSponsorSegments = map["skipSponsorSegments"] ?? skipSponsorSegments;
     downloadLocation =
         map["downloadLocation"] ?? await _getDefaultDownloadDirectory();
+
+    layoutMode = LayoutMode.values.firstWhere(
+      (mode) => mode.name == map["layoutMode"],
+      orElse: () => kIsDesktop ? LayoutMode.extended : LayoutMode.compact,
+    );
   }
 
   @override
@@ -175,6 +194,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "audioQuality": audioQuality.index,
       "skipSponsorSegments": skipSponsorSegments,
       "downloadLocation": downloadLocation,
+      "layoutMode": layoutMode.name,
     };
   }
 }
@@ -185,5 +205,6 @@ final userPreferencesProvider = ChangeNotifierProvider(
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,
     ytSearchFormat: "\$MAIN_ARTIST - \$TITLE \$FEATURED_ARTISTS",
+    layoutMode: kIsMobile ? LayoutMode.compact : LayoutMode.adaptive,
   ),
 );

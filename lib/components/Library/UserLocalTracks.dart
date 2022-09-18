@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:dart_tags/dart_tags.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
-import 'package:mp3_info/mp3_info.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
@@ -18,14 +15,12 @@ import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:id3/id3.dart';
-
-final tagProcessor = TagProcessor();
 
 const supportedAudioTypes = [
   "audio/webm",
   "audio/ogg",
   "audio/mpeg",
+  "audio/mp4",
   "audio/opus",
   "audio/wav",
   "audio/aac",
@@ -40,9 +35,11 @@ const imgMimeToExt = {
 
 final localTracksProvider = FutureProvider<List<Track>>((ref) async {
   try {
-    final downloadDir = Directory(
-      ref.watch(userPreferencesProvider.select((s) => s.downloadLocation)),
+    final downloadLocation = ref.watch(
+      userPreferencesProvider.select((s) => s.downloadLocation),
     );
+    if (downloadLocation.isEmpty) return [];
+    final downloadDir = Directory(downloadLocation);
     if (!await downloadDir.exists()) {
       await downloadDir.create(recursive: true);
       return [];
@@ -56,70 +53,39 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
       }).map(
         (f) async {
           try {
-            final bytes = f.readAsBytes();
-            final mp3Instance = MP3Instance(await bytes);
+            final metadata = await MetadataGod.getMetadata(f);
 
-            bool isParsed = false;
-            try {
-              isParsed = mp3Instance.parseTagsSync();
-            } catch (e, stack) {
-              getLogger(MP3Instance).e("[parseTagsSync]", e, stack);
-            }
-
-            final imageFile = isParsed
-                ? File(join(
-                    (await getTemporaryDirectory()).path,
-                    "spotube",
-                    basenameWithoutExtension(f.path) +
-                        imgMimeToExt[mp3Instance.metaTags["APIC"]?["mime"] ??
-                            "image/jpeg"]!,
-                  ))
-                : null;
-            if (imageFile != null &&
-                !await imageFile.exists() &&
-                mp3Instance.metaTags["APIC"]?["base64"] != null) {
+            final imageFile = File(join(
+              (await getTemporaryDirectory()).path,
+              "spotube",
+              basenameWithoutExtension(f.path) +
+                  imgMimeToExt[metadata?.picture?.mimeType ?? "image/jpeg"]!,
+            ));
+            if (!await imageFile.exists() && metadata?.picture != null) {
               await imageFile.create(recursive: true);
               await imageFile.writeAsBytes(
-                base64Decode(
-                  mp3Instance.metaTags["APIC"]["base64"],
-                ),
+                metadata?.picture?.data ?? [],
                 mode: FileMode.writeOnly,
               );
             }
-            Duration duration;
-            try {
-              duration = MP3Processor.fromBytes(await bytes).duration;
-            } catch (e, stack) {
-              getLogger(MP3Processor).e("[Parsing Mp3]", e, stack);
-              duration = Duration.zero;
-            }
 
-            final metadata = await tagProcessor.getTagsFromByteArray(bytes);
-            return {
-              "metadata": metadata,
-              "file": f,
-              "art": imageFile?.path,
-              "duration": duration,
-            };
+            return {"metadata": metadata, "file": f, "art": imageFile.path};
           } catch (e, stack) {
             getLogger(FutureProvider).e("[Fetching metadata]", e, stack);
-            return {
-              "metadata": <Tag>[],
-              "file": f,
-              "duration": Duration.zero,
-            };
+            return {};
           }
         },
       ),
-    ));
+    ))
+        .where((e) => e.isNotEmpty)
+        .toList();
 
     final tracks = filesWithMetadata
         .map(
           (fileWithMetadata) => TypeConversionUtils.localTrack_X_Track(
-            fileWithMetadata["metadata"] as List<Tag>,
-            fileWithMetadata["file"] as File,
-            fileWithMetadata["duration"] as Duration,
-            fileWithMetadata["art"] as String?,
+            fileWithMetadata["file"],
+            metadata: fileWithMetadata["metadata"],
+            art: fileWithMetadata["art"],
           ),
         )
         .toList();
@@ -144,7 +110,10 @@ class UserLocalTracks extends HookConsumerWidget {
           tracks: tracks,
           id: "local",
           name: "Local Tracks",
-          thumbnail: TypeConversionUtils.image_X_UrlString(null),
+          thumbnail: TypeConversionUtils.image_X_UrlString(
+            null,
+            placeholder: ImagePlaceholder.collection,
+          ),
           isLocal: true,
         ),
         tracks.indexWhere((s) => s.id == currentTrack?.id),
@@ -217,17 +186,11 @@ class UserLocalTracks extends HookConsumerWidget {
                         : "assets/album-placeholder.png",
                     isLocal: true,
                     onTrackPlayButtonPressed: (currentTrack) {
-                      if (tracks.isNotEmpty) {
-                        if (!isPlaylistPlaying) {
-                          playLocalTracks(
-                            playback,
-                            tracks,
-                            currentTrack: track,
-                          );
-                        } else {
-                          playback.stop();
-                        }
-                      }
+                      return playLocalTracks(
+                        playback,
+                        tracks,
+                        currentTrack: track,
+                      );
                     },
                   );
                 },

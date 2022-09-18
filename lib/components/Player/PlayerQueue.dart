@@ -113,6 +113,7 @@ class PlayerQueue extends HookConsumerWidget {
                           duration: duration,
                           thumbnailUrl: TypeConversionUtils.image_X_UrlString(
                             track.value.album?.images,
+                            placeholder: ImagePlaceholder.albumArt,
                           ),
                           isActive: playback.track?.id == track.value.id,
                           onTrackPlayButtonPressed: (currentTrack) async {

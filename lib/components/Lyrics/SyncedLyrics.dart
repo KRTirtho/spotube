@@ -112,6 +112,7 @@ class SyncedLyrics extends HookConsumerWidget {
       () => TypeConversionUtils.image_X_UrlString(
         playback.track?.album?.images,
         index: (playback.track?.album?.images?.length ?? 1) - 1,
+        placeholder: ImagePlaceholder.albumArt,
       ),
       [playback.track?.album?.images],
     );
@@ -221,22 +222,23 @@ class SyncedLyrics extends HookConsumerWidget {
                                       : Center(
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: AutoSizeText(
-                                              lyricSlice.text,
-                                              maxLines: 2,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4
-                                                  ?.copyWith(
-                                                    color: isActive
-                                                        ? Colors.white
-                                                        : palette.bodyTextColor,
-                                                    // indicating the active state of that lyric slice
-                                                    fontWeight: isActive
-                                                        ? FontWeight.bold
-                                                        : null,
-                                                  ),
-                                              textAlign: TextAlign.center,
+                                            child: AnimatedDefaultTextStyle(
+                                              duration: const Duration(
+                                                  milliseconds: 250),
+                                              style: TextStyle(
+                                                color: isActive
+                                                    ? Colors.white
+                                                    : palette.bodyTextColor,
+                                                fontWeight: isActive
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                                fontSize: isActive ? 30 : 26,
+                                              ),
+                                              child: Text(
+                                                lyricSlice.text,
+                                                maxLines: 2,
+                                                textAlign: TextAlign.center,
+                                              ),
                                             ),
                                           ),
                                         ),

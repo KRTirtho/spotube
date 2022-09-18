@@ -23,7 +23,10 @@ class PlaylistCard extends HookConsumerWidget {
     return PlaybuttonCard(
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       title: playlist.name!,
-      imageUrl: TypeConversionUtils.image_X_UrlString(playlist.images),
+      imageUrl: TypeConversionUtils.image_X_UrlString(
+        playlist.images,
+        placeholder: ImagePlaceholder.collection,
+      ),
       isPlaying: isPlaylistPlaying && playback.isPlaying,
       isLoading: playback.status == PlaybackStatus.loading && isPlaylistPlaying,
       onTap: () {
@@ -56,7 +59,10 @@ class PlaylistCard extends HookConsumerWidget {
             tracks: tracks,
             id: playlist.id!,
             name: playlist.name!,
-            thumbnail: TypeConversionUtils.image_X_UrlString(playlist.images),
+            thumbnail: TypeConversionUtils.image_X_UrlString(
+              playlist.images,
+              placeholder: ImagePlaceholder.collection,
+            ),
           ),
         );
       },

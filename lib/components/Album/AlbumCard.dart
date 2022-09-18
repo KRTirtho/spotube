@@ -21,7 +21,10 @@ class AlbumCard extends HookConsumerWidget {
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
     return PlaybuttonCard(
-      imageUrl: TypeConversionUtils.image_X_UrlString(album.images),
+      imageUrl: TypeConversionUtils.image_X_UrlString(
+        album.images,
+        placeholder: ImagePlaceholder.collection,
+      ),
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       isPlaying: isPlaylistPlaying && playback.isPlaying,
       isLoading: playback.status == PlaybackStatus.loading &&

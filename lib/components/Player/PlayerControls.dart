@@ -31,25 +31,26 @@ class PlayerControls extends HookConsumerWidget {
         child: Column(
           children: [
             StreamBuilder<Duration>(
-                stream: playback.player.onPositionChanged,
-                builder: (context, snapshot) {
-                  final totalMinutes = PrimitiveUtils.zeroPadNumStr(
-                      duration.inMinutes.remainder(60));
-                  final totalSeconds = PrimitiveUtils.zeroPadNumStr(
-                      duration.inSeconds.remainder(60));
-                  final currentMinutes = snapshot.hasData
-                      ? PrimitiveUtils.zeroPadNumStr(
-                          snapshot.data!.inMinutes.remainder(60))
-                      : "00";
-                  final currentSeconds = snapshot.hasData
-                      ? PrimitiveUtils.zeroPadNumStr(
-                          snapshot.data!.inSeconds.remainder(60))
-                      : "00";
+              stream: playback.player.onPositionChanged,
+              builder: (context, snapshot) {
+                final totalMinutes = PrimitiveUtils.zeroPadNumStr(
+                    duration.inMinutes.remainder(60));
+                final totalSeconds = PrimitiveUtils.zeroPadNumStr(
+                    duration.inSeconds.remainder(60));
+                final currentMinutes = snapshot.hasData
+                    ? PrimitiveUtils.zeroPadNumStr(
+                        snapshot.data!.inMinutes.remainder(60))
+                    : "00";
+                final currentSeconds = snapshot.hasData
+                    ? PrimitiveUtils.zeroPadNumStr(
+                        snapshot.data!.inSeconds.remainder(60))
+                    : "00";
 
-                  final sliderMax = duration.inSeconds;
-                  final sliderValue = snapshot.data?.inSeconds ?? 0;
+                final sliderMax = duration.inSeconds;
+                final sliderValue = snapshot.data?.inSeconds ?? 0;
 
-                  return HookBuilder(builder: (context) {
+                return HookBuilder(
+                  builder: (context) {
                     final progressStatic =
                         (sliderMax == 0 || sliderValue > sliderMax)
                             ? 0
@@ -84,7 +85,9 @@ class PlayerControls extends HookConsumerWidget {
                           activeColor: iconColor,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -97,26 +100,25 @@ class PlayerControls extends HookConsumerWidget {
                         ),
                       ],
                     );
-                  });
-                }),
+                  },
+                );
+              },
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
-                    icon: const Icon(Icons.shuffle_rounded),
-                    color: playback.isShuffled
-                        ? Theme.of(context).primaryColor
-                        : iconColor,
-                    onPressed: () {
-                      if (playback.track == null || playback.playlist == null) {
-                        return;
-                      }
-                      try {
-                        playback.toggleShuffle();
-                      } catch (e, stack) {
-                        logger.e("onShuffle", e, stack);
-                      }
-                    }),
+                  icon: Icon(
+                    playback.isLoop
+                        ? Icons.repeat_one_rounded
+                        : playback.isShuffled
+                            ? Icons.shuffle_rounded
+                            : Icons.repeat_rounded,
+                  ),
+                  onPressed: playback.track == null || playback.playlist == null
+                      ? null
+                      : playback.cyclePlaybackMode,
+                ),
                 IconButton(
                     icon: const Icon(Icons.skip_previous_rounded),
                     color: iconColor,
@@ -125,7 +127,11 @@ class PlayerControls extends HookConsumerWidget {
                     }),
                 IconButton(
                   icon: playback.status == PlaybackStatus.loading
-                      ? const CircularProgressIndicator()
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(),
+                        )
                       : Icon(
                           playback.isPlaying
                               ? Icons.pause_rounded
@@ -154,6 +160,7 @@ class PlayerControls extends HookConsumerWidget {
                 )
               ],
             ),
+            const SizedBox(height: 5)
           ],
         ));
   }
