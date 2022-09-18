@@ -37,7 +37,7 @@ dependencies:
   audio_service: ^0.18.4
   hookified_infinite_scroll_pagination: ^0.1.0
   skeleton_text: ^3.0.0
-  hive: ^2.2.2
+  hive: ^2.2.3
   hive_flutter: ^1.1.0
   dbus: ^0.7.3
   audioplayers:
