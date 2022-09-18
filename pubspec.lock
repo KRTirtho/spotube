@@ -119,7 +119,7 @@ packages:
       name: audio_session
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.9"
+    version: "0.1.10"
   audioplayers:
     dependency: "direct main"
     description:

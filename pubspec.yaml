@@ -46,7 +46,7 @@ dependencies:
       ref: 3ee12cd0361c0fc2f3d0303c504732d12fa8e49a
       path: packages/audioplayers/
   introduction_screen: ^3.0.2
-  audio_session: ^0.1.9
+  audio_session: ^0.1.10
   # This is temporary until the win32v3 update PR is merged and released
   file_picker:
     git:
