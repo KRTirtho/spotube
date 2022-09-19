@@ -429,6 +429,10 @@ class Playback extends PersistedChangeNotifier {
 
                 final bool hasNoLiveInTitle =
                     !PrimitiveUtils.containsTextInBracket(ytTitle, "live");
+                final bool hasCloseDuration =
+                    (track.duration!.inSeconds - video.duration!.inSeconds)
+                            .abs() <=
+                        10; //Duration matching threshold
 
                 int rate = 0;
                 for (final el in [
@@ -438,12 +442,14 @@ class Playback extends PersistedChangeNotifier {
                       SpotubeTrackMatchAlgorithm.authenticPopular)
                     authorIsArtist,
                   hasNoLiveInTitle,
+                  hasCloseDuration,
                   !video.isLive,
                 ]) {
                   if (el) rate++;
                 }
                 // can't let pass any non title matching track
                 if (!hasTitle) rate = rate - 2;
+
                 return {
                   "video": video,
                   "points": rate,
