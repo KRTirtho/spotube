@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart' hide Image;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:metadata_god/metadata_god.dart';
@@ -42,6 +42,7 @@ class Downloader with ChangeNotifier {
   Playback get _playback => ref.read(playbackProvider);
 
   void addToQueue(Track baseTrack) async {
+    if (kIsWeb) return;
     if (inQueue.any((t) => t.id == baseTrack.id!)) return;
     inQueue.add(baseTrack);
     currentlyRunning++;
@@ -103,7 +104,7 @@ class Downloader with ChangeNotifier {
           final response = await get(Uri.parse(imageUri));
 
           await MetadataGod.writeMetadata(
-            file,
+            file.path,
             Metadata(
               title: track.name,
               artist: track.artists?.map((a) => a.name).join(", "),

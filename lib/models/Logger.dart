@@ -19,16 +19,18 @@ class _SpotubeLogger extends Logger {
 
   @override
   void log(Level level, message, [error, StackTrace? stackTrace]) {
-    (kIsAndroid
-            ? getExternalStorageDirectory()
-            : getApplicationDocumentsDirectory())
-        .then((dir) async {
-      final file = File(path.join(dir!.path, ".spotube_logs"));
-      if (level == Level.error) {
-        await file.writeAsString("[${DateTime.now()}]\n$message\n$stackTrace",
-            mode: FileMode.writeOnlyAppend);
-      }
-    });
+    if (!kIsWeb) {
+      (kIsAndroid
+              ? getExternalStorageDirectory()
+              : getApplicationDocumentsDirectory())
+          .then((dir) async {
+        final file = File(path.join(dir!.path, ".spotube_logs"));
+        if (level == Level.error) {
+          await file.writeAsString("[${DateTime.now()}]\n$message\n$stackTrace",
+              mode: FileMode.writeOnlyAppend);
+        }
+      });
+    }
     super.log(level, "[$owner] $message", error, stackTrace);
   }
 }

@@ -47,21 +47,13 @@ dependencies:
       path: packages/audioplayers/
   introduction_screen: ^3.0.2
   audio_session: ^0.1.10
-  # This is temporary until the win32v3 update PR is merged and released
-  file_picker:
-    git:
-      url: https://github.com/KRTirtho/flutter_file_picker.git
+  file_picker: ^5.2.0
   popover: ^0.2.6+3
   queue: ^3.1.0+1
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   mime: ^1.0.2
-  metadata_god: ^0.1.1
-
-# Temporary before [package_info_plus_windows] is updated to support 
-# win32v3
-dependency_overrides:
-  win32: 3.0.0
+  metadata_god: ^0.2.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
@@ -35,6 +36,7 @@ const imgMimeToExt = {
 
 final localTracksProvider = FutureProvider<List<Track>>((ref) async {
   try {
+    if (kIsWeb) return [];
     final downloadLocation = ref.watch(
       userPreferencesProvider.select((s) => s.downloadLocation),
     );
@@ -53,7 +55,7 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
       }).map(
         (f) async {
           try {
-            final metadata = await MetadataGod.getMetadata(f);
+            final metadata = await MetadataGod.getMetadata(f.path);
 
             final imageFile = File(join(
               (await getTemporaryDirectory()).path,
@@ -203,6 +205,5 @@ class UserLocalTracks extends HookConsumerWidget {
         )
       ],
     );
-    ;
   }
 }

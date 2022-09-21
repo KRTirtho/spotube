@@ -54,7 +54,7 @@ class UniversalImage extends HookWidget {
         placeholder: placeholder,
         cacheKey: path,
       );
-    } else if (Uri.tryParse(path) != null) {
+    } else if (Uri.tryParse(path) != null && !path.startsWith("assets")) {
       return Image.file(
         File(path),
         width: width,
@@ -74,7 +74,28 @@ class UniversalImage extends HookWidget {
               );
         },
       );
+    } else if (path.startsWith("assets")) {
+      return Image.asset(
+        path,
+        width: width,
+        height: height,
+        cacheHeight: height?.toInt(),
+        cacheWidth: width?.toInt(),
+        scale: scale,
+        errorBuilder: (context, error, stackTrace) {
+          return placeholder?.call(context, error.toString()) ??
+              Image.asset(
+                "assets/placeholder.png",
+                width: width,
+                height: height,
+                cacheHeight: height?.toInt(),
+                cacheWidth: width?.toInt(),
+                scale: scale,
+              );
+        },
+      );
     }
+
     return Image.memory(
       base64Decode(path),
       width: width,

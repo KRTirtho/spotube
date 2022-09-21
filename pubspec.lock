@@ -426,12 +426,10 @@ packages:
   file_picker:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: f9133f6d5dbf33191fc9b58655aebfd15445045a
-      url: "https://github.com/KRTirtho/flutter_file_picker.git"
-    source: git
-    version: "5.0.1"
+      name: file_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.2.0"
   fixnum:
     dependency: transitive
     description:
@@ -726,7 +724,7 @@ packages:
       name: metadata_god
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "0.2.0"
   mime:
     dependency: "direct main"
     description:
@@ -796,7 +794,7 @@ packages:
       name: package_info_plus_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   palette_generator:
     dependency: "direct main"
     description:
@@ -1279,7 +1277,7 @@ packages:
     source: hosted
     version: "2.2.0"
   win32:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: win32
       url: "https://pub.dartlang.org"
