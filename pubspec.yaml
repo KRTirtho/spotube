@@ -69,7 +69,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_launcher_icons: ^0.10.0
   hive_generator: ^1.1.3
-  build_runner: ^2.1.11
+  build_runner: ^2.2.1
   flutter_distributor: ^0.0.2
 
 flutter:
