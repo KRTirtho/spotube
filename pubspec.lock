@@ -98,7 +98,7 @@ packages:
       name: audio_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.18.4"
+    version: "0.18.7"
   audio_service_platform_interface:
     dependency: transitive
     description:
@@ -366,7 +366,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   dart_style:
     dependency: transitive
     description:
