@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.5
   cached_network_image: ^3.2.0
   html: ^0.15.0
   http: ^0.13.4
