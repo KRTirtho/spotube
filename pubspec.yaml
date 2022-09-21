@@ -34,7 +34,7 @@ dependencies:
   scroll_to_index: ^2.1.1
   package_info_plus: ^1.4.3
   version: ^2.0.0
-  audio_service: ^0.18.4
+  audio_service: ^0.18.7
   hookified_infinite_scroll_pagination: ^0.1.0
   skeleton_text: ^3.0.0
   hive: ^2.2.3
