@@ -556,7 +556,7 @@ packages:
       name: go_router
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "5.0.1"
   graphs:
     dependency: transitive
     description:
