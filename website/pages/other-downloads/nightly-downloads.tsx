@@ -11,7 +11,7 @@ import {
   Tr,
   HStack,
 } from "@chakra-ui/react";
-import { GridMultiplexAd } from "components/special";
+// import { GridMultiplexAd } from "components/special";
 import NavLink from "next/link";
 
 const baseURL =
@@ -77,7 +77,7 @@ function NightlyDownloads() {
           </chakra.section>
         </VStack>
         <chakra.div w="full">
-          <GridMultiplexAd slot="3192619797" />
+          {/* <GridMultiplexAd slot="3192619797" /> */}
         </chakra.div>
       </VStack>
     </>

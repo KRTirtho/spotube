@@ -1,7 +1,6 @@
 import { Heading, VStack, chakra, HStack, Text } from "@chakra-ui/react";
 import DownloadButton from "components/DownloadButton";
 import Image from "next/image";
-import { DisplayAd } from "../components/special";
 
 const Root = () => {
   return (
@@ -35,7 +34,7 @@ const Root = () => {
             <DownloadButton />
           </VStack>
         </chakra.section>
-        <DisplayAd slot="9501208974" />
+        {/* <DisplayAd slot="9501208974" /> */}
         <chakra.div bgGradient="linear-gradient(180deg, rgba(249,207,143,1) 0%, rgba(250,250,250,1) 45%)">
           <VStack
             bgImage="url(/headline-1.png)"
@@ -108,7 +107,7 @@ const Root = () => {
             </Text>
           </chakra.div>
         </VStack>
-        <DisplayAd slot="9501208974" />
+        {/* <DisplayAd slot="9501208974" /> */}
         <HStack wrap="wrap-reverse" justify="center" px="8" align="center">
           <chakra.div maxW="400px">
             <Heading>Open Source, privacy respecting & No ads</Heading>

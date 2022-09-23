@@ -12,7 +12,7 @@ import {
 import { CodeBlock } from "components/CodeBlock";
 import { FcLinux } from "react-icons/fc";
 import { BsWindows } from "react-icons/bs";
-import { DisplayAd } from "components/special";
+// import { DisplayAd } from "components/special";
 
 export default function PackageManagerPage() {
   return (
@@ -60,7 +60,7 @@ export default function PackageManagerPage() {
           <br />$ yay -Sy spotube-bin
         </CodeBlock>
         <Box w="full">
-          <DisplayAd slot="9501208974" />
+          {/* <DisplayAd slot="9501208974" /> */}
         </Box>
         <HStack align="center" pt="5">
           <Heading size="lg">Windows</Heading>
@@ -92,7 +92,7 @@ export default function PackageManagerPage() {
         </Text>
         <CodeBlock>$ winget install --id KRTirtho.Spotube</CodeBlock>
         <Box w="full">
-          <DisplayAd slot="9501208974" />
+          {/* <DisplayAd slot="9501208974" /> */}
         </Box>
         <Heading pt="5">Install from App Stores</Heading>
         <Heading size="md">Android (F-Droid)</Heading>

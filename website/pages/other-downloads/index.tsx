@@ -7,7 +7,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import NavLink from "next/link";
-import { GridMultiplexAd } from "components/special";
+// import { GridMultiplexAd } from "components/special";
 import { useRouter } from "next/router";
 
 function OtherDownloads() {
@@ -50,7 +50,7 @@ function OtherDownloads() {
           </chakra.ul>
         </VStack>
       </Flex>
-      <GridMultiplexAd slot="4575915852" />
+      {/* <GridMultiplexAd slot="4575915852" /> */}
     </>
   );
 }

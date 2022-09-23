@@ -15,7 +15,7 @@ import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
 import ReactMarkdown from "react-markdown";
 import { Platform } from "hooks/usePlatform";
 import gfm from "remark-gfm";
-import { DisplayAd, InFeedAd } from "components/special";
+// import { DisplayAd, InFeedAd } from "components/special";
 import { GetServerSideProps, NextPage } from "next";
 import { MarkdownComponentDefs } from "misc/MarkdownComponentDefs";
 import { octokit } from "configurations/ocotokit";
@@ -199,10 +199,10 @@ const StableDownloads: NextPage<Props> = ({ data }) => {
             md: "35%",
           }}
         >
-          <DisplayAd slot="1391349310" />
-          <DisplayAd slot="6452104301" />
-          <DisplayAd slot="1199777626" />
-          <DisplayAd slot="2001723409" />
+          {/* <DisplayAd slot="1391349310" /> */}
+          {/* <DisplayAd slot="6452104301" /> */}
+          {/* <DisplayAd slot="1199777626" /> */}
+          {/* <DisplayAd slot="2001723409" /> */}
         </chakra.div>
       </HStack>
     </VStack>

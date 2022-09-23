@@ -6,13 +6,13 @@ import {
   withDefaultColorScheme,
 } from "@chakra-ui/react";
 import Navbar from "components/Navbar";
+import { chakra } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import Head from "next/head";
-import Script from "next/script";
-import * as gtag from "configurations/gtag";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import AdDetector from "components/AdDetector";
+// import Script from "next/script";
+// import * as gtag from "configurations/gtag";
+// import AdDetector from "components/AdDetector";
 import Footer from "components/Footer";
 import NextNProgress from "nextjs-progressbar";
 
@@ -52,34 +52,34 @@ const customTheme = extendTheme(
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  useEffect(() => {
-    const handleRouteChange = (url: string) => {
-      gtag.pageview(url);
-    };
-    router.events.on("routeChangeComplete", handleRouteChange);
-    router.events.on("hashChangeComplete", handleRouteChange);
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-      router.events.off("hashChangeComplete", handleRouteChange);
-    };
-  }, [router.events]);
+  // useEffect(() => {
+  //   const handleRouteChange = (url: string) => {
+  //     gtag.pageview(url);
+  //   };
+  //   router.events.on("routeChangeComplete", handleRouteChange);
+  //   router.events.on("hashChangeComplete", handleRouteChange);
+  //   return () => {
+  //     router.events.off("routeChangeComplete", handleRouteChange);
+  //     router.events.off("hashChangeComplete", handleRouteChange);
+  //   };
+  // }, [router.events]);
 
   return (
     <>
-      <Script
+      {/* <Script
         async
         onError={(e) => {
           console.error("Script failed to load", e);
         }}
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
         crossOrigin="anonymous"
-      />
+      /> */}
       {/* Global Site Tag (gtag.js) - Google Analytics */}
-      <Script
+      {/* <Script
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}
-      />
-      <Script
+      /> */}
+      {/* <Script
         id="gtag-init"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
@@ -92,7 +92,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             });
           `,
         }}
-      />
+      /> */}
       <ChakraProvider theme={customTheme}>
         <Head>
           <link
@@ -115,12 +115,19 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel="manifest" href="/site.webmanifest" />
           <title>Spotube</title>
         </Head>
-        <AdDetector>
-          <NextNProgress color="#45cd74" />
-          <Navbar />
-          <Component {...pageProps} />
+        <NextNProgress color="#45cd74" />
+        <chakra.div
+          minH="100vh"
+          display="flex"
+          flexDir="column"
+          justifyContent="space-between"
+        >
+          <div>
+            <Navbar />
+            <Component {...pageProps} />
+          </div>
           <Footer />
-        </AdDetector>
+        </chakra.div>
       </ChakraProvider>
     </>
   );
