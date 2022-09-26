@@ -6,16 +6,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:spotube/utils/platform.dart';
 
-final _loggerFactory = _SpotubeLogger();
+final _loggerFactory = SpotubeLogger();
 
-_SpotubeLogger getLogger<T>(T owner) {
+SpotubeLogger getLogger<T>(T owner) {
   _loggerFactory.owner = owner is String ? owner : owner.toString();
   return _loggerFactory;
 }
 
-class _SpotubeLogger extends Logger {
+class SpotubeLogger extends Logger {
   String? owner;
-  _SpotubeLogger([this.owner]) : super(filter: _SpotubeLogFilter());
+  SpotubeLogger([this.owner]) : super(filter: _SpotubeLogFilter());
 
   @override
   void log(Level level, message, [error, StackTrace? stackTrace]) async {

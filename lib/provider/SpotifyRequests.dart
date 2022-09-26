@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/LyricsModels.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -106,14 +107,23 @@ final currentUserSavedTracksQuery = FutureProvider<List<Track>>((ref) {
 
 final playlistTracksQuery = FutureProvider.family<List<Track>, String>(
   (ref, id) {
-    final spotify = ref.watch(spotifyProvider);
-    return id != "user-liked-tracks"
-        ? spotify.playlists.getTracksByPlaylistId(id).all().then(
-              (value) => value.toList(),
-            )
-        : spotify.tracks.me.saved.all().then(
-              (tracks) => tracks.map((e) => e.track!).toList(),
-            );
+    try {
+      final spotify = ref.watch(spotifyProvider);
+      return id != "user-liked-tracks"
+          ? spotify.playlists.getTracksByPlaylistId(id).all().then(
+                (value) => value.toList(),
+              )
+          : spotify.tracks.me.saved.all().then(
+                (tracks) => tracks.map((e) => e.track!).toList(),
+              );
+    } catch (e, stack) {
+      getLogger("playlistTracksQuery").e(
+        "Fetching playlist tracks",
+        e,
+        stack,
+      );
+      return [];
+    }
   },
 );
 
