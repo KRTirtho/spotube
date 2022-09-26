@@ -142,6 +142,11 @@ class UserPreferences extends PersistedChangeNotifier {
 
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
+
+    if (kIsMacOS) {
+      return path.join((await getLibraryDirectory()).path, "Caches");
+    }
+
     return getDownloadsDirectory().then((dir) {
       return path.join(dir!.path, "Spotube");
     });
