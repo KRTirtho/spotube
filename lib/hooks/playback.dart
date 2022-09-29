@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 
@@ -27,27 +26,6 @@ Future<void> Function() usePreviousTrack(WidgetRef ref) {
       playback.seekBackward();
     } catch (e, stack) {
       logger.e("onPrevious", e, stack);
-    }
-  };
-}
-
-Future<void> Function([dynamic]) useTogglePlayPause(WidgetRef ref) {
-  return ([key]) async {
-    try {
-      final playback = ref.read(playbackProvider);
-      if (playback.track == null) {
-        return;
-      } else if (playback.track != null &&
-          playback.currentDuration == Duration.zero &&
-          await playback.player.getCurrentPosition() == Duration.zero) {
-        final track = Track.fromJson(playback.track!.toJson());
-        playback.track = null;
-        await playback.play(track);
-      } else {
-        await playback.togglePlayPause();
-      }
-    } catch (e, stack) {
-      logger.e("useTogglePlayPause", e, stack);
     }
   };
 }

@@ -7,6 +7,7 @@ import 'package:spotube/components/Player/PlayerTrackDetails.dart';
 import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
+import 'package:spotube/models/Intents.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
@@ -33,7 +34,6 @@ class PlayerOverlay extends HookConsumerWidget {
 
     final onNext = useNextTrack(ref);
     final onPrevious = usePreviousTrack(ref);
-    final _playOrPause = useTogglePlayPause(ref);
 
     if (!isHome && !isAllowedPage) return Container();
 
@@ -109,7 +109,10 @@ class PlayerOverlay extends HookConsumerWidget {
                                     : Icons.play_arrow_rounded,
                               ),
                               color: paletteColor.bodyTextColor,
-                              onPressed: _playOrPause,
+                              onPressed: Actions.handler<PlayPauseIntent>(
+                                context,
+                                PlayPauseIntent(ref),
+                              ),
                             );
                           },
                         ),

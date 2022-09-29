@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:audio_service/audio_service.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -11,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/entities/CacheTrack.dart';
 import 'package:spotube/models/GoRouteDeclarations.dart';
+import 'package:spotube/models/Intents.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/AudioPlayer.dart';
@@ -52,7 +54,6 @@ void main() async {
     Builder(
       builder: (context) {
         return ProviderScope(
-          child: const Spotube(),
           overrides: [
             playbackProvider.overrideWithProvider(
               ChangeNotifierProvider(
@@ -123,6 +124,7 @@ void main() async {
               ),
             )
           ],
+          child: const Spotube(),
         );
       },
     ),
@@ -205,6 +207,17 @@ class _SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         backgroundMaterialColor: backgroundMaterialColor,
       ),
       themeMode: themeMode,
+      shortcuts: {
+        ...WidgetsApp.defaultShortcuts,
+        const SingleActivator(LogicalKeyboardKey.space): PlayPauseIntent(ref),
+        const SingleActivator(LogicalKeyboardKey.comma, control: true):
+            OpenSettingsIntent(_router),
+      },
+      actions: {
+        ...WidgetsApp.defaultActions,
+        PlayPauseIntent: PlayPauseAction(),
+        OpenSettingsIntent: OpenSettingsAction(),
+      },
     );
   }
 }
