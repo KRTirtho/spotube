@@ -1,10 +1,14 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Home/Home.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/platform.dart';
 
 class PlayPauseIntent extends Intent {
   final WidgetRef ref;
@@ -40,16 +44,51 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
   }
 }
 
-class OpenSettingsIntent extends Intent {
+class NavigationIntent extends Intent {
   final GoRouter router;
-  const OpenSettingsIntent(this.router);
+  final String path;
+  const NavigationIntent(this.router, this.path);
 }
 
-class OpenSettingsAction extends Action<OpenSettingsIntent> {
+class NavigationAction extends Action<NavigationIntent> {
   @override
-  invoke(intent) async {
-    intent.router.push("/settings");
-    FocusManager.instance.primaryFocus?.unfocus();
+  invoke(intent) {
+    intent.router.go(intent.path);
+    return null;
+  }
+}
+
+enum HomeTabs {
+  browse,
+  search,
+  library,
+  lyrics,
+}
+
+class HomeTabIntent extends Intent {
+  final WidgetRef ref;
+  final HomeTabs tab;
+  const HomeTabIntent(this.ref, {required this.tab});
+}
+
+class HomeTabAction extends Action<HomeTabIntent> {
+  @override
+  invoke(intent) {
+    final notifier = intent.ref.read(selectedIndexState.notifier);
+    switch (intent.tab) {
+      case HomeTabs.browse:
+        notifier.state = 0;
+        break;
+      case HomeTabs.search:
+        notifier.state = 1;
+        break;
+      case HomeTabs.library:
+        notifier.state = 2;
+        break;
+      case HomeTabs.lyrics:
+        notifier.state = 3;
+        break;
+    }
     return null;
   }
 }
@@ -80,6 +119,20 @@ class SeekAction extends Action<SeekIntent> {
         seconds: intent.forward ? position + 5 : position - 5,
       ),
     );
+    return null;
+  }
+}
+
+class CloseAppIntent extends Intent {}
+
+class CloseAppAction extends Action<CloseAppIntent> {
+  @override
+  invoke(intent) {
+    if (kIsDesktop) {
+      appWindow.close();
+    } else {
+      SystemNavigator.pop();
+    }
     return null;
   }
 }

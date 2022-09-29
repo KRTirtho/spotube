@@ -211,12 +211,39 @@ class _SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         ...WidgetsApp.defaultShortcuts,
         const SingleActivator(LogicalKeyboardKey.space): PlayPauseIntent(ref),
         const SingleActivator(LogicalKeyboardKey.comma, control: true):
-            OpenSettingsIntent(_router),
+            NavigationIntent(_router, "/settings"),
+        const SingleActivator(
+          LogicalKeyboardKey.keyB,
+          control: true,
+          shift: true,
+        ): HomeTabIntent(ref, tab: HomeTabs.browse),
+        const SingleActivator(
+          LogicalKeyboardKey.keyS,
+          control: true,
+          shift: true,
+        ): HomeTabIntent(ref, tab: HomeTabs.search),
+        const SingleActivator(
+          LogicalKeyboardKey.keyL,
+          control: true,
+          shift: true,
+        ): HomeTabIntent(ref, tab: HomeTabs.library),
+        const SingleActivator(
+          LogicalKeyboardKey.keyY,
+          control: true,
+          shift: true,
+        ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
+        const SingleActivator(
+          LogicalKeyboardKey.keyW,
+          control: true,
+          shift: true,
+        ): CloseAppIntent(),
       },
       actions: {
         ...WidgetsApp.defaultActions,
         PlayPauseIntent: PlayPauseAction(),
-        OpenSettingsIntent: OpenSettingsAction(),
+        NavigationIntent: NavigationAction(),
+        HomeTabIntent: HomeTabAction(),
+        CloseAppIntent: CloseAppAction(),
       },
     );
   }

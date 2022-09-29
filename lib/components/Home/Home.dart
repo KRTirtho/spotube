@@ -37,6 +37,8 @@ List<String> spotifyScopes = [
   "playlist-read-collaborative"
 ];
 
+final selectedIndexState = StateProvider((ref) => 0);
+
 class Home extends HookConsumerWidget {
   Home({Key? key}) : super(key: key);
   final logger = getLogger(Home);
@@ -51,8 +53,9 @@ class Home extends HookConsumerWidget {
       xxl: 256.0,
     );
     final extended = ref.watch(sidebarExtendedStateProvider);
-    final _selectedIndex = useState(0);
-    _onSelectedIndexChanged(int index) => _selectedIndex.value = index;
+    final selectedIndex = ref.watch(selectedIndexState);
+    onSelectedIndexChanged(int index) =>
+        ref.read(selectedIndexState.notifier).state = index;
 
     final downloader = ref.watch(downloaderProvider);
     final isMounted = useIsMounted();
@@ -115,12 +118,12 @@ class Home extends HookConsumerWidget {
 
     return Scaffold(
       bottomNavigationBar: SpotubeNavigationBar(
-        selectedIndex: _selectedIndex.value,
-        onSelectedIndexChanged: _onSelectedIndexChanged,
+        selectedIndex: selectedIndex,
+        onSelectedIndexChanged: onSelectedIndexChanged,
       ),
       body: Column(
         children: [
-          if (_selectedIndex.value != 3)
+          if (selectedIndex != 3)
             kIsMobile
                 ? titleBarContents
                 : WindowTitleBarBox(child: titleBarContents),
@@ -128,11 +131,11 @@ class Home extends HookConsumerWidget {
             child: Row(
               children: [
                 Sidebar(
-                  selectedIndex: _selectedIndex.value,
-                  onSelectedIndexChanged: _onSelectedIndexChanged,
+                  selectedIndex: selectedIndex,
+                  onSelectedIndexChanged: onSelectedIndexChanged,
                 ),
                 // contents of the spotify
-                if (_selectedIndex.value == 0)
+                if (selectedIndex == 0)
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -177,9 +180,9 @@ class Home extends HookConsumerWidget {
                       }),
                     ),
                   ),
-                if (_selectedIndex.value == 1) const Search(),
-                if (_selectedIndex.value == 2) const UserLibrary(),
-                if (_selectedIndex.value == 3) const SyncedLyrics(),
+                if (selectedIndex == 1) const Search(),
+                if (selectedIndex == 2) const UserLibrary(),
+                if (selectedIndex == 3) const SyncedLyrics(),
               ],
             ),
           ),
