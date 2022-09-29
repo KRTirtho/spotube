@@ -143,6 +143,8 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [Linux](https://www.linux.org/) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
 - [AUR](https://aur.archlinux.org/) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users
 - [Flatpak](https://flatpak.org/) - Flatpak is a utility for software deployment and package management for Linux
+- [rentanadviser](https://www.rentanadviser.com/) - Generous Synced lyrics API provider service
+- [SponsorBlock](https://sponsor.ajay.app/) - SponsorBlock is an open-source crowdsourced browser extension and open API for skipping sponsor segments in YouTube videos.
 - [spotify (dart)](https://github.com/rinukkusu/spotify-dart) - A dart library for interfacing with the Spotify API
 - [audioplayers](https://github.com/bluefireteam/audioplayers) - A Flutter plugin to play multiple audio files simultaneously (Android/iOS)
 - [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - YoutubeExplode is a library that provides an interface to query metadata of YouTube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks
@@ -168,7 +170,20 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [dbus](https://github.com/canonical/dbus.dart) - Native Dart client library to use DBus
 - [introduction_screen](https://github.com/pyozer/introduction_screen) - Add easily to your app an introduction screen to provide informations to new users
 - [audio_session](https://github.com/ryanheise/audio_session) - Sets the iOS audio session category and Android audio attributes for your app, and manages your app's audio focus, mixing and ducking behaviour.
+- [file_picker](https://github.com/miguelpruivo/flutter_file_picker) - A Flutter plugin to let users pick a file from the file system, be it from a local storage or a remote one (e.g. Google Drive, Dropbox, iCloud, etc).
+- [popover](https://github.com/minikin/popover) - Popover for Flutter. A popover is a transient view that appears above other content onscreen when you tap a control or in an area. 
+- [queue](https://github.com/rknell/dart_queue) - A library to easily handle sequential queueing of futures in dart
+- [auto_size_text](https://github.com/leisim/auto_size_text) - Flutter widget that automatically resizes text to fit perfectly within its bounds.
+- [badges](https://github.com/yako-dev/flutter_badges) - A flutter package for creating badges.
+- [mime](https://github.com/dart-lang/mime) - Dart package for working with MIME type definitions and for processing streams of MIME multipart media types.
+- [metadata_god](https://github.com/KRTirtho/metadata_god) - Audio file Metadata reading and writing library for Flutter 
 
+# The Team
+
+- [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
+- [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
+- [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
+- [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
 # Social handlers
 
