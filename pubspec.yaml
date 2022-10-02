@@ -31,7 +31,7 @@ dependencies:
   logger: ^1.1.0
   permission_handler: ^10.0.2
   marquee: ^2.2.3
-  scroll_to_index: ^2.1.1
+  scroll_to_index: ^3.0.1
   package_info_plus: ^1.4.3
   version: ^3.0.2
   audio_service: ^0.18.7
