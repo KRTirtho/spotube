@@ -15,6 +15,7 @@ ThemeData darkTheme({
       )
     ],
     primaryColor: accentMaterialColor,
+    splashFactory: NoSplash.splashFactory,
     primarySwatch: accentMaterialColor,
     backgroundColor: backgroundMaterialColor[900],
     scaffoldBackgroundColor: backgroundMaterialColor[900],
@@ -56,7 +57,7 @@ ThemeData darkTheme({
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        onPrimary: accentMaterialColor[300],
+        foregroundColor: accentMaterialColor[300],
         textStyle: const TextStyle(
           fontWeight: FontWeight.bold,
         ),

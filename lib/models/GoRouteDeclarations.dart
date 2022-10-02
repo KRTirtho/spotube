@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
-import 'package:spotube/components/Artist/ArtistAlbumView.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Home/Home.dart';
 import 'package:spotube/components/Login/Login.dart';
@@ -47,19 +46,6 @@ GoRouter createGoRouter() => GoRouter(
           pageBuilder: (context, state) {
             assert(state.params["id"] != null);
             return SpotubePage(child: ArtistProfile(state.params["id"]!));
-          },
-        ),
-        GoRoute(
-          path: "/artist-album/:id",
-          pageBuilder: (context, state) {
-            assert(state.params["id"] != null);
-            assert(state.extra is String);
-            return SpotubePage(
-              child: ArtistAlbumView(
-                state.params["id"]!,
-                state.extra as String,
-              ),
-            );
           },
         ),
         GoRoute(

@@ -60,6 +60,10 @@ class Search extends HookConsumerWidget {
                             controller.value.text;
                       },
                     ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 7,
+                    ),
                     hintStyle: const TextStyle(height: 2),
                     hintText: "Search...",
                   ),
@@ -93,7 +97,9 @@ class Search extends HookConsumerWidget {
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 20),
+                          vertical: 8,
+                          horizontal: 20,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

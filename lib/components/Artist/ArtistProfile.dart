@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Album/AlbumCard.dart';
+import 'package:spotube/components/Artist/ArtistAlbumList.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerArtistProfile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -28,7 +27,6 @@ class ArtistProfile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     SpotifyApi spotify = ref.watch(spotifyProvider);
-    final scrollController = useScrollController();
     final parentScrollController = useScrollController();
     final textTheme = Theme.of(context).textTheme;
     final chipTextVariant = useBreakpointValue(
@@ -55,7 +53,7 @@ class ArtistProfile extends HookConsumerWidget {
     final isFollowingSnapshot =
         ref.watch(currentUserFollowsArtistQuery(artistId));
     final topTracksSnapshot = ref.watch(artistTopTracksQuery(artistId));
-    final albums = ref.watch(artistAlbumsQuery(artistId));
+
     final relatedArtists = ref.watch(artistRelatedArtistsQuery(artistId));
 
     return SafeArea(
@@ -263,46 +261,12 @@ class ArtistProfile extends HookConsumerWidget {
                         child: CircularProgressIndicator.adaptive()),
                   ),
                   const SizedBox(height: 50),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Albums",
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      TextButton(
-                        child: const Text("See All"),
-                        onPressed: () {
-                          GoRouter.of(context).push(
-                            "/artist-album/$artistId",
-                            extra: data.name ?? "KRTX",
-                          );
-                        },
-                      )
-                    ],
+                  Text(
+                    "Albums",
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                   const SizedBox(height: 10),
-                  albums.when(
-                    data: (albums) {
-                      return Scrollbar(
-                        controller: scrollController,
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: albums.items
-                                    ?.map((album) => AlbumCard(album))
-                                    .toList() ??
-                                [],
-                          ),
-                        ),
-                      );
-                    },
-                    error: (error, stackTrack) =>
-                        Text("Failed to get Artist albums $error"),
-                    loading: () => const CircularProgressIndicator.adaptive(),
-                  ),
+                  ArtistAlbumList(artistId),
                   const SizedBox(height: 20),
                   Text(
                     "Fans also likes",

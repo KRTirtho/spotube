@@ -80,9 +80,10 @@ ThemeData lightTheme({
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: backgroundMaterialColor[50],
     ),
+    splashFactory: NoSplash.splashFactory,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        onPrimary: accentMaterialColor[800],
+        foregroundColor: accentMaterialColor[800],
         textStyle: const TextStyle(
           fontWeight: FontWeight.bold,
         ),

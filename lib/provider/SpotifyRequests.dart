@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fl_query/fl_query.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/LyricsModels.dart';
@@ -11,29 +12,35 @@ import 'package:collection/collection.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
-final categoriesQuery = FutureProvider.family<Page<Category>, int>(
-  (ref, pageKey) {
-    final spotify = ref.watch(spotifyProvider);
-    final recommendationMarket = ref.watch(
-      userPreferencesProvider.select((s) => s.recommendationMarket),
-    );
-    return spotify.categories
+final categoriesQueryJob =
+    InfiniteQueryJob<Page<Category>, Map<String, dynamic>, int>(
+  queryKey: "categories-query",
+  initialParam: 0,
+  getNextPageParam: (lastPage, lastParam) => lastPage.nextOffset,
+  getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 16,
+  task: (queryKey, pageParam, data) async {
+    final SpotifyApi spotify = data["spotify"] as SpotifyApi;
+    final String recommendationMarket = data["recommendationMarket"];
+    final categories = await spotify.categories
         .list(country: recommendationMarket)
-        .getPage(15, pageKey);
+        .getPage(15, pageParam);
+
+    return categories;
   },
 );
 
-final categoryPlaylistsQuery =
-    FutureProvider.family<Page<PlaylistSimple>, String>(
-  (ref, value) {
-    final spotify = ref.watch(spotifyProvider);
-    final List data = value.split("/");
-    final id = data.first;
-    final pageKey = data.last;
+final categoryPlaylistsQueryJob =
+    InfiniteQueryJob.withVariableKey<Page<PlaylistSimple>, SpotifyApi, int>(
+  preQueryKey: "category-playlists",
+  initialParam: 0,
+  getNextPageParam: (lastPage, lastParam) => lastPage.nextOffset,
+  getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 6,
+  task: (queryKey, pageKey, spotify) {
+    final id = getVariable(queryKey);
     return (id != "user-featured-playlists"
             ? spotify.playlists.getByCategoryId(id)
             : spotify.playlists.featured)
-        .getPage(3, int.parse(pageKey));
+        .getPage(5, pageKey);
   },
 );
 
@@ -55,6 +62,18 @@ final currentUserFollowingArtistsQuery =
     FutureProvider.family<CursorPage<Artist>, String>(
   (ref, pageKey) {
     final spotify = ref.watch(spotifyProvider);
+    return spotify.me.following(FollowingType.artist).getPage(15, pageKey);
+  },
+);
+
+final currentUserFollowingArtistsQueryJob =
+    InfiniteQueryJob<CursorPage<Artist>, SpotifyApi, String>(
+  queryKey: "user-following-artists",
+  initialParam: "",
+  getNextPageParam: (lastPage, lastParam) => lastPage.after,
+  getPreviousPageParam: (lastPage, lastParam) =>
+      lastPage.metadata.previous ?? "",
+  task: (queryKey, pageKey, spotify) {
     return spotify.me.following(FollowingType.artist).getPage(15, pageKey);
   },
 );
@@ -87,6 +106,18 @@ final artistAlbumsQuery = FutureProvider.family<Page<Album>, String>(
   (ref, id) {
     final spotify = ref.watch(spotifyProvider);
     return spotify.artists.albums(id).getPage(5, 0);
+  },
+);
+
+final artistAlbumsQueryJob =
+    InfiniteQueryJob.withVariableKey<Page<Album>, SpotifyApi, int>(
+  preQueryKey: "artist-albums",
+  initialParam: 0,
+  getNextPageParam: (lastPage, lastParam) => lastPage.nextOffset,
+  getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 6,
+  task: (queryKey, pageKey, spotify) {
+    final id = getVariable(queryKey);
+    return spotify.artists.albums(id).getPage(5, pageKey);
   },
 );
 

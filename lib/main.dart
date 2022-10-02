@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -25,6 +26,7 @@ import 'package:spotube/themes/dark-theme.dart';
 import 'package:spotube/themes/light-theme.dart';
 import 'package:spotube/utils/platform.dart';
 
+final bowl = QueryBowl();
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CacheTrackAdapter());
@@ -124,7 +126,10 @@ void main() async {
               ),
             )
           ],
-          child: const Spotube(),
+          child: QueryBowlScope(
+            bowl: bowl,
+            child: const Spotube(),
+          ),
         );
       },
     ),

@@ -1,9 +1,9 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart' hide Image, Player, Search;
 
 import 'package:spotube/components/Category/CategoryCard.dart';
@@ -16,12 +16,14 @@ import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Player/Player.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
+import 'package:spotube/components/Shared/Waypoint.dart';
 import 'package:spotube/hooks/useBreakpointValue.dart';
-import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
 import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Downloader.dart';
+import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
 
 List<String> spotifyScopes = [
@@ -144,38 +146,43 @@ class Home extends HookConsumerWidget {
                         left: 8.0,
                       ),
                       child: HookBuilder(builder: (context) {
-                        final pagingController = usePaginatedFutureProvider<
-                            Page<Category>, int, Category>(
-                          (pageKey) => categoriesQuery(pageKey),
-                          ref: ref,
-                          firstPageKey: 0,
-                          onData: (categories, pagingController, pageKey) {
-                            final items = categories.items?.toList();
-                            if (pageKey == 0) {
-                              Category category = Category();
-                              category.id = "user-featured-playlists";
-                              category.name = "Featured";
-                              items?.insert(0, category);
-                            }
-                            if (categories.isLast && items != null) {
-                              pagingController.appendLastPage(items);
-                            } else if (categories.items != null) {
-                              pagingController.appendPage(
-                                  items!, categories.nextOffset);
-                            }
+                        final spotify = ref.watch(spotifyProvider);
+                        final recommendationMarket = ref.watch(
+                          userPreferencesProvider
+                              .select((s) => s.recommendationMarket),
+                        );
+
+                        final categoriesQuery = useInfiniteQuery(
+                          job: categoriesQueryJob,
+                          externalData: {
+                            "spotify": spotify,
+                            "recommendationMarket": recommendationMarket,
                           },
                         );
-                        return PagedListView(
-                          pagingController: pagingController,
-                          builderDelegate: PagedChildBuilderDelegate<Category>(
-                            firstPageProgressIndicatorBuilder: (_) =>
-                                const ShimmerCategories(),
-                            newPageProgressIndicatorBuilder: (_) =>
-                                const ShimmerCategories(),
-                            itemBuilder: (context, item, index) {
-                              return CategoryCard(item);
-                            },
-                          ),
+
+                        final categories = categoriesQuery.pages
+                            .expand<Category?>(
+                              (page) => page?.items ?? const Iterable.empty(),
+                            )
+                            .toList();
+
+                        return ListView.builder(
+                          itemCount: categories.length,
+                          itemBuilder: (context, index) {
+                            final category = categories[index];
+                            if (category == null) return Container();
+                            if (index == categories.length - 1) {
+                              return Waypoint(
+                                onEnter: () {
+                                  if (categoriesQuery.hasNextPage) {
+                                    categoriesQuery.fetchNextPage();
+                                  }
+                                },
+                                child: const ShimmerCategories(),
+                              );
+                            }
+                            return CategoryCard(category);
+                          },
                         );
                       }),
                     ),

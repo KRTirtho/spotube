@@ -1,14 +1,14 @@
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
-import 'package:spotube/components/Shared/NotFound.dart';
-import 'package:spotube/hooks/usePaginatedFutureProvider.dart';
+import 'package:spotube/components/Shared/Waypoint.dart';
 import 'package:spotube/models/Logger.dart';
+import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
 class CategoryCard extends HookConsumerWidget {
@@ -25,29 +25,20 @@ class CategoryCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
-    final mounted = useIsMounted();
-
-    final pagingController =
-        usePaginatedFutureProvider<Page<PlaylistSimple>, int, PlaylistSimple>(
-      (pageKey) => categoryPlaylistsQuery(
-        [
-          category.id,
-          pageKey,
-        ].join("/"),
-      ),
-      ref: ref,
-      firstPageKey: 0,
-      onData: (page, pagingController, pageKey) {
-        if (playlists != null && playlists?.isNotEmpty == true && mounted()) {
-          return pagingController.appendLastPage(playlists!.toList());
-        }
-        if (page.isLast && page.items != null) {
-          pagingController.appendLastPage(page.items!.toList());
-        } else if (page.items != null) {
-          pagingController.appendPage(page.items!.toList(), page.nextOffset);
-        }
-      },
+    final spotify = ref.watch(spotifyProvider);
+    final playlistQuery = useInfiniteQuery(
+      job: categoryPlaylistsQueryJob(category.id!),
+      externalData: spotify,
     );
+    final hasNextPage = playlistQuery.pages.isEmpty
+        ? false
+        : (playlistQuery.pages.last?.items?.length ?? 0) == 5;
+
+    final playlists = playlistQuery.pages
+        .expand(
+          (page) => page?.items ?? const Iterable.empty(),
+        )
+        .toList();
 
     return Column(
       children: [
@@ -62,8 +53,8 @@ class CategoryCard extends HookConsumerWidget {
             ],
           ),
         ),
-        pagingController.error != null
-            ? const Text("Something Went Wrong")
+        playlistQuery.hasError
+            ? Text("Something Went Wrong\n${playlistQuery.errors.first}")
             : SizedBox(
                 height: 245,
                 child: ScrollConfiguration(
@@ -76,26 +67,21 @@ class CategoryCard extends HookConsumerWidget {
                   child: Scrollbar(
                     controller: scrollController,
                     interactive: false,
-                    child: PagedListView<int, PlaylistSimple>(
-                      shrinkWrap: true,
-                      pagingController: pagingController,
-                      scrollController: scrollController,
+                    child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      builderDelegate:
-                          PagedChildBuilderDelegate<PlaylistSimple>(
-                        noItemsFoundIndicatorBuilder: (context) {
-                          return const NotFound();
-                        },
-                        firstPageProgressIndicatorBuilder: (context) {
-                          return const ShimmerPlaybuttonCard();
-                        },
-                        newPageProgressIndicatorBuilder: (context) {
-                          return const ShimmerPlaybuttonCard();
-                        },
-                        itemBuilder: (context, playlist, index) {
-                          return PlaylistCard(playlist);
-                        },
-                      ),
+                      shrinkWrap: true,
+                      itemCount: playlists.length,
+                      itemBuilder: (context, index) {
+                        if (index == playlists.length - 1 && hasNextPage) {
+                          return Waypoint(
+                            onEnter: () {
+                              playlistQuery.fetchNextPage();
+                            },
+                            child: const ShimmerPlaybuttonCard(count: 1),
+                          );
+                        }
+                        return PlaylistCard(playlists[index]);
+                      },
                     ),
                   ),
                 ),
