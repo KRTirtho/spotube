@@ -612,7 +612,7 @@ packages:
       name: go_router
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "5.0.5"
   graphs:
     dependency: transitive
     description:
@@ -641,13 +641,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.3"
-  hookified_infinite_scroll_pagination:
-    dependency: "direct main"
-    description:
-      name: hookified_infinite_scroll_pagination
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   hooks_riverpod:
     dependency: "direct main"
     description:
@@ -687,13 +680,6 @@ packages:
     dependency: transitive
     description:
       name: image
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.2.0"
-  infinite_scroll_pagination:
-    dependency: transitive
-    description:
-      name: infinite_scroll_pagination
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.0"
@@ -1129,13 +1115,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  sliver_tools:
-    dependency: transitive
-    description:
-      name: sliver_tools
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.6"
   source_gen:
     dependency: transitive
     description:
