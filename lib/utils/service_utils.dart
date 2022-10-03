@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:html/dom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Home/Home.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/models/LyricsModels.dart';
+import 'package:spotube/models/SpotifySpotubeCredentials.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -176,6 +176,7 @@ abstract class ServiceUtils {
     }
   }
 
+  @Deprecated("Use getAccessToken instead")
   static Future<String?> connectIpc(String authUri, String redirectUri) async {
     try {
       logger.i("[connectIpc][Launching]: $authUri");
@@ -220,6 +221,9 @@ abstract class ServiceUtils {
 
   static const authRedirectUri = "http://localhost:4304/auth/spotify/callback";
 
+  /// Use [getAccessToken] instead
+  /// This method will be removed in the next major release
+  @Deprecated("Use getAccessToken instead")
   static Future<void> oauthLogin(Auth auth,
       {required String clientId, required String clientSecret}) async {
     try {
@@ -229,8 +233,9 @@ abstract class ServiceUtils {
       final credentials = SpotifyApiCredentials(clientId, clientSecret);
       final grant = SpotifyApi.authorizationCodeGrant(credentials);
 
-      final authUri = grant.getAuthorizationUrl(Uri.parse(authRedirectUri),
-          scopes: spotifyScopes);
+      final authUri = grant.getAuthorizationUrl(
+        Uri.parse(authRedirectUri),
+      );
 
       final responseUri = await connectIpc(authUri.toString(), authRedirectUri);
       SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -261,13 +266,13 @@ abstract class ServiceUtils {
         clientSecret,
       );
 
-      auth.setAuthState(
-        clientId: clientId,
-        clientSecret: clientSecret,
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        expiration: expiration,
-      );
+      // auth.setAuthState(
+      //   clientId: clientId,
+      //   clientSecret: clientSecret,
+      //   accessToken: accessToken,
+      //   refreshToken: refreshToken,
+      //   expiration: expiration,
+      // );
     } catch (e, stack) {
       logger.e("oauthLogin", e, stack);
       rethrow;
@@ -359,5 +364,27 @@ abstract class ServiceUtils {
     );
 
     return subtitle;
+  }
+
+  static Future<SpotifySpotubeCredentials> getAccessToken(
+      String cookieHeader) async {
+    try {
+      final res = await http.get(
+        Uri.parse(
+          "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
+        ),
+        headers: {
+          "Cookie": cookieHeader,
+          "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+        },
+      );
+      return SpotifySpotubeCredentials.fromJson(
+        jsonDecode(res.body),
+      );
+    } catch (e, stack) {
+      logger.e("getAccessToken", e, stack);
+      rethrow;
+    }
   }
 }

@@ -26,19 +26,6 @@ import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
 
-List<String> spotifyScopes = [
-  "playlist-modify-public",
-  "playlist-modify-private",
-  "playlist-read-private",
-  "user-library-read",
-  "user-library-modify",
-  "user-read-private",
-  "user-read-email",
-  "user-follow-read",
-  "user-follow-modify",
-  "playlist-read-collaborative"
-];
-
 final selectedIndexState = StateProvider((ref) => 0);
 
 class Home extends HookConsumerWidget {

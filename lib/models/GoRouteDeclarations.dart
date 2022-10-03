@@ -3,12 +3,14 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumView.dart';
 import 'package:spotube/components/Artist/ArtistProfile.dart';
 import 'package:spotube/components/Home/Home.dart';
-import 'package:spotube/components/Login/Login.dart';
 import 'package:spotube/components/Login/LoginTutorial.dart';
+import 'package:spotube/components/Login/TokenLogin.dart';
 import 'package:spotube/components/Player/PlayerView.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Settings/Settings.dart';
 import 'package:spotube/components/Shared/SpotubePageRoute.dart';
+import 'package:spotube/utils/platform.dart';
+import 'package:spotube/components/Login/WebViewLogin.dart';
 
 GoRouter createGoRouter() => GoRouter(
       routes: [
@@ -19,7 +21,7 @@ GoRouter createGoRouter() => GoRouter(
         GoRoute(
           path: "/login",
           pageBuilder: (context, state) => SpotubePage(
-            child: Login(),
+            child: kIsMobile ? const WebViewLogin() : const TokenLogin(),
           ),
         ),
         GoRoute(

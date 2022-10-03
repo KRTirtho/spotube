@@ -166,10 +166,12 @@ class _SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    if (localStorage == null ||
-        (prevSize?.width == appWindow.size.width &&
-            prevSize?.height == appWindow.size.height) ||
-        kIsMobile) return;
+    final windowSameDimension = kIsMobile
+        ? false
+        : prevSize?.width == appWindow.size.width &&
+            prevSize?.height == appWindow.size.height;
+
+    if (localStorage == null || windowSameDimension || kIsMobile) return;
     localStorage!.setString(
       LocalStorageKeys.windowSizeInfo,
       jsonEncode({

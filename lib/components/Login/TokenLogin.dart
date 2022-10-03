@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/Login/LoginForm.dart';
+import 'package:spotube/components/Login/TokenLoginForms.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
-import 'package:spotube/models/Logger.dart';
 
-class Login extends HookConsumerWidget {
-  Login({Key? key}) : super(key: key);
-  final log = getLogger(Login);
+class TokenLogin extends HookConsumerWidget {
+  const TokenLogin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
-
     final textTheme = Theme.of(context).textTheme;
 
     return SafeArea(
@@ -39,8 +36,8 @@ class Login extends HookConsumerWidget {
                     style: Theme.of(context).textTheme.caption,
                   ),
                   const SizedBox(height: 10),
-                  LoginForm(
-                    onDone: () => GoRouter.of(context).pop(),
+                  TokenLoginForm(
+                    onDone: () => GoRouter.of(context).go("/"),
                   ),
                   const SizedBox(height: 10),
                   Wrap(
