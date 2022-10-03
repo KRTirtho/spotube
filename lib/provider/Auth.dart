@@ -35,6 +35,7 @@ class Auth extends PersistedChangeNotifier {
     _accessToken = data.accessToken;
     _expiration = data.expiration;
     _restartRefresher();
+    notifyListeners();
   }
 
   Timer? _createRefresher() {
