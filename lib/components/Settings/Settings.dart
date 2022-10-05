@@ -74,14 +74,21 @@ class Settings extends HookConsumerWidget {
                           Icons.login_rounded,
                           color: Theme.of(context).primaryColor,
                         ),
-                        title: AutoSizeText(
-                          "Login with your Spotify account",
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                        title: SizedBox(
+                          height: 50,
+                          width: 200,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: AutoSizeText(
+                              "Login with your Spotify account",
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
                           ),
                         ),
                         trailing: (context, update) => ElevatedButton(
-                          child: Text("Connect with Spotify".toUpperCase()),
                           onPressed: () {
                             GoRouter.of(context).push("/login");
                           },
@@ -92,6 +99,7 @@ class Settings extends HookConsumerWidget {
                               ),
                             ),
                           ),
+                          child: Text("Connect with Spotify".toUpperCase()),
                         ),
                       ),
                     if (auth.isLoggedIn)
@@ -99,12 +107,18 @@ class Settings extends HookConsumerWidget {
                         Auth auth = ref.watch(authProvider);
                         return ListTile(
                           leading: const Icon(Icons.logout_rounded),
-                          title: const AutoSizeText(
-                            "Log out of this account",
-                            maxLines: 1,
+                          title: const SizedBox(
+                            height: 50,
+                            width: 180,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: AutoSizeText(
+                                "Log out of this account",
+                                maxLines: 1,
+                              ),
+                            ),
                           ),
                           trailing: ElevatedButton(
-                            child: const Text("Logout"),
                             style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.red),
@@ -115,6 +129,7 @@ class Settings extends HookConsumerWidget {
                               auth.logout();
                               GoRouter.of(context).pop();
                             },
+                            child: const Text("Logout"),
                           ),
                         );
                       }),
@@ -133,20 +148,20 @@ class Settings extends HookConsumerWidget {
                         value: preferences.layoutMode,
                         items: const [
                           DropdownMenuItem(
+                            value: LayoutMode.adaptive,
                             child: Text(
                               "Adaptive",
                             ),
-                            value: LayoutMode.adaptive,
                           ),
                           DropdownMenuItem(
+                            value: LayoutMode.compact,
                             child: Text(
                               "Compact",
                             ),
-                            value: LayoutMode.compact,
                           ),
                           DropdownMenuItem(
-                            child: Text("Extended"),
                             value: LayoutMode.extended,
+                            child: Text("Extended"),
                           ),
                         ],
                         onChanged: (value) {
@@ -164,20 +179,20 @@ class Settings extends HookConsumerWidget {
                         value: preferences.themeMode,
                         items: const [
                           DropdownMenuItem(
+                            value: ThemeMode.dark,
                             child: Text(
                               "Dark",
                             ),
-                            value: ThemeMode.dark,
                           ),
                           DropdownMenuItem(
+                            value: ThemeMode.light,
                             child: Text(
                               "Light",
                             ),
-                            value: ThemeMode.light,
                           ),
                           DropdownMenuItem(
-                            child: Text("System"),
                             value: ThemeMode.system,
+                            child: Text("System"),
                           ),
                         ],
                         onChanged: (value) {
@@ -229,14 +244,14 @@ class Settings extends HookConsumerWidget {
                         value: preferences.audioQuality,
                         items: const [
                           DropdownMenuItem(
+                            value: AudioQuality.high,
                             child: Text(
                               "High",
                             ),
-                            value: AudioQuality.high,
                           ),
                           DropdownMenuItem(
-                            child: Text("Low"),
                             value: AudioQuality.low,
+                            child: Text("Low"),
                           ),
                         ],
                         onChanged: (value) {
@@ -283,8 +298,8 @@ class Settings extends HookConsumerWidget {
                           items: spotifyMarkets
                               .map(
                                 (country) => (DropdownMenuItem(
-                                  child: Text(country.last),
                                   value: country.first,
+                                  child: Text(country.last),
                                 )),
                               )
                               .toList(),
@@ -300,9 +315,16 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.screen_search_desktop_rounded),
-                      title: const AutoSizeText(
-                        "Format of the YouTube Search term",
-                        maxLines: 2,
+                      title: const SizedBox(
+                        height: 50,
+                        width: 200,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: AutoSizeText(
+                            "Format of the YouTube Search term",
+                            maxLines: 2,
+                          ),
+                        ),
                       ),
                       subtitle: const Text("(Case sensitive)"),
                       breakOn: Breakpoints.lg,
@@ -330,29 +352,36 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.low_priority_rounded),
-                      title: const AutoSizeText(
-                        "Track Match Algorithm",
-                        maxLines: 1,
+                      title: const SizedBox(
+                        height: 50,
+                        width: 180,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: AutoSizeText(
+                            "Track Match Algorithm",
+                            maxLines: 1,
+                          ),
+                        ),
                       ),
                       trailing: (context, update) =>
                           DropdownButton<SpotubeTrackMatchAlgorithm>(
                         value: preferences.trackMatchAlgorithm,
                         items: const [
                           DropdownMenuItem(
+                            value: SpotubeTrackMatchAlgorithm.authenticPopular,
                             child: Text(
                               "Popular from Author",
                             ),
-                            value: SpotubeTrackMatchAlgorithm.authenticPopular,
                           ),
                           DropdownMenuItem(
+                            value: SpotubeTrackMatchAlgorithm.popular,
                             child: Text(
                               "Accurately Popular",
                             ),
-                            value: SpotubeTrackMatchAlgorithm.popular,
                           ),
                           DropdownMenuItem(
-                            child: Text("YouTube's Top choice"),
                             value: SpotubeTrackMatchAlgorithm.youtube,
+                            child: Text("YouTube's Top choice"),
                           ),
                         ],
                         onChanged: (value) {
@@ -373,8 +402,8 @@ class Settings extends HookConsumerWidget {
                       title: const Text("Download Location"),
                       subtitle: Text(preferences.downloadLocation),
                       trailing: ElevatedButton(
-                        child: const Icon(Icons.folder_rounded),
                         onPressed: pickDownloadLocation,
+                        child: const Icon(Icons.folder_rounded),
                       ),
                       onTap: pickDownloadLocation,
                     ),
@@ -399,12 +428,19 @@ class Settings extends HookConsumerWidget {
                         Icons.favorite_border_rounded,
                         color: Colors.pink,
                       ),
-                      title: const AutoSizeText(
-                        "We know you Love Spotube",
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: Colors.pink,
-                          fontWeight: FontWeight.bold,
+                      title: const SizedBox(
+                        height: 50,
+                        width: 200,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: AutoSizeText(
+                            "We know you Love Spotube",
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.pink,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                       trailing: (context, update) => ElevatedButton.icon(

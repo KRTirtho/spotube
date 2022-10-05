@@ -40,6 +40,7 @@ class AdaptiveListTile extends HookWidget {
                     return AlertDialog(
                       title: title != null
                           ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 if (leading != null) ...[
                                   leading!,
