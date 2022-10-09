@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +14,7 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
@@ -28,6 +28,9 @@ class PlayerView extends HookConsumerWidget {
       (value) => value.track,
     ));
     final breakpoint = useBreakpoints();
+    final canRotate = ref.watch(
+      userPreferencesProvider.select((s) => s.rotatingAlbumArt),
+    );
 
     useEffect(() {
       if (breakpoint.isMoreThan(Breakpoints.md)) {
@@ -108,23 +111,46 @@ class PlayerView extends HookConsumerWidget {
                     final controller = useAnimationController(
                       duration: const Duration(seconds: 10),
                       vsync: ticker,
-                    )..repeat();
+                    );
+
+                    useEffect(
+                      () {
+                        controller.repeat();
+                        if (!canRotate) controller.stop();
+                        return null;
+                      },
+                      [controller],
+                    );
                     return RotationTransition(
                       turns: Tween(begin: 0.0, end: 1.0).animate(controller),
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: paletteColor.titleTextColor,
-                            width: 2,
-                          ),
-                          shape: BoxShape.circle,
+                          border: canRotate
+                              ? Border.all(
+                                  color: paletteColor.titleTextColor,
+                                  width: 2,
+                                )
+                              : null,
+                          borderRadius:
+                              !canRotate ? BorderRadius.circular(15) : null,
+                          shape:
+                              canRotate ? BoxShape.circle : BoxShape.rectangle,
                         ),
-                        child: CircleAvatar(
-                          backgroundImage:
-                              UniversalImage.imageProvider(albumArt),
-                          radius: MediaQuery.of(context).size.width *
-                              (breakpoint.isSm ? 0.4 : 0.3),
-                        ),
+                        child: !canRotate
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: UniversalImage(
+                                  path: albumArt,
+                                  width: MediaQuery.of(context).size.width *
+                                      (breakpoint.isSm ? 0.8 : 0.5),
+                                ),
+                              )
+                            : CircleAvatar(
+                                backgroundImage:
+                                    UniversalImage.imageProvider(albumArt),
+                                radius: MediaQuery.of(context).size.width *
+                                    (breakpoint.isSm ? 0.4 : 0.3),
+                              ),
                       ),
                     );
                   }),

@@ -231,6 +231,17 @@ class Settings extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(ColorSchemeType.background),
                     ),
+                    ListTile(
+                      leading: const Icon(Icons.album_rounded),
+                      title: const Text("Rotating Album Art"),
+                      trailing: Switch.adaptive(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: preferences.rotatingAlbumArt,
+                        onChanged: (state) {
+                          preferences.setRotatingAlbumArt(state);
+                        },
+                      ),
+                    ),
                     const Text(
                       " Playback",
                       style:

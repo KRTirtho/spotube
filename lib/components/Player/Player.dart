@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Player/PlayerActions.dart';
@@ -122,23 +123,36 @@ class Player extends HookConsumerWidget {
                         }
                         return null;
                       }, [playback.volume]);
-                      return Slider.adaptive(
-                        min: 0,
-                        max: 1,
-                        value: volume.value,
-                        onChanged: (v) {
-                          volume.value = v;
-                        },
-                        onChangeEnd: (value) async {
-                          try {
-                            // You don't really need to know why but this
-                            // way it works only
-                            await playback.setVolume(value);
-                            await playback.setVolume(value);
-                          } catch (e, stack) {
-                            logger.e("onChange", e, stack);
+                      return Listener(
+                        onPointerSignal: (event) async {
+                          if (event is PointerScrollEvent) {
+                            if (event.scrollDelta.dy > 0) {
+                              final value = volume.value - .2;
+                              playback.setVolume(value < 0 ? 0 : value);
+                            } else {
+                              final value = volume.value + .2;
+                              playback.setVolume(value > 1 ? 1 : value);
+                            }
                           }
                         },
+                        child: Slider.adaptive(
+                          min: 0,
+                          max: 1,
+                          value: volume.value,
+                          onChanged: (v) {
+                            volume.value = v;
+                          },
+                          onChangeEnd: (value) async {
+                            try {
+                              // You don't really need to know why but this
+                              // way it works only
+                              await playback.setVolume(value);
+                              await playback.setVolume(value);
+                            } catch (e, stack) {
+                              logger.e("onChange", e, stack);
+                            }
+                          },
+                        ),
                       );
                     }),
                   ),

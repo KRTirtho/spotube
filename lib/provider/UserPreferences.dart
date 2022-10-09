@@ -36,6 +36,7 @@ class UserPreferences extends PersistedChangeNotifier {
   String downloadLocation;
 
   LayoutMode layoutMode;
+  bool rotatingAlbumArt;
 
   UserPreferences({
     required this.geniusAccessToken,
@@ -51,6 +52,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.audioQuality = AudioQuality.high,
     this.skipSponsorSegments = true,
     this.downloadLocation = "",
+    this.rotatingAlbumArt = true,
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
@@ -140,6 +142,12 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setRotatingAlbumArt(bool should) {
+    rotatingAlbumArt = should;
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -182,6 +190,7 @@ class UserPreferences extends PersistedChangeNotifier {
       (mode) => mode.name == map["layoutMode"],
       orElse: () => kIsDesktop ? LayoutMode.extended : LayoutMode.compact,
     );
+    rotatingAlbumArt = map["rotatingAlbumArt"] ?? rotatingAlbumArt;
   }
 
   @override
@@ -200,6 +209,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "skipSponsorSegments": skipSponsorSegments,
       "downloadLocation": downloadLocation,
       "layoutMode": layoutMode.name,
+      "rotatingAlbumArt": rotatingAlbumArt,
     };
   }
 }
