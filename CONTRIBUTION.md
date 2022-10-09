@@ -22,6 +22,8 @@ All types of contributions are encouraged and valued. See the [Table of Contents
       - [Before Submitting a Bug Report](#before-submitting-a-bug-report)
       - [How Do I Submit a Good Bug Report?](#how-do-i-submit-a-good-bug-report)
     - [Suggesting Enhancements](#suggesting-enhancements)
+      - [Before Submitting an Enhancement](#before-submitting-an-enhancement)
+      - [How Do I Submit a Good Enhancement Suggestion?](#how-do-i-submit-a-good-enhancement-suggestion)
     - [Your First Code Contribution](#your-first-code-contribution)
 
 ## Code of Conduct
@@ -120,6 +122,7 @@ Do the following:
 - Install Development dependencies in linux
   - `libgstreamer1.0-dev` & `libgstreamer-plugins-base1.0-dev` (for Debian/Ubuntu)
   - `gstreamer`, `gst-libav`, `gst-plugins-base` & `gst-plugins-good` (for Arch/Manjaro)
+  - `gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras` (for Fedora)
 - Clone the Repo & Run `flutter pub get` in the Terminal
 - Create a `secrets.json` in root of the project. The structure should be similar to the following example:
 

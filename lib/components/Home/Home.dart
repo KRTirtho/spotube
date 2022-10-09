@@ -147,11 +147,19 @@ class Home extends HookConsumerWidget {
                           },
                         );
 
-                        final categories = categoriesQuery.pages
-                            .expand<Category?>(
-                              (page) => page?.items ?? const Iterable.empty(),
-                            )
-                            .toList();
+                        final categories = [
+                          useMemoized(
+                            () => Category()
+                              ..id = "user-featured-playlists"
+                              ..name = "Featured",
+                            [],
+                          ),
+                          ...categoriesQuery.pages
+                              .expand<Category?>(
+                                (page) => page?.items ?? const Iterable.empty(),
+                              )
+                              .toList()
+                        ];
 
                         return ListView.builder(
                           itemCount: categories.length,
