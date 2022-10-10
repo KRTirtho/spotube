@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:spotube/components/Shared/AnchorButton.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class LinkText<T> extends StatelessWidget {
   final String text;
@@ -24,7 +24,7 @@ class LinkText<T> extends StatelessWidget {
     return AnchorButton(
       text,
       onTap: () {
-        GoRouter.of(context).push(route, extra: extra);
+        ServiceUtils.navigate(context, route, extra: extra);
       },
       key: key,
       overflow: overflow,

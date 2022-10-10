@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart' hide Element;
+import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
@@ -386,5 +388,9 @@ abstract class ServiceUtils {
       logger.e("getAccessToken", e, stack);
       rethrow;
     }
+  }
+
+  static void navigate(BuildContext context, String location, {Object? extra}) {
+    GoRouter.of(context).push(location, extra: extra);
   }
 }

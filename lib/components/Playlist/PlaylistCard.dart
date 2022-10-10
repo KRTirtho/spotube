@@ -7,6 +7,7 @@ import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistCard extends HookConsumerWidget {
@@ -30,7 +31,8 @@ class PlaylistCard extends HookConsumerWidget {
       isPlaying: isPlaylistPlaying && playback.isPlaying,
       isLoading: playback.status == PlaybackStatus.loading && isPlaylistPlaying,
       onTap: () {
-        GoRouter.of(context).push(
+        ServiceUtils.navigate(
+          context,
           "/playlist/${playlist.id}",
           extra: playlist,
         );

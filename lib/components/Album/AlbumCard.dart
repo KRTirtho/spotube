@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/PlaybuttonCard.dart';
@@ -7,6 +6,7 @@ import 'package:spotube/hooks/useBreakpointValue.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class AlbumCard extends HookConsumerWidget {
@@ -33,7 +33,7 @@ class AlbumCard extends HookConsumerWidget {
       description:
           "Album • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
       onTap: () {
-        GoRouter.of(context).push("/album/${album.id}", extra: album);
+        ServiceUtils.navigate(context, "/album/${album.id}", extra: album);
       },
       onPlaybuttonPressed: () async {
         SpotifyApi spotify = ref.read(spotifyProvider);

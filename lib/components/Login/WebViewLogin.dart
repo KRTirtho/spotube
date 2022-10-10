@@ -61,7 +61,7 @@ class WebViewLogin extends HookConsumerWidget {
                 expiration: body.expiration,
               );
               if (mounted()) {
-                GoRouter.of(context).go("/");
+                ServiceUtils.navigate(context, "/");
               }
             }
           },

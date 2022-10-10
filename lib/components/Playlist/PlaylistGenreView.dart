@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 
 class PlaylistGenreView extends ConsumerWidget {

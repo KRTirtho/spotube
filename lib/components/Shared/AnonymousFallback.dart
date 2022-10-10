@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:spotube/provider/Auth.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class AnonymousFallback extends ConsumerWidget {
   final Widget? child;
@@ -23,7 +23,7 @@ class AnonymousFallback extends ConsumerWidget {
           const SizedBox(height: 10),
           ElevatedButton(
             child: const Text("Login with Spotify"),
-            onPressed: () => GoRouter.of(context).push("/settings"),
+            onPressed: () => ServiceUtils.navigate(context, "/settings"),
           )
         ],
       ),

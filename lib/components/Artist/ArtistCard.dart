@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HoverBuilder.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistCard extends StatelessWidget {
@@ -23,7 +23,7 @@ class ArtistCard extends StatelessWidget {
       width: 200,
       child: InkWell(
         onTap: () {
-          GoRouter.of(context).push("/artist/${artist.id}");
+          ServiceUtils.navigate(context, "/artist/${artist.id}");
         },
         borderRadius: BorderRadius.circular(10),
         child: HoverBuilder(builder: (context, isHovering) {

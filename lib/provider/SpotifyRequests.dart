@@ -18,6 +18,7 @@ final categoriesQueryJob =
   initialParam: 0,
   getNextPageParam: (lastPage, lastParam) => lastPage.nextOffset,
   getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 16,
+  refetchOnExternalDataChange: true,
   task: (queryKey, pageParam, data) async {
     final SpotifyApi spotify = data["spotify"] as SpotifyApi;
     final String recommendationMarket = data["recommendationMarket"];

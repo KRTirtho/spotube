@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:spotube/components/Login/TokenLoginForms.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/provider/Auth.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class LoginTutorial extends ConsumerWidget {
   const LoginTutorial({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class LoginTutorial extends ConsumerWidget {
         overrideDone: TextButton(
           onPressed: auth.isLoggedIn
               ? () {
-                  GoRouter.of(context).go("/");
+                  ServiceUtils.navigate(context, "/");
                 }
               : null,
           child: const Text("Done"),

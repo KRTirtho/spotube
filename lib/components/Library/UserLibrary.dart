@@ -12,32 +12,30 @@ class UserLibrary extends ConsumerWidget {
   const UserLibrary({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
-    return Expanded(
-      child: DefaultTabController(
-        length: 5,
-        child: SafeArea(
-          child: Scaffold(
-            appBar: ColoredTabBar(
-              color: Theme.of(context).backgroundColor,
-              child: const TabBar(
-                isScrollable: true,
-                tabs: [
-                  Tab(text: "Playlist"),
-                  Tab(text: "Downloads"),
-                  Tab(text: "Local"),
-                  Tab(text: "Artists"),
-                  Tab(text: "Album"),
-                ],
-              ),
+    return DefaultTabController(
+      length: 5,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: ColoredTabBar(
+            color: Theme.of(context).backgroundColor,
+            child: const TabBar(
+              isScrollable: true,
+              tabs: [
+                Tab(text: "Playlist"),
+                Tab(text: "Downloads"),
+                Tab(text: "Local"),
+                Tab(text: "Artists"),
+                Tab(text: "Album"),
+              ],
             ),
-            body: const TabBarView(children: [
-              AnonymousFallback(child: UserPlaylists()),
-              UserDownloads(),
-              UserLocalTracks(),
-              AnonymousFallback(child: UserArtists()),
-              AnonymousFallback(child: UserAlbums()),
-            ]),
           ),
+          body: const TabBarView(children: [
+            AnonymousFallback(child: UserPlaylists()),
+            UserDownloads(),
+            UserLocalTracks(),
+            AnonymousFallback(child: UserArtists()),
+            AnonymousFallback(child: UserAlbums()),
+          ]),
         ),
       ),
     );

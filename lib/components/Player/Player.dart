@@ -35,60 +35,15 @@ class Player extends HookConsumerWidget {
       [playback.track?.album?.images],
     );
 
-    final entryRef = useRef<OverlayEntry?>(null);
-
-    void disposeOverlay() {
-      try {
-        entryRef.value?.remove();
-        entryRef.value = null;
-      } catch (e, stack) {
-        if (e is! AssertionError) {
-          logger.e("useEffect.cleanup", e, stack);
-        }
-      }
-    }
-
-    useEffect(() {
-      // I can't believe useEffect doesn't run Post Frame aka
-      // after rendering/painting the UI
-      // `My disappointment is immeasurable and my day is ruined` XD
-      WidgetsBinding.instance.addPostFrameCallback((time) {
-        // clearing the overlay-entry as passing the already available
-        // entry will result in splashing while resizing the window
-        if ((layoutMode == LayoutMode.compact ||
-                (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
-                    layoutMode == LayoutMode.adaptive)) &&
-            entryRef.value == null &&
-            playback.track != null) {
-          entryRef.value = OverlayEntry(
-            opaque: false,
-            builder: (context) => PlayerOverlay(albumArt: albumArt),
-          );
-          try {
-            Overlay.of(context)?.insert(entryRef.value!);
-          } catch (e) {
-            if (e is AssertionError &&
-                e.message ==
-                    'The specified entry is already present in the Overlay.') {
-              disposeOverlay();
-              Overlay.of(context)?.insert(entryRef.value!);
-            }
-          }
-        } else {
-          disposeOverlay();
-        }
-      });
-      return () {
-        disposeOverlay();
-      };
-    }, [breakpoint, playback.track, layoutMode]);
-
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]
     if (layoutMode == LayoutMode.compact ||
         (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
             layoutMode == LayoutMode.adaptive)) {
-      return Container();
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 0),
+        child: PlayerOverlay(albumArt: albumArt),
+      );
     }
 
     return Container(
