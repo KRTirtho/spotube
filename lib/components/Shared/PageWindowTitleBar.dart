@@ -77,17 +77,23 @@ class PageWindowTitleBar extends StatelessWidget
   final Widget? center;
   final Color? backgroundColor;
   final Color? foregroundColor;
+  final Size? _preferredSize;
   const PageWindowTitleBar({
     Key? key,
+    Size? preferredSize,
     this.leading,
     this.center,
     this.backgroundColor,
     this.foregroundColor,
-  }) : super(key: key);
-  @override
-  Size get preferredSize => Size.fromHeight(
+  })  : _preferredSize = preferredSize,
+        super(key: key);
+
+  static Size get staticPreferredSize => Size.fromHeight(
         (kIsDesktop ? appWindow.titleBarHeight : 35),
       );
+
+  @override
+  Size get preferredSize => _preferredSize ?? staticPreferredSize;
 
   @override
   Widget build(BuildContext context) {

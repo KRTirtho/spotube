@@ -62,12 +62,24 @@ class Shell extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    const pageWindowTitleBar = PageWindowTitleBar();
+    final allowedPath = _path.values.contains(GoRouter.of(context).location);
+    final preferredSize =
+        allowedPath ? PageWindowTitleBar.staticPreferredSize : Size.zero;
     return Scaffold(
       primary: true,
-      appBar: _path.values.contains(GoRouter.of(context).location)
-          ? pageWindowTitleBar
-          : null,
+      appBar: PreferredSize(
+        preferredSize: preferredSize,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          height:
+              allowedPath ? PageWindowTitleBar.staticPreferredSize.height : 0,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 250),
+            opacity: allowedPath ? 1 : 0,
+            child: PageWindowTitleBar(preferredSize: preferredSize),
+          ),
+        ),
+      ),
       extendBodyBehindAppBar: true,
       body: Row(
         children: [
@@ -78,13 +90,7 @@ class Shell extends HookConsumerWidget {
               GoRouter.of(context).go(_path[selectedIndex]!);
             },
           ),
-          Expanded(
-            child: Column(
-              children: [
-                Expanded(child: child),
-              ],
-            ),
-          ),
+          Expanded(child: child),
         ],
       ),
       extendBody: true,
