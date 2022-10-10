@@ -45,16 +45,17 @@ final categoryPlaylistsQueryJob =
   },
 );
 
-final currentUserPlaylistsQuery = FutureProvider<Iterable<PlaylistSimple>>(
-  (ref) {
-    final spotify = ref.watch(spotifyProvider);
+final currentUserPlaylistsQueryJob =
+    QueryJob<Iterable<PlaylistSimple>, SpotifyApi>(
+  queryKey: "current-user-query",
+  task: (_, spotify) {
     return spotify.playlists.me.all();
   },
 );
 
-final currentUserAlbumsQuery = FutureProvider<Iterable<AlbumSimple>>(
-  (ref) {
-    final spotify = ref.watch(spotifyProvider);
+final currentUserAlbumsQueryJob = QueryJob<Iterable<AlbumSimple>, SpotifyApi>(
+  queryKey: "current-user-albums",
+  task: (_, spotify) {
     return spotify.me.savedAlbums().all();
   },
 );

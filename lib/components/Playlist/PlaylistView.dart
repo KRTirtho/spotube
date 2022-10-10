@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fl_query/fl_query.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -146,7 +147,9 @@ class PlaylistView extends HookConsumerWidget {
                           logger.e("FollowButton.onPressed", e, stack);
                         } finally {
                           ref.refresh(query);
-                          ref.refresh(currentUserPlaylistsQuery);
+                          QueryBowl.of(context).refetchQueries([
+                            currentUserPlaylistsQueryJob.queryKey,
+                          ]);
                         }
                       },
                     );

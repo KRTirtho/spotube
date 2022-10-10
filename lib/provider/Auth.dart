@@ -95,16 +95,18 @@ class Auth extends PersistedChangeNotifier {
   }
 
   @override
-  FutureOr<void> loadFromLocal(Map<String, dynamic> map) {
+  FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
     _accessToken = map["accessToken"];
     _expiration = map["expiration"] != null
         ? DateTime.tryParse(map["expiration"])
         : _expiration;
     _authCookie = map["authCookie"];
-    _restartRefresher();
     if (isExpired) {
-      refresh();
+      final data = await ServiceUtils.getAccessToken(authCookie!);
+      _accessToken = data.accessToken;
+      _expiration = data.expiration;
     }
+    _restartRefresher();
   }
 
   @override

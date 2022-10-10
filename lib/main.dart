@@ -170,6 +170,7 @@ class _SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
             prevSize?.height == appWindow.size.height;
 
     if (localStorage == null || windowSameDimension || kIsMobile) return;
+    if (appWindow.isMaximized) return;
     localStorage!.setString(
       LocalStorageKeys.windowSizeInfo,
       jsonEncode({
