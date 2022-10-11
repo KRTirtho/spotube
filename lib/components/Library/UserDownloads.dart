@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -32,13 +31,13 @@ class UserDownloads extends HookConsumerWidget {
               const SizedBox(width: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red[50],
-                  onPrimary: Colors.red[400],
+                  backgroundColor: Colors.red[50],
+                  foregroundColor: Colors.red[400],
                 ),
-                child: const Text("Cancel All"),
                 onPressed: downloader.currentlyRunning > 0
                     ? downloader.cancelAll
                     : null,
+                child: const Text("Cancel All"),
               ),
             ],
           ),

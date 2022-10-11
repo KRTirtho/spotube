@@ -26,7 +26,7 @@ jobs:
 
       - run: |
           curl -sS https://webi.sh/yq | sh
-          yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
+          yq -i '.version |= sub("\+\d+", "-nightly+${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
           flutter config --enable-linux-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
@@ -60,7 +60,7 @@ jobs:
 
       - run: |
           curl -sS https://webi.sh/yq | sh
-          yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
+          yq -i '.version |= sub("\+\d+", "-nightly+${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
@@ -88,7 +88,7 @@ jobs:
           cache: true
       - run: |
           choco install sed make yq -y
-          yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
+          yq -i '.version |= sub("\+\d+", "-nightly+${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.GITHUB_RUN_NUMBER }}/" windows/runner/Runner.rc
           flutter config --enable-windows-desktop
           flutter pub get
@@ -115,7 +115,7 @@ jobs:
         with:
           cache: true
       - run: brew install yq
-      - run: yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
+      - run: yq -i '.version |= sub("\+\d+", "-nightly+${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
       - run: flutter config --enable-macos-desktop
       - run: flutter pub get
       - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'

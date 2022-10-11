@@ -15,6 +15,7 @@ void main() {
         throw Exception("In new releases pkgrel should be 1");
       }
     } catch (e) {
+      // ignore: avoid_print
       print("[Failed to parse PKGBUILD] $e");
     }
   });

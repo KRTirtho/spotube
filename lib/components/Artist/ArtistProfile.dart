@@ -234,17 +234,10 @@ class ArtistProfile extends HookConsumerWidget {
                         ...topTracks.toList().asMap().entries.map((track) {
                           String duration =
                               "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                          String? thumbnailUrl =
-                              TypeConversionUtils.image_X_UrlString(
-                            track.value.album?.images,
-                            index: (track.value.album?.images?.length ?? 1) - 1,
-                            placeholder: ImagePlaceholder.albumArt,
-                          );
                           return TrackTile(
                             playback,
                             duration: duration,
                             track: track,
-                            thumbnailUrl: thumbnailUrl,
                             isActive: playback.track?.id == track.value.id,
                             onTrackPlayButtonPressed: (currentTrack) =>
                                 playPlaylist(

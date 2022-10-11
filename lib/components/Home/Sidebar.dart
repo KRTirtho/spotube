@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
@@ -11,7 +12,6 @@ import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 final sidebarExtendedStateProvider = StateProvider<bool?>((ref) => null);
@@ -35,7 +35,7 @@ class Sidebar extends HookConsumerWidget {
   }
 
   static void goToSettings(BuildContext context) {
-    ServiceUtils.navigate(context, "/settings");
+    GoRouter.of(context).go("/settings");
   }
 
   @override

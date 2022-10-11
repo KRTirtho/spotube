@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:queue/queue.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/DownloadConfirmationDialog.dart';
 import 'package:spotube/components/Shared/NotFound.dart';
@@ -10,7 +9,6 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class TracksTableView extends HookConsumerWidget {
   final void Function(Track currentTrack)? onTrackPlayButtonPressed;
@@ -149,11 +147,6 @@ class TracksTableView extends HookConsumerWidget {
               ],
             ),
             ...tracks.asMap().entries.map((track) {
-              String? thumbnailUrl = TypeConversionUtils.image_X_UrlString(
-                track.value.album?.images,
-                index: (track.value.album?.images?.length ?? 1) - 1,
-                placeholder: ImagePlaceholder.albumArt,
-              );
               String duration =
                   "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
               return InkWell(
@@ -181,7 +174,6 @@ class TracksTableView extends HookConsumerWidget {
                   playlistId: playlistId,
                   track: track,
                   duration: duration,
-                  thumbnailUrl: thumbnailUrl,
                   userPlaylist: userPlaylist,
                   isActive: playback.track?.id == track.value.id,
                   onTrackPlayButtonPressed: onTrackPlayButtonPressed,

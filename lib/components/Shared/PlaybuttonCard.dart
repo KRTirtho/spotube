@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/components/Shared/HoverBuilder.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
@@ -58,6 +57,7 @@ class PlaybuttonCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         child: UniversalImage(
                           path: imageUrl,
+                          width: 200,
                           placeholder: (context, url) =>
                               Image.asset("assets/placeholder.png"),
                         ),
@@ -69,6 +69,14 @@ class PlaybuttonCard extends StatelessWidget {
                         child: Builder(builder: (context) {
                           return ElevatedButton(
                             onPressed: onPlaybuttonPressed,
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                const CircleBorder(),
+                              ),
+                              padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(16),
+                              ),
+                            ),
                             child: isLoading
                                 ? const SizedBox(
                                     height: 23,
@@ -80,14 +88,6 @@ class PlaybuttonCard extends StatelessWidget {
                                         ? Icons.pause_rounded
                                         : Icons.play_arrow_rounded,
                                   ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                const CircleBorder(),
-                              ),
-                              padding: MaterialStateProperty.all(
-                                const EdgeInsets.all(16),
-                              ),
-                            ),
                           );
                         }),
                       )

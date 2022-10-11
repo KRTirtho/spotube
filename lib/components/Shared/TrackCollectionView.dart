@@ -78,11 +78,11 @@ class TrackCollectionView extends HookConsumerWidget {
               const CircleBorder(),
             ),
           ),
+          onPressed: tracksSnapshot.asData?.value != null ? onPlay : null,
           child: Icon(
             isPlaying ? Icons.stop_rounded : Icons.play_arrow_rounded,
             color: Theme.of(context).backgroundColor,
           ),
-          onPressed: tracksSnapshot.asData?.value != null ? onPlay : null,
         ),
       ),
     ];

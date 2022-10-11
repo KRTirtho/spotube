@@ -21,7 +21,7 @@ enum ImagePlaceholder {
 abstract class TypeConversionUtils {
   static String image_X_UrlString(
     List<Image>? images, {
-    int index = 0,
+    int index = 1,
     required ImagePlaceholder placeholder,
   }) {
     final String placeholderUrl = {
@@ -31,8 +31,9 @@ abstract class TypeConversionUtils {
       ImagePlaceholder.online:
           "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png",
     }[placeholder]!;
+
     return images != null && images.isNotEmpty
-        ? images[0].url!
+        ? images[index > images.length - 1 ? images.length - 1 : index].url!
         : placeholderUrl;
   }
 

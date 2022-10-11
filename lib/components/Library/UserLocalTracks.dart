@@ -183,9 +183,6 @@ class UserLocalTracks extends HookConsumerWidget {
                     isActive: playback.track?.id == track.id,
                     isChecked: false,
                     showCheck: false,
-                    thumbnailUrl: track.album?.images?.isNotEmpty == true
-                        ? track.album?.images?.single.url
-                        : "assets/album-placeholder.png",
                     isLocal: true,
                     onTrackPlayButtonPressed: (currentTrack) {
                       return playLocalTracks(

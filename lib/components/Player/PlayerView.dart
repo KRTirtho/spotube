@@ -44,7 +44,6 @@ class PlayerView extends HookConsumerWidget {
     String albumArt = useMemoized(
       () => TypeConversionUtils.image_X_UrlString(
         currentTrack?.album?.images,
-        index: (currentTrack?.album?.images?.length ?? 1) - 1,
         placeholder: ImagePlaceholder.albumArt,
       ),
       [currentTrack?.album?.images],

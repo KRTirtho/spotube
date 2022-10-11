@@ -19,7 +19,6 @@ class TrackTile extends HookConsumerWidget {
   final Playback playback;
   final MapEntry<int, Track> track;
   final String duration;
-  final String? thumbnailUrl;
   final void Function(Track currentTrack)? onTrackPlayButtonPressed;
   final logger = getLogger(TrackTile);
   final bool userPlaylist;
@@ -43,7 +42,6 @@ class TrackTile extends HookConsumerWidget {
     required this.isActive,
     this.playlistId,
     this.userPlaylist = false,
-    this.thumbnailUrl,
     this.onTrackPlayButtonPressed,
     this.showAlbum = true,
     this.isChecked = false,
@@ -184,6 +182,12 @@ class TrackTile extends HookConsumerWidget {
           });
     }
 
+    final String thumbnailUrl = TypeConversionUtils.image_X_UrlString(
+      track.value.album?.images,
+      placeholder: ImagePlaceholder.albumArt,
+      index: track.value.album?.images?.length == 1 ? 0 : 2,
+    );
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       decoration: BoxDecoration(
@@ -209,28 +213,27 @@ class TrackTile extends HookConsumerWidget {
                   child: Text((track.key + 1).toString()),
                 ),
               ),
-            if (thumbnailUrl != null)
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: breakpoint.isMoreThan(Breakpoints.md) ? 8.0 : 0,
-                  vertical: 8.0,
-                ),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  child: UniversalImage(
-                    path: thumbnailUrl!,
-                    height: 40,
-                    width: 40,
-                    placeholder: (context, url) {
-                      return Image.asset(
-                        "assets/album-placeholder.png",
-                        height: 40,
-                        width: 40,
-                      );
-                    },
-                  ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: breakpoint.isMoreThan(Breakpoints.md) ? 8.0 : 0,
+                vertical: 8.0,
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+                child: UniversalImage(
+                  path: thumbnailUrl,
+                  height: 40,
+                  width: 40,
+                  placeholder: (context, url) {
+                    return Image.asset(
+                      "assets/album-placeholder.png",
+                      height: 40,
+                      width: 40,
+                    );
+                  },
                 ),
               ),
+            ),
             IconButton(
               icon: Icon(
                 playback.track?.id != null &&

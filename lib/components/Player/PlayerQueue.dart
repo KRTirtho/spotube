@@ -9,7 +9,6 @@ import 'package:spotube/components/Shared/TrackTile.dart';
 import 'package:spotube/hooks/useAutoScrollController.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
@@ -111,10 +110,6 @@ class PlayerQueue extends HookConsumerWidget {
                           playback,
                           track: track,
                           duration: duration,
-                          thumbnailUrl: TypeConversionUtils.image_X_UrlString(
-                            track.value.album?.images,
-                            placeholder: ImagePlaceholder.albumArt,
-                          ),
                           isActive: playback.track?.id == track.value.id,
                           onTrackPlayButtonPressed: (currentTrack) async {
                             if (playback.track?.id == track.value.id) return;
