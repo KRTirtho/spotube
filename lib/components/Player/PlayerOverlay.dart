@@ -21,6 +21,14 @@ class PlayerOverlay extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final paletteColor = usePaletteColor(albumArt, ref);
+    final canShow = ref.watch(
+      playbackProvider.select(
+        (s) =>
+            s.track != null ||
+            s.isPlaying ||
+            s.status == PlaybackStatus.loading,
+      ),
+    );
 
     final onNext = useNextTrack(ref);
     final onPrevious = usePreviousTrack(ref);
@@ -38,9 +46,9 @@ class PlayerOverlay extends HookConsumerWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 250),
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: canShow ? 50 : 0,
             decoration: BoxDecoration(
               color: paletteColor.color.withOpacity(.7),
               border: Border.all(
@@ -49,55 +57,59 @@ class PlayerOverlay extends HookConsumerWidget {
               ),
               borderRadius: BorderRadius.circular(5),
             ),
-            child: Material(
-              type: MaterialType.transparency,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () => GoRouter.of(context).push("/player"),
-                        child: PlayerTrackDetails(
-                          albumArt: albumArt,
-                          color: paletteColor.bodyTextColor,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 250),
+              opacity: canShow ? 1 : 0,
+              child: Material(
+                type: MaterialType.transparency,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () => GoRouter.of(context).push("/player"),
+                          child: PlayerTrackDetails(
+                            albumArt: albumArt,
+                            color: paletteColor.bodyTextColor,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                          icon: const Icon(Icons.skip_previous_rounded),
-                          color: paletteColor.bodyTextColor,
-                          onPressed: () {
-                            onPrevious();
-                          }),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          return IconButton(
-                            icon: Icon(
-                              ref.read(playbackProvider).isPlaying
-                                  ? Icons.pause_rounded
-                                  : Icons.play_arrow_rounded,
-                            ),
+                    Row(
+                      children: [
+                        IconButton(
+                            icon: const Icon(Icons.skip_previous_rounded),
                             color: paletteColor.bodyTextColor,
-                            onPressed: Actions.handler<PlayPauseIntent>(
-                              context,
-                              PlayPauseIntent(ref),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.skip_next_rounded),
-                        onPressed: () => onNext(),
-                        color: paletteColor.bodyTextColor,
-                      ),
-                    ],
-                  ),
-                ],
+                            onPressed: () {
+                              onPrevious();
+                            }),
+                        Consumer(
+                          builder: (context, ref, _) {
+                            return IconButton(
+                              icon: Icon(
+                                ref.read(playbackProvider).isPlaying
+                                    ? Icons.pause_rounded
+                                    : Icons.play_arrow_rounded,
+                              ),
+                              color: paletteColor.bodyTextColor,
+                              onPressed: Actions.handler<PlayPauseIntent>(
+                                context,
+                                PlayPauseIntent(ref),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.skip_next_rounded),
+                          onPressed: () => onNext(),
+                          color: paletteColor.bodyTextColor,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

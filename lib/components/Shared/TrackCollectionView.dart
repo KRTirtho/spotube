@@ -233,7 +233,6 @@ class TrackCollectionView extends HookConsumerWidget {
                     onTrackPlayButtonPressed: onPlay,
                     playlistId: id,
                     userPlaylist: isOwned,
-                    bottomSpace: bottomSpace,
                   );
                 },
                 error: (error, _) =>

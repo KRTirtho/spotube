@@ -15,7 +15,6 @@ class TracksTableView extends HookConsumerWidget {
   final List<Track> tracks;
   final bool userPlaylist;
   final String? playlistId;
-  final bool bottomSpace;
   final bool isSliver;
 
   final Widget? heading;
@@ -26,7 +25,6 @@ class TracksTableView extends HookConsumerWidget {
     this.userPlaylist = false,
     this.playlistId,
     this.heading,
-    this.bottomSpace = false,
     this.isSliver = true,
   }) : super(key: key);
 
@@ -191,7 +189,6 @@ class TracksTableView extends HookConsumerWidget {
                 ),
               );
             }).toList(),
-            if (bottomSpace) const SizedBox(height: 70),
           ];
 
     if (isSliver) {
