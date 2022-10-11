@@ -25,6 +25,8 @@ jobs:
           mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
 
       - run: |
+          curl -sS https://webi.sh/yq | sh
+          yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
           flutter config --enable-linux-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
@@ -57,6 +59,8 @@ jobs:
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
 
       - run: |
+          curl -sS https://webi.sh/yq | sh
+          yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
@@ -83,6 +87,9 @@ jobs:
         with:
           cache: true
       - run: |
+          choco install sed make yq -y
+          yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.GITHUB_RUN_NUMBER }}/" windows/runner/Runner.rc
           flutter config --enable-windows-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
@@ -107,6 +114,8 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+      - run: brew install yq
+      - run: yq -i '.version |= sub("\+\d+", "${{ env.GITHUB_RUN_NUMBER }}")' pubspec.yaml
       - run: flutter config --enable-macos-desktop
       - run: flutter pub get
       - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
