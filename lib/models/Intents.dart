@@ -30,9 +30,15 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
       } else if (playback.track != null &&
           playback.currentDuration == Duration.zero &&
           await playback.player.getCurrentPosition() == Duration.zero) {
-        final track = Track.fromJson(playback.track!.toJson());
-        playback.track = null;
-        await playback.play(track);
+        if (playback.track!.ytUri.startsWith("http")) {
+          final track = Track.fromJson(playback.track!.toJson());
+          playback.track = null;
+          await playback.play(track);
+        } else {
+          final track = playback.track;
+          playback.track = null;
+          await playback.play(track!);
+        }
       } else {
         await playback.togglePlayPause();
       }

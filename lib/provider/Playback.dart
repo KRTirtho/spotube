@@ -576,8 +576,8 @@ class Playback extends PersistedChangeNotifier {
         track = SpotubeTrack.fromJson(trackMap);
       }
       volume = map["volume"] ?? volume;
-    } catch (e) {
-      _logger.e("loadFromLocal", e);
+    } catch (e, stack) {
+      _logger.e("loadFromLocal", e, stack);
     }
   }
 

@@ -83,6 +83,7 @@ class Shell extends HookConsumerWidget {
               ),
             )
           : null,
+      extendBodyBehindAppBar: true,
       body: Row(
         children: [
           Sidebar(

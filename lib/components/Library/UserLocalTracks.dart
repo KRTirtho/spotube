@@ -16,6 +16,7 @@ import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -137,6 +138,7 @@ class UserLocalTracks extends HookConsumerWidget {
 
     useAsyncEffect(
       () async {
+        if (!kIsMobile) return;
         if (!await Permission.storage.isGranted &&
             !await Permission.storage.isLimited) {
           await Permission.storage.request();

@@ -1,4 +1,5 @@
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/SpotubeTrack.dart';
 
 extension AlbumJson on AlbumSimple {
   Map<String, dynamic> toJson() {
@@ -74,8 +75,13 @@ class CurrentPlaylist {
   static CurrentPlaylist fromJson(Map<String, dynamic> map) {
     return CurrentPlaylist(
       id: map["id"],
-      tracks: List.castFrom<dynamic, Track>(
-          map["tracks"].map((track) => Track.fromJson(track)).toList()),
+      tracks: List.castFrom<dynamic, Track>(map["tracks"]
+          .map(
+            (track) => map["isLocal"] == true
+                ? SpotubeTrack.fromJson(track)
+                : Track.fromJson(track),
+          )
+          .toList()),
       name: map["name"],
       thumbnail: map["thumbnail"],
       isLocal: map["isLocal"],
@@ -108,7 +114,10 @@ class CurrentPlaylist {
     return {
       "id": id,
       "name": name,
-      "tracks": tracks.map((track) => track.toJson()).toList(),
+      "tracks": tracks
+          .map((track) =>
+              track is SpotubeTrack ? track.toJson() : track.toJson())
+          .toList(),
       "thumbnail": thumbnail,
       "isLocal": isLocal,
     };
