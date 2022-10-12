@@ -27,7 +27,7 @@ jobs:
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/spotube.nuspec
 
       # Build Windows Executable
-      - uses: subosito/flutter-action@v2.2.0
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - run: |
@@ -69,7 +69,7 @@ jobs:
         id: tag
         with:
           strip_v: true
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - run: flutter config --enable-macos-desktop
@@ -96,7 +96,7 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - name: Get current date
@@ -138,7 +138,7 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - run: |
