@@ -100,6 +100,10 @@ class PlayerView extends HookConsumerWidget {
                                     fontWeight: FontWeight.bold,
                                     color: paletteColor.bodyTextColor,
                                   ),
+                          onRouteChange: (route) {
+                            GoRouter.of(context).pop();
+                            GoRouter.of(context).push(route);
+                          },
                         ),
                       ],
                     ),

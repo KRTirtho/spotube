@@ -38,7 +38,7 @@ class TokenLogin extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 10),
                   TokenLoginForm(
-                    onDone: () => ServiceUtils.navigate(context, "/"),
+                    onDone: () => GoRouter.of(context).go("/"),
                   ),
                   const SizedBox(height: 10),
                   Wrap(

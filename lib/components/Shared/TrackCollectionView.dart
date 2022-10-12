@@ -112,7 +112,7 @@ class TrackCollectionView extends HookConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-          appBar: (kIsDesktop)
+          appBar: kIsDesktop
               ? PageWindowTitleBar(
                   backgroundColor: color?.color,
                   foregroundColor: color?.titleTextColor,

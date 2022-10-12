@@ -7,9 +7,11 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
+import 'package:spotube/hooks/useAsyncEffect.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -132,6 +134,18 @@ class UserLocalTracks extends HookConsumerWidget {
     final playback = ref.watch(playbackProvider);
     final isPlaylistPlaying = playback.playlist?.id == "local";
     final trackSnapshot = ref.watch(localTracksProvider);
+
+    useAsyncEffect(
+      () async {
+        if (!await Permission.storage.isGranted &&
+            !await Permission.storage.isLimited) {
+          await Permission.storage.request();
+        }
+      },
+      null,
+      [],
+    );
+
     return Column(
       children: [
         Padding(

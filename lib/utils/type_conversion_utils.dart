@@ -5,10 +5,12 @@ import 'dart:io';
 import 'package:flutter/widgets.dart' hide Image;
 import 'package:metadata_god/metadata_god.dart' hide Image;
 import 'package:path/path.dart';
+import 'package:spotube/components/Shared/AnchorButton.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 enum ImagePlaceholder {
@@ -46,6 +48,7 @@ abstract class TypeConversionUtils {
     WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.center,
     WrapAlignment mainAxisAlignment = WrapAlignment.center,
     TextStyle textStyle = const TextStyle(),
+    void Function(String route)? onRouteChange,
   }) {
     return Wrap(
       crossAxisAlignment: crossAxisAlignment,
@@ -54,14 +57,25 @@ abstract class TypeConversionUtils {
           .asMap()
           .entries
           .map(
-            (artist) => LinkText(
-              (artist.key != artists.length - 1)
-                  ? "${artist.value.name}, "
-                  : artist.value.name!,
-              "/artist/${artist.value.id}",
-              overflow: TextOverflow.ellipsis,
-              style: textStyle,
-            ),
+            (artist) => Builder(builder: (context) {
+              return AnchorButton(
+                (artist.key != artists.length - 1)
+                    ? "${artist.value.name}, "
+                    : artist.value.name!,
+                onTap: () {
+                  if (onRouteChange != null) {
+                    onRouteChange("/artist/${artist.value.id}");
+                  } else {
+                    ServiceUtils.navigate(
+                      context,
+                      "/artist/${artist.value.id}",
+                    );
+                  }
+                },
+                overflow: TextOverflow.ellipsis,
+                style: textStyle,
+              );
+            }),
           )
           .toList(),
     );

@@ -49,7 +49,6 @@ class Settings extends HookConsumerWidget {
     return SafeArea(
       child: Scaffold(
         appBar: PageWindowTitleBar(
-          leading: const BackButton(),
           center: Text(
             "Settings",
             style: Theme.of(context).textTheme.headline5,

@@ -10,6 +10,7 @@ import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/provider/Downloader.dart';
+import 'package:spotube/utils/platform.dart';
 
 const _path = {
   0: "/",
@@ -66,21 +67,22 @@ class Shell extends HookConsumerWidget {
     final preferredSize =
         allowedPath ? PageWindowTitleBar.staticPreferredSize : Size.zero;
     return Scaffold(
-      primary: true,
-      appBar: PreferredSize(
-        preferredSize: preferredSize,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          height:
-              allowedPath ? PageWindowTitleBar.staticPreferredSize.height : 0,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 250),
-            opacity: allowedPath ? 1 : 0,
-            child: PageWindowTitleBar(preferredSize: preferredSize),
-          ),
-        ),
-      ),
-      extendBodyBehindAppBar: true,
+      appBar: kIsDesktop
+          ? PreferredSize(
+              preferredSize: preferredSize,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                height: allowedPath
+                    ? PageWindowTitleBar.staticPreferredSize.height
+                    : 0,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 250),
+                  opacity: allowedPath ? 1 : 0,
+                  child: PageWindowTitleBar(preferredSize: preferredSize),
+                ),
+              ),
+            )
+          : null,
       body: Row(
         children: [
           Sidebar(

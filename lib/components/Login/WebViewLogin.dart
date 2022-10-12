@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/utils/platform.dart';
@@ -61,7 +62,7 @@ class WebViewLogin extends HookConsumerWidget {
               );
               if (mounted()) {
                 // ignore: use_build_context_synchronously
-                ServiceUtils.navigate(context, "/");
+                GoRouter.of(context).go("/");
               }
             }
           },
