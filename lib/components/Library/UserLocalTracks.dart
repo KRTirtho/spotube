@@ -142,6 +142,7 @@ class UserLocalTracks extends HookConsumerWidget {
         if (!await Permission.storage.isGranted &&
             !await Permission.storage.isLimited) {
           await Permission.storage.request();
+          ref.refresh(localTracksProvider);
         }
       },
       null,
