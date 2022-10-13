@@ -6,7 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/TrackCollectionView.dart';
+import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -18,14 +20,20 @@ class AlbumView extends HookConsumerWidget {
   final AlbumSimple album;
   const AlbumView(this.album, {Key? key}) : super(key: key);
 
-  Future<void> playPlaylist(Playback playback, List<Track> tracks,
-      {Track? currentTrack}) async {
-    currentTrack ??= tracks.first;
+  Future<void> playPlaylist(
+    Playback playback,
+    List<Track> tracks,
+    WidgetRef ref, {
+    Track? currentTrack,
+  }) async {
+    final sortBy = ref.read(trackCollectionSortState(album.id!));
+    final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
+    currentTrack ??= sortedTracks.first;
     final isPlaylistPlaying = playback.playlist?.id == album.id;
     if (!isPlaylistPlaying) {
       await playback.playPlaylist(
         CurrentPlaylist(
-          tracks: tracks,
+          tracks: sortedTracks,
           id: album.id!,
           name: album.name!,
           thumbnail: TypeConversionUtils.image_X_UrlString(
@@ -33,7 +41,7 @@ class AlbumView extends HookConsumerWidget {
             placeholder: ImagePlaceholder.collection,
           ),
         ),
-        tracks.indexWhere((s) => s.id == currentTrack?.id),
+        sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
       );
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
@@ -82,6 +90,7 @@ class AlbumView extends HookConsumerWidget {
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
                   .toList(),
+              ref,
             );
           } else if (isAlbumPlaying && track != null) {
             playPlaylist(
@@ -91,6 +100,7 @@ class AlbumView extends HookConsumerWidget {
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
                   .toList(),
               currentTrack: track,
+              ref,
             );
           } else {
             playback.stop();

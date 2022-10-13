@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
@@ -10,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
+import 'package:spotube/components/Shared/SortTracksDropdown.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
 import 'package:spotube/hooks/useAsyncEffect.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
@@ -18,6 +21,7 @@ import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 const supportedAudioTypes = [
@@ -36,6 +40,15 @@ const imgMimeToExt = {
   "image/webp": ".webp",
   "image/gif": ".gif",
 };
+
+enum SortBy {
+  none,
+  ascending,
+  descending,
+  artist,
+  album,
+  dateAdded,
+}
 
 final localTracksProvider = FutureProvider<List<Track>>((ref) async {
   try {
@@ -132,6 +145,7 @@ class UserLocalTracks extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final sortBy = useState<SortBy>(SortBy.none);
     final playback = ref.watch(playbackProvider);
     final isPlaylistPlaying = playback.playlist?.id == "local";
     final trackSnapshot = ref.watch(localTracksProvider);
@@ -176,6 +190,13 @@ class UserLocalTracks extends HookConsumerWidget {
                     : null,
               ),
               const Spacer(),
+              SortTracksDropdown(
+                value: sortBy.value,
+                onChanged: (value) {
+                  if (value != null) sortBy.value = value;
+                },
+              ),
+              const SizedBox(width: 10),
               ElevatedButton(
                 child: const Icon(Icons.refresh_rounded),
                 onPressed: () {
@@ -187,11 +208,15 @@ class UserLocalTracks extends HookConsumerWidget {
         ),
         trackSnapshot.when(
           data: (tracks) {
+            final sortedTracks = useMemoized(() {
+              return ServiceUtils.sortTracks(tracks, sortBy.value);
+            }, [sortBy.value, tracks]);
+
             return Expanded(
               child: ListView.builder(
-                itemCount: tracks.length,
+                itemCount: sortedTracks.length,
                 itemBuilder: (context, index) {
-                  final track = tracks[index];
+                  final track = sortedTracks[index];
                   return TrackTile(
                     playback,
                     duration:
@@ -204,7 +229,7 @@ class UserLocalTracks extends HookConsumerWidget {
                     onTrackPlayButtonPressed: (currentTrack) {
                       return playLocalTracks(
                         playback,
-                        tracks,
+                        sortedTracks,
                         currentTrack: track,
                       );
                     },

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:http/http.dart' as http;
@@ -392,5 +393,32 @@ abstract class ServiceUtils {
 
   static void navigate(BuildContext context, String location, {Object? extra}) {
     GoRouter.of(context).push(location, extra: extra);
+  }
+
+  static List<T> sortTracks<T extends Track>(List<T> tracks, SortBy sortBy) {
+    if (sortBy == SortBy.none) return tracks;
+    return List<T>.from(tracks)
+      ..sort((a, b) {
+        switch (sortBy) {
+          case SortBy.album:
+            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
+          case SortBy.artist:
+            return a.artists?.first.name
+                    ?.compareTo(b.artists?.first.name ?? "") ??
+                0;
+          case SortBy.ascending:
+            return a.name?.compareTo(b.name ?? "") ?? 0;
+          case SortBy.dateAdded:
+            final aDate =
+                double.parse(a.album?.releaseDate?.split("-").first ?? "2069");
+            final bDate =
+                double.parse(b.album?.releaseDate?.split("-").first ?? "2069");
+            return aDate.compareTo(bDate);
+          case SortBy.descending:
+            return b.name?.compareTo(a.name ?? "") ?? 0;
+          default:
+            return 0;
+        }
+      });
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/TrackCollectionView.dart';
+import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistView extends HookConsumerWidget {
@@ -23,15 +25,21 @@ class PlaylistView extends HookConsumerWidget {
   final PlaylistSimple playlist;
   PlaylistView(this.playlist, {Key? key}) : super(key: key);
 
-  playPlaylist(Playback playback, List<Track> tracks,
-      {Track? currentTrack}) async {
-    currentTrack ??= tracks.first;
+  Future<void> playPlaylist(
+    Playback playback,
+    List<Track> tracks,
+    WidgetRef ref, {
+    Track? currentTrack,
+  }) async {
+    final sortBy = ref.read(trackCollectionSortState(playlist.id!));
+    final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
+    currentTrack ??= sortedTracks.first;
     final isPlaylistPlaying =
         playback.playlist?.id != null && playback.playlist?.id == playlist.id;
     if (!isPlaylistPlaying) {
       await playback.playPlaylist(
         CurrentPlaylist(
-          tracks: tracks,
+          tracks: sortedTracks,
           id: playlist.id!,
           name: playlist.name!,
           thumbnail: TypeConversionUtils.image_X_UrlString(
@@ -39,7 +47,7 @@ class PlaylistView extends HookConsumerWidget {
             placeholder: ImagePlaceholder.collection,
           ),
         ),
-        tracks.indexWhere((s) => s.id == currentTrack?.id),
+        sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
       );
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
@@ -85,14 +93,12 @@ class PlaylistView extends HookConsumerWidget {
       onPlay: ([track]) {
         if (tracksSnapshot.asData?.value != null) {
           if (!isPlaylistPlaying) {
-            playPlaylist(
-              playback,
-              tracksSnapshot.asData!.value,
-            );
+            playPlaylist(playback, tracksSnapshot.asData!.value, ref);
           } else if (isPlaylistPlaying && track != null) {
             playPlaylist(
               playback,
               tracksSnapshot.asData!.value,
+              ref,
               currentTrack: track,
             );
           } else {

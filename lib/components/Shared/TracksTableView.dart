@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/components/Shared/DownloadConfirmationDialog.dart';
 import 'package:spotube/components/Shared/NotFound.dart';
+import 'package:spotube/components/Shared/SortTracksDropdown.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/service_utils.dart';
+
+final trackCollectionSortState =
+    StateProvider.family<SortBy, String>((ref, _) => SortBy.none);
 
 class TracksTableView extends HookConsumerWidget {
   final void Function(Track currentTrack)? onTrackPlayButtonPressed;
@@ -39,26 +45,34 @@ class TracksTableView extends HookConsumerWidget {
 
     final selected = useState<List<String>>([]);
     final showCheck = useState<bool>(false);
+    final sortBy = ref.watch(trackCollectionSortState(playlistId ?? ''));
 
-    final selectedTracks = useMemoized(
-      () => tracks.where(
-        (track) => selected.value.contains(track.id),
-      ),
-      [tracks],
+    final sortedTracks = useMemoized(
+      () {
+        return ServiceUtils.sortTracks(tracks, sortBy);
+      },
+      [tracks, sortBy],
     );
 
-    final children = tracks.isEmpty
+    final selectedTracks = useMemoized(
+      () => sortedTracks.where(
+        (track) => selected.value.contains(track.id),
+      ),
+      [sortedTracks],
+    );
+
+    final children = sortedTracks.isEmpty
         ? [const NotFound(vertical: true)]
         : [
             if (heading != null) heading!,
             Row(
               children: [
                 Checkbox(
-                  value: selected.value.length == tracks.length,
+                  value: selected.value.length == sortedTracks.length,
                   onChanged: (checked) {
                     if (!showCheck.value) showCheck.value = true;
                     if (checked == true) {
-                      selected.value = tracks.map((s) => s.id!).toList();
+                      selected.value = sortedTracks.map((s) => s.id!).toList();
                     } else {
                       selected.value = [];
                       showCheck.value = false;
@@ -104,11 +118,20 @@ class TracksTableView extends HookConsumerWidget {
                   Text("Time", style: tableHeadStyle),
                   const SizedBox(width: 10),
                 ],
+                SortTracksDropdown(
+                  value: sortBy,
+                  onChanged: (value) {
+                    ref
+                        .read(trackCollectionSortState(playlistId ?? '').state)
+                        .state = value;
+                  },
+                ),
                 PopupMenuButton(
                   itemBuilder: (context) {
                     return [
                       PopupMenuItem(
                         enabled: selected.value.isNotEmpty,
+                        value: "download",
                         child: Row(
                           children: [
                             const Icon(Icons.file_download_outlined),
@@ -117,7 +140,6 @@ class TracksTableView extends HookConsumerWidget {
                             ),
                           ],
                         ),
-                        value: "download",
                       ),
                     ];
                   },
@@ -144,7 +166,7 @@ class TracksTableView extends HookConsumerWidget {
                 ),
               ],
             ),
-            ...tracks.asMap().entries.map((track) {
+            ...sortedTracks.asMap().entries.map((track) {
               String duration =
                   "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
               return InkWell(
