@@ -87,28 +87,6 @@ I'm always releasing newer versions of binary of the software each 2-3 month wit
 ## Nightly Builds
 Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/spotube/workflows/spotube-nightly/build)
 
-## Optional Configurations
-### Login with <b>Spotify</b>
-  You need a spotify account & a developer app for
-
-  - clientId
-  - clientSecret
-
-  **Grab credentials:**
-
-  - Go to https://developer.spotify.com/dashboard/login & login with your spotify account (Skip if you're logged in)
-    <img width='480' alt='Step 1' src='https://user-images.githubusercontent.com/61944859/111762106-d1d37680-88ca-11eb-9884-ec7a40c0dd27.png'/>
-
-  - Create an web app for Spotify Public API<br/>
-    <img width='480' alt='step 2' src='https://user-images.githubusercontent.com/61944859/111762507-473f4700-88cb-11eb-91f3-d480e9584883.png'/>
-
-  - **MOST IMPORTANT:** Give the app a name & description. Then Edit settings & add `http://localhost:4304/auth/spotify/callback` as **Redirect URI** for the app. Its important for authenticating<br/>
-    <img width='720' alt='step-3-a' src='https://user-images.githubusercontent.com/61944859/172991668-fa40f247-1118-4aba-a749-e669b732fa4d.jpg' />
-    <img width='720' alt='setp-3-b' src='https://user-images.githubusercontent.com/61944859/111768971-d308a180-88d2-11eb-9108-3e7444cef049.png'/>
-
-  - Click on **SHOW CLIENT SECRET** to reveal the **clientSecret**. Then copy the **clientID**, **clientSecret** & paste in the **Spotube's** respective fields<br/>
-    <img width='480' alt='step-4' src='https://user-images.githubusercontent.com/61944859/111769501-7fe31e80-88d3-11eb-8fc1-f3655dbd4711.png'/>
-
 # TODO:
 - [ ] Windows OS Media Control & Media Keys Support
 - [ ] Spotify Listen Along
@@ -176,6 +154,10 @@ Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sour
 - [badges](https://github.com/yako-dev/flutter_badges) - A flutter package for creating badges.
 - [mime](https://github.com/dart-lang/mime) - Dart package for working with MIME type definitions and for processing streams of MIME multipart media types.
 - [metadata_god](https://github.com/KRTirtho/metadata_god) - Audio file Metadata reading and writing library for Flutter 
+- [visibility_detector](https://github.com/google/flutter.widgets/tree/master/packages/visibility_detector) - A widget that detects the visibility of its child and notifies a callback
+- [fl_query](https://github.com/KRTirtho/fl-query) - Asynchronous data caching, refetching & invalidation library for Flutter
+- [fl_query_hooks](https://github.com/KRTirtho/fl-query/tree/main/packages/fl_query_hooks) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
+- [flutter_inappwebview](https://github.com/pichillilorenzo/flutter_inappwebview) - A Flutter plugin that allows you to add an inline webview, to use a headless webview, and to open an in-app browser window
 
 # The Team
 
