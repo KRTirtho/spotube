@@ -8,6 +8,7 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:queue/queue.dart';
 import 'package:path/path.dart' as path;
 import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -63,8 +64,10 @@ class Downloader with ChangeNotifier {
         final filename = '$cleanTitle.m4a';
         final file = File(path.join(downloadPath, filename));
         try {
+          final replaceFileGlobal = ref.read(replaceDownloadedFileState);
           logger.v("[addToQueue] Download starting for ${file.path}");
-          if (file.existsSync() && await onFileExists?.call(track) != true) {
+          if (file.existsSync() &&
+              (replaceFileGlobal ?? await onFileExists?.call(track)) != true) {
             return;
           }
           file.createSync(recursive: true);
