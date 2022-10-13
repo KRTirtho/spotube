@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/KRTirtho/spotube/compare/v2.4.1...v2.5.0) (2022-10-13)
+
+
+### Features
+
+* animated transition of root PageWindowTitleBar ([ff35e06](https://github.com/KRTirtho/spotube/commit/ff35e06a6605fc7ec762e716fb7bdf6f7eb45732))
+* **auth:** new authentication flow using cookies and webview in android ([756b910](https://github.com/KRTirtho/spotube/commit/756b91007ee747c10ed10aa7060af49b555a2eaf))
+* **downloader:** replace /skip all choice for downloaded tracks ([88d7ce5](https://github.com/KRTirtho/spotube/commit/88d7ce55a59f673d60cd9e85ab062bcb1b7dcbc3))
+* implemented go_route shell/nested route ([3e498a4](https://github.com/KRTirtho/spotube/commit/3e498a4827a1118e0b23faec7cf114272f7838d4))
+* **keyboard shortcuts:** play/pause on space, seek position on left/right ([2734454](https://github.com/KRTirtho/spotube/commit/2734454717bbfb5d0621c6ea72fa755ef4fc8602))
+* **keyboard-shortcuts:** home sidebar tab navigation and close app ([8f258e7](https://github.com/KRTirtho/spotube/commit/8f258e709ada418dbeef8d272af370b1741afd9c))
+* smoother list using fl_query and waypoint ([c77b0e1](https://github.com/KRTirtho/spotube/commit/c77b0e198b215180d863747e35998a17aff92720))
+* sort tracks in playlist, album and local tracks ([cb4bd25](https://github.com/KRTirtho/spotube/commit/cb4bd25df154455d225c426cfeaaea36ac09e9b7))
+* use of smaller sized images in `TrackTile` ([0ca97b4](https://github.com/KRTirtho/spotube/commit/0ca97b495f2a9ece8356f7813fc0e37d1cdb8608))
+* volume slider mouse scroll and preference for Rotating Album Art [#255](https://github.com/KRTirtho/spotube/issues/255) ([edb6f3c](https://github.com/KRTirtho/spotube/commit/edb6f3cd1c9ee2961040b2fe7a91c48577cee4f7))
+
+
+### Bug Fixes
+
+* **android:** file_picker and permission_handler failure for sdk < 33 ([139d4dc](https://github.com/KRTirtho/spotube/commit/139d4dc033d9aaa1d6882bf0f53e96a3b1e87c95))
+* cached local track is fetched from network ([abf4a57](https://github.com/KRTirtho/spotube/commit/abf4a5763a2faeedeb93d54e66c1f2482295b326))
+* categories not showing for oauth exception ([4df917e](https://github.com/KRTirtho/spotube/commit/4df917e65ee20cbcf42394cc141b1cdcdd6cc914))
+* **desktop:** maximized window size is stored and window maximized state doesn't persist ([91d5d10](https://github.com/KRTirtho/spotube/commit/91d5d1003b09530ff3bc9a0aa93e382e943977e0))
+* local audio doesn't get refreshed after getting permission ([618c6da](https://github.com/KRTirtho/spotube/commit/618c6da0ebddf3cc8e216743bbbb9220bcf40521))
+* no appropriate output when playlist is empty [#201](https://github.com/KRTirtho/spotube/issues/201) ([dbb81de](https://github.com/KRTirtho/spotube/commit/dbb81de763df60eba62ef1256a7161ea6ca59b66))
+* PlayerOverlay not hiding when not playing and unneeded bottom space in TrackTableView ([0ebac05](https://github.com/KRTirtho/spotube/commit/0ebac05a4be8e8f744a6c672d3bb9807d6f02e10))
+* **web:** not building due to metadata_god ffi ([1191bf2](https://github.com/KRTirtho/spotube/commit/1191bf232d0797aaae7eff2f5d570acd49ce61bd))
+
 ## [2.4.1](https://github.com/KRTirtho/spotube/compare/v2.4.0...v2.4.1) (2022-09-13)
 
 
