@@ -241,10 +241,11 @@ jobs:
       - run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
           rm -rf spotube
-      - uses: EndBug/add-and-commit@v9
-        with:
-          message: v${{ steps.tag.outputs.tag }} Update
-          push: origin master
+          git add .
+          git commit -m "v${{ steps.tag.outputs.tag }} Update"
+          git branch update-${{ steps.tag.outputs.tag }}
+          git switch update-${{ steps.tag.outputs.tag }}
+          git push -u origin update-${{ steps.tag.outputs.tag }}
 
   publish_aur:
     needs: update_release
