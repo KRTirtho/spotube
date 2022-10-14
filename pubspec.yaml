@@ -52,7 +52,10 @@ dependencies:
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   mime: ^1.0.2
-  metadata_god: ^0.2.0
+  metadata_god:
+    git:
+      url: https://github.com/KRTirtho/metadata_god.git
+      ref: 7d195fdde324b382fc12067c56391285807e6233
   visibility_detector: ^0.3.3
   fl_query: ^0.3.0
   fl_query_hooks: ^0.3.0

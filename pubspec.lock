@@ -770,10 +770,12 @@ packages:
   metadata_god:
     dependency: "direct main"
     description:
-      name: metadata_god
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
+      path: "."
+      ref: "7d195fdde324b382fc12067c56391285807e6233"
+      resolved-ref: "7d195fdde324b382fc12067c56391285807e6233"
+      url: "https://github.com/KRTirtho/metadata_god.git"
+    source: git
+    version: "0.3.0"
   mime:
     dependency: "direct main"
     description:
