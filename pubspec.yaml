@@ -58,7 +58,7 @@ dependencies:
       ref: 7d195fdde324b382fc12067c56391285807e6233
   visibility_detector: ^0.3.3
   fl_query: ^0.3.0
-  fl_query_hooks: ^0.3.0
+  fl_query_hooks: ^0.3.1
   flutter_inappwebview: ^5.4.3+7
   tuple: ^2.0.1
 

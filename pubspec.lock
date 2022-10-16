@@ -485,14 +485,14 @@ packages:
       name: fl_query
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   fl_query_hooks:
     dependency: "direct main"
     description:
       name: fl_query_hooks
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   flutter:
     dependency: "direct main"
     description: flutter
