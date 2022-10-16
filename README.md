@@ -105,7 +105,7 @@ You can find the details [here](CONTRIBUTION.md#your-first-code-contribution)
 
 [BSD-4-Clause](/LICENSE)
 
-Bu why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p)
+But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p)
 
 # Financial Contributors
 ## Backers
