@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:spotify/spotify.dart';
@@ -21,6 +22,7 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:tuple/tuple.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
 import 'package:spotube/extensions/list-sort-multiple.dart';
@@ -154,7 +156,7 @@ class Playback extends PersistedChangeNotifier {
               playlist!.tracks[currentTrackIndex + 1],
             ).then((v) {
               _isPreSearching = false;
-              return v;
+              return v.item1;
             });
           }
           if (track != null && preferences.skipSponsorSegments) {
@@ -211,10 +213,12 @@ class Playback extends PersistedChangeNotifier {
         status = PlaybackStatus.loading;
         notifyListeners();
       }
-
+      AudioOnlyStreamInfo? manifest;
       // the track is not a SpotubeTrack so turning it to one
       if (track is! SpotubeTrack) {
-        track = await toSpotubeTrack(track);
+        final s = await toSpotubeTrack(track);
+        track = s.item1;
+        manifest = s.item2;
       }
 
       final tag = MediaItem(
@@ -238,7 +242,7 @@ class Playback extends PersistedChangeNotifier {
       updatePersistence();
       await player.play(
         track.ytUri.startsWith("http")
-            ? UrlSource(track.ytUri)
+            ? await getAppropriateSource(track, manifest)
             : DeviceFileSource(track.ytUri),
       );
       status = PlaybackStatus.playing;
@@ -372,7 +376,7 @@ class Playback extends PersistedChangeNotifier {
   }
 
   // playlist & track list methods
-  Future<SpotubeTrack> toSpotubeTrack(
+  Future<Tuple2<SpotubeTrack, AudioOnlyStreamInfo>> toSpotubeTrack(
     Track track, {
     bool noSponsorBlock = false,
   }) async {
@@ -389,7 +393,7 @@ class Playback extends PersistedChangeNotifier {
       _logger.v("[Track Search Artists] $artistsName");
       final mainArtist = artistsName.first;
       final featuredArtists = artistsName.length > 1
-          ? "feat. " + artistsName.sublist(1).join(" ")
+          ? "feat. ${artistsName.sublist(1).join(" ")}"
           : "";
       final title = ServiceUtils.getTitle(
         track.name!,
@@ -487,11 +491,11 @@ class Playback extends PersistedChangeNotifier {
         }
       });
 
-      final ytUri = (audioQuality == AudioQuality.high
-              ? audioManifest.withHighestBitrate()
-              : audioManifest.sortByBitrate().last)
-          .url
-          .toString();
+      final chosenStreamInfo = audioQuality == AudioQuality.high
+          ? audioManifest.withHighestBitrate()
+          : audioManifest.sortByBitrate().last;
+
+      final ytUri = chosenStreamInfo.url.toString();
 
       final skipSegments = cachedTrack?.skipSegments != null &&
               cachedTrack!.skipSegments!.isNotEmpty
@@ -517,19 +521,68 @@ class Playback extends PersistedChangeNotifier {
         );
       }
 
-      return SpotubeTrack.fromTrack(
-        track: track,
-        ytTrack: ytVideo,
-        // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
-        // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
-        // codec/mimetype for those Platforms
-        ytUri: ytUri,
-        skipSegments: skipSegments,
+      return Tuple2(
+        SpotubeTrack.fromTrack(
+          track: track,
+          ytTrack: ytVideo,
+          // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
+          // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
+          // codec/mimetype for those Platforms
+          ytUri: ytUri,
+          skipSegments: skipSegments,
+        ),
+        chosenStreamInfo,
       );
     } catch (e, stack) {
       _logger.e("topSpotubeTrack", e, stack);
       rethrow;
     }
+  }
+
+  Future<Source> getAppropriateSource(
+    SpotubeTrack track, [
+    AudioOnlyStreamInfo? manifest,
+  ]) async {
+    if (!kIsMobile || !preferences.androidBytesPlay) {
+      return UrlSource(track.ytUri);
+    }
+    final List<int> bytesStore = [];
+    final bytesFuture = Completer<Uint8List>();
+
+    if (manifest == null) {
+      StreamManifest trackManifest = await raceMultiple(
+        () => youtube.videos.streams.getManifest(track.ytTrack.id),
+      );
+      final audioManifest = trackManifest.audioOnly.where((info) {
+        final isMp4a = info.codec.mimeType == "audio/mp4";
+        if (kIsLinux) {
+          return !isMp4a;
+        } else if (kIsMacOS || kIsIOS) {
+          return isMp4a;
+        } else {
+          return true;
+        }
+      });
+
+      manifest ??= audioManifest.sortByBitrate().last;
+    }
+
+    youtube.videos.streamsClient.get(manifest).listen(
+      (data) {
+        bytesStore.addAll(data);
+      },
+      onDone: () {
+        bytesFuture.complete(Uint8List.fromList(bytesStore));
+      },
+      onError: (e) {
+        _logger.e("toByteTrack", e);
+        bytesFuture.completeError(e);
+      },
+    );
+
+    final bytes = await bytesFuture.future;
+
+    return bytes.isNotEmpty ? BytesSource(bytes) : UrlSource(track.ytUri);
   }
 
   Future<void> setPlaylistPosition(int position) async {

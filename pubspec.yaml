@@ -60,6 +60,7 @@ dependencies:
   fl_query: ^0.3.0
   fl_query_hooks: ^0.3.0
   flutter_inappwebview: ^5.4.3+7
+  tuple: ^2.0.1
 
 dev_dependencies:
   flutter_test:

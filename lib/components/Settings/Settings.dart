@@ -14,6 +14,7 @@ import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class Settings extends HookConsumerWidget {
@@ -272,6 +273,23 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
+                    if (kIsMobile)
+                      ListTile(
+                        leading: const Icon(Icons.download_for_offline_rounded),
+                        title: const Text(
+                          "Pre download and play",
+                        ),
+                        subtitle: const Text(
+                          "Instead of streaming audio, download bytes and play instead (Recommended for higher bandwidth users)",
+                        ),
+                        trailing: Switch.adaptive(
+                          activeColor: Theme.of(context).primaryColor,
+                          value: preferences.androidBytesPlay,
+                          onChanged: (state) {
+                            preferences.setAndroidBytesPlay(state);
+                          },
+                        ),
+                      ),
                     ListTile(
                       leading: const Icon(Icons.fast_forward_rounded),
                       title: const Text(

@@ -52,10 +52,11 @@ class Downloader with ChangeNotifier {
     // Using android Audio Focus to keep the app run in background
     _playback.mobileAudioService?.session?.setActive(true);
     grabberQueue.add(() async {
-      final track = await ref.read(playbackProvider).toSpotubeTrack(
-            baseTrack,
-            noSponsorBlock: true,
-          );
+      final track = (await ref.read(playbackProvider).toSpotubeTrack(
+                baseTrack,
+                noSponsorBlock: true,
+              ))
+          .item1;
       _queue.add(() async {
         final cleanTitle = track.ytTrack.title.replaceAll(
           RegExp(r'[/\\?%*:|"<>]'),

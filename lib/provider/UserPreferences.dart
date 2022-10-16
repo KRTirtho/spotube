@@ -38,12 +38,15 @@ class UserPreferences extends PersistedChangeNotifier {
   LayoutMode layoutMode;
   bool rotatingAlbumArt;
 
+  bool androidBytesPlay;
+
   UserPreferences({
     required this.geniusAccessToken,
     required this.recommendationMarket,
     required this.themeMode,
     required this.ytSearchFormat,
     required this.layoutMode,
+    this.androidBytesPlay = true,
     this.saveTrackLyrics = false,
     this.accentColorScheme = Colors.green,
     this.backgroundColorScheme = Colors.grey,
@@ -61,6 +64,11 @@ class UserPreferences extends PersistedChangeNotifier {
         },
       );
     }
+  }
+
+  void setAndroidBytesPlay(bool value) {
+    androidBytesPlay = value;
+    notifyListeners();
   }
 
   void setThemeMode(ThemeMode mode) {
@@ -191,6 +199,7 @@ class UserPreferences extends PersistedChangeNotifier {
       orElse: () => kIsDesktop ? LayoutMode.extended : LayoutMode.compact,
     );
     rotatingAlbumArt = map["rotatingAlbumArt"] ?? rotatingAlbumArt;
+    androidBytesPlay = map["androidBytesPlay"] ?? androidBytesPlay;
   }
 
   @override
@@ -210,6 +219,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "downloadLocation": downloadLocation,
       "layoutMode": layoutMode.name,
       "rotatingAlbumArt": rotatingAlbumArt,
+      "androidBytesPlay": androidBytesPlay,
     };
   }
 }
