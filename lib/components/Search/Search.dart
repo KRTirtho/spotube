@@ -1,3 +1,4 @@
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,9 +13,11 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:tuple/tuple.dart';
 
 final searchTermStateProvider = StateProvider<String>((ref) => "");
 
@@ -24,18 +27,26 @@ class Search extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final Auth auth = ref.watch(authProvider);
-    final searchTerm = ref.watch(searchTermStateProvider);
-    final controller =
-        useTextEditingController(text: ref.read(searchTermStateProvider));
     final albumController = useScrollController();
     final playlistController = useScrollController();
     final artistController = useScrollController();
     final breakpoint = useBreakpoints();
 
+    final searchMutation = useMutation(
+      job: searchMutationJob,
+    );
+
     if (auth.isAnonymous) {
       return const AnonymousFallback();
     }
-    final searchSnapshot = ref.watch(searchQuery(searchTerm));
+
+    final getVariables = useCallback(
+      () => Tuple2(
+        ref.read(searchTermStateProvider),
+        ref.read(spotifyProvider),
+      ),
+      [],
+    );
 
     return SafeArea(
       child: Material(
@@ -49,14 +60,15 @@ class Search extends HookConsumerWidget {
               ),
               color: Theme.of(context).backgroundColor,
               child: TextField(
-                controller: controller,
+                onChanged: (value) {
+                  ref.read(searchTermStateProvider.notifier).state = value;
+                },
                 decoration: InputDecoration(
                   isDense: true,
                   suffix: ElevatedButton(
                     child: const Icon(Icons.search_rounded),
                     onPressed: () {
-                      ref.read(searchTermStateProvider.notifier).state =
-                          controller.value.text;
+                      searchMutation.mutate(getVariables());
                     },
                   ),
                   contentPadding: const EdgeInsets.symmetric(
@@ -67,19 +79,26 @@ class Search extends HookConsumerWidget {
                   hintText: "Search...",
                 ),
                 onSubmitted: (value) {
-                  ref.read(searchTermStateProvider.notifier).state =
-                      controller.value.text;
+                  searchMutation.mutate(getVariables());
                 },
               ),
             ),
-            searchSnapshot.when(
-              data: (data) {
+            HookBuilder(
+              builder: (context) {
+                if (searchMutation.hasError && searchMutation.isError) {
+                  return Text("Alas! Error=${searchMutation.error}");
+                }
+                if (searchMutation.isLoading) {
+                  return const CircularProgressIndicator();
+                }
+
                 Playback playback = ref.watch(playbackProvider);
                 List<AlbumSimple> albums = [];
                 List<Artist> artists = [];
                 List<Track> tracks = [];
                 List<PlaylistSimple> playlists = [];
-                for (MapEntry<int, Page> page in data.asMap().entries) {
+                for (MapEntry<int, Page> page
+                    in (searchMutation.data ?? []).asMap().entries) {
                   for (var item in page.value.items ?? []) {
                     if (item is AlbumSimple) {
                       albums.add(item);
@@ -241,8 +260,6 @@ class Search extends HookConsumerWidget {
                   ),
                 );
               },
-              error: (error, __) => Text("Error $error"),
-              loading: () => const CircularProgressIndicator(),
             )
           ],
         ),

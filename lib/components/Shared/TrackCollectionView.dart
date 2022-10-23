@@ -1,3 +1,4 @@
+import 'package:fl_query/fl_query.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,12 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
 
-class TrackCollectionView extends HookConsumerWidget {
+class TrackCollectionView<T> extends HookConsumerWidget {
   final logger = getLogger(TrackCollectionView);
   final String id;
   final String title;
   final String? description;
-  final AsyncValue<List<TrackSimple>> tracksSnapshot;
+  final Query<List<TrackSimple>, T> tracksSnapshot;
   final String titleImage;
   final bool isPlaying;
   final void Function([Track? currentTrack]) onPlay;
@@ -78,7 +79,7 @@ class TrackCollectionView extends HookConsumerWidget {
               const CircleBorder(),
             ),
           ),
-          onPressed: tracksSnapshot.asData?.value != null ? onPlay : null,
+          onPressed: tracksSnapshot.data != null ? onPlay : null,
           child: Icon(
             isPlaying ? Icons.stop_rounded : Icons.play_arrow_rounded,
             color: Theme.of(context).backgroundColor,
@@ -175,7 +176,14 @@ class TrackCollectionView extends HookConsumerWidget {
                                     const BoxConstraints(maxHeight: 200),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: UniversalImage(path: titleImage),
+                                  child: UniversalImage(
+                                    path: titleImage,
+                                    placeholder: (context, url) {
+                                      return const UniversalImage(
+                                        path: "assets/album-placeholder.png",
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                               Column(
@@ -220,14 +228,25 @@ class TrackCollectionView extends HookConsumerWidget {
                   );
                 }),
               ),
-              tracksSnapshot.when(
-                data: (tracks) {
+              HookBuilder(
+                builder: (context) {
+                  if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
+                    return const ShimmerTrackTile();
+                  } else if (tracksSnapshot.hasError &&
+                      tracksSnapshot.isError) {
+                    return SliverToBoxAdapter(
+                        child: Text("Error ${tracksSnapshot.error}"));
+                  }
+
+                  final tracks = tracksSnapshot.data!;
                   return TracksTableView(
                     tracks is! List<Track>
                         ? tracks
-                            .map((track) =>
-                                TypeConversionUtils.simpleTrack_X_Track(
-                                    track, album!))
+                            .map(
+                              (track) =>
+                                  TypeConversionUtils.simpleTrack_X_Track(
+                                      track, album!),
+                            )
                             .toList()
                         : tracks,
                     onTrackPlayButtonPressed: onPlay,
@@ -235,10 +254,7 @@ class TrackCollectionView extends HookConsumerWidget {
                     userPlaylist: isOwned,
                   );
                 },
-                error: (error, _) =>
-                    SliverToBoxAdapter(child: Text("Error $error")),
-                loading: () => const ShimmerTrackTile(),
-              ),
+              )
             ],
           )),
     );

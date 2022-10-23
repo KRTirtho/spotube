@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Downloader.dart';
+import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
@@ -42,7 +44,7 @@ class Sidebar extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final breakpoints = useBreakpoints();
     final extended = useState(false);
-    final meSnapshot = ref.watch(currentUserQuery);
+
     final auth = ref.watch(authProvider);
     final downloadCount = ref.watch(
       downloaderProvider.select((s) => s.currentlyRunning),
@@ -161,15 +163,28 @@ class Sidebar extends HookConsumerWidget {
             ),
             SizedBox(
               width: extended.value ? 256 : 80,
-              child: Builder(
+              child: HookBuilder(
                 builder: (context) {
-                  final data = meSnapshot.asData?.value;
+                  final me = useQuery(
+                    job: currentUserQueryJob,
+                    externalData: ref.watch(spotifyProvider),
+                  );
+                  final data = me.data;
 
                   final avatarImg = TypeConversionUtils.image_X_UrlString(
                     data?.images,
                     index: (data?.images?.length ?? 1) - 1,
                     placeholder: ImagePlaceholder.artist,
                   );
+
+                  useEffect(() {
+                    if (auth.isLoggedIn && !me.hasData) {
+                      me.setExternalData(ref.read(spotifyProvider));
+                      me.refetch();
+                    }
+                    return;
+                  }, [auth.isLoggedIn, me.hasData]);
+
                   if (extended.value) {
                     return Padding(
                         padding: const EdgeInsets.all(16).copyWith(left: 0),

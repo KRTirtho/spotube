@@ -32,7 +32,7 @@ class Action extends StatelessWidget {
     }
     return TextButton.icon(
       style: TextButton.styleFrom(
-        primary: Theme.of(context).textTheme.bodyMedium?.color,
+        foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
         padding: const EdgeInsets.all(20),
       ),
       icon: icon,

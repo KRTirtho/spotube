@@ -1,3 +1,5 @@
+import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -49,20 +51,28 @@ class ArtistProfile extends HookConsumerWidget {
 
     final Playback playback = ref.watch(playbackProvider);
 
-    final artistsSnapshot = ref.watch(artistProfileQuery(artistId));
-    final isFollowingSnapshot =
-        ref.watch(currentUserFollowsArtistQuery(artistId));
-    final topTracksSnapshot = ref.watch(artistTopTracksQuery(artistId));
-
-    final relatedArtists = ref.watch(artistRelatedArtistsQuery(artistId));
-
     return SafeArea(
       child: Scaffold(
         appBar: const PageWindowTitleBar(
           leading: BackButton(),
         ),
-        body: artistsSnapshot.when<Widget>(
-          data: (data) {
+        body: HookBuilder(
+          builder: (context) {
+            final artistsQuery = useQuery(
+              job: artistProfileQueryJob(artistId),
+              externalData: spotify,
+            );
+
+            if (artistsQuery.isLoading || !artistsQuery.hasData) {
+              return const ShimmerArtistProfile();
+            } else if (artistsQuery.hasError) {
+              return Center(
+                child: Text(artistsQuery.error.toString()),
+              );
+            }
+
+            final data = artistsQuery.data!;
+
             return SingleChildScrollView(
               controller: parentScrollController,
               padding: const EdgeInsets.all(20),
@@ -115,42 +125,57 @@ class ArtistProfile extends HookConsumerWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                isFollowingSnapshot.when(
-                                    data: (isFollowing) {
-                                      return OutlinedButton(
-                                        onPressed: () async {
-                                          try {
-                                            isFollowing
-                                                ? await spotify.me.unfollow(
-                                                    FollowingType.artist,
-                                                    [artistId],
-                                                  )
-                                                : await spotify.me.follow(
-                                                    FollowingType.artist,
-                                                    [artistId],
-                                                  );
-                                          } catch (e, stack) {
-                                            logger.e(
-                                              "FollowButton.onPressed",
-                                              e,
-                                              stack,
-                                            );
-                                          } finally {
-                                            ref.refresh(
-                                              currentUserFollowsArtistQuery(
-                                                  artistId),
-                                            );
-                                          }
-                                        },
-                                        child: Text(
-                                          isFollowing ? "Following" : "Follow",
-                                        ),
+                                HookBuilder(
+                                  builder: (context) {
+                                    final isFollowingQuery = useQuery(
+                                      job: currentUserFollowsArtistQueryJob(
+                                          artistId),
+                                      externalData: spotify,
+                                    );
+
+                                    if (isFollowingQuery.isLoading ||
+                                        !isFollowingQuery.hasData) {
+                                      return const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(),
                                       );
-                                    },
-                                    error: (error, stackTrace) => Container(),
-                                    loading: () =>
-                                        const CircularProgressIndicator
-                                            .adaptive()),
+                                    }
+
+                                    return OutlinedButton(
+                                      onPressed: () async {
+                                        try {
+                                          isFollowingQuery.data!
+                                              ? await spotify.me.unfollow(
+                                                  FollowingType.artist,
+                                                  [artistId],
+                                                )
+                                              : await spotify.me.follow(
+                                                  FollowingType.artist,
+                                                  [artistId],
+                                                );
+                                        } catch (e, stack) {
+                                          logger.e(
+                                            "FollowButton.onPressed",
+                                            e,
+                                            stack,
+                                          );
+                                        } finally {
+                                          QueryBowl.of(context).refetchQueries([
+                                            currentUserFollowsArtistQueryJob(
+                                                    artistId)
+                                                .queryKey,
+                                          ]);
+                                        }
+                                      },
+                                      child: Text(
+                                        isFollowingQuery.data!
+                                            ? "Following"
+                                            : "Follow",
+                                      ),
+                                    );
+                                  },
+                                ),
                                 IconButton(
                                   icon: const Icon(Icons.share_rounded),
                                   onPressed: () {
@@ -180,8 +205,23 @@ class ArtistProfile extends HookConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 50),
-                  topTracksSnapshot.when(
-                    data: (topTracks) {
+                  HookBuilder(
+                    builder: (context) {
+                      final topTracksQuery = useQuery(
+                        job: artistTopTracksQueryJob(artistId),
+                        externalData: spotify,
+                      );
+
+                      if (topTracksQuery.isLoading || !topTracksQuery.hasData) {
+                        return const CircularProgressIndicator.adaptive();
+                      } else if (topTracksQuery.hasError) {
+                        return Center(
+                          child: Text(topTracksQuery.error.toString()),
+                        );
+                      }
+
+                      final topTracks = topTracksQuery.data!;
+
                       final isPlaylistPlaying =
                           playback.playlist?.id == data.id;
                       playPlaylist(List<Track> tracks,
@@ -248,10 +288,6 @@ class ArtistProfile extends HookConsumerWidget {
                         }),
                       ]);
                     },
-                    error: (error, stack) =>
-                        Text("Failed to find top tracks $error"),
-                    loading: () => const Center(
-                        child: CircularProgressIndicator.adaptive()),
                   ),
                   const SizedBox(height: 50),
                   Text(
@@ -266,28 +302,36 @@ class ArtistProfile extends HookConsumerWidget {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   const SizedBox(height: 10),
-                  relatedArtists.when(
-                    data: (artists) {
+                  HookBuilder(
+                    builder: (context) {
+                      final relatedArtists = useQuery(
+                        job: artistRelatedArtistsQueryJob(artistId),
+                        externalData: spotify,
+                      );
+
+                      if (relatedArtists.isLoading || !relatedArtists.hasData) {
+                        return const CircularProgressIndicator.adaptive();
+                      } else if (relatedArtists.hasError) {
+                        return Center(
+                          child: Text(relatedArtists.error.toString()),
+                        );
+                      }
+
                       return Center(
                         child: Wrap(
                           spacing: 20,
                           runSpacing: 20,
-                          children: artists
+                          children: relatedArtists.data!
                               .map((artist) => ArtistCard(artist))
                               .toList(),
                         ),
                       );
                     },
-                    error: (error, stackTrack) =>
-                        Text("Failed to get Artist albums $error"),
-                    loading: () => const CircularProgressIndicator.adaptive(),
                   ),
                 ],
               ),
             );
           },
-          error: (_, __) => const Text("Life's miserable"),
-          loading: () => const ShimmerArtistProfile(),
         ),
       ),
     );

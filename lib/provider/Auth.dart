@@ -30,7 +30,7 @@ class Auth extends PersistedChangeNotifier {
   Duration get expiresIn =>
       _expiration?.difference(DateTime.now()) ?? Duration.zero;
 
-  refresh() async {
+  Future<void> refresh() async {
     final data = await ServiceUtils.getAccessToken(authCookie!);
     _accessToken = data.accessToken;
     _expiration = data.expiration;
@@ -39,15 +39,17 @@ class Auth extends PersistedChangeNotifier {
   }
 
   Timer? _createRefresher() {
-    if (expiration == null || !isExpired || authCookie == null) {
+    if (expiration == null || authCookie == null) {
       return null;
     }
+    if (isExpired) {
+      refresh();
+    }
     _refresher?.cancel();
-    return Timer(expiresIn, refresh);
+    return Timer(expiresIn - const Duration(minutes: 5), refresh);
   }
 
   void _restartRefresher() {
-    _refresher?.cancel();
     _refresher = _createRefresher();
   }
 

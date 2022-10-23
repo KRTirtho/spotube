@@ -1,4 +1,5 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -57,9 +58,14 @@ class AlbumView extends HookConsumerWidget {
     final SpotifyApi spotify = ref.watch(spotifyProvider);
     final Auth auth = ref.watch(authProvider);
 
-    final tracksSnapshot = ref.watch(albumTracksQuery(album.id!));
-    final albumSavedSnapshot =
-        ref.watch(albumIsSavedForCurrentUserQuery(album.id!));
+    final tracksSnapshot = useQuery(
+      job: albumTracksQueryJob(album.id!),
+      externalData: spotify,
+    );
+    final albumSavedSnapshot = useQuery(
+      job: albumIsSavedForCurrentUserQueryJob(album.id!),
+      externalData: spotify,
+    );
 
     final albumArt = useMemoized(
         () => TypeConversionUtils.image_X_UrlString(
@@ -82,11 +88,11 @@ class AlbumView extends HookConsumerWidget {
       routePath: "/album/${album.id}",
       bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
       onPlay: ([track]) {
-        if (tracksSnapshot.asData?.value != null) {
+        if (tracksSnapshot.hasData) {
           if (!isAlbumPlaying) {
             playPlaylist(
               playback,
-              tracksSnapshot.asData!.value
+              tracksSnapshot.data!
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
                   .toList(),
@@ -95,7 +101,7 @@ class AlbumView extends HookConsumerWidget {
           } else if (isAlbumPlaying && track != null) {
             playPlaylist(
               playback,
-              tracksSnapshot.asData!.value
+              tracksSnapshot.data!
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
                   .toList(),
@@ -112,35 +118,7 @@ class AlbumView extends HookConsumerWidget {
           ClipboardData(text: "https://open.spotify.com/album/${album.id}"),
         );
       },
-      heartBtn: auth.isLoggedIn
-          ? albumSavedSnapshot.when(
-              data: (isSaved) {
-                return HeartButton(
-                  isLiked: isSaved,
-                  onPressed: () {
-                    (isSaved
-                            ? spotify.me.removeAlbums(
-                                [album.id!],
-                              )
-                            : spotify.me.saveAlbums(
-                                [album.id!],
-                              ))
-                        .whenComplete(() {
-                      ref.refresh(
-                        albumIsSavedForCurrentUserQuery(
-                          album.id!,
-                        ),
-                      );
-                      QueryBowl.of(context).refetchQueries(
-                        [currentUserAlbumsQueryJob.queryKey],
-                      );
-                    });
-                  },
-                );
-              },
-              error: (error, _) => Text("Error $error"),
-              loading: () => const CircularProgressIndicator())
-          : null,
+      heartBtn: AlbumHeartButton(album: album),
     );
   }
 }

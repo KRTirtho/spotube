@@ -4,16 +4,16 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/Shared/AdaptivePopupMenuButton.dart';
+import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
-import 'package:spotube/hooks/useForceUpdate.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:tuple/tuple.dart';
 
 class TrackTile extends HookConsumerWidget {
   final Playback playback;
@@ -60,28 +60,6 @@ class TrackTile extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final auth = ref.watch(authProvider);
     final spotify = ref.watch(spotifyProvider);
-    final update = useForceUpdate();
-
-    final savedTracksSnapshot = ref.watch(currentUserSavedTracksQuery);
-
-    final isSaved = savedTracksSnapshot.asData?.value.any(
-          (e) => track.value.id == e.id,
-        ) ??
-        false;
-
-    final actionFavorite = useCallback((bool isLiked) async {
-      try {
-        isLiked
-            ? await spotify.tracks.me.removeOne(track.value.id!)
-            : await spotify.tracks.me.saveOne(track.value.id!);
-      } catch (e, stack) {
-        logger.e("FavoriteButton.onPressed", e, stack);
-      } finally {
-        update();
-        ref.refresh(currentUserSavedTracksQuery);
-        ref.refresh(playlistTracksQuery("user-liked-tracks"));
-      }
-    }, [track.value.id, spotify]);
 
     final actionRemoveFromPlaylist = useCallback(() async {
       if (playlistId == null) return;
@@ -188,6 +166,8 @@ class TrackTile extends HookConsumerWidget {
       index: track.value.album?.images?.length == 1 ? 0 : 2,
     );
 
+    final toggler = useTrackToggleLike(track.value, ref);
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       decoration: BoxDecoration(
@@ -291,14 +271,17 @@ class TrackTile extends HookConsumerWidget {
             if (!isReallyLocal)
               AdaptiveActions(
                 actions: [
-                  if (auth.isLoggedIn)
+                  if (toggler.item3.hasData)
                     Action(
-                      icon: Icon(isSaved
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded),
+                      icon: toggler.item1
+                          ? const Icon(
+                              Icons.favorite_rounded,
+                              color: Colors.pink,
+                            )
+                          : const Icon(Icons.favorite_border_rounded),
                       text: const Text("Save as favorite"),
                       onPressed: () {
-                        actionFavorite(isSaved);
+                        toggler.item2.mutate(Tuple2(spotify, toggler.item1));
                       },
                     ),
                   if (auth.isLoggedIn)

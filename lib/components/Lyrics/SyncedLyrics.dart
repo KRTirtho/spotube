@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,14 +31,17 @@ class SyncedLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final timedLyricsSnapshot = ref.watch(rentanadviserLyricsQuery);
+    Playback playback = ref.watch(playbackProvider);
+    final timedLyricsQuery = useQuery(
+      job: rentanadviserLyricsQueryJob,
+      externalData: playback.track,
+    );
     final lyricDelay = ref.watch(lyricDelayState);
 
-    Playback playback = ref.watch(playbackProvider);
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
     final failed = useState(false);
-    final lyricValue = timedLyricsSnapshot.asData?.value;
+    final lyricValue = timedLyricsQuery.data;
     final lyricsMap = useMemoized(
       () =>
           lyricValue?.lyrics

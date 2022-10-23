@@ -1,3 +1,4 @@
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -5,7 +6,9 @@ import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:tuple/tuple.dart';
 
 class Lyrics extends HookConsumerWidget {
   final Color? titleBarForegroundColor;
@@ -17,7 +20,13 @@ class Lyrics extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
-    final geniusLyricsSnapshot = ref.watch(geniusLyricsQuery);
+    final geniusLyricsQuery = useQuery(
+      job: geniusLyricsQueryJob,
+      externalData: Tuple2(
+        playback.track,
+        ref.watch(userPreferencesProvider).geniusAccessToken,
+      ),
+    );
     final breakpoint = useBreakpoints();
     final textTheme = Theme.of(context).textTheme;
 
@@ -46,8 +55,18 @@ class Lyrics extends HookConsumerWidget {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: geniusLyricsSnapshot.when(
-                  data: (lyrics) {
+                child: Builder(
+                  builder: (context) {
+                    if (geniusLyricsQuery.isLoading) {
+                      return const ShimmerLyrics();
+                    } else if (geniusLyricsQuery.hasError) {
+                      return Text(
+                        "Sorry, no Lyrics were found for `${playback.track?.name}` :'(\n${geniusLyricsQuery.error.toString()}",
+                      );
+                    }
+
+                    final lyrics = geniusLyricsQuery.data;
+
                     return Text(
                       lyrics == null && playback.track == null
                           ? "No Track being played currently"
@@ -56,9 +75,6 @@ class Lyrics extends HookConsumerWidget {
                           ?.copyWith(color: textTheme.headline1?.color),
                     );
                   },
-                  error: (error, __) => Text(
-                      "Sorry, no Lyrics were found for `${playback.track?.name}` :'("),
-                  loading: () => const ShimmerLyrics(),
                 ),
               ),
             ),

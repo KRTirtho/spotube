@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,10 +6,8 @@ import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/TrackCollectionView.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
-import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
 import 'package:spotube/models/Logger.dart';
-import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
@@ -59,15 +55,18 @@ class PlaylistView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
-    final Auth auth = ref.watch(authProvider);
     SpotifyApi spotify = ref.watch(spotifyProvider);
     final isPlaylistPlaying =
         playback.playlist?.id != null && playback.playlist?.id == playlist.id;
 
     final breakpoint = useBreakpoints();
 
-    final meSnapshot = ref.watch(currentUserQuery);
-    final tracksSnapshot = ref.watch(playlistTracksQuery(playlist.id!));
+    final meSnapshot =
+        useQuery(job: currentUserQueryJob, externalData: spotify);
+    final tracksSnapshot = useQuery(
+      job: playlistTracksQueryJob(playlist.id!),
+      externalData: spotify,
+    );
 
     final titleImage = useMemoized(
         () => TypeConversionUtils.image_X_UrlString(
@@ -75,11 +74,6 @@ class PlaylistView extends HookConsumerWidget {
               placeholder: ImagePlaceholder.collection,
             ),
         [playlist.images]);
-
-    final color = usePaletteGenerator(
-      context,
-      titleImage,
-    ).dominantColor;
 
     return TrackCollectionView(
       id: playlist.id!,
@@ -89,15 +83,15 @@ class PlaylistView extends HookConsumerWidget {
       tracksSnapshot: tracksSnapshot,
       description: playlist.description,
       isOwned: playlist.owner?.id != null &&
-          playlist.owner!.id == meSnapshot.asData?.value.id,
+          playlist.owner!.id == meSnapshot.data?.id,
       onPlay: ([track]) {
-        if (tracksSnapshot.asData?.value != null) {
+        if (tracksSnapshot.hasData) {
           if (!isPlaylistPlaying) {
-            playPlaylist(playback, tracksSnapshot.asData!.value, ref);
+            playPlaylist(playback, tracksSnapshot.data!, ref);
           } else if (isPlaylistPlaying && track != null) {
             playPlaylist(
               playback,
-              tracksSnapshot.asData!.value,
+              tracksSnapshot.data!,
               ref,
               currentTrack: track,
             );
@@ -126,48 +120,7 @@ class PlaylistView extends HookConsumerWidget {
           );
         });
       },
-      heartBtn: (auth.isLoggedIn && playlist.id != "user-liked-tracks"
-          ? meSnapshot.when(
-              data: (me) {
-                final query = playlistIsFollowedQuery(
-                    jsonEncode({"playlistId": playlist.id, "userId": me.id!}));
-                final followingSnapshot = ref.watch(query);
-
-                return followingSnapshot.when(
-                  data: (isFollowing) {
-                    return HeartButton(
-                      isLiked: isFollowing,
-                      color: color?.titleTextColor,
-                      icon: playlist.owner?.id != null &&
-                              me.id == playlist.owner?.id
-                          ? Icons.delete_outline_rounded
-                          : null,
-                      onPressed: () async {
-                        try {
-                          isFollowing
-                              ? await spotify.playlists
-                                  .unfollowPlaylist(playlist.id!)
-                              : await spotify.playlists
-                                  .followPlaylist(playlist.id!);
-                        } catch (e, stack) {
-                          logger.e("FollowButton.onPressed", e, stack);
-                        } finally {
-                          ref.refresh(query);
-                          QueryBowl.of(context).refetchQueries([
-                            currentUserPlaylistsQueryJob.queryKey,
-                          ]);
-                        }
-                      },
-                    );
-                  },
-                  error: (error, _) => Text("Error $error"),
-                  loading: () => const CircularProgressIndicator(),
-                );
-              },
-              error: (error, _) => Text("Error $error"),
-              loading: () => const CircularProgressIndicator(),
-            )
-          : null),
+      heartBtn: PlaylistHeartButton(playlist: playlist),
     );
   }
 }
