@@ -48,7 +48,7 @@ class WebViewLogin extends HookConsumerWidget {
               url = url.substring(0, url.length - 1);
             }
 
-            final exp = RegExp(r"https:\/\/accounts.spotify.com\/\w+\/status");
+            final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
 
             if (exp.hasMatch(url)) {
               final cookies =
