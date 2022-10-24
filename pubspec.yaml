@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   cached_network_image: ^3.2.2
   html: ^0.15.0
-  http: ^0.13.4
+  http: ^0.13.5
   shared_preferences: ^2.0.11
   spotify: ^0.8.0
   url_launcher: ^6.1.5
