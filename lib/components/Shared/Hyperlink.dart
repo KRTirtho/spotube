@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:spotube/components/Shared/AnchorButton.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class Hyperlink extends StatelessWidget {

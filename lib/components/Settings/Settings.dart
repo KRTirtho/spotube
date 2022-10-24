@@ -475,8 +475,8 @@ class Settings extends HookConsumerWidget {
                         icon: const Icon(Icons.favorite_outline_rounded),
                         label: const Text("Please Sponsor/Donate"),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red[100],
-                          onPrimary: Colors.pinkAccent,
+                          backgroundColor: Colors.red[100],
+                          foregroundColor: Colors.pinkAccent,
                           padding: const EdgeInsets.all(15),
                         ),
                         onPressed: () {

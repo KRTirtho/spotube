@@ -8,7 +8,7 @@ import 'package:spotube/components/Home/Shell.dart';
 import 'package:spotube/components/Library/UserLibrary.dart';
 import 'package:spotube/components/Login/LoginTutorial.dart';
 import 'package:spotube/components/Login/TokenLogin.dart';
-import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
+import 'package:spotube/components/Lyrics/Lyrics.dart';
 import 'package:spotube/components/Player/PlayerView.dart';
 import 'package:spotube/components/Playlist/PlaylistView.dart';
 import 'package:spotube/components/Search/Search.dart';
@@ -44,8 +44,7 @@ final router = GoRouter(
         GoRoute(
           path: "/lyrics",
           name: "Lyrics",
-          pageBuilder: (context, state) =>
-              const SpotubePage(child: SyncedLyrics()),
+          pageBuilder: (context, state) => const SpotubePage(child: Lyrics()),
         ),
         GoRoute(
           path: "/settings",

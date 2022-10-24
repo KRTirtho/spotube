@@ -139,10 +139,10 @@ class Spotube extends StatefulHookConsumerWidget {
   const Spotube({Key? key}) : super(key: key);
 
   @override
-  _SpotubeState createState() => _SpotubeState();
+  SpotubeState createState() => SpotubeState();
 }
 
-class _SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
+class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
   final logger = getLogger(Spotube);
   SharedPreferences? localStorage;
 

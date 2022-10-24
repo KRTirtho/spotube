@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ColoredTabBar extends ColoredBox implements PreferredSizeWidget {
+  @override
+  // ignore: overridden_fields
   final TabBar child;
 
   const ColoredTabBar({

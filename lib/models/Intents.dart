@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/Home/Home.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
+import 'package:spotube/models/GoRouteDeclarations.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/platform.dart';
@@ -80,19 +80,18 @@ class HomeTabIntent extends Intent {
 class HomeTabAction extends Action<HomeTabIntent> {
   @override
   invoke(intent) {
-    final notifier = intent.ref.read(selectedIndexState.notifier);
     switch (intent.tab) {
       case HomeTabs.browse:
-        notifier.state = 0;
+        router.go("/");
         break;
       case HomeTabs.search:
-        notifier.state = 1;
+        router.go("/search");
         break;
       case HomeTabs.library:
-        notifier.state = 2;
+        router.go("/library");
         break;
       case HomeTabs.lyrics:
-        notifier.state = 3;
+        router.go("/lyrics");
         break;
     }
     return null;

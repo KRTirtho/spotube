@@ -1,24 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/widgets.dart' hide Element;
 import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Library/UserLocalTracks.dart';
-import 'package:spotube/models/LocalStorageKeys.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/models/LyricsModels.dart';
 import 'package:spotube/models/SpotifySpotubeCredentials.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/models/generated_secrets.dart';
-import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:html/parser.dart' as parser;
-import 'package:url_launcher/url_launcher.dart';
 
 abstract class ServiceUtils {
   static final logger = getLogger("ServiceUtils");
@@ -176,109 +171,6 @@ abstract class ServiceUtils {
     } catch (e, stack) {
       logger.e("getLyrics", e, stack);
       return null;
-    }
-  }
-
-  @Deprecated("Use getAccessToken instead")
-  static Future<String?> connectIpc(String authUri, String redirectUri) async {
-    try {
-      logger.i("[connectIpc][Launching]: $authUri");
-      await launchUrl(
-        Uri.parse(authUri),
-        mode: LaunchMode.externalApplication,
-      );
-
-      HttpServer server = await HttpServer.bind(
-        InternetAddress.loopbackIPv4,
-        4304,
-        shared: true,
-      );
-
-      logger.i("[connectIpc] Server started");
-
-      await for (HttpRequest request in server) {
-        if (request.uri.path == "/auth/spotify/callback" &&
-            request.method == "GET") {
-          String? code = request.uri.queryParameters["code"];
-          if (code != null) {
-            request.response
-              ..statusCode = HttpStatus.ok
-              ..write("Authentication successful. Now Go back to Spotube")
-              ..close();
-            return "$redirectUri?code=$code";
-          } else {
-            request.response
-              ..statusCode = HttpStatus.forbidden
-              ..write("Authorization failed start over!")
-              ..close();
-            throw Exception("No code provided");
-          }
-        }
-      }
-    } catch (e, stack) {
-      logger.e("connectIpc", e, stack);
-      rethrow;
-    }
-    return null;
-  }
-
-  static const authRedirectUri = "http://localhost:4304/auth/spotify/callback";
-
-  /// Use [getAccessToken] instead
-  /// This method will be removed in the next major release
-  @Deprecated("Use getAccessToken instead")
-  static Future<void> oauthLogin(Auth auth,
-      {required String clientId, required String clientSecret}) async {
-    try {
-      String? accessToken;
-      String? refreshToken;
-      DateTime? expiration;
-      final credentials = SpotifyApiCredentials(clientId, clientSecret);
-      final grant = SpotifyApi.authorizationCodeGrant(credentials);
-
-      final authUri = grant.getAuthorizationUrl(
-        Uri.parse(authRedirectUri),
-      );
-
-      final responseUri = await connectIpc(authUri.toString(), authRedirectUri);
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      if (responseUri != null) {
-        final SpotifyApi spotify =
-            SpotifyApi.fromAuthCodeGrant(grant, responseUri);
-        final credentials = await spotify.getCredentials();
-        if (credentials.accessToken != null) {
-          accessToken = credentials.accessToken;
-          await localStorage.setString(
-              LocalStorageKeys.accessToken, credentials.accessToken!);
-        }
-        if (credentials.refreshToken != null) {
-          refreshToken = credentials.refreshToken;
-          await localStorage.setString(
-              LocalStorageKeys.refreshToken, credentials.refreshToken!);
-        }
-        if (credentials.expiration != null) {
-          expiration = credentials.expiration;
-          await localStorage.setString(LocalStorageKeys.expiration,
-              credentials.expiration?.toString() ?? "");
-        }
-      }
-
-      await localStorage.setString(LocalStorageKeys.clientId, clientId);
-      await localStorage.setString(
-        LocalStorageKeys.clientSecret,
-        clientSecret,
-      );
-
-      // auth.setAuthState(
-      //   clientId: clientId,
-      //   clientSecret: clientSecret,
-      //   accessToken: accessToken,
-      //   refreshToken: refreshToken,
-      //   expiration: expiration,
-      // );
-    } catch (e, stack) {
-      logger.e("oauthLogin", e, stack);
-      rethrow;
     }
   }
 

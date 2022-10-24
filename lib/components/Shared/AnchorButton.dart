@@ -23,6 +23,9 @@ class AnchorButton<T> extends HookWidget {
     var tap = useState(false);
 
     return GestureDetector(
+      onTapDown: (event) => tap.value = true,
+      onTapUp: (event) => tap.value = false,
+      onTap: onTap,
       child: MouseRegion(
         cursor: MaterialStateMouseCursor.clickable,
         child: Text(
@@ -37,9 +40,6 @@ class AnchorButton<T> extends HookWidget {
         onEnter: (event) => hover.value = true,
         onExit: (event) => hover.value = false,
       ),
-      onTapDown: (event) => tap.value = true,
-      onTapUp: (event) => tap.value = false,
-      onTap: onTap,
     );
   }
 }

@@ -13,14 +13,6 @@ class PlaylistCreateDialog extends HookConsumerWidget {
     final spotify = ref.watch(spotifyProvider);
 
     return TextButton(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(Icons.add_box_rounded, size: 50),
-          Text("Create Playlist", style: TextStyle(fontSize: 22)),
-        ],
-      ),
       onPressed: () {
         showDialog(
           context: context,
@@ -105,6 +97,14 @@ class PlaylistCreateDialog extends HookConsumerWidget {
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
             const EdgeInsets.symmetric(horizontal: 15, vertical: 100)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.add_box_rounded, size: 50),
+          Text("Create Playlist", style: TextStyle(fontSize: 22)),
+        ],
       ),
     );
   }

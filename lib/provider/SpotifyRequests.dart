@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:fl_query/fl_query.dart';
 import 'package:spotube/models/LyricsModels.dart';
 import 'package:spotube/models/SpotubeTrack.dart';

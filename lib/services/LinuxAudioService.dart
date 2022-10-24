@@ -260,7 +260,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Rate
   Future<DBusMethodResponse> getRate() async {
-    return DBusMethodSuccessResponse([DBusDouble(1)]);
+    return DBusMethodSuccessResponse([const DBusDouble(1)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Rate
@@ -442,9 +442,12 @@ class _MprisMediaPlayer2Player extends DBusObject {
   }
 
   /// Emits signal org.mpris.MediaPlayer2.Player.Seeked
-  Future<void> emitSeeked(int Position) async {
+  Future<void> emitSeeked(int position) async {
     await emitSignal(
-        'org.mpris.MediaPlayer2.Player', 'Seeked', [DBusInt64(Position)]);
+      'org.mpris.MediaPlayer2.Player',
+      'Seeked',
+      [DBusInt64(position)],
+    );
   }
 
   Future<void> updateProperties(Playback playback) async {

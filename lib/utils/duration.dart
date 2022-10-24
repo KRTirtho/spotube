@@ -6,7 +6,7 @@
 Duration parseDuration(String input) {
   final parts = input.split(':');
 
-  if (parts.length != 3) throw FormatException('Invalid time format');
+  if (parts.length != 3) throw const FormatException('Invalid time format');
 
   int days;
   int hours;
@@ -18,7 +18,7 @@ Duration parseDuration(String input) {
   {
     final p = parts[2].split('.');
 
-    if (p.length != 2) throw FormatException('Invalid time format');
+    if (p.length != 2) throw const FormatException('Invalid time format');
 
     final p2 = int.parse(p[1]);
     microseconds = p2 % 1000;
@@ -38,12 +38,13 @@ Duration parseDuration(String input) {
   // TODO verify that there are no negative parts
 
   return Duration(
-      days: days,
-      hours: hours,
-      minutes: minutes,
-      seconds: seconds,
-      milliseconds: milliseconds,
-      microseconds: microseconds);
+    days: days,
+    hours: hours,
+    minutes: minutes,
+    seconds: seconds,
+    milliseconds: milliseconds,
+    microseconds: microseconds,
+  );
 }
 
 Duration? tryParseDuration(String input) {

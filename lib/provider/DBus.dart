@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dbus/dbus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/utils/platform.dart';

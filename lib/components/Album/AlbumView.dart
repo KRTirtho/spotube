@@ -1,4 +1,3 @@
-import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,6 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/models/CurrentPlaylist.dart';
-import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
@@ -56,14 +54,9 @@ class AlbumView extends HookConsumerWidget {
     Playback playback = ref.watch(playbackProvider);
 
     final SpotifyApi spotify = ref.watch(spotifyProvider);
-    final Auth auth = ref.watch(authProvider);
 
     final tracksSnapshot = useQuery(
       job: albumTracksQueryJob(album.id!),
-      externalData: spotify,
-    );
-    final albumSavedSnapshot = useQuery(
-      job: albumIsSavedForCurrentUserQueryJob(album.id!),
       externalData: spotify,
     );
 
