@@ -161,6 +161,16 @@ class PlayerView extends HookConsumerWidget {
                   PlayerActions(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     floatingQueue: false,
+                    extraActions: [
+                      IconButton(
+                        tooltip: "Open Lyrics",
+                        icon: const Icon(Icons.lyrics_rounded),
+                        onPressed: () {
+                          GoRouter.of(context).pop();
+                          GoRouter.of(context).go('/lyrics');
+                        },
+                      )
+                    ],
                   ),
                   PlayerControls(iconColor: paletteColor.bodyTextColor),
                 ],

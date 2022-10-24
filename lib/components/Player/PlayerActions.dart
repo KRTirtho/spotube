@@ -14,9 +14,11 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class PlayerActions extends HookConsumerWidget {
   final MainAxisAlignment mainAxisAlignment;
   final bool floatingQueue;
+  final List<Widget>? extraActions;
   PlayerActions({
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.floatingQueue = true,
+    this.extraActions,
     Key? key,
   }) : super(key: key);
   final logger = getLogger(PlayerActions);
@@ -90,6 +92,7 @@ class PlayerActions extends HookConsumerWidget {
                   : null,
             ),
         if (playback.track != null) TrackHeartButton(track: playback.track!),
+        ...(extraActions ?? [])
       ],
     );
   }
