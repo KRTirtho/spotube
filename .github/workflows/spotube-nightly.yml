@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - name: Get current date
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - run: |
@@ -85,7 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       # Build Windows Executable
-      - uses: subosito/flutter-action@v2.2.0
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - run: |
@@ -114,7 +114,7 @@ jobs:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
       - run: brew install yq
