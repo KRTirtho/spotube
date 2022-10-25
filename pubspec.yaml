@@ -18,7 +18,7 @@ dependencies:
   shared_preferences: ^2.0.11
   spotify: ^0.8.0
   url_launcher: ^6.1.5
-  youtube_explode_dart: ^1.10.8
+  youtube_explode_dart: ^1.12.1
   bitsdojo_window: ^0.1.5
   path: ^1.8.0
   path_provider: ^2.0.8
