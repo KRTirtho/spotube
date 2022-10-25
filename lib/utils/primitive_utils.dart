@@ -34,4 +34,11 @@ abstract class PrimitiveUtils {
   static String zeroPadNumStr(int input) {
     return input < 10 ? "0$input" : input.toString();
   }
+
+  static String toReadableDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    final seconds = duration.inSeconds % 60;
+    return "${hours > 0 ? "${zeroPadNumStr(hours)}:" : ""}${zeroPadNumStr(minutes)}:${zeroPadNumStr(seconds)}";
+  }
 }

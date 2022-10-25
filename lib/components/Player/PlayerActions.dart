@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/components/Player/PlayerQueue.dart';
+import 'package:spotube/components/Player/SiblingTracksSheet.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Downloader.dart';
@@ -49,6 +50,7 @@ class PlayerActions extends HookConsumerWidget {
       children: [
         IconButton(
           icon: const Icon(Icons.queue_music_rounded),
+          tooltip: 'Queue',
           onPressed: playback.playlist != null
               ? () {
                   showModalBottomSheet(
@@ -71,6 +73,31 @@ class PlayerActions extends HookConsumerWidget {
                 }
               : null,
         ),
+        IconButton(
+          icon: const Icon(Icons.alt_route_rounded),
+          tooltip: "Alternative Track Sources",
+          onPressed: playback.track != null
+              ? () {
+                  showModalBottomSheet(
+                    context: context,
+                    isDismissible: true,
+                    enableDrag: true,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.black12,
+                    barrierColor: Colors.black12,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * .5,
+                    ),
+                    builder: (context) {
+                      return SiblingTracksSheet(floating: floatingQueue);
+                    },
+                  );
+                }
+              : null,
+        ),
         if (!kIsWeb)
           if (isInQueue)
             const SizedBox(
@@ -82,6 +109,7 @@ class PlayerActions extends HookConsumerWidget {
             )
           else
             IconButton(
+              tooltip: 'Download track',
               icon: Icon(
                 isDownloaded
                     ? Icons.download_done_rounded

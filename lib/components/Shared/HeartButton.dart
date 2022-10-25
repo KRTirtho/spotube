@@ -16,10 +16,12 @@ class HeartButton extends ConsumerWidget {
   final void Function()? onPressed;
   final IconData? icon;
   final Color? color;
+  final String? tooltip;
   const HeartButton({
     required this.isLiked,
     required this.onPressed,
     this.color,
+    this.tooltip,
     this.icon,
     Key? key,
   }) : super(key: key);
@@ -31,6 +33,7 @@ class HeartButton extends ConsumerWidget {
     if (!auth.isLoggedIn) return Container();
 
     return IconButton(
+      tooltip: tooltip,
       icon: Icon(
         icon ??
             (!isLiked
@@ -122,6 +125,7 @@ class TrackHeartButton extends HookConsumerWidget {
     }
 
     return HeartButton(
+      tooltip: toggler.item1 ? "Remove from Favorite" : "Add to Favorite",
       isLiked: toggler.item1,
       onPressed: savedTracks.hasData
           ? () {
@@ -181,6 +185,9 @@ class PlaylistHeartButton extends HookConsumerWidget {
 
     return HeartButton(
       isLiked: isLikedQuery.data ?? false,
+      tooltip: isLikedQuery.data ?? false
+          ? "Remove from Favorite"
+          : "Add to Favorite",
       color: color?.titleTextColor,
       onPressed: isLikedQuery.hasData
           ? () {
@@ -232,6 +239,7 @@ class AlbumHeartButton extends HookConsumerWidget {
 
     return HeartButton(
       isLiked: isLiked,
+      tooltip: isLiked ? "Remove from Favorite" : "Add to Favorite",
       onPressed: albumIsSaved.hasData
           ? () {
               toggleAlbumLike

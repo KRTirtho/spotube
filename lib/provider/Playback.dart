@@ -66,6 +66,7 @@ class Playback extends PersistedChangeNotifier {
   late LazyBox<CacheTrack> cache;
   CurrentPlaylist? playlist;
   SpotubeTrack? track;
+  List<Video> _siblingYtVideos = [];
 
   // internal stuff
   final List<StreamSubscription> _subscriptions;
@@ -182,6 +183,20 @@ class Playback extends PersistedChangeNotifier {
     super.dispose();
   }
 
+  Future<void> changeToSiblingVideo(Video ytVideo, Track track) async {
+    pause();
+    final siblingYtVideos = _siblingYtVideos;
+    final spotubeTrack = await ytVideoToSpotubeTrack(
+      ytVideo,
+      track,
+      overwriteCache: true,
+    );
+    this.track = null;
+    await play(spotubeTrack.item1, manifest: spotubeTrack.item2);
+    _siblingYtVideos = siblingYtVideos;
+    notifyListeners();
+  }
+
   Future<void> playPlaylist(CurrentPlaylist playlist, [int index = 0]) async {
     try {
       if (index < 0 || index > playlist.tracks.length - 1) return;
@@ -204,7 +219,7 @@ class Playback extends PersistedChangeNotifier {
   }
 
   // player methods
-  Future<void> play(Track track) async {
+  Future<void> play(Track track, {AudioOnlyStreamInfo? manifest}) async {
     _logger.v("[Track Playing] ${track.name} - ${track.id}");
     try {
       // the track is already playing so no need to change that
@@ -213,7 +228,8 @@ class Playback extends PersistedChangeNotifier {
         status = PlaybackStatus.loading;
         notifyListeners();
       }
-      AudioOnlyStreamInfo? manifest;
+      _siblingYtVideos = [];
+
       // the track is not a SpotubeTrack so turning it to one
       if (track is! SpotubeTrack) {
         final s = await toSpotubeTrack(track);
@@ -375,10 +391,83 @@ class Playback extends PersistedChangeNotifier {
     }
   }
 
+  Future<Tuple2<SpotubeTrack, AudioOnlyStreamInfo>> ytVideoToSpotubeTrack(
+    Video ytVideo,
+    Track track, {
+    bool noSponsorBlock = false,
+    bool overwriteCache = false,
+  }) async {
+    final cachedTrack = await cache.get(track.id);
+    StreamManifest trackManifest = await raceMultiple(
+      () => youtube.videos.streams.getManifest(ytVideo.id),
+    );
+
+    _logger.v(
+      "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
+    );
+
+    final audioManifest = trackManifest.audioOnly.where((info) {
+      final isMp4a = info.codec.mimeType == "audio/mp4";
+      if (kIsLinux) {
+        return !isMp4a;
+      } else if (kIsMacOS || kIsIOS) {
+        return isMp4a;
+      } else {
+        return true;
+      }
+    });
+
+    final chosenStreamInfo = preferences.audioQuality == AudioQuality.high
+        ? audioManifest.withHighestBitrate()
+        : audioManifest.sortByBitrate().last;
+
+    final ytUri = chosenStreamInfo.url.toString();
+
+    final skipSegments = cachedTrack?.skipSegments != null &&
+            cachedTrack!.skipSegments!.isNotEmpty
+        ? cachedTrack.skipSegments!
+            .map(
+              (segment) => segment.toJson(),
+            )
+            .toList()
+        : noSponsorBlock
+            ? List.castFrom<dynamic, Map<String, int>>([])
+            : await getSkipSegments(ytVideo.id.value);
+
+    // only save when the track isn't available in the cache with same
+    // matchAlgorithm
+    if (overwriteCache ||
+        cachedTrack == null ||
+        cachedTrack.mode != preferences.trackMatchAlgorithm.name) {
+      await cache.put(
+        track.id!,
+        CacheTrack.fromVideo(
+          ytVideo,
+          preferences.trackMatchAlgorithm.name,
+          skipSegments: skipSegments,
+        ),
+      );
+    }
+
+    return Tuple2(
+      SpotubeTrack.fromTrack(
+        track: track,
+        ytTrack: ytVideo,
+        // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
+        // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
+        // codec/mimetype for those Platforms
+        ytUri: ytUri,
+        skipSegments: skipSegments,
+      ),
+      chosenStreamInfo,
+    );
+  }
+
   // playlist & track list methods
   Future<Tuple2<SpotubeTrack, AudioOnlyStreamInfo>> toSpotubeTrack(
     Track track, {
     bool noSponsorBlock = false,
+    bool ignoreCache = false,
   }) async {
     try {
       final format = preferences.ytSearchFormat;
@@ -389,7 +478,6 @@ class Playback extends PersistedChangeNotifier {
               .whereNotNull()
               .toList() ??
           [];
-      final audioQuality = preferences.audioQuality;
       _logger.v("[Track Search Artists] $artistsName");
       final mainArtist = artistsName.first;
       final featuredArtists = artistsName.length > 1
@@ -409,7 +497,9 @@ class Playback extends PersistedChangeNotifier {
 
       Video ytVideo;
       final cachedTrack = await cache.get(track.id);
-      if (cachedTrack != null && cachedTrack.mode == matchAlgorithm.name) {
+      if (cachedTrack != null &&
+          cachedTrack.mode == matchAlgorithm.name &&
+          !ignoreCache) {
         _logger.v(
           "[Playing track from cache] youtubeId: ${cachedTrack.id} mode: ${cachedTrack.mode}",
         );
@@ -467,71 +557,19 @@ class Playback extends PersistedChangeNotifier {
               );
 
           ytVideo = ratedRankedVideos.first["video"] as Video;
+          _siblingYtVideos =
+              ratedRankedVideos.map((e) => e["video"] as Video).toList();
+          notifyListeners();
         } else {
           ytVideo = videos.where((video) => !video.isLive).first;
+          _siblingYtVideos = videos.take(10).toList();
+          notifyListeners();
         }
       }
-
-      StreamManifest trackManifest = await raceMultiple(
-        () => youtube.videos.streams.getManifest(ytVideo.id),
-      );
-
-      _logger.v(
-        "[YouTube Matched Track] ${ytVideo.title} | ${ytVideo.author} - ${ytVideo.url}",
-      );
-
-      final audioManifest = trackManifest.audioOnly.where((info) {
-        final isMp4a = info.codec.mimeType == "audio/mp4";
-        if (kIsLinux) {
-          return !isMp4a;
-        } else if (kIsMacOS || kIsIOS) {
-          return isMp4a;
-        } else {
-          return true;
-        }
-      });
-
-      final chosenStreamInfo = audioQuality == AudioQuality.high
-          ? audioManifest.withHighestBitrate()
-          : audioManifest.sortByBitrate().last;
-
-      final ytUri = chosenStreamInfo.url.toString();
-
-      final skipSegments = cachedTrack?.skipSegments != null &&
-              cachedTrack!.skipSegments!.isNotEmpty
-          ? cachedTrack.skipSegments!
-              .map(
-                (segment) => segment.toJson(),
-              )
-              .toList()
-          : noSponsorBlock
-              ? List.castFrom<dynamic, Map<String, int>>([])
-              : await getSkipSegments(ytVideo.id.value);
-
-      // only save when the track isn't available in the cache with same
-      // matchAlgorithm
-      if (cachedTrack == null || cachedTrack.mode != matchAlgorithm.name) {
-        await cache.put(
-          track.id!,
-          CacheTrack.fromVideo(
-            ytVideo,
-            matchAlgorithm.name,
-            skipSegments: skipSegments,
-          ),
-        );
-      }
-
-      return Tuple2(
-        SpotubeTrack.fromTrack(
-          track: track,
-          ytTrack: ytVideo,
-          // Since Mac OS's & IOS's CodeAudio doesn't support WebMedia
-          // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
-          // codec/mimetype for those Platforms
-          ytUri: ytUri,
-          skipSegments: skipSegments,
-        ),
-        chosenStreamInfo,
+      return ytVideoToSpotubeTrack(
+        ytVideo,
+        track,
+        noSponsorBlock: noSponsorBlock,
       );
     } catch (e, stack) {
       _logger.e("topSpotubeTrack", e, stack);
@@ -646,6 +684,8 @@ class Playback extends PersistedChangeNotifier {
   bool get isLoop => playbackMode == PlaybackMode.repeat;
   bool get isShuffled => playbackMode == PlaybackMode.shuffle;
   bool get isNormal => playbackMode == PlaybackMode.normal;
+  UnmodifiableListView<Video> get siblingYtVideos =>
+      UnmodifiableListView(_siblingYtVideos);
 }
 
 final playbackProvider = ChangeNotifierProvider<Playback>((ref) {

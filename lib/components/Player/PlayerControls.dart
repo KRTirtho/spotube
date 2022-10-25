@@ -94,23 +94,26 @@ class PlayerControls extends HookConsumerWidget {
 
                       return Column(
                         children: [
-                          Slider.adaptive(
-                            focusNode: FocusNode(),
-                            // cannot divide by zero
-                            // there's an edge case for value being bigger
-                            // than total duration. Keeping it resolved
-                            value: progress.value.toDouble(),
-                            onChanged: (v) {
-                              progress.value = v;
-                            },
-                            onChangeEnd: (value) async {
-                              await playback.seekPosition(
-                                Duration(
-                                  seconds: (value * sliderMax).toInt(),
-                                ),
-                              );
-                            },
-                            activeColor: iconColor,
+                          Tooltip(
+                            message: "Slide to seek forward or backward",
+                            child: Slider.adaptive(
+                              focusNode: FocusNode(),
+                              // cannot divide by zero
+                              // there's an edge case for value being bigger
+                              // than total duration. Keeping it resolved
+                              value: progress.value.toDouble(),
+                              onChanged: (v) {
+                                progress.value = v;
+                              },
+                              onChangeEnd: (value) async {
+                                await playback.seekPosition(
+                                  Duration(
+                                    seconds: (value * sliderMax).toInt(),
+                                  ),
+                                );
+                              },
+                              activeColor: iconColor,
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -136,6 +139,11 @@ class PlayerControls extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
+                    tooltip: playback.isLoop
+                        ? "Repeat playlist"
+                        : playback.isShuffled
+                            ? "Loop track"
+                            : "Shuffle playlist",
                     icon: Icon(
                       playback.isLoop
                           ? Icons.repeat_one_rounded
@@ -149,12 +157,16 @@ class PlayerControls extends HookConsumerWidget {
                             : playback.cyclePlaybackMode,
                   ),
                   IconButton(
+                      tooltip: "Previous track",
                       icon: const Icon(Icons.skip_previous_rounded),
                       color: iconColor,
                       onPressed: () {
                         onPrevious();
                       }),
                   IconButton(
+                    tooltip: playback.isPlaying
+                        ? "Pause playback"
+                        : "Resume playback",
                     icon: playback.status == PlaybackStatus.loading
                         ? const SizedBox(
                             height: 20,
@@ -173,11 +185,13 @@ class PlayerControls extends HookConsumerWidget {
                     ),
                   ),
                   IconButton(
+                    tooltip: "Next track",
                     icon: const Icon(Icons.skip_next_rounded),
                     onPressed: () => onNext(),
                     color: iconColor,
                   ),
                   IconButton(
+                    tooltip: "Stop playback",
                     icon: const Icon(Icons.stop_rounded),
                     color: iconColor,
                     onPressed: playback.track != null
