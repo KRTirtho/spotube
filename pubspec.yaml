@@ -46,7 +46,7 @@ dependencies:
       path: packages/audioplayers/
   introduction_screen: ^3.0.2
   audio_session: ^0.1.10
-  file_picker: ^5.2.0
+  file_picker: ^5.2.2
   popover: ^0.2.6+3
   queue: ^3.1.0+1
   auto_size_text: ^3.0.0
