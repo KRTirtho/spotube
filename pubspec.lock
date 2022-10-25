@@ -1041,7 +1041,7 @@ packages:
       name: scroll_to_index
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "3.0.1"
   shared_preferences:
     dependency: "direct main"
     description:
