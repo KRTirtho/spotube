@@ -174,13 +174,23 @@ final albumIsSavedForCurrentUserQueryJob =
       .isSavedAlbums([getVariable(queryKey)]).then((value) => value.first);
 });
 
-final searchMutationJob = MutationJob<List<Page>, Tuple2<String, SpotifyApi>>(
-  mutationKey: "search-query",
-  task: (ref, variables) {
+final searchQueryJob = InfiniteQueryJob.withVariableKey<List<Page>,
+    Tuple2<String, SpotifyApi>, int>(
+  preQueryKey: "search-query",
+  initialParam: 0,
+  enabled: false,
+  getNextPageParam: (lastPage, lastParam) =>
+      (lastPage.first.items?.length ?? 0) < 10 ? null : lastParam + 10,
+  getPreviousPageParam: (lastPage, lastParam) => lastParam - 10,
+  task: (queryKey, pageParam, variables) {
     final queryString = variables.item1;
     final spotify = variables.item2;
     if (queryString.isEmpty) return [];
-    return spotify.search.get(queryString).first(10);
+    final searchType = getVariable(queryKey);
+    return spotify.search.get(
+      queryString,
+      types: [SearchType(searchType)],
+    ).getPage(10, pageParam);
   },
 );
 
