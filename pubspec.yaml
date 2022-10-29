@@ -62,6 +62,8 @@ dependencies:
   flutter_inappwebview: ^5.4.3+7
   tuple: ^2.0.1
   uuid: ^3.0.6
+  platform_ui:
+    path: ../platform_ui
 
 dev_dependencies:
   flutter_test:

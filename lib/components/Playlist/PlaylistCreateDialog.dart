@@ -2,6 +2,7 @@ import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
@@ -12,7 +13,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
 
-    return TextButton(
+    return PlatformTextButton(
       onPressed: () {
         showDialog(
           context: context,
@@ -26,11 +27,11 @@ class PlaylistCreateDialog extends HookConsumerWidget {
               return AlertDialog(
                 title: const Text("Create a Playlist"),
                 actions: [
-                  TextButton(
+                  PlatformTextButton(
                     child: const Text("Cancel"),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
-                  ElevatedButton(
+                  PlatformFilledButton(
                     child: const Text("Create"),
                     onPressed: () async {
                       if (playlistName.text.isEmpty) return;
@@ -58,19 +59,15 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      TextField(
+                      PlatformTextField(
                         controller: playlistName,
-                        decoration: const InputDecoration(
-                          hintText: "Name of the playlist",
-                          label: Text("Playlist Name"),
-                        ),
+                        placeholder: "Name of the playlist",
+                        label: "Playlist Name",
                       ),
                       const SizedBox(height: 10),
-                      TextField(
+                      PlatformTextField(
                         controller: description,
-                        decoration: const InputDecoration(
-                          hintText: "Description...",
-                        ),
+                        placeholder: "Description...",
                         keyboardType: TextInputType.multiline,
                         maxLines: 5,
                       ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/components/Shared/AdaptiveListTile.dart';
@@ -88,7 +89,7 @@ class Settings extends HookConsumerWidget {
                             ),
                           ),
                         ),
-                        trailing: (context, update) => ElevatedButton(
+                        trailing: (context, update) => PlatformFilledButton(
                           onPressed: () {
                             GoRouter.of(context).push("/login");
                           },
@@ -105,7 +106,7 @@ class Settings extends HookConsumerWidget {
                     if (auth.isLoggedIn)
                       Builder(builder: (context) {
                         Auth auth = ref.watch(authProvider);
-                        return ListTile(
+                        return PlatformListTile(
                           leading: const Icon(Icons.logout_rounded),
                           title: const SizedBox(
                             height: 50,
@@ -118,7 +119,7 @@ class Settings extends HookConsumerWidget {
                               ),
                             ),
                           ),
-                          trailing: ElevatedButton(
+                          trailing: PlatformFilledButton(
                             style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.red),
@@ -144,24 +145,25 @@ class Settings extends HookConsumerWidget {
                       subtitle: const Text(
                         "Override responsive layout mode settings",
                       ),
-                      trailing: (context, update) => DropdownButton<LayoutMode>(
+                      trailing: (context, update) =>
+                          PlatformDropDownMenu<LayoutMode>(
                         value: preferences.layoutMode,
-                        items: const [
-                          DropdownMenuItem(
+                        items: [
+                          PlatformDropDownMenuItem(
                             value: LayoutMode.adaptive,
-                            child: Text(
+                            child: const Text(
                               "Adaptive",
                             ),
                           ),
-                          DropdownMenuItem(
+                          PlatformDropDownMenuItem(
                             value: LayoutMode.compact,
-                            child: Text(
+                            child: const Text(
                               "Compact",
                             ),
                           ),
-                          DropdownMenuItem(
+                          PlatformDropDownMenuItem(
                             value: LayoutMode.extended,
-                            child: Text("Extended"),
+                            child: const Text("Extended"),
                           ),
                         ],
                         onChanged: (value) {
@@ -175,24 +177,25 @@ class Settings extends HookConsumerWidget {
                     AdaptiveListTile(
                       leading: const Icon(Icons.dark_mode_outlined),
                       title: const Text("Theme"),
-                      trailing: (context, update) => DropdownButton<ThemeMode>(
+                      trailing: (context, update) =>
+                          PlatformDropDownMenu<ThemeMode>(
                         value: preferences.themeMode,
-                        items: const [
-                          DropdownMenuItem(
+                        items: [
+                          PlatformDropDownMenuItem(
                             value: ThemeMode.dark,
-                            child: Text(
+                            child: const Text(
                               "Dark",
                             ),
                           ),
-                          DropdownMenuItem(
+                          PlatformDropDownMenuItem(
                             value: ThemeMode.light,
-                            child: Text(
+                            child: const Text(
                               "Light",
                             ),
                           ),
-                          DropdownMenuItem(
+                          PlatformDropDownMenuItem(
                             value: ThemeMode.system,
-                            child: Text("System"),
+                            child: const Text("System"),
                           ),
                         ],
                         onChanged: (value) {
@@ -203,7 +206,7 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    ListTile(
+                    PlatformListTile(
                       leading: const Icon(Icons.palette_outlined),
                       title: const Text("Accent Color Scheme"),
                       contentPadding: const EdgeInsets.symmetric(
@@ -217,7 +220,7 @@ class Settings extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(ColorSchemeType.accent),
                     ),
-                    ListTile(
+                    PlatformListTile(
                       leading: const Icon(Icons.format_color_fill_rounded),
                       title: const Text("Background Color Scheme"),
                       contentPadding: const EdgeInsets.symmetric(
@@ -231,11 +234,10 @@ class Settings extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(ColorSchemeType.background),
                     ),
-                    ListTile(
+                    PlatformListTile(
                       leading: const Icon(Icons.album_rounded),
                       title: const Text("Rotating Album Art"),
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
+                      trailing: PlatformSwitch(
                         value: preferences.rotatingAlbumArt,
                         onChanged: (state) {
                           preferences.setRotatingAlbumArt(state);
@@ -251,18 +253,18 @@ class Settings extends HookConsumerWidget {
                       leading: const Icon(Icons.multitrack_audio_rounded),
                       title: const Text("Audio Quality"),
                       trailing: (context, update) =>
-                          DropdownButton<AudioQuality>(
+                          PlatformDropDownMenu<AudioQuality>(
                         value: preferences.audioQuality,
-                        items: const [
-                          DropdownMenuItem(
+                        items: [
+                          PlatformDropDownMenuItem(
                             value: AudioQuality.high,
-                            child: Text(
+                            child: const Text(
                               "High",
                             ),
                           ),
-                          DropdownMenuItem(
+                          PlatformDropDownMenuItem(
                             value: AudioQuality.low,
-                            child: Text("Low"),
+                            child: const Text("Low"),
                           ),
                         ],
                         onChanged: (value) {
@@ -274,7 +276,7 @@ class Settings extends HookConsumerWidget {
                       ),
                     ),
                     if (kIsMobile)
-                      ListTile(
+                      PlatformListTile(
                         leading: const Icon(Icons.download_for_offline_rounded),
                         title: const Text(
                           "Pre download and play",
@@ -282,21 +284,19 @@ class Settings extends HookConsumerWidget {
                         subtitle: const Text(
                           "Instead of streaming audio, download bytes and play instead (Recommended for higher bandwidth users)",
                         ),
-                        trailing: Switch.adaptive(
-                          activeColor: Theme.of(context).primaryColor,
+                        trailing: PlatformSwitch(
                           value: preferences.androidBytesPlay,
                           onChanged: (state) {
                             preferences.setAndroidBytesPlay(state);
                           },
                         ),
                       ),
-                    ListTile(
+                    PlatformListTile(
                       leading: const Icon(Icons.fast_forward_rounded),
                       title: const Text(
                         "Skip non-music segments (SponsorBlock)",
                       ),
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
+                      trailing: PlatformSwitch(
                         value: preferences.skipSponsorSegments,
                         onChanged: (state) {
                           preferences.setSkipSponsorSegments(state);
@@ -320,12 +320,11 @@ class Settings extends HookConsumerWidget {
                       ),
                       trailing: (context, update) => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 250),
-                        child: DropdownButton(
-                          isExpanded: true,
+                        child: PlatformDropDownMenu(
                           value: preferences.recommendationMarket,
                           items: spotifyMarkets
                               .map(
-                                (country) => (DropdownMenuItem(
+                                (country) => (PlatformDropDownMenuItem(
                                   value: country.first,
                                   child: Text(country.last),
                                 )),
@@ -358,18 +357,15 @@ class Settings extends HookConsumerWidget {
                       breakOn: Breakpoints.lg,
                       trailing: (context, update) => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 450),
-                        child: TextField(
+                        child: PlatformTextField(
                           controller: ytSearchFormatController,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            suffix: ElevatedButton(
-                              child: const Icon(Icons.save_rounded),
-                              onPressed: () {
-                                preferences.setYtSearchFormat(
-                                  ytSearchFormatController.value.text,
-                                );
-                              },
-                            ),
+                          suffix: PlatformFilledButton(
+                            child: const Icon(Icons.save_rounded),
+                            onPressed: () {
+                              preferences.setYtSearchFormat(
+                                ytSearchFormatController.value.text,
+                              );
+                            },
                           ),
                           onSubmitted: (value) {
                             preferences.setYtSearchFormat(value);
@@ -392,24 +388,24 @@ class Settings extends HookConsumerWidget {
                         ),
                       ),
                       trailing: (context, update) =>
-                          DropdownButton<SpotubeTrackMatchAlgorithm>(
+                          PlatformDropDownMenu<SpotubeTrackMatchAlgorithm>(
                         value: preferences.trackMatchAlgorithm,
-                        items: const [
-                          DropdownMenuItem(
+                        items: [
+                          PlatformDropDownMenuItem(
                             value: SpotubeTrackMatchAlgorithm.authenticPopular,
-                            child: Text(
+                            child: const Text(
                               "Popular from Author",
                             ),
                           ),
-                          DropdownMenuItem(
+                          PlatformDropDownMenuItem(
                             value: SpotubeTrackMatchAlgorithm.popular,
-                            child: Text(
+                            child: const Text(
                               "Accurately Popular",
                             ),
                           ),
-                          DropdownMenuItem(
+                          PlatformDropDownMenuItem(
                             value: SpotubeTrackMatchAlgorithm.youtube,
-                            child: Text("YouTube's Top choice"),
+                            child: const Text("YouTube's Top choice"),
                           ),
                         ],
                         onChanged: (value) {
@@ -425,21 +421,20 @@ class Settings extends HookConsumerWidget {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
-                    ListTile(
+                    PlatformListTile(
                       leading: const Icon(Icons.file_download_outlined),
                       title: const Text("Download Location"),
                       subtitle: Text(preferences.downloadLocation),
-                      trailing: ElevatedButton(
+                      trailing: PlatformFilledButton(
                         onPressed: pickDownloadLocation,
                         child: const Icon(Icons.folder_rounded),
                       ),
                       onTap: pickDownloadLocation,
                     ),
-                    ListTile(
+                    PlatformListTile(
                       leading: const Icon(Icons.lyrics_rounded),
                       title: const Text("Download lyrics along with the Track"),
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
+                      trailing: PlatformSwitch(
                         value: preferences.saveTrackLyrics,
                         onChanged: (state) {
                           preferences.setSaveTrackLyrics(state);
@@ -487,11 +482,10 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    ListTile(
+                    PlatformListTile(
                       leading: const Icon(Icons.update_rounded),
                       title: const Text("Check for Update"),
-                      trailing: Switch.adaptive(
-                        activeColor: Theme.of(context).primaryColor,
+                      trailing: PlatformSwitch(
                         value: preferences.checkUpdate,
                         onChanged: (checked) =>
                             preferences.setCheckUpdate(checked),

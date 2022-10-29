@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Library/UserAlbums.dart';
 import 'package:spotube/components/Library/UserArtists.dart';
 import 'package:spotube/components/Library/UserDownloads.dart';
 import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/components/Library/UserPlaylists.dart';
 import 'package:spotube/components/Shared/AnonymousFallback.dart';
-import 'package:spotube/components/Shared/ColoredTabBar.dart';
 
 class UserLibrary extends ConsumerWidget {
   const UserLibrary({Key? key}) : super(key: key);
@@ -15,27 +15,30 @@ class UserLibrary extends ConsumerWidget {
     return DefaultTabController(
       length: 5,
       child: SafeArea(
-        child: Scaffold(
-          appBar: ColoredTabBar(
-            color: Theme.of(context).backgroundColor,
-            child: const TabBar(
-              isScrollable: true,
-              tabs: [
-                Tab(text: "Playlist"),
-                Tab(text: "Downloads"),
-                Tab(text: "Local"),
-                Tab(text: "Artists"),
-                Tab(text: "Album"),
-              ],
-            ),
-          ),
-          body: const TabBarView(children: [
-            AnonymousFallback(child: UserPlaylists()),
-            UserDownloads(),
-            UserLocalTracks(),
-            AnonymousFallback(child: UserArtists()),
-            AnonymousFallback(child: UserAlbums()),
-          ]),
+        child: PlatformTabView(
+          placement: PlatformProperty.all(PlatformTabbarPlacement.top),
+          body: {
+            PlatformTab(
+              label: "Playlist",
+              icon: Container(),
+            ): const AnonymousFallback(child: UserPlaylists()),
+            PlatformTab(
+              label: "Downloads",
+              icon: Container(),
+            ): const UserDownloads(),
+            PlatformTab(
+              label: "Local",
+              icon: Container(),
+            ): const UserLocalTracks(),
+            PlatformTab(
+              label: "Artists",
+              icon: Container(),
+            ): const AnonymousFallback(child: UserArtists()),
+            PlatformTab(
+              label: "Album",
+              icon: Container(),
+            ): const AnonymousFallback(child: UserAlbums()),
+          },
         ),
       ),
     );

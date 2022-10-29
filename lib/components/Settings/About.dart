@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/hooks/usePackageInfo.dart';
 
@@ -29,7 +30,7 @@ class About extends HookWidget {
       version: "2.5.0",
     );
 
-    return ListTile(
+    return PlatformListTile(
       leading: const Icon(Icons.info_outline_rounded),
       title: const Text("About Spotube"),
       onTap: () {

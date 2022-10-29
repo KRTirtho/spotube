@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
@@ -85,23 +86,15 @@ class Search extends HookConsumerWidget {
                 vertical: 10,
               ),
               color: Theme.of(context).backgroundColor,
-              child: TextField(
+              child: PlatformTextField(
                 onChanged: (value) {
                   ref.read(searchTermStateProvider.notifier).state = value;
                 },
-                decoration: InputDecoration(
-                  isDense: true,
-                  suffix: ElevatedButton(
-                    onPressed: onSearch,
-                    child: const Icon(Icons.search_rounded),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 7,
-                  ),
-                  hintStyle: const TextStyle(height: 2),
-                  hintText: "Search...",
+                suffix: PlatformFilledButton(
+                  onPressed: onSearch,
+                  child: const Icon(Icons.search_rounded),
                 ),
+                placeholder: "Search...",
                 onSubmitted: (value) {
                   onSearch();
                 },

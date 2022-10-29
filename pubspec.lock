@@ -493,6 +493,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.1"
+  fluent_ui:
+    dependency: transitive
+    description:
+      name: fluent_ui
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -561,6 +568,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -690,6 +702,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.0"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.17.0"
   introduction_screen:
     dependency: "direct main"
     description:
@@ -739,6 +758,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  macos_ui:
+    dependency: transitive
+    description:
+      name: macos_ui
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.7.5"
   marquee:
     dependency: "direct main"
     description:
@@ -972,6 +998,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+  platform_ui:
+    dependency: "direct main"
+    description:
+      path: "../platform_ui"
+      relative: true
+    source: path
+    version: "0.0.1"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -1021,6 +1054,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0+1"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.0"
   riverpod:
     dependency: transitive
     description:
@@ -1035,6 +1075,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.3"
+  scroll_pos:
+    dependency: transitive
+    description:
+      name: scroll_pos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   scroll_to_index:
     dependency: "direct main"
     description:

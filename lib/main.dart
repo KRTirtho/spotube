@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/entities/CacheTrack.dart';
@@ -198,57 +199,66 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       };
     }, []);
 
-    return MaterialApp.router(
-      routerConfig: router,
+    platform = TargetPlatform.macOS;
+
+    return PlatformApp.router(
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+      routeInformationProvider: router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
-      theme: lightTheme(
+      androidTheme: lightTheme(
         accentMaterialColor: accentMaterialColor,
         backgroundMaterialColor: backgroundMaterialColor,
       ),
-      darkTheme: darkTheme(
+      androidDarkTheme: darkTheme(
         accentMaterialColor: accentMaterialColor,
         backgroundMaterialColor: backgroundMaterialColor,
       ),
       themeMode: themeMode,
-      shortcuts: {
-        ...WidgetsApp.defaultShortcuts,
-        const SingleActivator(LogicalKeyboardKey.space): PlayPauseIntent(ref),
-        const SingleActivator(LogicalKeyboardKey.comma, control: true):
+      shortcuts: PlatformProperty.all({
+        ...WidgetsApp.defaultShortcuts.map((key, value) {
+          return MapEntry(
+            LogicalKeySet.fromSet(key.triggers?.toSet() ?? {}),
+            value,
+          );
+        }),
+        LogicalKeySet(LogicalKeyboardKey.space): PlayPauseIntent(ref),
+        LogicalKeySet(LogicalKeyboardKey.comma, LogicalKeyboardKey.control):
             NavigationIntent(router, "/settings"),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyB,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.browse),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyS,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.search),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyL,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.library),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyY,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyW,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): CloseAppIntent(),
-      },
-      actions: {
+      }),
+      actions: PlatformProperty.all({
         ...WidgetsApp.defaultActions,
         PlayPauseIntent: PlayPauseAction(),
         NavigationIntent: NavigationAction(),
         HomeTabIntent: HomeTabAction(),
         CloseAppIntent: CloseAppAction(),
-      },
+      }),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
@@ -15,16 +16,19 @@ import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
 
 final sidebarExtendedStateProvider = StateProvider<bool?>((ref) => null);
 
 class Sidebar extends HookConsumerWidget {
   final int selectedIndex;
   final void Function(int) onSelectedIndexChanged;
+  final Widget child;
 
   const Sidebar({
     required this.selectedIndex,
     required this.onSelectedIndexChanged,
+    required this.child,
     Key? key,
   }) : super(key: key);
 
@@ -45,7 +49,6 @@ class Sidebar extends HookConsumerWidget {
     final breakpoints = useBreakpoints();
     final extended = useState(false);
 
-    final auth = ref.watch(authProvider);
     final downloadCount = ref.watch(
       downloaderProvider.select((s) => s.currentlyRunning),
     );
@@ -81,10 +84,31 @@ class Sidebar extends HookConsumerWidget {
 
     return SafeArea(
       top: false,
-      child: Material(
-        color: Theme.of(context).navigationRailTheme.backgroundColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+      child: PlatformSidebar(
+        currentIndex: selectedIndex,
+        onIndexChanged: onSelectedIndexChanged,
+        body: Map.fromEntries(
+          sidebarTileList.map(
+            (e) {
+              final icon = Icon(e.icon);
+              return MapEntry(
+                PlatformSidebarItem(
+                  icon: icon,
+                  title: Text(
+                    e.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                child,
+              );
+            },
+          ),
+        ),
+        expanded: extended.value,
+        header: Column(
           children: [
             if (kIsDesktop)
               SizedBox(
@@ -126,138 +150,120 @@ class Sidebar extends HookConsumerWidget {
                     ],
                   )
                 : _buildSmallLogo(),
-            Expanded(
-              child: NavigationRail(
-                destinations: sidebarTileList.map(
-                  (e) {
-                    final icon = Icon(e.icon);
-                    return NavigationRailDestination(
-                      icon: e.title == "Library" && downloadCount > 0
-                          ? Badge(
-                              badgeColor: Colors.red[100]!,
-                              badgeContent: Text(
-                                downloadCount.toString(),
+          ],
+        ),
+        windowsFooterItems: [
+          FluentUI.PaneItemAction(
+            icon: const FluentUI.Icon(FluentUI.FluentIcons.settings),
+            onTap: () => goToSettings(context),
+          ),
+        ],
+        footer: SidebarFooter(extended: extended.value),
+      ),
+    );
+  }
+}
+
+class SidebarFooter extends HookConsumerWidget {
+  final bool extended;
+  const SidebarFooter({
+    Key? key,
+    required this.extended,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final auth = ref.watch(authProvider);
+
+    return SizedBox(
+      width: extended ? 256 : 80,
+      child: HookBuilder(
+        builder: (context) {
+          final me = useQuery(
+            job: currentUserQueryJob,
+            externalData: ref.watch(spotifyProvider),
+          );
+          final data = me.data;
+
+          final avatarImg = TypeConversionUtils.image_X_UrlString(
+            data?.images,
+            index: (data?.images?.length ?? 1) - 1,
+            placeholder: ImagePlaceholder.artist,
+          );
+
+          useEffect(() {
+            if (auth.isLoggedIn && !me.hasData) {
+              me.setExternalData(ref.read(spotifyProvider));
+              me.refetch();
+            }
+            return;
+          }, [auth.isLoggedIn, me.hasData]);
+
+          if (extended) {
+            return Padding(
+                padding: const EdgeInsets.all(16).copyWith(left: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (auth.isLoggedIn && data == null)
+                      const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    else if (data != null)
+                      Flexible(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  UniversalImage.imageProvider(avatarImg),
+                              onBackgroundImageError: (exception, stackTrace) =>
+                                  Image.asset(
+                                "assets/user-placeholder.png",
+                                height: 16,
+                                width: 16,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Flexible(
+                              child: Text(
+                                data.displayName ?? "Guest",
+                                maxLines: 1,
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
                                 style: const TextStyle(
-                                  color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              animationType: BadgeAnimationType.fade,
-                              child: icon,
-                            )
-                          : icon,
-                      label: Text(
-                        e.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    );
-                  },
-                ).toList(),
-                selectedIndex: selectedIndex,
-                onDestinationSelected: onSelectedIndexChanged,
-                extended: extended.value,
-              ),
-            ),
-            SizedBox(
-              width: extended.value ? 256 : 80,
-              child: HookBuilder(
-                builder: (context) {
-                  final me = useQuery(
-                    job: currentUserQueryJob,
-                    externalData: ref.watch(spotifyProvider),
-                  );
-                  final data = me.data;
-
-                  final avatarImg = TypeConversionUtils.image_X_UrlString(
-                    data?.images,
-                    index: (data?.images?.length ?? 1) - 1,
-                    placeholder: ImagePlaceholder.artist,
-                  );
-
-                  useEffect(() {
-                    if (auth.isLoggedIn && !me.hasData) {
-                      me.setExternalData(ref.read(spotifyProvider));
-                      me.refetch();
-                    }
-                    return;
-                  }, [auth.isLoggedIn, me.hasData]);
-
-                  if (extended.value) {
-                    return Padding(
-                        padding: const EdgeInsets.all(16).copyWith(left: 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (auth.isLoggedIn && data == null)
-                              const Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            else if (data != null)
-                              Flexible(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundImage:
-                                          UniversalImage.imageProvider(
-                                              avatarImg),
-                                      onBackgroundImageError:
-                                          (exception, stackTrace) =>
-                                              Image.asset(
-                                        "assets/user-placeholder.png",
-                                        height: 16,
-                                        width: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        data.displayName ?? "Guest",
-                                        maxLines: 1,
-                                        softWrap: false,
-                                        overflow: TextOverflow.fade,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            IconButton(
-                                icon: const Icon(Icons.settings_outlined),
-                                onPressed: () => goToSettings(context)),
+                            ),
                           ],
-                        ));
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                        onTap: () => goToSettings(context),
-                        child: CircleAvatar(
-                          backgroundImage:
-                              UniversalImage.imageProvider(avatarImg),
-                          onBackgroundImageError: (exception, stackTrace) =>
-                              Image.asset(
-                            "assets/user-placeholder.png",
-                            height: 16,
-                            width: 16,
-                          ),
                         ),
                       ),
-                    );
-                  }
-                },
+                    IconButton(
+                        icon: const Icon(Icons.settings_outlined),
+                        onPressed: () => Sidebar.goToSettings(context)),
+                  ],
+                ));
+          } else {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InkWell(
+                onTap: () => Sidebar.goToSettings(context),
+                child: CircleAvatar(
+                  backgroundImage: UniversalImage.imageProvider(avatarImg),
+                  onBackgroundImageError: (exception, stackTrace) =>
+                      Image.asset(
+                    "assets/user-placeholder.png",
+                    height: 16,
+                    width: 16,
+                  ),
+                ),
               ),
-            )
-          ],
-        ),
+            );
+          }
+        },
       ),
     );
   }

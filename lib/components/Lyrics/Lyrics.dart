@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:palette_generator/palette_generator.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Lyrics/GeniusLyrics.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
@@ -13,6 +15,25 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Lyrics extends HookConsumerWidget {
   const Lyrics({Key? key}) : super(key: key);
+
+  Widget buildContainer(Widget child, String albumArt, PaletteColor palette) {
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: UniversalImage.imageProvider(albumArt),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Container(
+          color: palette.color.withOpacity(.7),
+          child: child,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, ref) {
@@ -33,8 +54,22 @@ class Lyrics extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    return DefaultTabController(
-      length: 2,
+    return SafeArea(
+      child: PlatformTabView(
+        body: {
+          PlatformTab(
+            label: "Synced Lyrics",
+            icon: Container(),
+          ): buildContainer(SyncedLyrics(palette: palette), albumArt, palette),
+          PlatformTab(
+            label: "Lyrics (genius.com)",
+            icon: Container(),
+          ): buildContainer(GeniusLyrics(palette: palette), albumArt, palette),
+        },
+      ),
+    );
+
+    return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: const TabBar(

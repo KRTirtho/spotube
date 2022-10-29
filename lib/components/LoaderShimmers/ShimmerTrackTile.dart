@@ -13,10 +13,12 @@ class ShimmerTrackTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shimmerColor =
-        Theme.of(context).extension<ShimmerColorTheme>()!.shimmerColor!;
+        Theme.of(context).extension<ShimmerColorTheme>()?.shimmerColor ??
+            Colors.white;
     final shimmerBackgroundColor = Theme.of(context)
-        .extension<ShimmerColorTheme>()!
-        .shimmerBackgroundColor!;
+            .extension<ShimmerColorTheme>()
+            ?.shimmerBackgroundColor ??
+        Colors.grey;
 
     final single = Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),

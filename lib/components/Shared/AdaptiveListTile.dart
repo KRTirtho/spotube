@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 
 class AdaptiveListTile extends HookWidget {
@@ -24,7 +25,7 @@ class AdaptiveListTile extends HookWidget {
   Widget build(BuildContext context) {
     final breakpoint = useBreakpoints();
 
-    return ListTile(
+    return PlatformListTile(
       title: title,
       subtitle: subtitle,
       trailing:

@@ -9,6 +9,7 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/SortTracksDropdown.dart';
@@ -169,13 +170,7 @@ class UserLocalTracks extends HookConsumerWidget {
           child: Row(
             children: [
               const SizedBox(width: 10),
-              ElevatedButton.icon(
-                label: const Text("Play"),
-                icon: Icon(
-                  isPlaylistPlaying
-                      ? Icons.stop_rounded
-                      : Icons.play_arrow_rounded,
-                ),
+              PlatformFilledButton(
                 onPressed: trackSnapshot.value != null
                     ? () {
                         if (trackSnapshot.value?.isNotEmpty == true) {
@@ -187,6 +182,16 @@ class UserLocalTracks extends HookConsumerWidget {
                         }
                       }
                     : null,
+                child: Row(
+                  children: [
+                    const Text("Play"),
+                    Icon(
+                      isPlaylistPlaying
+                          ? Icons.stop_rounded
+                          : Icons.play_arrow_rounded,
+                    )
+                  ],
+                ),
               ),
               const Spacer(),
               SortTracksDropdown(
@@ -196,7 +201,7 @@ class UserLocalTracks extends HookConsumerWidget {
                 },
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
+              PlatformFilledButton(
                 child: const Icon(Icons.refresh_rounded),
                 onPressed: () {
                   ref.refresh(localTracksProvider);

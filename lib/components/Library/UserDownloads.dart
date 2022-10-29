@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/provider/Downloader.dart';
@@ -47,7 +48,7 @@ class UserDownloads extends HookConsumerWidget {
             itemCount: downloader.inQueue.length,
             itemBuilder: (context, index) {
               final track = downloader.inQueue.elementAt(index);
-              return ListTile(
+              return PlatformListTile(
                 title: Text(track.name!),
                 leading: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -68,7 +69,6 @@ class UserDownloads extends HookConsumerWidget {
                   height: 30,
                   child: CircularProgressIndicator.adaptive(),
                 ),
-                horizontalTitleGap: 5,
                 subtitle: Text(
                   TypeConversionUtils.artists_X_String(
                     track.artists ?? <Artist>[],

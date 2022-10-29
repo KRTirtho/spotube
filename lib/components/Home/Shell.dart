@@ -84,17 +84,13 @@ class Shell extends HookConsumerWidget {
             )
           : null,
       extendBodyBehindAppBar: true,
-      body: Row(
-        children: [
-          Sidebar(
-            selectedIndex: index.value,
-            onSelectedIndexChanged: (selectedIndex) {
-              index.value = selectedIndex;
-              GoRouter.of(context).go(_path[selectedIndex]!);
-            },
-          ),
-          Expanded(child: child),
-        ],
+      body: Sidebar(
+        selectedIndex: index.value,
+        onSelectedIndexChanged: (i) {
+          index.value = i;
+          GoRouter.of(context).go(_path[index.value]!);
+        },
+        child: child,
       ),
       extendBody: true,
       bottomNavigationBar: Column(

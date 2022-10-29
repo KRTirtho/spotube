@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/HoverBuilder.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
@@ -67,7 +68,7 @@ class PlaybuttonCard extends StatelessWidget {
                         bottom: 10,
                         end: 5,
                         child: Builder(builder: (context) {
-                          return ElevatedButton(
+                          return PlatformFilledButton(
                             onPressed: onPlaybuttonPressed,
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all(

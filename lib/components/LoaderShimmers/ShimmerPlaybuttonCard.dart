@@ -9,10 +9,12 @@ class ShimmerPlaybuttonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shimmerColor =
-        Theme.of(context).extension<ShimmerColorTheme>()!.shimmerColor!;
+        Theme.of(context).extension<ShimmerColorTheme>()?.shimmerColor ??
+            Colors.white;
     final shimmerBackgroundColor = Theme.of(context)
-        .extension<ShimmerColorTheme>()!
-        .shimmerBackgroundColor!;
+            .extension<ShimmerColorTheme>()
+            ?.shimmerBackgroundColor ??
+        Colors.grey;
 
     final card = Stack(
       children: [
