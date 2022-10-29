@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 
 final replaceDownloadedFileState = StateProvider<bool?>((ref) => null);
@@ -48,13 +49,13 @@ class ReplaceDownloadedFileDialog extends ConsumerWidget {
         ],
       ),
       actions: [
-        TextButton(
+        PlatformTextButton(
           child: const Text("No"),
           onPressed: () {
             Navigator.pop(context, false);
           },
         ),
-        TextButton(
+        PlatformTextButton(
           child: const Text("Yes"),
           onPressed: () {
             Navigator.pop(context, true);

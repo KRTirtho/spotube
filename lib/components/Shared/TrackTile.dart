@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Action;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/components/Shared/AdaptivePopupMenuButton.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
@@ -105,11 +106,11 @@ class TrackTile extends HookConsumerWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                       actions: [
-                        TextButton(
+                        PlatformTextButton(
                           child: const Text("Cancel"),
                           onPressed: () => Navigator.pop(context),
                         ),
-                        ElevatedButton(
+                        PlatformFilledButton(
                           child: const Text("Add"),
                           onPressed: () async {
                             final selectedPlaylists = playlistsCheck
@@ -214,7 +215,7 @@ class TrackTile extends HookConsumerWidget {
                 ),
               ),
             ),
-            IconButton(
+            PlatformIconButton(
               icon: Icon(
                 playback.track?.id != null &&
                         playback.track?.id == track.value.id

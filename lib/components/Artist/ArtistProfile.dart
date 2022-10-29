@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Artist/ArtistAlbumList.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
@@ -176,7 +177,7 @@ class ArtistProfile extends HookConsumerWidget {
                                     );
                                   },
                                 ),
-                                IconButton(
+                                PlatformIconButton(
                                   icon: const Icon(Icons.share_rounded),
                                   onPressed: () {
                                     Clipboard.setData(
@@ -260,11 +261,13 @@ class ArtistProfile extends HookConsumerWidget {
                                 color: Theme.of(context).primaryColor,
                                 borderRadius: BorderRadius.circular(50),
                               ),
-                              child: IconButton(
-                                icon: Icon(isPlaylistPlaying
-                                    ? Icons.stop_rounded
-                                    : Icons.play_arrow_rounded),
-                                color: Colors.white,
+                              child: PlatformIconButton(
+                                icon: Icon(
+                                  isPlaylistPlaying
+                                      ? Icons.stop_rounded
+                                      : Icons.play_arrow_rounded,
+                                  color: Colors.white,
+                                ),
                                 onPressed: () =>
                                     playPlaylist(topTracks.toList()),
                               ),

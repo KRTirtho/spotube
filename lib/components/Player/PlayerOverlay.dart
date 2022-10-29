@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Player/PlayerTrackDetails.dart';
 import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
@@ -79,21 +80,23 @@ class PlayerOverlay extends HookConsumerWidget {
                     ),
                     Row(
                       children: [
-                        IconButton(
-                            icon: const Icon(Icons.skip_previous_rounded),
-                            color: paletteColor.bodyTextColor,
+                        PlatformIconButton(
+                            icon: Icon(
+                              Icons.skip_previous_rounded,
+                              color: paletteColor.bodyTextColor,
+                            ),
                             onPressed: () {
                               onPrevious();
                             }),
                         Consumer(
                           builder: (context, ref, _) {
-                            return IconButton(
+                            return PlatformIconButton(
                               icon: Icon(
                                 ref.read(playbackProvider).isPlaying
                                     ? Icons.pause_rounded
                                     : Icons.play_arrow_rounded,
+                                color: paletteColor.bodyTextColor,
                               ),
-                              color: paletteColor.bodyTextColor,
                               onPressed: Actions.handler<PlayPauseIntent>(
                                 context,
                                 PlayPauseIntent(ref),
@@ -101,10 +104,12 @@ class PlayerOverlay extends HookConsumerWidget {
                             );
                           },
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.skip_next_rounded),
+                        PlatformIconButton(
+                          icon: Icon(
+                            Icons.skip_next_rounded,
+                            color: paletteColor.bodyTextColor,
+                          ),
                           onPressed: () => onNext(),
-                          color: paletteColor.bodyTextColor,
                         ),
                       ],
                     ),

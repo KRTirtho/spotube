@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:popover/popover.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 
@@ -24,23 +25,25 @@ class Action extends StatelessWidget {
               "\"",
               "",
             ),
-        child: IconButton(
+        child: PlatformIconButton(
           icon: icon,
           onPressed: onPressed,
         ),
       );
     }
-    return TextButton.icon(
+    return PlatformTextButton(
       style: TextButton.styleFrom(
         foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
         padding: const EdgeInsets.all(20),
       ),
-      icon: icon,
-      label: Align(
-        alignment: Alignment.centerLeft,
-        child: text,
-      ),
       onPressed: onPressed,
+      child: Row(
+        children: [
+          icon,
+          const SizedBox(width: 10),
+          text,
+        ],
+      ),
     );
   }
 }
@@ -59,7 +62,7 @@ class AdaptiveActions extends HookWidget {
     final breakpoint = useBreakpoints();
 
     if (breakpoint.isLessThan(breakOn)) {
-      return IconButton(
+      return PlatformIconButton(
         icon: const Icon(Icons.more_horiz),
         onPressed: () {
           showPopover(

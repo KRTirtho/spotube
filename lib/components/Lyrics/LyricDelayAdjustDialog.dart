@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
 
 class LyricDelayAdjustDialog extends HookConsumerWidget {
@@ -18,13 +19,13 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
     return AlertDialog(
       title: const Center(child: Text("Adjust Lyrics Delay")),
       actions: [
-        ElevatedButton(
+        PlatformFilledButton(
           child: const Text("Cancel"),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        ElevatedButton(
+        PlatformFilledButton(
           child: const Text("Done"),
           onPressed: () {
             Navigator.of(context).pop(
@@ -38,7 +39,7 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
       content: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
+          PlatformIconButton(
             icon: const Icon(Icons.remove_rounded),
             onPressed: () {
               controller.text = "${getValue() - 25}ms";
@@ -61,7 +62,7 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
               },
             ),
           ),
-          IconButton(
+          PlatformIconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () {
               controller.text = "${getValue() + 25}ms";

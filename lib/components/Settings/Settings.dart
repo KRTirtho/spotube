@@ -466,9 +466,7 @@ class Settings extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                      trailing: (context, update) => ElevatedButton.icon(
-                        icon: const Icon(Icons.favorite_outline_rounded),
-                        label: const Text("Please Sponsor/Donate"),
+                      trailing: (context, update) => PlatformFilledButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red[100],
                           foregroundColor: Colors.pinkAccent,
@@ -480,6 +478,12 @@ class Settings extends HookConsumerWidget {
                             mode: LaunchMode.externalApplication,
                           );
                         },
+                        child: Row(
+                          children: const [
+                            Icon(Icons.favorite_outline_rounded),
+                            Text("Please Sponsor/Donate"),
+                          ],
+                        ),
                       ),
                     ),
                     PlatformListTile(

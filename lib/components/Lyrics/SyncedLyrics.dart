@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/components/Lyrics/LyricDelayAdjustDialog.dart';
@@ -85,7 +86,7 @@ class SyncedLyrics extends HookConsumerWidget {
                 Positioned.fill(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: IconButton(
+                    child: PlatformIconButton(
                       tooltip: "Lyrics Delay",
                       icon: const Icon(Icons.av_timer_rounded),
                       onPressed: () async {

@@ -185,7 +185,7 @@ class Search extends HookConsumerWidget {
                             }),
                           if (searchTrack.hasNextPage && tracks.isNotEmpty)
                             Center(
-                              child: TextButton(
+                              child: PlatformTextButton(
                                 onPressed: searchTrack.isFetchingNextPage
                                     ? null
                                     : () => searchTrack.fetchNextPage(),

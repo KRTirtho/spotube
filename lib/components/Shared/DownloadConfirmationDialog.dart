@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 
 class DownloadConfirmationDialog extends StatelessWidget {
@@ -57,11 +58,11 @@ class DownloadConfirmationDialog extends StatelessWidget {
         ),
       ),
       actions: [
-        ElevatedButton(
+        PlatformFilledButton(
           child: const Text("Decline"),
           onPressed: () => Navigator.of(context).pop(false),
         ),
-        ElevatedButton(
+        PlatformFilledButton(
           onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,

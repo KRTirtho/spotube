@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Login/TokenLoginForms.dart';
 import 'package:spotube/components/Shared/Hyperlink.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -16,7 +17,7 @@ class LoginTutorial extends ConsumerWidget {
 
     return Scaffold(
       appBar: PageWindowTitleBar(
-        leading: TextButton(
+        leading: PlatformTextButton(
           child: const Text("Exit"),
           onPressed: () {
             Navigator.of(context).pop();
@@ -27,7 +28,7 @@ class LoginTutorial extends ConsumerWidget {
         next: const Text("Next"),
         back: const Text("Previous"),
         showBackButton: true,
-        overrideDone: TextButton(
+        overrideDone: PlatformTextButton(
           onPressed: auth.isLoggedIn
               ? () {
                   ServiceUtils.navigate(context, "/");

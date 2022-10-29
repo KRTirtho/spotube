@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/components/Shared/DownloadConfirmationDialog.dart';
@@ -126,23 +127,21 @@ class TracksTableView extends HookConsumerWidget {
                         .state = value;
                   },
                 ),
-                PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        enabled: selected.value.isNotEmpty,
-                        value: "download",
-                        child: Row(
-                          children: [
-                            const Icon(Icons.file_download_outlined),
-                            Text(
-                              "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
-                            ),
-                          ],
-                        ),
+                PlatformPopupMenuButton(
+                  items: [
+                    PlatformPopupMenuItem(
+                      enabled: selected.value.isNotEmpty,
+                      value: "download",
+                      child: Row(
+                        children: [
+                          const Icon(Icons.file_download_outlined),
+                          Text(
+                            "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
+                          ),
+                        ],
                       ),
-                    ];
-                  },
+                    ),
+                  ],
                   onSelected: (action) async {
                     switch (action) {
                       case "download":
@@ -163,6 +162,7 @@ class TracksTableView extends HookConsumerWidget {
                       default:
                     }
                   },
+                  child: const Icon(Icons.more_vert),
                 ),
               ],
             ),

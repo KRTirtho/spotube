@@ -30,7 +30,7 @@ class UserDownloads extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
+              PlatformFilledButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red[50],
                   foregroundColor: Colors.red[400],

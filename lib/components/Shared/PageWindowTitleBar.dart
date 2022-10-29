@@ -1,5 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/utils/platform.dart';
 
 class TitleBarActionButtons extends StatelessWidget {
@@ -26,7 +27,7 @@ class TitleBarActionButtons extends StatelessWidget {
         data: const IconThemeData(size: 16),
         child: Row(
           children: [
-            TextButton(
+            PlatformTextButton(
                 onPressed: () {
                   appWindow.minimize();
                 },
@@ -38,7 +39,7 @@ class TitleBarActionButtons extends StatelessWidget {
                   Icons.minimize_rounded,
                   color: color,
                 )),
-            TextButton(
+            PlatformTextButton(
                 onPressed: () async {
                   appWindow.maximizeOrRestore();
                 },
@@ -50,7 +51,7 @@ class TitleBarActionButtons extends StatelessWidget {
                   Icons.crop_square_rounded,
                   color: color,
                 )),
-            TextButton(
+            PlatformTextButton(
                 onPressed: () {
                   appWindow.close();
                 },

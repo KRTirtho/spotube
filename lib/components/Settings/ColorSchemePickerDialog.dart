@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/provider/UserPreferences.dart';
 
 final highContrast = MaterialColor(
@@ -68,13 +69,13 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
     return AlertDialog(
       title: Text("Pick ${schemeType.name} color scheme"),
       actions: [
-        TextButton(
+        PlatformTextButton(
           child: const Text("Cancel"),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        ElevatedButton(
+        PlatformFilledButton(
           child: const Text("Save"),
           onPressed: () {
             switch (schemeType) {

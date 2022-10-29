@@ -75,7 +75,7 @@ class Sidebar extends HookConsumerWidget {
 
     if (layoutMode == LayoutMode.compact ||
         (breakpoints.isSm && layoutMode == LayoutMode.adaptive)) {
-      return Container();
+      return child;
     }
 
     void toggleExtended() =>
@@ -117,7 +117,7 @@ class Sidebar extends HookConsumerWidget {
                 child: MoveWindow(
                   child: !extended.value
                       ? Center(
-                          child: IconButton(
+                          child: PlatformIconButton(
                             icon: const Icon(Icons.menu_rounded),
                             onPressed: toggleExtended,
                           ),
@@ -127,7 +127,7 @@ class Sidebar extends HookConsumerWidget {
               ),
             if (!kIsDesktop && !extended.value)
               Center(
-                child: IconButton(
+                child: PlatformIconButton(
                   icon: const Icon(Icons.menu_rounded),
                   onPressed: toggleExtended,
                 ),
@@ -143,7 +143,7 @@ class Sidebar extends HookConsumerWidget {
                         "Spotube",
                         style: Theme.of(context).textTheme.headline4,
                       ),
-                      IconButton(
+                      PlatformIconButton(
                         icon: const Icon(Icons.menu_rounded),
                         onPressed: toggleExtended,
                       ),
@@ -241,7 +241,7 @@ class SidebarFooter extends HookConsumerWidget {
                           ],
                         ),
                       ),
-                    IconButton(
+                    PlatformIconButton(
                         icon: const Icon(Icons.settings_outlined),
                         onPressed: () => Sidebar.goToSettings(context)),
                   ],

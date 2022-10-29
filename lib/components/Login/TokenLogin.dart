@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Login/TokenLoginForms.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
@@ -45,7 +46,7 @@ class TokenLogin extends HookConsumerWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       const Text("Don't know how to do this?"),
-                      TextButton(
+                      PlatformTextButton(
                         child: const Text(
                           "Follow along the Step by Step guide",
                         ),

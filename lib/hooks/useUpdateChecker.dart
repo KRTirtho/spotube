@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/AnchorButton.dart';
 import 'package:spotube/hooks/usePackageInfo.dart';
 import 'package:spotube/provider/UserPreferences.dart';
@@ -59,7 +60,7 @@ void useUpdateChecker(WidgetRef ref) {
             return AlertDialog(
               title: const Text("Spotube has an update"),
               actions: [
-                ElevatedButton(
+                PlatformFilledButton(
                   child: const Text("Download Now"),
                   onPressed: () => download(url),
                 ),
