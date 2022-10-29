@@ -64,6 +64,8 @@ dependencies:
   uuid: ^3.0.6
   platform_ui:
     path: ../platform_ui
+  fluent_ui: ^4.0.3
+  macos_ui: ^1.7.5
 
 dev_dependencies:
   flutter_test:

@@ -27,7 +27,7 @@ class TitleBarActionButtons extends StatelessWidget {
         data: const IconThemeData(size: 16),
         child: Row(
           children: [
-            PlatformTextButton(
+            TextButton(
                 onPressed: () {
                   appWindow.minimize();
                 },
@@ -39,7 +39,7 @@ class TitleBarActionButtons extends StatelessWidget {
                   Icons.minimize_rounded,
                   color: color,
                 )),
-            PlatformTextButton(
+            TextButton(
                 onPressed: () async {
                   appWindow.maximizeOrRestore();
                 },
@@ -51,7 +51,7 @@ class TitleBarActionButtons extends StatelessWidget {
                   Icons.crop_square_rounded,
                   color: color,
                 )),
-            PlatformTextButton(
+            TextButton(
                 onPressed: () {
                   appWindow.close();
                 },

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:macos_ui/macos_ui.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
@@ -467,10 +468,13 @@ class Settings extends HookConsumerWidget {
                         ),
                       ),
                       trailing: (context, update) => PlatformFilledButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red[100],
-                          foregroundColor: Colors.pinkAccent,
-                          padding: const EdgeInsets.all(15),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Colors.red[100]),
+                          foregroundColor:
+                              const MaterialStatePropertyAll(Colors.pinkAccent),
+                          padding: const MaterialStatePropertyAll(
+                              EdgeInsets.all(15)),
                         ),
                         onPressed: () {
                           launchUrlString(
@@ -479,8 +483,10 @@ class Settings extends HookConsumerWidget {
                           );
                         },
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: const [
                             Icon(Icons.favorite_outline_rounded),
+                            SizedBox(width: 5),
                             Text("Please Sponsor/Donate"),
                           ],
                         ),

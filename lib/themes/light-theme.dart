@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 import 'package:spotube/extensions/ShimmerColorTheme.dart';
+import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
 
 final materialWhite = MaterialColor(Colors.white.value, {
   50: Colors.white,
@@ -115,3 +118,27 @@ ThemeData lightTheme({
     ),
   );
 }
+
+final windowsTheme = FluentUI.ThemeData.light().copyWith(
+  buttonTheme: FluentUI.ButtonThemeData(
+    iconButtonStyle: FluentUI.ButtonStyle(
+      iconSize: FluentUI.ButtonState.all(20),
+    ),
+  ),
+);
+final windowsDarkTheme = FluentUI.ThemeData.dark().copyWith(
+  buttonTheme: FluentUI.ButtonThemeData(
+    iconButtonStyle: FluentUI.ButtonStyle(
+      iconSize: FluentUI.ButtonState.all(20),
+    ),
+  ),
+);
+final macosTheme = MacosThemeData.light().copyWith(
+  pushButtonTheme: PushButtonThemeData(
+    secondaryColor: Colors.white,
+  ),
+  iconTheme: MacosIconThemeData(size: 16),
+  iconButtonTheme: MacosIconButtonThemeData(),
+);
+final macosDarkTheme = MacosThemeData.dark();
+final iosTheme = CupertinoThemeData();

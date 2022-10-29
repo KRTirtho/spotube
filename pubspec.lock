@@ -494,7 +494,7 @@ packages:
     source: hosted
     version: "0.3.1"
   fluent_ui:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: fluent_ui
       url: "https://pub.dartlang.org"
@@ -759,7 +759,7 @@ packages:
     source: hosted
     version: "1.0.2"
   macos_ui:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: macos_ui
       url: "https://pub.dartlang.org"

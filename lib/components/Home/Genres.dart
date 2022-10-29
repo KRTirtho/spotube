@@ -2,6 +2,7 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerCategories.dart';
@@ -40,7 +41,8 @@ class Genres extends HookConsumerWidget {
           .toList()
     ];
 
-    return Scaffold(
+    return PlatformScaffold(
+      backgroundColor: PlatformProperty.all(Colors.transparent),
       body: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {
