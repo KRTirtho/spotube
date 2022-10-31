@@ -68,13 +68,13 @@ class Player extends HookConsumerWidget {
         android: null,
         ios: Border(
           top: BorderSide(
-            color: CupertinoTheme.of(context).barBackgroundColor,
+            color: PlatformTheme.of(context).borderColor ?? Colors.transparent,
             width: 1,
           ),
         ),
         macos: Border(
           top: BorderSide(
-            color: MacosTheme.of(context).dividerColor,
+            color: PlatformTheme.of(context).borderColor ?? Colors.transparent,
             width: 1,
           ),
         ),
@@ -130,7 +130,7 @@ class Player extends HookConsumerWidget {
                             }
                           }
                         },
-                        child: Slider.adaptive(
+                        child: PlatformSlider(
                           min: 0,
                           max: 1,
                           value: volume.value,

@@ -122,7 +122,7 @@ class TrackHeartButton extends HookConsumerWidget {
     );
     final toggler = useTrackToggleLike(track, ref);
     if (toggler.item3.isLoading || !toggler.item3.hasData) {
-      return const CircularProgressIndicator();
+      return const PlatformCircularProgressIndicator();
     }
 
     return HeartButton(
@@ -182,7 +182,8 @@ class PlaylistHeartButton extends HookConsumerWidget {
       titleImage,
     ).dominantColor;
 
-    if (me.isLoading || !me.hasData) return const CircularProgressIndicator();
+    if (me.isLoading || !me.hasData)
+      return const PlatformCircularProgressIndicator();
 
     return HeartButton(
       isLiked: isLikedQuery.data ?? false,
@@ -236,7 +237,8 @@ class AlbumHeartButton extends HookConsumerWidget {
       },
     );
 
-    if (me.isLoading || !me.hasData) return const CircularProgressIndicator();
+    if (me.isLoading || !me.hasData)
+      return const PlatformCircularProgressIndicator();
 
     return HeartButton(
       isLiked: isLiked,

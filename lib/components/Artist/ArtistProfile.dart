@@ -139,7 +139,8 @@ class ArtistProfile extends HookConsumerWidget {
                                       return const SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: CircularProgressIndicator(),
+                                        child:
+                                            PlatformCircularProgressIndicator(),
                                       );
                                     }
 
@@ -214,7 +215,7 @@ class ArtistProfile extends HookConsumerWidget {
                       );
 
                       if (topTracksQuery.isLoading || !topTracksQuery.hasData) {
-                        return const CircularProgressIndicator.adaptive();
+                        return const PlatformCircularProgressIndicator();
                       } else if (topTracksQuery.hasError) {
                         return Center(
                           child: Text(topTracksQuery.error.toString()),
@@ -313,7 +314,7 @@ class ArtistProfile extends HookConsumerWidget {
                       );
 
                       if (relatedArtists.isLoading || !relatedArtists.hasData) {
-                        return const CircularProgressIndicator.adaptive();
+                        return const PlatformCircularProgressIndicator();
                       } else if (relatedArtists.hasError) {
                         return Center(
                           child: Text(relatedArtists.error.toString()),

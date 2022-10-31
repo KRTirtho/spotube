@@ -141,7 +141,7 @@ class Sidebar extends HookConsumerWidget {
                       ),
                       Text(
                         "Spotube",
-                        style: Theme.of(context).textTheme.headline4,
+                        style: PlatformTheme.of(context).textTheme?.headline,
                       ),
                       PlatformIconButton(
                         icon: const Icon(Icons.menu_rounded),
@@ -207,7 +207,7 @@ class SidebarFooter extends HookConsumerWidget {
                   children: [
                     if (auth.isLoggedIn && data == null)
                       const Center(
-                        child: CircularProgressIndicator(),
+                        child: PlatformCircularProgressIndicator(),
                       )
                     else if (data != null)
                       Flexible(
@@ -233,9 +233,10 @@ class SidebarFooter extends HookConsumerWidget {
                                 maxLines: 1,
                                 softWrap: false,
                                 overflow: TextOverflow.fade,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: PlatformTheme.of(context)
+                                    .textTheme
+                                    ?.body
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],

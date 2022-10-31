@@ -67,7 +67,7 @@ class UserDownloads extends HookConsumerWidget {
                 trailing: const SizedBox(
                   width: 30,
                   height: 30,
-                  child: CircularProgressIndicator.adaptive(),
+                  child: PlatformCircularProgressIndicator(),
                 ),
                 subtitle: Text(
                   TypeConversionUtils.artists_X_String(

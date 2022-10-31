@@ -32,17 +32,7 @@ class PlaybuttonCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = usePlatformProperty<Color?>(
-      (context) => PlatformProperty(
-        android: Theme.of(context).backgroundColor,
-        ios: CupertinoTheme.of(context).scaffoldBackgroundColor,
-        macos: MacosTheme.of(context).brightness == Brightness.dark
-            ? Colors.grey[800]
-            : Colors.blueGrey[50],
-        linux: Theme.of(context).backgroundColor,
-        windows: FluentUI.FluentTheme.maybeOf(context)?.scaffoldBackgroundColor,
-      ),
-    );
+    final backgroundColor = PlatformTheme.of(context).secondaryBackgroundColor;
 
     final boxShadow = usePlatformProperty<BoxShadow?>(
       (context) => PlatformProperty(
@@ -64,28 +54,9 @@ class PlaybuttonCard extends HookWidget {
       ),
     );
 
-    final titleStyle = usePlatformProperty<TextStyle?>(
-      (context) => PlatformProperty(
-        android: Theme.of(context).textTheme.bodyMedium,
-        ios: CupertinoTheme.of(context).textTheme.textStyle,
-        macos: MacosTheme.of(context).typography.body,
-        linux: Theme.of(context).textTheme.bodyMedium,
-        windows: FluentUI.FluentTheme.maybeOf(context)?.typography.body,
-      ),
-    );
+    final titleStyle = PlatformTextTheme.of(context).body;
 
-    final descriptionStyle = usePlatformProperty<TextStyle?>(
-      (context) => PlatformProperty(
-        android: Theme.of(context).textTheme.caption,
-        ios: CupertinoTheme.of(context)
-            .textTheme
-            .textStyle
-            .copyWith(fontSize: 13),
-        macos: MacosTheme.of(context).typography.caption1,
-        linux: Theme.of(context).textTheme.caption,
-        windows: FluentUI.FluentTheme.maybeOf(context)?.typography.caption,
-      ),
-    );
+    final descriptionStyle = PlatformTextTheme.of(context).caption;
 
     final splash = usePlatformProperty<InteractiveInkFeatureFactory?>(
       (context) => PlatformProperty.multiPlatformGroup({
@@ -98,15 +69,7 @@ class PlaybuttonCard extends HookWidget {
       }),
     );
 
-    final iconBgColor = usePlatformProperty<Color?>(
-      (context) => PlatformProperty(
-        android: Theme.of(context).primaryColor,
-        ios: CupertinoTheme.of(context).primaryColor,
-        macos: MacosTheme.of(context).primaryColor,
-        linux: Theme.of(context).primaryColor,
-        windows: FluentUI.FluentTheme.maybeOf(context)?.accentColor,
-      ),
-    );
+    final iconBgColor = PlatformTheme.of(context).primaryColor;
 
     return Container(
       margin: margin,
@@ -174,7 +137,8 @@ class PlaybuttonCard extends HookWidget {
                                   ? const SizedBox(
                                       height: 23,
                                       width: 23,
-                                      child: CircularProgressIndicator(),
+                                      child:
+                                          PlatformCircularProgressIndicator(),
                                     )
                                   : Icon(
                                       isPlaying

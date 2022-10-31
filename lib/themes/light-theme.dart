@@ -139,6 +139,9 @@ final macosTheme = MacosThemeData.light().copyWith(
   ),
   iconTheme: MacosIconThemeData(size: 16),
   iconButtonTheme: MacosIconButtonThemeData(),
+  typography: MacosTypography(color: Colors.green),
 );
-final macosDarkTheme = MacosThemeData.dark();
+final macosDarkTheme = MacosThemeData.dark().copyWith(
+  typography: MacosTypography(color: Colors.red),
+);
 final iosTheme = CupertinoThemeData();

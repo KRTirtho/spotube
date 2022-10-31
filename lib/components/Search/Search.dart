@@ -143,7 +143,7 @@ class Search extends HookConsumerWidget {
                             ),
                           if (searchTrack.isLoading &&
                               !searchTrack.isFetchingNextPage)
-                            const CircularProgressIndicator()
+                            const PlatformCircularProgressIndicator()
                           else if (searchTrack.hasError)
                             Text(
                                 searchTrack.error?[searchTrack.pageParams.last])
@@ -190,7 +190,7 @@ class Search extends HookConsumerWidget {
                                     ? null
                                     : () => searchTrack.fetchNextPage(),
                                 child: searchTrack.isFetchingNextPage
-                                    ? const CircularProgressIndicator()
+                                    ? const PlatformCircularProgressIndicator()
                                     : const Text("Load more"),
                               ),
                             ),
@@ -202,7 +202,7 @@ class Search extends HookConsumerWidget {
                           const SizedBox(height: 10),
                           if (searchPlaylist.isLoading &&
                               !searchPlaylist.isFetchingNextPage)
-                            const CircularProgressIndicator()
+                            const PlatformCircularProgressIndicator()
                           else if (searchPlaylist.hasError)
                             Text(searchPlaylist
                                 .error?[searchPlaylist.pageParams.last])
@@ -256,7 +256,7 @@ class Search extends HookConsumerWidget {
                           const SizedBox(height: 10),
                           if (searchArtist.isLoading &&
                               !searchArtist.isFetchingNextPage)
-                            const CircularProgressIndicator()
+                            const PlatformCircularProgressIndicator()
                           else if (searchArtist.hasError)
                             Text(searchArtist
                                 .error?[searchArtist.pageParams.last])
@@ -310,7 +310,7 @@ class Search extends HookConsumerWidget {
                           const SizedBox(height: 10),
                           if (searchAlbum.isLoading &&
                               !searchAlbum.isFetchingNextPage)
-                            const CircularProgressIndicator()
+                            const PlatformCircularProgressIndicator()
                           else if (searchAlbum.hasError)
                             Text(
                                 searchAlbum.error?[searchAlbum.pageParams.last])

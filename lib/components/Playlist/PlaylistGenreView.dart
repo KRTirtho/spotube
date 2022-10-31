@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -47,7 +48,7 @@ class PlaylistGenreView extends ConsumerWidget {
                           return const Center(child: Text("Error occurred"));
                         }
                         if (!snapshot.hasData) {
-                          return const CircularProgressIndicator.adaptive();
+                          return const PlatformCircularProgressIndicator();
                         }
                         return Center(
                           child: Wrap(

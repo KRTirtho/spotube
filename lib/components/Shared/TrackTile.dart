@@ -132,7 +132,7 @@ class TrackTile extends HookConsumerWidget {
                         width: 300,
                         child: !snapshot.hasData
                             ? const Center(
-                                child: CircularProgressIndicator.adaptive())
+                                child: PlatformCircularProgressIndicator())
                             : ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: snapshot.data!.length,

@@ -97,7 +97,7 @@ class PlayerControls extends HookConsumerWidget {
                         children: [
                           Tooltip(
                             message: "Slide to seek forward or backward",
-                            child: Slider.adaptive(
+                            child: PlatformSlider(
                               focusNode: FocusNode(),
                               // cannot divide by zero
                               // there's an edge case for value being bigger
@@ -174,7 +174,7 @@ class PlayerControls extends HookConsumerWidget {
                         ? const SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(),
+                            child: PlatformCircularProgressIndicator(),
                           )
                         : Icon(
                             playback.isPlaying
