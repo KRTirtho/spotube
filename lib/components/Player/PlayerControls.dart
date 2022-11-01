@@ -95,7 +95,7 @@ class PlayerControls extends HookConsumerWidget {
 
                       return Column(
                         children: [
-                          Tooltip(
+                          PlatformTooltip(
                             message: "Slide to seek forward or backward",
                             child: PlatformSlider(
                               focusNode: FocusNode(),
@@ -123,10 +123,10 @@ class PlayerControls extends HookConsumerWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                PlatformText(
                                   "$currentMinutes:$currentSeconds",
                                 ),
-                                Text("$totalMinutes:$totalSeconds"),
+                                PlatformText("$totalMinutes:$totalSeconds"),
                               ],
                             ),
                           ),

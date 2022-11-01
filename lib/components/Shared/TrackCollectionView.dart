@@ -132,12 +132,12 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                 primary: true,
                 backgroundColor: color?.color,
                 title: collapsed.value
-                    ? Text(
+                    ? PlatformText.headline(
                         title,
-                        style: Theme.of(context).textTheme.headline4?.copyWith(
-                              color: color?.titleTextColor,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style: TextStyle(
+                          color: color?.titleTextColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       )
                     : null,
                 flexibleSpace: LayoutBuilder(builder: (context, constrains) {
@@ -188,25 +188,19 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
+                                  PlatformText.headline(
                                     title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(
-                                          color: color?.titleTextColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                    style: TextStyle(
+                                      color: color?.titleTextColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                   if (description != null)
-                                    Text(
+                                    PlatformText(
                                       description!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(
-                                            color: color?.bodyTextColor,
-                                          ),
+                                      style: TextStyle(
+                                        color: color?.bodyTextColor,
+                                      ),
                                       maxLines: 2,
                                       overflow: TextOverflow.fade,
                                     ),
@@ -232,7 +226,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                   } else if (tracksSnapshot.hasError &&
                       tracksSnapshot.isError) {
                     return SliverToBoxAdapter(
-                        child: Text("Error ${tracksSnapshot.error}"));
+                        child: PlatformText("Error ${tracksSnapshot.error}"));
                   }
 
                   final tracks = tracksSnapshot.data!;

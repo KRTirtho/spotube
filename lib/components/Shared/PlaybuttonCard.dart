@@ -77,6 +77,7 @@ class PlaybuttonCard extends HookWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
         splashFactory: splash,
+        highlightColor: Colors.black12,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 200),
           child: HoverBuilder(builder: (context, isHovering) {
@@ -89,11 +90,10 @@ class PlaybuttonCard extends HookWidget {
                 boxShadow: [
                   if (boxShadow != null) boxShadow,
                 ],
-                border: platform == TargetPlatform.windows
+                border: [TargetPlatform.windows, TargetPlatform.macOS]
+                        .contains(platform)
                     ? Border.all(
-                        color: FluentUI.FluentTheme.maybeOf(context)
-                                ?.micaBackgroundColor
-                                .withOpacity(.7) ??
+                        color: PlatformTheme.of(context).borderColor ??
                             Colors.transparent,
                         width: 1,
                       )

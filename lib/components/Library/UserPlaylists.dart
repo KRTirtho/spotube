@@ -34,19 +34,23 @@ class UserPlaylists extends HookConsumerWidget {
     }
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Wrap(
-          spacing: 20, // gap between adjacent chips
-          runSpacing: 20, // gap between lines
-          alignment: WrapAlignment.center,
-          children: [
-            const PlaylistCreateDialog(),
-            PlaylistCard(likedTracksPlaylist),
-            ...playlistsQuery.data!
-                .map((playlist) => PlaylistCard(playlist))
-                .toList(),
-          ],
+      child: Material(
+        type: MaterialType.transparency,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+            spacing: 20, // gap between adjacent chips
+            runSpacing: 20, // gap between lines
+            alignment: WrapAlignment.center,
+            children: [
+              const PlaylistCreateDialog(),
+              PlaylistCard(likedTracksPlaylist),
+              ...playlistsQuery.data!
+                  .map((playlist) => PlaylistCard(playlist))
+                  .toList(),
+            ],
+          ),
         ),
       ),
     );

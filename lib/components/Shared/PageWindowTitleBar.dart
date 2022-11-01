@@ -33,7 +33,7 @@ class TitleBarActionButtons extends StatelessWidget {
                 },
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all(
-                      Theme.of(context).iconTheme.color),
+                      PlatformTheme.of(context).iconTheme?.color),
                 ),
                 child: Icon(
                   Icons.minimize_rounded,
@@ -45,7 +45,7 @@ class TitleBarActionButtons extends StatelessWidget {
                 },
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all(
-                      Theme.of(context).iconTheme.color),
+                      PlatformTheme.of(context).iconTheme?.color),
                 ),
                 child: Icon(
                   Icons.crop_square_rounded,
@@ -57,7 +57,7 @@ class TitleBarActionButtons extends StatelessWidget {
                 },
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all(
-                      color ?? Theme.of(context).iconTheme.color),
+                      color ?? PlatformTheme.of(context).iconTheme?.color),
                   overlayColor: MaterialStateProperty.all(Colors.redAccent),
                 ),
                 child: const Icon(

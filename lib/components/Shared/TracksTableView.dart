@@ -82,7 +82,7 @@ class TracksTableView extends HookConsumerWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
+                  child: PlatformText(
                     "#",
                     textAlign: TextAlign.center,
                     style: tableHeadStyle,
@@ -91,7 +91,7 @@ class TracksTableView extends HookConsumerWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      Text(
+                      PlatformText(
                         "Title",
                         style: tableHeadStyle,
                         overflow: TextOverflow.ellipsis,
@@ -105,7 +105,7 @@ class TracksTableView extends HookConsumerWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        Text(
+                        PlatformText(
                           "Album",
                           overflow: TextOverflow.ellipsis,
                           style: tableHeadStyle,
@@ -116,7 +116,7 @@ class TracksTableView extends HookConsumerWidget {
                 ],
                 if (!breakpoint.isSm) ...[
                   const SizedBox(width: 10),
-                  Text("Time", style: tableHeadStyle),
+                  PlatformText("Time", style: tableHeadStyle),
                   const SizedBox(width: 10),
                 ],
                 SortTracksDropdown(
@@ -135,7 +135,7 @@ class TracksTableView extends HookConsumerWidget {
                       child: Row(
                         children: [
                           const Icon(Icons.file_download_outlined),
-                          Text(
+                          PlatformText(
                             "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
                           ),
                         ],

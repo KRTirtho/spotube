@@ -50,11 +50,11 @@ class Settings extends HookConsumerWidget {
     );
 
     return SafeArea(
-      child: Scaffold(
+      child: PlatformScaffold(
         appBar: PageWindowTitleBar(
-          center: Text(
+          center: PlatformText(
             "Settings",
-            style: Theme.of(context).textTheme.headline5,
+            style: PlatformTheme.of(context).textTheme?.headline,
           ),
         ),
         body: Row(
@@ -65,10 +65,11 @@ class Settings extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: ListView(
                   children: [
-                    const Text(
+                    PlatformText(
                       " Account",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: PlatformTextTheme.of(context)
+                          .headline
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     if (auth.isAnonymous)
                       AdaptiveListTile(
@@ -101,7 +102,8 @@ class Settings extends HookConsumerWidget {
                               ),
                             ),
                           ),
-                          child: Text("Connect with Spotify".toUpperCase()),
+                          child: PlatformText(
+                              "Connect with Spotify".toUpperCase()),
                         ),
                       ),
                     if (auth.isLoggedIn)
@@ -109,7 +111,7 @@ class Settings extends HookConsumerWidget {
                         Auth auth = ref.watch(authProvider);
                         return PlatformListTile(
                           leading: const Icon(Icons.logout_rounded),
-                          title: const SizedBox(
+                          title: SizedBox(
                             height: 50,
                             width: 180,
                             child: Align(
@@ -117,6 +119,7 @@ class Settings extends HookConsumerWidget {
                               child: AutoSizeText(
                                 "Log out of this account",
                                 maxLines: 1,
+                                style: PlatformTextTheme.of(context).body,
                               ),
                             ),
                           ),
@@ -131,19 +134,20 @@ class Settings extends HookConsumerWidget {
                               auth.logout();
                               GoRouter.of(context).pop();
                             },
-                            child: const Text("Logout"),
+                            child: const PlatformText("Logout"),
                           ),
                         );
                       }),
-                    const Text(
+                    PlatformText(
                       " Appearance",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: PlatformTextTheme.of(context)
+                          .headline
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.dashboard_rounded),
-                      title: const Text("Layout Mode"),
-                      subtitle: const Text(
+                      title: const PlatformText("Layout Mode"),
+                      subtitle: const PlatformText(
                         "Override responsive layout mode settings",
                       ),
                       trailing: (context, update) =>
@@ -152,19 +156,19 @@ class Settings extends HookConsumerWidget {
                         items: [
                           PlatformDropDownMenuItem(
                             value: LayoutMode.adaptive,
-                            child: const Text(
+                            child: const PlatformText(
                               "Adaptive",
                             ),
                           ),
                           PlatformDropDownMenuItem(
                             value: LayoutMode.compact,
-                            child: const Text(
+                            child: const PlatformText(
                               "Compact",
                             ),
                           ),
                           PlatformDropDownMenuItem(
                             value: LayoutMode.extended,
-                            child: const Text("Extended"),
+                            child: const PlatformText("Extended"),
                           ),
                         ],
                         onChanged: (value) {
@@ -177,26 +181,22 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.dark_mode_outlined),
-                      title: const Text("Theme"),
+                      title: const PlatformText("Theme"),
                       trailing: (context, update) =>
                           PlatformDropDownMenu<ThemeMode>(
                         value: preferences.themeMode,
                         items: [
                           PlatformDropDownMenuItem(
                             value: ThemeMode.dark,
-                            child: const Text(
-                              "Dark",
-                            ),
+                            child: const PlatformText("Dark"),
                           ),
                           PlatformDropDownMenuItem(
                             value: ThemeMode.light,
-                            child: const Text(
-                              "Light",
-                            ),
+                            child: const PlatformText("Light"),
                           ),
                           PlatformDropDownMenuItem(
                             value: ThemeMode.system,
-                            child: const Text("System"),
+                            child: const PlatformText("System"),
                           ),
                         ],
                         onChanged: (value) {
@@ -209,7 +209,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     PlatformListTile(
                       leading: const Icon(Icons.palette_outlined),
-                      title: const Text("Accent Color Scheme"),
+                      title: const PlatformText("Accent Color Scheme"),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5,
@@ -223,7 +223,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     PlatformListTile(
                       leading: const Icon(Icons.format_color_fill_rounded),
-                      title: const Text("Background Color Scheme"),
+                      title: const PlatformText("Background Color Scheme"),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5,
@@ -237,7 +237,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     PlatformListTile(
                       leading: const Icon(Icons.album_rounded),
-                      title: const Text("Rotating Album Art"),
+                      title: const PlatformText("Rotating Album Art"),
                       trailing: PlatformSwitch(
                         value: preferences.rotatingAlbumArt,
                         onChanged: (state) {
@@ -245,27 +245,28 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    const Text(
+                    PlatformText(
                       " Playback",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: PlatformTextTheme.of(context)
+                          .headline
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.multitrack_audio_rounded),
-                      title: const Text("Audio Quality"),
+                      title: const PlatformText("Audio Quality"),
                       trailing: (context, update) =>
                           PlatformDropDownMenu<AudioQuality>(
                         value: preferences.audioQuality,
                         items: [
                           PlatformDropDownMenuItem(
                             value: AudioQuality.high,
-                            child: const Text(
+                            child: const PlatformText(
                               "High",
                             ),
                           ),
                           PlatformDropDownMenuItem(
                             value: AudioQuality.low,
-                            child: const Text("Low"),
+                            child: const PlatformText("Low"),
                           ),
                         ],
                         onChanged: (value) {
@@ -279,10 +280,10 @@ class Settings extends HookConsumerWidget {
                     if (kIsMobile)
                       PlatformListTile(
                         leading: const Icon(Icons.download_for_offline_rounded),
-                        title: const Text(
+                        title: const PlatformText(
                           "Pre download and play",
                         ),
-                        subtitle: const Text(
+                        subtitle: const PlatformText(
                           "Instead of streaming audio, download bytes and play instead (Recommended for higher bandwidth users)",
                         ),
                         trailing: PlatformSwitch(
@@ -294,7 +295,7 @@ class Settings extends HookConsumerWidget {
                       ),
                     PlatformListTile(
                       leading: const Icon(Icons.fast_forward_rounded),
-                      title: const Text(
+                      title: const PlatformText(
                         "Skip non-music segments (SponsorBlock)",
                       ),
                       trailing: PlatformSwitch(
@@ -304,20 +305,17 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    const Text(
+                    PlatformText(
                       " Search",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: PlatformTextTheme.of(context)
+                          .headline
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.shopping_bag_rounded),
-                      title: Text(
-                        "Market Place",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      subtitle: Text(
+                      title: const PlatformText("Market Place"),
+                      subtitle: PlatformText.caption(
                         "Recommendation Country",
-                        style: Theme.of(context).textTheme.caption,
                       ),
                       trailing: (context, update) => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 250),
@@ -327,7 +325,7 @@ class Settings extends HookConsumerWidget {
                               .map(
                                 (country) => (PlatformDropDownMenuItem(
                                   value: country.first,
-                                  child: Text(country.last),
+                                  child: PlatformText(country.last),
                                 )),
                               )
                               .toList(),
@@ -343,18 +341,21 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.screen_search_desktop_rounded),
-                      title: const SizedBox(
+                      title: SizedBox(
                         height: 50,
                         width: 200,
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: AutoSizeText(
-                            "Format of the YouTube Search term",
-                            maxLines: 2,
+                          child: DefaultTextStyle(
+                            style: PlatformTextTheme.of(context).body!,
+                            child: const AutoSizeText(
+                              "Format of the YouTube Search term",
+                              maxLines: 2,
+                            ),
                           ),
                         ),
                       ),
-                      subtitle: const Text("(Case sensitive)"),
+                      subtitle: const PlatformText("(Case sensitive)"),
                       breakOn: Breakpoints.lg,
                       trailing: (context, update) => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 450),
@@ -377,7 +378,7 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.low_priority_rounded),
-                      title: const SizedBox(
+                      title: SizedBox(
                         height: 50,
                         width: 180,
                         child: Align(
@@ -385,6 +386,7 @@ class Settings extends HookConsumerWidget {
                           child: AutoSizeText(
                             "Track Match Algorithm",
                             maxLines: 1,
+                            style: PlatformTextTheme.of(context).body,
                           ),
                         ),
                       ),
@@ -394,19 +396,19 @@ class Settings extends HookConsumerWidget {
                         items: [
                           PlatformDropDownMenuItem(
                             value: SpotubeTrackMatchAlgorithm.authenticPopular,
-                            child: const Text(
+                            child: const PlatformText(
                               "Popular from Author",
                             ),
                           ),
                           PlatformDropDownMenuItem(
                             value: SpotubeTrackMatchAlgorithm.popular,
-                            child: const Text(
+                            child: const PlatformText(
                               "Accurately Popular",
                             ),
                           ),
                           PlatformDropDownMenuItem(
                             value: SpotubeTrackMatchAlgorithm.youtube,
-                            child: const Text("YouTube's Top choice"),
+                            child: const PlatformText("YouTube's Top choice"),
                           ),
                         ],
                         onChanged: (value) {
@@ -417,15 +419,16 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    const Text(
+                    PlatformText(
                       " Downloads",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: PlatformTextTheme.of(context)
+                          .headline
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     PlatformListTile(
                       leading: const Icon(Icons.file_download_outlined),
-                      title: const Text("Download Location"),
-                      subtitle: Text(preferences.downloadLocation),
+                      title: const PlatformText("Download Location"),
+                      subtitle: PlatformText(preferences.downloadLocation),
                       trailing: PlatformFilledButton(
                         onPressed: pickDownloadLocation,
                         child: const Icon(Icons.folder_rounded),
@@ -434,7 +437,8 @@ class Settings extends HookConsumerWidget {
                     ),
                     PlatformListTile(
                       leading: const Icon(Icons.lyrics_rounded),
-                      title: const Text("Download lyrics along with the Track"),
+                      title: const PlatformText(
+                          "Download lyrics along with the Track"),
                       trailing: PlatformSwitch(
                         value: preferences.saveTrackLyrics,
                         onChanged: (state) {
@@ -442,10 +446,11 @@ class Settings extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    const Text(
+                    PlatformText(
                       " About",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: PlatformTextTheme.of(context)
+                          .headline
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(
@@ -487,14 +492,14 @@ class Settings extends HookConsumerWidget {
                           children: const [
                             Icon(Icons.favorite_outline_rounded),
                             SizedBox(width: 5),
-                            Text("Please Sponsor/Donate"),
+                            PlatformText("Please Sponsor/Donate"),
                           ],
                         ),
                       ),
                     ),
                     PlatformListTile(
                       leading: const Icon(Icons.update_rounded),
-                      title: const Text("Check for Update"),
+                      title: const PlatformText("Check for Update"),
                       trailing: PlatformSwitch(
                         value: preferences.checkUpdate,
                         onChanged: (checked) =>

@@ -42,7 +42,6 @@ class Genres extends HookConsumerWidget {
     ];
 
     return PlatformScaffold(
-      backgroundColor: PlatformProperty.all(Colors.transparent),
       body: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {

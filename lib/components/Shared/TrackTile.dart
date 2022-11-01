@@ -74,7 +74,7 @@ class TrackTile extends HookConsumerWidget {
           SnackBar(
             width: 300,
             behavior: SnackBarBehavior.floating,
-            content: Text(
+            content: PlatformText(
               "Copied $data to clipboard",
               textAlign: TextAlign.center,
             ),
@@ -98,7 +98,7 @@ class TrackTile extends HookConsumerWidget {
                   return HookBuilder(builder: (context) {
                     final playlistsCheck = useState(<String, bool>{});
                     return AlertDialog(
-                      title: Text(
+                      title: PlatformText(
                           "Add `${track.value.name}` to following Playlists"),
                       titleTextStyle:
                           Theme.of(context).textTheme.bodyText1?.copyWith(
@@ -107,11 +107,11 @@ class TrackTile extends HookConsumerWidget {
                               ),
                       actions: [
                         PlatformTextButton(
-                          child: const Text("Cancel"),
+                          child: const PlatformText("Cancel"),
                           onPressed: () => Navigator.pop(context),
                         ),
                         PlatformFilledButton(
-                          child: const Text("Add"),
+                          child: const PlatformText("Add"),
                           onPressed: () async {
                             final selectedPlaylists = playlistsCheck
                                 .value.entries
@@ -140,7 +140,7 @@ class TrackTile extends HookConsumerWidget {
                                   final playlist =
                                       snapshot.data!.elementAt(index);
                                   return CheckboxListTile(
-                                    title: Text(playlist.name!),
+                                    title: PlatformText(playlist.name!),
                                     controlAffinity:
                                         ListTileControlAffinity.leading,
                                     value: playlistsCheck.value[playlist.id] ??
@@ -191,7 +191,7 @@ class TrackTile extends HookConsumerWidget {
                 height: 20,
                 width: 25,
                 child: Center(
-                  child: Text((track.key + 1).toString()),
+                  child: PlatformText((track.key + 1).toString()),
                 ),
               ),
             Padding(
@@ -221,7 +221,7 @@ class TrackTile extends HookConsumerWidget {
                         playback.track?.id == track.value.id
                     ? Icons.pause_circle_rounded
                     : Icons.play_circle_rounded,
-                color: Theme.of(context).primaryColor,
+                color: PlatformTheme.of(context).primaryColor,
               ),
               onPressed: () => onTrackPlayButtonPressed?.call(
                 track.value,
@@ -231,7 +231,7 @@ class TrackTile extends HookConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  PlatformText(
                     track.value.name ?? "",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -240,7 +240,7 @@ class TrackTile extends HookConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   isReallyLocal
-                      ? Text(
+                      ? PlatformText(
                           TypeConversionUtils.artists_X_String<Artist>(
                               track.value.artists ?? []),
                         )
@@ -256,7 +256,7 @@ class TrackTile extends HookConsumerWidget {
             if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
               Expanded(
                 child: isReallyLocal
-                    ? Text(track.value.album?.name ?? "")
+                    ? PlatformText(track.value.album?.name ?? "")
                     : LinkText(
                         track.value.album!.name!,
                         "/album/${track.value.album?.id}",
@@ -266,7 +266,7 @@ class TrackTile extends HookConsumerWidget {
               ),
             if (!breakpoint.isSm) ...[
               const SizedBox(width: 10),
-              Text(duration),
+              PlatformText(duration),
             ],
             const SizedBox(width: 10),
             if (!isReallyLocal)
@@ -280,7 +280,7 @@ class TrackTile extends HookConsumerWidget {
                               color: Colors.pink,
                             )
                           : const Icon(Icons.favorite_border_rounded),
-                      text: const Text("Save as favorite"),
+                      text: const PlatformText("Save as favorite"),
                       onPressed: () {
                         toggler.item2.mutate(Tuple2(spotify, toggler.item1));
                       },
@@ -288,18 +288,18 @@ class TrackTile extends HookConsumerWidget {
                   if (auth.isLoggedIn)
                     Action(
                       icon: const Icon(Icons.add_box_rounded),
-                      text: const Text("Add To playlist"),
+                      text: const PlatformText("Add To playlist"),
                       onPressed: actionAddToPlaylist,
                     ),
                   if (userPlaylist && auth.isLoggedIn)
                     Action(
                       icon: const Icon(Icons.remove_circle_outline_rounded),
-                      text: const Text("Remove from playlist"),
+                      text: const PlatformText("Remove from playlist"),
                       onPressed: actionRemoveFromPlaylist,
                     ),
                   Action(
                     icon: const Icon(Icons.share_rounded),
-                    text: const Text("Share"),
+                    text: const PlatformText("Share"),
                     onPressed: () {
                       actionShare(track.value);
                     },

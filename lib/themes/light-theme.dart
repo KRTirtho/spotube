@@ -134,14 +134,17 @@ final windowsDarkTheme = FluentUI.ThemeData.dark().copyWith(
   ),
 );
 final macosTheme = MacosThemeData.light().copyWith(
-  pushButtonTheme: PushButtonThemeData(
+  pushButtonTheme: const PushButtonThemeData(
     secondaryColor: Colors.white,
   ),
-  iconTheme: MacosIconThemeData(size: 16),
-  iconButtonTheme: MacosIconButtonThemeData(),
-  typography: MacosTypography(color: Colors.green),
+  iconTheme: const MacosIconThemeData(size: 14),
+  typography: MacosTypography(color: Colors.grey[900]!),
 );
 final macosDarkTheme = MacosThemeData.dark().copyWith(
-  typography: MacosTypography(color: Colors.red),
+  pushButtonTheme: const PushButtonThemeData(
+    secondaryColor: Colors.white,
+  ),
+  iconTheme: const MacosIconThemeData(size: 14),
+  typography: MacosTypography(color: MacosColors.textColor),
 );
 final iosTheme = CupertinoThemeData();

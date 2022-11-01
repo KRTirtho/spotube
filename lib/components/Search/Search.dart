@@ -77,7 +77,7 @@ class Search extends HookConsumerWidget {
 
     return SafeArea(
       child: Material(
-        color: Theme.of(context).backgroundColor,
+        color: PlatformTheme.of(context).scaffoldBackgroundColor,
         child: Column(
           children: [
             Container(
@@ -85,7 +85,6 @@ class Search extends HookConsumerWidget {
                 horizontal: 20,
                 vertical: 10,
               ),
-              color: Theme.of(context).backgroundColor,
               child: PlatformTextField(
                 onChanged: (value) {
                   ref.read(searchTermStateProvider.notifier).state = value;
@@ -136,16 +135,12 @@ class Search extends HookConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (tracks.isNotEmpty)
-                            Text(
-                              "Songs",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
+                          if (tracks.isNotEmpty) PlatformText.headline("Songs"),
                           if (searchTrack.isLoading &&
                               !searchTrack.isFetchingNextPage)
                             const PlatformCircularProgressIndicator()
                           else if (searchTrack.hasError)
-                            Text(
+                            PlatformText(
                                 searchTrack.error?[searchTrack.pageParams.last])
                           else
                             ...tracks.asMap().entries.map((track) {
@@ -191,20 +186,17 @@ class Search extends HookConsumerWidget {
                                     : () => searchTrack.fetchNextPage(),
                                 child: searchTrack.isFetchingNextPage
                                     ? const PlatformCircularProgressIndicator()
-                                    : const Text("Load more"),
+                                    : const PlatformText("Load more"),
                               ),
                             ),
                           if (playlists.isNotEmpty)
-                            Text(
-                              "Playlists",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
+                            PlatformText.headline("Playlists"),
                           const SizedBox(height: 10),
                           if (searchPlaylist.isLoading &&
                               !searchPlaylist.isFetchingNextPage)
                             const PlatformCircularProgressIndicator()
                           else if (searchPlaylist.hasError)
-                            Text(searchPlaylist
+                            PlatformText(searchPlaylist
                                 .error?[searchPlaylist.pageParams.last])
                           else
                             ScrollConfiguration(
@@ -249,16 +241,13 @@ class Search extends HookConsumerWidget {
                             ),
                           const SizedBox(height: 20),
                           if (artists.isNotEmpty)
-                            Text(
-                              "Artists",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
+                            PlatformText.headline("Artists"),
                           const SizedBox(height: 10),
                           if (searchArtist.isLoading &&
                               !searchArtist.isFetchingNextPage)
                             const PlatformCircularProgressIndicator()
                           else if (searchArtist.hasError)
-                            Text(searchArtist
+                            PlatformText(searchArtist
                                 .error?[searchArtist.pageParams.last])
                           else
                             ScrollConfiguration(
@@ -303,7 +292,7 @@ class Search extends HookConsumerWidget {
                             ),
                           const SizedBox(height: 20),
                           if (albums.isNotEmpty)
-                            Text(
+                            PlatformText(
                               "Albums",
                               style: Theme.of(context).textTheme.headline5,
                             ),
@@ -312,7 +301,7 @@ class Search extends HookConsumerWidget {
                               !searchAlbum.isFetchingNextPage)
                             const PlatformCircularProgressIndicator()
                           else if (searchAlbum.hasError)
-                            Text(
+                            PlatformText(
                                 searchAlbum.error?[searchAlbum.pageParams.last])
                           else
                             ScrollConfiguration(

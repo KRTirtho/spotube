@@ -20,15 +20,15 @@ class Action extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isExpanded != true) {
-      return Tooltip(
-        message: text.toStringShallow().split(",").last.replaceAll(
-              "\"",
-              "",
-            ),
-        child: PlatformIconButton(
-          icon: icon,
-          onPressed: onPressed,
-        ),
+      return PlatformIconButton(
+        icon: icon,
+        onPressed: onPressed,
+        tooltip: text is Text
+            ? (text as Text).data
+            : text.toStringShallow().split(",").last.replaceAll(
+                  "\"",
+                  "",
+                ),
       );
     }
     return PlatformTextButton(

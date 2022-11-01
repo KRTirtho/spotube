@@ -1,6 +1,7 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
@@ -22,16 +23,21 @@ class UserAlbums extends HookConsumerWidget {
     }
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Wrap(
-          spacing: 20, // gap between adjacent chips
-          runSpacing: 20, // gap between lines
-          alignment: WrapAlignment.center,
-          children: albumsQuery.data!
-              .map((album) =>
-                  AlbumCard(TypeConversionUtils.simpleAlbum_X_Album(album)))
-              .toList(),
+      child: Material(
+        type: MaterialType.transparency,
+        color: PlatformTheme.of(context).scaffoldBackgroundColor,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+            spacing: 20, // gap between adjacent chips
+            runSpacing: 20, // gap between lines
+            alignment: WrapAlignment.center,
+            children: albumsQuery.data!
+                .map((album) =>
+                    AlbumCard(TypeConversionUtils.simpleAlbum_X_Album(album)))
+                .toList(),
+          ),
         ),
       ),
     );

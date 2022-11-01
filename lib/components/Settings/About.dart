@@ -32,7 +32,10 @@ class About extends HookWidget {
 
     return PlatformListTile(
       leading: const Icon(Icons.info_outline_rounded),
-      title: const Text("About Spotube"),
+      title: Text(
+        "About Spotube",
+        style: PlatformTextTheme.of(context).body,
+      ),
       onTap: () {
         showAboutDialog(
             context: context,

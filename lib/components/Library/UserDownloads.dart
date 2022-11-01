@@ -26,7 +26,7 @@ class UserDownloads extends HookConsumerWidget {
                 child: AutoSizeText(
                   "Currently downloading (${downloader.currentlyRunning})",
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: PlatformTextTheme.of(context).headline,
                 ),
               ),
               const SizedBox(width: 10),
@@ -38,7 +38,8 @@ class UserDownloads extends HookConsumerWidget {
                 onPressed: downloader.currentlyRunning > 0
                     ? downloader.cancelAll
                     : null,
-                child: const Text("Cancel All"),
+                macOSIsSecondary: true,
+                child: const PlatformText("Cancel All"),
               ),
             ],
           ),
