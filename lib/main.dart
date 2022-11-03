@@ -109,8 +109,8 @@ void main() async {
                         logger.v(
                           "[onFileExists] download confirmation for ${track.name}",
                         );
-                        return showDialog<bool>(
-                          context: context,
+                        return showPlatformAlertDialog<bool>(
+                          context,
                           builder: (_) =>
                               ReplaceDownloadedFileDialog(track: track),
                         ).then((s) => s ?? false);
@@ -201,7 +201,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       };
     }, []);
 
-    platform = TargetPlatform.macOS;
+    platform = TargetPlatform.windows;
 
     return PlatformApp.router(
       routeInformationParser: router.routeInformationParser,
@@ -217,7 +217,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         accentMaterialColor: accentMaterialColor,
         backgroundMaterialColor: backgroundMaterialColor,
       ),
-      iosTheme: iosTheme,
+      iosTheme: themeMode == ThemeMode.dark ? iosDarkTheme : iosTheme,
       windowsTheme: windowsTheme,
       windowsDarkTheme: windowsDarkTheme,
       macosTheme: macosTheme,

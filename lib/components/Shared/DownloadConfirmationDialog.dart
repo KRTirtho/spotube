@@ -7,22 +7,24 @@ class DownloadConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: const EdgeInsets.all(15),
-      title: Row(
-        children: const [
-          Text("Are you sure?"),
-          SizedBox(width: 10),
-          UniversalImage(
-            path:
-                "https://c.tenor.com/kHcmsxlKHEAAAAAM/rock-one-eyebrow-raised-rock-staring.gif",
-            height: 40,
-            width: 40,
-          )
-        ],
+    return PlatformAlertDialog(
+      title: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          children: const [
+            Text("Are you sure?"),
+            SizedBox(width: 10),
+            UniversalImage(
+              path:
+                  "https://c.tenor.com/kHcmsxlKHEAAAAAM/rock-one-eyebrow-raised-rock-staring.gif",
+              height: 40,
+              width: 40,
+            )
+          ],
+        ),
       ),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
+      content: Padding(
+        padding: const EdgeInsets.all(15),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -57,19 +59,22 @@ class DownloadConfirmationDialog extends StatelessWidget {
           ),
         ),
       ),
-      actions: [
+      primaryActions: [
         PlatformFilledButton(
+          style: const ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll(Colors.white),
+            backgroundColor: MaterialStatePropertyAll(Colors.red),
+          ),
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text("Accept"),
+        )
+      ],
+      secondaryActions: [
+        PlatformFilledButton(
+          isSecondary: true,
           child: const Text("Decline"),
           onPressed: () => Navigator.of(context).pop(false),
         ),
-        PlatformFilledButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.red,
-          ),
-          child: const Text("Accept"),
-        )
       ],
     );
   }

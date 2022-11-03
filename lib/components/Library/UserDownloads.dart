@@ -31,14 +31,14 @@ class UserDownloads extends HookConsumerWidget {
               ),
               const SizedBox(width: 10),
               PlatformFilledButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[50],
-                  foregroundColor: Colors.red[400],
+                style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.red[50]),
+                  foregroundColor: MaterialStatePropertyAll(Colors.red[400]),
                 ),
                 onPressed: downloader.currentlyRunning > 0
                     ? downloader.cancelAll
                     : null,
-                macOSIsSecondary: true,
+                isSecondary: true,
                 child: const PlatformText("Cancel All"),
               ),
             ],
@@ -50,7 +50,7 @@ class UserDownloads extends HookConsumerWidget {
             itemBuilder: (context, index) {
               final track = downloader.inQueue.elementAt(index);
               return PlatformListTile(
-                title: Text(track.name!),
+                title: Text(track.name ?? ''),
                 leading: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: ClipRRect(

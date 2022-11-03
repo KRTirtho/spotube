@@ -28,9 +28,7 @@ class Settings extends HookConsumerWidget {
     final Auth auth = ref.watch(authProvider);
 
     final pickColorScheme = useCallback((ColorSchemeType schemeType) {
-      return () => showDialog(
-          context: context,
-          builder: (context) {
+      return () => showPlatformAlertDialog(context, builder: (context) {
             return ColorSchemePickerDialog(
               schemeType: schemeType,
             );

@@ -147,4 +147,5 @@ final macosDarkTheme = MacosThemeData.dark().copyWith(
   iconTheme: const MacosIconThemeData(size: 14),
   typography: MacosTypography(color: MacosColors.textColor),
 );
-final iosTheme = CupertinoThemeData();
+const iosTheme = CupertinoThemeData(brightness: Brightness.light);
+const iosDarkTheme = CupertinoThemeData(brightness: Brightness.dark);

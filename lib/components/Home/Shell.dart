@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
 import 'package:spotube/components/Player/Player.dart';
@@ -35,8 +36,8 @@ class Shell extends HookConsumerWidget {
     useEffect(() {
       downloader.onFileExists = (track) async {
         if (!isMounted()) return false;
-        return await showDialog<bool>(
-              context: context,
+        return await showPlatformAlertDialog<bool>(
+              context,
               builder: (context) => ReplaceDownloadedFileDialog(
                 track: track,
               ),

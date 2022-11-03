@@ -90,8 +90,8 @@ class SyncedLyrics extends HookConsumerWidget {
                       tooltip: "Lyrics Delay",
                       icon: const Icon(Icons.av_timer_rounded),
                       onPressed: () async {
-                        final delay = await showDialog(
-                          context: context,
+                        final delay = await showPlatformAlertDialog(
+                          context,
                           builder: (context) => const LyricDelayAdjustDialog(),
                         );
                         if (delay != null) {

@@ -146,11 +146,10 @@ class TracksTableView extends HookConsumerWidget {
                     switch (action) {
                       case "download":
                         {
-                          final isConfirmed = await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const DownloadConfirmationDialog();
-                              });
+                          final isConfirmed = await showPlatformAlertDialog(
+                              context, builder: (context) {
+                            return const DownloadConfirmationDialog();
+                          });
                           if (isConfirmed != true) return;
                           for (final selectedTrack in selectedTracks) {
                             downloader.addToQueue(selectedTrack);

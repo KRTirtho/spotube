@@ -66,15 +66,9 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
       },
     ).key);
 
-    return AlertDialog(
+    return PlatformAlertDialog(
       title: Text("Pick ${schemeType.name} color scheme"),
-      actions: [
-        PlatformTextButton(
-          child: const Text("Cancel"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+      primaryActions: [
         PlatformFilledButton(
           child: const Text("Save"),
           onPressed: () {
@@ -90,6 +84,15 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
             Navigator.pop(context);
           },
         )
+      ],
+      secondaryActions: [
+        PlatformFilledButton(
+          isSecondary: true,
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ],
       content: SizedBox(
         height: 200,

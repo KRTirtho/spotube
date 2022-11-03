@@ -34,11 +34,11 @@ class AdaptiveListTile extends HookWidget {
       onTap: breakpoint.isLessThan(breakOn)
           ? () {
               onTap?.call();
-              showDialog(
-                context: context,
+              showPlatformAlertDialog(
+                context,
                 builder: (context) {
                   return StatefulBuilder(builder: (context, update) {
-                    return AlertDialog(
+                    return PlatformAlertDialog(
                       title: title != null
                           ? Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,7 +50,7 @@ class AdaptiveListTile extends HookWidget {
                                 Flexible(child: title!),
                               ],
                             )
-                          : null,
+                          : Container(),
                       content: trailing?.call(context, update),
                     );
                   });

@@ -15,8 +15,8 @@ class PlaylistCreateDialog extends HookConsumerWidget {
 
     return PlatformTextButton(
       onPressed: () {
-        showDialog(
-          context: context,
+        showPlatformAlertDialog(
+          context,
           builder: (context) {
             return HookBuilder(builder: (context) {
               final playlistName = useTextEditingController();
@@ -24,13 +24,9 @@ class PlaylistCreateDialog extends HookConsumerWidget {
               final public = useState(false);
               final collaborative = useState(false);
 
-              return AlertDialog(
+              return PlatformAlertDialog(
                 title: const Text("Create a Playlist"),
-                actions: [
-                  PlatformTextButton(
-                    child: const Text("Cancel"),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
+                primaryActions: [
                   PlatformFilledButton(
                     child: const Text("Create"),
                     onPressed: () async {
@@ -52,6 +48,13 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                       });
                     },
                   )
+                ],
+                secondaryActions: [
+                  PlatformFilledButton(
+                    isSecondary: true,
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Cancel"),
+                  ),
                 ],
                 content: Container(
                   width: MediaQuery.of(context).size.width,

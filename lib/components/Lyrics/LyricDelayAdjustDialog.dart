@@ -16,15 +16,18 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
     double getValue() =>
         double.tryParse(controller.text.replaceAll("ms", "")) ?? 0;
 
-    return AlertDialog(
+    return PlatformAlertDialog(
       title: const Center(child: Text("Adjust Lyrics Delay")),
-      actions: [
+      secondaryActions: [
         PlatformFilledButton(
-          child: const Text("Cancel"),
+          isSecondary: true,
           onPressed: () {
             Navigator.of(context).pop();
           },
+          child: const Text("Cancel"),
         ),
+      ],
+      primaryActions: [
         PlatformFilledButton(
           child: const Text("Done"),
           onPressed: () {

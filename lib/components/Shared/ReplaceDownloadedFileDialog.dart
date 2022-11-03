@@ -14,7 +14,7 @@ class ReplaceDownloadedFileDialog extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final groupValue = ref.watch(replaceDownloadedFileState);
 
-    return AlertDialog(
+    return PlatformAlertDialog(
       title: Text("Track ${track.name} Already Exists"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -48,19 +48,22 @@ class ReplaceDownloadedFileDialog extends ConsumerWidget {
           ),
         ],
       ),
-      actions: [
-        PlatformTextButton(
-          child: const Text("No"),
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-        ),
-        PlatformTextButton(
+      primaryActions: [
+        PlatformFilledButton(
           child: const Text("Yes"),
           onPressed: () {
             Navigator.pop(context, true);
           },
         )
+      ],
+      secondaryActions: [
+        PlatformFilledButton(
+          isSecondary: true,
+          child: const Text("No"),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
       ],
     );
   }

@@ -84,81 +84,79 @@ class TrackTile extends HookConsumerWidget {
     }
 
     Future<void> actionAddToPlaylist() async {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return FutureBuilder<Iterable<PlaylistSimple>>(
-                future: spotify.playlists.me.all().then((playlists) async {
-                  final me = await spotify.me.get();
-                  return playlists.where((playlist) =>
-                      playlist.owner?.id != null &&
-                      playlist.owner!.id == me.id);
-                }),
-                builder: (context, snapshot) {
-                  return HookBuilder(builder: (context) {
-                    final playlistsCheck = useState(<String, bool>{});
-                    return AlertDialog(
-                      title: PlatformText(
-                          "Add `${track.value.name}` to following Playlists"),
-                      titleTextStyle:
-                          Theme.of(context).textTheme.bodyText1?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                      actions: [
-                        PlatformTextButton(
-                          child: const PlatformText("Cancel"),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        PlatformFilledButton(
-                          child: const PlatformText("Add"),
-                          onPressed: () async {
-                            final selectedPlaylists = playlistsCheck
-                                .value.entries
-                                .where((entry) => entry.value)
-                                .map((entry) => entry.key);
+      showPlatformAlertDialog(context, builder: (context) {
+        return FutureBuilder<Iterable<PlaylistSimple>>(
+            future: spotify.playlists.me.all().then((playlists) async {
+              final me = await spotify.me.get();
+              return playlists.where((playlist) =>
+                  playlist.owner?.id != null && playlist.owner!.id == me.id);
+            }),
+            builder: (context, snapshot) {
+              return HookBuilder(builder: (context) {
+                final playlistsCheck = useState(<String, bool>{});
+                return PlatformAlertDialog(
+                  title: PlatformText(
+                    "Add `${track.value.name}` to following Playlists",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  secondaryActions: [
+                    PlatformFilledButton(
+                      isSecondary: true,
+                      child: const PlatformText("Cancel"),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                  primaryActions: [
+                    PlatformFilledButton(
+                      child: const PlatformText("Add"),
+                      onPressed: () async {
+                        final selectedPlaylists = playlistsCheck.value.entries
+                            .where((entry) => entry.value)
+                            .map((entry) => entry.key);
 
-                            await Future.wait(
-                              selectedPlaylists.map(
-                                (playlistId) => spotify.playlists
-                                    .addTrack(track.value.uri!, playlistId),
-                              ),
-                            ).then((_) => Navigator.pop(context));
-                          },
-                        )
-                      ],
-                      content: SizedBox(
-                        height: 300,
-                        width: 300,
-                        child: !snapshot.hasData
-                            ? const Center(
-                                child: PlatformCircularProgressIndicator())
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  final playlist =
-                                      snapshot.data!.elementAt(index);
-                                  return CheckboxListTile(
-                                    title: PlatformText(playlist.name!),
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    value: playlistsCheck.value[playlist.id] ??
-                                        false,
-                                    onChanged: (val) {
-                                      playlistsCheck.value = {
-                                        ...playlistsCheck.value,
-                                        playlist.id!: val == true
-                                      };
-                                    },
-                                  );
+                        await Future.wait(
+                          selectedPlaylists.map(
+                            (playlistId) => spotify.playlists
+                                .addTrack(track.value.uri!, playlistId),
+                          ),
+                        ).then((_) => Navigator.pop(context));
+                      },
+                    )
+                  ],
+                  content: SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: !snapshot.hasData
+                        ? const Center(
+                            child: PlatformCircularProgressIndicator())
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              final playlist = snapshot.data!.elementAt(index);
+                              return CheckboxListTile(
+                                title: PlatformText(playlist.name!),
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                value:
+                                    playlistsCheck.value[playlist.id] ?? false,
+                                onChanged: (val) {
+                                  playlistsCheck.value = {
+                                    ...playlistsCheck.value,
+                                    playlist.id!: val == true
+                                  };
                                 },
-                              ),
-                      ),
-                    );
-                  });
-                });
-          });
+                              );
+                            },
+                          ),
+                  ),
+                );
+              });
+            });
+      });
     }
 
     final String thumbnailUrl = TypeConversionUtils.image_X_UrlString(
