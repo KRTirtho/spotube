@@ -75,15 +75,15 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                         maxLines: 5,
                       ),
                       const SizedBox(height: 10),
-                      CheckboxListTile(
+                      PlatformCheckbox(
                         value: public.value,
-                        title: const PlatformText("Public"),
+                        label: const PlatformText("Public"),
                         onChanged: (val) => public.value = val ?? false,
                       ),
                       const SizedBox(height: 10),
-                      CheckboxListTile(
+                      PlatformCheckbox(
                         value: collaborative.value,
-                        title: const PlatformText("Collaborative"),
+                        label: const PlatformText("Collaborative"),
                         onChanged: (val) => collaborative.value = val ?? false,
                       ),
                     ],

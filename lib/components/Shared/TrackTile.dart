@@ -137,10 +137,8 @@ class TrackTile extends HookConsumerWidget {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               final playlist = snapshot.data!.elementAt(index);
-                              return CheckboxListTile(
-                                title: PlatformText(playlist.name!),
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
+                              return PlatformCheckbox(
+                                label: PlatformText(playlist.name!),
                                 value:
                                     playlistsCheck.value[playlist.id] ?? false,
                                 onChanged: (val) {
@@ -181,7 +179,7 @@ class TrackTile extends HookConsumerWidget {
         child: Row(
           children: [
             if (showCheck)
-              Checkbox(
+              PlatformCheckbox(
                 value: isChecked,
                 onChanged: (s) => onCheckChange?.call(s),
               )

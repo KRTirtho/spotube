@@ -68,7 +68,7 @@ class TracksTableView extends HookConsumerWidget {
             if (heading != null) heading!,
             Row(
               children: [
-                Checkbox(
+                PlatformCheckbox(
                   value: selected.value.length == sortedTracks.length,
                   onChanged: (checked) {
                     if (!showCheck.value) showCheck.value = true;
