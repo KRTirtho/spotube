@@ -26,12 +26,12 @@ class SpotubeMarqueeText extends HookWidget {
     return AutoSizeText(
       text,
       minFontSize: 13,
-      style: style,
+      style: DefaultTextStyle.of(context).style.merge(style),
       maxLines: 1,
       overflowReplacement: Marquee(
         key: uKey.value,
         text: text,
-        style: style,
+        style: DefaultTextStyle.of(context).style.merge(style),
         scrollAxis: Axis.horizontal,
         crossAxisAlignment: CrossAxisAlignment.start,
         blankSpace: 40.0,

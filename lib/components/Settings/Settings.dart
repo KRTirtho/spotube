@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Settings/About.dart';
 import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
@@ -339,17 +338,14 @@ class Settings extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(Icons.screen_search_desktop_rounded),
-                      title: SizedBox(
+                      title: const SizedBox(
                         height: 50,
                         width: 200,
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: DefaultTextStyle(
-                            style: PlatformTextTheme.of(context).body!,
-                            child: const AutoSizeText(
-                              "Format of the YouTube Search term",
-                              maxLines: 2,
-                            ),
+                          child: AutoSizeText(
+                            "Format of the YouTube Search term",
+                            maxLines: 2,
                           ),
                         ),
                       ),

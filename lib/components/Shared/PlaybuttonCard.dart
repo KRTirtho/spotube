@@ -1,8 +1,5 @@
-import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/HoverBuilder.dart';
 import 'package:spotube/components/Shared/SpotubeMarqueeText.dart';
@@ -53,10 +50,6 @@ class PlaybuttonCard extends HookWidget {
         windows: null,
       ),
     );
-
-    final titleStyle = PlatformTextTheme.of(context).body;
-
-    final descriptionStyle = PlatformTextTheme.of(context).caption;
 
     final splash = usePlatformProperty<InteractiveInkFeatureFactory?>(
       (context) => PlatformProperty.multiPlatformGroup({
@@ -164,8 +157,8 @@ class PlaybuttonCard extends HookWidget {
                             height: 20,
                             child: SpotubeMarqueeText(
                               text: title,
-                              style: titleStyle?.copyWith(
-                                  fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                               isHovering: isHovering,
                             ),
                           ),
@@ -176,7 +169,7 @@ class PlaybuttonCard extends HookWidget {
                             height: 30,
                             child: SpotubeMarqueeText(
                               text: description!,
-                              style: descriptionStyle,
+                              style: PlatformTextTheme.of(context).caption,
                               isHovering: isHovering,
                             ),
                           ),

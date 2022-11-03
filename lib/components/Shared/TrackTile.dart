@@ -177,6 +177,7 @@ class TrackTile extends HookConsumerWidget {
       ),
       child: Material(
         type: MaterialType.transparency,
+        textStyle: PlatformTheme.of(context).textTheme!.body!,
         child: Row(
           children: [
             if (showCheck)

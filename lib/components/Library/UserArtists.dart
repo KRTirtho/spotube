@@ -31,6 +31,7 @@ class UserArtists extends HookConsumerWidget {
 
     return Material(
       type: MaterialType.transparency,
+      textStyle: PlatformTheme.of(context).textTheme!.body!,
       color: PlatformTheme.of(context).scaffoldBackgroundColor,
       child: GridView.builder(
         itemCount: artists.length,

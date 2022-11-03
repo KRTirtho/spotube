@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -59,7 +60,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
               itemCount: playback.siblingYtVideos.length,
               itemBuilder: (context, index) {
                 final video = playback.siblingYtVideos[index];
-                return ListTile(
+                return PlatformListTile(
                   title: Text(video.title),
                   leading: UniversalImage(
                     path: video.thumbnails.lowResUrl,
@@ -69,7 +70,6 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  horizontalTitleGap: 10,
                   trailing: Text(
                     PrimitiveUtils.toReadableDuration(
                       video.duration ?? Duration.zero,

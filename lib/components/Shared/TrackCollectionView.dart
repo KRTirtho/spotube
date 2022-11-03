@@ -155,6 +155,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         ),
                       ),
                       child: Material(
+                        textStyle: PlatformTheme.of(context).textTheme!.body!,
                         type: MaterialType.transparency,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(

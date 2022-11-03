@@ -49,13 +49,10 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
             },
           ),
           Flexible(
-            child: TextField(
+            child: PlatformTextField(
               keyboardType: TextInputType.number,
               controller: controller,
-              decoration: const InputDecoration(
-                isDense: true,
-                hintText: "Delay in milliseconds",
-              ),
+              placeholder: "Delay in milliseconds",
               onSubmitted: (_) {
                 Navigator.of(context).pop(
                   Duration(

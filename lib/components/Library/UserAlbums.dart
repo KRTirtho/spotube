@@ -25,6 +25,7 @@ class UserAlbums extends HookConsumerWidget {
     return SingleChildScrollView(
       child: Material(
         type: MaterialType.transparency,
+        textStyle: PlatformTheme.of(context).textTheme!.body!,
         color: PlatformTheme.of(context).scaffoldBackgroundColor,
         child: Container(
           width: double.infinity,

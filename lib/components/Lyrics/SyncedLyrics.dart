@@ -74,6 +74,7 @@ class SyncedLyrics extends HookConsumerWidget {
           height: breakpoint >= Breakpoints.md ? 50 : 30,
           child: Material(
             type: MaterialType.transparency,
+            textStyle: PlatformTheme.of(context).textTheme!.body!,
             child: Stack(
               children: [
                 Center(

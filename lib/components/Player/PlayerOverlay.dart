@@ -62,6 +62,7 @@ class PlayerOverlay extends HookConsumerWidget {
               duration: const Duration(milliseconds: 250),
               opacity: canShow ? 1 : 0,
               child: Material(
+                textStyle: PlatformTheme.of(context).textTheme!.body!,
                 type: MaterialType.transparency,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

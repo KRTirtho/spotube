@@ -32,7 +32,7 @@ class About extends HookWidget {
 
     return PlatformListTile(
       leading: const Icon(Icons.info_outline_rounded),
-      title: Text(
+      title: PlatformText(
         "About Spotube",
         style: PlatformTextTheme.of(context).body,
       ),
@@ -48,7 +48,7 @@ class About extends HookWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Text("Author: "),
+                  PlatformText("Author: "),
                   Hyperlink(
                     "Kingkor Roy Tirtho",
                     "https://github.com/KRTirtho",
@@ -63,12 +63,12 @@ class About extends HookWidget {
                     "💚 Sponsor/Donate 💚",
                     "https://opencollective.com/spotube",
                   ),
-                  Text(" • "),
+                  PlatformText(" • "),
                   Hyperlink(
                     "BSD-4-Clause LICENSE",
                     "https://github.com/KRTirtho/spotube/blob/master/LICENSE",
                   ),
-                  Text(" • "),
+                  PlatformText(" • "),
                   Hyperlink(
                     "Bug Report",
                     "https://github.com/KRTirtho/spotube/issues/new?assignees=&labels=bug&template=bug_report.md&title=",
@@ -76,7 +76,8 @@ class About extends HookWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              const Center(child: Text("© Spotube 2022. All rights reserved"))
+              const Center(
+                  child: PlatformText("© Spotube 2022. All rights reserved"))
             ]);
       },
     );

@@ -5,7 +5,7 @@
       "name": "Flutter",
       "type": "dart",
       "request": "launch",
-      "program": "lib/main.dart"
+      "program": "${workspaceFolder}/lib/main.dart"
     },
   ],
   "compounds": []

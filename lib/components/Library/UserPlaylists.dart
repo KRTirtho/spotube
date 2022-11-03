@@ -1,6 +1,7 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
@@ -36,6 +37,7 @@ class UserPlaylists extends HookConsumerWidget {
     return SingleChildScrollView(
       child: Material(
         type: MaterialType.transparency,
+        textStyle: PlatformTheme.of(context).textTheme!.body!,
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(8.0),

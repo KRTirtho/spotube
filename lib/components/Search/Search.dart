@@ -78,6 +78,7 @@ class Search extends HookConsumerWidget {
     return SafeArea(
       child: Material(
         color: PlatformTheme.of(context).scaffoldBackgroundColor,
+        textStyle: PlatformTheme.of(context).textTheme!.body!,
         child: Column(
           children: [
             Container(

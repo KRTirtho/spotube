@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:audio_service/audio_service.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fl_query/fl_query.dart';
-import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
@@ -201,7 +199,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       };
     }, []);
 
-    platform = TargetPlatform.windows;
+    platform = TargetPlatform.macOS;
 
     return PlatformApp.router(
       routeInformationParser: router.routeInformationParser,
