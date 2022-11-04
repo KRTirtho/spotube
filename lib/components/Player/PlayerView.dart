@@ -75,7 +75,7 @@ class PlayerView extends HookConsumerWidget {
               child: Column(
                 children: [
                   PageWindowTitleBar(
-                    leading: const BackButton(),
+                    leading: const PlatformBackButton(),
                     backgroundColor: Colors.transparent,
                     foregroundColor: paletteColor.titleTextColor,
                   ),

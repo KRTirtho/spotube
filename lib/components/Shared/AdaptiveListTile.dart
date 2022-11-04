@@ -37,6 +37,7 @@ class AdaptiveListTile extends HookWidget {
               onTap?.call();
               showPlatformAlertDialog(
                 context,
+                barrierDismissible: true,
                 builder: (context) {
                   return StatefulBuilder(builder: (context, update) {
                     return PlatformAlertDialog(

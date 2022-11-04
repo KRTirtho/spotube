@@ -141,6 +141,11 @@ class Spotube extends StatefulHookConsumerWidget {
 
   @override
   SpotubeState createState() => SpotubeState();
+
+  /// ↓↓ ADDED
+  /// InheritedWidget style accessor to our State object.
+  static SpotubeState of(BuildContext context) =>
+      context.findAncestorStateOfType<SpotubeState>()!;
 }
 
 class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
@@ -181,6 +186,13 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     prevSize = appWindow.size;
   }
 
+  TargetPlatform appPlatform = TargetPlatform.android;
+
+  void changePlatform(TargetPlatform targetPlatform) {
+    appPlatform = targetPlatform;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeMode =
@@ -199,7 +211,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       };
     }, []);
 
-    platform = TargetPlatform.macOS;
+    platform = appPlatform;
 
     return PlatformApp.router(
       routeInformationParser: router.routeInformationParser,

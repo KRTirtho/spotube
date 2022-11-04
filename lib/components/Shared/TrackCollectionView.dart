@@ -115,7 +115,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                   backgroundColor: color?.color,
                   foregroundColor: color?.titleTextColor,
                   leading: Row(
-                    children: [BackButton(color: color?.titleTextColor)],
+                    children: [
+                      PlatformBackButton(color: color?.titleTextColor)
+                    ],
                   ),
                 )
               : null,

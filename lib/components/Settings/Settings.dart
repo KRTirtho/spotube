@@ -10,6 +10,7 @@ import 'package:spotube/components/Settings/ColorSchemePickerDialog.dart';
 import 'package:spotube/components/Shared/AdaptiveListTile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/main.dart';
 import 'package:spotube/models/SpotifyMarkets.dart';
 import 'package:spotube/models/SpotubeTrack.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -199,6 +200,42 @@ class Settings extends HookConsumerWidget {
                         onChanged: (value) {
                           if (value != null) {
                             preferences.setThemeMode(value);
+                            update?.call(() {});
+                          }
+                        },
+                      ),
+                    ),
+                    AdaptiveListTile(
+                      leading: const Icon(Icons.ad_units_rounded),
+                      title: const PlatformText("Mimic Platform"),
+                      trailing: (context, update) =>
+                          PlatformDropDownMenu<TargetPlatform>(
+                        value: Spotube.of(context).appPlatform,
+                        items: [
+                          PlatformDropDownMenuItem(
+                            value: TargetPlatform.android,
+                            child: const PlatformText("Android (Material You)"),
+                          ),
+                          PlatformDropDownMenuItem(
+                            value: TargetPlatform.iOS,
+                            child: const PlatformText("iOS (Cupertino)"),
+                          ),
+                          PlatformDropDownMenuItem(
+                            value: TargetPlatform.macOS,
+                            child: const PlatformText("macOS (Aqua)"),
+                          ),
+                          PlatformDropDownMenuItem(
+                            value: TargetPlatform.linux,
+                            child: const PlatformText("Linux (GTK+Libadwaita)"),
+                          ),
+                          PlatformDropDownMenuItem(
+                            value: TargetPlatform.windows,
+                            child: const PlatformText("Windows 11 (Fluent UI)"),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            Spotube.of(context).changePlatform(value);
                             update?.call(() {});
                           }
                         },
