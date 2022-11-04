@@ -315,7 +315,7 @@ class Settings extends HookConsumerWidget {
                         "Recommendation Country",
                       ),
                       trailing: (context, update) => ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 250),
+                        constraints: const BoxConstraints(maxWidth: 350),
                         child: PlatformDropDownMenu(
                           value: preferences.recommendationMarket,
                           items: spotifyMarkets

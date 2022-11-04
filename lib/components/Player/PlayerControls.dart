@@ -98,7 +98,6 @@ class PlayerControls extends HookConsumerWidget {
                           PlatformTooltip(
                             message: "Slide to seek forward or backward",
                             child: PlatformSlider(
-                              focusNode: FocusNode(),
                               // cannot divide by zero
                               // there's an edge case for value being bigger
                               // than total duration. Keeping it resolved

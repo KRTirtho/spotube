@@ -72,7 +72,7 @@ ThemeData darkTheme({
     ),
     dialogTheme: DialogTheme(backgroundColor: backgroundMaterialColor[900]),
     cardColor: backgroundMaterialColor[800],
-    canvasColor: backgroundMaterialColor[900],
+    canvasColor: backgroundMaterialColor[800],
     listTileTheme: const ListTileThemeData(horizontalTitleGap: 0),
     checkboxTheme: CheckboxThemeData(
       fillColor: MaterialStateProperty.resolveWith((states) {

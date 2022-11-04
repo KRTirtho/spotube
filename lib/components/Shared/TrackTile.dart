@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Shared/AdaptivePopupMenuButton.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
@@ -95,6 +96,7 @@ class TrackTile extends HookConsumerWidget {
               return HookBuilder(builder: (context) {
                 final playlistsCheck = useState(<String, bool>{});
                 return PlatformAlertDialog(
+                  icon: Sidebar.brandLogo(),
                   title: PlatformText(
                     "Add `${track.value.name}` to following Playlists",
                     style: const TextStyle(

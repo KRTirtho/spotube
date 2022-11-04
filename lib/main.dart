@@ -199,7 +199,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       };
     }, []);
 
-    platform = TargetPlatform.android;
+    platform = TargetPlatform.macOS;
 
     return PlatformApp.router(
       routeInformationParser: router.routeInformationParser,

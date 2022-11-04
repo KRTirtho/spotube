@@ -32,7 +32,7 @@ class Sidebar extends HookConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  Widget _buildSmallLogo() {
+  static Widget brandLogo() {
     return Image.asset(
       "assets/spotube-logo.png",
       height: 50,
@@ -135,7 +135,7 @@ class Sidebar extends HookConsumerWidget {
             (extended.value)
                 ? Row(
                     children: [
-                      _buildSmallLogo(),
+                      brandLogo(),
                       const SizedBox(
                         width: 10,
                       ),
@@ -149,7 +149,7 @@ class Sidebar extends HookConsumerWidget {
                       ),
                     ],
                   )
-                : _buildSmallLogo(),
+                : brandLogo(),
           ],
         ),
         windowsFooterItems: [

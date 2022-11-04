@@ -16,6 +16,7 @@ class UserLibrary extends ConsumerWidget {
       length: 5,
       child: SafeArea(
         child: PlatformTabView(
+          androidIsScrollable: true,
           placement: PlatformProperty.all(PlatformTabbarPlacement.top),
           body: {
             PlatformTab(

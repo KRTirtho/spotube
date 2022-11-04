@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Shared/AnchorButton.dart';
 import 'package:spotube/hooks/usePackageInfo.dart';
 import 'package:spotube/provider/UserPreferences.dart';
@@ -56,6 +57,7 @@ void useUpdateChecker(WidgetRef ref) {
         const url =
             "https://spotube.netlify.app/other-downloads/stable-downloads";
         return PlatformAlertDialog(
+          icon: Sidebar.brandLogo(),
           title: const PlatformText("Spotube has an update"),
           primaryActions: [
             PlatformFilledButton(

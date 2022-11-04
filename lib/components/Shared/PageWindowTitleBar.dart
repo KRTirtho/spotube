@@ -1,4 +1,5 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:fluent_ui/fluent_ui.dart' show FluentTheme;
 import 'package:flutter/material.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/utils/platform.dart';
@@ -112,7 +113,8 @@ class PageWindowTitleBar extends StatelessWidget
     }
     return WindowTitleBarBox(
       child: Container(
-        color: backgroundColor,
+        color: backgroundColor ??
+            FluentTheme.maybeOf(context)?.micaBackgroundColor,
         child: Row(
           children: [
             if (kIsMacOS)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Home/Sidebar.dart';
 
 final replaceDownloadedFileState = StateProvider<bool?>((ref) => null);
 
@@ -15,6 +16,7 @@ class ReplaceDownloadedFileDialog extends ConsumerWidget {
     final groupValue = ref.watch(replaceDownloadedFileState);
 
     return PlatformAlertDialog(
+      icon: Sidebar.brandLogo(),
       title: Text("Track ${track.name} Already Exists"),
       content: Column(
         mainAxisSize: MainAxisSize.min,

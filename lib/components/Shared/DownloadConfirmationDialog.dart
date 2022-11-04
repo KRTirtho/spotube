@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 
 class DownloadConfirmationDialog extends StatelessWidget {
@@ -8,6 +9,7 @@ class DownloadConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformAlertDialog(
+      icon: Sidebar.brandLogo(),
       title: Padding(
         padding: const EdgeInsets.all(15),
         child: Row(
