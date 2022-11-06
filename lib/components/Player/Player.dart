@@ -78,7 +78,12 @@ class Player extends HookConsumerWidget {
             width: 1,
           ),
         ),
-        linux: null,
+        linux: Border(
+          top: BorderSide(
+            color: PlatformTheme.of(context).borderColor ?? Colors.transparent,
+            width: 1,
+          ),
+        ),
         windows: null,
       ),
     );

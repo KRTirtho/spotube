@@ -214,16 +214,22 @@ class TrackTile extends HookConsumerWidget {
                 ),
               ),
             ),
-            PlatformIconButton(
-              icon: Icon(
-                playback.track?.id != null &&
-                        playback.track?.id == track.value.id
-                    ? Icons.pause_circle_rounded
-                    : Icons.play_circle_rounded,
-                color: PlatformTheme.of(context).primaryColor,
-              ),
-              onPressed: () => onTrackPlayButtonPressed?.call(
-                track.value,
+            Padding(
+              padding: const EdgeInsets.all(8.0).copyWith(left: 0),
+              child: PlatformIconButton(
+                icon: Icon(
+                  playback.track?.id != null &&
+                          playback.track?.id == track.value.id
+                      ? Icons.pause_rounded
+                      : Icons.play_arrow_rounded,
+                  color: Colors.white,
+                ),
+                backgroundColor: PlatformTheme.of(context).primaryColor,
+                hoverColor:
+                    PlatformTheme.of(context).primaryColor?.withOpacity(0.5),
+                onPressed: () => onTrackPlayButtonPressed?.call(
+                  track.value,
+                ),
               ),
             ),
             Expanded(

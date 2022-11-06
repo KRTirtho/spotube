@@ -139,10 +139,7 @@ class Sidebar extends HookConsumerWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      Text(
-                        "Spotube",
-                        style: PlatformTheme.of(context).textTheme?.headline,
-                      ),
+                      PlatformText.headline("Spotube"),
                       PlatformIconButton(
                         icon: const Icon(Icons.menu_rounded),
                         onPressed: toggleExtended,

@@ -66,6 +66,8 @@ dependencies:
     path: ../platform_ui
   fluent_ui: ^4.0.3
   macos_ui: ^1.7.5
+  libadwaita: ^1.2.5
+  adwaita: ^0.5.2
 
 dev_dependencies:
   flutter_test:

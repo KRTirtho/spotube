@@ -227,6 +227,8 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         accentMaterialColor: accentMaterialColor,
         backgroundMaterialColor: backgroundMaterialColor,
       ),
+      linuxTheme: linuxTheme,
+      linuxDarkTheme: linuxDarkTheme,
       iosTheme: themeMode == ThemeMode.dark ? iosDarkTheme : iosTheme,
       windowsTheme: windowsTheme,
       windowsDarkTheme: windowsDarkTheme,

@@ -42,10 +42,8 @@ class PlaybuttonCard extends HookWidget {
         ios: null,
         macos: null,
         linux: BoxShadow(
-          blurRadius: 10,
-          offset: const Offset(0, 3),
-          spreadRadius: 5,
-          color: Theme.of(context).shadowColor,
+          blurRadius: 6,
+          color: Theme.of(context).shadowColor.withOpacity(0.3),
         ),
         windows: null,
       ),
@@ -78,7 +76,10 @@ class PlaybuttonCard extends HookWidget {
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(
-                  platform == TargetPlatform.windows ? 5 : 8,
+                  [TargetPlatform.windows, TargetPlatform.linux]
+                          .contains(platform)
+                      ? 5
+                      : 8,
                 ),
                 boxShadow: [
                   if (boxShadow != null) boxShadow,
@@ -104,7 +105,10 @@ class PlaybuttonCard extends HookWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(
-                            platform == TargetPlatform.windows ? 5 : 8,
+                            [TargetPlatform.windows, TargetPlatform.linux]
+                                    .contains(platform)
+                                ? 5
+                                : 8,
                           ),
                           child: UniversalImage(
                             path: imageUrl,
@@ -126,6 +130,11 @@ class PlaybuttonCard extends HookWidget {
                             ),
                             child: PlatformIconButton(
                               onPressed: onPlaybuttonPressed,
+                              backgroundColor:
+                                  PlatformTheme.of(context).primaryColor,
+                              hoverColor: PlatformTheme.of(context)
+                                  .primaryColor
+                                  ?.withOpacity(0.5),
                               icon: isLoading
                                   ? const SizedBox(
                                       height: 23,
@@ -137,7 +146,7 @@ class PlaybuttonCard extends HookWidget {
                                       isPlaying
                                           ? Icons.pause_rounded
                                           : Icons.play_arrow_rounded,
-                                      color: backgroundColor,
+                                      color: Colors.white,
                                     ),
                             ),
                           );

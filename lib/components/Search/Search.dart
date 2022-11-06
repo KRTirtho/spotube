@@ -90,10 +90,7 @@ class Search extends HookConsumerWidget {
                 onChanged: (value) {
                   ref.read(searchTermStateProvider.notifier).state = value;
                 },
-                suffix: PlatformFilledButton(
-                  onPressed: onSearch,
-                  child: const Icon(Icons.search_rounded),
-                ),
+                prefixIcon: Icons.search_rounded,
                 placeholder: "Search...",
                 onSubmitted: (value) {
                   onSearch();

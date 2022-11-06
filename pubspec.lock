@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "47.0.0"
+  adwaita:
+    dependency: "direct main"
+    description:
+      name: adwaita
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.2"
   analyzer:
     dependency: transitive
     description:
@@ -594,6 +601,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.42.0"
+  flutter_svg:
+    dependency: transitive
+    description:
+      name: flutter_svg
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.6"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -639,6 +653,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  gsettings:
+    dependency: transitive
+    description:
+      name: gsettings
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.5"
   hive:
     dependency: "direct main"
     description:
@@ -737,6 +758,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.5.0"
+  libadwaita:
+    dependency: "direct main"
+    description:
+      name: libadwaita
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.5"
+  libadwaita_core:
+    dependency: transitive
+    description:
+      name: libadwaita_core
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.4"
   lints:
     dependency: transitive
     description:
@@ -893,6 +928,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.2"
+  path_drawing:
+    dependency: transitive
+    description:
+      name: path_drawing
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  path_parsing:
+    dependency: transitive
+    description:
+      name: path_parsing
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   path_provider:
     dependency: "direct main"
     description:
@@ -1004,7 +1053,7 @@ packages:
       path: "../platform_ui"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.1.0"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -1023,6 +1072,13 @@ packages:
     dependency: "direct main"
     description:
       name: popover
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.6+3"
+  popover_gtk:
+    dependency: transitive
+    description:
+      name: popover_gtk
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.6+3"

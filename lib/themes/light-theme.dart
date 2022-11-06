@@ -1,3 +1,4 @@
+import 'package:adwaita/adwaita.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
@@ -149,3 +150,16 @@ final macosDarkTheme = MacosThemeData.dark().copyWith(
 );
 const iosTheme = CupertinoThemeData(brightness: Brightness.light);
 const iosDarkTheme = CupertinoThemeData(brightness: Brightness.dark);
+
+final linuxTheme = AdwaitaThemeData.light().copyWith(
+  listTileTheme: ListTileThemeData(
+    iconColor: Colors.grey[900],
+    horizontalTitleGap: 0,
+  ),
+);
+final linuxDarkTheme = AdwaitaThemeData.dark().copyWith(
+  listTileTheme: ListTileThemeData(
+    iconColor: Colors.grey[50],
+    horizontalTitleGap: 0,
+  ),
+);
