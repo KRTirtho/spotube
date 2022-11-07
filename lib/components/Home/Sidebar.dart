@@ -75,7 +75,7 @@ class Sidebar extends HookConsumerWidget {
 
     if (layoutMode == LayoutMode.compact ||
         (breakpoints.isSm && layoutMode == LayoutMode.adaptive)) {
-      return child;
+      return PlatformScaffold(body: child);
     }
 
     void toggleExtended() =>
