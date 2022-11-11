@@ -16,7 +16,7 @@ class TokenLogin extends HookConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: const PageWindowTitleBar(leading: PlatformBackButton()),
+        appBar: PageWindowTitleBar(leading: PlatformBackButton()),
         body: SingleChildScrollView(
           child: Center(
             child: Container(

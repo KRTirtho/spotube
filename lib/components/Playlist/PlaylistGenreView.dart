@@ -20,8 +20,8 @@ class PlaylistGenreView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return Scaffold(
-      appBar: const PageWindowTitleBar(
-        leading: PlatformBackButton(),
+      appBar: PageWindowTitleBar(
+        leading: const PlatformBackButton(),
       ),
       body: Column(
         children: [

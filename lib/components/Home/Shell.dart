@@ -13,7 +13,7 @@ import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/utils/platform.dart';
 
-const _path = {
+const rootPaths = {
   0: "/",
   1: "/search",
   2: "/library",
@@ -64,34 +64,40 @@ class Shell extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    final allowedPath = _path.values.contains(GoRouter.of(context).location);
-    final preferredSize =
-        allowedPath ? PageWindowTitleBar.staticPreferredSize : Size.zero;
-    return Scaffold(
-      appBar: kIsDesktop
-          ? PreferredSize(
-              preferredSize: preferredSize,
-              child: AnimatedContainer(
+    final allowedPath =
+        rootPaths.values.contains(GoRouter.of(context).location);
+    final titleBar = PageWindowTitleBar(
+      backgroundColor:
+          platform == TargetPlatform.android ? Colors.transparent : null,
+    );
+    final preferredSize = allowedPath ? titleBar.preferredSize : Size.zero;
+    var appBar = kIsDesktop
+        ? PreferredSize(
+            preferredSize: preferredSize,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              height: allowedPath ? titleBar.preferredSize.height : 0,
+              child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 250),
-                height: allowedPath
-                    ? PageWindowTitleBar.staticPreferredSize.height
-                    : 0,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 250),
-                  opacity: allowedPath ? 1 : 0,
-                  child: PageWindowTitleBar(preferredSize: preferredSize),
-                ),
+                opacity: allowedPath ? 1 : 0,
+                child: titleBar,
               ),
-            )
-          : null,
-      extendBodyBehindAppBar: true,
+            ),
+          )
+        : null;
+    return PlatformScaffold(
+      appBar: platform == TargetPlatform.windows ? appBar : null,
+      extendBodyBehindAppBar: false,
       body: Sidebar(
         selectedIndex: index.value,
         onSelectedIndexChanged: (i) {
           index.value = i;
-          GoRouter.of(context).go(_path[index.value]!);
+          GoRouter.of(context).go(rootPaths[index.value]!);
         },
-        child: child,
+        child: PlatformScaffold(
+          appBar: platform != TargetPlatform.windows ? appBar : null,
+          body: child,
+        ),
       ),
       extendBody: true,
       bottomNavigationBar: Column(
@@ -102,7 +108,7 @@ class Shell extends HookConsumerWidget {
             selectedIndex: index.value,
             onSelectedIndexChanged: (selectedIndex) {
               index.value = selectedIndex;
-              GoRouter.of(context).go(_path[selectedIndex]!);
+              GoRouter.of(context).go(rootPaths[selectedIndex]!);
             },
           ),
         ],

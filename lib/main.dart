@@ -236,7 +236,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       macosDarkTheme: macosDarkTheme,
       themeMode: themeMode,
       windowButtonConfig: PlatformWindowButtonConfig(
-        isMaximized: appWindow.isMaximized,
+        isMaximized: () => appWindow.isMaximized,
         onClose: appWindow.close,
         onRestore: appWindow.restore,
         onMaximize: appWindow.maximize,

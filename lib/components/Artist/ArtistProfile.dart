@@ -54,8 +54,8 @@ class ArtistProfile extends HookConsumerWidget {
 
     return SafeArea(
       child: PlatformScaffold(
-        appBar: const PageWindowTitleBar(
-          leading: PlatformBackButton(),
+        appBar: PageWindowTitleBar(
+          leading: const PlatformBackButton(),
         ),
         body: HookBuilder(
           builder: (context) {

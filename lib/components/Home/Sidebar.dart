@@ -110,7 +110,7 @@ class Sidebar extends HookConsumerWidget {
         expanded: extended.value,
         header: Column(
           children: [
-            if (kIsDesktop)
+            if (kIsMacOS)
               SizedBox(
                 height: appWindow.titleBarHeight,
                 width: extended.value ? 256 : 80,
