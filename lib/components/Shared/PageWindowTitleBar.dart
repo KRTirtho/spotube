@@ -123,8 +123,7 @@ class PageWindowTitleBar extends StatelessWidget
               ),
             if (leading != null) leading!,
             Expanded(child: MoveWindow(child: Center(child: center))),
-            if (!kIsMacOS && !kIsMobile)
-              TitleBarActionButtons(color: foregroundColor)
+            if (!kIsMacOS && !kIsMobile) const PlatformWindowButtons()
           ],
         ),
       ),

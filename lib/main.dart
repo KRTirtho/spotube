@@ -235,6 +235,13 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       macosTheme: macosTheme,
       macosDarkTheme: macosDarkTheme,
       themeMode: themeMode,
+      windowButtonConfig: PlatformWindowButtonConfig(
+        isMaximized: appWindow.isMaximized,
+        onClose: appWindow.close,
+        onRestore: appWindow.restore,
+        onMaximize: appWindow.maximize,
+        onMinimize: appWindow.minimize,
+      ),
       shortcuts: PlatformProperty.all({
         ...WidgetsApp.defaultShortcuts.map((key, value) {
           return MapEntry(
