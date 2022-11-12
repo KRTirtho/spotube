@@ -25,7 +25,7 @@ class UserLibrary extends HookConsumerWidget {
 
     return PlatformScaffold(
       appBar: PageWindowTitleBar(
-        titleWidth: 415,
+        titleWidth: 347,
         centerTitle: true,
         center: PlatformTabBar(
           androidIsScrollable: true,

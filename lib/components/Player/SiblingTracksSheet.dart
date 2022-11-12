@@ -41,41 +41,46 @@ class SiblingTracksSheet extends HookConsumerWidget {
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: Theme.of(context)
-              .navigationRailTheme
-              .backgroundColor
-              ?.withOpacity(0.5),
+          color: PlatformTheme.of(context)
+              .scaffoldBackgroundColor!
+              .withOpacity(.3),
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
+          appBar: PlatformAppBar(
             centerTitle: true,
-            title: const Text('Alternative Tracks Sources'),
+            title: PlatformText.subheading(
+              'Alternative Tracks Sources',
+            ),
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
+            toolbarOpacity: 0,
           ),
-          body: Padding(
+          body: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ListView.builder(
               itemCount: playback.siblingYtVideos.length,
               itemBuilder: (context, index) {
                 final video = playback.siblingYtVideos[index];
                 return PlatformListTile(
-                  title: Text(video.title),
-                  leading: UniversalImage(
-                    path: video.thumbnails.lowResUrl,
-                    height: 60,
-                    width: 60,
+                  title: PlatformText(video.title),
+                  leading: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UniversalImage(
+                      path: video.thumbnails.lowResUrl,
+                      height: 60,
+                      width: 60,
+                    ),
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  trailing: Text(
+                  trailing: PlatformText(
                     PrimitiveUtils.toReadableDuration(
                       video.duration ?? Duration.zero,
                     ),
                   ),
-                  subtitle: Text(video.author),
+                  subtitle: PlatformText(video.author),
                   enabled: playback.status != PlaybackStatus.loading,
                   selected: video.id == playback.track!.ytTrack.id,
                   selectedTileColor: Theme.of(context).popupMenuTheme.color,

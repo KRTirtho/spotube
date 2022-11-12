@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/components/Shared/NotFound.dart';
 import 'package:spotube/components/Shared/TrackTile.dart';
@@ -47,9 +48,6 @@ class PlayerQueue extends HookConsumerWidget {
       return null;
     }, []);
 
-    var titleStyle = Theme.of(context).textTheme.headline4?.copyWith(
-          fontWeight: FontWeight.bold,
-        );
     return BackdropFilter(
       filter: ImageFilter.blur(
         sigmaX: 12.0,
@@ -61,9 +59,8 @@ class PlayerQueue extends HookConsumerWidget {
           top: 5.0,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context)
-              .navigationRailTheme
-              .backgroundColor
+          color: PlatformTheme.of(context)
+              .scaffoldBackgroundColor
               ?.withOpacity(0.5),
           borderRadius: borderRadius,
         ),
@@ -78,16 +75,13 @@ class PlayerQueue extends HookConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            Text("Queue", style: titleStyle),
+            PlatformText.subheading("Queue"),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
+              child: PlatformText(
                 playback.playlist?.name ?? "",
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: PlatformTextTheme.of(context).body,
               ),
             ),
             const SizedBox(height: 10),
