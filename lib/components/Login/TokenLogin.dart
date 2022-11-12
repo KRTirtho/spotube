@@ -15,12 +15,17 @@ class TokenLogin extends HookConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return SafeArea(
-      child: Scaffold(
-        appBar: PageWindowTitleBar(leading: PlatformBackButton()),
+      child: PlatformScaffold(
+        appBar: PageWindowTitleBar(leading: const PlatformBackButton()),
         body: SingleChildScrollView(
           child: Center(
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: PlatformTheme.of(context).secondaryBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Column(
                 children: [
                   Image.asset(
@@ -28,11 +33,11 @@ class TokenLogin extends HookConsumerWidget {
                     width: MediaQuery.of(context).size.width *
                         (breakpoint <= Breakpoints.md ? .5 : .3),
                   ),
-                  Text("Add your spotify credentials to get started",
+                  PlatformText("Add your spotify credentials to get started",
                       style: breakpoint <= Breakpoints.md
                           ? textTheme.headline5
                           : textTheme.headline4),
-                  Text(
+                  PlatformText(
                     "Don't worry, any of your credentials won't be collected or shared with anyone",
                     style: Theme.of(context).textTheme.caption,
                   ),
@@ -45,9 +50,9 @@ class TokenLogin extends HookConsumerWidget {
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      const Text("Don't know how to do this?"),
+                      const PlatformText("Don't know how to do this?"),
                       PlatformTextButton(
-                        child: const Text(
+                        child: const PlatformText(
                           "Follow along the Step by Step guide",
                         ),
                         onPressed: () => GoRouter.of(context).push(

@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Album/AlbumCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
+import 'package:spotube/components/Shared/AnonymousFallback.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -13,6 +15,10 @@ class UserAlbums extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(authProvider);
+    if (auth.isAnonymous) {
+      return const AnonymousFallback();
+    }
     final albumsQuery = useQuery(
       job: currentUserAlbumsQueryJob,
       externalData: ref.watch(spotifyProvider),

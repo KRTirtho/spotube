@@ -20,10 +20,10 @@ class AnonymousFallback extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("You're not logged in"),
+          const PlatformText("You're not logged in"),
           const SizedBox(height: 10),
           PlatformFilledButton(
-            child: const Text("Login with Spotify"),
+            child: const PlatformText("Login with Spotify"),
             onPressed: () => ServiceUtils.navigate(context, "/settings"),
           )
         ],

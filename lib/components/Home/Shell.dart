@@ -64,40 +64,14 @@ class Shell extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    final allowedPath =
-        rootPaths.values.contains(GoRouter.of(context).location);
-    final titleBar = PageWindowTitleBar(
-      backgroundColor:
-          platform == TargetPlatform.android ? Colors.transparent : null,
-    );
-    final preferredSize = allowedPath ? titleBar.preferredSize : Size.zero;
-    var appBar = kIsDesktop
-        ? PreferredSize(
-            preferredSize: preferredSize,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              height: allowedPath ? titleBar.preferredSize.height : 0,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 250),
-                opacity: allowedPath ? 1 : 0,
-                child: titleBar,
-              ),
-            ),
-          )
-        : null;
     return PlatformScaffold(
-      appBar: platform == TargetPlatform.windows ? appBar : null,
-      extendBodyBehindAppBar: false,
       body: Sidebar(
         selectedIndex: index.value,
         onSelectedIndexChanged: (i) {
           index.value = i;
           GoRouter.of(context).go(rootPaths[index.value]!);
         },
-        child: PlatformScaffold(
-          appBar: platform != TargetPlatform.windows ? appBar : null,
-          body: child,
-        ),
+        child: child,
       ),
       extendBody: true,
       bottomNavigationBar: Column(

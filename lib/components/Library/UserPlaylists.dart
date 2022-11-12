@@ -6,6 +6,8 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCreateDialog.dart';
+import 'package:spotube/components/Shared/AnonymousFallback.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
@@ -14,6 +16,11 @@ class UserPlaylists extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(authProvider);
+    if (auth.isAnonymous) {
+      return const AnonymousFallback();
+    }
+
     final playlistsQuery = useQuery(
       job: currentUserPlaylistsQueryJob,
       externalData: ref.watch(spotifyProvider),

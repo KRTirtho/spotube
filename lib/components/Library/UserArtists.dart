@@ -5,7 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Artist/ArtistCard.dart';
+import 'package:spotube/components/Shared/AnonymousFallback.dart';
 import 'package:spotube/components/Shared/Waypoint.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
@@ -14,6 +16,10 @@ class UserArtists extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(authProvider);
+    if (auth.isAnonymous) {
+      return const AnonymousFallback();
+    }
     final artistQuery = useInfiniteQuery(
       job: currentUserFollowingArtistsQueryJob,
       externalData: ref.watch(spotifyProvider),

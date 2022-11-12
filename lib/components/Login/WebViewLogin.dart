@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -23,7 +24,7 @@ class WebViewLogin extends HookConsumerWidget {
       );
     }
 
-    return Scaffold(
+    return PlatformScaffold(
       body: SafeArea(
         child: InAppWebView(
           initialOptions: InAppWebViewGroupOptions(

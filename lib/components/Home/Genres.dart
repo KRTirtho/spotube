@@ -6,6 +6,7 @@ import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerCategories.dart';
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/Waypoint.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
@@ -42,6 +43,7 @@ class Genres extends HookConsumerWidget {
     ];
 
     return PlatformScaffold(
+      appBar: PageWindowTitleBar(),
       body: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {

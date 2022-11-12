@@ -58,7 +58,14 @@ class PlayerView extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    return Scaffold(
+    return PlatformScaffold(
+      appBar: PageWindowTitleBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: paletteColor.titleTextColor,
+        toolbarOpacity: 0,
+        automaticallyImplyLeading: true,
+      ),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -74,11 +81,6 @@ class PlayerView extends HookConsumerWidget {
             child: SafeArea(
               child: Column(
                 children: [
-                  PageWindowTitleBar(
-                    leading: const PlatformBackButton(),
-                    backgroundColor: Colors.transparent,
-                    foregroundColor: paletteColor.titleTextColor,
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(

@@ -133,18 +133,21 @@ class Sidebar extends HookConsumerWidget {
                 ),
               ),
             (extended.value)
-                ? Row(
-                    children: [
-                      brandLogo(),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      PlatformText.headline("Spotube"),
-                      PlatformIconButton(
-                        icon: const Icon(Icons.menu_rounded),
-                        onPressed: toggleExtended,
-                      ),
-                    ],
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        brandLogo(),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        PlatformText.headline("Spotube"),
+                        PlatformIconButton(
+                          icon: const Icon(Icons.menu_rounded),
+                          onPressed: toggleExtended,
+                        ),
+                      ],
+                    ),
                   )
                 : brandLogo(),
           ],

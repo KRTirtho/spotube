@@ -1,3 +1,4 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/utils/platform.dart';
@@ -26,4 +27,9 @@ class PageWindowTitleBar extends PlatformAppBar {
           ],
           title: center,
         );
+
+  @override
+  Widget build(BuildContext context) {
+    return MoveWindow(child: super.build(context));
+  }
 }

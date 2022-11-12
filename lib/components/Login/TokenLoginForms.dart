@@ -25,21 +25,17 @@ class TokenLoginForm extends HookConsumerWidget {
       ),
       child: Column(
         children: [
-          TextField(
+          PlatformTextField(
             controller: directCodeController,
-            decoration: const InputDecoration(
-              hintText: "Spotify \"sp_dc\" Cookie",
-              label: Text("sp_dc Cookie"),
-            ),
+            placeholder: "Spotify \"sp_dc\" Cookie",
+            label: "sp_dc Cookie",
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 10),
-          TextField(
+          PlatformTextField(
             controller: keyCodeController,
-            decoration: const InputDecoration(
-              hintText: "Spotify \"sp_key\" Cookie",
-              label: Text("sp_key Cookie"),
-            ),
+            placeholder: "Spotify \"sp_key\" Cookie",
+            label: "sp_key Cookie",
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 20),
@@ -49,7 +45,7 @@ class TokenLoginForm extends HookConsumerWidget {
                   directCodeController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text("Please fill in all fields"),
+                    content: PlatformText("Please fill in all fields"),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -68,7 +64,7 @@ class TokenLoginForm extends HookConsumerWidget {
                 onDone?.call();
               }
             },
-            child: const Text("Submit"),
+            child: const PlatformText("Submit"),
           )
         ],
       ),
