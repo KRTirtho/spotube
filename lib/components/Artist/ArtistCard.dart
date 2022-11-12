@@ -33,24 +33,18 @@ class ArtistCard extends HookWidget {
         ios: null,
         macos: null,
         linux: BoxShadow(
-          blurRadius: 10,
-          offset: const Offset(0, 3),
-          spreadRadius: 5,
-          color: Theme.of(context).shadowColor,
+          blurRadius: 6,
+          color: Theme.of(context).shadowColor.withOpacity(0.3),
         ),
         windows: null,
       ),
     );
 
     final splash = usePlatformProperty<InteractiveInkFeatureFactory?>(
-      (context) => PlatformProperty.multiPlatformGroup({
-        InkRipple.splashFactory: {TargetPlatform.android, TargetPlatform.linux},
-        NoSplash.splashFactory: {
-          TargetPlatform.windows,
-          TargetPlatform.macOS,
-          TargetPlatform.iOS,
-        }
-      }),
+      (context) => PlatformProperty.only(
+        android: InkRipple.splashFactory,
+        other: NoSplash.splashFactory,
+      ),
     );
 
     return SizedBox(
