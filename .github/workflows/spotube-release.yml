@@ -265,7 +265,7 @@ jobs:
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
           sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-Linux-Bundle/Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
-      - uses: KSXGitHub/github-actions-deploy-aur@v2.5.0
+      - uses: KSXGitHub/github-actions-deploy-aur@v2.6.0
         with:
           pkgname: spotube-bin
           pkgbuild: aur-struct/PKGBUILD
