@@ -159,6 +159,11 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     super.initState();
     SharedPreferences.getInstance().then(((value) => localStorage = value));
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        appPlatform = Theme.of(context).platform;
+      });
+    });
   }
 
   @override
