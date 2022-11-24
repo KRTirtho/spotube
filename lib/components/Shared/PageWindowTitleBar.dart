@@ -23,9 +23,14 @@ class PageWindowTitleBar extends PlatformAppBar {
   }) : super(
           actions: [
             ...?actions,
-            if (!kIsMacOS && !kIsMobile) const PlatformWindowButtons(),
+            if (!kIsMacOS && !kIsMobile)
+              platform == TargetPlatform.linux
+                  ? MoveWindow(child: const PlatformWindowButtons())
+                  : const PlatformWindowButtons(),
           ],
-          title: center,
+          title: platform == TargetPlatform.linux
+              ? MoveWindow(child: Center(child: center))
+              : center,
         );
 
   @override

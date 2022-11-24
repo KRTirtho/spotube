@@ -290,7 +290,7 @@ class Playback extends PersistedChangeNotifier {
     switch (playbackMode) {
       case PlaybackMode.normal:
         playbackMode = PlaybackMode.shuffle;
-        playlist?.shuffle();
+        playlist?.shuffle(track);
         break;
       case PlaybackMode.shuffle:
         playbackMode = PlaybackMode.repeat;

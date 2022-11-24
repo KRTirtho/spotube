@@ -90,11 +90,15 @@ class CurrentPlaylist {
 
   List<String> get trackIds => tracks.map((e) => e.id!).toList();
 
-  bool shuffle() {
+  bool shuffle(Track? topTrack) {
     // won't shuffle if already shuffled
     if (_tempTrack == null) {
       _tempTrack = [...tracks];
       tracks.shuffle();
+      if (topTrack != null) {
+        tracks.remove(topTrack);
+        tracks.insert(0, topTrack);
+      }
       return true;
     }
     return false;

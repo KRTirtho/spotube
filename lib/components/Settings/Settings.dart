@@ -207,28 +207,28 @@ class Settings extends HookConsumerWidget {
                       leading: const Icon(Icons.ad_units_rounded),
                       title: const PlatformText("Mimic Platform"),
                       trailing: (context, update) =>
-                          PlatformDropDownMenu<TargetPlatform>(
+                          DropdownButton<TargetPlatform>(
                         value: Spotube.of(context).appPlatform,
-                        items: [
-                          PlatformDropDownMenuItem(
+                        items: const [
+                          DropdownMenuItem(
                             value: TargetPlatform.android,
-                            child: const PlatformText("Android (Material You)"),
+                            child: PlatformText("Android (Material You)"),
                           ),
-                          PlatformDropDownMenuItem(
+                          DropdownMenuItem(
                             value: TargetPlatform.iOS,
-                            child: const PlatformText("iOS (Cupertino)"),
+                            child: PlatformText("iOS (Cupertino)"),
                           ),
-                          PlatformDropDownMenuItem(
+                          DropdownMenuItem(
                             value: TargetPlatform.macOS,
-                            child: const PlatformText("macOS (Aqua)"),
+                            child: PlatformText("macOS (Aqua)"),
                           ),
-                          PlatformDropDownMenuItem(
+                          DropdownMenuItem(
                             value: TargetPlatform.linux,
-                            child: const PlatformText("Linux (GTK+Libadwaita)"),
+                            child: PlatformText("Linux (GTK+Libadwaita)"),
                           ),
-                          PlatformDropDownMenuItem(
+                          DropdownMenuItem(
                             value: TargetPlatform.windows,
-                            child: const PlatformText("Windows 11 (Fluent UI)"),
+                            child: PlatformText("Windows 11 (Fluent UI)"),
                           ),
                         ],
                         onChanged: (value) {
