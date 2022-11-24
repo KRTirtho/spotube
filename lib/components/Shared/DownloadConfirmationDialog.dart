@@ -9,7 +9,7 @@ class DownloadConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformAlertDialog(
-      icon: Sidebar.brandLogo(),
+      macosAppIcon: Sidebar.brandLogo(),
       title: Padding(
         padding: const EdgeInsets.all(15),
         child: Row(

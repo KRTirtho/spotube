@@ -57,7 +57,7 @@ void useUpdateChecker(WidgetRef ref) {
         const url =
             "https://spotube.netlify.app/other-downloads/stable-downloads";
         return PlatformAlertDialog(
-          icon: Sidebar.brandLogo(),
+          macosAppIcon: Sidebar.brandLogo(),
           title: const PlatformText("Spotube has an update"),
           primaryActions: [
             PlatformFilledButton(

@@ -87,18 +87,24 @@ class SyncedLyrics extends HookConsumerWidget {
                 Positioned.fill(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: PlatformIconButton(
-                      tooltip: "Lyrics Delay",
-                      icon: const Icon(Icons.av_timer_rounded),
-                      onPressed: () async {
-                        final delay = await showPlatformAlertDialog(
-                          context,
-                          builder: (context) => const LyricDelayAdjustDialog(),
-                        );
-                        if (delay != null) {
-                          ref.read(lyricDelayState.notifier).state = delay;
-                        }
-                      },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PlatformFilledButton(
+                        child: const Icon(
+                          Icons.av_timer_rounded,
+                          size: 16,
+                        ),
+                        onPressed: () async {
+                          final delay = await showPlatformAlertDialog(
+                            context,
+                            builder: (context) =>
+                                const LyricDelayAdjustDialog(),
+                          );
+                          if (delay != null) {
+                            ref.read(lyricDelayState.notifier).state = delay;
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),

@@ -68,7 +68,7 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
     ).key);
 
     return PlatformAlertDialog(
-      icon: Sidebar.brandLogo(),
+      macosAppIcon: Sidebar.brandLogo(),
       title: Text("Pick ${schemeType.name} color scheme"),
       primaryActions: [
         PlatformFilledButton(

@@ -18,7 +18,7 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
         double.tryParse(controller.text.replaceAll("ms", "")) ?? 0;
 
     return PlatformAlertDialog(
-      icon: Sidebar.brandLogo(),
+      macosAppIcon: Sidebar.brandLogo(),
       title: const Center(child: Text("Adjust Lyrics Delay")),
       secondaryActions: [
         PlatformFilledButton(
@@ -41,36 +41,39 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
           },
         )
       ],
-      content: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          PlatformIconButton(
-            icon: const Icon(Icons.remove_rounded),
-            onPressed: () {
-              controller.text = "${getValue() - 25}ms";
-            },
-          ),
-          Flexible(
-            child: PlatformTextField(
-              keyboardType: TextInputType.number,
-              controller: controller,
-              placeholder: "Delay in milliseconds",
-              onSubmitted: (_) {
-                Navigator.of(context).pop(
-                  Duration(
-                    milliseconds: getValue().toInt(),
-                  ),
-                );
+      content: SizedBox(
+        height: 100,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PlatformIconButton(
+              icon: const Icon(Icons.remove_rounded),
+              onPressed: () {
+                controller.text = "${getValue() - 25}ms";
               },
             ),
-          ),
-          PlatformIconButton(
-            icon: const Icon(Icons.add_rounded),
-            onPressed: () {
-              controller.text = "${getValue() + 25}ms";
-            },
-          ),
-        ],
+            Flexible(
+              child: PlatformTextField(
+                keyboardType: TextInputType.number,
+                controller: controller,
+                placeholder: "Delay in milliseconds",
+                onSubmitted: (_) {
+                  Navigator.of(context).pop(
+                    Duration(
+                      milliseconds: getValue().toInt(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            PlatformIconButton(
+              icon: const Icon(Icons.add_rounded),
+              onPressed: () {
+                controller.text = "${getValue() + 25}ms";
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -41,7 +41,7 @@ class AdaptiveListTile extends HookWidget {
                 builder: (context) {
                   return StatefulBuilder(builder: (context, update) {
                     return PlatformAlertDialog(
-                      icon: Sidebar.brandLogo(),
+                      macosAppIcon: Sidebar.brandLogo(),
                       title: title != null
                           ? Row(
                               crossAxisAlignment: CrossAxisAlignment.center,

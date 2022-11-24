@@ -16,7 +16,7 @@ class ReplaceDownloadedFileDialog extends ConsumerWidget {
     final groupValue = ref.watch(replaceDownloadedFileState);
 
     return PlatformAlertDialog(
-      icon: Sidebar.brandLogo(),
+      macosAppIcon: Sidebar.brandLogo(),
       title: Text("Track ${track.name} Already Exists"),
       content: Column(
         mainAxisSize: MainAxisSize.min,

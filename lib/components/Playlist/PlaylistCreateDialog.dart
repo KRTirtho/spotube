@@ -26,7 +26,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
               final collaborative = useState(false);
 
               return PlatformAlertDialog(
-                icon: Sidebar.brandLogo(),
+                macosAppIcon: Sidebar.brandLogo(),
                 title: const Text("Create a Playlist"),
                 primaryActions: [
                   PlatformFilledButton(

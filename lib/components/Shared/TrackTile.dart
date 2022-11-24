@@ -96,7 +96,7 @@ class TrackTile extends HookConsumerWidget {
               return HookBuilder(builder: (context) {
                 final playlistsCheck = useState(<String, bool>{});
                 return PlatformAlertDialog(
-                  icon: Sidebar.brandLogo(),
+                  macosAppIcon: Sidebar.brandLogo(),
                   title: PlatformText(
                     "Add `${track.value.name}` to following Playlists",
                     style: const TextStyle(
