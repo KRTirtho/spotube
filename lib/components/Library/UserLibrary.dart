@@ -23,26 +23,28 @@ class UserLibrary extends HookConsumerWidget {
       const UserAlbums(),
     ][index.value];
 
-    return PlatformScaffold(
-      appBar: PageWindowTitleBar(
-        titleWidth: 347,
-        centerTitle: true,
-        center: PlatformTabBar(
-          androidIsScrollable: true,
-          selectedIndex: index.value,
-          onSelectedIndexChanged: (value) => index.value = value,
-          isNavigational:
-              PlatformProperty.byPlatformGroup(mobile: false, desktop: true),
-          tabs: [
-            PlatformTab(label: 'Playlists', icon: const SizedBox.shrink()),
-            PlatformTab(label: 'Tracks', icon: const SizedBox.shrink()),
-            PlatformTab(label: 'Downloads', icon: const SizedBox.shrink()),
-            PlatformTab(label: 'Artists', icon: const SizedBox.shrink()),
-            PlatformTab(label: 'Albums', icon: const SizedBox.shrink()),
-          ],
+    return SafeArea(
+      child: PlatformScaffold(
+        appBar: PageWindowTitleBar(
+          titleWidth: 347,
+          centerTitle: true,
+          center: PlatformTabBar(
+            androidIsScrollable: true,
+            selectedIndex: index.value,
+            onSelectedIndexChanged: (value) => index.value = value,
+            isNavigational:
+                PlatformProperty.byPlatformGroup(mobile: false, desktop: true),
+            tabs: [
+              PlatformTab(label: 'Playlists', icon: const SizedBox.shrink()),
+              PlatformTab(label: 'Tracks', icon: const SizedBox.shrink()),
+              PlatformTab(label: 'Downloads', icon: const SizedBox.shrink()),
+              PlatformTab(label: 'Artists', icon: const SizedBox.shrink()),
+              PlatformTab(label: 'Albums', icon: const SizedBox.shrink()),
+            ],
+          ),
         ),
+        body: body,
       ),
-      body: body,
     );
   }
 }

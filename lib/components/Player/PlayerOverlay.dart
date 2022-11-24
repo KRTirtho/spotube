@@ -81,7 +81,7 @@ class PlayerOverlay extends HookConsumerWidget {
                     ),
                     Row(
                       children: [
-                        PlatformIconButton(
+                        IconButton(
                             icon: Icon(
                               Icons.skip_previous_rounded,
                               color: paletteColor.bodyTextColor,
@@ -91,7 +91,7 @@ class PlayerOverlay extends HookConsumerWidget {
                             }),
                         Consumer(
                           builder: (context, ref, _) {
-                            return PlatformIconButton(
+                            return IconButton(
                               icon: Icon(
                                 ref.read(playbackProvider).isPlaying
                                     ? Icons.pause_rounded
@@ -105,7 +105,7 @@ class PlayerOverlay extends HookConsumerWidget {
                             );
                           },
                         ),
-                        PlatformIconButton(
+                        IconButton(
                           icon: Icon(
                             Icons.skip_next_rounded,
                             color: paletteColor.bodyTextColor,

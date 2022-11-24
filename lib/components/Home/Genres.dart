@@ -11,6 +11,7 @@ import 'package:spotube/components/Shared/Waypoint.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 
 class Genres extends HookConsumerWidget {
   const Genres({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class Genres extends HookConsumerWidget {
     ];
 
     return PlatformScaffold(
-      appBar: PageWindowTitleBar(),
+      appBar: kIsDesktop ? PageWindowTitleBar() : null,
       body: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {

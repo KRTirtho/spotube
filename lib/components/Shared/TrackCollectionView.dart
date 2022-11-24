@@ -114,11 +114,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
               ? PageWindowTitleBar(
                   backgroundColor: color?.color,
                   foregroundColor: color?.titleTextColor,
-                  leading: Row(
-                    children: [
-                      PlatformBackButton(color: color?.titleTextColor)
-                    ],
-                  ),
+                  leading: PlatformBackButton(color: color?.titleTextColor),
                 )
               : null,
           body: CustomScrollView(
@@ -130,6 +126,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                 pinned: true,
                 expandedHeight: 400,
                 automaticallyImplyLeading: kIsMobile,
+                leading: kIsMobile
+                    ? PlatformBackButton(color: color?.titleTextColor)
+                    : null,
                 iconTheme: IconThemeData(color: color?.titleTextColor),
                 primary: true,
                 backgroundColor: color?.color,
