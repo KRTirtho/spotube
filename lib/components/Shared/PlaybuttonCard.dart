@@ -50,14 +50,10 @@ class PlaybuttonCard extends HookWidget {
     );
 
     final splash = usePlatformProperty<InteractiveInkFeatureFactory?>(
-      (context) => PlatformProperty.multiPlatformGroup({
-        InkRipple.splashFactory: {TargetPlatform.android, TargetPlatform.linux},
-        NoSplash.splashFactory: {
-          TargetPlatform.windows,
-          TargetPlatform.macOS,
-          TargetPlatform.iOS,
-        }
-      }),
+      (context) => PlatformProperty.only(
+        android: InkRipple.splashFactory,
+        other: NoSplash.splashFactory,
+      ),
     );
 
     final iconBgColor = PlatformTheme.of(context).primaryColor;

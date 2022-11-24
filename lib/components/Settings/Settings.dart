@@ -50,10 +50,8 @@ class Settings extends HookConsumerWidget {
     return SafeArea(
       child: PlatformScaffold(
         appBar: PageWindowTitleBar(
-          center: PlatformText(
-            "Settings",
-            style: PlatformTheme.of(context).textTheme?.headline,
-          ),
+          center: PlatformText.headline("Settings"),
+          centerTitle: true,
         ),
         body: Row(
           mainAxisAlignment: MainAxisAlignment.center,
