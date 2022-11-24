@@ -29,7 +29,7 @@ dependencies:
   go_router: ^5.2.0
   palette_generator: ^0.3.3
   logger: ^1.1.0
-  permission_handler: ^10.0.2
+  permission_handler: ^10.2.0
   marquee: ^2.2.3
   scroll_to_index: ^3.0.1
   package_info_plus: ^1.4.3
