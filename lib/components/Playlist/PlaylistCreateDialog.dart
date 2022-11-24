@@ -2,6 +2,8 @@ import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
@@ -12,10 +14,10 @@ class PlaylistCreateDialog extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
 
-    return TextButton(
+    return PlatformTextButton(
       onPressed: () {
-        showDialog(
-          context: context,
+        showPlatformAlertDialog(
+          context,
           builder: (context) {
             return HookBuilder(builder: (context) {
               final playlistName = useTextEditingController();
@@ -23,14 +25,11 @@ class PlaylistCreateDialog extends HookConsumerWidget {
               final public = useState(false);
               final collaborative = useState(false);
 
-              return AlertDialog(
+              return PlatformAlertDialog(
+                macosAppIcon: Sidebar.brandLogo(),
                 title: const Text("Create a Playlist"),
-                actions: [
-                  TextButton(
-                    child: const Text("Cancel"),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  ElevatedButton(
+                primaryActions: [
+                  PlatformFilledButton(
                     child: const Text("Create"),
                     onPressed: () async {
                       if (playlistName.text.isEmpty) return;
@@ -52,38 +51,41 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                     },
                   )
                 ],
+                secondaryActions: [
+                  PlatformFilledButton(
+                    isSecondary: true,
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Cancel"),
+                  ),
+                ],
                 content: Container(
                   width: MediaQuery.of(context).size.width,
                   constraints: const BoxConstraints(maxWidth: 500),
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      TextField(
+                      PlatformTextField(
                         controller: playlistName,
-                        decoration: const InputDecoration(
-                          hintText: "Name of the playlist",
-                          label: Text("Playlist Name"),
-                        ),
+                        placeholder: "Name of the playlist",
+                        label: "Playlist Name",
                       ),
                       const SizedBox(height: 10),
-                      TextField(
+                      PlatformTextField(
                         controller: description,
-                        decoration: const InputDecoration(
-                          hintText: "Description...",
-                        ),
+                        placeholder: "Description...",
                         keyboardType: TextInputType.multiline,
                         maxLines: 5,
                       ),
                       const SizedBox(height: 10),
-                      CheckboxListTile(
+                      PlatformCheckbox(
                         value: public.value,
-                        title: const Text("Public"),
+                        label: const PlatformText("Public"),
                         onChanged: (val) => public.value = val ?? false,
                       ),
                       const SizedBox(height: 10),
-                      CheckboxListTile(
+                      PlatformCheckbox(
                         value: collaborative.value,
-                        title: const Text("Collaborative"),
+                        label: const PlatformText("Collaborative"),
                         onChanged: (val) => collaborative.value = val ?? false,
                       ),
                     ],

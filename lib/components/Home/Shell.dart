@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Home/SpotubeNavigationBar.dart';
 import 'package:spotube/components/Player/Player.dart';
@@ -12,7 +13,7 @@ import 'package:spotube/hooks/useUpdateChecker.dart';
 import 'package:spotube/provider/Downloader.dart';
 import 'package:spotube/utils/platform.dart';
 
-const _path = {
+const rootPaths = {
   0: "/",
   1: "/search",
   2: "/library",
@@ -35,8 +36,8 @@ class Shell extends HookConsumerWidget {
     useEffect(() {
       downloader.onFileExists = (track) async {
         if (!isMounted()) return false;
-        return await showDialog<bool>(
-              context: context,
+        return await showPlatformAlertDialog<bool>(
+              context,
               builder: (context) => ReplaceDownloadedFileDialog(
                 track: track,
               ),
@@ -63,38 +64,14 @@ class Shell extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    final allowedPath = _path.values.contains(GoRouter.of(context).location);
-    final preferredSize =
-        allowedPath ? PageWindowTitleBar.staticPreferredSize : Size.zero;
-    return Scaffold(
-      appBar: kIsDesktop
-          ? PreferredSize(
-              preferredSize: preferredSize,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                height: allowedPath
-                    ? PageWindowTitleBar.staticPreferredSize.height
-                    : 0,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 250),
-                  opacity: allowedPath ? 1 : 0,
-                  child: PageWindowTitleBar(preferredSize: preferredSize),
-                ),
-              ),
-            )
-          : null,
-      extendBodyBehindAppBar: true,
-      body: Row(
-        children: [
-          Sidebar(
-            selectedIndex: index.value,
-            onSelectedIndexChanged: (selectedIndex) {
-              index.value = selectedIndex;
-              GoRouter.of(context).go(_path[selectedIndex]!);
-            },
-          ),
-          Expanded(child: child),
-        ],
+    return PlatformScaffold(
+      body: Sidebar(
+        selectedIndex: index.value,
+        onSelectedIndexChanged: (i) {
+          index.value = i;
+          GoRouter.of(context).go(rootPaths[index.value]!);
+        },
+        child: child,
       ),
       extendBody: true,
       bottomNavigationBar: Column(
@@ -105,7 +82,7 @@ class Shell extends HookConsumerWidget {
             selectedIndex: index.value,
             onSelectedIndexChanged: (selectedIndex) {
               index.value = selectedIndex;
-              GoRouter.of(context).go(_path[selectedIndex]!);
+              GoRouter.of(context).go(rootPaths[selectedIndex]!);
             },
           ),
         ],

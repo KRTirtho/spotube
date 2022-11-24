@@ -72,7 +72,7 @@ ThemeData darkTheme({
     ),
     dialogTheme: DialogTheme(backgroundColor: backgroundMaterialColor[900]),
     cardColor: backgroundMaterialColor[800],
-    canvasColor: backgroundMaterialColor[900],
+    canvasColor: backgroundMaterialColor[800],
     listTileTheme: const ListTileThemeData(horizontalTitleGap: 0),
     checkboxTheme: CheckboxThemeData(
       fillColor: MaterialStateProperty.resolveWith((states) {
@@ -88,6 +88,9 @@ ThemeData darkTheme({
       labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       unselectedLabelStyle:
           const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: backgroundMaterialColor[900],
     ),
   );
 }

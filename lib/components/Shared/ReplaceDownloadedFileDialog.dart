@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/Home/Sidebar.dart';
 
 final replaceDownloadedFileState = StateProvider<bool?>((ref) => null);
 
@@ -13,7 +15,8 @@ class ReplaceDownloadedFileDialog extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final groupValue = ref.watch(replaceDownloadedFileState);
 
-    return AlertDialog(
+    return PlatformAlertDialog(
+      macosAppIcon: Sidebar.brandLogo(),
       title: Text("Track ${track.name} Already Exists"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -47,19 +50,22 @@ class ReplaceDownloadedFileDialog extends ConsumerWidget {
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          child: const Text("No"),
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-        ),
-        TextButton(
+      primaryActions: [
+        PlatformFilledButton(
           child: const Text("Yes"),
           onPressed: () {
             Navigator.pop(context, true);
           },
         )
+      ],
+      secondaryActions: [
+        PlatformFilledButton(
+          isSecondary: true,
+          child: const Text("No"),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
       ],
     );
   }

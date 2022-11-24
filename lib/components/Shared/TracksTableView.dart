@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Library/UserLocalTracks.dart';
 import 'package:spotube/components/Shared/DownloadConfirmationDialog.dart';
@@ -67,7 +68,7 @@ class TracksTableView extends HookConsumerWidget {
             if (heading != null) heading!,
             Row(
               children: [
-                Checkbox(
+                PlatformCheckbox(
                   value: selected.value.length == sortedTracks.length,
                   onChanged: (checked) {
                     if (!showCheck.value) showCheck.value = true;
@@ -81,7 +82,7 @@ class TracksTableView extends HookConsumerWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
+                  child: PlatformText(
                     "#",
                     textAlign: TextAlign.center,
                     style: tableHeadStyle,
@@ -90,7 +91,7 @@ class TracksTableView extends HookConsumerWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      Text(
+                      PlatformText(
                         "Title",
                         style: tableHeadStyle,
                         overflow: TextOverflow.ellipsis,
@@ -104,7 +105,7 @@ class TracksTableView extends HookConsumerWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        Text(
+                        PlatformText(
                           "Album",
                           overflow: TextOverflow.ellipsis,
                           style: tableHeadStyle,
@@ -115,7 +116,7 @@ class TracksTableView extends HookConsumerWidget {
                 ],
                 if (!breakpoint.isSm) ...[
                   const SizedBox(width: 10),
-                  Text("Time", style: tableHeadStyle),
+                  PlatformText("Time", style: tableHeadStyle),
                   const SizedBox(width: 10),
                 ],
                 SortTracksDropdown(
@@ -126,32 +127,29 @@ class TracksTableView extends HookConsumerWidget {
                         .state = value;
                   },
                 ),
-                PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        enabled: selected.value.isNotEmpty,
-                        value: "download",
-                        child: Row(
-                          children: [
-                            const Icon(Icons.file_download_outlined),
-                            Text(
-                              "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
-                            ),
-                          ],
-                        ),
+                PlatformPopupMenuButton(
+                  items: [
+                    PlatformPopupMenuItem(
+                      enabled: selected.value.isNotEmpty,
+                      value: "download",
+                      child: Row(
+                        children: [
+                          const Icon(Icons.file_download_outlined),
+                          PlatformText(
+                            "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
+                          ),
+                        ],
                       ),
-                    ];
-                  },
+                    ),
+                  ],
                   onSelected: (action) async {
                     switch (action) {
                       case "download":
                         {
-                          final isConfirmed = await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const DownloadConfirmationDialog();
-                              });
+                          final isConfirmed = await showPlatformAlertDialog(
+                              context, builder: (context) {
+                            return const DownloadConfirmationDialog();
+                          });
                           if (isConfirmed != true) return;
                           for (final selectedTrack in selectedTracks) {
                             downloader.addToQueue(selectedTrack);
@@ -163,6 +161,7 @@ class TracksTableView extends HookConsumerWidget {
                       default:
                     }
                   },
+                  child: const Icon(Icons.more_vert),
                 ),
               ],
             ),

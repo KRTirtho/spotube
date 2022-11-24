@@ -2,6 +2,7 @@ import 'package:fl_query/fl_query.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerTrackTile.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/TracksTableView.dart';
@@ -59,7 +60,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
     final List<Widget> buttons = [
       if (showShare)
-        IconButton(
+        PlatformIconButton(
           icon: Icon(
             Icons.share_rounded,
             color: color?.titleTextColor,
@@ -71,13 +72,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
       // play playlist
       Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
-        child: ElevatedButton(
+        child: PlatformFilledButton(
           style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all(Theme.of(context).primaryColor),
-            shape: MaterialStateProperty.all(
-              const CircleBorder(),
-            ),
+            shape: MaterialStateProperty.all(const CircleBorder()),
           ),
           onPressed: tracksSnapshot.data != null ? onPlay : null,
           child: Icon(
@@ -112,14 +109,12 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     }, [collapsed.value]);
 
     return SafeArea(
-      child: Scaffold(
+      child: PlatformScaffold(
           appBar: kIsDesktop
               ? PageWindowTitleBar(
                   backgroundColor: color?.color,
                   foregroundColor: color?.titleTextColor,
-                  leading: Row(
-                    children: [BackButton(color: color?.titleTextColor)],
-                  ),
+                  leading: PlatformBackButton(color: color?.titleTextColor),
                 )
               : null,
           body: CustomScrollView(
@@ -131,16 +126,19 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                 pinned: true,
                 expandedHeight: 400,
                 automaticallyImplyLeading: kIsMobile,
+                leading: kIsMobile
+                    ? PlatformBackButton(color: color?.titleTextColor)
+                    : null,
                 iconTheme: IconThemeData(color: color?.titleTextColor),
                 primary: true,
                 backgroundColor: color?.color,
                 title: collapsed.value
-                    ? Text(
+                    ? PlatformText.headline(
                         title,
-                        style: Theme.of(context).textTheme.headline4?.copyWith(
-                              color: color?.titleTextColor,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style: TextStyle(
+                          color: color?.titleTextColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       )
                     : null,
                 flexibleSpace: LayoutBuilder(builder: (context, constrains) {
@@ -158,6 +156,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         ),
                       ),
                       child: Material(
+                        textStyle: PlatformTheme.of(context).textTheme!.body!,
                         type: MaterialType.transparency,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -191,25 +190,19 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
+                                  PlatformText.headline(
                                     title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(
-                                          color: color?.titleTextColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                    style: TextStyle(
+                                      color: color?.titleTextColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                   if (description != null)
-                                    Text(
+                                    PlatformText(
                                       description!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(
-                                            color: color?.bodyTextColor,
-                                          ),
+                                      style: TextStyle(
+                                        color: color?.bodyTextColor,
+                                      ),
                                       maxLines: 2,
                                       overflow: TextOverflow.fade,
                                     ),
@@ -235,7 +228,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                   } else if (tracksSnapshot.hasError &&
                       tracksSnapshot.isError) {
                     return SliverToBoxAdapter(
-                        child: Text("Error ${tracksSnapshot.error}"));
+                        child: PlatformText("Error ${tracksSnapshot.error}"));
                   }
 
                   final tracks = tracksSnapshot.data!;

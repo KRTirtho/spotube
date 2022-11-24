@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -57,7 +58,19 @@ class PlayerView extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    return Scaffold(
+    return PlatformScaffold(
+      appBar: PageWindowTitleBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: paletteColor.titleTextColor,
+        toolbarOpacity: 0,
+        leading: PlatformBackButton(
+          color: PlatformProperty.only(
+            macos: Colors.transparent,
+            other: paletteColor.titleTextColor,
+          ).resolve(platform!),
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -68,15 +81,11 @@ class PlayerView extends HookConsumerWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Material(
+            textStyle: PlatformTheme.of(context).textTheme!.body!,
             color: paletteColor.color.withOpacity(.5),
             child: SafeArea(
               child: Column(
                 children: [
-                  PageWindowTitleBar(
-                    leading: const BackButton(),
-                    backgroundColor: Colors.transparent,
-                    foregroundColor: paletteColor.titleTextColor,
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
@@ -162,7 +171,7 @@ class PlayerView extends HookConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     floatingQueue: false,
                     extraActions: [
-                      IconButton(
+                      PlatformIconButton(
                         tooltip: "Open Lyrics",
                         icon: const Icon(Icons.lyrics_rounded),
                         onPressed: () {

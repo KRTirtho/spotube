@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/provider/Downloader.dart';
@@ -25,19 +26,20 @@ class UserDownloads extends HookConsumerWidget {
                 child: AutoSizeText(
                   "Currently downloading (${downloader.currentlyRunning})",
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: PlatformTextTheme.of(context).headline,
                 ),
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[50],
-                  foregroundColor: Colors.red[400],
+              PlatformFilledButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.red[50]),
+                  foregroundColor: MaterialStatePropertyAll(Colors.red[400]),
                 ),
                 onPressed: downloader.currentlyRunning > 0
                     ? downloader.cancelAll
                     : null,
-                child: const Text("Cancel All"),
+                isSecondary: true,
+                child: const PlatformText("Cancel All"),
               ),
             ],
           ),
@@ -47,8 +49,8 @@ class UserDownloads extends HookConsumerWidget {
             itemCount: downloader.inQueue.length,
             itemBuilder: (context, index) {
               final track = downloader.inQueue.elementAt(index);
-              return ListTile(
-                title: Text(track.name!),
+              return PlatformListTile(
+                title: Text(track.name ?? ''),
                 leading: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: ClipRRect(
@@ -66,9 +68,8 @@ class UserDownloads extends HookConsumerWidget {
                 trailing: const SizedBox(
                   width: 30,
                   height: 30,
-                  child: CircularProgressIndicator.adaptive(),
+                  child: PlatformCircularProgressIndicator(),
                 ),
-                horizontalTitleGap: 5,
                 subtitle: Text(
                   TypeConversionUtils.artists_X_String(
                     track.artists ?? <Artist>[],

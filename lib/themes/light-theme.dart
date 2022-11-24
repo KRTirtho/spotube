@@ -1,5 +1,9 @@
+import 'package:adwaita/adwaita.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 import 'package:spotube/extensions/ShimmerColorTheme.dart';
+import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
 
 final materialWhite = MaterialColor(Colors.white.value, {
   50: Colors.white,
@@ -115,3 +119,49 @@ ThemeData lightTheme({
     ),
   );
 }
+
+final windowsTheme = FluentUI.ThemeData.light().copyWith(
+  buttonTheme: FluentUI.ButtonThemeData(
+    iconButtonStyle: FluentUI.ButtonStyle(
+      iconSize: FluentUI.ButtonState.all(20),
+    ),
+  ),
+);
+final windowsDarkTheme = FluentUI.ThemeData.dark().copyWith(
+  buttonTheme: FluentUI.ButtonThemeData(
+    iconButtonStyle: FluentUI.ButtonStyle(
+      iconSize: FluentUI.ButtonState.all(20),
+    ),
+  ),
+);
+final macosTheme = MacosThemeData.light().copyWith(
+  pushButtonTheme: const PushButtonThemeData(
+    secondaryColor: Colors.white,
+  ),
+  iconTheme: const MacosIconThemeData(size: 14),
+  typography: MacosTypography(color: Colors.grey[900]!),
+);
+final macosDarkTheme = MacosThemeData.dark().copyWith(
+  pushButtonTheme: const PushButtonThemeData(
+    secondaryColor: Colors.white,
+  ),
+  iconTheme: const MacosIconThemeData(size: 14),
+  typography: MacosTypography(color: MacosColors.textColor),
+);
+const iosTheme = CupertinoThemeData(brightness: Brightness.light);
+const iosDarkTheme = CupertinoThemeData(
+  brightness: Brightness.dark,
+);
+
+final linuxTheme = AdwaitaThemeData.light().copyWith(
+  listTileTheme: ListTileThemeData(
+    iconColor: Colors.grey[900],
+    horizontalTitleGap: 0,
+  ),
+);
+final linuxDarkTheme = AdwaitaThemeData.dark().copyWith(
+  listTileTheme: ListTileThemeData(
+    iconColor: Colors.grey[50],
+    horizontalTitleGap: 0,
+  ),
+);

@@ -1,11 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerOverlay.dart';
 import 'package:spotube/components/Player/PlayerTrackDetails.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
+import 'package:spotube/hooks/usePlatformProperty.dart';
 import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:flutter/material.dart';
@@ -46,10 +51,51 @@ class Player extends HookConsumerWidget {
       );
     }
 
-    return Container(
-      color: Theme.of(context).backgroundColor,
+    final backgroundColor = usePlatformProperty<Color?>(
+      (context) => PlatformProperty(
+        android: Theme.of(context).backgroundColor,
+        ios: CupertinoTheme.of(context).scaffoldBackgroundColor,
+        macos: MacosTheme.of(context).brightness == Brightness.dark
+            ? Colors.grey[800]
+            : Colors.blueGrey[50],
+        linux: Theme.of(context).backgroundColor,
+        windows: FluentUI.FluentTheme.maybeOf(context)?.micaBackgroundColor,
+      ),
+    );
+
+    final border = usePlatformProperty<BoxBorder?>(
+      (context) => PlatformProperty(
+        android: null,
+        ios: Border(
+          top: BorderSide(
+            color: PlatformTheme.of(context).borderColor ?? Colors.transparent,
+            width: 1,
+          ),
+        ),
+        macos: Border(
+          top: BorderSide(
+            color: PlatformTheme.of(context).borderColor ?? Colors.transparent,
+            width: 1,
+          ),
+        ),
+        linux: Border(
+          top: BorderSide(
+            color: PlatformTheme.of(context).borderColor ?? Colors.transparent,
+            width: 1,
+          ),
+        ),
+        windows: null,
+      ),
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: border,
+      ),
       child: Material(
         type: MaterialType.transparency,
+        textStyle: PlatformTheme.of(context).textTheme!.body!,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -90,7 +136,7 @@ class Player extends HookConsumerWidget {
                             }
                           }
                         },
-                        child: Slider.adaptive(
+                        child: PlatformSlider(
                           min: 0,
                           max: 1,
                           value: volume.value,

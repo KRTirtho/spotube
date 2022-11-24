@@ -1,7 +1,7 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/models/sideBarTiles.dart';
@@ -37,37 +37,23 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     if (layoutMode == LayoutMode.extended ||
         (breakpoint.isMoreThan(Breakpoints.sm) &&
             layoutMode == LayoutMode.adaptive)) return const SizedBox();
-    return NavigationBar(
-      destinations: [
+    return PlatformBottomNavigationBar(
+      items: [
         ...sidebarTileList.map(
           (e) {
-            final icon = Icon(e.icon);
-            return NavigationDestination(
-              icon: e.title == "Library" && downloadCount > 0
-                  ? Badge(
-                      badgeColor: Colors.red[100]!,
-                      badgeContent: Text(
-                        downloadCount.toString(),
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      animationType: BadgeAnimationType.fade,
-                      child: icon,
-                    )
-                  : icon,
+            return PlatformBottomNavigationBarItem(
+              icon: e.icon,
               label: e.title,
             );
           },
         ),
-        const NavigationDestination(
-          icon: Icon(Icons.settings_rounded),
+        const PlatformBottomNavigationBarItem(
+          icon: Icons.settings_rounded,
           label: "Settings",
         )
       ],
       selectedIndex: insideSelectedIndex.value,
-      onDestinationSelected: (i) {
+      onSelectedIndexChanged: (i) {
         if (i == 4) {
           insideSelectedIndex.value = 4;
           Sidebar.goToSettings(context);

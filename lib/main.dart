@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
 import 'package:spotube/entities/CacheTrack.dart';
@@ -106,8 +107,8 @@ void main() async {
                         logger.v(
                           "[onFileExists] download confirmation for ${track.name}",
                         );
-                        return showDialog<bool>(
-                          context: context,
+                        return showPlatformAlertDialog<bool>(
+                          context,
                           builder: (_) =>
                               ReplaceDownloadedFileDialog(track: track),
                         ).then((s) => s ?? false);
@@ -140,6 +141,11 @@ class Spotube extends StatefulHookConsumerWidget {
 
   @override
   SpotubeState createState() => SpotubeState();
+
+  /// ↓↓ ADDED
+  /// InheritedWidget style accessor to our State object.
+  static SpotubeState of(BuildContext context) =>
+      context.findAncestorStateOfType<SpotubeState>()!;
 }
 
 class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
@@ -153,6 +159,11 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     super.initState();
     SharedPreferences.getInstance().then(((value) => localStorage = value));
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        appPlatform = Theme.of(context).platform;
+      });
+    });
   }
 
   @override
@@ -180,6 +191,13 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     prevSize = appWindow.size;
   }
 
+  TargetPlatform appPlatform = TargetPlatform.android;
+
+  void changePlatform(TargetPlatform targetPlatform) {
+    appPlatform = targetPlatform;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeMode =
@@ -198,57 +216,82 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       };
     }, []);
 
-    return MaterialApp.router(
-      routerConfig: router,
+    platform = appPlatform;
+
+    return PlatformApp.router(
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+      routeInformationProvider: router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
-      theme: lightTheme(
+      androidTheme: lightTheme(
         accentMaterialColor: accentMaterialColor,
         backgroundMaterialColor: backgroundMaterialColor,
       ),
-      darkTheme: darkTheme(
+      androidDarkTheme: darkTheme(
         accentMaterialColor: accentMaterialColor,
         backgroundMaterialColor: backgroundMaterialColor,
       ),
+      linuxTheme: linuxTheme,
+      linuxDarkTheme: linuxDarkTheme,
+      iosTheme: themeMode == ThemeMode.dark ? iosDarkTheme : iosTheme,
+      windowsTheme: windowsTheme,
+      windowsDarkTheme: windowsDarkTheme,
+      macosTheme: macosTheme,
+      macosDarkTheme: macosDarkTheme,
       themeMode: themeMode,
-      shortcuts: {
-        ...WidgetsApp.defaultShortcuts,
-        const SingleActivator(LogicalKeyboardKey.space): PlayPauseIntent(ref),
-        const SingleActivator(LogicalKeyboardKey.comma, control: true):
+      windowButtonConfig: kIsDesktop
+          ? PlatformWindowButtonConfig(
+              isMaximized: () => appWindow.isMaximized,
+              onClose: appWindow.close,
+              onRestore: appWindow.restore,
+              onMaximize: appWindow.maximize,
+              onMinimize: appWindow.minimize,
+            )
+          : null,
+      shortcuts: PlatformProperty.all({
+        ...WidgetsApp.defaultShortcuts.map((key, value) {
+          return MapEntry(
+            LogicalKeySet.fromSet(key.triggers?.toSet() ?? {}),
+            value,
+          );
+        }),
+        LogicalKeySet(LogicalKeyboardKey.space): PlayPauseIntent(ref),
+        LogicalKeySet(LogicalKeyboardKey.comma, LogicalKeyboardKey.control):
             NavigationIntent(router, "/settings"),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyB,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.browse),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyS,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.search),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyL,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.library),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyY,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
-        const SingleActivator(
+        LogicalKeySet(
           LogicalKeyboardKey.keyW,
-          control: true,
-          shift: true,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
         ): CloseAppIntent(),
-      },
-      actions: {
+      }),
+      actions: PlatformProperty.all({
         ...WidgetsApp.defaultActions,
         PlayPauseIntent: PlayPauseAction(),
         NavigationIntent: NavigationAction(),
         HomeTabIntent: HomeTabAction(),
         CloseAppIntent: CloseAppAction(),
-      },
+      }),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Auth.dart';
@@ -32,7 +33,7 @@ class HeartButton extends ConsumerWidget {
 
     if (!auth.isLoggedIn) return Container();
 
-    return IconButton(
+    return PlatformIconButton(
       tooltip: tooltip,
       icon: Icon(
         icon ??
@@ -121,7 +122,7 @@ class TrackHeartButton extends HookConsumerWidget {
     );
     final toggler = useTrackToggleLike(track, ref);
     if (toggler.item3.isLoading || !toggler.item3.hasData) {
-      return const CircularProgressIndicator();
+      return const PlatformCircularProgressIndicator();
     }
 
     return HeartButton(
@@ -181,7 +182,8 @@ class PlaylistHeartButton extends HookConsumerWidget {
       titleImage,
     ).dominantColor;
 
-    if (me.isLoading || !me.hasData) return const CircularProgressIndicator();
+    if (me.isLoading || !me.hasData)
+      return const PlatformCircularProgressIndicator();
 
     return HeartButton(
       isLiked: isLikedQuery.data ?? false,
@@ -235,7 +237,8 @@ class AlbumHeartButton extends HookConsumerWidget {
       },
     );
 
-    if (me.isLoading || !me.hasData) return const CircularProgressIndicator();
+    if (me.isLoading || !me.hasData)
+      return const PlatformCircularProgressIndicator();
 
     return HeartButton(
       isLiked: isLiked,

@@ -1,10 +1,13 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerPlaybuttonCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCard.dart';
 import 'package:spotube/components/Playlist/PlaylistCreateDialog.dart';
+import 'package:spotube/components/Shared/AnonymousFallback.dart';
+import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 
@@ -13,6 +16,11 @@ class UserPlaylists extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(authProvider);
+    if (auth.isAnonymous) {
+      return const AnonymousFallback();
+    }
+
     final playlistsQuery = useQuery(
       job: currentUserPlaylistsQueryJob,
       externalData: ref.watch(spotifyProvider),
@@ -34,19 +42,24 @@ class UserPlaylists extends HookConsumerWidget {
     }
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Wrap(
-          spacing: 20, // gap between adjacent chips
-          runSpacing: 20, // gap between lines
-          alignment: WrapAlignment.center,
-          children: [
-            const PlaylistCreateDialog(),
-            PlaylistCard(likedTracksPlaylist),
-            ...playlistsQuery.data!
-                .map((playlist) => PlaylistCard(playlist))
-                .toList(),
-          ],
+      child: Material(
+        type: MaterialType.transparency,
+        textStyle: PlatformTheme.of(context).textTheme!.body!,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+            spacing: 20, // gap between adjacent chips
+            runSpacing: 20, // gap between lines
+            alignment: WrapAlignment.center,
+            children: [
+              const PlaylistCreateDialog(),
+              PlaylistCard(likedTracksPlaylist),
+              ...playlistsQuery.data!
+                  .map((playlist) => PlaylistCard(playlist))
+                  .toList(),
+            ],
+          ),
         ),
       ),
     );

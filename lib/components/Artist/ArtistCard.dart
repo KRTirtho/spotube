@@ -1,12 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide Colors;
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Shared/HoverBuilder.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
+import 'package:spotube/hooks/usePlatformProperty.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
-class ArtistCard extends StatelessWidget {
+class ArtistCard extends HookWidget {
   final Artist artist;
   const ArtistCard(this.artist, {Key? key}) : super(key: key);
 
@@ -18,28 +22,70 @@ class ArtistCard extends StatelessWidget {
         placeholder: ImagePlaceholder.artist,
       ),
     );
+    final boxShadow = usePlatformProperty<BoxShadow?>(
+      (context) => PlatformProperty(
+        android: BoxShadow(
+          blurRadius: 10,
+          offset: const Offset(0, 3),
+          spreadRadius: 5,
+          color: Theme.of(context).shadowColor,
+        ),
+        ios: null,
+        macos: null,
+        linux: BoxShadow(
+          blurRadius: 6,
+          color: Theme.of(context).shadowColor.withOpacity(0.3),
+        ),
+        windows: null,
+      ),
+    );
+
+    final splash = usePlatformProperty<InteractiveInkFeatureFactory?>(
+      (context) => PlatformProperty.only(
+        android: InkRipple.splashFactory,
+        other: NoSplash.splashFactory,
+      ),
+    );
+
     return SizedBox(
       height: 240,
       width: 200,
       child: InkWell(
+        splashFactory: splash,
         onTap: () {
           ServiceUtils.navigate(context, "/artist/${artist.id}");
         },
-        borderRadius: BorderRadius.circular(10),
+        customBorder: platform == TargetPlatform.windows
+            ? Border.all(
+                color: FluentTheme.maybeOf(context)
+                        ?.micaBackgroundColor
+                        .withOpacity(.7) ??
+                    Colors.transparent,
+                width: 1,
+              )
+            : null,
+        borderRadius: BorderRadius.circular(
+          platform == TargetPlatform.windows ? 5 : 8,
+        ),
         child: HoverBuilder(builder: (context, isHovering) {
           return Ink(
             width: 200,
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.circular(8),
+              color: PlatformTheme.of(context).secondaryBackgroundColor,
+              borderRadius: BorderRadius.circular(
+                platform == TargetPlatform.windows ? 5 : 8,
+              ),
               boxShadow: [
-                BoxShadow(
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                  spreadRadius: 5,
-                  color: Theme.of(context).shadowColor,
-                )
+                if (boxShadow != null) boxShadow,
               ],
+              border: [TargetPlatform.windows, TargetPlatform.macOS]
+                      .contains(platform)
+                  ? Border.all(
+                      color: PlatformTheme.of(context).borderColor ??
+                          Colors.transparent,
+                      width: 1,
+                    )
+                  : null,
             ),
             child: Padding(
               padding: const EdgeInsets.all(15),
@@ -79,7 +125,7 @@ class ArtistCard extends StatelessWidget {
                     artist.name!,
                     maxLines: 2,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: PlatformTextTheme.of(context).body?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ),

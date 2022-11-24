@@ -2,7 +2,9 @@ import 'package:flutter/material.dart' hide Action;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/components/Home/Sidebar.dart';
 import 'package:spotube/components/Shared/AdaptivePopupMenuButton.dart';
 import 'package:spotube/components/Shared/HeartButton.dart';
 import 'package:spotube/components/Shared/LinkText.dart';
@@ -73,7 +75,7 @@ class TrackTile extends HookConsumerWidget {
           SnackBar(
             width: 300,
             behavior: SnackBarBehavior.floating,
-            content: Text(
+            content: PlatformText(
               "Copied $data to clipboard",
               textAlign: TextAlign.center,
             ),
@@ -83,81 +85,78 @@ class TrackTile extends HookConsumerWidget {
     }
 
     Future<void> actionAddToPlaylist() async {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return FutureBuilder<Iterable<PlaylistSimple>>(
-                future: spotify.playlists.me.all().then((playlists) async {
-                  final me = await spotify.me.get();
-                  return playlists.where((playlist) =>
-                      playlist.owner?.id != null &&
-                      playlist.owner!.id == me.id);
-                }),
-                builder: (context, snapshot) {
-                  return HookBuilder(builder: (context) {
-                    final playlistsCheck = useState(<String, bool>{});
-                    return AlertDialog(
-                      title: Text(
-                          "Add `${track.value.name}` to following Playlists"),
-                      titleTextStyle:
-                          Theme.of(context).textTheme.bodyText1?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                      actions: [
-                        TextButton(
-                          child: const Text("Cancel"),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        ElevatedButton(
-                          child: const Text("Add"),
-                          onPressed: () async {
-                            final selectedPlaylists = playlistsCheck
-                                .value.entries
-                                .where((entry) => entry.value)
-                                .map((entry) => entry.key);
+      showPlatformAlertDialog(context, builder: (context) {
+        return FutureBuilder<Iterable<PlaylistSimple>>(
+            future: spotify.playlists.me.all().then((playlists) async {
+              final me = await spotify.me.get();
+              return playlists.where((playlist) =>
+                  playlist.owner?.id != null && playlist.owner!.id == me.id);
+            }),
+            builder: (context, snapshot) {
+              return HookBuilder(builder: (context) {
+                final playlistsCheck = useState(<String, bool>{});
+                return PlatformAlertDialog(
+                  macosAppIcon: Sidebar.brandLogo(),
+                  title: PlatformText(
+                    "Add `${track.value.name}` to following Playlists",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  secondaryActions: [
+                    PlatformFilledButton(
+                      isSecondary: true,
+                      child: const PlatformText("Cancel"),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                  primaryActions: [
+                    PlatformFilledButton(
+                      child: const PlatformText("Add"),
+                      onPressed: () async {
+                        final selectedPlaylists = playlistsCheck.value.entries
+                            .where((entry) => entry.value)
+                            .map((entry) => entry.key);
 
-                            await Future.wait(
-                              selectedPlaylists.map(
-                                (playlistId) => spotify.playlists
-                                    .addTrack(track.value.uri!, playlistId),
-                              ),
-                            ).then((_) => Navigator.pop(context));
-                          },
-                        )
-                      ],
-                      content: SizedBox(
-                        height: 300,
-                        width: 300,
-                        child: !snapshot.hasData
-                            ? const Center(
-                                child: CircularProgressIndicator.adaptive())
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  final playlist =
-                                      snapshot.data!.elementAt(index);
-                                  return CheckboxListTile(
-                                    title: Text(playlist.name!),
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    value: playlistsCheck.value[playlist.id] ??
-                                        false,
-                                    onChanged: (val) {
-                                      playlistsCheck.value = {
-                                        ...playlistsCheck.value,
-                                        playlist.id!: val == true
-                                      };
-                                    },
-                                  );
+                        await Future.wait(
+                          selectedPlaylists.map(
+                            (playlistId) => spotify.playlists
+                                .addTrack(track.value.uri!, playlistId),
+                          ),
+                        ).then((_) => Navigator.pop(context));
+                      },
+                    )
+                  ],
+                  content: SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: !snapshot.hasData
+                        ? const Center(
+                            child: PlatformCircularProgressIndicator())
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              final playlist = snapshot.data!.elementAt(index);
+                              return PlatformCheckbox(
+                                label: PlatformText(playlist.name!),
+                                value:
+                                    playlistsCheck.value[playlist.id] ?? false,
+                                onChanged: (val) {
+                                  playlistsCheck.value = {
+                                    ...playlistsCheck.value,
+                                    playlist.id!: val == true
+                                  };
                                 },
-                              ),
-                      ),
-                    );
-                  });
-                });
-          });
+                              );
+                            },
+                          ),
+                  ),
+                );
+              });
+            });
+      });
     }
 
     final String thumbnailUrl = TypeConversionUtils.image_X_UrlString(
@@ -178,10 +177,11 @@ class TrackTile extends HookConsumerWidget {
       ),
       child: Material(
         type: MaterialType.transparency,
+        textStyle: PlatformTheme.of(context).textTheme!.body!,
         child: Row(
           children: [
             if (showCheck)
-              Checkbox(
+              PlatformCheckbox(
                 value: isChecked,
                 onChanged: (s) => onCheckChange?.call(s),
               )
@@ -190,7 +190,7 @@ class TrackTile extends HookConsumerWidget {
                 height: 20,
                 width: 25,
                 child: Center(
-                  child: Text((track.key + 1).toString()),
+                  child: PlatformText((track.key + 1).toString()),
                 ),
               ),
             Padding(
@@ -214,23 +214,29 @@ class TrackTile extends HookConsumerWidget {
                 ),
               ),
             ),
-            IconButton(
-              icon: Icon(
-                playback.track?.id != null &&
-                        playback.track?.id == track.value.id
-                    ? Icons.pause_circle_rounded
-                    : Icons.play_circle_rounded,
-                color: Theme.of(context).primaryColor,
-              ),
-              onPressed: () => onTrackPlayButtonPressed?.call(
-                track.value,
+            Padding(
+              padding: const EdgeInsets.all(8.0).copyWith(left: 0),
+              child: PlatformIconButton(
+                icon: Icon(
+                  playback.track?.id != null &&
+                          playback.track?.id == track.value.id
+                      ? Icons.pause_rounded
+                      : Icons.play_arrow_rounded,
+                  color: Colors.white,
+                ),
+                backgroundColor: PlatformTheme.of(context).primaryColor,
+                hoverColor:
+                    PlatformTheme.of(context).primaryColor?.withOpacity(0.5),
+                onPressed: () => onTrackPlayButtonPressed?.call(
+                  track.value,
+                ),
               ),
             ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  PlatformText(
                     track.value.name ?? "",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -239,7 +245,7 @@ class TrackTile extends HookConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   isReallyLocal
-                      ? Text(
+                      ? PlatformText(
                           TypeConversionUtils.artists_X_String<Artist>(
                               track.value.artists ?? []),
                         )
@@ -255,7 +261,7 @@ class TrackTile extends HookConsumerWidget {
             if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
               Expanded(
                 child: isReallyLocal
-                    ? Text(track.value.album?.name ?? "")
+                    ? PlatformText(track.value.album?.name ?? "")
                     : LinkText(
                         track.value.album!.name!,
                         "/album/${track.value.album?.id}",
@@ -265,7 +271,7 @@ class TrackTile extends HookConsumerWidget {
               ),
             if (!breakpoint.isSm) ...[
               const SizedBox(width: 10),
-              Text(duration),
+              PlatformText(duration),
             ],
             const SizedBox(width: 10),
             if (!isReallyLocal)
@@ -279,7 +285,7 @@ class TrackTile extends HookConsumerWidget {
                               color: Colors.pink,
                             )
                           : const Icon(Icons.favorite_border_rounded),
-                      text: const Text("Save as favorite"),
+                      text: const PlatformText("Save as favorite"),
                       onPressed: () {
                         toggler.item2.mutate(Tuple2(spotify, toggler.item1));
                       },
@@ -287,18 +293,18 @@ class TrackTile extends HookConsumerWidget {
                   if (auth.isLoggedIn)
                     Action(
                       icon: const Icon(Icons.add_box_rounded),
-                      text: const Text("Add To playlist"),
+                      text: const PlatformText("Add To playlist"),
                       onPressed: actionAddToPlaylist,
                     ),
                   if (userPlaylist && auth.isLoggedIn)
                     Action(
                       icon: const Icon(Icons.remove_circle_outline_rounded),
-                      text: const Text("Remove from playlist"),
+                      text: const PlatformText("Remove from playlist"),
                       onPressed: actionRemoveFromPlaylist,
                     ),
                   Action(
                     icon: const Icon(Icons.share_rounded),
-                    text: const Text("Share"),
+                    text: const PlatformText("Share"),
                     onPressed: () {
                       actionShare(track.value);
                     },

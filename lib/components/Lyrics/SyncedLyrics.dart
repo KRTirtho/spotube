@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerLyrics.dart';
 import 'package:spotube/components/Lyrics/LyricDelayAdjustDialog.dart';
@@ -73,6 +74,7 @@ class SyncedLyrics extends HookConsumerWidget {
           height: breakpoint >= Breakpoints.md ? 50 : 30,
           child: Material(
             type: MaterialType.transparency,
+            textStyle: PlatformTheme.of(context).textTheme!.body!,
             child: Stack(
               children: [
                 Center(
@@ -85,18 +87,24 @@ class SyncedLyrics extends HookConsumerWidget {
                 Positioned.fill(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: IconButton(
-                      tooltip: "Lyrics Delay",
-                      icon: const Icon(Icons.av_timer_rounded),
-                      onPressed: () async {
-                        final delay = await showDialog(
-                          context: context,
-                          builder: (context) => const LyricDelayAdjustDialog(),
-                        );
-                        if (delay != null) {
-                          ref.read(lyricDelayState.notifier).state = delay;
-                        }
-                      },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PlatformFilledButton(
+                        child: const Icon(
+                          Icons.av_timer_rounded,
+                          size: 16,
+                        ),
+                        onPressed: () async {
+                          final delay = await showPlatformAlertDialog(
+                            context,
+                            builder: (context) =>
+                                const LyricDelayAdjustDialog(),
+                          );
+                          if (delay != null) {
+                            ref.read(lyricDelayState.notifier).state = delay;
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),

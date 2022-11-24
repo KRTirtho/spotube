@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useBreakpoints.dart';
 import 'package:spotube/provider/Playback.dart';
@@ -36,13 +37,10 @@ class PlayerTrackDetails extends HookConsumerWidget {
           ),
         if (breakpoint.isLessThanOrEqualTo(Breakpoints.md))
           Flexible(
-            child: Text(
+            child: PlatformText(
               playback.track?.name ?? "Not playing",
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  ?.copyWith(fontWeight: FontWeight.bold, color: color),
+              style: TextStyle(fontWeight: FontWeight.bold, color: color),
             ),
           ),
 
@@ -52,13 +50,10 @@ class PlayerTrackDetails extends HookConsumerWidget {
             flex: 1,
             child: Column(
               children: [
-                Text(
+                PlatformText(
                   playback.track?.name ?? "Not playing",
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(fontWeight: FontWeight.bold, color: color),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: color),
                 ),
                 TypeConversionUtils.artists_X_ClickableArtists(
                   playback.track?.artists ?? [],

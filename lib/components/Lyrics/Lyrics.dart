@@ -3,12 +3,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/Lyrics/GeniusLyrics.dart';
 import 'package:spotube/components/Lyrics/SyncedLyrics.dart';
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/UniversalImage.dart';
 import 'package:spotube/hooks/useCustomStatusBarColor.dart';
 import 'package:spotube/hooks/usePaletteColor.dart';
 import 'package:spotube/provider/Playback.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Lyrics extends HookConsumerWidget {
@@ -26,6 +29,7 @@ class Lyrics extends HookConsumerWidget {
       [playback.track?.album?.images],
     );
     final palette = usePaletteColor(albumArt, ref);
+    final index = useState(0);
 
     useCustomStatusBarColor(
       palette.color,
@@ -33,38 +37,52 @@ class Lyrics extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: const TabBar(
-          isScrollable: true,
-          tabs: [
-            Tab(text: "Synced Lyrics"),
-            Tab(text: "Lyrics (genius.com)"),
-          ],
-        ),
-        body: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: UniversalImage.imageProvider(albumArt),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Container(
-              color: palette.color.withOpacity(.7),
-              child: SafeArea(
-                child: TabBarView(
-                  children: [
-                    SyncedLyrics(palette: palette),
-                    GeniusLyrics(palette: palette),
-                  ],
-                ),
+    final body = [
+      SyncedLyrics(palette: palette),
+      GeniusLyrics(palette: palette),
+    ][index.value];
+
+    return PlatformScaffold(
+      extendBodyBehindAppBar: true,
+      appBar: !kIsMacOS
+          ? PageWindowTitleBar(
+              toolbarOpacity: 0,
+              backgroundColor: Colors.transparent,
+              center: PlatformTabBar(
+                isNavigational:
+                    PlatformProperty.only(linux: true, other: false),
+                selectedIndex: index.value,
+                onSelectedIndexChanged: (value) => index.value = value,
+                backgroundColor:
+                    PlatformTheme.of(context).scaffoldBackgroundColor,
+                tabs: [
+                  PlatformTab(
+                    label: "Synced",
+                    icon: const SizedBox.shrink(),
+                    color: PlatformTextTheme.of(context).caption?.color,
+                  ),
+                  PlatformTab(
+                    label: "Genius",
+                    icon: const SizedBox.shrink(),
+                    color: PlatformTextTheme.of(context).caption?.color,
+                  ),
+                ],
               ),
-            ),
+            )
+          : null,
+      body: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: UniversalImage.imageProvider(albumArt),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(
+            color: palette.color.withOpacity(.7),
+            child: SafeArea(child: body),
           ),
         ),
       ),

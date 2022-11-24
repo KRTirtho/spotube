@@ -2,13 +2,16 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Category/CategoryCard.dart';
 import 'package:spotube/components/LoaderShimmers/ShimmerCategories.dart';
+import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
 import 'package:spotube/components/Shared/Waypoint.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
 import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/provider/UserPreferences.dart';
+import 'package:spotube/utils/platform.dart';
 
 class Genres extends HookConsumerWidget {
   const Genres({Key? key}) : super(key: key);
@@ -40,7 +43,8 @@ class Genres extends HookConsumerWidget {
           .toList()
     ];
 
-    return Scaffold(
+    return PlatformScaffold(
+      appBar: kIsDesktop ? PageWindowTitleBar() : null,
       body: ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {

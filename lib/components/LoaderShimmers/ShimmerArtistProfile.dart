@@ -11,10 +11,11 @@ class ShimmerArtistProfile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final shimmerColor =
-        Theme.of(context).extension<ShimmerColorTheme>()!.shimmerColor!;
+        Theme.of(context).extension<ShimmerColorTheme>()?.shimmerColor ??
+            Colors.white;
     final shimmerBackgroundColor = Theme.of(context)
-        .extension<ShimmerColorTheme>()!
-        .shimmerBackgroundColor!;
+        .extension<ShimmerColorTheme>()
+        ?.shimmerBackgroundColor;
 
     final avatarWidth = useBreakpointValue(
       sm: MediaQuery.of(context).size.width * 0.80,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/hooks/playback.dart';
 import 'package:spotube/models/Intents.dart';
 import 'package:spotube/models/Logger.dart';
@@ -94,10 +95,9 @@ class PlayerControls extends HookConsumerWidget {
 
                       return Column(
                         children: [
-                          Tooltip(
+                          PlatformTooltip(
                             message: "Slide to seek forward or backward",
-                            child: Slider.adaptive(
-                              focusNode: FocusNode(),
+                            child: PlatformSlider(
                               // cannot divide by zero
                               // there's an edge case for value being bigger
                               // than total duration. Keeping it resolved
@@ -122,10 +122,10 @@ class PlayerControls extends HookConsumerWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                PlatformText(
                                   "$currentMinutes:$currentSeconds",
                                 ),
-                                Text("$totalMinutes:$totalSeconds"),
+                                PlatformText("$totalMinutes:$totalSeconds"),
                               ],
                             ),
                           ),
@@ -138,7 +138,7 @@ class PlayerControls extends HookConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  IconButton(
+                  PlatformIconButton(
                     tooltip: playback.isLoop
                         ? "Repeat playlist"
                         : playback.isShuffled
@@ -156,14 +156,16 @@ class PlayerControls extends HookConsumerWidget {
                             ? null
                             : playback.cyclePlaybackMode,
                   ),
-                  IconButton(
+                  PlatformIconButton(
                       tooltip: "Previous track",
-                      icon: const Icon(Icons.skip_previous_rounded),
-                      color: iconColor,
+                      icon: Icon(
+                        Icons.skip_previous_rounded,
+                        color: iconColor,
+                      ),
                       onPressed: () {
                         onPrevious();
                       }),
-                  IconButton(
+                  PlatformIconButton(
                     tooltip: playback.isPlaying
                         ? "Pause playback"
                         : "Resume playback",
@@ -171,29 +173,33 @@ class PlayerControls extends HookConsumerWidget {
                         ? const SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(),
+                            child: PlatformCircularProgressIndicator(),
                           )
                         : Icon(
                             playback.isPlaying
                                 ? Icons.pause_rounded
                                 : Icons.play_arrow_rounded,
+                            color: iconColor,
                           ),
-                    color: iconColor,
                     onPressed: Actions.handler<PlayPauseIntent>(
                       context,
                       PlayPauseIntent(ref),
                     ),
                   ),
-                  IconButton(
+                  PlatformIconButton(
                     tooltip: "Next track",
-                    icon: const Icon(Icons.skip_next_rounded),
+                    icon: Icon(
+                      Icons.skip_next_rounded,
+                      color: iconColor,
+                    ),
                     onPressed: () => onNext(),
-                    color: iconColor,
                   ),
-                  IconButton(
+                  PlatformIconButton(
                     tooltip: "Stop playback",
-                    icon: const Icon(Icons.stop_rounded),
-                    color: iconColor,
+                    icon: Icon(
+                      Icons.stop_rounded,
+                      color: iconColor,
+                    ),
                     onPressed: playback.track != null
                         ? () async {
                             try {
