@@ -61,7 +61,7 @@ dependencies:
   fl_query_hooks: ^0.3.1
   flutter_inappwebview: ^5.4.3+7
   tuple: ^2.0.1
-  uuid: ^3.0.6
+  uuid: ^3.0.7
   platform_ui:
     git:
       url: https://github.com/KRTirtho/platform_ui.git
