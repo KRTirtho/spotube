@@ -46,16 +46,26 @@ class Lyrics extends HookConsumerWidget {
       extendBodyBehindAppBar: true,
       appBar: !kIsMacOS
           ? PageWindowTitleBar(
-              backgroundColor: Colors.transparent,
               toolbarOpacity: 0,
+              backgroundColor: Colors.transparent,
               center: PlatformTabBar(
                 isNavigational:
                     PlatformProperty.only(linux: true, other: false),
                 selectedIndex: index.value,
                 onSelectedIndexChanged: (value) => index.value = value,
+                backgroundColor:
+                    PlatformTheme.of(context).scaffoldBackgroundColor,
                 tabs: [
-                  PlatformTab(label: "Synced", icon: const SizedBox.shrink()),
-                  PlatformTab(label: "Genius", icon: const SizedBox.shrink()),
+                  PlatformTab(
+                    label: "Synced",
+                    icon: const SizedBox.shrink(),
+                    color: PlatformTextTheme.of(context).caption?.color,
+                  ),
+                  PlatformTab(
+                    label: "Genius",
+                    icon: const SizedBox.shrink(),
+                    color: PlatformTextTheme.of(context).caption?.color,
+                  ),
                 ],
               ),
             )

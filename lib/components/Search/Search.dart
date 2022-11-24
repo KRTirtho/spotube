@@ -89,6 +89,10 @@ class Search extends HookConsumerWidget {
                       ref.read(searchTermStateProvider.notifier).state = value;
                     },
                     prefixIcon: Icons.search_rounded,
+                    prefixIconColor: PlatformProperty.only(
+                      ios: PlatformTheme.of(context).textTheme?.caption?.color,
+                      other: null,
+                    ).resolve(platform!),
                     placeholder: "Search...",
                     onSubmitted: (value) {
                       onSearch();

@@ -149,7 +149,9 @@ final macosDarkTheme = MacosThemeData.dark().copyWith(
   typography: MacosTypography(color: MacosColors.textColor),
 );
 const iosTheme = CupertinoThemeData(brightness: Brightness.light);
-const iosDarkTheme = CupertinoThemeData(brightness: Brightness.dark);
+const iosDarkTheme = CupertinoThemeData(
+  brightness: Brightness.dark,
+);
 
 final linuxTheme = AdwaitaThemeData.light().copyWith(
   listTileTheme: ListTileThemeData(

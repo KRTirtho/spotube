@@ -89,5 +89,8 @@ ThemeData darkTheme({
       unselectedLabelStyle:
           const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
     ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: backgroundMaterialColor[900],
+    ),
   );
 }

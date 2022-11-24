@@ -63,7 +63,12 @@ class PlayerView extends HookConsumerWidget {
         backgroundColor: Colors.transparent,
         foregroundColor: paletteColor.titleTextColor,
         toolbarOpacity: 0,
-        automaticallyImplyLeading: true,
+        leading: PlatformBackButton(
+          color: PlatformProperty.only(
+            macos: Colors.transparent,
+            other: paletteColor.titleTextColor,
+          ).resolve(platform!),
+        ),
       ),
       extendBodyBehindAppBar: true,
       body: Container(
