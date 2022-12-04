@@ -1,0 +1,29 @@
+icon: assets/spotube-logo.png
+summary: Lightweight cross-platform Spotify desktop client
+group: Applications/Multimedia
+vendor: Kingkor Roy Tirtho
+packager: Kingkor Roy Tirtho
+packagerEmail: krtirtho@gmail.com
+license: BSD-4-Clause
+url: https://github.com/KRTirtho/spotube
+requires:
+  - gstreamer1-devel
+  - gstreamer1-plugins-base-tools
+  - gstreamer1-plugins-base-devel
+  - gstreamer1-plugins-good
+
+display_name: Spotube
+
+keywords:
+  - Music
+  - Spotify
+  - Media
+  - Streaming
+  - YouTube
+
+generic_name: Music Streaming Application
+categories:
+  - Music
+
+
+startup_notify: true
