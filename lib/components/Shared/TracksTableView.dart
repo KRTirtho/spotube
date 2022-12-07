@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Library/UserLocalTracks.dart';
+import 'package:spotube/components/Shared/AddTracksToPlaylistDialog.dart';
 import 'package:spotube/components/Shared/DownloadConfirmationDialog.dart';
 import 'package:spotube/components/Shared/NotFound.dart';
 import 'package:spotube/components/Shared/SortTracksDropdown.dart';
@@ -123,14 +124,16 @@ class TracksTableView extends HookConsumerWidget {
                   value: sortBy,
                   onChanged: (value) {
                     ref
-                        .read(trackCollectionSortState(playlistId ?? '').state)
+                        .read(
+                            trackCollectionSortState(playlistId ?? '').notifier)
                         .state = value;
                   },
                 ),
                 PlatformPopupMenuButton(
+                  closeAfterClick: false,
                   items: [
                     PlatformPopupMenuItem(
-                      enabled: selected.value.isNotEmpty,
+                      enabled: selectedTracks.isNotEmpty,
                       value: "download",
                       child: Row(
                         children: [
@@ -141,16 +144,31 @@ class TracksTableView extends HookConsumerWidget {
                         ],
                       ),
                     ),
+                    if (!userPlaylist)
+                      PlatformPopupMenuItem(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "add-to-playlist",
+                        child: Row(
+                          children: [
+                            const Icon(Icons.playlist_add_rounded),
+                            PlatformText(
+                              "Add (${selectedTracks.length}) to Playlist",
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                   onSelected: (action) async {
                     switch (action) {
                       case "download":
                         {
-                          final isConfirmed = await showPlatformAlertDialog(
-                              context, builder: (context) {
-                            return const DownloadConfirmationDialog();
-                          });
-                          if (isConfirmed != true) return;
+                          final confirmed = await showPlatformAlertDialog(
+                            context,
+                            builder: (context) {
+                              return const DownloadConfirmationDialog();
+                            },
+                          );
+                          if (confirmed != true) return;
                           for (final selectedTrack in selectedTracks) {
                             downloader.addToQueue(selectedTrack);
                           }
@@ -158,11 +176,24 @@ class TracksTableView extends HookConsumerWidget {
                           showCheck.value = false;
                           break;
                         }
+                      case "add-to-playlist":
+                        {
+                          await showPlatformAlertDialog(
+                            context,
+                            builder: (context) {
+                              return AddTracksToPlaylistDialog(
+                                tracks: selectedTracks.toList(),
+                              );
+                            },
+                          );
+                          break;
+                        }
                       default:
                     }
                   },
                   child: const Icon(Icons.more_vert),
                 ),
+                const SizedBox(width: 10),
               ],
             ),
             ...sortedTracks.asMap().entries.map((track) {

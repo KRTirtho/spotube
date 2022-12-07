@@ -276,3 +276,16 @@ final toggleFavoriteAlbumMutationJob =
     return !isLiked;
   },
 );
+
+final removeTrackFromPlaylistMutationJob =
+    MutationJob.withVariableKey<bool, Tuple2<SpotifyApi, String>>(
+  preMutationKey: "remove-track-from-playlist",
+  task: (queryKey, externalData) async {
+    final spotify = externalData.item1;
+    final playlistId = getVariable(queryKey);
+    final trackId = externalData.item2;
+
+    await spotify.playlists.removeTracks([trackId], playlistId);
+    return true;
+  },
+);

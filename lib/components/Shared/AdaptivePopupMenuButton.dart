@@ -6,7 +6,7 @@ import 'package:spotube/hooks/useBreakpoints.dart';
 
 class Action extends StatelessWidget {
   final Widget text;
-  final Icon icon;
+  final Widget icon;
   final void Function() onPressed;
   final bool isExpanded;
   const Action({

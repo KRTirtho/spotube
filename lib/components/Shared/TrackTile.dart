@@ -1,3 +1,5 @@
+import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -14,6 +16,7 @@ import 'package:spotube/models/Logger.dart';
 import 'package:spotube/provider/Auth.dart';
 import 'package:spotube/provider/Playback.dart';
 import 'package:spotube/provider/SpotifyDI.dart';
+import 'package:spotube/provider/SpotifyRequests.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:tuple/tuple.dart';
 
@@ -55,18 +58,21 @@ class TrackTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final isReallyLocal = isLocal ||
-        ref.watch(
-          playbackProvider.select((s) => s.playlist?.isLocal == true),
-        );
     final breakpoint = useBreakpoints();
     final auth = ref.watch(authProvider);
     final spotify = ref.watch(spotifyProvider);
-
-    final actionRemoveFromPlaylist = useCallback(() async {
-      if (playlistId == null) return;
-      return await spotify.playlists.removeTrack(track.value.uri!, playlistId!);
-    }, [playlistId, spotify, track.value.uri]);
+    final removingTrack = useState<String?>(null);
+    final removeTrack = useMutation<bool, Tuple2<SpotifyApi, String>>(
+      job: removeTrackFromPlaylistMutationJob(playlistId ?? ""),
+      onData: (payload, variables, ctx) {
+        if (playlistId == null || !payload) return;
+        QueryBowl.of(context)
+            .getQuery(
+              playlistTracksQueryJob(playlistId!).queryKey,
+            )
+            ?.refetch();
+      },
+    );
 
     void actionShare(Track track) {
       final data = "https://open.spotify.com/track/${track.id}";
@@ -244,7 +250,7 @@ class TrackTile extends HookConsumerWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  isReallyLocal
+                  isLocal
                       ? PlatformText(
                           TypeConversionUtils.artists_X_String<Artist>(
                               track.value.artists ?? []),
@@ -260,7 +266,7 @@ class TrackTile extends HookConsumerWidget {
             ),
             if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
               Expanded(
-                child: isReallyLocal
+                child: isLocal
                     ? PlatformText(track.value.album?.name ?? "")
                     : LinkText(
                         track.value.album!.name!,
@@ -274,7 +280,7 @@ class TrackTile extends HookConsumerWidget {
               PlatformText(duration),
             ],
             const SizedBox(width: 10),
-            if (!isReallyLocal)
+            if (!isLocal)
               AdaptiveActions(
                 actions: [
                   if (toggler.item3.hasData)
@@ -298,9 +304,17 @@ class TrackTile extends HookConsumerWidget {
                     ),
                   if (userPlaylist && auth.isLoggedIn)
                     Action(
-                      icon: const Icon(Icons.remove_circle_outline_rounded),
+                      icon: removeTrack.isLoading &&
+                              removingTrack.value == track.value.uri
+                          ? const Center(
+                              child: PlatformCircularProgressIndicator(),
+                            )
+                          : const Icon(Icons.remove_circle_outline_rounded),
                       text: const PlatformText("Remove from playlist"),
-                      onPressed: actionRemoveFromPlaylist,
+                      onPressed: () {
+                        removingTrack.value = track.value.uri;
+                        removeTrack.mutate(Tuple2(spotify, track.value.uri!));
+                      },
                     ),
                   Action(
                     icon: const Icon(Icons.share_rounded),
