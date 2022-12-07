@@ -71,7 +71,7 @@ class SyncedLyrics extends HookConsumerWidget {
     return Column(
       children: [
         SizedBox(
-          height: breakpoint >= Breakpoints.md ? 50 : 30,
+          height: breakpoint >= Breakpoints.md ? 50 : 40,
           child: Material(
             type: MaterialType.transparency,
             textStyle: PlatformTheme.of(context).textTheme!.body!,
@@ -84,27 +84,25 @@ class SyncedLyrics extends HookConsumerWidget {
                     isHovering: true,
                   ),
                 ),
-                Positioned.fill(
+                Positioned(
+                  top: 10,
+                  right: 10,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: PlatformFilledButton(
-                        child: const Icon(
-                          Icons.av_timer_rounded,
-                          size: 16,
-                        ),
-                        onPressed: () async {
-                          final delay = await showPlatformAlertDialog(
-                            context,
-                            builder: (context) =>
-                                const LyricDelayAdjustDialog(),
-                          );
-                          if (delay != null) {
-                            ref.read(lyricDelayState.notifier).state = delay;
-                          }
-                        },
+                    child: PlatformFilledButton(
+                      child: const Icon(
+                        Icons.av_timer_rounded,
+                        size: 16,
                       ),
+                      onPressed: () async {
+                        final delay = await showPlatformAlertDialog(
+                          context,
+                          builder: (context) => const LyricDelayAdjustDialog(),
+                        );
+                        if (delay != null) {
+                          ref.read(lyricDelayState.notifier).state = delay;
+                        }
+                      },
                     ),
                   ),
                 ),

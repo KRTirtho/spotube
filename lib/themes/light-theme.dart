@@ -154,12 +154,24 @@ const iosDarkTheme = CupertinoThemeData(
 );
 
 final linuxTheme = AdwaitaThemeData.light().copyWith(
+  extensions: [
+    ShimmerColorTheme(
+      shimmerBackgroundColor: Colors.grey[300],
+      shimmerColor: Colors.grey[400],
+    )
+  ],
   listTileTheme: ListTileThemeData(
     iconColor: Colors.grey[900],
     horizontalTitleGap: 0,
   ),
 );
 final linuxDarkTheme = AdwaitaThemeData.dark().copyWith(
+  extensions: [
+    ShimmerColorTheme(
+      shimmerBackgroundColor: Colors.grey[800],
+      shimmerColor: Colors.grey[900],
+    )
+  ],
   listTileTheme: ListTileThemeData(
     iconColor: Colors.grey[50],
     horizontalTitleGap: 0,

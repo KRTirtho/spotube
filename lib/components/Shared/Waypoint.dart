@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class Waypoint extends HookWidget {
-  final void Function()? onTouchEdge;
+  final FutureOr<void> Function()? onTouchEdge;
   final Widget? child;
   final ScrollController controller;
   final bool isGrid;
@@ -18,27 +20,31 @@ class Waypoint extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMounted = useIsMounted();
+
     useEffect(() {
       if (isGrid) {
         return null;
       }
-      listener() {
+      Future<void> listener() async {
         // nextPageTrigger will have a value equivalent to 80% of the list size.
         final nextPageTrigger = 0.8 * controller.position.maxScrollExtent;
 
 // scrollController fetches the next paginated data when the current postion of the user on the screen has surpassed
-        if (controller.position.pixels >= nextPageTrigger) {
-          onTouchEdge?.call();
+        if (controller.position.pixels >= nextPageTrigger && isMounted()) {
+          await onTouchEdge?.call();
         }
       }
 
-      if (controller.hasClients) {
-        listener();
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (controller.hasClients && isMounted()) {
+          listener();
+        }
 
-      controller.addListener(listener);
+        controller.addListener(listener);
+      });
       return () => controller.removeListener(listener);
-    }, [controller, onTouchEdge]);
+    }, [controller, onTouchEdge, isMounted]);
 
     if (isGrid) {
       return VisibilityDetector(

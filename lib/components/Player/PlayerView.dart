@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/components/Player/PlayerActions.dart';
 import 'package:spotube/components/Player/PlayerControls.dart';
 import 'package:spotube/components/Shared/PageWindowTitleBar.dart';
@@ -27,6 +28,9 @@ class PlayerView extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final currentTrack = ref.watch(playbackProvider.select(
       (value) => value.track,
+    ));
+    final isLocalTrack = ref.watch(playbackProvider.select(
+      (value) => value.playlist?.isLocal == true,
     ));
     final breakpoint = useBreakpoints();
     final canRotate = ref.watch(
@@ -102,18 +106,30 @@ class PlayerView extends HookConsumerWidget {
                             isHovering: true,
                           ),
                         ),
-                        TypeConversionUtils.artists_X_ClickableArtists(
-                          currentTrack?.artists ?? [],
-                          textStyle:
-                              Theme.of(context).textTheme.headline6!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: paletteColor.bodyTextColor,
-                                  ),
-                          onRouteChange: (route) {
-                            GoRouter.of(context).pop();
-                            GoRouter.of(context).push(route);
-                          },
-                        ),
+                        if (isLocalTrack)
+                          Text(
+                            TypeConversionUtils.artists_X_String<Artist>(
+                              currentTrack?.artists ?? [],
+                            ),
+                            style:
+                                Theme.of(context).textTheme.headline6!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: paletteColor.bodyTextColor,
+                                    ),
+                          )
+                        else
+                          TypeConversionUtils.artists_X_ClickableArtists(
+                            currentTrack?.artists ?? [],
+                            textStyle:
+                                Theme.of(context).textTheme.headline6!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: paletteColor.bodyTextColor,
+                                    ),
+                            onRouteChange: (route) {
+                              GoRouter.of(context).pop();
+                              GoRouter.of(context).push(route);
+                            },
+                          ),
                       ],
                     ),
                   ),

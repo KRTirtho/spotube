@@ -28,6 +28,7 @@ class PlayerActions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final Playback playback = ref.watch(playbackProvider);
+    final isLocalTrack = playback.playlist?.isLocal == true;
     final downloader = ref.watch(downloaderProvider);
     final isInQueue =
         downloader.inQueue.any((element) => element.id == playback.track?.id);
@@ -74,32 +75,33 @@ class PlayerActions extends HookConsumerWidget {
                 }
               : null,
         ),
-        PlatformIconButton(
-          icon: const Icon(Icons.alt_route_rounded),
-          tooltip: "Alternative Track Sources",
-          onPressed: playback.track != null
-              ? () {
-                  showModalBottomSheet(
-                    context: context,
-                    isDismissible: true,
-                    enableDrag: true,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.black12,
-                    barrierColor: Colors.black12,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * .5,
-                    ),
-                    builder: (context) {
-                      return SiblingTracksSheet(floating: floatingQueue);
-                    },
-                  );
-                }
-              : null,
-        ),
-        if (!kIsWeb)
+        if (!isLocalTrack)
+          PlatformIconButton(
+            icon: const Icon(Icons.alt_route_rounded),
+            tooltip: "Alternative Track Sources",
+            onPressed: playback.track != null
+                ? () {
+                    showModalBottomSheet(
+                      context: context,
+                      isDismissible: true,
+                      enableDrag: true,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.black12,
+                      barrierColor: Colors.black12,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * .5,
+                      ),
+                      builder: (context) {
+                        return SiblingTracksSheet(floating: floatingQueue);
+                      },
+                    );
+                  }
+                : null,
+          ),
+        if (!kIsWeb && !isLocalTrack)
           if (isInQueue)
             const SizedBox(
               height: 20,
@@ -120,7 +122,8 @@ class PlayerActions extends HookConsumerWidget {
                   ? () => downloader.addToQueue(playback.track!)
                   : null,
             ),
-        if (playback.track != null) TrackHeartButton(track: playback.track!),
+        if (playback.track != null && !isLocalTrack)
+          TrackHeartButton(track: playback.track!),
         ...(extraActions ?? [])
       ],
     );

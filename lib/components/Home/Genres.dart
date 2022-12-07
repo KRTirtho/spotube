@@ -44,12 +44,14 @@ class Genres extends HookConsumerWidget {
           .toList()
     ];
 
+    final isMounted = useIsMounted();
+
     return PlatformScaffold(
       appBar: kIsDesktop ? PageWindowTitleBar() : null,
       body: Waypoint(
-        onTouchEdge: () {
-          if (categoriesQuery.hasNextPage) {
-            categoriesQuery.fetchNextPage();
+        onTouchEdge: () async {
+          if (categoriesQuery.hasNextPage && isMounted()) {
+            await categoriesQuery.fetchNextPage();
           }
         },
         controller: scrollController,
