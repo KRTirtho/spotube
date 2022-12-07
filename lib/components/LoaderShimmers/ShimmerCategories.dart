@@ -20,25 +20,22 @@ class ShimmerCategories extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(
+          Container(
             padding: const EdgeInsets.only(left: 15),
-            child: SkeletonAnimation(
-              shimmerColor: shimmerBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-              shimmerDuration: 1000,
-              child: Container(
-                width: 150,
-                height: 15,
-                decoration: BoxDecoration(
-                  color: shimmerColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                margin: const EdgeInsets.only(top: 10),
-              ),
+            height: 10,
+            width: 100,
+            decoration: BoxDecoration(
+              color: shimmerBackgroundColor,
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
-          const ShimmerPlaybuttonCard(count: 7),
+          const SizedBox(height: 10),
+          const Align(
+            alignment: Alignment.topCenter,
+            child: ShimmerPlaybuttonCard(count: 7),
+          ),
         ],
       ),
     );

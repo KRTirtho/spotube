@@ -1,95 +1,107 @@
 import 'package:flutter/material.dart';
-import 'package:skeleton_text/skeleton_text.dart';
 import 'package:spotube/extensions/ShimmerColorTheme.dart';
+
+class ShimmerTrackTilePainter extends CustomPainter {
+  final Color background;
+  final Color foreground;
+  ShimmerTrackTilePainter({
+    required this.background,
+    required this.foreground,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = background
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        const Radius.circular(5),
+      ),
+      paint,
+    );
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(5, 5, 40, 40),
+        const Radius.circular(5),
+      ),
+      Paint()..color = foreground,
+    );
+
+    canvas.drawCircle(
+      const Offset(70, 25),
+      15,
+      Paint()..color = foreground,
+    );
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(95, 10, 100, 10),
+        const Radius.circular(5),
+      ),
+      Paint()..color = foreground,
+    );
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(95, 30, 170, 7),
+        const Radius.circular(5),
+      ),
+      Paint()..color = foreground,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
 
 class ShimmerTrackTile extends StatelessWidget {
   final bool noSliver;
-
-  const ShimmerTrackTile({
-    Key? key,
-    this.noSliver = false,
-  }) : super(key: key);
+  const ShimmerTrackTile({super.key, this.noSliver = false});
 
   @override
   Widget build(BuildContext context) {
-    final shimmerColor =
-        Theme.of(context).extension<ShimmerColorTheme>()?.shimmerColor ??
-            Colors.white;
-    final shimmerBackgroundColor = Theme.of(context)
-            .extension<ShimmerColorTheme>()
-            ?.shimmerBackgroundColor ??
-        Colors.grey;
-
-    final single = Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          SkeletonAnimation(
-            shimmerColor: shimmerColor,
-            borderRadius: BorderRadius.circular(20),
-            shimmerDuration: 1000,
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: shimmerBackgroundColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              margin: const EdgeInsets.only(top: 10),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SkeletonAnimation(
-                  shimmerColor: shimmerColor,
-                  borderRadius: BorderRadius.circular(20),
-                  shimmerDuration: 1000,
-                  child: Container(
-                    height: 15,
-                    decoration: BoxDecoration(
-                      color: shimmerBackgroundColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    margin: const EdgeInsets.only(top: 10),
-                  ),
-                ),
-                SkeletonAnimation(
-                  shimmerColor: shimmerColor,
-                  borderRadius: BorderRadius.circular(20),
-                  shimmerDuration: 1000,
-                  child: Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * .8),
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: shimmerBackgroundColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    margin: const EdgeInsets.only(top: 10),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    final shimmerTheme = Theme.of(context).extension<ShimmerColorTheme>();
 
     if (noSliver) {
       return ListView.builder(
-        shrinkWrap: true,
         itemCount: 5,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, _) => single,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+            child: CustomPaint(
+              size: const Size(double.infinity, 50),
+              painter: ShimmerTrackTilePainter(
+                background: shimmerTheme?.shimmerBackgroundColor ??
+                    Theme.of(context).scaffoldBackgroundColor,
+                foreground:
+                    shimmerTheme?.shimmerColor ?? Theme.of(context).cardColor,
+              ),
+            ),
+          );
+        },
       );
     }
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) => single,
+        (BuildContext context, int index) => Padding(
+          padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+          child: CustomPaint(
+            size: const Size(double.infinity, 50),
+            painter: ShimmerTrackTilePainter(
+              background: shimmerTheme?.shimmerBackgroundColor ??
+                  Theme.of(context).scaffoldBackgroundColor,
+              foreground:
+                  shimmerTheme?.shimmerColor ?? Theme.of(context).cardColor,
+            ),
+          ),
+        ),
         childCount: 5,
       ),
     );
