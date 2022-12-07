@@ -202,6 +202,7 @@ class Playback extends PersistedChangeNotifier {
       if (index < 0 || index > playlist.tracks.length - 1) return;
       if (isPlaying || status == PlaybackStatus.playing) await stop();
       this.playlist = playlist;
+      mobileAudioService?.session?.setActive(true);
       final played = this.playlist!.tracks[index];
       status = PlaybackStatus.loading;
       notifyListeners();
@@ -320,6 +321,7 @@ class Playback extends PersistedChangeNotifier {
   }
 
   Future<void> stop() async {
+    mobileAudioService?.session?.setActive(false);
     await player.stop();
     await player.release();
     isPlaying = false;
@@ -634,6 +636,7 @@ class Playback extends PersistedChangeNotifier {
         (playlist!.trackIds.indexOf(track!.id!) + 1).toInt();
     // checking if there's any track available forward
     if (nextTrackIndex > (playlist?.tracks.length ?? 0) - 1) return;
+    await pause();
     await play(playlist!.tracks.elementAt(nextTrackIndex)).then((_) {
       playlist!.tracks[nextTrackIndex] = track!;
     });
@@ -645,6 +648,7 @@ class Playback extends PersistedChangeNotifier {
         (playlist!.trackIds.indexOf(track!.id!) - 1).toInt();
     // checking if there's any track available behind
     if (prevTrackIndex < 0) return;
+    await pause();
     await play(playlist!.tracks.elementAt(prevTrackIndex)).then((_) {
       playlist!.tracks[prevTrackIndex] = track!;
     });

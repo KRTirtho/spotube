@@ -18,18 +18,18 @@ class MobileAudioService extends BaseAudioHandler {
         }
       });
     });
-    final _player = playback.player;
-    _player.onPlayerStateChanged.listen((state) async {
+    final player = playback.player;
+    player.onPlayerStateChanged.listen((state) async {
       if (state != PlayerState.completed) {
         playbackState.add(await _transformEvent());
       }
     });
 
-    _player.onPositionChanged.listen((pos) async {
+    player.onPositionChanged.listen((pos) async {
       playbackState.add(await _transformEvent());
     });
 
-    _player.onPlayerComplete.listen((_) {
+    player.onPlayerComplete.listen((_) {
       if (playback.playlist == null && playback.track == null) {
         playbackState.add(
           PlaybackState(
@@ -56,7 +56,6 @@ class MobileAudioService extends BaseAudioHandler {
 
   @override
   Future<void> stop() async {
-    await session?.setActive(true);
     await playback.stop();
   }
 
