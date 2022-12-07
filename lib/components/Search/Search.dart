@@ -200,26 +200,24 @@ class Search extends HookConsumerWidget {
                                 if (playlists.isNotEmpty)
                                   PlatformText.headline("Playlists"),
                                 const SizedBox(height: 10),
-                                if (searchPlaylist.isLoading &&
-                                    !searchPlaylist.isFetchingNextPage)
-                                  const PlatformCircularProgressIndicator()
-                                else if (searchPlaylist.hasError)
-                                  PlatformText(searchPlaylist
-                                      .error?[searchPlaylist.pageParams.last])
-                                else
-                                  ScrollConfiguration(
-                                    behavior: ScrollConfiguration.of(context)
-                                        .copyWith(
-                                      dragDevices: {
-                                        PointerDeviceKind.touch,
-                                        PointerDeviceKind.mouse,
+                                ScrollConfiguration(
+                                  behavior:
+                                      ScrollConfiguration.of(context).copyWith(
+                                    dragDevices: {
+                                      PointerDeviceKind.touch,
+                                      PointerDeviceKind.mouse,
+                                    },
+                                  ),
+                                  child: Scrollbar(
+                                    scrollbarOrientation:
+                                        breakpoint > Breakpoints.md
+                                            ? ScrollbarOrientation.bottom
+                                            : ScrollbarOrientation.top,
+                                    controller: playlistController,
+                                    child: Waypoint(
+                                      onTouchEdge: () {
+                                        searchPlaylist.fetchNextPage();
                                       },
-                                    ),
-                                    child: Scrollbar(
-                                      scrollbarOrientation:
-                                          breakpoint > Breakpoints.md
-                                              ? ScrollbarOrientation.bottom
-                                              : ScrollbarOrientation.top,
                                       controller: playlistController,
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
@@ -231,15 +229,8 @@ class Search extends HookConsumerWidget {
                                                 if (i == playlists.length - 1 &&
                                                     searchPlaylist
                                                         .hasNextPage) {
-                                                  return Waypoint(
-                                                    onEnter: () {
-                                                      searchPlaylist
-                                                          .fetchNextPage();
-                                                    },
-                                                    child:
-                                                        const ShimmerPlaybuttonCard(
-                                                            count: 1),
-                                                  );
+                                                  return const ShimmerPlaybuttonCard(
+                                                      count: 1);
                                                 }
                                                 return PlaylistCard(playlist);
                                               },
@@ -249,27 +240,32 @@ class Search extends HookConsumerWidget {
                                       ),
                                     ),
                                   ),
+                                ),
+                                if (searchPlaylist.isLoading &&
+                                    !searchPlaylist.isFetchingNextPage)
+                                  const PlatformCircularProgressIndicator(),
+                                if (searchPlaylist.hasError)
+                                  PlatformText(searchPlaylist
+                                      .error?[searchPlaylist.pageParams.last]),
                                 const SizedBox(height: 20),
                                 if (artists.isNotEmpty)
                                   PlatformText.headline("Artists"),
                                 const SizedBox(height: 10),
-                                if (searchArtist.isLoading &&
-                                    !searchArtist.isFetchingNextPage)
-                                  const PlatformCircularProgressIndicator()
-                                else if (searchArtist.hasError)
-                                  PlatformText(searchArtist
-                                      .error?[searchArtist.pageParams.last])
-                                else
-                                  ScrollConfiguration(
-                                    behavior: ScrollConfiguration.of(context)
-                                        .copyWith(
-                                      dragDevices: {
-                                        PointerDeviceKind.touch,
-                                        PointerDeviceKind.mouse,
-                                      },
-                                    ),
-                                    child: Scrollbar(
+                                ScrollConfiguration(
+                                  behavior:
+                                      ScrollConfiguration.of(context).copyWith(
+                                    dragDevices: {
+                                      PointerDeviceKind.touch,
+                                      PointerDeviceKind.mouse,
+                                    },
+                                  ),
+                                  child: Scrollbar(
+                                    controller: artistController,
+                                    child: Waypoint(
                                       controller: artistController,
+                                      onTouchEdge: () {
+                                        searchArtist.fetchNextPage();
+                                      },
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
                                         controller: artistController,
@@ -279,15 +275,8 @@ class Search extends HookConsumerWidget {
                                               (i, artist) {
                                                 if (i == artists.length - 1 &&
                                                     searchArtist.hasNextPage) {
-                                                  return Waypoint(
-                                                    onEnter: () {
-                                                      searchArtist
-                                                          .fetchNextPage();
-                                                    },
-                                                    child:
-                                                        const ShimmerPlaybuttonCard(
-                                                            count: 1),
-                                                  );
+                                                  return const ShimmerPlaybuttonCard(
+                                                      count: 1);
                                                 }
                                                 return Container(
                                                   margin: const EdgeInsets
@@ -302,6 +291,13 @@ class Search extends HookConsumerWidget {
                                       ),
                                     ),
                                   ),
+                                ),
+                                if (searchArtist.isLoading &&
+                                    !searchArtist.isFetchingNextPage)
+                                  const PlatformCircularProgressIndicator(),
+                                if (searchArtist.hasError)
+                                  PlatformText(searchArtist
+                                      .error?[searchArtist.pageParams.last]),
                                 const SizedBox(height: 20),
                                 if (albums.isNotEmpty)
                                   PlatformText(
@@ -310,23 +306,21 @@ class Search extends HookConsumerWidget {
                                         Theme.of(context).textTheme.headline5,
                                   ),
                                 const SizedBox(height: 10),
-                                if (searchAlbum.isLoading &&
-                                    !searchAlbum.isFetchingNextPage)
-                                  const PlatformCircularProgressIndicator()
-                                else if (searchAlbum.hasError)
-                                  PlatformText(searchAlbum
-                                      .error?[searchAlbum.pageParams.last])
-                                else
-                                  ScrollConfiguration(
-                                    behavior: ScrollConfiguration.of(context)
-                                        .copyWith(
-                                      dragDevices: {
-                                        PointerDeviceKind.touch,
-                                        PointerDeviceKind.mouse,
-                                      },
-                                    ),
-                                    child: Scrollbar(
+                                ScrollConfiguration(
+                                  behavior:
+                                      ScrollConfiguration.of(context).copyWith(
+                                    dragDevices: {
+                                      PointerDeviceKind.touch,
+                                      PointerDeviceKind.mouse,
+                                    },
+                                  ),
+                                  child: Scrollbar(
+                                    controller: albumController,
+                                    child: Waypoint(
                                       controller: albumController,
+                                      onTouchEdge: () {
+                                        searchAlbum.fetchNextPage();
+                                      },
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
                                         controller: albumController,
@@ -335,14 +329,8 @@ class Search extends HookConsumerWidget {
                                             ...albums.mapIndexed((i, album) {
                                               if (i == albums.length - 1 &&
                                                   searchAlbum.hasNextPage) {
-                                                return Waypoint(
-                                                  onEnter: () {
-                                                    searchAlbum.fetchNextPage();
-                                                  },
-                                                  child:
-                                                      const ShimmerPlaybuttonCard(
-                                                          count: 1),
-                                                );
+                                                return const ShimmerPlaybuttonCard(
+                                                    count: 1);
                                               }
                                               return AlbumCard(
                                                 TypeConversionUtils
@@ -356,6 +344,13 @@ class Search extends HookConsumerWidget {
                                       ),
                                     ),
                                   ),
+                                ),
+                                if (searchAlbum.isLoading &&
+                                    !searchAlbum.isFetchingNextPage)
+                                  const PlatformCircularProgressIndicator(),
+                                if (searchAlbum.hasError)
+                                  PlatformText(searchAlbum
+                                      .error?[searchAlbum.pageParams.last]),
                               ],
                             ),
                           ),

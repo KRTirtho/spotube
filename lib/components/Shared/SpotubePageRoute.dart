@@ -1,18 +1,27 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:platform_ui/platform_ui.dart';
 
-class SpotubePageRoute extends PageRouteBuilder {
-  final Widget child;
-  SpotubePageRoute({required this.child})
-      : super(
-          pageBuilder: (context, animation, secondaryAnimation) => child,
-          settings: RouteSettings(
-            name: child.key.toString(),
-          ),
+class SpotubePage extends CustomTransitionPage {
+  SpotubePage({
+    required super.child,
+  }) : super(
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return child;
+          },
         );
-}
 
-class SpotubePage extends MaterialPage {
-  const SpotubePage({
-    required Widget child,
-  }) : super(child: child);
+  @override
+  Route createRoute(BuildContext context) {
+    if (platform == TargetPlatform.windows) {
+      return FluentPageRoute(
+        builder: (context) => child,
+        settings: this,
+        maintainState: maintainState,
+        barrierLabel: barrierLabel,
+        fullscreenDialog: fullscreenDialog,
+      );
+    }
+    return super.createRoute(context);
+  }
 }

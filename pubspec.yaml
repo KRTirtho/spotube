@@ -63,9 +63,7 @@ dependencies:
   tuple: ^2.0.1
   uuid: ^3.0.6
   platform_ui:
-    git:
-      url: https://github.com/KRTirtho/platform_ui.git
-      ref: bf42bc4caf9cb382f5215ea2db711adbf2a99f4b
+    path: ../platform_ui
   fluent_ui: ^4.0.3
   macos_ui: ^1.7.5
   libadwaita: ^1.2.5

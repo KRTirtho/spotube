@@ -66,21 +66,22 @@ class CategoryCard extends HookConsumerWidget {
                   child: Scrollbar(
                     controller: scrollController,
                     interactive: false,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: playlists.length,
-                      itemBuilder: (context, index) {
-                        if (index == playlists.length - 1 && hasNextPage) {
-                          return Waypoint(
-                            onEnter: () {
-                              playlistQuery.fetchNextPage();
-                            },
-                            child: const ShimmerPlaybuttonCard(count: 1),
-                          );
-                        }
-                        return PlaylistCard(playlists[index]);
+                    child: Waypoint(
+                      controller: scrollController,
+                      onTouchEdge: () {
+                        playlistQuery.fetchNextPage();
                       },
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        controller: scrollController,
+                        children: [
+                          ...playlists
+                              .map((playlist) => PlaylistCard(playlist)),
+                          if (hasNextPage)
+                            const ShimmerPlaybuttonCard(count: 1),
+                        ],
+                      ),
                     ),
                   ),
                 ),

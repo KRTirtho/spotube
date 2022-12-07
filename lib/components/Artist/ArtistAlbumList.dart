@@ -50,21 +50,22 @@ class ArtistAlbumList extends HookConsumerWidget {
         child: Scrollbar(
           interactive: false,
           controller: scrollController,
-          child: ListView.builder(
-            itemCount: albums.length,
+          child: Waypoint(
             controller: scrollController,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              if (index == albums.length - 1 && hasNextPage) {
-                return Waypoint(
-                  onEnter: () {
-                    albumsQuery.fetchNextPage();
-                  },
-                  child: const ShimmerPlaybuttonCard(count: 1),
-                );
-              }
-              return AlbumCard(albums[index]);
+            onTouchEdge: () {
+              albumsQuery.fetchNextPage();
             },
+            child: ListView.builder(
+              itemCount: albums.length,
+              controller: scrollController,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                if (index == albums.length - 1 && hasNextPage) {
+                  return const ShimmerPlaybuttonCard(count: 1);
+                }
+                return AlbumCard(albums[index]);
+              },
+            ),
           ),
         ),
       ),

@@ -49,15 +49,19 @@ class UserArtists extends HookConsumerWidget {
         ),
         padding: const EdgeInsets.all(10),
         itemBuilder: (context, index) {
-          if (index == artists.length - 1 && hasNextPage) {
-            return Waypoint(
-              onEnter: () {
-                artistQuery.fetchNextPage();
-              },
-              child: ArtistCard(artists[index]),
-            );
-          }
-          return ArtistCard(artists[index]);
+          return HookBuilder(builder: (context) {
+            if (index == artists.length - 1 && hasNextPage) {
+              return Waypoint(
+                controller: useScrollController(),
+                isGrid: true,
+                onTouchEdge: () {
+                  artistQuery.fetchNextPage();
+                },
+                child: ArtistCard(artists[index]),
+              );
+            }
+            return ArtistCard(artists[index]);
+          });
         },
       ),
     );

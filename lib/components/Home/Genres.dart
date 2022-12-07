@@ -18,6 +18,7 @@ class Genres extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final scrollController = useScrollController();
     final spotify = ref.watch(spotifyProvider);
     final recommendationMarket = ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),
@@ -45,23 +46,25 @@ class Genres extends HookConsumerWidget {
 
     return PlatformScaffold(
       appBar: kIsDesktop ? PageWindowTitleBar() : null,
-      body: ListView.builder(
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          if (category == null) return Container();
-          if (index == categories.length - 1) {
-            return Waypoint(
-              onEnter: () {
-                if (categoriesQuery.hasNextPage) {
-                  categoriesQuery.fetchNextPage();
-                }
-              },
-              child: const ShimmerCategories(),
-            );
+      body: Waypoint(
+        onTouchEdge: () {
+          if (categoriesQuery.hasNextPage) {
+            categoriesQuery.fetchNextPage();
           }
-          return CategoryCard(category);
         },
+        controller: scrollController,
+        child: ListView.builder(
+          controller: scrollController,
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            if (category == null) return Container();
+            if (index == categories.length - 1) {
+              return const ShimmerCategories();
+            }
+            return CategoryCard(category);
+          },
+        ),
       ),
     );
   }

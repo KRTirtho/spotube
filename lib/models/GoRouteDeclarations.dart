@@ -28,28 +28,28 @@ final router = GoRouter(
       routes: [
         GoRoute(
           path: "/",
-          pageBuilder: (context, state) => const SpotubePage(child: Genres()),
+          pageBuilder: (context, state) => SpotubePage(child: const Genres()),
         ),
         GoRoute(
           path: "/search",
           name: "Search",
-          pageBuilder: (context, state) => const SpotubePage(child: Search()),
+          pageBuilder: (context, state) => SpotubePage(child: const Search()),
         ),
         GoRoute(
           path: "/library",
           name: "Library",
           pageBuilder: (context, state) =>
-              const SpotubePage(child: UserLibrary()),
+              SpotubePage(child: const UserLibrary()),
         ),
         GoRoute(
           path: "/lyrics",
           name: "Lyrics",
-          pageBuilder: (context, state) => const SpotubePage(child: Lyrics()),
+          pageBuilder: (context, state) => SpotubePage(child: const Lyrics()),
         ),
         GoRoute(
           path: "/settings",
-          pageBuilder: (context, state) => const SpotubePage(
-            child: Settings(),
+          pageBuilder: (context, state) => SpotubePage(
+            child: const Settings(),
           ),
         ),
         GoRoute(
@@ -87,16 +87,16 @@ final router = GoRouter(
     GoRoute(
       path: "/login-tutorial",
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) => const SpotubePage(
-        child: LoginTutorial(),
+      pageBuilder: (context, state) => SpotubePage(
+        child: const LoginTutorial(),
       ),
     ),
     GoRoute(
       path: "/player",
       parentNavigatorKey: rootNavigatorKey,
       pageBuilder: (context, state) {
-        return const SpotubePage(
-          child: PlayerView(),
+        return SpotubePage(
+          child: const PlayerView(),
         );
       },
     ),
