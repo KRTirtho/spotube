@@ -14,6 +14,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/components/shared/playlist_shuffle_button.dart';
 
 class AlbumPage extends HookConsumerWidget {
   final AlbumSimple album;
@@ -112,6 +113,26 @@ class AlbumPage extends HookConsumerWidget {
         );
       },
       heartBtn: AlbumHeartButton(album: album),
+      shuffleButton: PlaylistShuffleButton(onPressed: () {
+        var albumTracks = tracksSnapshot.data!
+            .map((track) =>
+            TypeConversionUtils.simpleTrack_X_Track(track, album))
+            .toList();
+        // Shuffle the tracks (create a copy of playlist)
+        var tracks = [...albumTracks];
+        tracks.shuffle();
+
+        // If playback is playing a track then pause it
+        if (playback.isPlaying) {
+          playback.pause();
+        }
+
+        // Play the shuffled playlist
+        playPlaylist( playback,
+          tracks,
+          ref,
+        );
+      }),
     );
   }
 }

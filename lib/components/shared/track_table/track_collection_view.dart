@@ -26,6 +26,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   final void Function([Track? currentTrack]) onPlay;
   final void Function() onShare;
   final Widget? heartBtn;
+  final Widget? shuffleButton;
   final AlbumSimple? album;
 
   final bool showShare;
@@ -43,6 +44,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     required this.onShare,
     required this.routePath,
     this.heartBtn,
+    this.shuffleButton,
     this.album,
     this.description,
     this.showShare = true,
@@ -68,6 +70,8 @@ class TrackCollectionView<T> extends HookConsumerWidget {
           onPressed: onShare,
         ),
       if (heartBtn != null) heartBtn!,
+      if (shuffleButton != null) shuffleButton!,
+
 
       // play playlist
       Container(
