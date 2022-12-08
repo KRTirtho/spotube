@@ -23,8 +23,8 @@ class Action extends StatelessWidget {
       return PlatformIconButton(
         icon: icon,
         onPressed: onPressed,
-        tooltip: text is Text
-            ? (text as Text).data
+        tooltip: text is PlatformText
+            ? (text as PlatformText).data
             : text.toStringShallow().split(",").last.replaceAll(
                   "\"",
                   "",

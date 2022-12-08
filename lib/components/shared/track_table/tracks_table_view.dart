@@ -131,6 +131,7 @@ class TracksTableView extends HookConsumerWidget {
                 ),
                 PlatformPopupMenuButton(
                   closeAfterClick: false,
+                  tooltip: "More Actions",
                   items: [
                     PlatformPopupMenuItem(
                       enabled: selectedTracks.isNotEmpty,

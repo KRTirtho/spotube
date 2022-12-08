@@ -47,6 +47,7 @@ class SortTracksDropdown extends StatelessWidget {
         ),
       ],
       onSelected: onChanged,
+      tooltip: "Sort tracks",
       child: const Icon(Icons.sort_rounded),
     );
   }
