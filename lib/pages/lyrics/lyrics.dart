@@ -42,33 +42,37 @@ class LyricsPage extends HookConsumerWidget {
       GeniusLyrics(palette: palette),
     ][index.value];
 
+    final tabbar = PreferredSize(
+      preferredSize: const Size.fromHeight(40),
+      child: PlatformTabBar(
+        isNavigational: PlatformProperty.only(linux: true, other: false),
+        selectedIndex: index.value,
+        onSelectedIndexChanged: (value) => index.value = value,
+        backgroundColor: PlatformTheme.of(context).scaffoldBackgroundColor,
+        tabs: [
+          PlatformTab(
+            label: "Synced",
+            icon: const SizedBox.shrink(),
+            color: PlatformTextTheme.of(context).caption?.color,
+          ),
+          PlatformTab(
+            label: "Genius",
+            icon: const SizedBox.shrink(),
+            color: PlatformTextTheme.of(context).caption?.color,
+          ),
+        ],
+      ),
+    );
     return PlatformScaffold(
       extendBodyBehindAppBar: true,
       appBar: !kIsMacOS
-          ? PageWindowTitleBar(
-              toolbarOpacity: 0,
-              backgroundColor: Colors.transparent,
-              center: PlatformTabBar(
-                isNavigational:
-                    PlatformProperty.only(linux: true, other: false),
-                selectedIndex: index.value,
-                onSelectedIndexChanged: (value) => index.value = value,
-                backgroundColor:
-                    PlatformTheme.of(context).scaffoldBackgroundColor,
-                tabs: [
-                  PlatformTab(
-                    label: "Synced",
-                    icon: const SizedBox.shrink(),
-                    color: PlatformTextTheme.of(context).caption?.color,
-                  ),
-                  PlatformTab(
-                    label: "Genius",
-                    icon: const SizedBox.shrink(),
-                    color: PlatformTextTheme.of(context).caption?.color,
-                  ),
-                ],
-              ),
-            )
+          ? (platform != TargetPlatform.windows
+              ? PageWindowTitleBar(
+                  toolbarOpacity: 0,
+                  backgroundColor: Colors.transparent,
+                  center: tabbar,
+                )
+              : tabbar)
           : null,
       body: Container(
         clipBehavior: Clip.hardEdge,

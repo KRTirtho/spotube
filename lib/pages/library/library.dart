@@ -23,26 +23,32 @@ class LibraryPage extends HookConsumerWidget {
       const UserAlbums(),
     ][index.value];
 
+    var tabbar = PlatformTabBar(
+      androidIsScrollable: true,
+      selectedIndex: index.value,
+      onSelectedIndexChanged: (value) => index.value = value,
+      isNavigational:
+          PlatformProperty.byPlatformGroup(mobile: false, desktop: true),
+      tabs: [
+        PlatformTab(label: 'Playlists', icon: const SizedBox.shrink()),
+        PlatformTab(label: 'Tracks', icon: const SizedBox.shrink()),
+        PlatformTab(label: 'Downloads', icon: const SizedBox.shrink()),
+        PlatformTab(label: 'Artists', icon: const SizedBox.shrink()),
+        PlatformTab(label: 'Albums', icon: const SizedBox.shrink()),
+      ],
+    );
     return SafeArea(
       child: PlatformScaffold(
-        appBar: PageWindowTitleBar(
-          titleWidth: 347,
-          centerTitle: true,
-          center: PlatformTabBar(
-            androidIsScrollable: true,
-            selectedIndex: index.value,
-            onSelectedIndexChanged: (value) => index.value = value,
-            isNavigational:
-                PlatformProperty.byPlatformGroup(mobile: false, desktop: true),
-            tabs: [
-              PlatformTab(label: 'Playlists', icon: const SizedBox.shrink()),
-              PlatformTab(label: 'Tracks', icon: const SizedBox.shrink()),
-              PlatformTab(label: 'Downloads', icon: const SizedBox.shrink()),
-              PlatformTab(label: 'Artists', icon: const SizedBox.shrink()),
-              PlatformTab(label: 'Albums', icon: const SizedBox.shrink()),
-            ],
-          ),
-        ),
+        appBar: platform == TargetPlatform.windows
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(40),
+                child: tabbar,
+              )
+            : PageWindowTitleBar(
+                titleWidth: 347,
+                centerTitle: true,
+                center: tabbar,
+              ),
         body: body,
       ),
     );

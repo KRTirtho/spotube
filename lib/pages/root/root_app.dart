@@ -8,6 +8,7 @@ import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart
 import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
+import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 
@@ -63,6 +64,9 @@ class RootApp extends HookConsumerWidget {
     }, [backgroundColor]);
 
     return PlatformScaffold(
+      appBar: platform == TargetPlatform.windows
+          ? PageWindowTitleBar(hideWhenWindows: false)
+          : null,
       body: Sidebar(
         selectedIndex: index.value,
         onSelectedIndexChanged: (i) {
