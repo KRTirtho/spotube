@@ -306,7 +306,7 @@ class TrackTile extends HookConsumerWidget {
                     ),
                   if (userPlaylist && auth.isLoggedIn)
                     Action(
-                      icon: removeTrack.isLoading &&
+                      icon: (removeTrack.isLoading || !removeTrack.hasData) &&
                               removingTrack.value == track.value.uri
                           ? const Center(
                               child: PlatformCircularProgressIndicator(),

@@ -165,9 +165,9 @@ class PlaylistHeartButton extends HookConsumerWidget {
 
     final togglePlaylistLike = useMutation<bool, Tuple2<SpotifyApi, bool>>(
       job: Mutations.playlist.toggleFavorite(playlist.id!),
-      onData: (payload, variables, queryContext) {
-        isLikedQuery.refetch();
-        QueryBowl.of(context)
+      onData: (payload, variables, queryContext) async {
+        await isLikedQuery.refetch();
+        await QueryBowl.of(context)
             .getQuery(Queries.playlist.ofMine.queryKey)
             ?.refetch();
       },

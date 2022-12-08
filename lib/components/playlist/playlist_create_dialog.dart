@@ -34,20 +34,19 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                     onPressed: () async {
                       if (playlistName.text.isEmpty) return;
                       final me = await spotify.me.get();
-                      await spotify.playlists
-                          .createPlaylist(
+                      await spotify.playlists.createPlaylist(
                         me.id!,
                         playlistName.text,
                         collaborative: collaborative.value,
                         public: public.value,
                         description: description.text,
-                      )
-                          .then((_) {
-                        QueryBowl.of(context).refetchQueries([
-                          Queries.playlist.ofMine.queryKey,
-                        ]);
-                        Navigator.pop(context);
-                      });
+                      );
+                      await QueryBowl.of(context)
+                          .getQuery(
+                            Queries.playlist.ofMine.queryKey,
+                          )
+                          ?.refetch();
+                      Navigator.pop(context);
                     },
                   )
                 ],

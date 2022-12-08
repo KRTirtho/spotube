@@ -157,6 +157,13 @@ class ArtistPage extends HookConsumerWidget {
                                                   FollowingType.artist,
                                                   [artistId],
                                                 );
+                                          await isFollowingQuery.refetch();
+                                          QueryBowl.of(context)
+                                              .getInfiniteQuery(
+                                                Queries.artist.followedByMe
+                                                    .queryKey,
+                                              )
+                                              ?.refetch();
                                         } catch (e, stack) {
                                           logger.e(
                                             "FollowButton.onPressed",
