@@ -1050,9 +1050,11 @@ packages:
   platform_ui:
     dependency: "direct main"
     description:
-      path: "../platform_ui"
-      relative: true
-    source: path
+      path: "."
+      ref: fdff4771fed193aece0862c3216a8457410a856a
+      resolved-ref: fdff4771fed193aece0862c3216a8457410a856a
+      url: "https://github.com/KRTirtho/platform_ui.git"
+    source: git
     version: "0.1.0"
   plugin_platform_interface:
     dependency: transitive
