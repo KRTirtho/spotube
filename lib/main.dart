@@ -10,20 +10,20 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/components/Shared/ReplaceDownloadedFileDialog.dart';
+import 'package:spotube/collections/cache_keys.dart';
+import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/entities/CacheTrack.dart';
-import 'package:spotube/models/GoRouteDeclarations.dart';
-import 'package:spotube/models/Intents.dart';
-import 'package:spotube/models/LocalStorageKeys.dart';
-import 'package:spotube/models/Logger.dart';
-import 'package:spotube/provider/AudioPlayer.dart';
-import 'package:spotube/provider/Downloader.dart';
-import 'package:spotube/provider/Playback.dart';
-import 'package:spotube/provider/UserPreferences.dart';
-import 'package:spotube/provider/YouTube.dart';
-import 'package:spotube/services/MobileAudioService.dart';
-import 'package:spotube/themes/dark-theme.dart';
-import 'package:spotube/themes/light-theme.dart';
+import 'package:spotube/collections/routes.dart';
+import 'package:spotube/collections/intents.dart';
+import 'package:spotube/models/logger.dart';
+import 'package:spotube/provider/audio_player_provider.dart';
+import 'package:spotube/provider/downloader_provider.dart';
+import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/youtube_provider.dart';
+import 'package:spotube/services/mobile_audio_service.dart';
+import 'package:spotube/themes/dark_theme.dart';
+import 'package:spotube/themes/light_theme.dart';
 import 'package:spotube/utils/platform.dart';
 
 final bowl = QueryBowl(refetchOnExternalDataChange: true);
@@ -57,73 +57,68 @@ void main() async {
       builder: (context) {
         return ProviderScope(
           overrides: [
-            playbackProvider.overrideWithProvider(
-              ChangeNotifierProvider(
-                (ref) {
-                  final youtube = ref.watch(youtubeProvider);
-                  final player = ref.watch(audioPlayerProvider);
+            playbackProvider.overrideWith(
+              (ref) {
+                final youtube = ref.watch(youtubeProvider);
+                final player = ref.watch(audioPlayerProvider);
 
-                  final playback = Playback(
-                    player: player,
-                    youtube: youtube,
-                    ref: ref,
-                  );
+                final playback = Playback(
+                  player: player,
+                  youtube: youtube,
+                  ref: ref,
+                );
 
-                  if (audioServiceHandler == null) {
-                    AudioService.init(
-                      builder: () => MobileAudioService(playback),
-                      config: const AudioServiceConfig(
-                        androidNotificationChannelId: 'com.krtirtho.Spotube',
-                        androidNotificationChannelName: 'Spotube',
-                        androidNotificationOngoing: true,
-                      ),
-                    ).then(
-                      (value) {
-                        playback.mobileAudioService = value;
-                        audioServiceHandler = value;
-                      },
-                    );
-                  }
-
-                  return playback;
-                },
-              ),
-            ),
-            downloaderProvider.overrideWithProvider(
-              ChangeNotifierProvider(
-                (ref) {
-                  return Downloader(
-                    ref,
-                    queueInstance,
-                    yt: ref.watch(youtubeProvider),
-                    downloadPath: ref.watch(
-                      userPreferencesProvider.select(
-                        (s) => s.downloadLocation,
-                      ),
+                if (audioServiceHandler == null) {
+                  AudioService.init(
+                    builder: () => MobileAudioService(playback),
+                    config: const AudioServiceConfig(
+                      androidNotificationChannelId: 'com.krtirtho.Spotube',
+                      androidNotificationChannelName: 'Spotube',
+                      androidNotificationOngoing: true,
                     ),
-                    onFileExists: (track) {
-                      final logger = getLogger(Downloader);
-                      try {
-                        logger.v(
-                          "[onFileExists] download confirmation for ${track.name}",
-                        );
-                        return showPlatformAlertDialog<bool>(
-                          context,
-                          builder: (_) =>
-                              ReplaceDownloadedFileDialog(track: track),
-                        ).then((s) => s ?? false);
-                      } catch (e, stack) {
-                        logger.e(
-                          "onFileExists",
-                          e,
-                          stack,
-                        );
-                        return false;
-                      }
+                  ).then(
+                    (value) {
+                      playback.mobileAudioService = value;
+                      audioServiceHandler = value;
                     },
                   );
-                },
-              ),
+                }
+
+                return playback;
+              },
+            ),
+            downloaderProvider.overrideWith(
+              (ref) {
+                return Downloader(
+                  ref,
+                  queueInstance,
+                  yt: ref.watch(youtubeProvider),
+                  downloadPath: ref.watch(
+                    userPreferencesProvider.select(
+                      (s) => s.downloadLocation,
+                    ),
+                  ),
+                  onFileExists: (track) {
+                    final logger = getLogger(Downloader);
+                    try {
+                      logger.v(
+                        "[onFileExists] download confirmation for ${track.name}",
+                      );
+                      return showPlatformAlertDialog<bool>(
+                        context,
+                        builder: (_) => ReplaceDownloadedDialog(track: track),
+                      ).then((s) => s ?? false);
+                    } catch (e, stack) {
+                      logger.e(
+                        "onFileExists",
+                        e,
+                        stack,
+                      );
+                      return false;
+                    }
+                  },
+                );
+              },
             )
           ],
           child: QueryBowlScope(

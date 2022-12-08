@@ -1,6 +1,6 @@
 import 'package:fl_query/fl_query.dart';
-import 'package:spotube/models/LyricsModels.dart';
-import 'package:spotube/models/SpotubeTrack.dart';
+import 'package:spotube/models/lyrics.dart';
+import 'package:spotube/models/spotube_track.dart';
 import 'package:spotify/spotify.dart';
 import 'package:collection/collection.dart';
 import 'package:spotube/utils/service_utils.dart';
