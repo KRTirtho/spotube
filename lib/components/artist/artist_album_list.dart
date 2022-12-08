@@ -9,7 +9,7 @@ import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart'
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
 
 class ArtistAlbumList extends HookConsumerWidget {
   final String artistId;
@@ -24,7 +24,7 @@ class ArtistAlbumList extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
     final albumsQuery = useInfiniteQuery(
-      job: artistAlbumsQueryJob(artistId),
+      job: Queries.artist.albumsOf(artistId),
       externalData: ref.watch(spotifyProvider),
     );
 

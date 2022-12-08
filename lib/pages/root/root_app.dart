@@ -75,7 +75,7 @@ class RootApp extends HookConsumerWidget {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Player(),
+          BottomPlayer(),
           SpotubeNavigationBar(
             selectedIndex: index.value,
             onSelectedIndexChanged: (selectedIndex) {

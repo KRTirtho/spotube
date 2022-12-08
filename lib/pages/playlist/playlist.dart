@@ -12,7 +12,8 @@ import 'package:spotube/provider/playback_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
+
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -61,10 +62,9 @@ class PlaylistView extends HookConsumerWidget {
 
     final breakpoint = useBreakpoints();
 
-    final meSnapshot =
-        useQuery(job: currentUserQueryJob, externalData: spotify);
+    final meSnapshot = useQuery(job: Queries.user.me, externalData: spotify);
     final tracksSnapshot = useQuery(
-      job: playlistTracksQueryJob(playlist.id!),
+      job: Queries.playlist.tracksOf(playlist.id!),
       externalData: spotify,
     );
 

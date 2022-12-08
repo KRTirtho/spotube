@@ -18,7 +18,8 @@ import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
+
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -47,16 +48,16 @@ class SearchPage extends HookConsumerWidget {
     );
 
     final searchTrack = useInfiniteQuery(
-        job: searchQueryJob(SearchType.track.key),
+        job: Queries.search.get(SearchType.track.key),
         externalData: getVariables());
     final searchAlbum = useInfiniteQuery(
-        job: searchQueryJob(SearchType.album.key),
+        job: Queries.search.get(SearchType.album.key),
         externalData: getVariables());
     final searchPlaylist = useInfiniteQuery(
-        job: searchQueryJob(SearchType.playlist.key),
+        job: Queries.search.get(SearchType.playlist.key),
         externalData: getVariables());
     final searchArtist = useInfiniteQuery(
-        job: searchQueryJob(SearchType.artist.key),
+        job: Queries.search.get(SearchType.artist.key),
         externalData: getVariables());
 
     void onSearch() {

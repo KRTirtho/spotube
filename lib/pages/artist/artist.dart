@@ -18,7 +18,8 @@ import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
+
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -60,7 +61,7 @@ class ArtistPage extends HookConsumerWidget {
         body: HookBuilder(
           builder: (context) {
             final artistsQuery = useQuery(
-              job: artistProfileQueryJob(artistId),
+              job: Queries.artist.get(artistId),
               externalData: spotify,
             );
 
@@ -130,8 +131,7 @@ class ArtistPage extends HookConsumerWidget {
                                 HookBuilder(
                                   builder: (context) {
                                     final isFollowingQuery = useQuery(
-                                      job: currentUserFollowsArtistQueryJob(
-                                          artistId),
+                                      job: Queries.artist.doIFollow(artistId),
                                       externalData: spotify,
                                     );
 
@@ -165,8 +165,8 @@ class ArtistPage extends HookConsumerWidget {
                                           );
                                         } finally {
                                           QueryBowl.of(context).refetchQueries([
-                                            currentUserFollowsArtistQueryJob(
-                                                    artistId)
+                                            Queries.artist
+                                                .doIFollow(artistId)
                                                 .queryKey,
                                           ]);
                                         }
@@ -211,7 +211,7 @@ class ArtistPage extends HookConsumerWidget {
                   HookBuilder(
                     builder: (context) {
                       final topTracksQuery = useQuery(
-                        job: artistTopTracksQueryJob(artistId),
+                        job: Queries.artist.topTracksOf(artistId),
                         externalData: spotify,
                       );
 
@@ -311,7 +311,7 @@ class ArtistPage extends HookConsumerWidget {
                   HookBuilder(
                     builder: (context) {
                       final relatedArtists = useQuery(
-                        job: artistRelatedArtistsQueryJob(artistId),
+                        job: Queries.artist.relatedArtistsOf(artistId),
                         externalData: spotify,
                       );
 

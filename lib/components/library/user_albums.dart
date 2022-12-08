@@ -7,7 +7,8 @@ import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart'
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
+
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class UserAlbums extends HookConsumerWidget {
@@ -20,7 +21,7 @@ class UserAlbums extends HookConsumerWidget {
       return const AnonymousFallback();
     }
     final albumsQuery = useQuery(
-      job: currentUserAlbumsQueryJob,
+      job: Queries.album.ofMine,
       externalData: ref.watch(spotifyProvider),
     );
 

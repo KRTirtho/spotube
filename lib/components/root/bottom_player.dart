@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
+import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_overlay.dart';
@@ -17,10 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
-class Player extends HookConsumerWidget {
-  Player({Key? key}) : super(key: key);
+class BottomPlayer extends HookConsumerWidget {
+  BottomPlayer({Key? key}) : super(key: key);
 
-  final logger = getLogger(Player);
+  final logger = getLogger(BottomPlayer);
   @override
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
@@ -59,7 +59,7 @@ class Player extends HookConsumerWidget {
             ? Colors.grey[800]
             : Colors.blueGrey[50],
         linux: Theme.of(context).backgroundColor,
-        windows: FluentUI.FluentTheme.maybeOf(context)?.micaBackgroundColor,
+        windows: fluent_ui.FluentTheme.maybeOf(context)?.micaBackgroundColor,
       ),
     );
 

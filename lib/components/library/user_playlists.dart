@@ -9,7 +9,7 @@ import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
 
 class UserPlaylists extends HookConsumerWidget {
   const UserPlaylists({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class UserPlaylists extends HookConsumerWidget {
     }
 
     final playlistsQuery = useQuery(
-      job: currentUserPlaylistsQueryJob,
+      job: Queries.playlist.ofMine,
       externalData: ref.watch(spotifyProvider),
     );
     Image image = Image();

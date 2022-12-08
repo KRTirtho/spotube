@@ -9,7 +9,7 @@ import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
 
 class UserArtists extends HookConsumerWidget {
   const UserArtists({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class UserArtists extends HookConsumerWidget {
       return const AnonymousFallback();
     }
     final artistQuery = useInfiniteQuery(
-      job: currentUserFollowingArtistsQueryJob,
+      job: Queries.artist.followedByMe,
       externalData: ref.watch(spotifyProvider),
     );
 

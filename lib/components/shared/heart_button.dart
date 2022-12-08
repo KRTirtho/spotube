@@ -8,7 +8,9 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/mutations/mutations.dart';
+import 'package:spotube/services/queries/queries.dart';
+
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:tuple/tuple.dart';
 
@@ -49,11 +51,11 @@ class HeartButton extends ConsumerWidget {
 
 Tuple3<bool, Mutation<bool, Tuple2<SpotifyApi, bool>>, Query<User, SpotifyApi>>
     useTrackToggleLike(Track track, WidgetRef ref) {
-  final me = useQuery(
-      job: currentUserQueryJob, externalData: ref.watch(spotifyProvider));
+  final me =
+      useQuery(job: Queries.user.me, externalData: ref.watch(spotifyProvider));
 
   final savedTracks = useQuery(
-    job: playlistTracksQueryJob("user-liked-tracks"),
+    job: Queries.playlist.tracksOf("user-liked-tracks"),
     externalData: ref.watch(spotifyProvider),
   );
 
@@ -63,7 +65,7 @@ Tuple3<bool, Mutation<bool, Tuple2<SpotifyApi, bool>>, Query<User, SpotifyApi>>
   final mounted = useIsMounted();
 
   final toggleTrackLike = useMutation<bool, Tuple2<SpotifyApi, bool>>(
-    job: toggleFavoriteTrackMutationJob(track.id!),
+    job: Mutations.track.toggleFavorite(track.id!),
     onMutate: (variable) {
       savedTracks.setQueryData(
         (oldData) {
@@ -117,7 +119,7 @@ class TrackHeartButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final savedTracks = useQuery(
-      job: playlistTracksQueryJob("user-liked-tracks"),
+      job: Queries.playlist.tracksOf("user-liked-tracks"),
       externalData: ref.watch(spotifyProvider),
     );
     final toggler = useTrackToggleLike(track, ref);
@@ -150,22 +152,23 @@ class PlaylistHeartButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final me = useQuery(
-      job: currentUserQueryJob,
+      job: Queries.user.me,
       externalData: ref.watch(spotifyProvider),
     );
 
-    final job = playlistIsFollowedQueryJob("${playlist.id}:${me.data?.id}");
+    final job =
+        Queries.playlist.doesUserFollow("${playlist.id}:${me.data?.id}");
     final isLikedQuery = useQuery(
       job: job,
       externalData: ref.watch(spotifyProvider),
     );
 
     final togglePlaylistLike = useMutation<bool, Tuple2<SpotifyApi, bool>>(
-      job: toggleFavoritePlaylistMutationJob(playlist.id!),
+      job: Mutations.playlist.toggleFavorite(playlist.id!),
       onData: (payload, variables, queryContext) {
         isLikedQuery.refetch();
         QueryBowl.of(context)
-            .getQuery(currentUserPlaylistsQueryJob.queryKey)
+            .getQuery(Queries.playlist.ofMine.queryKey)
             ?.refetch();
       },
     );
@@ -182,8 +185,9 @@ class PlaylistHeartButton extends HookConsumerWidget {
       titleImage,
     ).dominantColor;
 
-    if (me.isLoading || !me.hasData)
+    if (me.isLoading || !me.hasData) {
       return const PlatformCircularProgressIndicator();
+    }
 
     return HeartButton(
       isLiked: isLikedQuery.data ?? false,
@@ -217,28 +221,29 @@ class AlbumHeartButton extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
     final me = useQuery(
-      job: currentUserQueryJob,
+      job: Queries.user.me,
       externalData: spotify,
     );
 
     final albumIsSaved = useQuery(
-      job: albumIsSavedForCurrentUserQueryJob(album.id!),
+      job: Queries.album.isSavedForMe(album.id!),
       externalData: spotify,
     );
     final isLiked = albumIsSaved.data ?? false;
 
     final toggleAlbumLike = useMutation<bool, Tuple2<SpotifyApi, bool>>(
-      job: toggleFavoriteAlbumMutationJob(album.id!),
+      job: Mutations.album.toggleFavorite(album.id!),
       onData: (payload, variables, queryContext) {
         albumIsSaved.refetch();
         QueryBowl.of(context)
-            .getQuery(currentUserAlbumsQueryJob.queryKey)
+            .getQuery(Queries.album.ofMine.queryKey)
             ?.refetch();
       },
     );
 
-    if (me.isLoading || !me.hasData)
+    if (me.isLoading || !me.hasData) {
       return const PlatformCircularProgressIndicator();
+    }
 
     return HeartButton(
       isLiked: isLiked,

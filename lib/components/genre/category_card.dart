@@ -10,7 +10,7 @@ import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
 
 class CategoryCard extends HookConsumerWidget {
   final Category category;
@@ -28,7 +28,7 @@ class CategoryCard extends HookConsumerWidget {
     final scrollController = useScrollController();
     final spotify = ref.watch(spotifyProvider);
     final playlistQuery = useInfiniteQuery(
-      job: categoryPlaylistsQueryJob(category.id!),
+      job: Queries.category.playlistsOf(category.id!),
       externalData: spotify,
     );
     final hasNextPage = playlistQuery.pages.isEmpty

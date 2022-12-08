@@ -12,11 +12,12 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
+import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 
 final sidebarExtendedStateProvider = StateProvider<bool?>((ref) => null);
 
@@ -153,8 +154,8 @@ class Sidebar extends HookConsumerWidget {
           ],
         ),
         windowsFooterItems: [
-          FluentUI.PaneItemAction(
-            icon: const FluentUI.Icon(FluentUI.FluentIcons.settings),
+          fluent_ui.PaneItemAction(
+            icon: const fluent_ui.Icon(fluent_ui.FluentIcons.settings),
             onTap: () => goToSettings(context),
           ),
         ],
@@ -180,7 +181,7 @@ class SidebarFooter extends HookConsumerWidget {
       child: HookBuilder(
         builder: (context) {
           final me = useQuery(
-            job: currentUserQueryJob,
+            job: Queries.user.me,
             externalData: ref.watch(spotifyProvider),
           );
           final data = me.data;

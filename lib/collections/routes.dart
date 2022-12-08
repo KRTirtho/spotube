@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
+import 'package:spotube/utils/platform.dart';
+import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/album/album.dart';
 import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/pages/genre/genres.dart';
@@ -12,9 +14,7 @@ import 'package:spotube/pages/player/player.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/search/search.dart';
-import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/settings/settings.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();

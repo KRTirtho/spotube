@@ -7,8 +7,9 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/playback_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:tuple/tuple.dart';
 
@@ -23,7 +24,7 @@ class GeniusLyrics extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
     final geniusLyricsQuery = useQuery(
-      job: geniusLyricsQueryJob,
+      job: Queries.lyrics.static,
       externalData: Tuple2(
         playback.track,
         ref.watch(userPreferencesProvider).geniusAccessToken,

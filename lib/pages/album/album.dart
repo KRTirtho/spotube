@@ -8,12 +8,12 @@ import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
 
 class AlbumPage extends HookConsumerWidget {
   final AlbumSimple album;
@@ -56,7 +56,7 @@ class AlbumPage extends HookConsumerWidget {
     final SpotifyApi spotify = ref.watch(spotifyProvider);
 
     final tracksSnapshot = useQuery(
-      job: albumTracksQueryJob(album.id!),
+      job: Queries.album.tracksOf(album.id!),
       externalData: spotify,
     );
 

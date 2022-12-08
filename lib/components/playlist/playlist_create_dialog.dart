@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
 
 class PlaylistCreateDialog extends HookConsumerWidget {
   const PlaylistCreateDialog({Key? key}) : super(key: key);
@@ -44,7 +44,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                       )
                           .then((_) {
                         QueryBowl.of(context).refetchQueries([
-                          currentUserPlaylistsQueryJob.queryKey,
+                          Queries.playlist.ofMine.queryKey,
                         ]);
                         Navigator.pop(context);
                       });

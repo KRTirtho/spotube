@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
   final List<Track> tracks;
@@ -18,11 +18,11 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
     final userPlaylists = useQuery(
-      job: currentUserPlaylistsQueryJob,
+      job: Queries.playlist.ofMine,
       externalData: spotify,
     );
     final me = useQuery(
-      job: currentUserQueryJob,
+      job: Queries.user.me,
       externalData: spotify,
     );
     final filteredPlaylists = userPlaylists.data?.where(

@@ -16,7 +16,9 @@ import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/mutations/mutations.dart';
+import 'package:spotube/services/queries/queries.dart';
+
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:tuple/tuple.dart';
 
@@ -63,12 +65,12 @@ class TrackTile extends HookConsumerWidget {
     final spotify = ref.watch(spotifyProvider);
     final removingTrack = useState<String?>(null);
     final removeTrack = useMutation<bool, Tuple2<SpotifyApi, String>>(
-      job: removeTrackFromPlaylistMutationJob(playlistId ?? ""),
+      job: Mutations.playlist.removeTrackOf(playlistId ?? ""),
       onData: (payload, variables, ctx) {
         if (playlistId == null || !payload) return;
         QueryBowl.of(context)
             .getQuery(
-              playlistTracksQueryJob(playlistId!).queryKey,
+              Queries.playlist.tracksOf(playlistId!).queryKey,
             )
             ?.refetch();
       },

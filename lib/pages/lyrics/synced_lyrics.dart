@@ -13,7 +13,8 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_synced_lyrics.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+import 'package:spotube/services/queries/queries.dart';
+
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 final lyricDelayState = StateProvider<Duration>(
@@ -33,7 +34,7 @@ class SyncedLyrics extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
     final timedLyricsQuery = useQuery(
-      job: rentanadviserLyricsQueryJob,
+      job: Queries.lyrics.synced,
       externalData: playback.track,
     );
     final lyricDelay = ref.watch(lyricDelayState);

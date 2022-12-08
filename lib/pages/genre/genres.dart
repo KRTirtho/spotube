@@ -9,8 +9,9 @@ import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/SpotifyRequests.dart';
+
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
 
 class GenrePage extends HookConsumerWidget {
@@ -24,7 +25,7 @@ class GenrePage extends HookConsumerWidget {
       userPreferencesProvider.select((s) => s.recommendationMarket),
     );
     final categoriesQuery = useInfiniteQuery(
-      job: categoriesQueryJob,
+      job: Queries.category.list,
       externalData: {
         "spotify": spotify,
         "recommendationMarket": recommendationMarket,
