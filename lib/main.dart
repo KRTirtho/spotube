@@ -40,7 +40,7 @@ void main() async {
       final savedSize = rawSize != null ? json.decode(rawSize) : null;
       final double? height = savedSize?["height"];
       final double? width = savedSize?["width"];
-      appWindow.minSize = const Size(359, 700);
+      appWindow.minSize = const Size(900, 700);
       appWindow.alignment = Alignment.center;
       appWindow.title = "Spotube";
       if (height != null && width != null && height >= 700 && width >= 359) {

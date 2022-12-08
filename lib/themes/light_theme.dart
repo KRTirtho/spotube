@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:spotube/extensions/theme.dart';
-import 'package:fluent_ui/fluent_ui.dart' as FluentUI;
+import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 
 final materialWhite = MaterialColor(Colors.white.value, {
   50: Colors.white,
@@ -120,17 +120,17 @@ ThemeData lightTheme({
   );
 }
 
-final windowsTheme = FluentUI.ThemeData.light().copyWith(
-  buttonTheme: FluentUI.ButtonThemeData(
-    iconButtonStyle: FluentUI.ButtonStyle(
-      iconSize: FluentUI.ButtonState.all(20),
+final windowsTheme = fluent_ui.ThemeData.light().copyWith(
+  buttonTheme: fluent_ui.ButtonThemeData(
+    iconButtonStyle: fluent_ui.ButtonStyle(
+      iconSize: fluent_ui.ButtonState.all(20),
     ),
   ),
 );
-final windowsDarkTheme = FluentUI.ThemeData.dark().copyWith(
-  buttonTheme: FluentUI.ButtonThemeData(
-    iconButtonStyle: FluentUI.ButtonStyle(
-      iconSize: FluentUI.ButtonState.all(20),
+final windowsDarkTheme = fluent_ui.ThemeData.dark().copyWith(
+  buttonTheme: fluent_ui.ButtonThemeData(
+    iconButtonStyle: fluent_ui.ButtonStyle(
+      iconSize: fluent_ui.ButtonState.all(20),
     ),
   ),
 );
@@ -154,12 +154,22 @@ const iosDarkTheme = CupertinoThemeData(
 );
 
 final linuxTheme = AdwaitaThemeData.light().copyWith(
+  primaryColor: const Color(0xFF3582e5),
   extensions: [
     ShimmerColorTheme(
       shimmerBackgroundColor: Colors.grey[300],
       shimmerColor: Colors.grey[400],
     )
   ],
+  switchTheme: SwitchThemeData(
+    trackColor: MaterialStateProperty.all(const Color(0xFF3582e5)),
+  ),
+  colorScheme: const ColorScheme.light(
+    primary: Color(0xFF3582e5),
+  ),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(
+    color: Color(0xFF3582e5),
+  ),
   listTileTheme: ListTileThemeData(
     iconColor: Colors.grey[900],
     horizontalTitleGap: 0,

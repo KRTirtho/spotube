@@ -86,6 +86,7 @@ class SearchPage extends HookConsumerWidget {
                       horizontal: 20,
                       vertical: 10,
                     ),
+                    color: PlatformTheme.of(context).scaffoldBackgroundColor,
                     child: PlatformTextField(
                       onChanged: (value) {
                         ref.read(searchTermStateProvider.notifier).state =
