@@ -53,40 +53,45 @@ void useUpdateChecker(WidgetRef ref) {
       final latestVersion = value.last;
       if (currentVersion == null || latestVersion == null) return;
       if (latestVersion <= currentVersion) return;
-      showPlatformAlertDialog(context, builder: (context) {
-        const url =
-            "https://spotube.netlify.app/other-downloads/stable-downloads";
-        return PlatformAlertDialog(
-          macosAppIcon: Sidebar.brandLogo(),
-          title: const PlatformText("Spotube has an update"),
-          primaryActions: [
-            PlatformFilledButton(
-              child: const Text("Download Now"),
-              onPressed: () => download(url),
-            ),
-          ],
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Spotube v${value.last} has been released"),
-              Row(
-                children: [
-                  const PlatformText("Read the latest "),
-                  AnchorButton(
-                    "release notes",
-                    style: const TextStyle(color: Colors.blue),
-                    onTap: () => launchUrlString(
-                      url,
-                      mode: LaunchMode.externalApplication,
-                    ),
-                  ),
-                ],
+      showPlatformAlertDialog(
+        context,
+        barrierDismissible: true,
+        barrierColor: Colors.black26,
+        builder: (context) {
+          const url =
+              "https://spotube.netlify.app/other-downloads/stable-downloads";
+          return PlatformAlertDialog(
+            macosAppIcon: Sidebar.brandLogo(),
+            title: const PlatformText("Spotube has an update"),
+            primaryActions: [
+              PlatformFilledButton(
+                child: const Text("Download Now"),
+                onPressed: () => download(url),
               ),
             ],
-          ),
-        );
-      });
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Spotube v${value.last} has been released"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const PlatformText("Read the latest "),
+                    AnchorButton(
+                      "release notes",
+                      style: const TextStyle(color: Colors.blue),
+                      onTap: () => launchUrlString(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
     });
     return null;
   }, [packageInfo, isCheckUpdateEnabled]);
