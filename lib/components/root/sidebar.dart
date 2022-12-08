@@ -94,7 +94,18 @@ class Sidebar extends HookConsumerWidget {
               final icon = Icon(e.icon);
               return MapEntry(
                 PlatformSidebarItem(
-                  icon: icon,
+                  icon: Badge(
+                    badgeColor: PlatformTheme.of(context).primaryColor!,
+                    showBadge: e.title == "Library" && downloadCount > 0,
+                    badgeContent: Text(
+                      downloadCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    ),
+                    child: icon,
+                  ),
                   title: Text(
                     e.title,
                     style: const TextStyle(

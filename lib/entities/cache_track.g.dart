@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'CacheTrack.dart';
+part of 'cache_track.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

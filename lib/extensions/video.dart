@@ -1,4 +1,4 @@
-import 'package:spotube/entities/CacheTrack.dart';
+import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/utils/duration.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 

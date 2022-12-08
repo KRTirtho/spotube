@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/entities/CacheTrack.dart';
+import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/extensions/video.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';

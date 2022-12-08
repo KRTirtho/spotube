@@ -12,7 +12,7 @@ import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/cache_keys.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
-import 'package:spotube/entities/CacheTrack.dart';
+import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/models/logger.dart';
@@ -40,7 +40,7 @@ void main() async {
       final savedSize = rawSize != null ? json.decode(rawSize) : null;
       final double? height = savedSize?["height"];
       final double? width = savedSize?["width"];
-      appWindow.minSize = const Size(900, 700);
+      appWindow.minSize = const Size(1020, 700);
       appWindow.alignment = Alignment.center;
       appWindow.title = "Spotube";
       if (height != null && width != null && height >= 700 && width >= 359) {
