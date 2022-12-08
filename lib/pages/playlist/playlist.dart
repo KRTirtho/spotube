@@ -16,6 +16,7 @@ import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/components/shared/playlist_shuffle_button.dart';
 
 class PlaylistView extends HookConsumerWidget {
   final logger = getLogger(PlaylistView);
@@ -126,6 +127,23 @@ class PlaylistView extends HookConsumerWidget {
         });
       },
       heartBtn: PlaylistHeartButton(playlist: playlist),
+      shuffleButton: PlaylistShuffleButton(onPressed: () {
+        // Shuffle the tracks (create a copy of playlist)
+        var tracks = [...?tracksSnapshot.data];
+        tracks.shuffle();
+
+        // If playback is playing a track then pause it
+        if (playback.isPlaying) {
+          playback.pause();
+        }
+
+        // Play the shuffled playlist
+        playPlaylist( playback,
+          tracks,
+          ref,
+          currentTrack: null,
+        );
+      }),
     );
   }
 }
