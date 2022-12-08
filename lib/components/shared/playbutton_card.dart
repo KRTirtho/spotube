@@ -119,32 +119,34 @@ class PlaybuttonCard extends HookWidget {
                         bottom: 10,
                         end: 5,
                         child: Builder(builder: (context) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: iconBgColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: PlatformIconButton(
-                              onPressed: onPlaybuttonPressed,
-                              backgroundColor:
-                                  PlatformTheme.of(context).primaryColor,
-                              hoverColor: PlatformTheme.of(context)
-                                  .primaryColor
-                                  ?.withOpacity(0.5),
-                              icon: isLoading
-                                  ? const SizedBox(
-                                      height: 23,
-                                      width: 23,
-                                      child:
-                                          PlatformCircularProgressIndicator(),
-                                    )
-                                  : Icon(
-                                      isPlaying
-                                          ? Icons.pause_rounded
-                                          : Icons.play_arrow_rounded,
-                                      color: Colors.white,
+                          return PlatformIconButton(
+                            onPressed: onPlaybuttonPressed,
+                            backgroundColor:
+                                PlatformTheme.of(context).primaryColor,
+                            hoverColor: PlatformTheme.of(context)
+                                .primaryColor
+                                ?.withOpacity(0.5),
+                            icon: isLoading
+                                ? SizedBox(
+                                    height: 23,
+                                    width: 23,
+                                    child: PlatformCircularProgressIndicator(
+                                      color:
+                                          ThemeData.estimateBrightnessForColor(
+                                                    PlatformTheme.of(context)
+                                                        .primaryColor!,
+                                                  ) ==
+                                                  Brightness.dark
+                                              ? Colors.white
+                                              : Colors.grey[900],
                                     ),
-                            ),
+                                  )
+                                : Icon(
+                                    isPlaying
+                                        ? Icons.pause_rounded
+                                        : Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                  ),
                           );
                         }),
                       )

@@ -68,21 +68,17 @@ class TrackCollectionView<T> extends HookConsumerWidget {
           onPressed: onShare,
         ),
       if (heartBtn != null) heartBtn!,
-
+      const SizedBox(width: 5),
       // play playlist
-      Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        child: PlatformFilledButton(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all(const CircleBorder()),
-          ),
-          onPressed: tracksSnapshot.data != null ? onPlay : null,
-          child: Icon(
-            isPlaying ? Icons.stop_rounded : Icons.play_arrow_rounded,
-            color: Theme.of(context).backgroundColor,
-          ),
+      PlatformIconButton(
+        backgroundColor: PlatformTheme.of(context).primaryColor,
+        onPressed: tracksSnapshot.data != null ? onPlay : null,
+        icon: Icon(
+          isPlaying ? Icons.stop_rounded : Icons.play_arrow_rounded,
+          color: PlatformTextTheme.of(context).body?.color,
         ),
       ),
+      const SizedBox(width: 10),
     ];
 
     final controller = useScrollController();

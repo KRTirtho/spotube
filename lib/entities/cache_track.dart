@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-part 'CacheTrack.g.dart';
+part 'cache_track.g.dart';
 
 @HiveType(typeId: 2)
 class CacheTrackEngagement {
