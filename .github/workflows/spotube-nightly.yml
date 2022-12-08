@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2.8.0
@@ -20,9 +20,9 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
       - run: |
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.0-beta.1/appimage-builder-1.0.0-677acbd-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
-          mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          wget -O appimage-builder https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          chmod +x appimage-builder
+          mv appimage-builder /usr/local/bin/
 
       - run: |
           curl -sS https://webi.sh/yq | sh

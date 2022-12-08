@@ -24,9 +24,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   final String titleImage;
   final bool isPlaying;
   final void Function([Track? currentTrack]) onPlay;
+  final void Function([Track? currentTrack]) onShuffledPlay;
   final void Function() onShare;
   final Widget? heartBtn;
-  final Widget? shuffleButton;
   final AlbumSimple? album;
 
   final bool showShare;
@@ -41,10 +41,10 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     required this.titleImage,
     required this.isPlaying,
     required this.onPlay,
+    required this.onShuffledPlay,
     required this.onShare,
     required this.routePath,
     this.heartBtn,
-    this.shuffleButton,
     this.album,
     this.description,
     this.showShare = true,
@@ -70,7 +70,14 @@ class TrackCollectionView<T> extends HookConsumerWidget {
           onPressed: onShare,
         ),
       if (heartBtn != null) heartBtn!,
-      if (shuffleButton != null) shuffleButton!,
+      PlatformIconButton(
+        tooltip: "Shuffle",
+        icon: Icon(
+          Icons.shuffle,
+          color: color?.titleTextColor,
+        ),
+        onPressed: onShuffledPlay,
+      ),
       const SizedBox(width: 5),
       // play playlist
       PlatformIconButton(
