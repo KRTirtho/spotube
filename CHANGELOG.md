@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/KRTirtho/spotube/compare/v2.5.0...v2.6.0) (2022-12-09)
+
+
+### Features
+
+* add selected tracks to playlists, optimistic playlist remove track ([3386dac](https://github.com/KRTirtho/spotube/commit/3386dac78ee49b9e3504f5c05bf1e7b362a2e8a2))
+* added shuffle button in playlist and album section ([1fad95f](https://github.com/KRTirtho/spotube/commit/1fad95f6e370606a9faf6f2bb9738dc360e23918))
+* **android-playback:** option to download track bytes and play instead of Streaming ([dcc8ba5](https://github.com/KRTirtho/spotube/commit/dcc8ba5a54286b252d53c9c14918971bf7bea8cc))
+* change default platform option and platform specific back button ([36c5e02](https://github.com/KRTirtho/spotube/commit/36c5e02f18374100f61cc3f2957c27bfc0d8511f))
+* dialog logo for macos, settings more width for country picker ([5e96913](https://github.com/KRTirtho/spotube/commit/5e96913ba34230e7a15d62060d5dae28d80e3630))
+* initial platform_ui integration ([9eee573](https://github.com/KRTirtho/spotube/commit/9eee573ce928aa6c03dcb50bf1521350d2de32cc))
+* libadwaita theming, track tile and PlayButtonCard play button icon fix ([e795e23](https://github.com/KRTirtho/spotube/commit/e795e23e42e5f1f832963b2a4506df89b7df5baa))
+* **lyrics:** tabs for both synced and static lyrics [#182](https://github.com/KRTirtho/spotube/issues/182) ([6b6907a](https://github.com/KRTirtho/spotube/commit/6b6907af3fdb327312ad4dd9e16b3e2a850ed896))
+* new refined about page, update checker only check for same update channel ([4cadfa9](https://github.com/KRTirtho/spotube/commit/4cadfa93750cc9b3f8fbe7b60f8161a77d2a12f6))
+* pause track when seeking forward/back and keep audio session alive when paused/interrupted ([bc8a04e](https://github.com/KRTirtho/spotube/commit/bc8a04e5442ba3abe1b04ab325769559f37d9802))
+* platform bottom navigation bar add ([ff14469](https://github.com/KRTirtho/spotube/commit/ff1446982f0260c6fe231970aa6ed61c273fdf07))
+* platform slider and progress indicator integration ([46b00ba](https://github.com/KRTirtho/spotube/commit/46b00bafdf71a4add61cf50168a32198c3293181))
+* platform title bar buttons add ([54048cb](https://github.com/KRTirtho/spotube/commit/54048cbfc37d9a40c020eb81ab67b9dd5428f0d7))
+* **playback:** change current track youtube source panel and tooltips for player icon buttons ([4b21cc8](https://github.com/KRTirtho/spotube/commit/4b21cc829954fb079d1a0081b9147377063da3ec))
+* Player and Playbutton theme respect to platform ([512446d](https://github.com/KRTirtho/spotube/commit/512446dcab72aa1d7bce18e5a5793f6be8f30fcb))
+* player queue and sibling tracks platform decoration ([39a7794](https://github.com/KRTirtho/spotube/commit/39a77945d132d90ff323b0a22edc2a12a4749888))
+* **PlayerView:** shortcut button for opening lyrics [#273](https://github.com/KRTirtho/spotube/issues/273) ([1d4847a](https://github.com/KRTirtho/spotube/commit/1d4847ab0a0b18d5bc27257b3db863b995dc5843))
+* rename files to snake_case and reorganize folder structure ([7c25e1c](https://github.com/KRTirtho/spotube/commit/7c25e1cc8a35eb8aee2268799c05f299204fa3f5))
+* replace all types of buttons with platform buttons ([69739b4](https://github.com/KRTirtho/spotube/commit/69739b457296a6b209aa6f73beb378ae1f089ac5))
+* rpm packaging support ([067e9ac](https://github.com/KRTirtho/spotube/commit/067e9ac53ee85775c9ec35457fac9e064e72e4c0))
+* **search:** infinite scroll for tracks, artists, playlists and albums ([e6761a6](https://github.com/KRTirtho/spotube/commit/e6761a6f8eadf4ab260723253a8e00121b6365b5))
+* set platform to default platform on start up ([472da6b](https://github.com/KRTirtho/spotube/commit/472da6b8b1c3e06b666da58351f3feafbfe6c98a))
+* shuffle keep playing track at top, linux title bar drag no working ([1223cf2](https://github.com/KRTirtho/spotube/commit/1223cf2629c6615b0c48e9e6742b68341f33c7f8))
+* sidebar download count and proper progress color in playbutton ([a10bc5b](https://github.com/KRTirtho/spotube/commit/a10bc5b8d89207ac86872dd25f3258e47c2141a5))
+* static shimmer for track tile, playbutton card and track tile ([3ed8b0f](https://github.com/KRTirtho/spotube/commit/3ed8b0fda2cb8145a2bc6c8f8c6af82db6a40547))
+* tablet mode navigation bar & windows semi transparent bg, ([3282370](https://github.com/KRTirtho/spotube/commit/3282370f74f323c00116fa8626fd1440ee9d4922))
+* **title_bar:** platform specific title bar ([e659e3c](https://github.com/KRTirtho/spotube/commit/e659e3c56fb02ad8a1c5114bf80074f0324cc4f1))
+* titlebar complete compatibility, platform specific login, library tabbar in titlebar ([b3c27d1](https://github.com/KRTirtho/spotube/commit/b3c27d1fca233ea079803fe49134abc528376df3))
+* use platform checkbox ([2211505](https://github.com/KRTirtho/spotube/commit/2211505d713cef752d07cafb9791a49e8095eee2))
+* window blur effect add ([b0db5e7](https://github.com/KRTirtho/spotube/commit/b0db5e7d8246f98835e7ce6656c8aa7620e46bec))
+
+
+### Bug Fixes
+
+* **ArtistCard:** linux shadow ([c186881](https://github.com/KRTirtho/spotube/commit/c1868817e5abb8a4152646f00a0395933fee7823))
+* **auth:** refresh access token timer not working ([b3ac5ca](https://github.com/KRTirtho/spotube/commit/b3ac5ca3bbb6d5af154f4b5d715d1f19ca2f46e2))
+* bottom navigation bar settings tile not active when selected ([43557e4](https://github.com/KRTirtho/spotube/commit/43557e40df269757c2d5236a455308ea6478d95a))
+* dialog logo in android, lyrics visible timer adjust button ([3c6803b](https://github.com/KRTirtho/spotube/commit/3c6803bb3fac8eee9166764089724194a48509c6))
+* heart button showing when not logged in, wrong login redirect ([4dc26af](https://github.com/KRTirtho/spotube/commit/4dc26af23d12f76cbfdfbf4e37b0c11fcc484d3f))
+* horizontal infinite lists doesn't fill the screen ([69995be](https://github.com/KRTirtho/spotube/commit/69995bea1c6342c9212e5b22ef50bdfd6e7eba45))
+* ios dialog action buttons, local tracks crashing app, shimmer color and android wrong status bar color ([90c1200](https://github.com/KRTirtho/spotube/commit/90c1200a087f796690de0cfc8cc607d2bff44282))
+* **login:** not working in android in Brazil or Ukraine regions ([0b79a11](https://github.com/KRTirtho/spotube/commit/0b79a1181c37cf06fbfa3bfb3854cfd47097016e))
+* **macos:** black text in dark mode ([fb9c0e4](https://github.com/KRTirtho/spotube/commit/fb9c0e44be93997fc852bf0260e8a8608000c023))
+* **macos:** white text color in dark mode, text field white background ([e086b52](https://github.com/KRTirtho/spotube/commit/e086b520e745e65771136cbfa842ae0693c44872))
+* **mobile:** SafeArea bugs and back button color ([a8330ef](https://github.com/KRTirtho/spotube/commit/a8330ef2e1112012bbae19ee6a5c27a26c5fb719))
+* null exception in themes ([9465d92](https://github.com/KRTirtho/spotube/commit/9465d92fa032b8598a0752767dcec9af2541d222))
+* platform_ui local path ([00d0d38](https://github.com/KRTirtho/spotube/commit/00d0d38b5450aeb877195afdfb9424f83762d178))
+* player view artist link when local playlist is playing, lyric delay adjust button alignment ([ee5c417](https://github.com/KRTirtho/spotube/commit/ee5c417ac396ef0b1796fa74a6a494181e6e0396))
+* remove windows background ([6942964](https://github.com/KRTirtho/spotube/commit/694296418787c460bb3fa63ab30f3b0eed9184dc))
+* search field ios dark icon , lyrics tabbar ios background color ([be56ad4](https://github.com/KRTirtho/spotube/commit/be56ad44773ebcd14777d80b61e26875698dc18a))
+* settings Title alignment and play button card ripple effect in other platforms ([3b6bf27](https://github.com/KRTirtho/spotube/commit/3b6bf27a984f5d4836143638396ed4b467c0eae7))
+* shuffle play logic ([65cad07](https://github.com/KRTirtho/spotube/commit/65cad07e3a6e2188c53159057f9c3d4fe89706ea))
+* small minwidth of window in desktop, linux wrong light theme accent color, search field transparent background ([5b0e22c](https://github.com/KRTirtho/spotube/commit/5b0e22c1b639f2f57d92cb70cd11f56e30e0a457))
+* tooltips of menu and adaptive pop up menu ([261aaf1](https://github.com/KRTirtho/spotube/commit/261aaf191c51bc12b28c602ee160d53d3eacf3a5))
+* update download dialog blocking the UI ([3925f74](https://github.com/KRTirtho/spotube/commit/3925f743951e51f138cc3ca865fa167c34e776ef))
+* user playlists not updating after creating/deleting, artist follow not updating after follow/unfollow ([6cc2a18](https://github.com/KRTirtho/spotube/commit/6cc2a185d0c4c19f176e6f65b8ada19ebc76af5e))
+* **windows:** windows global title bar ([bd18f19](https://github.com/KRTirtho/spotube/commit/bd18f198217538f0089d5a1c4288dd97f982661b))
+
 ## [2.5.0](https://github.com/KRTirtho/spotube/compare/v2.4.1...v2.5.0) (2022-10-13)
 
 

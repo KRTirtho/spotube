@@ -3,7 +3,7 @@ description: A lightweight free Spotify crossplatform-client which handles playb
 
 publish_to: "none"
 
-version: 2.5.0+15
+version: 2.6.0+16
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
