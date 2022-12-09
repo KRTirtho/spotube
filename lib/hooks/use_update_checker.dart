@@ -51,7 +51,10 @@ void useUpdateChecker(WidgetRef ref) {
     checkUpdate().then((value) {
       final currentVersion = value.first;
       final latestVersion = value.last;
-      if (currentVersion == null || latestVersion == null) return;
+      if (currentVersion == null ||
+          latestVersion == null ||
+          (latestVersion.isPreRelease && !currentVersion.isPreRelease) ||
+          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) return;
       if (latestVersion <= currentVersion) return;
       showPlatformAlertDialog(
         context,

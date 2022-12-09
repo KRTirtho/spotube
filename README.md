@@ -61,7 +61,7 @@ Following are the features that currently spotube offers:
 # Support this project
 
 <a href="https://patreon.com/krtirtho"><img src="https://user-images.githubusercontent.com/61944859/180249027-678b01b8-c336-451e-b147-6d84a5b9d0e7.png" width="250"/></a>
-[!["Donate to out Collective"](https://opencollective.com/webpack/donate/button.png?color=blue)](https://opencollective.com/spotube)
+[!["Donate to out Collective"](https://opencollective.com/spotube/donate/button.png?color=blue)](https://opencollective.com/spotube)
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/krtirtho)
 
 # Installation

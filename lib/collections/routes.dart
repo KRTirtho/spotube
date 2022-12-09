@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
+import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/album/album.dart';
@@ -54,6 +55,14 @@ final router = GoRouter(
           pageBuilder: (context, state) => SpotubePage(
             child: const SettingsPage(),
           ),
+          routes: [
+            GoRoute(
+              path: "about",
+              pageBuilder: (context, state) => SpotubePage(
+                child: const AboutSpotube(),
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: "/album/:id",

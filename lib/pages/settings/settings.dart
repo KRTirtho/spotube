@@ -535,7 +535,14 @@ class SettingsPage extends HookConsumerWidget {
                             preferences.setCheckUpdate(checked),
                       ),
                     ),
-                    const About()
+                    PlatformListTile(
+                      leading: const Icon(Icons.info_outline_rounded),
+                      title: const PlatformText("About Spotube"),
+                      trailing: const Icon(Icons.arrow_forward_ios_rounded),
+                      onTap: () {
+                        GoRouter.of(context).push("/settings/about");
+                      },
+                    ),
                   ],
                 ),
               ),
