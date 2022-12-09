@@ -127,7 +127,7 @@ final windowsTheme = fluent_ui.ThemeData.light().copyWith(
     ),
   ),
   navigationPaneTheme: fluent_ui.NavigationPaneThemeData(
-    backgroundColor: fluent_ui.Colors.grey[100].withOpacity(0.5),
+    backgroundColor: Colors.grey[100]?.withOpacity(0.5),
   ),
 );
 final windowsDarkTheme = fluent_ui.ThemeData.dark().copyWith(
@@ -137,7 +137,7 @@ final windowsDarkTheme = fluent_ui.ThemeData.dark().copyWith(
     ),
   ),
   navigationPaneTheme: fluent_ui.NavigationPaneThemeData(
-    backgroundColor: fluent_ui.Colors.grey[900].withOpacity(0.5),
+    backgroundColor: Colors.grey[900]?.withOpacity(0.5),
   ),
 );
 final macosTheme = MacosThemeData.light().copyWith(
