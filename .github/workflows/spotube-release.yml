@@ -241,6 +241,8 @@ jobs:
       - run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
           rm -rf spotube
+          git config --global user.email "krtirtho@gmail.com"
+          git config --global user.name "Kingkor Roy Tirtho"
           git add .
           git commit -m "v${{ steps.tag.outputs.tag }} Update"
           git branch update-${{ steps.tag.outputs.tag }}
