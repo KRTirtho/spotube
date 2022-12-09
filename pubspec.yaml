@@ -70,7 +70,6 @@ dependencies:
   macos_ui: ^1.7.5
   libadwaita: ^1.2.5
   adwaita: ^0.5.2
-  flutter_acrylic: 1.0.0+2
 
 dev_dependencies:
   flutter_test:

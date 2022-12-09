@@ -1,4 +1,3 @@
-import flutter_acrylic
 import Cocoa
 import FlutterMacOS
 import bitsdojo_window_macos
@@ -9,15 +8,12 @@ class MainFlutterWindow: BitsdojoWindow {
   }
 
   override func awakeFromNib() {
+    let flutterViewController = FlutterViewController.init()
     let windowFrame = self.frame
-    let blurryContainerViewController = BlurryContainerViewController()
-    self.contentViewController = blurryContainerViewController
+    self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
 
-    /* Initialize the flutter_acrylic plugin */
-    MainFlutterWindowManipulator.start(mainFlutterWindow: self)
-
-    RegisterGeneratedPlugins(registry: blurryContainerViewController.flutterViewController)
+    RegisterGeneratedPlugins(registry: flutterViewController)
 
     super.awakeFromNib()
   }
