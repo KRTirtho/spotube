@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -62,20 +63,46 @@ class ConfirmDownloadDialog extends StatelessWidget {
         ),
       ),
       primaryActions: [
-        PlatformFilledButton(
-          style: const ButtonStyle(
-            foregroundColor: MaterialStatePropertyAll(Colors.white),
-            backgroundColor: MaterialStatePropertyAll(Colors.red),
-          ),
-          onPressed: () => Navigator.of(context).pop(true),
-          child: const Text("Accept"),
+        PlatformBuilder(
+          android: (context, _) {
+            return PlatformFilledButton(
+              style: const ButtonStyle(
+                foregroundColor: MaterialStatePropertyAll(Colors.white),
+                backgroundColor: MaterialStatePropertyAll(Colors.red),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text("Accept"),
+            );
+          },
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () => Navigator.of(context).pop(true),
+              isDestructiveAction: true,
+              child: const Text("Accept"),
+            );
+          },
         )
       ],
       secondaryActions: [
-        PlatformFilledButton(
-          isSecondary: true,
-          child: const Text("Decline"),
-          onPressed: () => Navigator.of(context).pop(false),
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              child: const Text("Decline"),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            );
+          },
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              isDefaultAction: true,
+              child: const Text("Decline"),
+            );
+          },
         ),
       ],
     );

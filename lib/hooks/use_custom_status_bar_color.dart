@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:platform_ui/platform_ui.dart';
 
 void useCustomStatusBarColor(
   Color color,
@@ -8,7 +9,7 @@ void useCustomStatusBarColor(
   bool noSetBGColor = false,
 }) {
   final context = useContext();
-  final backgroundColor = Theme.of(context).backgroundColor;
+  final backgroundColor = PlatformTheme.of(context).scaffoldBackgroundColor!;
   resetStatusbar() => SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           statusBarColor: backgroundColor, // status bar color

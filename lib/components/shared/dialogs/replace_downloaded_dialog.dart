@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
@@ -51,19 +52,47 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
         ],
       ),
       primaryActions: [
-        PlatformFilledButton(
-          child: const Text("Yes"),
-          onPressed: () {
-            Navigator.pop(context, true);
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              child: const Text("Yes"),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            );
           },
-        )
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              isDefaultAction: true,
+              child: const Text("Yes"),
+            );
+          },
+        ),
       ],
       secondaryActions: [
-        PlatformFilledButton(
-          isSecondary: true,
-          child: const Text("No"),
-          onPressed: () {
-            Navigator.pop(context, false);
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              isSecondary: true,
+              child: const Text("No"),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            );
+          },
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              isDestructiveAction: true,
+              child: const Text("No"),
+            );
           },
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/extensions/theme.dart';
 
 class ShimmerPlaybuttonCardPainter extends CustomPainter {
@@ -52,7 +53,11 @@ class ShimmerPlaybuttonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shimmerTheme = Theme.of(context).extension<ShimmerColorTheme>();
+    final isDark = PlatformTheme.of(context).brightness == Brightness.dark;
+    final shimmerTheme = ShimmerColorTheme(
+      shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
+      shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],
+    );
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -61,10 +66,10 @@ class ShimmerPlaybuttonCard extends StatelessWidget {
           CustomPaint(
             size: const Size(200, 250),
             painter: ShimmerPlaybuttonCardPainter(
-              background: shimmerTheme?.shimmerBackgroundColor ??
+              background: shimmerTheme.shimmerBackgroundColor ??
                   Theme.of(context).scaffoldBackgroundColor,
               foreground:
-                  shimmerTheme?.shimmerColor ?? Theme.of(context).cardColor,
+                  shimmerTheme.shimmerColor ?? Theme.of(context).cardColor,
             ),
           ),
           const SizedBox(width: 10),

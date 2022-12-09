@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/extensions/theme.dart';
@@ -10,12 +11,14 @@ class ShimmerArtistProfile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shimmerColor =
-        Theme.of(context).extension<ShimmerColorTheme>()?.shimmerColor ??
-            Colors.white;
-    final shimmerBackgroundColor = Theme.of(context)
-        .extension<ShimmerColorTheme>()
-        ?.shimmerBackgroundColor;
+    final isDark = PlatformTheme.of(context).brightness == Brightness.dark;
+    final shimmerTheme = ShimmerColorTheme(
+      shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
+      shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],
+    );
+    final shimmerColor = shimmerTheme.shimmerColor ?? Colors.white;
+    final shimmerBackgroundColor =
+        shimmerTheme.shimmerBackgroundColor ?? Colors.grey;
 
     final avatarWidth = useBreakpointValue(
       sm: MediaQuery.of(context).size.width * 0.80,

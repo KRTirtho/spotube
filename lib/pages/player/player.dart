@@ -89,7 +89,7 @@ class PlayerView extends HookConsumerWidget {
             textStyle: PlatformTheme.of(context).textTheme!.body!,
             color: paletteColor.color.withOpacity(.5),
             child: SafeArea(
-              child: ListView(
+              child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10),

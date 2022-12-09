@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -67,32 +68,60 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
       },
     ).key);
 
+    onOk() {
+      switch (schemeType) {
+        case ColorSchemeType.accent:
+          preferences.setAccentColorScheme(colorsMap[active.value]!);
+          break;
+        default:
+          preferences.setBackgroundColorScheme(
+            colorsMap[active.value]!,
+          );
+      }
+      Navigator.pop(context);
+    }
+
     return PlatformAlertDialog(
       macosAppIcon: Sidebar.brandLogo(),
       title: Text("Pick ${schemeType.name} color scheme"),
       primaryActions: [
-        PlatformFilledButton(
-          child: const Text("Save"),
-          onPressed: () {
-            switch (schemeType) {
-              case ColorSchemeType.accent:
-                preferences.setAccentColorScheme(colorsMap[active.value]!);
-                break;
-              default:
-                preferences.setBackgroundColorScheme(
-                  colorsMap[active.value]!,
-                );
-            }
-            Navigator.pop(context);
+        PlatformBuilder(
+          android: (context, data) {
+            return PlatformFilledButton(
+              onPressed: onOk,
+              child: const Text("Save"),
+            );
           },
-        )
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: onOk,
+              isDefaultAction: true,
+              child: const Text("Save"),
+            );
+          },
+          fallback: PlatformBuilderFallback.android,
+        ),
       ],
       secondaryActions: [
-        PlatformFilledButton(
-          isSecondary: true,
-          child: const Text("Cancel"),
-          onPressed: () {
-            Navigator.pop(context);
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              isSecondary: true,
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            );
+          },
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              isDestructiveAction: true,
+              child: const Text("Cancel"),
+            );
           },
         ),
       ],

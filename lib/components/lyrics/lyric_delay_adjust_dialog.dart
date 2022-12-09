@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,25 +22,57 @@ class LyricDelayAdjustDialog extends HookConsumerWidget {
       macosAppIcon: Sidebar.brandLogo(),
       title: const Center(child: Text("Adjust Lyrics Delay")),
       secondaryActions: [
-        PlatformFilledButton(
-          isSecondary: true,
-          onPressed: () {
-            Navigator.of(context).pop();
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              isSecondary: true,
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            );
           },
-          child: const Text("Cancel"),
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              isDestructiveAction: true,
+              child: const Text("Cancel"),
+            );
+          },
         ),
       ],
       primaryActions: [
-        PlatformFilledButton(
-          child: const Text("Done"),
-          onPressed: () {
-            Navigator.of(context).pop(
-              Duration(
-                milliseconds: getValue().toInt(),
-              ),
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              child: const Text("Done"),
+              onPressed: () {
+                Navigator.of(context).pop(
+                  Duration(
+                    milliseconds: getValue().toInt(),
+                  ),
+                );
+              },
             );
           },
-        )
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop(
+                  Duration(
+                    milliseconds: getValue().toInt(),
+                  ),
+                );
+              },
+              isDefaultAction: true,
+              child: const Text("Done"),
+            );
+          },
+        ),
       ],
       content: SizedBox(
         height: 100,

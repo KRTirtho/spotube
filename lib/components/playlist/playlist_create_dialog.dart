@@ -1,4 +1,5 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,36 +26,66 @@ class PlaylistCreateDialog extends HookConsumerWidget {
               final public = useState(false);
               final collaborative = useState(false);
 
+              onCreate() async {
+                if (playlistName.text.isEmpty) return;
+                final me = await spotify.me.get();
+                await spotify.playlists.createPlaylist(
+                  me.id!,
+                  playlistName.text,
+                  collaborative: collaborative.value,
+                  public: public.value,
+                  description: description.text,
+                );
+                await QueryBowl.of(context)
+                    .getQuery(
+                      Queries.playlist.ofMine.queryKey,
+                    )
+                    ?.refetch();
+                Navigator.pop(context);
+              }
+
               return PlatformAlertDialog(
                 macosAppIcon: Sidebar.brandLogo(),
                 title: const Text("Create a Playlist"),
                 primaryActions: [
-                  PlatformFilledButton(
-                    child: const Text("Create"),
-                    onPressed: () async {
-                      if (playlistName.text.isEmpty) return;
-                      final me = await spotify.me.get();
-                      await spotify.playlists.createPlaylist(
-                        me.id!,
-                        playlistName.text,
-                        collaborative: collaborative.value,
-                        public: public.value,
-                        description: description.text,
+                  PlatformBuilder(
+                    fallback: PlatformBuilderFallback.android,
+                    android: (context, _) {
+                      return PlatformFilledButton(
+                        onPressed: onCreate,
+                        child: const Text("Create"),
                       );
-                      await QueryBowl.of(context)
-                          .getQuery(
-                            Queries.playlist.ofMine.queryKey,
-                          )
-                          ?.refetch();
-                      Navigator.pop(context);
                     },
-                  )
+                    ios: (context, data) {
+                      return CupertinoDialogAction(
+                        isDefaultAction: true,
+                        onPressed: onCreate,
+                        child: const Text("Create"),
+                      );
+                    },
+                  ),
                 ],
                 secondaryActions: [
-                  PlatformFilledButton(
-                    isSecondary: true,
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("Cancel"),
+                  PlatformBuilder(
+                    fallback: PlatformBuilderFallback.android,
+                    android: (context, _) {
+                      return PlatformFilledButton(
+                        isSecondary: true,
+                        child: const Text("Cancel"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                    ios: (context, data) {
+                      return CupertinoDialogAction(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        isDestructiveAction: true,
+                        child: const Text("Cancel"),
+                      );
+                    },
                   ),
                 ],
                 content: Container(

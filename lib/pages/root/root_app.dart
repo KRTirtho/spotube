@@ -51,7 +51,7 @@ class RootApp extends HookConsumerWidget {
     // checks for latest version of the application
     useUpdateChecker(ref);
 
-    final backgroundColor = Theme.of(context).backgroundColor;
+    final backgroundColor = PlatformTheme.of(context).scaffoldBackgroundColor!;
 
     useEffect(() {
       SystemChrome.setSystemUIOverlayStyle(

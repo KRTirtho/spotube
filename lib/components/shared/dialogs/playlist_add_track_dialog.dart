@@ -1,4 +1,5 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -31,36 +32,66 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
     );
     final playlistsCheck = useState(<String, bool>{});
 
+    Future<void> onAdd() async {
+      final selectedPlaylists = playlistsCheck.value.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key);
+
+      await Future.wait(
+        selectedPlaylists.map(
+          (playlistId) => spotify.playlists.addTracks(
+              tracks
+                  .map(
+                    (track) => track.uri!,
+                  )
+                  .toList(),
+              playlistId),
+        ),
+      ).then((_) => Navigator.pop(context));
+    }
+
     return PlatformAlertDialog(
       title: const PlatformText("Add to Playlist"),
       secondaryActions: [
-        PlatformFilledButton(
-          isSecondary: true,
-          child: const PlatformText("Cancel"),
-          onPressed: () => Navigator.pop(context),
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              isSecondary: true,
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            );
+          },
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              isDestructiveAction: true,
+              child: const Text("Cancel"),
+            );
+          },
         ),
       ],
       primaryActions: [
-        PlatformFilledButton(
-          child: const PlatformText("Add"),
-          onPressed: () async {
-            final selectedPlaylists = playlistsCheck.value.entries
-                .where((entry) => entry.value)
-                .map((entry) => entry.key);
-
-            await Future.wait(
-              selectedPlaylists.map(
-                (playlistId) => spotify.playlists.addTracks(
-                    tracks
-                        .map(
-                          (track) => track.uri!,
-                        )
-                        .toList(),
-                    playlistId),
-              ),
-            ).then((_) => Navigator.pop(context));
+        PlatformBuilder(
+          fallback: PlatformBuilderFallback.android,
+          android: (context, _) {
+            return PlatformFilledButton(
+              onPressed: onAdd,
+              child: const Text("Add"),
+            );
           },
-        )
+          ios: (context, data) {
+            return CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: onAdd,
+              child: const Text("Add"),
+            );
+          },
+        ),
       ],
       content: SizedBox(
         height: 300,

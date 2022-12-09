@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/extensions/theme.dart';
 
 class ShimmerTrackTilePainter extends CustomPainter {
@@ -66,7 +67,11 @@ class ShimmerTrackTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shimmerTheme = Theme.of(context).extension<ShimmerColorTheme>();
+    final isDark = PlatformTheme.of(context).brightness == Brightness.dark;
+    final shimmerTheme = ShimmerColorTheme(
+      shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
+      shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],
+    );
 
     if (noSliver) {
       return ListView.builder(
@@ -77,10 +82,10 @@ class ShimmerTrackTile extends StatelessWidget {
             child: CustomPaint(
               size: const Size(double.infinity, 50),
               painter: ShimmerTrackTilePainter(
-                background: shimmerTheme?.shimmerBackgroundColor ??
+                background: shimmerTheme.shimmerBackgroundColor ??
                     Theme.of(context).scaffoldBackgroundColor,
                 foreground:
-                    shimmerTheme?.shimmerColor ?? Theme.of(context).cardColor,
+                    shimmerTheme.shimmerColor ?? Theme.of(context).cardColor,
               ),
             ),
           );

@@ -242,7 +242,8 @@ class UserLocalTracks extends HookConsumerWidget {
               ),
             );
           },
-          loading: () => const ShimmerTrackTile(noSliver: true),
+          loading: () =>
+              const Expanded(child: ShimmerTrackTile(noSliver: true)),
           error: (error, stackTrace) =>
               Text(error.toString() + stackTrace.toString()),
         )
