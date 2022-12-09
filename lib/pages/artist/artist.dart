@@ -16,6 +16,7 @@ import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -52,6 +53,8 @@ class ArtistPage extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
 
     final Playback playback = ref.watch(playbackProvider);
+
+    final auth = ref.watch(authProvider);
 
     return SafeArea(
       child: PlatformScaffold(
@@ -128,64 +131,66 @@ class ArtistPage extends HookConsumerWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                HookBuilder(
-                                  builder: (context) {
-                                    final isFollowingQuery = useQuery(
-                                      job: Queries.artist.doIFollow(artistId),
-                                      externalData: spotify,
-                                    );
-
-                                    if (isFollowingQuery.isLoading ||
-                                        !isFollowingQuery.hasData) {
-                                      return const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child:
-                                            PlatformCircularProgressIndicator(),
+                                if (auth.isLoggedIn)
+                                  HookBuilder(
+                                    builder: (context) {
+                                      final isFollowingQuery = useQuery(
+                                        job: Queries.artist.doIFollow(artistId),
+                                        externalData: spotify,
                                       );
-                                    }
 
-                                    return PlatformFilledButton(
-                                      onPressed: () async {
-                                        try {
-                                          isFollowingQuery.data!
-                                              ? await spotify.me.unfollow(
-                                                  FollowingType.artist,
-                                                  [artistId],
+                                      if (isFollowingQuery.isLoading ||
+                                          !isFollowingQuery.hasData) {
+                                        return const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child:
+                                              PlatformCircularProgressIndicator(),
+                                        );
+                                      }
+
+                                      return PlatformFilledButton(
+                                        onPressed: () async {
+                                          try {
+                                            isFollowingQuery.data!
+                                                ? await spotify.me.unfollow(
+                                                    FollowingType.artist,
+                                                    [artistId],
+                                                  )
+                                                : await spotify.me.follow(
+                                                    FollowingType.artist,
+                                                    [artistId],
+                                                  );
+                                            await isFollowingQuery.refetch();
+                                            QueryBowl.of(context)
+                                                .getInfiniteQuery(
+                                                  Queries.artist.followedByMe
+                                                      .queryKey,
                                                 )
-                                              : await spotify.me.follow(
-                                                  FollowingType.artist,
-                                                  [artistId],
-                                                );
-                                          await isFollowingQuery.refetch();
-                                          QueryBowl.of(context)
-                                              .getInfiniteQuery(
-                                                Queries.artist.followedByMe
-                                                    .queryKey,
-                                              )
-                                              ?.refetch();
-                                        } catch (e, stack) {
-                                          logger.e(
-                                            "FollowButton.onPressed",
-                                            e,
-                                            stack,
-                                          );
-                                        } finally {
-                                          QueryBowl.of(context).refetchQueries([
-                                            Queries.artist
-                                                .doIFollow(artistId)
-                                                .queryKey,
-                                          ]);
-                                        }
-                                      },
-                                      child: PlatformText(
-                                        isFollowingQuery.data!
-                                            ? "Following"
-                                            : "Follow",
-                                      ),
-                                    );
-                                  },
-                                ),
+                                                ?.refetch();
+                                          } catch (e, stack) {
+                                            logger.e(
+                                              "FollowButton.onPressed",
+                                              e,
+                                              stack,
+                                            );
+                                          } finally {
+                                            QueryBowl.of(context)
+                                                .refetchQueries([
+                                              Queries.artist
+                                                  .doIFollow(artistId)
+                                                  .queryKey,
+                                            ]);
+                                          }
+                                        },
+                                        child: PlatformText(
+                                          isFollowingQuery.data!
+                                              ? "Following"
+                                              : "Follow",
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 PlatformIconButton(
                                   icon: const Icon(Icons.share_rounded),
                                   onPressed: () {

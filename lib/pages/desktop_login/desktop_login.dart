@@ -12,7 +12,6 @@ class DesktopLoginPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
-    final textTheme = Theme.of(context).textTheme;
 
     return SafeArea(
       child: PlatformScaffold(
@@ -36,13 +35,11 @@ class DesktopLoginPage extends HookConsumerWidget {
                     width: MediaQuery.of(context).size.width *
                         (breakpoint <= Breakpoints.md ? .5 : .3),
                   ),
-                  PlatformText("Add your spotify credentials to get started",
-                      style: breakpoint <= Breakpoints.md
-                          ? textTheme.headline5
-                          : textTheme.headline4),
-                  PlatformText(
+                  PlatformText.subheading(
+                    "Add your spotify credentials to get started",
+                  ),
+                  PlatformText.label(
                     "Don't worry, any of your credentials won't be collected or shared with anyone",
-                    style: Theme.of(context).textTheme.caption,
                   ),
                   const SizedBox(height: 10),
                   TokenLoginForm(

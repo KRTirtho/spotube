@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
@@ -16,6 +17,10 @@ class LoginTutorial extends ConsumerWidget {
     final auth = ref.watch(authProvider);
     final key = GlobalKey<State<IntroductionScreen>>();
 
+    final pageDecoration = PageDecoration(
+      bodyTextStyle: PlatformTheme.of(context).textTheme!.body!,
+      titleTextStyle: PlatformTheme.of(context).textTheme!.subheading!,
+    );
     return PlatformScaffold(
       appBar: PageWindowTitleBar(
         hideWhenWindows: false,
@@ -28,6 +33,8 @@ class LoginTutorial extends ConsumerWidget {
       ),
       body: IntroductionScreen(
         key: key,
+        globalBackgroundColor:
+            PlatformTheme.of(context).scaffoldBackgroundColor,
         overrideBack: PlatformFilledButton(
           isSecondary: true,
           child: const Center(child: PlatformText("Previous")),
@@ -52,6 +59,7 @@ class LoginTutorial extends ConsumerWidget {
         ),
         pages: [
           PageViewModel(
+            decoration: pageDecoration,
             title: "Step 1",
             image: Image.asset("assets/tutorial/step-1.png"),
             bodyWidget: Wrap(
@@ -70,6 +78,7 @@ class LoginTutorial extends ConsumerWidget {
             ),
           ),
           PageViewModel(
+            decoration: pageDecoration,
             title: "Step 2",
             image: Image.asset("assets/tutorial/step-2.png"),
             bodyWidget: const PlatformText(
@@ -78,6 +87,7 @@ class LoginTutorial extends ConsumerWidget {
             ),
           ),
           PageViewModel(
+            decoration: pageDecoration,
             title: "Step 3",
             image: Image.asset(
               "assets/tutorial/step-3.png",
@@ -89,7 +99,7 @@ class LoginTutorial extends ConsumerWidget {
           ),
           if (auth.isLoggedIn)
             PageViewModel(
-              decoration: const PageDecoration(
+              decoration: pageDecoration.copyWith(
                 bodyAlignment: Alignment.center,
               ),
               title: "Success🥳",
@@ -99,14 +109,19 @@ class LoginTutorial extends ConsumerWidget {
             )
           else
             PageViewModel(
+              decoration: pageDecoration,
               title: "Step 5",
               bodyWidget: Column(
-                children: const [
-                  PlatformText(
+                children: [
+                  PlatformText.label(
                     "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
                   ),
-                  SizedBox(height: 10),
-                  TokenLoginForm(),
+                  const SizedBox(height: 10),
+                  TokenLoginForm(
+                    onDone: () {
+                      GoRouter.of(context).go("/");
+                    },
+                  ),
                 ],
               ),
             ),

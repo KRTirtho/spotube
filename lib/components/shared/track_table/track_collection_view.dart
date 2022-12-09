@@ -7,6 +7,7 @@ import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
+import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
@@ -55,6 +56,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(authProvider);
     final color = usePaletteGenerator(
       context,
       titleImage,
@@ -69,7 +71,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
           ),
           onPressed: onShare,
         ),
-      if (heartBtn != null) heartBtn!,
+      if (heartBtn != null && auth.isLoggedIn) heartBtn!,
       PlatformIconButton(
         tooltip: "Shuffle",
         icon: Icon(
