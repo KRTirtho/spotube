@@ -34,7 +34,8 @@ class PlayerQueue extends HookConsumerWidget {
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           );
-    final headlineColor = Theme.of(context).textTheme.headline4?.color;
+    final headlineColor =
+        PlatformTheme.of(context).textTheme?.subheading?.color;
 
     useEffect(() {
       if (playback.track == null || playback.playlist == null) return null;

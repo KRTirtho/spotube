@@ -25,12 +25,12 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
           RadioListTile<bool>(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            activeColor: Theme.of(context).primaryColor,
+            activeColor: PlatformTheme.of(context).primaryColor,
             value: true,
             groupValue: groupValue,
             onChanged: (value) {
               if (value != null) {
-                ref.read(replaceDownloadedFileState.state).state = value;
+                ref.read(replaceDownloadedFileState.notifier).state = value;
               }
             },
             title: const Text("Replace all downloaded tracks"),
@@ -38,12 +38,12 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
           RadioListTile<bool>(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            activeColor: Theme.of(context).primaryColor,
+            activeColor: PlatformTheme.of(context).primaryColor,
             value: false,
             groupValue: groupValue,
             onChanged: (value) {
               if (value != null) {
-                ref.read(replaceDownloadedFileState.state).state = value;
+                ref.read(replaceDownloadedFileState.notifier).state = value;
               }
             },
             title: const Text("Skip downloading all downloaded tracks"),

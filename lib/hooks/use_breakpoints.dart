@@ -83,12 +83,12 @@ BreakpointUtils useBreakpoints() {
         width <= 1366 &&
         breakpoint.value != Breakpoints.lg) {
       breakpoint.value = Breakpoints.lg;
-    } else if (width > 414 &&
+    } else if (width > 500 &&
         width <= 800 &&
         breakpoint.value != Breakpoints.md) {
       breakpoint.value = Breakpoints.md;
     } else if (width >= 250 &&
-        width <= 414 &&
+        width <= 500 &&
         breakpoint.value != Breakpoints.sm) {
       breakpoint.value = Breakpoints.sm;
     }

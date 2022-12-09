@@ -25,9 +25,8 @@ class PlaylistGenreView extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          Text(
+          PlatformText.subheading(
             genreName,
-            style: Theme.of(context).textTheme.headline4,
             textAlign: TextAlign.center,
           ),
           Consumer(

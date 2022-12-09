@@ -268,7 +268,7 @@ class ArtistPage extends HookConsumerWidget {
                             Container(
                               margin: const EdgeInsets.symmetric(horizontal: 5),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
+                                color: PlatformTheme.of(context).primaryColor,
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               child: PlatformIconButton(

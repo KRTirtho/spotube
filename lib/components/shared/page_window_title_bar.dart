@@ -1,7 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/utils/platform.dart';
 
@@ -78,7 +77,7 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
       return null;
     }, [platform, widget.hideWhenWindows]);
 
-    var appBar = PlatformAppBar(
+    final appBar = PlatformAppBar(
       actions: [
         ...?widget.actions,
         if (!kIsMacOS && !kIsMobile)

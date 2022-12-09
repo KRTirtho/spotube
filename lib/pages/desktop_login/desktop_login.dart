@@ -16,7 +16,10 @@ class DesktopLoginPage extends HookConsumerWidget {
 
     return SafeArea(
       child: PlatformScaffold(
-        appBar: PageWindowTitleBar(leading: const PlatformBackButton()),
+        appBar: PageWindowTitleBar(
+          leading: const PlatformBackButton(),
+          hideWhenWindows: false,
+        ),
         body: SingleChildScrollView(
           child: Center(
             child: Container(

@@ -33,7 +33,7 @@ class Action extends StatelessWidget {
     }
     return PlatformTextButton(
       style: TextButton.styleFrom(
-        foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
+        foregroundColor: PlatformTextTheme.of(context).body?.color,
         padding: const EdgeInsets.all(20),
       ),
       onPressed: onPressed,
@@ -86,7 +86,8 @@ class AdaptiveActions extends HookWidget {
                     .toList(),
               );
             },
-            backgroundColor: Theme.of(context).cardColor,
+            backgroundColor:
+                PlatformTheme.of(context).secondaryBackgroundColor!,
           );
         },
       );

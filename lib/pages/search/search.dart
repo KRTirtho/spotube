@@ -302,11 +302,7 @@ class SearchPage extends HookConsumerWidget {
                                       .error?[searchArtist.pageParams.last]),
                                 const SizedBox(height: 20),
                                 if (albums.isNotEmpty)
-                                  PlatformText(
-                                    "Albums",
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
+                                  PlatformText.subheading("Albums"),
                                 const SizedBox(height: 10),
                                 ScrollConfiguration(
                                   behavior:

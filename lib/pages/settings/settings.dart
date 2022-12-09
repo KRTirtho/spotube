@@ -71,7 +71,7 @@ class SettingsPage extends HookConsumerWidget {
                       AdaptiveListTile(
                         leading: Icon(
                           Icons.login_rounded,
-                          color: Theme.of(context).primaryColor,
+                          color: PlatformTheme.of(context).primaryColor,
                         ),
                         title: SizedBox(
                           height: 50,
@@ -82,7 +82,7 @@ class SettingsPage extends HookConsumerWidget {
                               "Login with your Spotify account",
                               maxLines: 1,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                                color: PlatformTheme.of(context).primaryColor,
                               ),
                             ),
                           ),

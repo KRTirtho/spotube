@@ -126,12 +126,18 @@ final windowsTheme = fluent_ui.ThemeData.light().copyWith(
       iconSize: fluent_ui.ButtonState.all(20),
     ),
   ),
+  navigationPaneTheme: fluent_ui.NavigationPaneThemeData(
+    backgroundColor: fluent_ui.Colors.grey[100].withOpacity(0.5),
+  ),
 );
 final windowsDarkTheme = fluent_ui.ThemeData.dark().copyWith(
   buttonTheme: fluent_ui.ButtonThemeData(
     iconButtonStyle: fluent_ui.ButtonStyle(
       iconSize: fluent_ui.ButtonState.all(20),
     ),
+  ),
+  navigationPaneTheme: fluent_ui.NavigationPaneThemeData(
+    backgroundColor: fluent_ui.Colors.grey[900].withOpacity(0.5),
   ),
 );
 final macosTheme = MacosThemeData.light().copyWith(

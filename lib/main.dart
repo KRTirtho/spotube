@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:audio_service/audio_service.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fl_query/fl_query.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -40,7 +41,7 @@ void main() async {
       final savedSize = rawSize != null ? json.decode(rawSize) : null;
       final double? height = savedSize?["height"];
       final double? width = savedSize?["width"];
-      appWindow.minSize = const Size(1020, 700);
+      appWindow.minSize = const Size(kReleaseMode ? 1020 : 300, 700);
       appWindow.alignment = Alignment.center;
       appWindow.title = "Spotube";
       if (height != null && width != null && height >= 700 && width >= 359) {

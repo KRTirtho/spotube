@@ -18,6 +18,7 @@ class LoginTutorial extends ConsumerWidget {
 
     return PlatformScaffold(
       appBar: PageWindowTitleBar(
+        hideWhenWindows: false,
         leading: PlatformTextButton(
           child: const PlatformText("Exit"),
           onPressed: () {

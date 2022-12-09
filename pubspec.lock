@@ -1051,8 +1051,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: fdff4771fed193aece0862c3216a8457410a856a
-      resolved-ref: fdff4771fed193aece0862c3216a8457410a856a
+      ref: "7a4cda31e434de7cbee92ac7f418903641a2f023"
+      resolved-ref: "7a4cda31e434de7cbee92ac7f418903641a2f023"
       url: "https://github.com/KRTirtho/platform_ui.git"
     source: git
     version: "0.1.0"

@@ -64,12 +64,13 @@ class PlayerView extends HookConsumerWidget {
 
     return PlatformScaffold(
       appBar: PageWindowTitleBar(
+        hideWhenWindows: false,
         backgroundColor: Colors.transparent,
         foregroundColor: paletteColor.titleTextColor,
         toolbarOpacity: 0,
         leading: PlatformBackButton(
           color: PlatformProperty.only(
-            macos: Colors.transparent,
+            macos: Colors.black,
             other: paletteColor.titleTextColor,
           ).resolve(platform!),
         ),
@@ -88,7 +89,7 @@ class PlayerView extends HookConsumerWidget {
             textStyle: PlatformTheme.of(context).textTheme!.body!,
             color: paletteColor.color.withOpacity(.5),
             child: SafeArea(
-              child: Column(
+              child: ListView(
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10),
