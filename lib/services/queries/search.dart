@@ -6,6 +6,7 @@ class SearchQueries {
   final get = InfiniteQueryJob.withVariableKey<List<Page>,
       Tuple2<String, SpotifyApi>, int>(
     preQueryKey: "search-query",
+    refetchOnExternalDataChange: true,
     initialParam: 0,
     enabled: false,
     getNextPageParam: (lastPage, lastParam) =>

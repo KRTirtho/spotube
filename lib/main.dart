@@ -27,7 +27,7 @@ import 'package:spotube/themes/dark_theme.dart';
 import 'package:spotube/themes/light_theme.dart';
 import 'package:spotube/utils/platform.dart';
 
-final bowl = QueryBowl(refetchOnExternalDataChange: true);
+final bowl = QueryBowl();
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CacheTrackAdapter());

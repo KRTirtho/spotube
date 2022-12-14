@@ -29,7 +29,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[Spotube Code of Conduct](https://github.com/KRTirtho/spotubeblob/master/CODE_OF_CONDUCT.md).
+[Spotube Code of Conduct](https://github.com/KRTirtho/spotube/blob/master/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to <>.
 

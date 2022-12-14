@@ -359,7 +359,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.7"
+    version: "2.3.9"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -387,7 +387,7 @@ packages:
       name: connectivity_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.4"
+    version: "1.2.5"
   connectivity_plus_windows:
     dependency: transitive
     description:
@@ -489,16 +489,16 @@ packages:
   fl_query:
     dependency: "direct main"
     description:
-      name: fl_query
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../fl-query/packages/fl_query"
+      relative: true
+    source: path
     version: "0.3.1"
   fl_query_hooks:
     dependency: "direct main"
     description:
-      name: fl_query_hooks
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../fl-query/packages/fl_query_hooks"
+      relative: true
+    source: path
     version: "0.3.1"
   fluent_ui:
     dependency: "direct main"

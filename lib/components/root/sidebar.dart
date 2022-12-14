@@ -198,14 +198,6 @@ class SidebarFooter extends HookConsumerWidget {
             placeholder: ImagePlaceholder.artist,
           );
 
-          useEffect(() {
-            if (auth.isLoggedIn && !me.hasData) {
-              me.setExternalData(ref.read(spotifyProvider));
-              me.refetch();
-            }
-            return;
-          }, [auth.isLoggedIn, me.hasData]);
-
           return Padding(
               padding: const EdgeInsets.all(16).copyWith(left: 0),
               child: Row(

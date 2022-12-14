@@ -9,6 +9,7 @@ import 'package:tuple/tuple.dart';
 class LyricsQueries {
   final static = QueryJob<String, Tuple2<Track?, String>>(
     queryKey: "genius-lyrics-query",
+    refetchOnExternalDataChange: true,
     task: (_, externalData) async {
       final currentTrack = externalData.item1;
       final geniusAccessToken = externalData.item2;

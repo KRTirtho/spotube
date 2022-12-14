@@ -33,17 +33,6 @@ class GeniusLyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final textTheme = Theme.of(context).textTheme;
 
-    useEffect(() {
-      if (playback.track != null) {
-        geniusLyricsQuery.setExternalData(Tuple2(
-          playback.track,
-          ref.read(userPreferencesProvider).geniusAccessToken,
-        ));
-        geniusLyricsQuery.refetch();
-      }
-      return null;
-    }, [playback.track]);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -75,7 +64,8 @@ class GeniusLyrics extends HookConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Builder(
                   builder: (context) {
-                    if (geniusLyricsQuery.isLoading) {
+                    if (geniusLyricsQuery.isLoading ||
+                        geniusLyricsQuery.isRefetching) {
                       return const ShimmerLyrics();
                     } else if (geniusLyricsQuery.hasError) {
                       return Text(
