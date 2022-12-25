@@ -15,6 +15,7 @@ import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 
@@ -37,6 +38,8 @@ class Sidebar extends HookConsumerWidget {
       width: 50,
     );
   }
+
+  static Widget macSpacer = const SizedBox(height: 25);
 
   static void goToSettings(BuildContext context) {
     GoRouter.of(context).go("/settings");
@@ -62,9 +65,11 @@ class Sidebar extends HookConsumerWidget {
             labelType: NavigationRailLabelType.all,
             extended: false,
             backgroundColor: PlatformTheme.of(context).scaffoldBackgroundColor,
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: brandLogo(),
+            leading: Column(
+              children: [
+                if (kIsMacOS) macSpacer,
+                brandLogo(),
+              ],
             ),
             trailing: PlatformIconButton(
               icon: const Icon(fluent_ui.FluentIcons.settings),
@@ -151,13 +156,16 @@ class Sidebar extends HookConsumerWidget {
         expanded: true,
         header: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
+          child: Column(
             children: [
-              brandLogo(),
-              const SizedBox(
-                width: 10,
+              if (kIsMacOS) macSpacer,
+              Row(
+                children: [
+                  brandLogo(),
+                  const SizedBox(width: 10),
+                  PlatformText.headline("Spotube"),
+                ],
               ),
-              PlatformText.headline("Spotube"),
             ],
           ),
         ),
