@@ -489,16 +489,16 @@ packages:
   fl_query:
     dependency: "direct main"
     description:
-      path: "../fl-query/packages/fl_query"
-      relative: true
-    source: path
+      name: fl_query
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.3.1"
   fl_query_hooks:
     dependency: "direct main"
     description:
-      path: "../fl-query/packages/fl_query_hooks"
-      relative: true
-    source: path
+      name: fl_query_hooks
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.3.1"
   fluent_ui:
     dependency: "direct main"

@@ -57,10 +57,8 @@ dependencies:
       url: https://github.com/KRTirtho/metadata_god.git
       ref: 7d195fdde324b382fc12067c56391285807e6233
   visibility_detector: ^0.3.3
-  fl_query:
-    path: ../fl-query/packages/fl_query
-  fl_query_hooks:
-    path: ../fl-query/packages/fl_query_hooks
+  fl_query: ^0.3.1
+  fl_query_hooks: ^0.3.1
   flutter_inappwebview: ^5.4.3+7
   tuple: ^2.0.1
   uuid: ^3.0.6
