@@ -47,7 +47,7 @@ dependencies:
   introduction_screen: ^3.0.2
   audio_session: ^0.1.10
   file_picker: ^5.2.2
-  popover: ^0.2.6+3
+  popover: ^0.2.8
   queue: ^3.1.0+1
   auto_size_text: ^3.0.0
   badges: ^2.0.3

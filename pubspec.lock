@@ -1095,7 +1095,7 @@ packages:
       name: popover
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.6+3"
+    version: "0.2.8"
   popover_gtk:
     dependency: transitive
     description:
