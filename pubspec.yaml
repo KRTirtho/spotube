@@ -75,7 +75,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.11.0
   hive_generator: ^2.0.0
   build_runner: ^2.3.2
   flutter_distributor: ^0.0.2
