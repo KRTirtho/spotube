@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Action;
@@ -196,9 +197,9 @@ class TrackTile extends HookConsumerWidget {
             else
               SizedBox(
                 height: 20,
-                width: 25,
+                width: 35,
                 child: Center(
-                  child: PlatformText((track.key + 1).toString()),
+                  child: AutoSizeText((track.key + 1).toString()),
                 ),
               ),
             Padding(
