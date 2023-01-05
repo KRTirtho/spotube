@@ -167,9 +167,11 @@ class AboutSpotube extends HookConsumerWidget {
               const SizedBox(height: 20),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 750),
-                child: PlatformText.caption(
-                  licenseText,
-                  textAlign: TextAlign.justify,
+                child: SafeArea(
+                  child: PlatformText.caption(
+                    licenseText,
+                    textAlign: TextAlign.justify,
+                  ),
                 ),
               ),
             ],

@@ -616,7 +616,7 @@ packages:
     source: hosted
     version: "1.59.0"
   flutter_svg:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_svg
       url: "https://pub.dartlang.org"

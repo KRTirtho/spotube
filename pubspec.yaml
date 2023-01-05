@@ -67,6 +67,7 @@ dependencies:
   macos_ui: ^1.7.5
   libadwaita: ^1.2.5
   adwaita: ^0.5.2
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:

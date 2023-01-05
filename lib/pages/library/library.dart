@@ -23,7 +23,7 @@ class LibraryPage extends HookConsumerWidget {
       const UserAlbums(),
     ][index.value];
 
-    var tabbar = PlatformTabBar(
+    final tabbar = PlatformTabBar(
       androidIsScrollable: true,
       selectedIndex: index.value,
       onSelectedIndexChanged: (value) => index.value = value,
