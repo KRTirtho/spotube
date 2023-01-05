@@ -241,6 +241,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.3.1"
+  build_cli_annotations:
+    dependency: transitive
+    description:
+      name: build_cli_annotations
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   build_config:
     dependency: transitive
     description:
@@ -353,6 +360,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  colorize:
+    dependency: transitive
+    description:
+      name: colorize
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   connectivity_plus:
     dependency: transitive
     description:
@@ -600,7 +614,7 @@ packages:
       name: flutter_rust_bridge
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.42.0"
+    version: "1.59.0"
   flutter_svg:
     dependency: transitive
     description:
@@ -831,12 +845,10 @@ packages:
   metadata_god:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "7d195fdde324b382fc12067c56391285807e6233"
-      resolved-ref: "7d195fdde324b382fc12067c56391285807e6233"
-      url: "https://github.com/KRTirtho/metadata_god.git"
-    source: git
-    version: "0.3.0"
+      name: metadata_god
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   mime:
     dependency: "direct main"
     description:
@@ -1105,6 +1117,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  puppeteer:
+    dependency: transitive
+    description:
+      name: puppeteer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.15.0"
   queue:
     dependency: "direct main"
     description:
@@ -1209,14 +1228,21 @@ packages:
       name: shelf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.0"
+    version: "1.4.0"
+  shelf_static:
+    dependency: transitive
+    description:
+      name: shelf_static
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   shelf_web_socket:
     dependency: transitive
     description:
       name: shelf_web_socket
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   skeleton_text:
     dependency: "direct main"
     description:
