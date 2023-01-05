@@ -238,11 +238,11 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       themeMode: themeMode,
       windowButtonConfig: kIsDesktop
           ? PlatformWindowButtonConfig(
-              isMaximized: () => appWindow.isMaximized,
-              onClose: appWindow.close,
-              onRestore: appWindow.restore,
-              onMaximize: appWindow.maximize,
-              onMinimize: appWindow.minimize,
+              isMaximized: () async => Future.value(appWindow.isMaximized),
+              onClose: () async => appWindow.close(),
+              onRestore: () async => appWindow.restore(),
+              onMaximize: () async => appWindow.maximize(),
+              onMinimize: () async => appWindow.minimize(),
             )
           : null,
       shortcuts: PlatformProperty.all({

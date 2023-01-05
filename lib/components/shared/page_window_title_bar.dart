@@ -54,6 +54,8 @@ class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
 class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
   @override
   Widget build(BuildContext context) {
+    final isMaximized = useState(appWindow.isMaximized);
+
     useEffect(() {
       if (platform == TargetPlatform.windows &&
           widget.hideWhenWindows &&
@@ -77,17 +79,30 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
       return null;
     }, [platform, widget.hideWhenWindows]);
 
-    final appBar = PlatformAppBar(
+    if (platform == TargetPlatform.windows && widget.hideWhenWindows) {
+      return const SizedBox.shrink();
+    }
+
+    return PlatformAppBar(
       actions: [
         ...?widget.actions,
         if (!kIsMacOS && !kIsMobile)
-          platform == TargetPlatform.linux
-              ? MoveWindow(child: const PlatformWindowButtons())
-              : const PlatformWindowButtons(),
+          PlatformWindowButtons(
+            isMaximized: () => isMaximized.value,
+            onMaximize: () {
+              appWindow.maximize();
+              isMaximized.value = true;
+            },
+            onRestore: () {
+              appWindow.restore();
+              isMaximized.value = false;
+            },
+          ),
       ],
-      title: platform == TargetPlatform.linux
-          ? MoveWindow(child: Center(child: widget.center))
-          : widget.center,
+      onDrag: () {
+        appWindow.startDragging();
+      },
+      title: widget.center,
       toolbarOpacity: widget.toolbarOpacity,
       backgroundColor: widget.backgroundColor,
       actionsIconTheme: widget.actionsIconTheme,
@@ -100,14 +115,6 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
       titleTextStyle: widget.titleTextStyle,
       titleWidth: widget.titleWidth,
       toolbarTextStyle: widget.toolbarTextStyle,
-    );
-
-    if (platform == TargetPlatform.windows && widget.hideWhenWindows) {
-      return const SizedBox.shrink();
-    }
-
-    return MoveWindow(
-      child: appBar,
     );
   }
 }
