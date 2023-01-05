@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.5
-  cached_network_image: ^3.2.2
+  cached_network_image: ^3.2.3
   html: ^0.15.1
   http: ^0.13.5
   shared_preferences: ^2.0.11
