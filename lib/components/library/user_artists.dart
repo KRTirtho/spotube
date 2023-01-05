@@ -64,7 +64,7 @@ class UserArtists extends HookConsumerWidget {
         ),
       ),
       backgroundColor: PlatformTheme.of(context).scaffoldBackgroundColor,
-      body: (artistQuery.isLoading || !artistQuery.hasData)
+      body: artistQuery.pages.isEmpty
           ? Padding(
               padding: const EdgeInsets.all(20),
               child: Row(

@@ -199,7 +199,9 @@ class TrackTile extends HookConsumerWidget {
                 height: 20,
                 width: 35,
                 child: Center(
-                  child: AutoSizeText((track.key + 1).toString()),
+                  child: AutoSizeText(
+                    (track.key + 1).toString(),
+                  ),
                 ),
               ),
             Padding(

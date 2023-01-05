@@ -1,5 +1,7 @@
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:collection/collection.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
@@ -8,13 +10,14 @@ import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/provider/auth_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:tuple/tuple.dart';
 
 class TrackCollectionView<T> extends HookConsumerWidget {
   final logger = getLogger(TrackCollectionView);
@@ -97,6 +100,28 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
     final collapsed = useState(false);
 
+    final searchText = useState("");
+
+    final filteredTracks = useMemoized(() {
+      return tracksSnapshot.data
+          ?.mapIndexed((i, e) => Tuple2(
+                searchText.value.isEmpty
+                    ? 100
+                    : weightedRatio(
+                        "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
+                        searchText.value,
+                      ),
+                e..discNumber = i,
+              ))
+          .toList()
+          .sorted(
+            (a, b) => b.item1.compareTo(a.item1),
+          )
+          .where((e) => e.item1 > 50)
+          .map((e) => e.item2)
+          .toList();
+    }, [tracksSnapshot.data, searchText.value]);
+
     useCustomStatusBarColor(
       color?.color ?? PlatformTheme.of(context).scaffoldBackgroundColor!,
       GoRouter.of(context).location == routePath,
@@ -116,13 +141,51 @@ class TrackCollectionView<T> extends HookConsumerWidget {
       return () => controller.removeListener(listener);
     }, [collapsed.value]);
 
+    final leading = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (platform != TargetPlatform.windows)
+          PlatformBackButton(color: color?.titleTextColor),
+        const SizedBox(width: 10),
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 400,
+            maxHeight: 40,
+          ),
+          child: PlatformTextField(
+            onChanged: (value) => searchText.value = value,
+            placeholder: "Search tracks...",
+            backgroundColor: Colors.transparent,
+            prefixIcon: Icons.search_rounded,
+          ),
+        ),
+      ],
+    );
+
+    useEffect(() {
+      OverlayEntry? entry;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (platform == TargetPlatform.windows) {
+          entry = OverlayEntry(builder: (context) {
+            return Positioned(
+              left: 40,
+              top: 7,
+              child: leading,
+            );
+          });
+          Overlay.of(context)!.insert(entry!);
+        }
+      });
+      return () => entry?.remove();
+    }, [color?.titleTextColor, leading]);
+
     return SafeArea(
       child: PlatformScaffold(
           appBar: kIsDesktop
               ? PageWindowTitleBar(
                   backgroundColor: color?.color,
                   foregroundColor: color?.titleTextColor,
-                  leading: PlatformBackButton(color: color?.titleTextColor),
+                  leading: leading,
                 )
               : null,
           body: CustomScrollView(
@@ -134,9 +197,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                 pinned: true,
                 expandedHeight: 400,
                 automaticallyImplyLeading: kIsMobile,
-                leading: kIsMobile
-                    ? PlatformBackButton(color: color?.titleTextColor)
-                    : null,
+                leading: kIsMobile ? leading : null,
                 iconTheme: IconThemeData(color: color?.titleTextColor),
                 primary: true,
                 backgroundColor: color?.color,
@@ -239,17 +300,19 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         child: PlatformText("Error ${tracksSnapshot.error}"));
                   }
 
-                  final tracks = tracksSnapshot.data!;
                   return TracksTableView(
-                    tracks is! List<Track>
-                        ? tracks
-                            .map(
-                              (track) =>
-                                  TypeConversionUtils.simpleTrack_X_Track(
-                                      track, album!),
-                            )
-                            .toList()
-                        : tracks,
+                    List.from(
+                      (filteredTracks ?? []).map(
+                        (e) {
+                          if (e is Track) {
+                            return e;
+                          } else {
+                            return TypeConversionUtils.simpleTrack_X_Track(
+                                e, album!);
+                          }
+                        },
+                      ),
+                    ),
                     onTrackPlayButtonPressed: onPlay,
                     playlistId: id,
                     userPlaylist: isOwned,
