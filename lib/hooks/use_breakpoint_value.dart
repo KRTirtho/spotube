@@ -1,17 +1,24 @@
 import 'package:spotube/hooks/use_breakpoints.dart';
 
-useBreakpointValue({sm, md, lg, xl, xxl}) {
+useBreakpointValue<T>({
+  T? sm,
+  T? md,
+  T? lg,
+  T? xl,
+  T? xxl,
+  T? others,
+}) {
   final breakpoint = useBreakpoints();
 
   if (breakpoint.isSm) {
-    return sm;
+    return sm ?? others;
   } else if (breakpoint.isMd) {
-    return md;
+    return md ?? others;
   } else if (breakpoint.isXl) {
-    return xl;
+    return xl ?? others;
   } else if (breakpoint.isXxl) {
-    return xxl;
+    return xxl ?? others;
   } else {
-    return lg;
+    return lg ?? others;
   }
 }

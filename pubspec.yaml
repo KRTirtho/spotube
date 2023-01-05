@@ -68,6 +68,7 @@ dependencies:
   libadwaita: ^1.2.5
   adwaita: ^0.5.2
   flutter_svg: ^1.1.6
+  fuzzywuzzy: ^0.2.0
 
 dev_dependencies:
   flutter_test:

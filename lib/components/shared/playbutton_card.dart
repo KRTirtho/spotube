@@ -6,6 +6,8 @@ import 'package:spotube/components/shared/spotube_marquee_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_platform_property.dart';
 
+enum PlaybuttonCardViewType { square, list }
+
 class PlaybuttonCard extends HookWidget {
   final void Function()? onTap;
   final void Function()? onPlaybuttonPressed;
@@ -15,6 +17,8 @@ class PlaybuttonCard extends HookWidget {
   final bool isPlaying;
   final bool isLoading;
   final String title;
+  final PlaybuttonCardViewType viewType;
+
   const PlaybuttonCard({
     required this.imageUrl,
     required this.isPlaying,
@@ -24,6 +28,7 @@ class PlaybuttonCard extends HookWidget {
     this.description,
     this.onPlaybuttonPressed,
     this.onTap,
+    this.viewType = PlaybuttonCardViewType.square,
     Key? key,
   }) : super(key: key);
 
@@ -56,7 +61,7 @@ class PlaybuttonCard extends HookWidget {
       ),
     );
 
-    final iconBgColor = PlatformTheme.of(context).primaryColor;
+    final isSquare = viewType == PlaybuttonCardViewType.square;
 
     return Container(
       margin: margin,
@@ -66,8 +71,132 @@ class PlaybuttonCard extends HookWidget {
         splashFactory: splash,
         highlightColor: Colors.black12,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 200),
+          constraints: BoxConstraints(
+            maxWidth: isSquare ? 200 : double.infinity,
+            maxHeight: !isSquare ? 60 : double.infinity,
+          ),
           child: HoverBuilder(builder: (context, isHovering) {
+            final playButton = PlatformIconButton(
+              onPressed: onPlaybuttonPressed,
+              backgroundColor: PlatformTheme.of(context).primaryColor,
+              hoverColor:
+                  PlatformTheme.of(context).primaryColor?.withOpacity(0.5),
+              icon: isLoading
+                  ? SizedBox(
+                      height: 23,
+                      width: 23,
+                      child: PlatformCircularProgressIndicator(
+                        color: ThemeData.estimateBrightnessForColor(
+                                  PlatformTheme.of(context).primaryColor!,
+                                ) ==
+                                Brightness.dark
+                            ? Colors.white
+                            : Colors.grey[900],
+                      ),
+                    )
+                  : Icon(
+                      isPlaying
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
+                      color: Colors.white,
+                    ),
+            );
+            final image = Padding(
+              padding: EdgeInsets.all(
+                platform == TargetPlatform.windows ? 5 : 0,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  [TargetPlatform.windows, TargetPlatform.linux]
+                          .contains(platform)
+                      ? 5
+                      : 8,
+                ),
+                child: UniversalImage(
+                  path: imageUrl,
+                  width: isSquare ? 200 : 60,
+                  placeholder: (context, url) =>
+                      Image.asset("assets/placeholder.png"),
+                ),
+              ),
+            );
+
+            final square = Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // thumbnail of the playlist
+                Stack(
+                  children: [
+                    image,
+                    Positioned.directional(
+                      textDirection: TextDirection.ltr,
+                      bottom: 10,
+                      end: 5,
+                      child: playButton,
+                    )
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Column(
+                    children: [
+                      Tooltip(
+                        message: title,
+                        child: SizedBox(
+                          height: 20,
+                          child: SpotubeMarqueeText(
+                            text: title,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            isHovering: isHovering,
+                          ),
+                        ),
+                      ),
+                      if (description != null) ...[
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 30,
+                          child: SpotubeMarqueeText(
+                            text: description!,
+                            style: PlatformTextTheme.of(context).caption,
+                            isHovering: isHovering,
+                          ),
+                        ),
+                      ]
+                    ],
+                  ),
+                ),
+              ],
+            );
+
+            final list = Row(
+              children: [
+                // thumbnail of the playlist
+                image,
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PlatformText(
+                      title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 5),
+                    if (description != null)
+                      PlatformText(
+                        description!,
+                        overflow: TextOverflow.fade,
+                        style: PlatformTextTheme.of(context).caption,
+                      ),
+                  ],
+                ),
+                const Spacer(),
+                playButton,
+              ],
+            );
+
             return Ink(
               decoration: BoxDecoration(
                 color: backgroundColor,
@@ -89,103 +218,7 @@ class PlaybuttonCard extends HookWidget {
                       )
                     : null,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // thumbnail of the playlist
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(
-                          platform == TargetPlatform.windows ? 5 : 0,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                            [TargetPlatform.windows, TargetPlatform.linux]
-                                    .contains(platform)
-                                ? 5
-                                : 8,
-                          ),
-                          child: UniversalImage(
-                            path: imageUrl,
-                            width: 200,
-                            placeholder: (context, url) =>
-                                Image.asset("assets/placeholder.png"),
-                          ),
-                        ),
-                      ),
-                      Positioned.directional(
-                        textDirection: TextDirection.ltr,
-                        bottom: 10,
-                        end: 5,
-                        child: Builder(builder: (context) {
-                          return PlatformIconButton(
-                            onPressed: onPlaybuttonPressed,
-                            backgroundColor:
-                                PlatformTheme.of(context).primaryColor,
-                            hoverColor: PlatformTheme.of(context)
-                                .primaryColor
-                                ?.withOpacity(0.5),
-                            icon: isLoading
-                                ? SizedBox(
-                                    height: 23,
-                                    width: 23,
-                                    child: PlatformCircularProgressIndicator(
-                                      color:
-                                          ThemeData.estimateBrightnessForColor(
-                                                    PlatformTheme.of(context)
-                                                        .primaryColor!,
-                                                  ) ==
-                                                  Brightness.dark
-                                              ? Colors.white
-                                              : Colors.grey[900],
-                                    ),
-                                  )
-                                : Icon(
-                                    isPlaying
-                                        ? Icons.pause_rounded
-                                        : Icons.play_arrow_rounded,
-                                    color: Colors.white,
-                                  ),
-                          );
-                        }),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    child: Column(
-                      children: [
-                        Tooltip(
-                          message: title,
-                          child: SizedBox(
-                            height: 20,
-                            child: SpotubeMarqueeText(
-                              text: title,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                              isHovering: isHovering,
-                            ),
-                          ),
-                        ),
-                        if (description != null) ...[
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            height: 30,
-                            child: SpotubeMarqueeText(
-                              text: description!,
-                              style: PlatformTextTheme.of(context).caption,
-                              isHovering: isHovering,
-                            ),
-                          ),
-                        ]
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: isSquare ? square : list,
             );
           }),
         ),

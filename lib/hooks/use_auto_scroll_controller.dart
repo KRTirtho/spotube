@@ -57,15 +57,21 @@ class _AutoScrollControllerHook extends Hook<AutoScrollController> {
 
 class _AutoScrollControllerHookState
     extends HookState<AutoScrollController, _AutoScrollControllerHook> {
-  late final controller = AutoScrollController(
-    initialScrollOffset: hook.initialScrollOffset,
-    keepScrollOffset: hook.keepScrollOffset,
-    debugLabel: hook.debugLabel,
-    axis: hook.axis,
-    copyTagsFrom: hook.copyTagsFrom,
-    suggestedRowHeight: hook.suggestedRowHeight,
-    viewportBoundaryGetter: hook.viewportBoundaryGetter,
-  );
+  late final AutoScrollController controller;
+
+  @override
+  void initHook() {
+    super.initHook();
+    controller = AutoScrollController(
+      initialScrollOffset: hook.initialScrollOffset,
+      keepScrollOffset: hook.keepScrollOffset,
+      debugLabel: hook.debugLabel,
+      axis: hook.axis,
+      copyTagsFrom: hook.copyTagsFrom,
+      suggestedRowHeight: hook.suggestedRowHeight,
+      viewportBoundaryGetter: hook.viewportBoundaryGetter,
+    );
+  }
 
   @override
   AutoScrollController build(BuildContext context) => controller;

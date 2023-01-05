@@ -30,7 +30,8 @@ class Waypoint extends HookWidget {
         // nextPageTrigger will have a value equivalent to 80% of the list size.
         final nextPageTrigger = 0.8 * controller.position.maxScrollExtent;
 
-// scrollController fetches the next paginated data when the current postion of the user on the screen has surpassed
+        // scrollController fetches the next paginated data when the current
+        // position of the user on the screen has surpassed
         if (controller.position.pixels >= nextPageTrigger && isMounted()) {
           await onTouchEdge?.call();
         }
@@ -39,9 +40,8 @@ class Waypoint extends HookWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (controller.hasClients && isMounted()) {
           listener();
+          controller.addListener(listener);
         }
-
-        controller.addListener(listener);
       });
       return () => controller.removeListener(listener);
     }, [controller, onTouchEdge, isMounted]);

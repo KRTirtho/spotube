@@ -11,7 +11,12 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class AlbumCard extends HookConsumerWidget {
   final Album album;
-  const AlbumCard(this.album, {Key? key}) : super(key: key);
+  final PlaybuttonCardViewType viewType;
+  const AlbumCard(
+    this.album, {
+    Key? key,
+    this.viewType = PlaybuttonCardViewType.square,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -25,6 +30,7 @@ class AlbumCard extends HookConsumerWidget {
         album.images,
         placeholder: ImagePlaceholder.collection,
       ),
+      viewType: viewType,
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       isPlaying: isPlaylistPlaying && playback.isPlaying,
       isLoading: playback.status == PlaybackStatus.loading &&
