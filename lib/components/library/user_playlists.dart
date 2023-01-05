@@ -72,9 +72,6 @@ class UserPlaylists extends HookConsumerWidget {
     if (auth.isAnonymous) {
       return const AnonymousFallback();
     }
-    if (playlistsQuery.isLoading || !playlistsQuery.hasData) {
-      return const Center(child: ShimmerPlaybuttonCard(count: 7));
-    }
 
     final children = [
       const PlaylistCreateDialog(),
@@ -95,20 +92,23 @@ class UserPlaylists extends HookConsumerWidget {
             children: [
               PlatformTextField(
                 onChanged: (value) => searchText.value = value,
-                placeholder: "Search your playlists...",
-                prefixIcon: Icons.search,
+                placeholder: "Filter your playlists...",
+                prefixIcon: Icons.filter_alt_outlined,
               ),
               const SizedBox(height: 20),
-              Center(
-                child: Wrap(
-                  spacing: spacing, // gap between adjacent chips
-                  runSpacing: 20, // gap between lines
-                  alignment: breakpoint.isSm
-                      ? WrapAlignment.center
-                      : WrapAlignment.start,
-                  children: children,
+              if (playlistsQuery.isLoading || !playlistsQuery.hasData)
+                const Center(child: ShimmerPlaybuttonCard(count: 7))
+              else
+                Center(
+                  child: Wrap(
+                    spacing: spacing, // gap between adjacent chips
+                    runSpacing: 20, // gap between lines
+                    alignment: breakpoint.isSm
+                        ? WrapAlignment.center
+                        : WrapAlignment.start,
+                    children: children,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
