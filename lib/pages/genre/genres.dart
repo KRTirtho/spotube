@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/genre/category_card.dart';
+import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/waypoint.dart';
@@ -84,21 +85,11 @@ class GenrePage extends HookConsumerWidget {
         [categoriesQuery.pages, searchText.value],
       );
 
-      final searchbar = Container(
-        constraints: const BoxConstraints(maxWidth: 300, maxHeight: 50),
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: PlatformTextField(
-          placeholder: "Filter categories or genres...",
-          prefixIcon: Icons.search_rounded,
-          padding: PlatformProperty.only(
-            android: const EdgeInsets.all(0),
-            linux: const EdgeInsets.all(0),
-            other: null,
-          ).resolve(platform ?? Theme.of(context).platform),
-          onChanged: (value) {
-            searchText.value = value;
-          },
-        ),
+      final searchbar = CompactSearch(
+        onChanged: (value) {
+          searchText.value = value;
+        },
+        placeholder: "Filter categories or genres...",
       );
 
       final list = Waypoint(
@@ -122,20 +113,18 @@ class GenrePage extends HookConsumerWidget {
       );
       return PlatformScaffold(
         appBar: PageWindowTitleBar(
-          titleWidth: 300,
-          centerTitle: true,
-          center: searchbar,
+          actions: [searchbar, const SizedBox(width: 10)],
         ),
         backgroundColor: PlatformProperty.all(
           PlatformTheme.of(context).scaffoldBackgroundColor!,
         ),
-        body: platform == TargetPlatform.windows && kIsDesktop
+        body: (platform == TargetPlatform.windows && kIsDesktop) || kIsMobile
             ? Stack(
                 children: [
                   Positioned.fill(child: list),
                   Positioned(
-                    top: 5,
-                    right: 10,
+                    top: 10,
+                    right: 20,
                     child: searchbar,
                   ),
                 ],

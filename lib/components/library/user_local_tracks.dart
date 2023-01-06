@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
@@ -179,19 +180,13 @@ class UserLocalTracks extends HookConsumerWidget {
       [],
     );
 
-    var searchbar = PlatformTextField(
+    var searchbar = CompactSearch(
       onChanged: (value) => searchText.value = value,
       placeholder: "Search local tracks...",
-      prefixIcon: Icons.search_rounded,
     );
 
     return Column(
       children: [
-        if (breakpoint <= Breakpoints.md)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-            child: searchbar,
-          ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -220,13 +215,9 @@ class UserLocalTracks extends HookConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              if (breakpoint > Breakpoints.md)
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 300),
-                  child: searchbar,
-                ),
               const Spacer(),
+              searchbar,
+              const SizedBox(width: 10),
               SortTracksDropdown(
                 value: sortBy.value,
                 onChanged: (value) {
