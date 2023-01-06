@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:collection/collection.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
@@ -15,6 +17,7 @@ import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/hooks/use_async_effect.dart';
+import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/playback_provider.dart';
@@ -24,6 +27,7 @@ import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
+import 'package:tuple/tuple.dart';
 
 const supportedAudioTypes = [
   "audio/webm",
@@ -157,6 +161,10 @@ class UserLocalTracks extends HookConsumerWidget {
     final playback = ref.watch(playbackProvider);
     final isPlaylistPlaying = playback.playlist?.id == "local";
     final trackSnapshot = ref.watch(localTracksProvider);
+    final isMounted = useIsMounted();
+    final breakpoint = useBreakpoints();
+
+    final searchText = useState<String>("");
 
     useAsyncEffect(
       () async {
@@ -164,15 +172,26 @@ class UserLocalTracks extends HookConsumerWidget {
         if (!await Permission.storage.isGranted &&
             !await Permission.storage.isLimited) {
           await Permission.storage.request();
-          ref.refresh(localTracksProvider);
+          if (isMounted()) ref.refresh(localTracksProvider);
         }
       },
       null,
       [],
     );
 
+    var searchbar = PlatformTextField(
+      onChanged: (value) => searchText.value = value,
+      placeholder: "Search local tracks...",
+      prefixIcon: Icons.search_rounded,
+    );
+
     return Column(
       children: [
+        if (breakpoint <= Breakpoints.md)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+            child: searchbar,
+          ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -201,6 +220,12 @@ class UserLocalTracks extends HookConsumerWidget {
                   ],
                 ),
               ),
+              const SizedBox(width: 10),
+              if (breakpoint > Breakpoints.md)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 300),
+                  child: searchbar,
+                ),
               const Spacer(),
               SortTracksDropdown(
                 value: sortBy.value,
@@ -224,11 +249,32 @@ class UserLocalTracks extends HookConsumerWidget {
               return ServiceUtils.sortTracks(tracks, sortBy.value);
             }, [sortBy.value, tracks]);
 
+            final filteredTracks = useMemoized(() {
+              return sortedTracks
+                  .map((e) => Tuple2(
+                        searchText.value.isEmpty
+                            ? 100
+                            : weightedRatio(
+                                "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
+                                searchText.value,
+                              ),
+                        e,
+                      ))
+                  .toList()
+                  .sorted(
+                    (a, b) => b.item1.compareTo(a.item1),
+                  )
+                  .where((e) => e.item1 > 50)
+                  .map((e) => e.item2)
+                  .toList()
+                  .toList();
+            }, [searchText.value, sortedTracks]);
+
             return Expanded(
               child: ListView.builder(
-                itemCount: sortedTracks.length,
+                itemCount: filteredTracks.length,
                 itemBuilder: (context, index) {
-                  final track = sortedTracks[index];
+                  final track = filteredTracks[index];
                   return TrackTile(
                     playback,
                     duration:

@@ -104,14 +104,14 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
     final filteredTracks = useMemoized(() {
       return tracksSnapshot.data
-          ?.mapIndexed((i, e) => Tuple2(
+          ?.map((e) => Tuple2(
                 searchText.value.isEmpty
                     ? 100
                     : weightedRatio(
                         "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
                         searchText.value,
                       ),
-                e..discNumber = i,
+                e,
               ))
           .toList()
           .sorted(
