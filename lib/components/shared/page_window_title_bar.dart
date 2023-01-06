@@ -7,7 +7,6 @@ import 'package:spotube/utils/platform.dart';
 class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
   final Widget? leading;
   final bool automaticallyImplyLeading;
-  final Widget? title;
   final List<Widget>? actions;
   final Color? backgroundColor;
   final Color? foregroundColor;
@@ -24,7 +23,6 @@ class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
 
   PageWindowTitleBar({
     Key? key,
-    this.title,
     this.actions,
     this.center,
     this.toolbarOpacity = 1,

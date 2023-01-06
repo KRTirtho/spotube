@@ -100,10 +100,10 @@ class ShimmerTrackTile extends StatelessWidget {
           child: CustomPaint(
             size: const Size(double.infinity, 50),
             painter: ShimmerTrackTilePainter(
-              background: shimmerTheme?.shimmerBackgroundColor ??
+              background: shimmerTheme.shimmerBackgroundColor ??
                   Theme.of(context).scaffoldBackgroundColor,
               foreground:
-                  shimmerTheme?.shimmerColor ?? Theme.of(context).cardColor,
+                  shimmerTheme.shimmerColor ?? Theme.of(context).cardColor,
             ),
           ),
         ),

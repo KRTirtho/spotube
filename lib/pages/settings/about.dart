@@ -18,7 +18,7 @@ class AboutSpotube extends HookConsumerWidget {
     return PlatformScaffold(
       appBar: PageWindowTitleBar(
         leading: const PlatformBackButton(),
-        title: const PlatformText("About Wives"),
+        center: const PlatformText("About Spotube"),
       ),
       body: SingleChildScrollView(
         child: Padding(

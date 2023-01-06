@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
+import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
@@ -56,6 +57,12 @@ final router = GoRouter(
             child: const SettingsPage(),
           ),
           routes: [
+            GoRoute(
+              path: "blacklist",
+              pageBuilder: (context, state) => SpotubePage(
+                child: const BlackListPage(),
+              ),
+            ),
             GoRoute(
               path: "about",
               pageBuilder: (context, state) => SpotubePage(

@@ -4,11 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:tuple/tuple.dart';
 
-class BlackListDialog extends HookConsumerWidget {
-  const BlackListDialog({Key? key}) : super(key: key);
+class BlackListPage extends HookConsumerWidget {
+  const BlackListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -33,13 +34,19 @@ class BlackListDialog extends HookConsumerWidget {
       [blacklist, searchText.value],
     );
 
-    return PlatformAlertDialog(
-      title: const PlatformText("Blacklist"),
-      content: Column(
+    return PlatformScaffold(
+      appBar: PageWindowTitleBar(
+        center: const PlatformText("Blacklist"),
+        centerTitle: true,
+        leading: const PlatformBackButton(),
+      ),
+      body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: platform == TargetPlatform.windows
+                ? const EdgeInsets.all(8.0).copyWith(left: 45)
+                : const EdgeInsets.all(8.0),
             child: PlatformTextField(
               onChanged: (value) => searchText.value = value,
               placeholder: "Search",
@@ -51,12 +58,11 @@ class BlackListDialog extends HookConsumerWidget {
             itemCount: filteredBlacklist.length,
             itemBuilder: (context, index) {
               final item = filteredBlacklist.elementAt(index);
-              return ListTile(
+              return PlatformListTile(
                 leading: PlatformText("${index + 1}."),
-                minLeadingWidth: 20,
                 title: PlatformText("${item.name} (${item.type.name})"),
                 subtitle: PlatformText.caption(item.id),
-                trailing: IconButton(
+                trailing: PlatformIconButton(
                   icon: Icon(Icons.delete_forever_rounded,
                       color: Colors.red[400]),
                   onPressed: () {

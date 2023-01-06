@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/components/settings/blacklist_dialog.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -339,19 +338,14 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     PlatformListTile(
                       leading: const Icon(Icons.playlist_remove_rounded),
-                      title: const PlatformText(
-                        "Track/Artist Blacklist",
+                      title: const PlatformText("Blacklist"),
+                      subtitle: const PlatformText(
+                        "Blacklisted tracks and artists",
                       ),
                       onTap: () {
-                        showPlatformAlertDialog(
-                          context,
-                          barrierDismissible: true,
-                          builder: (context) {
-                            return const BlackListDialog();
-                          },
-                        );
+                        GoRouter.of(context).push("/settings/blacklist");
                       },
-                      trailing: const Icon(Icons.open_in_new_rounded),
+                      trailing: const Icon(Icons.chevron_right_rounded),
                     ),
                     PlatformText(
                       " Search",
