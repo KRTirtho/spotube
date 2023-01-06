@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/components/settings/blacklist_dialog.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -12,7 +13,6 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/main.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -336,6 +336,22 @@ class SettingsPage extends HookConsumerWidget {
                           preferences.setSkipSponsorSegments(state);
                         },
                       ),
+                    ),
+                    PlatformListTile(
+                      leading: const Icon(Icons.playlist_remove_rounded),
+                      title: const PlatformText(
+                        "Track/Artist Blacklist",
+                      ),
+                      onTap: () {
+                        showPlatformAlertDialog(
+                          context,
+                          barrierDismissible: true,
+                          builder: (context) {
+                            return const BlackListDialog();
+                          },
+                        );
+                      },
+                      trailing: const Icon(Icons.open_in_new_rounded),
                     ),
                     PlatformText(
                       " Search",

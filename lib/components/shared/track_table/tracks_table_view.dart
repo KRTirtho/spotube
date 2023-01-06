@@ -10,6 +10,7 @@ import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -217,7 +218,17 @@ class TracksTableView extends HookConsumerWidget {
                       selected.value = [...selected.value, track.value.id!];
                     }
                   } else {
-                    onTrackPlayButtonPressed?.call(track.value);
+                    final isBlackListed = ref.read(
+                      BlackListNotifier.provider.select(
+                        (blacklist) => blacklist.contains(
+                          BlacklistedElement.track(
+                              track.value.id!, track.value.name!),
+                        ),
+                      ),
+                    );
+                    if (!isBlackListed) {
+                      onTrackPlayButtonPressed?.call(track.value);
+                    }
                   }
                 },
                 child: TrackTile(

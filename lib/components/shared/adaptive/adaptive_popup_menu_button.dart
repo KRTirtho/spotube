@@ -9,12 +9,14 @@ class Action extends StatelessWidget {
   final Widget icon;
   final void Function() onPressed;
   final bool isExpanded;
+  final Color? backgroundColor;
   const Action({
     Key? key,
     required this.icon,
     required this.text,
     required this.onPressed,
     this.isExpanded = true,
+    this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -23,6 +25,7 @@ class Action extends StatelessWidget {
       return PlatformIconButton(
         icon: icon,
         onPressed: onPressed,
+        backgroundColor: backgroundColor,
         tooltip: text is PlatformText
             ? (text as PlatformText).data
             : text.toStringShallow().split(",").last.replaceAll(
@@ -31,18 +34,42 @@ class Action extends StatelessWidget {
                 ),
       );
     }
-    return PlatformTextButton(
-      style: TextButton.styleFrom(
-        foregroundColor: PlatformTextTheme.of(context).body?.color,
-        padding: const EdgeInsets.all(20),
-      ),
-      onPressed: onPressed,
-      child: Row(
-        children: [
-          icon,
-          const SizedBox(width: 10),
-          text,
-        ],
+    if (backgroundColor == null) {
+      return PlatformTextButton(
+        style: TextButton.styleFrom(
+          foregroundColor:
+              backgroundColor ?? PlatformTextTheme.of(context).body?.color,
+          backgroundColor: backgroundColor,
+          padding: const EdgeInsets.all(20),
+        ),
+        onPressed: onPressed,
+        child: Row(
+          children: [
+            icon,
+            const SizedBox(width: 10),
+            text,
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: PlatformFilledButton(
+        style: TextButton.styleFrom(
+          foregroundColor:
+              backgroundColor ?? PlatformTextTheme.of(context).body?.color,
+          backgroundColor: backgroundColor,
+          padding: const EdgeInsets.all(20),
+        ),
+        onPressed: onPressed,
+        child: Row(
+          children: [
+            icon,
+            const SizedBox(width: 10),
+            text,
+          ],
+        ),
       ),
     );
   }
@@ -75,7 +102,7 @@ class AdaptiveActions extends HookWidget {
                 children: actions
                     .map(
                       (action) => SizedBox(
-                        width: 200,
+                        width: 250,
                         child: Row(
                           children: [
                             Expanded(child: action),
@@ -99,6 +126,7 @@ class AdaptiveActions extends HookWidget {
           icon: action.icon,
           onPressed: action.onPressed,
           text: action.text,
+          backgroundColor: action.backgroundColor,
           isExpanded: false,
         );
       }).toList(),

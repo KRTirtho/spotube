@@ -15,6 +15,7 @@ import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
@@ -62,6 +63,13 @@ class TrackTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
+    final isBlackListed = ref.watch(
+      BlackListNotifier.provider.select(
+        (blacklist) => blacklist.contains(
+          BlacklistedElement.track(track.value.id!, track.value.name!),
+        ),
+      ),
+    );
     final auth = ref.watch(authProvider);
     final spotify = ref.watch(spotifyProvider);
     final removingTrack = useState<String?>(null);
@@ -179,9 +187,11 @@ class TrackTile extends HookConsumerWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       decoration: BoxDecoration(
-        color: isActive
-            ? Theme.of(context).popupMenuTheme.color
-            : Colors.transparent,
+        color: isBlackListed
+            ? Colors.red[100]
+            : isActive
+                ? Theme.of(context).popupMenuTheme.color
+                : Colors.transparent,
         borderRadius: BorderRadius.circular(isActive ? 10 : 0),
       ),
       child: Material(
@@ -238,22 +248,43 @@ class TrackTile extends HookConsumerWidget {
                 backgroundColor: PlatformTheme.of(context).primaryColor,
                 hoverColor:
                     PlatformTheme.of(context).primaryColor?.withOpacity(0.5),
-                onPressed: () => onTrackPlayButtonPressed?.call(
-                  track.value,
-                ),
+                onPressed: !isBlackListed
+                    ? () => onTrackPlayButtonPressed?.call(
+                          track.value,
+                        )
+                    : null,
               ),
             ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  PlatformText(
-                    track.value.name ?? "",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: breakpoint.isSm ? 14 : 17,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: PlatformText(
+                          track.value.name ?? "",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: breakpoint.isSm ? 14 : 17,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (isBlackListed) ...[
+                        const SizedBox(width: 5),
+                        PlatformText(
+                          "Blacklisted",
+                          style: TextStyle(
+                            color: Colors.red[400],
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ]
+                    ],
                   ),
                   isLocal
                       ? PlatformText(
@@ -326,6 +357,32 @@ class TrackTile extends HookConsumerWidget {
                     text: const PlatformText("Share"),
                     onPressed: () {
                       actionShare(track.value);
+                    },
+                  ),
+                  Action(
+                    icon: Icon(
+                      Icons.playlist_remove_rounded,
+                      color: isBlackListed ? Colors.white : Colors.red[400],
+                    ),
+                    backgroundColor: isBlackListed ? Colors.red[400] : null,
+                    text: PlatformText(
+                      "${isBlackListed ? "Remove from" : "Add to"} blacklist",
+                      style: TextStyle(
+                        color: isBlackListed ? Colors.white : Colors.red[400],
+                      ),
+                    ),
+                    onPressed: () {
+                      if (isBlackListed) {
+                        ref.read(BlackListNotifier.provider.notifier).remove(
+                              BlacklistedElement.track(
+                                  track.value.id!, track.value.name!),
+                            );
+                      } else {
+                        ref.read(BlackListNotifier.provider.notifier).add(
+                              BlacklistedElement.track(
+                                  track.value.id!, track.value.name!),
+                            );
+                      }
                     },
                   )
                 ],

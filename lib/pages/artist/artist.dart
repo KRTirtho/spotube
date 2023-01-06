@@ -17,6 +17,7 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -78,6 +79,11 @@ class ArtistPage extends HookConsumerWidget {
 
             final data = artistsQuery.data!;
 
+            final blacklist = ref.watch(BlackListNotifier.provider);
+            final isBlackListed = blacklist.contains(
+              BlacklistedElement.artist(artistId, data.name!),
+            );
+
             return SingleChildScrollView(
               controller: parentScrollController,
               padding: const EdgeInsets.all(20),
@@ -104,15 +110,40 @@ class ArtistPage extends HookConsumerWidget {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: PlatformText(data.type!.toUpperCase(),
-                                  style: chipTextVariant?.copyWith(
-                                      color: Colors.white)),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(50)),
+                                  child: PlatformText(
+                                    data.type!.toUpperCase(),
+                                    style: chipTextVariant?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                if (isBlackListed) ...[
+                                  const SizedBox(width: 5),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.red[400],
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    child: PlatformText(
+                                      "Blacklisted",
+                                      style: chipTextVariant?.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ]
+                              ],
                             ),
                             PlatformText(
                               data.name!,
@@ -149,6 +180,8 @@ class ArtistPage extends HookConsumerWidget {
                                         );
                                       }
 
+                                      final queryBowl = QueryBowl.of(context);
+
                                       return PlatformFilledButton(
                                         onPressed: () async {
                                           try {
@@ -162,7 +195,8 @@ class ArtistPage extends HookConsumerWidget {
                                                     [artistId],
                                                   );
                                             await isFollowingQuery.refetch();
-                                            QueryBowl.of(context)
+
+                                            queryBowl
                                                 .getInfiniteQuery(
                                                   Queries.artist.followedByMe
                                                       .queryKey,
@@ -191,25 +225,55 @@ class ArtistPage extends HookConsumerWidget {
                                       );
                                     },
                                   ),
+                                const SizedBox(width: 5),
+                                PlatformIconButton(
+                                  tooltip: "Add to blacklisted artists",
+                                  icon: Icon(
+                                    Icons.person_remove_rounded,
+                                    color: !isBlackListed
+                                        ? Colors.red[400]
+                                        : Colors.white,
+                                  ),
+                                  backgroundColor:
+                                      isBlackListed ? Colors.red[400] : null,
+                                  onPressed: () async {
+                                    if (isBlackListed) {
+                                      ref
+                                          .read(BlackListNotifier
+                                              .provider.notifier)
+                                          .remove(
+                                            BlacklistedElement.artist(
+                                                data.id!, data.name!),
+                                          );
+                                    } else {
+                                      ref
+                                          .read(BlackListNotifier
+                                              .provider.notifier)
+                                          .add(
+                                            BlacklistedElement.artist(
+                                                data.id!, data.name!),
+                                          );
+                                    }
+                                  },
+                                ),
                                 PlatformIconButton(
                                   icon: const Icon(Icons.share_rounded),
-                                  onPressed: () {
-                                    Clipboard.setData(
+                                  onPressed: () async {
+                                    await Clipboard.setData(
                                       ClipboardData(
                                           text: data.externalUrls?.spotify),
-                                    ).then((val) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          width: 300,
-                                          behavior: SnackBarBehavior.floating,
-                                          content: PlatformText(
-                                            "Artist URL copied to clipboard",
-                                            textAlign: TextAlign.center,
-                                          ),
+                                    );
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        width: 300,
+                                        behavior: SnackBarBehavior.floating,
+                                        content: PlatformText(
+                                          "Artist URL copied to clipboard",
+                                          textAlign: TextAlign.center,
                                         ),
-                                      );
-                                    });
+                                      ),
+                                    );
                                   },
                                 )
                               ],

@@ -13,6 +13,7 @@ import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/audio_player_provider.dart';
+import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/linux_audio_service.dart';
@@ -56,6 +57,9 @@ class Playback extends PersistedChangeNotifier {
   YoutubeExplode youtube;
   Ref ref;
   UserPreferences get preferences => ref.read(userPreferencesProvider);
+  Set<BlacklistedElement> get blacklist => ref.read(BlackListNotifier.provider);
+  BlackListNotifier get blacklistNotifier =>
+      ref.read(BlackListNotifier.provider.notifier);
 
   // playlist & track list properties
   late LazyBox<CacheTrack> cache;
@@ -197,7 +201,7 @@ class Playback extends PersistedChangeNotifier {
     try {
       if (index < 0 || index > playlist.tracks.length - 1) return;
       if (isPlaying || status == PlaybackStatus.playing) await stop();
-      this.playlist = playlist;
+      this.playlist = blacklistNotifier.filterPlaylist(playlist);
       mobileAudioService?.session?.setActive(true);
       final played = this.playlist!.tracks[index];
       status = PlaybackStatus.loading;
