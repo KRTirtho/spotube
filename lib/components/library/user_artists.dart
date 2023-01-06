@@ -33,12 +33,15 @@ class UserArtists extends HookConsumerWidget {
     final searchText = useState('');
 
     final filteredArtists = useMemoized(() {
-      return artistQuery.pages
-          .expand<Artist>((page) => page?.items ?? const Iterable.empty())
+      final artists = artistQuery.pages
+          .expand<Artist>((page) => page?.items ?? const Iterable.empty());
+
+      if (searchText.value.isEmpty) {
+        return artists.toList();
+      }
+      return artists
           .map((e) => Tuple2(
-                searchText.value.isEmpty
-                    ? 100
-                    : weightedRatio(e.name!, searchText.value),
+                weightedRatio(e.name!, searchText.value),
                 e,
               ))
           .sorted((a, b) => b.item1.compareTo(a.item1))

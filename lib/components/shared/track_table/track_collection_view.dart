@@ -103,14 +103,15 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     final searchText = useState("");
 
     final filteredTracks = useMemoized(() {
+      if (searchText.value.isEmpty) {
+        return tracksSnapshot.data;
+      }
       return tracksSnapshot.data
           ?.map((e) => Tuple2(
-                searchText.value.isEmpty
-                    ? 100
-                    : weightedRatio(
-                        "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
-                        searchText.value,
-                      ),
+                weightedRatio(
+                  "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
+                  searchText.value,
+                ),
                 e,
               ))
           .toList()

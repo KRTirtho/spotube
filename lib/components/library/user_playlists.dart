@@ -52,20 +52,26 @@ class UserPlaylists extends HookConsumerWidget {
     likedTracksPlaylist.images = [image];
 
     final playlists = useMemoized(
-      () => [
-        likedTracksPlaylist,
-        ...?playlistsQuery.data,
-      ]
-          .map((e) => Tuple2(
-                searchText.value.isEmpty
-                    ? 100
-                    : weightedRatio(e.name!, searchText.value),
-                e,
-              ))
-          .sorted((a, b) => b.item1.compareTo(a.item1))
-          .where((e) => e.item1 > 50)
-          .map((e) => e.item2)
-          .toList(),
+      () {
+        if (searchText.value.isEmpty) {
+          return [
+            likedTracksPlaylist,
+            ...?playlistsQuery.data,
+          ];
+        }
+        return [
+          likedTracksPlaylist,
+          ...?playlistsQuery.data,
+        ]
+            .map((e) => Tuple2(
+                  weightedRatio(e.name!, searchText.value),
+                  e,
+                ))
+            .sorted((a, b) => b.item1.compareTo(a.item1))
+            .where((e) => e.item1 > 50)
+            .map((e) => e.item2)
+            .toList();
+      },
       [playlistsQuery.data, searchText.value],
     );
 

@@ -249,13 +249,15 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.LoopStatus
   Future<DBusMethodResponse> getLoopStatus() async {
-    return DBusMethodSuccessResponse([const DBusString("Playlist")]);
+    return DBusMethodSuccessResponse([
+      playback.isLoop ? const DBusString("Track") : const DBusString("None"),
+    ]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.LoopStatus
   Future<DBusMethodResponse> setLoopStatus(String value) async {
-    return DBusMethodErrorResponse.failed(
-        'Set org.mpris.MediaPlayer2.Player.LoopStatus not implemented');
+    playback.setIsLoop(value == "Track");
+    return DBusMethodSuccessResponse();
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Rate
@@ -275,9 +277,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Sets property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> setShuffle(bool value) async {
-    playback.setPlaybackMode(
-      value ? PlaybackMode.shuffle : PlaybackMode.normal,
-    );
+    playback.setIsShuffled(value);
     return DBusMethodSuccessResponse();
   }
 

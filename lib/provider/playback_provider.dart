@@ -39,15 +39,10 @@ enum AudioQuality {
   low,
 }
 
-enum PlaybackMode {
-  repeat,
-  shuffle,
-  normal,
-}
-
 class Playback extends PersistedChangeNotifier {
   // player properties
-  PlaybackMode playbackMode;
+  bool isShuffled;
+  bool isLoop;
   bool isPlaying;
   Duration currentDuration;
   double volume;
@@ -83,7 +78,8 @@ class Playback extends PersistedChangeNotifier {
     this.mobileAudioService,
   })  : volume = 1,
         isPlaying = false,
-        playbackMode = PlaybackMode.normal,
+        isShuffled = false,
+        isLoop = false,
         currentDuration = Duration.zero,
         _subscriptions = [],
         status = PlaybackStatus.idle,
@@ -287,25 +283,18 @@ class Playback extends PersistedChangeNotifier {
     isPlaying ? await pause() : await resume();
   }
 
-  void cyclePlaybackMode() {
-    switch (playbackMode) {
-      case PlaybackMode.normal:
-        playbackMode = PlaybackMode.shuffle;
-        playlist?.shuffle(track);
-        break;
-      case PlaybackMode.shuffle:
-        playbackMode = PlaybackMode.repeat;
-        playlist?.unshuffle();
-        break;
-      case PlaybackMode.repeat:
-        playbackMode = PlaybackMode.normal;
-        break;
+  void setIsShuffled(bool shuffle) {
+    isShuffled = shuffle;
+    if (isShuffled) {
+      playlist?.shuffle(track);
+    } else {
+      playlist?.unshuffle();
     }
     notifyListeners();
   }
 
-  void setPlaybackMode(PlaybackMode mode) {
-    playbackMode = mode;
+  void setIsLoop(bool loop) {
+    isLoop = loop;
     notifyListeners();
   }
 
@@ -325,7 +314,8 @@ class Playback extends PersistedChangeNotifier {
     await player.stop();
     await player.release();
     isPlaying = false;
-    playbackMode = PlaybackMode.normal;
+    isShuffled = false;
+    isLoop = false;
     playlist = null;
     track = null;
     status = PlaybackStatus.idle;
@@ -685,9 +675,6 @@ class Playback extends PersistedChangeNotifier {
     };
   }
 
-  bool get isLoop => playbackMode == PlaybackMode.repeat;
-  bool get isShuffled => playbackMode == PlaybackMode.shuffle;
-  bool get isNormal => playbackMode == PlaybackMode.normal;
   UnmodifiableListView<Video> get siblingYtVideos =>
       UnmodifiableListView(_siblingYtVideos);
 }

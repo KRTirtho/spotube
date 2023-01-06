@@ -40,7 +40,7 @@ class CurrentPlaylist {
     // won't shuffle if already shuffled
     if (_tempTrack == null) {
       _tempTrack = [...tracks];
-      tracks.shuffle();
+      tracks = List.from(tracks)..shuffle();
       if (topTrack != null) {
         tracks.remove(topTrack);
         tracks.insert(0, topTrack);

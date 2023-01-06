@@ -139,22 +139,20 @@ class PlayerControls extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   PlatformIconButton(
-                    tooltip: playback.isLoop
-                        ? "Repeat playlist"
-                        : playback.isShuffled
-                            ? "Loop track"
-                            : "Shuffle playlist",
+                    tooltip: playback.isShuffled
+                        ? "Unshuffle playlist"
+                        : "Shuffle playlist",
                     icon: Icon(
-                      playback.isLoop
-                          ? Icons.repeat_one_rounded
-                          : playback.isShuffled
-                              ? Icons.shuffle_rounded
-                              : Icons.repeat_rounded,
+                      Icons.shuffle_rounded,
+                      color: playback.isShuffled
+                          ? PlatformTheme.of(context).primaryColor
+                          : null,
                     ),
-                    onPressed:
-                        playback.track == null || playback.playlist == null
-                            ? null
-                            : playback.cyclePlaybackMode,
+                    onPressed: playback.playlist == null
+                        ? null
+                        : () {
+                            playback.setIsShuffled(!playback.isShuffled);
+                          },
                   ),
                   PlatformIconButton(
                       tooltip: "Previous track",
@@ -209,7 +207,22 @@ class PlayerControls extends HookConsumerWidget {
                             }
                           }
                         : null,
-                  )
+                  ),
+                  PlatformIconButton(
+                    tooltip:
+                        !playback.isLoop ? "Loop Track" : "Repeat playlist",
+                    icon: Icon(
+                      playback.isLoop
+                          ? Icons.repeat_one_rounded
+                          : Icons.repeat_rounded,
+                    ),
+                    onPressed:
+                        playback.track == null || playback.playlist == null
+                            ? null
+                            : () {
+                                playback.setIsLoop(!playback.isLoop);
+                              },
+                  ),
                 ],
               ),
               const SizedBox(height: 5)

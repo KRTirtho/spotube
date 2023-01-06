@@ -250,14 +250,15 @@ class UserLocalTracks extends HookConsumerWidget {
             }, [sortBy.value, tracks]);
 
             final filteredTracks = useMemoized(() {
+              if (searchText.value.isEmpty) {
+                return sortedTracks;
+              }
               return sortedTracks
                   .map((e) => Tuple2(
-                        searchText.value.isEmpty
-                            ? 100
-                            : weightedRatio(
-                                "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
-                                searchText.value,
-                              ),
+                        weightedRatio(
+                          "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
+                          searchText.value,
+                        ),
                         e,
                       ))
                   .toList()

@@ -39,11 +39,12 @@ class UserAlbums extends HookConsumerWidget {
     final searchText = useState('');
 
     final albums = useMemoized(() {
+      if (searchText.value.isEmpty) {
+        return albumsQuery.data?.toList() ?? [];
+      }
       return albumsQuery.data
               ?.map((e) => Tuple2(
-                    searchText.value.isEmpty
-                        ? 100
-                        : weightedRatio(e.name!, searchText.value),
+                    weightedRatio(e.name!, searchText.value),
                     e,
                   ))
               .sorted((a, b) => b.item1.compareTo(a.item1))
