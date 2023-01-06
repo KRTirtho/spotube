@@ -56,10 +56,13 @@ class UserArtists extends HookConsumerWidget {
         preferredSize: const Size.fromHeight(50),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: PlatformTextField(
-            onChanged: (value) => searchText.value = value,
-            prefixIcon: Icons.filter_alt_outlined,
-            placeholder: 'Filter artists...',
+          child: ColoredBox(
+            color: PlatformTheme.of(context).scaffoldBackgroundColor!,
+            child: PlatformTextField(
+              onChanged: (value) => searchText.value = value,
+              prefixIcon: Icons.filter_alt_outlined,
+              placeholder: 'Filter artists...',
+            ),
           ),
         ),
       ),

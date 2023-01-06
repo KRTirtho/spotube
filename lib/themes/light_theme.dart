@@ -107,6 +107,7 @@ ThemeData lightTheme({
         if (states.contains(MaterialState.selected)) {
           return accentMaterialColor[500];
         }
+        return null;
       }),
     ),
     tabBarTheme: TabBarTheme(
@@ -162,7 +163,12 @@ final linuxTheme = AdwaitaThemeData.light().copyWith(
     )
   ],
   switchTheme: SwitchThemeData(
-    trackColor: MaterialStateProperty.all(const Color(0xFF3582e5)),
+    trackColor: MaterialStateProperty.resolveWith((states) {
+      if (states.contains(MaterialState.selected)) {
+        return const Color(0xFF3582e5);
+      }
+      return Colors.grey[300];
+    }),
   ),
   colorScheme: const ColorScheme.light(
     primary: Color(0xFF3582e5),

@@ -141,43 +141,48 @@ class TrackCollectionView<T> extends HookConsumerWidget {
       return () => controller.removeListener(listener);
     }, [collapsed.value]);
 
-    final leading = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (platform != TargetPlatform.windows)
-          PlatformBackButton(color: color?.titleTextColor),
-        const SizedBox(width: 10),
-        ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 400,
-            maxHeight: 40,
-          ),
-          child: PlatformTextField(
-            onChanged: (value) => searchText.value = value,
-            placeholder: "Search tracks...",
-            backgroundColor: Colors.transparent,
-            prefixIcon: Icons.search_rounded,
-          ),
+    final searchbar = ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxWidth: 400,
+        maxHeight: 50,
+      ),
+      child: PlatformTextField(
+        onChanged: (value) => searchText.value = value,
+        placeholder: "Search tracks...",
+        backgroundColor: Colors.transparent,
+        focusedBackgroundColor: Colors.transparent,
+        style: TextStyle(
+          color: color?.titleTextColor,
         ),
-      ],
+        placeholderStyle: TextStyle(
+          color: color?.titleTextColor,
+        ),
+        focusedStyle: TextStyle(
+          color: color?.titleTextColor,
+        ),
+        borderColor: color?.titleTextColor,
+        prefixIconColor: color?.titleTextColor,
+        cursorColor: color?.titleTextColor,
+        prefixIcon: Icons.search_rounded,
+      ),
     );
 
     useEffect(() {
       OverlayEntry? entry;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (platform == TargetPlatform.windows) {
+        if (platform == TargetPlatform.windows && kIsDesktop) {
           entry = OverlayEntry(builder: (context) {
             return Positioned(
               left: 40,
               top: 7,
-              child: leading,
+              child: searchbar,
             );
           });
           Overlay.of(context)!.insert(entry!);
         }
       });
       return () => entry?.remove();
-    }, [color?.titleTextColor, leading]);
+    }, [color?.titleTextColor]);
 
     return SafeArea(
       child: PlatformScaffold(
@@ -185,7 +190,14 @@ class TrackCollectionView<T> extends HookConsumerWidget {
               ? PageWindowTitleBar(
                   backgroundColor: color?.color,
                   foregroundColor: color?.titleTextColor,
-                  leading: leading,
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      PlatformBackButton(color: color?.titleTextColor),
+                      const SizedBox(width: 10),
+                      searchbar,
+                    ],
+                  ),
                 )
               : null,
           body: CustomScrollView(
@@ -197,7 +209,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                 pinned: true,
                 expandedHeight: 400,
                 automaticallyImplyLeading: kIsMobile,
-                leading: kIsMobile ? leading : null,
+                leading: kIsMobile
+                    ? PlatformBackButton(color: color?.titleTextColor)
+                    : null,
                 iconTheme: IconThemeData(color: color?.titleTextColor),
                 primary: true,
                 backgroundColor: color?.color,
@@ -210,85 +224,84 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         ),
                       )
                     : null,
-                flexibleSpace: LayoutBuilder(builder: (context, constrains) {
-                  return FlexibleSpaceBar(
-                    background: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            color?.color ?? Colors.transparent,
-                            Theme.of(context).canvasColor,
-                          ],
-                          begin: const FractionalOffset(0, 0),
-                          end: const FractionalOffset(0, 1),
-                          tileMode: TileMode.clamp,
-                        ),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          color?.color ?? Colors.transparent,
+                          Theme.of(context).canvasColor,
+                        ],
+                        begin: const FractionalOffset(0, 0),
+                        end: const FractionalOffset(0, 1),
+                        tileMode: TileMode.clamp,
                       ),
-                      child: Material(
-                        textStyle: PlatformTheme.of(context).textTheme!.body!,
-                        type: MaterialType.transparency,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 20,
-                          ),
-                          child: Wrap(
-                            spacing: 20,
-                            runSpacing: 20,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            alignment: WrapAlignment.center,
-                            runAlignment: WrapAlignment.center,
-                            children: [
-                              Container(
-                                constraints:
-                                    const BoxConstraints(maxHeight: 200),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: UniversalImage(
-                                    path: titleImage,
-                                    placeholder: (context, url) {
-                                      return const UniversalImage(
-                                        path: "assets/album-placeholder.png",
-                                      );
-                                    },
-                                  ),
+                    ),
+                    child: Material(
+                      textStyle: PlatformTheme.of(context).textTheme!.body!,
+                      type: MaterialType.transparency,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ),
+                        child: Wrap(
+                          spacing: 20,
+                          runSpacing: 20,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          alignment: WrapAlignment.center,
+                          runAlignment: WrapAlignment.center,
+                          children: [
+                            Container(
+                              constraints: const BoxConstraints(maxHeight: 200),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: UniversalImage(
+                                  path: titleImage,
+                                  placeholder: (context, url) {
+                                    return const UniversalImage(
+                                      path: "assets/album-placeholder.png",
+                                    );
+                                  },
                                 ),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  PlatformText.headline(
-                                    title,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                PlatformText.headline(
+                                  title,
+                                  style: TextStyle(
+                                    color: color?.titleTextColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                if (description != null)
+                                  PlatformText(
+                                    description!,
                                     style: TextStyle(
-                                      color: color?.titleTextColor,
-                                      fontWeight: FontWeight.w600,
+                                      color: color?.bodyTextColor,
                                     ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.fade,
                                   ),
-                                  if (description != null)
-                                    PlatformText(
-                                      description!,
-                                      style: TextStyle(
-                                        color: color?.bodyTextColor,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.fade,
-                                    ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: buttons,
+                                ),
+                                if (kIsMobile) ...[
                                   const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: buttons,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
+                                  searchbar,
+                                ]
+                              ],
+                            )
+                          ],
                         ),
                       ),
                     ),
-                  );
-                }),
+                  ),
+                ),
               ),
               HookBuilder(
                 builder: (context) {

@@ -54,7 +54,7 @@ class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
 class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
   @override
   Widget build(BuildContext context) {
-    final isMaximized = useState(appWindow.isMaximized);
+    final isMaximized = useState(kIsDesktop ? appWindow.isMaximized : false);
 
     useEffect(() {
       if (platform == TargetPlatform.windows &&
