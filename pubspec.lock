@@ -130,54 +130,52 @@ packages:
   audioplayers:
     dependency: "direct main"
     description:
-      path: "packages/audioplayers"
-      ref: "3ee12cd0361c0fc2f3d0303c504732d12fa8e49a"
-      resolved-ref: "3ee12cd0361c0fc2f3d0303c504732d12fa8e49a"
-      url: "https://github.com/bluefireteam/audioplayers.git"
-    source: git
-    version: "1.0.1"
+      name: audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   audioplayers_android:
     dependency: transitive
     description:
       name: audioplayers_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.3"
   audioplayers_darwin:
     dependency: transitive
     description:
       name: audioplayers_darwin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.4"
   audioplayers_linux:
     dependency: transitive
     description:
       name: audioplayers_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.2"
   audioplayers_platform_interface:
     dependency: transitive
     description:
       name: audioplayers_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.1.0"
   audioplayers_web:
     dependency: transitive
     description:
       name: audioplayers_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.1.0"
   audioplayers_windows:
     dependency: transitive
     description:
       name: audioplayers_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.1"
   auto_size_text:
     dependency: "direct main"
     description:

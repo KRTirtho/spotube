@@ -10,7 +10,9 @@ class SearchQueries {
     initialParam: 0,
     enabled: false,
     getNextPageParam: (lastPage, lastParam) =>
-        (lastPage.first.items?.length ?? 0) < 10 ? null : lastParam + 10,
+        lastPage.isNotEmpty && (lastPage.first.items?.length ?? 0) < 10
+            ? null
+            : lastParam + 10,
     getPreviousPageParam: (lastPage, lastParam) => lastParam - 10,
     task: (queryKey, pageParam, variables) {
       final queryString = variables.item1;

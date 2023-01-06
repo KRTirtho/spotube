@@ -1,5 +1,4 @@
 import 'package:badges/badges.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -194,9 +193,10 @@ class SidebarFooter extends HookConsumerWidget {
       width: 256,
       child: HookBuilder(
         builder: (context) {
+          var spotify = ref.watch(spotifyProvider);
           final me = useQuery(
             job: Queries.user.me,
-            externalData: ref.watch(spotifyProvider),
+            externalData: spotify,
           );
           final data = me.data;
 
@@ -205,6 +205,20 @@ class SidebarFooter extends HookConsumerWidget {
             index: (data?.images?.length ?? 1) - 1,
             placeholder: ImagePlaceholder.artist,
           );
+
+          // TODO: Remove below code after fl-query ^0.4.0
+          /// Temporary fix before fl-query 0.4.0
+          final auth = ref.watch(authProvider);
+
+          useEffect(() {
+            if (auth.isLoggedIn && me.hasError) {
+              me.setExternalData(spotify);
+              me.refetch();
+            }
+            return null;
+          }, [auth, me.hasError]);
+
+          /// ===================================
 
           return Padding(
               padding: const EdgeInsets.all(16).copyWith(left: 0),

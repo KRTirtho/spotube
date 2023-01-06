@@ -8,6 +8,7 @@ import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -46,6 +47,22 @@ class GenrePage extends HookConsumerWidget {
     ];
 
     final isMounted = useIsMounted();
+
+    /// Temporary fix before fl-query 0.4.0
+    final auth = ref.watch(authProvider);
+
+    useEffect(() {
+      if (auth.isLoggedIn && categoriesQuery.hasError) {
+        categoriesQuery.setExternalData({
+          "spotify": spotify,
+          "recommendationMarket": recommendationMarket,
+        });
+        categoriesQuery.refetchPages();
+      }
+      return null;
+    }, [auth, categoriesQuery.hasError]);
+
+    /// ===================================
 
     return PlatformScaffold(
       appBar: kIsDesktop ? PageWindowTitleBar() : null,
