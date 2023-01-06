@@ -41,7 +41,7 @@ dependencies:
   dbus: ^0.7.3
   audioplayers: ^1.2.0
   introduction_screen: ^3.0.2
-  audio_session: ^0.1.10
+  audio_session: ^0.1.13
   file_picker: ^5.2.2
   popover: ^0.2.6+3
   queue: ^3.1.0+1
