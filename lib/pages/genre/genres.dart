@@ -1,6 +1,8 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:collection/collection.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
@@ -14,6 +16,7 @@ import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:tuple/tuple.dart';
 
 class GenrePage extends HookConsumerWidget {
   const GenrePage({Key? key}) : super(key: key);
@@ -32,19 +35,6 @@ class GenrePage extends HookConsumerWidget {
         "recommendationMarket": recommendationMarket,
       },
     );
-    final categories = [
-      useMemoized(
-        () => Category()
-          ..id = "user-featured-playlists"
-          ..name = "Featured",
-        [],
-      ),
-      ...categoriesQuery.pages
-          .expand<Category?>(
-            (page) => page?.items ?? const Iterable.empty(),
-          )
-          .toList()
-    ];
 
     final isMounted = useIsMounted();
 
@@ -64,9 +54,54 @@ class GenrePage extends HookConsumerWidget {
 
     /// ===================================
 
-    return PlatformScaffold(
-      appBar: kIsDesktop ? PageWindowTitleBar() : null,
-      body: Waypoint(
+    return HookBuilder(builder: (context) {
+      final searchText = useState("");
+      final categories = useMemoized(
+        () {
+          final categories = [
+            Category()
+              ..id = "user-featured-playlists"
+              ..name = "Featured",
+            ...categoriesQuery.pages
+                .expand<Category>(
+                  (page) => page?.items ?? const Iterable.empty(),
+                )
+                .toList()
+          ];
+          if (searchText.value.isEmpty) {
+            return categories;
+          }
+          return categories
+              .map((e) => Tuple2(
+                    weightedRatio(e.name!, searchText.value),
+                    e,
+                  ))
+              .sorted((a, b) => b.item1.compareTo(a.item1))
+              .where((e) => e.item1 > 50)
+              .map((e) => e.item2)
+              .toList();
+        },
+        [categoriesQuery.pages, searchText.value],
+      );
+
+      final searchbar = Container(
+        constraints: const BoxConstraints(maxWidth: 300, maxHeight: 50),
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: PlatformTextField(
+          placeholder: "Filter categories or genres...",
+          prefixIcon: Icons.search_rounded,
+          padding: PlatformProperty.only(
+            android: const EdgeInsets.all(0),
+            linux: const EdgeInsets.all(0),
+            other: null,
+          ).resolve(platform ?? Theme.of(context).platform),
+          onChanged: (value) {
+            searchText.value = value;
+          },
+        ),
+      );
+
+      final list = Waypoint(
         onTouchEdge: () async {
           if (categoriesQuery.hasNextPage && isMounted()) {
             await categoriesQuery.fetchNextPage();
@@ -78,14 +113,35 @@ class GenrePage extends HookConsumerWidget {
           itemCount: categories.length,
           itemBuilder: (context, index) {
             final category = categories[index];
-            if (category == null) return Container();
-            if (index == categories.length - 1) {
+            if (searchText.value.isEmpty && index == categories.length - 1) {
               return const ShimmerCategories();
             }
             return CategoryCard(category);
           },
         ),
-      ),
-    );
+      );
+      return PlatformScaffold(
+        appBar: PageWindowTitleBar(
+          titleWidth: 300,
+          centerTitle: true,
+          center: searchbar,
+        ),
+        backgroundColor: PlatformProperty.all(
+          PlatformTheme.of(context).scaffoldBackgroundColor!,
+        ),
+        body: platform == TargetPlatform.windows && kIsDesktop
+            ? Stack(
+                children: [
+                  Positioned.fill(child: list),
+                  Positioned(
+                    top: 5,
+                    right: 10,
+                    child: searchbar,
+                  ),
+                ],
+              )
+            : list,
+      );
+    });
   }
 }
