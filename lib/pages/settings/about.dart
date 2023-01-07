@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/hooks/use_package_info.dart';
 
@@ -78,7 +79,7 @@ class AboutSpotube extends HookConsumerWidget {
                     InkWell(
                       onTap: () {
                         launchUrlString(
-                          "https://raw.githubusercontent.com/KRTirtho/spotube/main/LICENSE",
+                          "https://raw.githubusercontent.com/KRTirtho/spotube/master/LICENSE",
                           mode: LaunchMode.externalApplication,
                         );
                       },
@@ -99,6 +100,20 @@ class AboutSpotube extends HookConsumerWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => launchUrl(
+                    Uri.parse("https://discord.gg/uJ94vxB6vg"),
+                    mode: LaunchMode.externalApplication,
+                  ),
+                  child: const UniversalImage(
+                    path:
+                        "https://discord.com/api/guilds/1012234096237350943/widget.png?style=banner2",
+                  ),
                 ),
               ),
               const SizedBox(height: 20),

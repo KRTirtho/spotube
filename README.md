@@ -1,27 +1,27 @@
-![Spotube](assets/spotube_banner.png)
+<p align="center"><img width="700" src="assets/spotube_banner.png" alt="Spotube Logo"></p>
 
 <p align="center">
   <a href="https://spotube.netlify.app/">spotube.netlify.app</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/KRTirtho/spotube/actions/workflows/flutter-build.yml">
-    <img alt="GitHub Action Status" src="https://img.shields.io/github/workflow/status/KRTirtho/spotube/Flutter%20Cross%20Build/build?color=%2316ba58&style=flat-square"/>
+  <a href="https://github.com/KRTirtho/spotube/actions/workflows/spotube-nightly.yml">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-nightly.yml?color=1585be&style=flat-square">
   </a>
   <a href="https://github.com/KRTirtho/Spotube/releases">
-    <img alt="GitHub release" src="https://img.shields.io/github/v/release/KRTirtho/spotube?color=%2316ba58&style=flat-square"/>
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/KRTirtho/spotube?color=1585be&style=flat-square"/>
   </a>
   <a href="LICENSE">
-    <img alt="License" src="https://img.shields.io/aur/license/spotube-bin?color=%2316ba58&style=flat-square"/>
+    <img alt="License" src="https://img.shields.io/aur/license/spotube-bin?color=1585be&style=flat-square"/>
   </a>
   <a href="https://github.com/KRTirtho">
-    <img alt="Maintainer" src="https://img.shields.io/badge/Maintainer-KRTirtho-%2316ba58?style=flat-square"/>
+    <img alt="Maintainer" src="https://img.shields.io/badge/Maintainer-KRTirtho-1585be?style=flat-square"/>
   </a>
   <a href="https://opencollective.com/spotube">
-    <img alt="Open Collective backers and sponsors" src="https://img.shields.io/opencollective/all/spotube?color=%2316ba58&style=flat-square"/>
+    <img alt="Open Collective backers and sponsors" src="https://img.shields.io/opencollective/all/spotube?color=1585be&style=flat-square"/>
   </a>
   <a href="https://discord.gg/uJ94vxB6vg">
-    <img alt="Discord" src="https://img.shields.io/discord/1012234096237350943?color=%2316ba58&label=Discord%20Server&logoColor=%2316ba58&style=flat-square">
+    <img alt="Discord" src="https://img.shields.io/discord/1012234096237350943?color=1585be&label=Discord%20Server&logoColor=1585be&style=flat-square">
   </a>
 </p>
 
