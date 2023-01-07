@@ -98,7 +98,7 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
           ),
       ],
       onDrag: () {
-        appWindow.startDragging();
+        if (kIsDesktop) appWindow.startDragging();
       },
       title: widget.center,
       toolbarOpacity: widget.toolbarOpacity,

@@ -31,10 +31,15 @@ class Sidebar extends HookConsumerWidget {
   }) : super(key: key);
 
   static Widget brandLogo() {
-    return Image.asset(
-      "assets/spotube-logo.png",
-      height: 50,
-      width: 50,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Image.asset(
+        "assets/spotube-logo.png",
+        height: 50,
+      ),
     );
   }
 

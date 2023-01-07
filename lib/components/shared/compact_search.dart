@@ -7,12 +7,14 @@ class CompactSearch extends HookWidget {
   final ValueChanged<String>? onChanged;
   final String placeholder;
   final IconData icon;
+  final Color? iconColor;
 
   const CompactSearch({
     Key? key,
     this.onChanged,
     this.placeholder = "Search...",
     this.icon = Icons.search,
+    this.iconColor,
   }) : super(key: key);
 
   @override
@@ -24,14 +26,19 @@ class CompactSearch extends HookWidget {
           backgroundColor: PlatformTheme.of(context).secondaryBackgroundColor!,
           transitionDuration: const Duration(milliseconds: 100),
           barrierColor: Colors.transparent,
+          arrowDxOffset: -6,
           bodyBuilder: (context) {
-            return Padding(
+            return Container(
               padding: const EdgeInsets.all(8.0),
+              width: 300,
               child: PlatformTextField(
                 autofocus: true,
                 onChanged: onChanged,
                 placeholder: placeholder,
                 prefixIcon: icon,
+                padding: platform == TargetPlatform.android
+                    ? const EdgeInsets.all(0)
+                    : null,
               ),
             );
           },
@@ -39,7 +46,7 @@ class CompactSearch extends HookWidget {
         );
       },
       tooltip: placeholder,
-      icon: Icon(icon),
+      icon: Icon(icon, color: iconColor),
     );
   }
 }

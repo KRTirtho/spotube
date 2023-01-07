@@ -41,8 +41,11 @@ class AboutSpotube extends HookConsumerWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        PlatformText.subheading(
+                        const PlatformText(
                           "Founder:   Kingkor Roy Tirtho",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(width: 5),
                         CircleAvatar(

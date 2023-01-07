@@ -112,9 +112,11 @@ class GenrePage extends HookConsumerWidget {
         ),
       );
       return PlatformScaffold(
-        appBar: PageWindowTitleBar(
-          actions: [searchbar, const SizedBox(width: 10)],
-        ),
+        appBar: kIsDesktop
+            ? PageWindowTitleBar(
+                actions: [searchbar, const SizedBox(width: 10)],
+              )
+            : null,
         backgroundColor: PlatformProperty.all(
           PlatformTheme.of(context).scaffoldBackgroundColor!,
         ),
@@ -123,8 +125,8 @@ class GenrePage extends HookConsumerWidget {
                 children: [
                   Positioned.fill(child: list),
                   Positioned(
-                    top: 10,
-                    right: 20,
+                    top: kIsMobile ? 30 : 10,
+                    right: kIsMobile ? 5 : 20,
                     child: searchbar,
                   ),
                 ],

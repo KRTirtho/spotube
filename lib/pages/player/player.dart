@@ -67,7 +67,9 @@ class PlayerView extends HookConsumerWidget {
         hideWhenWindows: false,
         backgroundColor: Colors.transparent,
         foregroundColor: paletteColor.titleTextColor,
-        toolbarOpacity: 0,
+        toolbarOpacity:
+            PlatformProperty.only(android: 1.0, windows: 1.0, other: 0.0)
+                .resolve(platform ?? Theme.of(context).platform),
         leading: PlatformBackButton(
           color: PlatformProperty.only(
             macos: Colors.black,

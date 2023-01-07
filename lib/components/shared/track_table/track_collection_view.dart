@@ -5,6 +5,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -205,7 +206,15 @@ class TrackCollectionView<T> extends HookConsumerWidget {
             controller: controller,
             slivers: [
               SliverAppBar(
-                actions: collapsed.value ? buttons : null,
+                actions: [
+                  if (kIsMobile)
+                    CompactSearch(
+                      onChanged: (value) => searchText.value = value,
+                      placeholder: "Search tracks...",
+                      iconColor: color?.titleTextColor,
+                    ),
+                  if (collapsed.value) ...buttons,
+                ],
                 floating: false,
                 pinned: true,
                 expandedHeight: 400,
@@ -291,10 +300,6 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: buttons,
                                 ),
-                                if (kIsMobile) ...[
-                                  const SizedBox(height: 10),
-                                  searchbar,
-                                ]
                               ],
                             )
                           ],
