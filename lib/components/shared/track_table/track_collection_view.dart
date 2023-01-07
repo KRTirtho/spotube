@@ -102,6 +102,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     final collapsed = useState(false);
 
     final searchText = useState("");
+    final searchController = useTextEditingController();
 
     final filteredTracks = useMemoized(() {
       if (searchText.value.isEmpty) {
@@ -131,9 +132,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
     useEffect(() {
       listener() {
-        if (controller.position.pixels >= 400 && !collapsed.value) {
+        if (controller.position.pixels >= 390 && !collapsed.value) {
           collapsed.value = true;
-        } else if (controller.position.pixels < 400 && collapsed.value) {
+        } else if (controller.position.pixels < 390 && collapsed.value) {
           collapsed.value = false;
         }
       }
@@ -149,6 +150,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         maxHeight: 50,
       ),
       child: PlatformTextField(
+        controller: searchController,
         onChanged: (value) => searchText.value = value,
         placeholder: "Search tracks...",
         backgroundColor: Colors.transparent,
@@ -172,7 +174,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     useEffect(() {
       OverlayEntry? entry;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (platform == TargetPlatform.windows && kIsDesktop) {
+        if (platform == TargetPlatform.windows &&
+            kIsDesktop &&
+            !collapsed.value) {
           entry = OverlayEntry(builder: (context) {
             return Positioned(
               left: 40,
@@ -184,7 +188,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         }
       });
       return () => entry?.remove();
-    }, [color?.titleTextColor]);
+    }, [color?.titleTextColor, collapsed.value]);
 
     return SafeArea(
       child: PlatformScaffold(
@@ -234,6 +238,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         ),
                       )
                     : null,
+                centerTitle: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background: DecoratedBox(
                     decoration: BoxDecoration(
