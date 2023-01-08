@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,30 +25,39 @@ import 'package:spotube/services/mobile_audio_service.dart';
 import 'package:spotube/themes/dark_theme.dart';
 import 'package:spotube/themes/light_theme.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:window_size/window_size.dart';
 
 final bowl = QueryBowl();
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
-  WidgetsFlutterBinding.ensureInitialized();
   if (kIsDesktop) {
-    doWhenWindowReady(() async {
+    await windowManager.ensureInitialized();
+    WindowOptions windowOptions = const WindowOptions(
+      center: true,
+      backgroundColor: Colors.transparent,
+      titleBarStyle: TitleBarStyle.hidden,
+      title: "Spotube",
+    );
+    setWindowMinSize(const Size(kReleaseMode ? 1020 : 300, 700));
+    await windowManager.waitUntilReadyToShow(windowOptions, () async {
       final localStorage = await SharedPreferences.getInstance();
       final rawSize = localStorage.getString(LocalStorageKeys.windowSizeInfo);
       final savedSize = rawSize != null ? json.decode(rawSize) : null;
+      final wasMaximized = savedSize?["maximized"] ?? false;
       final double? height = savedSize?["height"];
       final double? width = savedSize?["width"];
-      appWindow.minSize = const Size(kReleaseMode ? 1020 : 300, 700);
-      appWindow.alignment = Alignment.center;
-      appWindow.title = "Spotube";
-      if (height != null && width != null && height >= 700 && width >= 359) {
-        appWindow.size = Size(width, height);
-      } else {
-        appWindow.maximize();
+      await windowManager.setResizable(true);
+      if (wasMaximized) {
+        await windowManager.maximize();
+      } else if (height != null && width != null) {
+        await windowManager.setSize(Size(width, height));
       }
-      appWindow.show();
+      await windowManager.show();
     });
   }
   MobileAudioService? audioServiceHandler;
@@ -169,22 +177,24 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeMetrics() {
+  void didChangeMetrics() async {
     super.didChangeMetrics();
-    final windowSameDimension = kIsMobile
-        ? false
-        : prevSize?.width == appWindow.size.width &&
-            prevSize?.height == appWindow.size.height;
+    if (kIsMobile) return;
+    final size = await windowManager.getSize();
+    final windowSameDimension =
+        prevSize?.width == size.width && prevSize?.height == size.height;
 
-    if (localStorage == null || windowSameDimension || kIsMobile) return;
+    if (localStorage == null || windowSameDimension) return;
+    final isMaximized = await windowManager.isMaximized();
     localStorage!.setString(
       LocalStorageKeys.windowSizeInfo,
       jsonEncode({
-        'width': appWindow.isMaximized ? 0.0 : appWindow.size.width,
-        'height': appWindow.isMaximized ? 0.0 : appWindow.size.height,
+        'maximized': isMaximized,
+        'width': size.width,
+        'height': size.height,
       }),
     );
-    prevSize = appWindow.size;
+    prevSize = await windowManager.getSize();
   }
 
   TargetPlatform appPlatform = TargetPlatform.android;
@@ -220,6 +230,9 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       routeInformationProvider: router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
+      builder: (context, child) {
+        return DragToResizeArea(child: child!);
+      },
       androidTheme: lightTheme(
         accentMaterialColor: accentMaterialColor,
         backgroundMaterialColor: backgroundMaterialColor,
@@ -236,15 +249,6 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       macosTheme: macosTheme,
       macosDarkTheme: macosDarkTheme,
       themeMode: themeMode,
-      windowButtonConfig: kIsDesktop
-          ? PlatformWindowButtonConfig(
-              isMaximized: () async => Future.value(appWindow.isMaximized),
-              onClose: () async => appWindow.close(),
-              onRestore: () async => appWindow.restore(),
-              onMaximize: () async => appWindow.maximize(),
-              onMinimize: () async => appWindow.minimize(),
-            )
-          : null,
       shortcuts: PlatformProperty.all({
         ...WidgetsApp.defaultShortcuts.map((key, value) {
           return MapEntry(

@@ -19,7 +19,6 @@ dependencies:
   spotify: ^0.8.0
   url_launcher: ^6.1.7
   youtube_explode_dart: ^1.12.1
-  bitsdojo_window: ^0.1.5
   path: ^1.8.0
   path_provider: ^2.0.8
   collection: ^1.15.0
@@ -65,6 +64,12 @@ dependencies:
   adwaita: ^0.5.2
   flutter_svg: ^1.1.6
   fuzzywuzzy: ^0.2.0
+  window_manager: 0.2.8
+  window_size:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding.git
+      ref: a738913c8ce2c9f47515382d40827e794a334274
+      path: plugins/window_size
 
 dev_dependencies:
   flutter_test:

@@ -4,11 +4,13 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
-  bitsdojo_window_windows
   connectivity_plus_windows
   metadata_god
   permission_handler_windows
+  screen_retriever
   url_launcher_windows
+  window_manager
+  window_size
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

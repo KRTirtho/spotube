@@ -1,8 +1,8 @@
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:window_manager/window_manager.dart';
 
 class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
   final Widget? leading;
@@ -52,7 +52,7 @@ class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
 class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
   @override
   Widget build(BuildContext context) {
-    final isMaximized = useState(kIsDesktop ? appWindow.isMaximized : false);
+    final isMaximized = useState<bool?>(null);
 
     useEffect(() {
       if (platform == TargetPlatform.windows &&
@@ -81,24 +81,38 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
       return const SizedBox.shrink();
     }
 
+    maximizeOrRestore() async {
+      if (await windowManager.isMaximized()) {
+        await windowManager.unmaximize();
+        isMaximized.value = false;
+      } else {
+        await windowManager.maximize();
+        isMaximized.value = true;
+      }
+    }
+
     return PlatformAppBar(
       actions: [
         ...?widget.actions,
         if (!kIsMacOS && !kIsMobile)
           PlatformWindowButtons(
-            isMaximized: () => isMaximized.value,
-            onMaximize: () {
-              appWindow.maximize();
-              isMaximized.value = true;
+            isMaximized: () async =>
+                isMaximized.value ?? await windowManager.isMaximized(),
+            onMaximize: maximizeOrRestore,
+            onRestore: maximizeOrRestore,
+            onMinimize: () {
+              windowManager.minimize();
             },
-            onRestore: () {
-              appWindow.restore();
-              isMaximized.value = false;
+            onClose: () {
+              windowManager.close();
             },
+            showCloseButton: true,
+            showMaximizeButton: true,
+            showMinimizeButton: true,
           ),
       ],
       onDrag: () {
-        if (kIsDesktop) appWindow.startDragging();
+        if (kIsDesktop) windowManager.startDragging();
       },
       title: widget.center,
       toolbarOpacity: widget.toolbarOpacity,

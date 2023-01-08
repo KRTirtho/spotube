@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dbus/dbus.dart';
 
 import 'package:spotube/provider/dbus_provider.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:window_manager/window_manager.dart';
 
 class _MprisMediaPlayer2 extends DBusObject {
   /// Creates a new object to expose on [path].
@@ -79,7 +79,7 @@ class _MprisMediaPlayer2 extends DBusObject {
 
   /// Implementation of org.mpris.MediaPlayer2.Quit()
   Future<DBusMethodResponse> doQuit() async {
-    appWindow.close();
+    await windowManager.close();
     return DBusMethodSuccessResponse();
   }
 
