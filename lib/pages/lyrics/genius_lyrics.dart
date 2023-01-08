@@ -1,6 +1,5 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
@@ -15,8 +14,10 @@ import 'package:tuple/tuple.dart';
 
 class GeniusLyrics extends HookConsumerWidget {
   final PaletteColor palette;
+  final bool? isModal;
   const GeniusLyrics({
     required this.palette,
+    this.isModal,
     Key? key,
   }) : super(key: key);
 
@@ -36,27 +37,29 @@ class GeniusLyrics extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Center(
-          child: Text(
-            playback.track?.name ?? "",
-            style: breakpoint >= Breakpoints.md
-                ? textTheme.headline3
-                : textTheme.headline4?.copyWith(
-                    fontSize: 25,
-                    color: palette.titleTextColor,
-                  ),
+        if (isModal != true) ...[
+          Center(
+            child: Text(
+              playback.track?.name ?? "",
+              style: breakpoint >= Breakpoints.md
+                  ? textTheme.headline3
+                  : textTheme.headline4?.copyWith(
+                      fontSize: 25,
+                      color: palette.titleTextColor,
+                    ),
+            ),
           ),
-        ),
-        Center(
-          child: Text(
-            TypeConversionUtils.artists_X_String<Artist>(
-                playback.track?.artists ?? []),
-            style: (breakpoint >= Breakpoints.md
-                    ? textTheme.headline5
-                    : textTheme.headline6)
-                ?.copyWith(color: palette.bodyTextColor),
-          ),
-        ),
+          Center(
+            child: Text(
+              TypeConversionUtils.artists_X_String<Artist>(
+                  playback.track?.artists ?? []),
+              style: (breakpoint >= Breakpoints.md
+                      ? textTheme.headline5
+                      : textTheme.headline6)
+                  ?.copyWith(color: palette.bodyTextColor),
+            ),
+          )
+        ],
         Expanded(
           child: SingleChildScrollView(
             child: Center(

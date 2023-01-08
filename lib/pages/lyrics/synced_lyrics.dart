@@ -26,8 +26,11 @@ final lyricDelayState = StateProvider<Duration>(
 
 class SyncedLyrics extends HookConsumerWidget {
   final PaletteColor palette;
+  final bool? isModal;
+
   const SyncedLyrics({
     required this.palette,
+    this.isModal,
     Key? key,
   }) : super(key: key);
 
@@ -70,107 +73,102 @@ class SyncedLyrics extends HookConsumerWidget {
             : textTheme.headline4?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
 
-    return Column(
+    return Stack(
       children: [
-        SizedBox(
-          height: breakpoint >= Breakpoints.md ? 50 : 40,
-          child: Material(
-            type: MaterialType.transparency,
-            textStyle: PlatformTheme.of(context).textTheme!.body!,
-            child: Stack(
-              children: [
-                Center(
-                  child: SpotubeMarqueeText(
-                    text: playback.track?.name ?? "Not Playing",
-                    style: headlineTextStyle,
-                    isHovering: true,
-                  ),
+        Column(
+          children: [
+            if (isModal != true)
+              Center(
+                child: SpotubeMarqueeText(
+                  text: playback.track?.name ?? "Not Playing",
+                  style: headlineTextStyle,
+                  isHovering: true,
                 ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: PlatformFilledButton(
-                      child: const Icon(
-                        SpotubeIcons.clock,
-                        size: 16,
-                      ),
-                      onPressed: () async {
-                        final delay = await showPlatformAlertDialog(
-                          context,
-                          builder: (context) => const LyricDelayAdjustDialog(),
-                        );
-                        if (delay != null) {
-                          ref.read(lyricDelayState.notifier).state = delay;
-                        }
-                      },
-                    ),
-                  ),
+              ),
+            if (isModal != true)
+              Center(
+                child: Text(
+                  TypeConversionUtils.artists_X_String<Artist>(
+                      playback.track?.artists ?? []),
+                  style: breakpoint >= Breakpoints.md
+                      ? textTheme.headline5
+                      : textTheme.headline6,
                 ),
-              ],
-            ),
-          ),
-        ),
-        Center(
-          child: Text(
-            TypeConversionUtils.artists_X_String<Artist>(
-                playback.track?.artists ?? []),
-            style: breakpoint >= Breakpoints.md
-                ? textTheme.headline5
-                : textTheme.headline6,
-          ),
-        ),
-        if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
-          Expanded(
-            child: ListView.builder(
-              controller: controller,
-              itemCount: lyricValue.lyrics.length,
-              itemBuilder: (context, index) {
-                final lyricSlice = lyricValue.lyrics[index];
-                final isActive = lyricSlice.time.inSeconds == currentTime;
-
-                if (isActive) {
-                  controller.scrollToIndex(
-                    index,
-                    preferPosition: AutoScrollPosition.middle,
-                  );
-                }
-                return AutoScrollTag(
-                  key: ValueKey(index),
-                  index: index,
+              ),
+            if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
                   controller: controller,
-                  child: lyricSlice.text.isEmpty
-                      ? Container()
-                      : Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AnimatedDefaultTextStyle(
-                              duration: const Duration(milliseconds: 250),
-                              style: TextStyle(
-                                color: isActive
-                                    ? Colors.white
-                                    : palette.bodyTextColor,
-                                fontWeight: isActive
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                fontSize: isActive ? 30 : 26,
-                              ),
-                              child: Text(
-                                lyricSlice.text,
-                                maxLines: 2,
-                                textAlign: TextAlign.center,
+                  itemCount: lyricValue.lyrics.length,
+                  itemBuilder: (context, index) {
+                    final lyricSlice = lyricValue.lyrics[index];
+                    final isActive = lyricSlice.time.inSeconds == currentTime;
+
+                    if (isActive) {
+                      controller.scrollToIndex(
+                        index,
+                        preferPosition: AutoScrollPosition.middle,
+                      );
+                    }
+                    return AutoScrollTag(
+                      key: ValueKey(index),
+                      index: index,
+                      controller: controller,
+                      child: lyricSlice.text.isEmpty
+                          ? Container()
+                          : Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: AnimatedDefaultTextStyle(
+                                  duration: const Duration(milliseconds: 250),
+                                  style: TextStyle(
+                                    color: isActive
+                                        ? Colors.white
+                                        : palette.bodyTextColor,
+                                    fontWeight: isActive
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: isActive ? 30 : 26,
+                                  ),
+                                  child: Text(
+                                    lyricSlice.text,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                    );
+                  },
+                ),
+              ),
+            if (playback.track != null &&
+                (lyricValue == null || lyricValue.lyrics.isEmpty == true))
+              const Expanded(child: ShimmerLyrics()),
+          ],
+        ),
+        Positioned(
+          top: 10,
+          right: 10,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: PlatformFilledButton(
+              child: const Icon(
+                SpotubeIcons.clock,
+                size: 16,
+              ),
+              onPressed: () async {
+                final delay = await showPlatformAlertDialog(
+                  context,
+                  builder: (context) => const LyricDelayAdjustDialog(),
                 );
+                if (delay != null) {
+                  ref.read(lyricDelayState.notifier).state = delay;
+                }
               },
             ),
           ),
-        if (playback.track != null &&
-            (lyricValue == null || lyricValue.lyrics.isEmpty == true))
-          const Expanded(child: ShimmerLyrics()),
+        ),
       ],
     );
   }

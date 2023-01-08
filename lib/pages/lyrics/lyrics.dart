@@ -40,8 +40,8 @@ class LyricsPage extends HookConsumerWidget {
     );
 
     Widget body = [
-      SyncedLyrics(palette: palette),
-      GeniusLyrics(palette: palette),
+      SyncedLyrics(palette: palette, isModal: isModal),
+      GeniusLyrics(palette: palette, isModal: isModal),
     ][index.value];
 
     final tabbar = PreferredSize(
@@ -70,11 +70,12 @@ class LyricsPage extends HookConsumerWidget {
       return SafeArea(
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            color: Colors.black45,
-            borderRadius: BorderRadius.circular(8),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
           ),
-          margin: const EdgeInsets.all(16),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
             child: Column(

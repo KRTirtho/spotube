@@ -201,13 +201,17 @@ class PlayerView extends HookConsumerWidget {
                             isDismissible: true,
                             enableDrag: true,
                             isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
+                            backgroundColor: Colors.black38,
                             barrierColor: Colors.black12,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
                             ),
                             constraints: BoxConstraints(
-                              maxHeight: MediaQuery.of(context).size.height,
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.8,
                             ),
                             builder: (context) =>
                                 const LyricsPage(isModal: true),
