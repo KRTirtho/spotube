@@ -6,6 +6,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
@@ -63,7 +64,7 @@ class UserArtists extends HookConsumerWidget {
             color: PlatformTheme.of(context).scaffoldBackgroundColor!,
             child: PlatformTextField(
               onChanged: (value) => searchText.value = value,
-              prefixIcon: Icons.filter_alt_outlined,
+              prefixIcon: SpotubeIcons.filter,
               placeholder: 'Filter artists...',
             ),
           ),

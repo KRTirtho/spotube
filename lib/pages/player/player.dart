@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -192,7 +193,7 @@ class PlayerView extends HookConsumerWidget {
                     extraActions: [
                       PlatformIconButton(
                         tooltip: "Open Lyrics",
-                        icon: const Icon(Icons.lyrics_rounded),
+                        icon: const Icon(SpotubeIcons.lyrics),
                         onPressed: () {
                           GoRouter.of(context).pop();
                           GoRouter.of(context).go('/lyrics');

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/hooks/playback_hooks.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
@@ -83,7 +84,7 @@ class PlayerOverlay extends HookConsumerWidget {
                       children: [
                         IconButton(
                             icon: Icon(
-                              Icons.skip_previous_rounded,
+                              SpotubeIcons.skipBack,
                               color: paletteColor.bodyTextColor,
                             ),
                             onPressed: () {
@@ -94,8 +95,8 @@ class PlayerOverlay extends HookConsumerWidget {
                             return IconButton(
                               icon: Icon(
                                 ref.read(playbackProvider).isPlaying
-                                    ? Icons.pause_rounded
-                                    : Icons.play_arrow_rounded,
+                                    ? SpotubeIcons.pause
+                                    : SpotubeIcons.play,
                                 color: paletteColor.bodyTextColor,
                               ),
                               onPressed: Actions.handler<PlayPauseIntent>(
@@ -107,7 +108,7 @@ class PlayerOverlay extends HookConsumerWidget {
                         ),
                         IconButton(
                           icon: Icon(
-                            Icons.skip_next_rounded,
+                            SpotubeIcons.skipForward,
                             color: paletteColor.bodyTextColor,
                           ),
                           onPressed: () => onNext(),

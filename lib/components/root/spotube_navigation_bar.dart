@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/downloader_provider.dart';
@@ -48,7 +49,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
           },
         ),
         const PlatformBottomNavigationBarItem(
-          icon: Icons.settings_rounded,
+          icon: SpotubeIcons.settings,
           label: "Settings",
         )
       ],

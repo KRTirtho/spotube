@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -138,7 +139,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            Icon(Icons.add_box_rounded, size: 40),
+            Icon(SpotubeIcons.addFilled, size: 40),
             PlatformText("Create Playlist", style: TextStyle(fontSize: 20)),
           ],
         ),

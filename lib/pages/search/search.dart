@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
@@ -92,7 +93,7 @@ class SearchPage extends HookConsumerWidget {
                         ref.read(searchTermStateProvider.notifier).state =
                             value;
                       },
-                      prefixIcon: Icons.search_rounded,
+                      prefixIcon: SpotubeIcons.search,
                       prefixIconColor: PlatformProperty.only(
                         ios:
                             PlatformTheme.of(context).textTheme?.caption?.color,

@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/components/shared/spotube_marquee_text.dart';
 import 'package:spotube/components/lyrics/lyric_delay_adjust_dialog.dart';
@@ -92,7 +93,7 @@ class SyncedLyrics extends HookConsumerWidget {
                     alignment: Alignment.centerRight,
                     child: PlatformFilledButton(
                       child: const Icon(
-                        Icons.av_timer_rounded,
+                        SpotubeIcons.clock,
                         size: 16,
                       ),
                       onPressed: () async {

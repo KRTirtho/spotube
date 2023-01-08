@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
@@ -38,10 +39,7 @@ class HeartButton extends ConsumerWidget {
     return PlatformIconButton(
       tooltip: tooltip,
       icon: Icon(
-        icon ??
-            (!isLiked
-                ? Icons.favorite_outline_rounded
-                : Icons.favorite_rounded),
+        icon ?? (!isLiked ? SpotubeIcons.heart : SpotubeIcons.heartFilled),
         color: isLiked ? Colors.pink : color,
       ),
       onPressed: onPressed,

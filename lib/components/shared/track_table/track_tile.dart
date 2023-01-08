@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_popup_menu_button.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
@@ -236,13 +237,13 @@ class TrackTile extends HookConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(left: 0),
+              padding: const EdgeInsets.all(8.0),
               child: PlatformIconButton(
                 icon: Icon(
                   playback.track?.id != null &&
                           playback.track?.id == track.value.id
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
+                      ? SpotubeIcons.pause
+                      : SpotubeIcons.play,
                   color: Colors.white,
                 ),
                 backgroundColor: PlatformTheme.of(context).primaryColor,
@@ -323,10 +324,10 @@ class TrackTile extends HookConsumerWidget {
                     Action(
                       icon: toggler.item1
                           ? const Icon(
-                              Icons.favorite_rounded,
+                              SpotubeIcons.heartFilled,
                               color: Colors.pink,
                             )
-                          : const Icon(Icons.favorite_border_rounded),
+                          : const Icon(SpotubeIcons.heart),
                       text: const PlatformText("Save as favorite"),
                       onPressed: () {
                         toggler.item2.mutate(Tuple2(spotify, toggler.item1));
@@ -334,7 +335,7 @@ class TrackTile extends HookConsumerWidget {
                     ),
                   if (auth.isLoggedIn)
                     Action(
-                      icon: const Icon(Icons.add_box_rounded),
+                      icon: const Icon(SpotubeIcons.addFilled),
                       text: const PlatformText("Add To playlist"),
                       onPressed: actionAddToPlaylist,
                     ),
@@ -345,7 +346,7 @@ class TrackTile extends HookConsumerWidget {
                           ? const Center(
                               child: PlatformCircularProgressIndicator(),
                             )
-                          : const Icon(Icons.remove_circle_outline_rounded),
+                          : const Icon(SpotubeIcons.removeFilled),
                       text: const PlatformText("Remove from playlist"),
                       onPressed: () {
                         removingTrack.value = track.value.uri;
@@ -353,7 +354,7 @@ class TrackTile extends HookConsumerWidget {
                       },
                     ),
                   Action(
-                    icon: const Icon(Icons.share_rounded),
+                    icon: const Icon(SpotubeIcons.share),
                     text: const PlatformText("Share"),
                     onPressed: () {
                       actionShare(track.value);
@@ -361,7 +362,7 @@ class TrackTile extends HookConsumerWidget {
                   ),
                   Action(
                     icon: Icon(
-                      Icons.playlist_remove_rounded,
+                      SpotubeIcons.playlistRemove,
                       color: isBlackListed ? Colors.white : Colors.red[400],
                     ),
                     backgroundColor: isBlackListed ? Colors.red[400] : null,

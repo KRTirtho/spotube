@@ -24,14 +24,17 @@ ThemeData darkTheme({
     buttonTheme: ButtonThemeData(
       buttonColor: accentMaterialColor,
     ),
+    iconTheme: IconThemeData(size: 16, color: Colors.grey[50]),
     inputDecorationTheme: InputDecorationTheme(
       focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
         borderSide: BorderSide(
           color: accentMaterialColor[400]!,
           width: 2.0,
         ),
       ),
       enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
         borderSide: BorderSide(
           color: backgroundMaterialColor[800]!,
         ),
@@ -39,8 +42,15 @@ ThemeData darkTheme({
     ),
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: backgroundMaterialColor[800],
-      unselectedIconTheme: IconThemeData(color: Colors.grey[300], opacity: 1),
-      selectedIconTheme: IconThemeData(color: backgroundMaterialColor[850]),
+      unselectedIconTheme: IconThemeData(
+        color: Colors.grey[300],
+        opacity: 1,
+        size: 18,
+      ),
+      selectedIconTheme: IconThemeData(
+        color: backgroundMaterialColor[850],
+        size: 18,
+      ),
       selectedLabelTextStyle: TextStyle(color: accentMaterialColor[300]),
       unselectedLabelTextStyle: TextStyle(color: Colors.grey[300]),
       indicatorColor: accentMaterialColor[300],
@@ -49,6 +59,19 @@ ThemeData darkTheme({
       backgroundColor: backgroundMaterialColor[800],
       height: 55,
       indicatorColor: accentMaterialColor[300],
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+      iconTheme: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return IconThemeData(
+            color: Colors.grey[900],
+            size: 18,
+          );
+        }
+        return IconThemeData(
+          color: Colors.grey[300],
+          size: 18,
+        );
+      }),
     ),
     cardTheme: CardTheme(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -79,6 +102,7 @@ ThemeData darkTheme({
         if (states.contains(MaterialState.selected)) {
           return accentMaterialColor[500];
         }
+        return null;
       }),
     ),
     tabBarTheme: TabBarTheme(

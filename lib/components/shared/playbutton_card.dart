@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/spotube_marquee_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -95,9 +96,7 @@ class PlaybuttonCard extends HookWidget {
                       ),
                     )
                   : Icon(
-                      isPlaying
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
+                      isPlaying ? SpotubeIcons.pause : SpotubeIcons.play,
                       color: Colors.white,
                     ),
             );

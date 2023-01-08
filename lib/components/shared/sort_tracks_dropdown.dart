@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
 
 class SortTracksDropdown extends StatelessWidget {
@@ -48,7 +49,7 @@ class SortTracksDropdown extends StatelessWidget {
       ],
       onSelected: onChanged,
       tooltip: "Sort tracks",
-      child: const Icon(Icons.sort_rounded),
+      child: const Icon(SpotubeIcons.sort),
     );
   }
 }

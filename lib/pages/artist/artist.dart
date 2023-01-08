@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_artist_profile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
@@ -229,7 +230,7 @@ class ArtistPage extends HookConsumerWidget {
                                 PlatformIconButton(
                                   tooltip: "Add to blacklisted artists",
                                   icon: Icon(
-                                    Icons.person_remove_rounded,
+                                    SpotubeIcons.userRemove,
                                     color: !isBlackListed
                                         ? Colors.red[400]
                                         : Colors.white,
@@ -257,7 +258,7 @@ class ArtistPage extends HookConsumerWidget {
                                   },
                                 ),
                                 PlatformIconButton(
-                                  icon: const Icon(Icons.share_rounded),
+                                  icon: const Icon(SpotubeIcons.share),
                                   onPressed: () async {
                                     await Clipboard.setData(
                                       ClipboardData(
@@ -343,8 +344,8 @@ class ArtistPage extends HookConsumerWidget {
                               child: PlatformIconButton(
                                 icon: Icon(
                                   isPlaylistPlaying
-                                      ? Icons.stop_rounded
-                                      : Icons.play_arrow_rounded,
+                                      ? SpotubeIcons.stop
+                                      : SpotubeIcons.play,
                                   color: Colors.white,
                                 ),
                                 onPressed: () =>

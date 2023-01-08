@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:popover/popover.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 
 class CompactSearch extends HookWidget {
   final ValueChanged<String>? onChanged;
@@ -13,7 +14,7 @@ class CompactSearch extends HookWidget {
     Key? key,
     this.onChanged,
     this.placeholder = "Search...",
-    this.icon = Icons.search,
+    this.icon = SpotubeIcons.search,
     this.iconColor,
   }) : super(key: key);
 

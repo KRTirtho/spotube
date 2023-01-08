@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -69,7 +70,7 @@ class SettingsPage extends HookConsumerWidget {
                     if (auth.isAnonymous)
                       AdaptiveListTile(
                         leading: Icon(
-                          Icons.login_rounded,
+                          SpotubeIcons.login,
                           color: PlatformTheme.of(context).primaryColor,
                         ),
                         title: SizedBox(
@@ -105,7 +106,7 @@ class SettingsPage extends HookConsumerWidget {
                       Builder(builder: (context) {
                         Auth auth = ref.watch(authProvider);
                         return PlatformListTile(
-                          leading: const Icon(Icons.logout_rounded),
+                          leading: const Icon(SpotubeIcons.logout),
                           title: SizedBox(
                             height: 50,
                             width: 180,
@@ -140,7 +141,7 @@ class SettingsPage extends HookConsumerWidget {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
-                      leading: const Icon(Icons.dashboard_rounded),
+                      leading: const Icon(SpotubeIcons.dashboard),
                       title: const PlatformText("Layout Mode"),
                       subtitle: const PlatformText(
                         "Override responsive layout mode settings",
@@ -175,7 +176,7 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     AdaptiveListTile(
-                      leading: const Icon(Icons.dark_mode_outlined),
+                      leading: const Icon(SpotubeIcons.darkMode),
                       title: const PlatformText("Theme"),
                       trailing: (context, update) =>
                           PlatformDropDownMenu<ThemeMode>(
@@ -203,7 +204,7 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     AdaptiveListTile(
-                      leading: const Icon(Icons.ad_units_rounded),
+                      leading: const Icon(SpotubeIcons.platform),
                       title: const PlatformText("Mimic Platform"),
                       trailing: (context, update) =>
                           DropdownButton<TargetPlatform>(
@@ -239,7 +240,7 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.palette_outlined),
+                      leading: const Icon(SpotubeIcons.palette),
                       title: const PlatformText("Accent Color Scheme"),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
@@ -253,7 +254,7 @@ class SettingsPage extends HookConsumerWidget {
                       onTap: pickColorScheme(ColorSchemeType.accent),
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.format_color_fill_rounded),
+                      leading: const Icon(SpotubeIcons.colorBucket),
                       title: const PlatformText("Background Color Scheme"),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
@@ -267,7 +268,7 @@ class SettingsPage extends HookConsumerWidget {
                       onTap: pickColorScheme(ColorSchemeType.background),
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.album_rounded),
+                      leading: const Icon(SpotubeIcons.album),
                       title: const PlatformText("Rotating Album Art"),
                       trailing: PlatformSwitch(
                         value: preferences.rotatingAlbumArt,
@@ -283,7 +284,7 @@ class SettingsPage extends HookConsumerWidget {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
-                      leading: const Icon(Icons.multitrack_audio_rounded),
+                      leading: const Icon(SpotubeIcons.audioQuality),
                       title: const PlatformText("Audio Quality"),
                       trailing: (context, update) =>
                           PlatformDropDownMenu<AudioQuality>(
@@ -310,7 +311,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     if (kIsMobile)
                       PlatformListTile(
-                        leading: const Icon(Icons.download_for_offline_rounded),
+                        leading: const Icon(SpotubeIcons.download),
                         title: const PlatformText(
                           "Pre download and play",
                         ),
@@ -325,7 +326,7 @@ class SettingsPage extends HookConsumerWidget {
                         ),
                       ),
                     PlatformListTile(
-                      leading: const Icon(Icons.fast_forward_rounded),
+                      leading: const Icon(SpotubeIcons.fastForward),
                       title: const PlatformText(
                         "Skip non-music segments (SponsorBlock)",
                       ),
@@ -337,7 +338,7 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.playlist_remove_rounded),
+                      leading: const Icon(SpotubeIcons.playlistRemove),
                       title: const PlatformText("Blacklist"),
                       subtitle: const PlatformText(
                         "Blacklisted tracks and artists",
@@ -345,7 +346,7 @@ class SettingsPage extends HookConsumerWidget {
                       onTap: () {
                         GoRouter.of(context).push("/settings/blacklist");
                       },
-                      trailing: const Icon(Icons.chevron_right_rounded),
+                      trailing: const Icon(SpotubeIcons.angleRight),
                     ),
                     PlatformText(
                       " Search",
@@ -354,7 +355,7 @@ class SettingsPage extends HookConsumerWidget {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
-                      leading: const Icon(Icons.shopping_bag_rounded),
+                      leading: const Icon(SpotubeIcons.shoppingBag),
                       title: const PlatformText("Market Place"),
                       subtitle: PlatformText.caption(
                         "Recommendation Country",
@@ -382,7 +383,7 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     AdaptiveListTile(
-                      leading: const Icon(Icons.screen_search_desktop_rounded),
+                      leading: const Icon(SpotubeIcons.screenSearch),
                       title: const SizedBox(
                         height: 50,
                         width: 200,
@@ -401,7 +402,7 @@ class SettingsPage extends HookConsumerWidget {
                         child: PlatformTextField(
                           controller: ytSearchFormatController,
                           suffix: PlatformFilledButton(
-                            child: const Icon(Icons.save_rounded),
+                            child: const Icon(SpotubeIcons.save),
                             onPressed: () {
                               preferences.setYtSearchFormat(
                                 ytSearchFormatController.value.text,
@@ -416,7 +417,7 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     AdaptiveListTile(
-                      leading: const Icon(Icons.low_priority_rounded),
+                      leading: const Icon(SpotubeIcons.barChart),
                       title: SizedBox(
                         height: 50,
                         width: 180,
@@ -465,17 +466,17 @@ class SettingsPage extends HookConsumerWidget {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.file_download_outlined),
+                      leading: const Icon(SpotubeIcons.download),
                       title: const PlatformText("Download Location"),
                       subtitle: PlatformText(preferences.downloadLocation),
                       trailing: PlatformFilledButton(
                         onPressed: pickDownloadLocation,
-                        child: const Icon(Icons.folder_rounded),
+                        child: const Icon(SpotubeIcons.folder),
                       ),
                       onTap: pickDownloadLocation,
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.lyrics_rounded),
+                      leading: const Icon(SpotubeIcons.lyrics),
                       title: const PlatformText(
                           "Download lyrics along with the Track"),
                       trailing: PlatformSwitch(
@@ -493,7 +494,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(
-                        Icons.favorite_border_rounded,
+                        SpotubeIcons.heart,
                         color: Colors.pink,
                       ),
                       title: const SizedBox(
@@ -529,7 +530,7 @@ class SettingsPage extends HookConsumerWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: const [
-                            Icon(Icons.favorite_outline_rounded),
+                            Icon(SpotubeIcons.heart),
                             SizedBox(width: 5),
                             PlatformText("Please Sponsor/Donate"),
                           ],
@@ -537,7 +538,7 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.update_rounded),
+                      leading: const Icon(SpotubeIcons.update),
                       title: const PlatformText("Check for Update"),
                       trailing: PlatformSwitch(
                         value: preferences.checkUpdate,
@@ -546,9 +547,9 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     PlatformListTile(
-                      leading: const Icon(Icons.info_outline_rounded),
+                      leading: const Icon(SpotubeIcons.info),
                       title: const PlatformText("About Spotube"),
-                      trailing: const Icon(Icons.arrow_forward_ios_rounded),
+                      trailing: const Icon(SpotubeIcons.angleRight),
                       onTap: () {
                         GoRouter.of(context).push("/settings/about");
                       },

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/hooks/playback_hooks.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/models/logger.dart';
@@ -143,7 +144,7 @@ class PlayerControls extends HookConsumerWidget {
                         ? "Unshuffle playlist"
                         : "Shuffle playlist",
                     icon: Icon(
-                      Icons.shuffle_rounded,
+                      SpotubeIcons.shuffle,
                       color: playback.isShuffled
                           ? PlatformTheme.of(context).primaryColor
                           : null,
@@ -157,7 +158,7 @@ class PlayerControls extends HookConsumerWidget {
                   PlatformIconButton(
                       tooltip: "Previous track",
                       icon: Icon(
-                        Icons.skip_previous_rounded,
+                        SpotubeIcons.skipBack,
                         color: iconColor,
                       ),
                       onPressed: () {
@@ -175,8 +176,8 @@ class PlayerControls extends HookConsumerWidget {
                           )
                         : Icon(
                             playback.isPlaying
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
+                                ? SpotubeIcons.pause
+                                : SpotubeIcons.play,
                             color: iconColor,
                           ),
                     onPressed: Actions.handler<PlayPauseIntent>(
@@ -187,7 +188,7 @@ class PlayerControls extends HookConsumerWidget {
                   PlatformIconButton(
                     tooltip: "Next track",
                     icon: Icon(
-                      Icons.skip_next_rounded,
+                      SpotubeIcons.skipForward,
                       color: iconColor,
                     ),
                     onPressed: () => onNext(),
@@ -195,7 +196,7 @@ class PlayerControls extends HookConsumerWidget {
                   PlatformIconButton(
                     tooltip: "Stop playback",
                     icon: Icon(
-                      Icons.stop_rounded,
+                      SpotubeIcons.stop,
                       color: iconColor,
                     ),
                     onPressed: playback.track != null
@@ -213,8 +214,8 @@ class PlayerControls extends HookConsumerWidget {
                         !playback.isLoop ? "Loop Track" : "Repeat playlist",
                     icon: Icon(
                       playback.isLoop
-                          ? Icons.repeat_one_rounded
-                          : Icons.repeat_rounded,
+                          ? SpotubeIcons.repeatOne
+                          : SpotubeIcons.repeat,
                     ),
                     onPressed:
                         playback.track == null || playback.playlist == null

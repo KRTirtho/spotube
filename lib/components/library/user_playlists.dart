@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
@@ -99,7 +100,7 @@ class UserPlaylists extends HookConsumerWidget {
               PlatformTextField(
                 onChanged: (value) => searchText.value = value,
                 placeholder: "Filter your playlists...",
-                prefixIcon: Icons.filter_alt_outlined,
+                prefixIcon: SpotubeIcons.filter,
               ),
               const SizedBox(height: 20),
               if (playlistsQuery.isLoading || !playlistsQuery.hasData)

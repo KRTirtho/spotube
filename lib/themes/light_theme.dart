@@ -50,24 +50,35 @@ ThemeData lightTheme({
       iconColor: Colors.grey[850],
       horizontalTitleGap: 0,
     ),
+    iconTheme: const IconThemeData(size: 16),
     inputDecorationTheme: InputDecorationTheme(
+      isDense: true,
       focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
         borderSide: BorderSide(
           color: accentMaterialColor[400]!,
           width: 2.0,
         ),
       ),
       enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
         borderSide: BorderSide(
-          color: Colors.grey[800]!,
+          color: Colors.grey[600]!,
         ),
       ),
     ),
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: backgroundMaterialColor[100],
       indicatorColor: accentMaterialColor[300],
-      selectedIconTheme: IconThemeData(color: accentMaterialColor[850]),
-      unselectedIconTheme: IconThemeData(color: Colors.grey[850], opacity: 1),
+      selectedIconTheme: IconThemeData(
+        color: accentMaterialColor[850],
+        size: 18,
+      ),
+      unselectedIconTheme: IconThemeData(
+        color: Colors.grey[850],
+        opacity: 1,
+        size: 18,
+      ),
       unselectedLabelTextStyle: TextStyle(
         color: Colors.grey[850],
       ),
@@ -77,8 +88,9 @@ ThemeData lightTheme({
       height: 55,
       indicatorColor: accentMaterialColor[300],
       iconTheme: MaterialStateProperty.all(
-        IconThemeData(color: Colors.grey[850]),
+        IconThemeData(color: Colors.grey[850], size: 18),
       ),
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
     ),
     cardTheme: CardTheme(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -122,6 +134,7 @@ ThemeData lightTheme({
 }
 
 final windowsTheme = fluent_ui.ThemeData.light().copyWith(
+  iconTheme: const IconThemeData(size: 16),
   buttonTheme: fluent_ui.ButtonThemeData(
     iconButtonStyle: fluent_ui.ButtonStyle(
       iconSize: fluent_ui.ButtonState.all(20),
@@ -129,6 +142,7 @@ final windowsTheme = fluent_ui.ThemeData.light().copyWith(
   ),
 );
 final windowsDarkTheme = fluent_ui.ThemeData.dark().copyWith(
+  iconTheme: const IconThemeData(size: 16),
   buttonTheme: fluent_ui.ButtonThemeData(
     iconButtonStyle: fluent_ui.ButtonStyle(
       iconSize: fluent_ui.ButtonState.all(20),
@@ -139,14 +153,14 @@ final macosTheme = MacosThemeData.light().copyWith(
   pushButtonTheme: const PushButtonThemeData(
     secondaryColor: Colors.white,
   ),
-  iconTheme: const MacosIconThemeData(size: 14),
+  iconTheme: const MacosIconThemeData(size: 16),
   typography: MacosTypography(color: Colors.grey[900]!),
 );
 final macosDarkTheme = MacosThemeData.dark().copyWith(
   pushButtonTheme: const PushButtonThemeData(
     secondaryColor: Colors.white,
   ),
-  iconTheme: const MacosIconThemeData(size: 14),
+  iconTheme: const MacosIconThemeData(size: 16),
   typography: MacosTypography(color: MacosColors.textColor),
 );
 const iosTheme = CupertinoThemeData(brightness: Brightness.light);
@@ -156,6 +170,7 @@ const iosDarkTheme = CupertinoThemeData(
 
 final linuxTheme = AdwaitaThemeData.light().copyWith(
   primaryColor: const Color(0xFF3582e5),
+  iconTheme: const IconThemeData(size: 16),
   extensions: [
     ShimmerColorTheme(
       shimmerBackgroundColor: Colors.grey[300],
@@ -182,6 +197,7 @@ final linuxTheme = AdwaitaThemeData.light().copyWith(
   ),
 );
 final linuxDarkTheme = AdwaitaThemeData.dark().copyWith(
+  iconTheme: IconThemeData(size: 16, color: Colors.grey[50]),
   extensions: [
     ShimmerColorTheme(
       shimmerBackgroundColor: Colors.grey[800],

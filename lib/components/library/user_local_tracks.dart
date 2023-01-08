@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
@@ -208,9 +209,7 @@ class UserLocalTracks extends HookConsumerWidget {
                   children: [
                     const Text("Play"),
                     Icon(
-                      isPlaylistPlaying
-                          ? Icons.stop_rounded
-                          : Icons.play_arrow_rounded,
+                      isPlaylistPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
                     )
                   ],
                 ),
@@ -226,7 +225,7 @@ class UserLocalTracks extends HookConsumerWidget {
               ),
               const SizedBox(width: 10),
               PlatformFilledButton(
-                child: const Icon(Icons.refresh_rounded),
+                child: const Icon(SpotubeIcons.refresh),
                 onPressed: () {
                   ref.refresh(localTracksProvider);
                 },

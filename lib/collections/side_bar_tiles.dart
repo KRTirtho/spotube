@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 
 class SideBarTiles {
   final IconData icon;
@@ -7,8 +8,8 @@ class SideBarTiles {
 }
 
 List<SideBarTiles> sidebarTileList = [
-  SideBarTiles(icon: Icons.home_rounded, title: "Browse"),
-  SideBarTiles(icon: Icons.search_rounded, title: "Search"),
-  SideBarTiles(icon: Icons.library_books_rounded, title: "Library"),
-  SideBarTiles(icon: Icons.music_note_rounded, title: "Lyrics")
+  SideBarTiles(icon: SpotubeIcons.home, title: "Browse"),
+  SideBarTiles(icon: SpotubeIcons.search, title: "Search"),
+  SideBarTiles(icon: SpotubeIcons.library, title: "Library"),
+  SideBarTiles(icon: SpotubeIcons.music, title: "Lyrics")
 ];

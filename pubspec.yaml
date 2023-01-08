@@ -70,6 +70,8 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding.git
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
+  flutter_feather_icons: ^2.0.0+1
+  fluentui_system_icons: ^1.1.189
 
 dev_dependencies:
   flutter_test:

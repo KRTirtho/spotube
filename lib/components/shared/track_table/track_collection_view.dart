@@ -5,6 +5,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -70,7 +71,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
       if (showShare)
         PlatformIconButton(
           icon: Icon(
-            Icons.share_rounded,
+            SpotubeIcons.share,
             color: color?.titleTextColor,
           ),
           onPressed: onShare,
@@ -79,7 +80,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
       PlatformIconButton(
         tooltip: "Shuffle",
         icon: Icon(
-          Icons.shuffle,
+          SpotubeIcons.shuffle,
           color: color?.titleTextColor,
         ),
         onPressed: onShuffledPlay,
@@ -90,7 +91,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         backgroundColor: PlatformTheme.of(context).primaryColor,
         onPressed: tracksSnapshot.data != null ? onPlay : null,
         icon: Icon(
-          isPlaying ? Icons.stop_rounded : Icons.play_arrow_rounded,
+          isPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
           color: PlatformTextTheme.of(context).body?.color,
         ),
       ),
@@ -167,7 +168,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         borderColor: color?.titleTextColor,
         prefixIconColor: color?.titleTextColor,
         cursorColor: color?.titleTextColor,
-        prefixIcon: Icons.search_rounded,
+        prefixIcon: SpotubeIcons.search,
       ),
     );
 

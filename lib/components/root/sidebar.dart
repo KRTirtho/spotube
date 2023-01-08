@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/auth_provider.dart';
@@ -175,7 +176,7 @@ class Sidebar extends HookConsumerWidget {
         ),
         windowsFooterItems: [
           fluent_ui.PaneItemAction(
-            icon: const fluent_ui.Icon(fluent_ui.FluentIcons.settings),
+            icon: const Icon(SpotubeIcons.settings),
             onTap: () => goToSettings(context),
           ),
         ],
@@ -192,8 +193,6 @@ class SidebarFooter extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authProvider);
-
     return SizedBox(
       width: 256,
       child: HookBuilder(
@@ -268,7 +267,7 @@ class SidebarFooter extends HookConsumerWidget {
                       ),
                     ),
                   PlatformIconButton(
-                      icon: const Icon(Icons.settings_outlined),
+                      icon: const Icon(SpotubeIcons.settings),
                       onPressed: () => Sidebar.goToSettings(context)),
                 ],
               ));

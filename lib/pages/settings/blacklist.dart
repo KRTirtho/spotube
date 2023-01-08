@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:tuple/tuple.dart';
@@ -50,7 +51,7 @@ class BlackListPage extends HookConsumerWidget {
             child: PlatformTextField(
               onChanged: (value) => searchText.value = value,
               placeholder: "Search",
-              prefixIcon: Icons.search_rounded,
+              prefixIcon: SpotubeIcons.search,
             ),
           ),
           ListView.builder(
@@ -63,8 +64,7 @@ class BlackListPage extends HookConsumerWidget {
                 title: PlatformText("${item.name} (${item.type.name})"),
                 subtitle: PlatformText.caption(item.id),
                 trailing: PlatformIconButton(
-                  icon: Icon(Icons.delete_forever_rounded,
-                      color: Colors.red[400]),
+                  icon: Icon(SpotubeIcons.trash, color: Colors.red[400]),
                   onPressed: () {
                     ref
                         .read(BlackListNotifier.provider.notifier)

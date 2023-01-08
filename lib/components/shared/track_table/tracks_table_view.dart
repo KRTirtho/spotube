@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/dialogs/confirm_download_dialog.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
@@ -139,7 +140,8 @@ class TracksTableView extends HookConsumerWidget {
                       value: "download",
                       child: Row(
                         children: [
-                          const Icon(Icons.file_download_outlined),
+                          const Icon(SpotubeIcons.download),
+                          const SizedBox(width: 5),
                           PlatformText(
                             "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
                           ),
@@ -152,7 +154,8 @@ class TracksTableView extends HookConsumerWidget {
                         value: "add-to-playlist",
                         child: Row(
                           children: [
-                            const Icon(Icons.playlist_add_rounded),
+                            const Icon(SpotubeIcons.playlistAdd),
+                            const SizedBox(width: 5),
                             PlatformText(
                               "Add (${selectedTracks.length}) to Playlist",
                             ),
@@ -193,7 +196,7 @@ class TracksTableView extends HookConsumerWidget {
                       default:
                     }
                   },
-                  child: const Icon(Icons.more_vert),
+                  child: const Icon(SpotubeIcons.moreVertical),
                 ),
                 const SizedBox(width: 10),
               ],

@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/player/sibling_tracks_sheet.dart';
@@ -53,7 +54,7 @@ class PlayerActions extends HookConsumerWidget {
       mainAxisAlignment: mainAxisAlignment,
       children: [
         PlatformIconButton(
-          icon: const Icon(Icons.queue_music_rounded),
+          icon: const Icon(SpotubeIcons.queue),
           tooltip: 'Queue',
           onPressed: playback.playlist != null
               ? () {
@@ -79,7 +80,7 @@ class PlayerActions extends HookConsumerWidget {
         ),
         if (!isLocalTrack)
           PlatformIconButton(
-            icon: const Icon(Icons.alt_route_rounded),
+            icon: const Icon(SpotubeIcons.alternativeRoute),
             tooltip: "Alternative Track Sources",
             onPressed: playback.track != null
                 ? () {
@@ -116,9 +117,7 @@ class PlayerActions extends HookConsumerWidget {
             PlatformIconButton(
               tooltip: 'Download track',
               icon: Icon(
-                isDownloaded
-                    ? Icons.download_done_rounded
-                    : Icons.download_rounded,
+                isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
               ),
               onPressed: playback.track != null
                   ? () => downloader.addToQueue(playback.track!)
