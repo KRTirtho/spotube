@@ -193,6 +193,7 @@ class PlaybuttonCard extends HookWidget {
                 ),
                 const Spacer(),
                 playButton,
+                const SizedBox(width: 10),
               ],
             );
 

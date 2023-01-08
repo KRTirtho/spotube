@@ -50,6 +50,7 @@ abstract class SpotubeIcons {
   static const fastForward = FeatherIcons.fastForward;
   static const angleRight = FeatherIcons.chevronRight;
   static const angleLeft = FeatherIcons.chevronLeft;
+  static const angleDown = FeatherIcons.chevronDown;
   static const shoppingBag = FeatherIcons.shoppingBag;
   static const screenSearch = Icons.screen_search_desktop_outlined;
   static const save = FeatherIcons.save;
@@ -58,4 +59,6 @@ abstract class SpotubeIcons {
   static const update = FeatherIcons.refreshCcw;
   static const info = FeatherIcons.info;
   static const userRemove = FeatherIcons.userX;
+  static const close = FeatherIcons.x;
+  static const minimize = FeatherIcons.minimize2;
 }

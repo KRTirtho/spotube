@@ -13,3 +13,10 @@ List<SideBarTiles> sidebarTileList = [
   SideBarTiles(icon: SpotubeIcons.library, title: "Library"),
   SideBarTiles(icon: SpotubeIcons.music, title: "Lyrics")
 ];
+
+List<SideBarTiles> navbarTileList = [
+  SideBarTiles(icon: SpotubeIcons.home, title: "Browse"),
+  SideBarTiles(icon: SpotubeIcons.search, title: "Search"),
+  SideBarTiles(icon: SpotubeIcons.library, title: "Library"),
+  SideBarTiles(icon: SpotubeIcons.settings, title: "Settings")
+];

@@ -16,6 +16,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
+import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -193,10 +194,24 @@ class PlayerView extends HookConsumerWidget {
                     extraActions: [
                       PlatformIconButton(
                         tooltip: "Open Lyrics",
-                        icon: const Icon(SpotubeIcons.lyrics),
+                        icon: const Icon(SpotubeIcons.music),
                         onPressed: () {
-                          GoRouter.of(context).pop();
-                          GoRouter.of(context).go('/lyrics');
+                          showModalBottomSheet(
+                            context: context,
+                            isDismissible: true,
+                            enableDrag: true,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor: Colors.black12,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            constraints: BoxConstraints(
+                              maxHeight: MediaQuery.of(context).size.height,
+                            ),
+                            builder: (context) =>
+                                const LyricsPage(isModal: true),
+                          );
                         },
                       )
                     ],
