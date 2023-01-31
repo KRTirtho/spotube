@@ -194,7 +194,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         'height': size.height,
       }),
     );
-    prevSize = await windowManager.getSize();
+    prevSize = size;
   }
 
   TargetPlatform appPlatform = TargetPlatform.android;

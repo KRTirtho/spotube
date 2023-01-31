@@ -7,13 +7,13 @@ import 'package:spotube/utils/service_utils.dart';
 import 'package:tuple/tuple.dart';
 
 class LyricsQueries {
-  final static = QueryJob<String, Tuple2<Track?, String>>(
-    queryKey: "genius-lyrics-query",
+  final static = QueryJob.withVariableKey<String, Tuple2<Track?, String>>(
+    preQueryKey: "genius-lyrics-query",
     refetchOnExternalDataChange: true,
-    task: (_, externalData) async {
+    task: (queryKey, externalData) async {
       final currentTrack = externalData.item1;
       final geniusAccessToken = externalData.item2;
-      if (currentTrack == null) {
+      if (currentTrack == null || getVariable(queryKey).isEmpty) {
         return "“Give this player a track to play”\n- S'Challa";
       }
       final lyrics = await ServiceUtils.getLyrics(
@@ -28,10 +28,12 @@ class LyricsQueries {
     },
   );
 
-  final synced = QueryJob<SubtitleSimple, SpotubeTrack?>(
-    queryKey: "synced-lyrics",
-    task: (_, currentTrack) async {
-      if (currentTrack == null) throw "No track currently";
+  final synced = QueryJob.withVariableKey<SubtitleSimple, SpotubeTrack?>(
+    preQueryKey: "synced-lyrics",
+    task: (queryKey, currentTrack) async {
+      if (currentTrack == null || getVariable(queryKey).isEmpty) {
+        throw "No track currently";
+      }
 
       final timedLyrics = await ServiceUtils.getTimedLyrics(currentTrack);
       if (timedLyrics == null) throw Exception("Unable to find lyrics");

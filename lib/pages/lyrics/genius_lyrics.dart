@@ -25,7 +25,7 @@ class GeniusLyrics extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
     final geniusLyricsQuery = useQuery(
-      job: Queries.lyrics.static,
+      job: Queries.lyrics.static(playback.track?.id ?? ""),
       externalData: Tuple2(
         playback.track,
         ref.watch(userPreferencesProvider).geniusAccessToken,

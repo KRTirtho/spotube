@@ -70,8 +70,9 @@ class LyricsPage extends HookConsumerWidget {
       return SafeArea(
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor.withOpacity(.4),
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
             ),

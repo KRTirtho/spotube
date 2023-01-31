@@ -38,7 +38,7 @@ class SyncedLyrics extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     Playback playback = ref.watch(playbackProvider);
     final timedLyricsQuery = useQuery(
-      job: Queries.lyrics.synced,
+      job: Queries.lyrics.synced(playback.track?.id ?? ""),
       externalData: playback.track,
     );
     final lyricDelay = ref.watch(lyricDelayState);

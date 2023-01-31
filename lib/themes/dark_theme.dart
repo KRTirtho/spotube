@@ -56,8 +56,8 @@ ThemeData darkTheme({
       indicatorColor: accentMaterialColor[300],
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: backgroundMaterialColor[800],
-      height: 55,
+      backgroundColor: backgroundMaterialColor[900],
+      height: 45,
       indicatorColor: accentMaterialColor[300],
       labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
       iconTheme: MaterialStateProperty.resolveWith((states) {

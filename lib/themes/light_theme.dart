@@ -84,8 +84,8 @@ ThemeData lightTheme({
       ),
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: backgroundMaterialColor[100],
-      height: 55,
+      backgroundColor: backgroundMaterialColor[50],
+      height: 45,
       indicatorColor: accentMaterialColor[300],
       iconTheme: MaterialStateProperty.all(
         IconThemeData(color: Colors.grey[850], size: 18),
