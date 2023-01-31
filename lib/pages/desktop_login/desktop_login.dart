@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
@@ -30,8 +31,7 @@ class DesktopLoginPage extends HookConsumerWidget {
               ),
               child: Column(
                 children: [
-                  Image.asset(
-                    "assets/spotube-logo.png",
+                  Assets.spotubeLogoPng.image(
                     width: MediaQuery.of(context).size.width *
                         (breakpoint <= Breakpoints.md ? .5 : .3),
                   ),

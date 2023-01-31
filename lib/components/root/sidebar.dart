@@ -3,8 +3,9 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Badge;
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -37,10 +38,7 @@ class Sidebar extends HookConsumerWidget {
         color: Colors.black,
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Image.asset(
-        "assets/spotube-logo.png",
-        height: 50,
-      ),
+      child: Assets.spotubeLogoPng.image(height: 50),
     );
   }
 
@@ -242,8 +240,7 @@ class SidebarFooter extends HookConsumerWidget {
                             backgroundImage:
                                 UniversalImage.imageProvider(avatarImg),
                             onBackgroundImageError: (exception, stackTrace) =>
-                                Image.asset(
-                              "assets/user-placeholder.png",
+                                Assets.userPlaceholder.image(
                               height: 16,
                               width: 16,
                             ),

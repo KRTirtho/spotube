@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart' hide Image;
 import 'package:metadata_god/metadata_god.dart' hide Image;
 import 'package:path/path.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/spotube_track.dart';
@@ -26,9 +27,9 @@ abstract class TypeConversionUtils {
     required ImagePlaceholder placeholder,
   }) {
     final String placeholderUrl = {
-      ImagePlaceholder.albumArt: "assets/album-placeholder.png",
-      ImagePlaceholder.artist: "assets/user-placeholder.png",
-      ImagePlaceholder.collection: "assets/placeholder.png",
+      ImagePlaceholder.albumArt: Assets.albumPlaceholder.path,
+      ImagePlaceholder.artist: Assets.userPlaceholder.path,
+      ImagePlaceholder.collection: Assets.placeholder.path,
       ImagePlaceholder.online:
           "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png",
     }[placeholder]!;

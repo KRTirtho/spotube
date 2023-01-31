@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_popup_menu_button.dart';
 import 'package:spotube/components/shared/heart_button.dart';
@@ -227,8 +228,7 @@ class TrackTile extends HookConsumerWidget {
                   height: 40,
                   width: 40,
                   placeholder: (context, url) {
-                    return Image.asset(
-                      "assets/album-placeholder.png",
+                    return Assets.albumPlaceholder.image(
                       height: 40,
                       width: 40,
                     );

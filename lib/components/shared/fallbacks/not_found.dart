@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotube/collections/assets.gen.dart';
 
 class NotFound extends StatelessWidget {
   final bool vertical;
@@ -10,7 +11,7 @@ class NotFound extends StatelessWidget {
       SizedBox(
         height: 150,
         width: 150,
-        child: Image.asset("assets/empty_box.png"),
+        child: Assets.emptyBox.image(),
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

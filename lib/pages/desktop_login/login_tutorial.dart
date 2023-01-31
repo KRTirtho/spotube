@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -61,7 +62,7 @@ class LoginTutorial extends ConsumerWidget {
           PageViewModel(
             decoration: pageDecoration,
             title: "Step 1",
-            image: Image.asset("assets/tutorial/step-1.png"),
+            image: Assets.tutorial.step1.image(),
             bodyWidget: Wrap(
               children: const [
                 PlatformText(
@@ -80,7 +81,7 @@ class LoginTutorial extends ConsumerWidget {
           PageViewModel(
             decoration: pageDecoration,
             title: "Step 2",
-            image: Image.asset("assets/tutorial/step-2.png"),
+            image: Assets.tutorial.step2.image(),
             bodyWidget: const PlatformText(
               "1. Once you're logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection",
               textAlign: TextAlign.left,
@@ -89,9 +90,7 @@ class LoginTutorial extends ConsumerWidget {
           PageViewModel(
             decoration: pageDecoration,
             title: "Step 3",
-            image: Image.asset(
-              "assets/tutorial/step-3.png",
-            ),
+            image: Assets.tutorial.step3.image(),
             bodyWidget: const PlatformText(
               "Copy the values of \"sp_dc\" and \"sp_key\" Cookies",
               textAlign: TextAlign.left,
@@ -103,7 +102,7 @@ class LoginTutorial extends ConsumerWidget {
                 bodyAlignment: Alignment.center,
               ),
               title: "Success🥳",
-              image: Image.asset("assets/success.png"),
+              image: Assets.success.image(),
               body:
                   "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
             )

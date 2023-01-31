@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/playback_provider.dart';
@@ -27,8 +28,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               height: 50,
               width: 50,
               placeholder: (context, url) {
-                return Image.asset(
-                  "assets/album-placeholder.png",
+                return Assets.albumPlaceholder.image(
                   height: 50,
                   width: 50,
                 );

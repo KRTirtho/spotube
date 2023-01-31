@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:spotube/collections/assets.gen.dart';
 
 class UniversalImage extends HookWidget {
   final String path;
@@ -64,8 +65,7 @@ class UniversalImage extends HookWidget {
         scale: scale,
         errorBuilder: (context, error, stackTrace) {
           return placeholder?.call(context, error.toString()) ??
-              Image.asset(
-                "assets/placeholder.png",
+              Assets.placeholder.image(
                 width: width,
                 height: height,
                 cacheHeight: height?.toInt(),
@@ -84,8 +84,7 @@ class UniversalImage extends HookWidget {
         scale: scale,
         errorBuilder: (context, error, stackTrace) {
           return placeholder?.call(context, error.toString()) ??
-              Image.asset(
-                "assets/placeholder.png",
+              Assets.placeholder.image(
                 width: width,
                 height: height,
                 cacheHeight: height?.toInt(),
@@ -105,8 +104,7 @@ class UniversalImage extends HookWidget {
       scale: scale,
       errorBuilder: (context, error, stackTrace) {
         return placeholder?.call(context, error.toString()) ??
-            Image.asset(
-              "assets/placeholder.png",
+            Assets.placeholder.image(
               width: width,
               height: height,
               cacheHeight: height?.toInt(),

@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_overlay.dart';
 import 'package:spotube/components/player/player_track_details.dart';
@@ -36,7 +37,7 @@ class BottomPlayer extends HookConsumerWidget {
               index: (playback.track?.album?.images?.length ?? 1) - 1,
               placeholder: ImagePlaceholder.albumArt,
             )
-          : "assets/album-placeholder.png",
+          : Assets.albumPlaceholder.path,
       [playback.track?.album?.images],
     );
 

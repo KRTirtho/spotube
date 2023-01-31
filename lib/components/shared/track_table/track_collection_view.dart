@@ -5,6 +5,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
@@ -185,7 +186,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
               child: searchbar,
             );
           });
-          Overlay.of(context)!.insert(entry!);
+          Overlay.of(context)?.insert(entry!);
         }
       });
       return () => entry?.remove();
@@ -274,9 +275,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                 child: UniversalImage(
                                   path: titleImage,
                                   placeholder: (context, url) {
-                                    return const UniversalImage(
-                                      path: "assets/album-placeholder.png",
-                                    );
+                                    return Assets.albumPlaceholder.image();
                                   },
                                 ),
                               ),
