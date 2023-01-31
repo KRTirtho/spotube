@@ -38,7 +38,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   dbus: ^0.7.3
-  audioplayers: ^1.2.0
+  audioplayers: ^3.0.1
   introduction_screen: ^3.0.2
   audio_session: ^0.1.10
   file_picker: ^5.2.2
