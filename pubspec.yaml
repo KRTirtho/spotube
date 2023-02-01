@@ -18,7 +18,7 @@ dependencies:
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   cached_network_image: ^3.2.2
-  collection: ^1.15.0
+  collection: ^1.17.0
   cupertino_icons: ^1.0.5
   dbus: ^0.7.8
   file_picker: ^5.2.2
