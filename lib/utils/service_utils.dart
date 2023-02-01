@@ -54,33 +54,28 @@ abstract class ServiceUtils {
   }
 
   static Future<String?> extractLyrics(Uri url) async {
-    try {
-      var response = await http.get(url);
+    final response = await http.get(url);
 
-      Document document = parser.parse(response.body);
-      var lyrics = document.querySelector('div.lyrics')?.text.trim();
-      if (lyrics == null) {
-        lyrics = "";
-        document
-            .querySelectorAll("div[class^=\"Lyrics__Container\"]")
-            .forEach((element) {
-          if (element.text.trim().isNotEmpty) {
-            var snippet = element.innerHtml.replaceAll("<br>", "\n").replaceAll(
-                  RegExp("<(?!\\s*br\\s*\\/?)[^>]+>", caseSensitive: false),
-                  "",
-                );
-            var el = document.createElement("textarea");
-            el.innerHtml = snippet;
-            lyrics = "$lyrics${el.text.trim()}\n\n";
-          }
-        });
-      }
-
-      return lyrics;
-    } catch (e, stack) {
-      logger.e("extractLyrics", e, stack);
-      rethrow;
+    Document document = parser.parse(response.body);
+    String? lyrics = document.querySelector('div.lyrics')?.text.trim();
+    if (lyrics == null) {
+      lyrics = "";
+      document
+          .querySelectorAll("div[class^=\"Lyrics__Container\"]")
+          .forEach((element) {
+        if (element.text.trim().isNotEmpty) {
+          final snippet = element.innerHtml.replaceAll("<br>", "\n").replaceAll(
+                RegExp("<(?!\\s*br\\s*\\/?)[^>]+>", caseSensitive: false),
+                "",
+              );
+          final el = document.createElement("textarea");
+          el.innerHtml = snippet;
+          lyrics = "$lyrics${el.text.trim()}\n\n";
+        }
+      });
     }
+
+    return lyrics;
   }
 
   static Future<List?> searchSong(
@@ -90,36 +85,31 @@ abstract class ServiceUtils {
     bool optimizeQuery = false,
     bool authHeader = false,
   }) async {
-    try {
-      if (apiKey == "" || apiKey == null) {
-        apiKey = PrimitiveUtils.getRandomElement(lyricsSecrets);
-      }
-      const searchUrl = 'https://api.genius.com/search?q=';
-      String song =
-          optimizeQuery ? getTitle(title, artists: artist) : "$title $artist";
-
-      String reqUrl = "$searchUrl${Uri.encodeComponent(song)}";
-      Map<String, String> headers = {"Authorization": 'Bearer $apiKey'};
-      final response = await http.get(
-        Uri.parse(authHeader ? reqUrl : "$reqUrl&access_token=$apiKey"),
-        headers: authHeader ? headers : null,
-      );
-      Map data = jsonDecode(response.body)["response"];
-      if (data["hits"]?.length == 0) return null;
-      List results = data["hits"]?.map((val) {
-        return <String, dynamic>{
-          "id": val["result"]["id"],
-          "full_title": val["result"]["full_title"],
-          "albumArt": val["result"]["song_art_image_url"],
-          "url": val["result"]["url"],
-          "author": val["result"]["primary_artist"]["name"],
-        };
-      }).toList();
-      return results;
-    } catch (e, stack) {
-      logger.e("searchSong", e, stack);
-      rethrow;
+    if (apiKey == "" || apiKey == null) {
+      apiKey = PrimitiveUtils.getRandomElement(lyricsSecrets);
     }
+    const searchUrl = 'https://api.genius.com/search?q=';
+    String song =
+        optimizeQuery ? getTitle(title, artists: artist) : "$title $artist";
+
+    String reqUrl = "$searchUrl${Uri.encodeComponent(song)}";
+    Map<String, String> headers = {"Authorization": 'Bearer $apiKey'};
+    final response = await http.get(
+      Uri.parse(authHeader ? reqUrl : "$reqUrl&access_token=$apiKey"),
+      headers: authHeader ? headers : null,
+    );
+    Map data = jsonDecode(response.body)["response"];
+    if (data["hits"]?.length == 0) return null;
+    List results = data["hits"]?.map((val) {
+      return <String, dynamic>{
+        "id": val["result"]["id"],
+        "full_title": val["result"]["full_title"],
+        "albumArt": val["result"]["song_art_image_url"],
+        "url": val["result"]["url"],
+        "author": val["result"]["primary_artist"]["name"],
+      };
+    }).toList();
+    return results;
   }
 
   static Future<String?> getLyrics(
@@ -129,49 +119,44 @@ abstract class ServiceUtils {
     bool optimizeQuery = false,
     bool authHeader = false,
   }) async {
-    try {
-      final results = await searchSong(
-        title,
-        artists,
-        apiKey: apiKey,
-        optimizeQuery: optimizeQuery,
-        authHeader: authHeader,
-      );
-      if (results == null) return null;
-      title = getTitle(
-        title,
-        artists: artists,
-        onlyCleanArtist: true,
-      ).trim();
-      final ratedLyrics = results.map((result) {
-        final gTitle = (result["full_title"] as String).toLowerCase();
-        int points = 0;
-        final hasTitle = gTitle.contains(title);
-        final hasAllArtists =
-            artists.every((artist) => gTitle.contains(artist.toLowerCase()));
-        final String lyricAuthor = result["author"].toLowerCase();
-        final fromOriginalAuthor =
-            lyricAuthor.contains(artists.first.toLowerCase());
+    final results = await searchSong(
+      title,
+      artists,
+      apiKey: apiKey,
+      optimizeQuery: optimizeQuery,
+      authHeader: authHeader,
+    );
+    if (results == null) return null;
+    title = getTitle(
+      title,
+      artists: artists,
+      onlyCleanArtist: true,
+    ).trim();
+    final ratedLyrics = results.map((result) {
+      final gTitle = (result["full_title"] as String).toLowerCase();
+      int points = 0;
+      final hasTitle = gTitle.contains(title);
+      final hasAllArtists =
+          artists.every((artist) => gTitle.contains(artist.toLowerCase()));
+      final String lyricAuthor = result["author"].toLowerCase();
+      final fromOriginalAuthor =
+          lyricAuthor.contains(artists.first.toLowerCase());
 
-        for (final criteria in [
-          hasTitle,
-          hasAllArtists,
-          fromOriginalAuthor,
-        ]) {
-          if (criteria) points++;
-        }
-        return {"result": result, "points": points};
-      }).sorted(
-        (a, b) => ((a["points"] as int).compareTo(a["points"] as int)),
-      );
-      final worthyOne = ratedLyrics.first["result"];
+      for (final criteria in [
+        hasTitle,
+        hasAllArtists,
+        fromOriginalAuthor,
+      ]) {
+        if (criteria) points++;
+      }
+      return {"result": result, "points": points};
+    }).sorted(
+      (a, b) => ((a["points"] as int).compareTo(a["points"] as int)),
+    );
+    final worthyOne = ratedLyrics.first["result"];
 
-      String? lyrics = await extractLyrics(Uri.parse(worthyOne["url"]));
-      return lyrics;
-    } catch (e, stack) {
-      logger.e("getLyrics", e, stack);
-      return null;
-    }
+    String? lyrics = await extractLyrics(Uri.parse(worthyOne["url"]));
+    return lyrics;
   }
 
   static const baseUri = "https://www.rentanadviser.com/subtitles";
@@ -263,24 +248,19 @@ abstract class ServiceUtils {
 
   static Future<SpotifySpotubeCredentials> getAccessToken(
       String cookieHeader) async {
-    try {
-      final res = await http.get(
-        Uri.parse(
-          "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
-        ),
-        headers: {
-          "Cookie": cookieHeader,
-          "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-        },
-      );
-      return SpotifySpotubeCredentials.fromJson(
-        jsonDecode(res.body),
-      );
-    } catch (e, stack) {
-      logger.e("getAccessToken", e, stack);
-      rethrow;
-    }
+    final res = await http.get(
+      Uri.parse(
+        "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
+      ),
+      headers: {
+        "Cookie": cookieHeader,
+        "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+      },
+    );
+    return SpotifySpotubeCredentials.fromJson(
+      jsonDecode(res.body),
+    );
   }
 
   static void navigate(BuildContext context, String location, {Object? extra}) {

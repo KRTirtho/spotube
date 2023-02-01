@@ -134,12 +134,8 @@ class Downloader with ChangeNotifier {
           logger.v(
             "[addToQueue] Writing metadata to ${file.path} is successful",
           );
-        } catch (e, stack) {
-          logger.e(
-            "[addToQueue] Failed download of ${file.path}",
-            e,
-            stack,
-          );
+        } catch (e) {
+          logger.v("[addToQueue] Failed download of ${file.path}", e);
           rethrow;
         } finally {
           currentlyRunning--;

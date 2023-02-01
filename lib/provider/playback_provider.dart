@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:catcher/catcher.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -198,75 +199,67 @@ class Playback extends PersistedChangeNotifier {
   }
 
   Future<void> playPlaylist(CurrentPlaylist playlist, [int index = 0]) async {
-    try {
-      if (index < 0 || index > playlist.tracks.length - 1) return;
-      if (isPlaying || status == PlaybackStatus.playing) await stop();
-      this.playlist = blacklistNotifier.filterPlaylist(playlist);
-      mobileAudioService?.session?.setActive(true);
-      final played = this.playlist!.tracks[index];
-      status = PlaybackStatus.loading;
-      notifyListeners();
-      await play(played).then((_) {
-        int i = this
-            .playlist!
-            .tracks
-            .indexWhere((element) => element.id == played.id);
-        if (index == -1) return;
-        this.playlist!.tracks[i] = track!;
-      });
-    } catch (e) {
-      _logger.e("[playPlaylist] $e");
-    }
+    if (index < 0 || index > playlist.tracks.length - 1) return;
+    if (isPlaying || status == PlaybackStatus.playing) await stop();
+    this.playlist = blacklistNotifier.filterPlaylist(playlist);
+    mobileAudioService?.session?.setActive(true);
+    final played = this.playlist!.tracks[index];
+    status = PlaybackStatus.loading;
+    notifyListeners();
+    await play(played).then((_) {
+      int i = this
+          .playlist!
+          .tracks
+          .indexWhere((element) => element.id == played.id);
+      if (index == -1) return;
+      this.playlist!.tracks[i] = track!;
+    });
   }
 
   // player methods
   Future<void> play(Track track, {AudioOnlyStreamInfo? manifest}) async {
     _logger.v("[Track Playing] ${track.name} - ${track.id}");
-    try {
-      // the track is already playing so no need to change that
-      if (track.id == this.track?.id) return;
-      if (status != PlaybackStatus.loading) {
-        status = PlaybackStatus.loading;
-        notifyListeners();
-      }
-      _siblingYtVideos = [];
-
-      // the track is not a SpotubeTrack so turning it to one
-      if (track is! SpotubeTrack) {
-        final s = await toSpotubeTrack(track);
-        track = s.item1;
-        manifest = s.item2;
-      }
-
-      final tag = MediaItem(
-        id: track.id!,
-        title: track.name!,
-        album: track.album?.name,
-        artist: TypeConversionUtils.artists_X_String(
-            track.artists ?? <ArtistSimple>[]),
-        artUri: Uri.parse(
-          TypeConversionUtils.image_X_UrlString(
-            track.album?.images,
-            placeholder: ImagePlaceholder.online,
-          ),
-        ),
-        duration: track.ytTrack.duration,
-      );
-      mobileAudioService?.addItem(tag);
-      _logger.v("[Track Direct Source] - ${(track).ytUri}");
-      this.track = track;
+    // the track is already playing so no need to change that
+    if (track.id == this.track?.id) return;
+    if (status != PlaybackStatus.loading) {
+      status = PlaybackStatus.loading;
       notifyListeners();
-      updatePersistence();
-      await player.play(
-        track.ytUri.startsWith("http")
-            ? await getAppropriateSource(track, manifest)
-            : DeviceFileSource(track.ytUri),
-      );
-      status = PlaybackStatus.playing;
-      notifyListeners();
-    } catch (e, stack) {
-      _logger.e("play", e, stack);
     }
+    _siblingYtVideos = [];
+
+    // the track is not a SpotubeTrack so turning it to one
+    if (track is! SpotubeTrack) {
+      final s = await toSpotubeTrack(track);
+      track = s.item1;
+      manifest = s.item2;
+    }
+
+    final tag = MediaItem(
+      id: track.id!,
+      title: track.name!,
+      album: track.album?.name,
+      artist: TypeConversionUtils.artists_X_String(
+          track.artists ?? <ArtistSimple>[]),
+      artUri: Uri.parse(
+        TypeConversionUtils.image_X_UrlString(
+          track.album?.images,
+          placeholder: ImagePlaceholder.online,
+        ),
+      ),
+      duration: track.ytTrack.duration,
+    );
+    mobileAudioService?.addItem(tag);
+    _logger.v("[Track Direct Source] - ${(track).ytUri}");
+    this.track = track;
+    notifyListeners();
+    updatePersistence();
+    await player.play(
+      track.ytUri.startsWith("http")
+          ? await getAppropriateSource(track, manifest)
+          : DeviceFileSource(track.ytUri),
+    );
+    status = PlaybackStatus.playing;
+    notifyListeners();
   }
 
   Future<void> resume() async {
@@ -382,7 +375,7 @@ class Playback extends PersistedChangeNotifier {
       );
       return List.castFrom<dynamic, Map<String, int>>(segments);
     } catch (e, stack) {
-      _logger.e("[getSkipSegments]", e, stack);
+      Catcher.reportCheckedError(e, stack);
       return List.castFrom<dynamic, Map<String, int>>([]);
     }
   }
@@ -465,112 +458,104 @@ class Playback extends PersistedChangeNotifier {
     bool noSponsorBlock = false,
     bool ignoreCache = false,
   }) async {
-    try {
-      final format = preferences.ytSearchFormat;
-      final matchAlgorithm = preferences.trackMatchAlgorithm;
-      final artistsName = track.artists
-              ?.map((ar) => ar.name)
-              .toList()
-              .whereNotNull()
-              .toList() ??
-          [];
-      _logger.v("[Track Search Artists] $artistsName");
-      final mainArtist = artistsName.first;
-      final featuredArtists = artistsName.length > 1
-          ? "feat. ${artistsName.sublist(1).join(" ")}"
-          : "";
-      final title = ServiceUtils.getTitle(
-        track.name!,
-        artists: artistsName,
-        onlyCleanArtist: true,
-      ).trim();
-      _logger.v("[Track Search Title] $title");
-      final queryString = format
-          .replaceAll("\$MAIN_ARTIST", mainArtist)
-          .replaceAll("\$TITLE", title)
-          .replaceAll("\$FEATURED_ARTISTS", featuredArtists);
-      _logger.v("[Youtube Search Term] $queryString");
+    final format = preferences.ytSearchFormat;
+    final matchAlgorithm = preferences.trackMatchAlgorithm;
+    final artistsName =
+        track.artists?.map((ar) => ar.name).toList().whereNotNull().toList() ??
+            [];
+    _logger.v("[Track Search Artists] $artistsName");
+    final mainArtist = artistsName.first;
+    final featuredArtists = artistsName.length > 1
+        ? "feat. ${artistsName.sublist(1).join(" ")}"
+        : "";
+    final title = ServiceUtils.getTitle(
+      track.name!,
+      artists: artistsName,
+      onlyCleanArtist: true,
+    ).trim();
+    _logger.v("[Track Search Title] $title");
+    final queryString = format
+        .replaceAll("\$MAIN_ARTIST", mainArtist)
+        .replaceAll("\$TITLE", title)
+        .replaceAll("\$FEATURED_ARTISTS", featuredArtists);
+    _logger.v("[Youtube Search Term] $queryString");
 
-      Video ytVideo;
-      final cachedTrack = await cache.get(track.id);
-      if (cachedTrack != null &&
-          cachedTrack.mode == matchAlgorithm.name &&
-          !ignoreCache) {
-        _logger.v(
-          "[Playing track from cache] youtubeId: ${cachedTrack.id} mode: ${cachedTrack.mode}",
-        );
-        ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
-      } else {
-        VideoSearchList videos =
-            await raceMultiple(() => youtube.search.search(queryString));
-        if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
-          List<Map> ratedRankedVideos = videos
-              .map((video) {
-                // the find should be lazy thus everything case insensitive
-                final ytTitle = video.title.toLowerCase();
-                final bool hasTitle = ytTitle.contains(title);
-                final bool hasAllArtists = track.artists?.every(
-                      (artist) => ytTitle.contains(artist.name!.toLowerCase()),
-                    ) ??
-                    false;
-                final bool authorIsArtist =
-                    track.artists?.first.name?.toLowerCase() ==
-                        video.author.toLowerCase();
-
-                final bool hasNoLiveInTitle =
-                    !PrimitiveUtils.containsTextInBracket(ytTitle, "live");
-                final bool hasCloseDuration =
-                    (track.duration!.inSeconds - video.duration!.inSeconds)
-                            .abs() <=
-                        10; //Duration matching threshold
-
-                int rate = 0;
-                for (final el in [
-                  hasTitle,
-                  hasAllArtists,
-                  if (matchAlgorithm ==
-                      SpotubeTrackMatchAlgorithm.authenticPopular)
-                    authorIsArtist,
-                  hasNoLiveInTitle,
-                  hasCloseDuration,
-                  !video.isLive,
-                ]) {
-                  if (el) rate++;
-                }
-                // can't let pass any non title matching track
-                if (!hasTitle) rate = rate - 2;
-
-                return {
-                  "video": video,
-                  "points": rate,
-                  "views": video.engagement.viewCount,
-                };
-              })
-              .toList()
-              .sortByProperties(
-                [false, false],
-                ["points", "views"],
-              );
-
-          ytVideo = ratedRankedVideos.first["video"] as Video;
-          _siblingYtVideos =
-              ratedRankedVideos.map((e) => e["video"] as Video).toList();
-          notifyListeners();
-        } else {
-          ytVideo = videos.where((video) => !video.isLive).first;
-          _siblingYtVideos = videos.take(10).toList();
-          notifyListeners();
-        }
-      }
-      return ytVideoToSpotubeTrack(
-        ytVideo,
-        track,
-        noSponsorBlock: noSponsorBlock,
+    Video ytVideo;
+    final cachedTrack = await cache.get(track.id);
+    if (cachedTrack != null &&
+        cachedTrack.mode == matchAlgorithm.name &&
+        !ignoreCache) {
+      _logger.v(
+        "[Playing track from cache] youtubeId: ${cachedTrack.id} mode: ${cachedTrack.mode}",
       );
-    } catch (e, stack) {
-      _logger.e("topSpotubeTrack", e, stack);
-      rethrow;
+      ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
+    } else {
+      VideoSearchList videos =
+          await raceMultiple(() => youtube.search.search(queryString));
+      if (matchAlgorithm != SpotubeTrackMatchAlgorithm.youtube) {
+        List<Map> ratedRankedVideos = videos
+            .map((video) {
+              // the find should be lazy thus everything case insensitive
+              final ytTitle = video.title.toLowerCase();
+              final bool hasTitle = ytTitle.contains(title);
+              final bool hasAllArtists = track.artists?.every(
+                    (artist) => ytTitle.contains(artist.name!.toLowerCase()),
+                  ) ??
+                  false;
+              final bool authorIsArtist =
+                  track.artists?.first.name?.toLowerCase() ==
+                      video.author.toLowerCase();
+
+              final bool hasNoLiveInTitle =
+                  !PrimitiveUtils.containsTextInBracket(ytTitle, "live");
+              final bool hasCloseDuration =
+                  (track.duration!.inSeconds - video.duration!.inSeconds)
+                          .abs() <=
+                      10; //Duration matching threshold
+
+              int rate = 0;
+              for (final el in [
+                hasTitle,
+                hasAllArtists,
+                if (matchAlgorithm ==
+                    SpotubeTrackMatchAlgorithm.authenticPopular)
+                  authorIsArtist,
+                hasNoLiveInTitle,
+                hasCloseDuration,
+                !video.isLive,
+              ]) {
+                if (el) rate++;
+              }
+              // can't let pass any non title matching track
+              if (!hasTitle) rate = rate - 2;
+
+              return {
+                "video": video,
+                "points": rate,
+                "views": video.engagement.viewCount,
+              };
+            })
+            .toList()
+            .sortByProperties(
+              [false, false],
+              ["points", "views"],
+            );
+
+        ytVideo = ratedRankedVideos.first["video"] as Video;
+        _siblingYtVideos =
+            ratedRankedVideos.map((e) => e["video"] as Video).toList();
+        notifyListeners();
+      } else {
+        ytVideo = videos.where((video) => !video.isLive).first;
+        _siblingYtVideos = videos.take(10).toList();
+        notifyListeners();
+      }
     }
+    return ytVideoToSpotubeTrack(
+      ytVideo,
+      track,
+      noSponsorBlock: noSponsorBlock,
+    );
   }
 
   Future<Source> getAppropriateSource(
@@ -650,24 +635,20 @@ class Playback extends PersistedChangeNotifier {
 
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
-    try {
-      if (map["playlist"] != null) {
-        playlist = CurrentPlaylist.fromJson(jsonDecode(map["playlist"]));
-      }
-      if (map["track"] != null) {
-        final Map<String, dynamic> trackMap = jsonDecode(map["track"]);
-        // for backwards compatibility
-        if (!trackMap.containsKey("skipSegments")) {
-          trackMap["skipSegments"] = await getSkipSegments(
-            trackMap["id"],
-          );
-        }
-        track = SpotubeTrack.fromJson(trackMap);
-      }
-      volume = map["volume"] ?? volume;
-    } catch (e, stack) {
-      _logger.e("loadFromLocal", e, stack);
+    if (map["playlist"] != null) {
+      playlist = CurrentPlaylist.fromJson(jsonDecode(map["playlist"]));
     }
+    if (map["track"] != null) {
+      final Map<String, dynamic> trackMap = jsonDecode(map["track"]);
+      // for backwards compatibility
+      if (!trackMap.containsKey("skipSegments")) {
+        trackMap["skipSegments"] = await getSkipSegments(
+          trackMap["id"],
+        );
+      }
+      track = SpotubeTrack.fromJson(trackMap);
+    }
+    volume = map["volume"] ?? volume;
   }
 
   @override

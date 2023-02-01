@@ -13,6 +13,22 @@ SpotubeLogger getLogger<T>(T owner) {
   return _loggerFactory;
 }
 
+Future<File> getLogsPath() async {
+  String dir = (await getApplicationDocumentsDirectory()).path;
+  if (kIsAndroid) {
+    dir = (await getExternalStorageDirectory())?.path ?? "";
+  }
+
+  if (kIsMacOS) {
+    dir = path.join((await getLibraryDirectory()).path, "Logs");
+  }
+  final file = File(path.join(dir, ".spotube_logs"));
+  if (!await file.exists()) {
+    await file.create();
+  }
+  return file;
+}
+
 class SpotubeLogger extends Logger {
   String? owner;
   SpotubeLogger([this.owner]) : super(filter: _SpotubeLogFilter());

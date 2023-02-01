@@ -145,14 +145,10 @@ class BottomPlayer extends HookConsumerWidget {
                             volume.value = v;
                           },
                           onChangeEnd: (value) async {
-                            try {
-                              // You don't really need to know why but this
-                              // way it works only
-                              await playback.setVolume(value);
-                              await playback.setVolume(value);
-                            } catch (e, stack) {
-                              logger.e("onChange", e, stack);
-                            }
+                            // You don't really need to know why but this
+                            // way it works only
+                            await playback.setVolume(value);
+                            await playback.setVolume(value);
                           },
                         ),
                       );

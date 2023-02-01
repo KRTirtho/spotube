@@ -1,3 +1,4 @@
+import 'package:catcher/catcher.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
@@ -19,7 +20,7 @@ import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
-final rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = Catcher.navigatorKey;
 final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,

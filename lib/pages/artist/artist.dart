@@ -203,12 +203,6 @@ class ArtistPage extends HookConsumerWidget {
                                                       .queryKey,
                                                 )
                                                 ?.refetch();
-                                          } catch (e, stack) {
-                                            logger.e(
-                                              "FollowButton.onPressed",
-                                              e,
-                                              stack,
-                                            );
                                           } finally {
                                             QueryBowl.of(context)
                                                 .refetchQueries([

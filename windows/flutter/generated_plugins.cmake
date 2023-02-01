@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
+  catcher
   connectivity_plus_windows
   metadata_god
   permission_handler_windows

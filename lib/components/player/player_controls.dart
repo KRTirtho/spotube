@@ -199,15 +199,7 @@ class PlayerControls extends HookConsumerWidget {
                       SpotubeIcons.stop,
                       color: iconColor,
                     ),
-                    onPressed: playback.track != null
-                        ? () async {
-                            try {
-                              await playback.stop();
-                            } catch (e, stack) {
-                              logger.e("onStop", e, stack);
-                            }
-                          }
-                        : null,
+                    onPressed: playback.track != null ? playback.stop : null,
                   ),
                   PlatformIconButton(
                     tooltip:

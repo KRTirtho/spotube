@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:catcher/catcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -98,12 +99,11 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
           } on FfiException catch (e) {
             if (e.message == "NoTag: reader does not contain an id3 tag") {
               getLogger(FutureProvider<List<Track>>)
-                  .w("[Fetching metadata]", e.message);
+                  .v("[Fetching metadata]", e.message);
             }
             return {};
-          } on Exception catch (e, stack) {
-            getLogger(FutureProvider<List<Track>>)
-                .e("[Fetching metadata]", e, stack);
+          } catch (e, stack) {
+            Catcher.reportCheckedError(e, stack);
             return {};
           }
         },
@@ -124,7 +124,7 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
 
     return tracks;
   } catch (e, stack) {
-    getLogger(FutureProvider).e("[LocalTracksProvider]", e, stack);
+    Catcher.reportCheckedError(e, stack);
     return [];
   }
 });

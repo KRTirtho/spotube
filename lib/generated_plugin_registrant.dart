@@ -10,7 +10,6 @@ import 'package:audio_service_web/audio_service_web.dart';
 import 'package:audio_session/audio_session_web.dart';
 import 'package:audioplayers_web/audioplayers_web.dart';
 import 'package:file_picker/_internal/file_picker_web.dart';
-import 'package:package_info_plus_web/package_info_plus_web.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
 import 'package:url_launcher_web/url_launcher_web.dart';
 
@@ -22,7 +21,6 @@ void registerPlugins(Registrar registrar) {
   AudioSessionWeb.registerWith(registrar);
   AudioplayersPlugin.registerWith(registrar);
   FilePickerWeb.registerWith(registrar);
-  PackageInfoPlugin.registerWith(registrar);
   SharedPreferencesPlugin.registerWith(registrar);
   UrlLauncherPlugin.registerWith(registrar);
   registrar.registerMessageHandler();

@@ -60,5 +60,5 @@ abstract class SpotubeIcons {
   static const info = FeatherIcons.info;
   static const userRemove = FeatherIcons.userX;
   static const close = FeatherIcons.x;
-  static const minimize = FeatherIcons.minimize2;
+  static const minimize = FeatherIcons.chevronDown;
 }

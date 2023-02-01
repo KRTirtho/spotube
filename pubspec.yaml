@@ -18,6 +18,9 @@ dependencies:
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   cached_network_image: ^3.2.2
+  catcher:
+    git:
+      url: https://github.com/ThexXTURBOXx/catcher
   collection: ^1.15.0
   cupertino_icons: ^1.0.5
   dbus: ^0.7.8
@@ -47,7 +50,7 @@ dependencies:
   marquee: ^2.2.3
   metadata_god: ^0.3.2
   mime: ^1.0.2
-  package_info_plus: ^1.4.3
+  package_info_plus: ^3.0.2
   palette_generator: ^0.3.3
   path: ^1.8.0
   path_provider: ^2.0.8
@@ -84,6 +87,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^2.0.0
+
+dependency_overrides: 
+  package_info_plus: ^3.0.2
 
 flutter:
   uses-material-design: true

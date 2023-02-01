@@ -20,33 +20,28 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
 
   @override
   invoke(intent) async {
-    try {
-      if (PlayerControls.focusNode.canRequestFocus) {
-        PlayerControls.focusNode.requestFocus();
-      }
-      final playback = intent.ref.read(playbackProvider);
-      if (playback.track == null) {
-        return null;
-      } else if (playback.track != null &&
-          playback.currentDuration == Duration.zero &&
-          await playback.player.getCurrentPosition() == Duration.zero) {
-        if (playback.track!.ytUri.startsWith("http")) {
-          final track = Track.fromJson(playback.track!.toJson());
-          playback.track = null;
-          await playback.play(track);
-        } else {
-          final track = playback.track;
-          playback.track = null;
-          await playback.play(track!);
-        }
-      } else {
-        await playback.togglePlayPause();
-      }
-      return null;
-    } catch (e, stack) {
-      logger.e("useTogglePlayPause", e, stack);
-      return null;
+    if (PlayerControls.focusNode.canRequestFocus) {
+      PlayerControls.focusNode.requestFocus();
     }
+    final playback = intent.ref.read(playbackProvider);
+    if (playback.track == null) {
+      return null;
+    } else if (playback.track != null &&
+        playback.currentDuration == Duration.zero &&
+        await playback.player.getCurrentPosition() == Duration.zero) {
+      if (playback.track!.ytUri.startsWith("http")) {
+        final track = Track.fromJson(playback.track!.toJson());
+        playback.track = null;
+        await playback.play(track);
+      } else {
+        final track = playback.track;
+        playback.track = null;
+        await playback.play(track!);
+      }
+    } else {
+      await playback.togglePlayPause();
+    }
+    return null;
   }
 }
 

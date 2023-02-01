@@ -283,44 +283,39 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Metadata
   Future<DBusMethodResponse> getMetadata() async {
-    try {
-      if (playback.track == null) {
-        return DBusMethodSuccessResponse([DBusDict.stringVariant({})]);
-      }
-      final id = (playback.playlist != null
-              ? playback.playlist!.tracks.indexWhere(
-                  (track) => playback.track!.id == track.id!,
-                )
-              : 0)
-          .abs();
-
-      return DBusMethodSuccessResponse([
-        DBusDict.stringVariant({
-          "mpris:trackid": DBusString("${path.value}/Track/$id"),
-          "mpris:length": DBusInt32(playback.currentDuration.inMicroseconds),
-          "mpris:artUrl": DBusString(
-            TypeConversionUtils.image_X_UrlString(
-              playback.track?.album?.images,
-              placeholder: ImagePlaceholder.albumArt,
-            ),
-          ),
-          "xesam:album": DBusString(playback.track!.album!.name!),
-          "xesam:artist": DBusArray.string(
-            playback.track!.artists!.map((artist) => artist.name!),
-          ),
-          "xesam:title": DBusString(playback.track!.name!),
-          "xesam:url": DBusString(
-            playback.track is SpotubeTrack
-                ? (playback.track as SpotubeTrack).ytUri
-                : playback.track!.previewUrl!,
-          ),
-          "xesam:genre": const DBusString("Unknown"),
-        }),
-      ]);
-    } catch (e) {
-      print("[DBUS ERROR] $e");
-      rethrow;
+    if (playback.track == null) {
+      return DBusMethodSuccessResponse([DBusDict.stringVariant({})]);
     }
+    final id = (playback.playlist != null
+            ? playback.playlist!.tracks.indexWhere(
+                (track) => playback.track!.id == track.id!,
+              )
+            : 0)
+        .abs();
+
+    return DBusMethodSuccessResponse([
+      DBusDict.stringVariant({
+        "mpris:trackid": DBusString("${path.value}/Track/$id"),
+        "mpris:length": DBusInt32(playback.currentDuration.inMicroseconds),
+        "mpris:artUrl": DBusString(
+          TypeConversionUtils.image_X_UrlString(
+            playback.track?.album?.images,
+            placeholder: ImagePlaceholder.albumArt,
+          ),
+        ),
+        "xesam:album": DBusString(playback.track!.album!.name!),
+        "xesam:artist": DBusArray.string(
+          playback.track!.artists!.map((artist) => artist.name!),
+        ),
+        "xesam:title": DBusString(playback.track!.name!),
+        "xesam:url": DBusString(
+          playback.track is SpotubeTrack
+              ? (playback.track as SpotubeTrack).ytUri
+              : playback.track!.previewUrl!,
+        ),
+        "xesam:genre": const DBusString("Unknown"),
+      }),
+    ]);
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Volume

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -61,82 +62,98 @@ void main() async {
     });
   }
   MobileAudioService? audioServiceHandler;
-  runApp(
-    Builder(
-      builder: (context) {
-        return ProviderScope(
-          overrides: [
-            playbackProvider.overrideWith(
-              (ref) {
-                final youtube = ref.watch(youtubeProvider);
-                final player = ref.watch(audioPlayerProvider);
 
-                final playback = Playback(
-                  player: player,
-                  youtube: youtube,
-                  ref: ref,
-                );
-
-                if (audioServiceHandler == null) {
-                  AudioService.init(
-                    builder: () => MobileAudioService(playback),
-                    config: const AudioServiceConfig(
-                      androidNotificationChannelId: 'com.krtirtho.Spotube',
-                      androidNotificationChannelName: 'Spotube',
-                      androidNotificationOngoing: true,
-                    ),
-                  ).then(
-                    (value) {
-                      playback.mobileAudioService = value;
-                      audioServiceHandler = value;
-                    },
-                  );
-                }
-
-                return playback;
-              },
-            ),
-            downloaderProvider.overrideWith(
-              (ref) {
-                return Downloader(
-                  ref,
-                  queueInstance,
-                  yt: ref.watch(youtubeProvider),
-                  downloadPath: ref.watch(
-                    userPreferencesProvider.select(
-                      (s) => s.downloadLocation,
-                    ),
-                  ),
-                  onFileExists: (track) {
-                    final logger = getLogger(Downloader);
-                    try {
-                      logger.v(
-                        "[onFileExists] download confirmation for ${track.name}",
-                      );
-                      return showPlatformAlertDialog<bool>(
-                        context,
-                        builder: (_) => ReplaceDownloadedDialog(track: track),
-                      ).then((s) => s ?? false);
-                    } catch (e, stack) {
-                      logger.e(
-                        "onFileExists",
-                        e,
-                        stack,
-                      );
-                      return false;
-                    }
-                  },
-                );
-              },
-            )
-          ],
-          child: QueryBowlScope(
-            bowl: bowl,
-            child: const Spotube(),
-          ),
-        );
-      },
+  Catcher(
+    debugConfig: CatcherOptions(
+      SilentReportMode(),
+      [
+        ConsoleHandler(
+          enableDeviceParameters: false,
+          enableApplicationParameters: false,
+        ),
+        FileHandler(await getLogsPath(), printLogs: false),
+        SnackbarHandler(const Duration(seconds: 5)),
+      ],
     ),
+    releaseConfig: CatcherOptions(SilentReportMode(), [
+      FileHandler(await getLogsPath(), printLogs: false),
+    ]),
+    runAppFunction: () {
+      runApp(
+        Builder(
+          builder: (context) {
+            return ProviderScope(
+              overrides: [
+                playbackProvider.overrideWith(
+                  (ref) {
+                    final youtube = ref.watch(youtubeProvider);
+                    final player = ref.watch(audioPlayerProvider);
+
+                    final playback = Playback(
+                      player: player,
+                      youtube: youtube,
+                      ref: ref,
+                    );
+
+                    if (audioServiceHandler == null) {
+                      AudioService.init(
+                        builder: () => MobileAudioService(playback),
+                        config: const AudioServiceConfig(
+                          androidNotificationChannelId: 'com.krtirtho.Spotube',
+                          androidNotificationChannelName: 'Spotube',
+                          androidNotificationOngoing: true,
+                        ),
+                      ).then(
+                        (value) {
+                          playback.mobileAudioService = value;
+                          audioServiceHandler = value;
+                        },
+                      );
+                    }
+
+                    return playback;
+                  },
+                ),
+                downloaderProvider.overrideWith(
+                  (ref) {
+                    return Downloader(
+                      ref,
+                      queueInstance,
+                      yt: ref.watch(youtubeProvider),
+                      downloadPath: ref.watch(
+                        userPreferencesProvider.select(
+                          (s) => s.downloadLocation,
+                        ),
+                      ),
+                      onFileExists: (track) {
+                        final logger = getLogger(Downloader);
+                        try {
+                          logger.v(
+                            "[onFileExists] download confirmation for ${track.name}",
+                          );
+                          return showPlatformAlertDialog<bool>(
+                            context,
+                            builder: (_) =>
+                                ReplaceDownloadedDialog(track: track),
+                          ).then((s) => s ?? false);
+                        } catch (e, stack) {
+                          Catcher.reportCheckedError(e, stack);
+                          return false;
+                        }
+                      },
+                    );
+                  },
+                )
+              ],
+              child: QueryBowlScope(
+                bowl: bowl,
+                child: const Spotube(),
+              ),
+            );
+          },
+        ),
+      );
+    },
   );
 }
 
