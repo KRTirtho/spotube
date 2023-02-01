@@ -24,7 +24,7 @@ dependencies:
   file_picker: ^5.2.2
   fl_query: ^0.3.1
   fl_query_hooks: ^0.3.1
-  fluent_ui: 4.0.3
+  fluent_ui: ^4.2.0
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
