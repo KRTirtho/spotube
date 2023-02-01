@@ -1,5 +1,7 @@
 name: spotube
-description: A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube & no Spotify premium account is needed
+description: A lightweight free Spotify crossplatform-client which handles
+  playback manually, streams music using Youtube & no Spotify premium account is
+  needed
 
 publish_to: "none"
 
@@ -9,79 +11,79 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.5
-  cached_network_image: ^3.2.2
-  html: ^0.15.1
-  http: ^0.13.5
-  shared_preferences: ^2.0.11
-  spotify: ^0.8.0
-  url_launcher: ^6.1.7
-  youtube_explode_dart: ^1.12.1
-  path: ^1.8.0
-  path_provider: ^2.0.8
-  collection: ^1.15.0
-  flutter_riverpod: ^2.1.1
-  flutter_hooks: ^0.18.2+1
-  hooks_riverpod: ^2.1.1
-  go_router: ^5.2.0
-  palette_generator: ^0.3.3
-  logger: ^1.1.0
-  permission_handler: ^10.2.0
-  marquee: ^2.2.3
-  scroll_to_index: ^3.0.1
-  package_info_plus: ^1.4.3
-  version: ^3.0.2
-  audio_service: ^0.18.7
-  skeleton_text: ^3.0.0
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  dbus: ^0.7.3
-  audioplayers: ^1.2.0
-  introduction_screen: ^3.0.2
-  audio_session: ^0.1.10
-  file_picker: ^5.2.2
-  popover: ^0.2.6+3
-  queue: ^3.1.0+1
+  adwaita: ^0.5.2
+  audio_service: ^0.18.9
+  audio_session: ^0.1.13
+  audioplayers: ^3.0.1
   auto_size_text: ^3.0.0
   badges: ^2.0.3
-  mime: ^1.0.2
-  metadata_god: ^0.3.2
-  visibility_detector: ^0.3.3
+  cached_network_image: ^3.2.2
+  collection: ^1.15.0
+  cupertino_icons: ^1.0.5
+  dbus: ^0.7.8
+  file_picker: ^5.2.2
   fl_query: ^0.3.1
   fl_query_hooks: ^0.3.1
+  fluent_ui: 4.0.3
+  fluentui_system_icons: ^1.1.189
+  flutter:
+    sdk: flutter
+  flutter_feather_icons: ^2.0.0+1
+  flutter_hooks: ^0.18.2+1
   flutter_inappwebview: ^5.7.2+3
-  tuple: ^2.0.1
-  uuid: ^3.0.7
+  flutter_riverpod: ^2.1.1
+  flutter_svg: ^1.1.6
+  fuzzywuzzy: ^0.2.0
+  go_router: ^6.0.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  hooks_riverpod: ^2.1.1
+  html: ^0.15.1
+  http: ^0.13.5
+  introduction_screen: ^3.0.2
+  libadwaita: ^1.2.5
+  logger: ^1.1.0
+  macos_ui: ^1.7.5
+  marquee: ^2.2.3
+  metadata_god: ^0.3.2
+  mime: ^1.0.2
+  package_info_plus: ^1.4.3
+  palette_generator: ^0.3.3
+  path: ^1.8.0
+  path_provider: ^2.0.8
+  permission_handler: ^10.2.0
   platform_ui:
     git:
       url: https://github.com/KRTirtho/platform_ui.git
       ref: 073cefb9c419fcb01cbdfd6ca2f9714eec23c83b
-  fluent_ui: 4.0.3
-  macos_ui: ^1.7.5
-  libadwaita: ^1.2.5
-  adwaita: ^0.5.2
-  flutter_svg: ^1.1.6
-  fuzzywuzzy: ^0.2.0
+  popover: ^0.2.6+3
+  queue: ^3.1.0+1
+  scroll_to_index: ^3.0.1
+  shared_preferences: ^2.0.11
+  skeleton_text: ^3.0.0
+  spotify: ^0.8.0
+  tuple: ^2.0.1
+  url_launcher: ^6.1.7
+  uuid: ^3.0.7
+  version: ^3.0.2
+  visibility_detector: ^0.3.3
   window_manager: 0.2.8
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
-  flutter_feather_icons: ^2.0.0+1
-  fluentui_system_icons: ^1.1.189
+  youtube_explode_dart: ^1.12.1
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.1
-  flutter_launcher_icons: ^0.11.0
-  hive_generator: ^2.0.0
   build_runner: ^2.3.2
   flutter_distributor: ^0.0.2
   flutter_gen_runner: ^5.1.0+1
+  flutter_launcher_icons: ^0.11.0
+  flutter_lints: ^2.0.1
+  flutter_test:
+    sdk: flutter
+  hive_generator: ^2.0.0
 
 flutter:
   uses-material-design: true
