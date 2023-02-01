@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/cache_keys.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/collections/routes.dart';
@@ -23,6 +24,7 @@ import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/mobile_audio_service.dart';
+import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/themes/dark_theme.dart';
 import 'package:spotube/themes/light_theme.dart';
 import 'package:spotube/utils/platform.dart';
@@ -36,6 +38,8 @@ void main() async {
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
+  await Env.configure();
+  await initializePocketBase();
   if (kIsDesktop) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
@@ -72,7 +76,17 @@ void main() async {
           enableApplicationParameters: false,
         ),
         FileHandler(await getLogsPath(), printLogs: false),
-        SnackbarHandler(const Duration(seconds: 5)),
+        SnackbarHandler(
+          const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: "Dismiss",
+            onPressed: () {
+              ScaffoldMessenger.of(
+                Catcher.navigatorKey!.currentContext!,
+              ).hideCurrentSnackBar();
+            },
+          ),
+        ),
       ],
     ),
     releaseConfig: CatcherOptions(SilentReportMode(), [

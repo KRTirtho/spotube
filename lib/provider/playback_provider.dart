@@ -6,19 +6,19 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:catcher/catcher.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/extensions/video.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/models/track.dart';
 import 'package:spotube/provider/audio_player_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/linux_audio_service.dart';
 import 'package:spotube/services/mobile_audio_service.dart';
+import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -63,7 +63,6 @@ class Playback extends PersistedChangeNotifier {
       ref.read(BlackListNotifier.provider.notifier);
 
   // playlist & track list properties
-  late LazyBox<CacheTrack> cache;
   CurrentPlaylist? playlist;
   SpotubeTrack? track;
   List<Video> _siblingYtVideos = [];
@@ -94,8 +93,6 @@ class Playback extends PersistedChangeNotifier {
     }
 
     (() async {
-      cache = await Hive.openLazyBox<CacheTrack>("track-cache");
-
       if (kIsAndroid) {
         await player.setVolume(1);
         volume = 1;
@@ -386,7 +383,15 @@ class Playback extends PersistedChangeNotifier {
     bool noSponsorBlock = false,
     bool overwriteCache = false,
   }) async {
-    final cachedTrack = await cache.get(track.id);
+    final cachedTracks = await pb
+        .collection(BackendTrack.collection)
+        .getFullList(filter: "spotify_id = '${track.id}'", sort: "-votes");
+    final cachedTrack = cachedTracks.isNotEmpty
+        ? BackendTrack.fromRecord(cachedTracks.first)
+        : null;
+    final altTrack = cachedTracks.firstWhereOrNull(
+      (record) => record.data["youtube_id"] == ytVideo.id.value,
+    );
     StreamManifest trackManifest = await raceMultiple(
       () => youtube.videos.streams.getManifest(ytVideo.id),
     );
@@ -412,30 +417,43 @@ class Playback extends PersistedChangeNotifier {
 
     final ytUri = chosenStreamInfo.url.toString();
 
-    final skipSegments = cachedTrack?.skipSegments != null &&
-            cachedTrack!.skipSegments!.isNotEmpty
-        ? cachedTrack.skipSegments!
-            .map(
-              (segment) => segment.toJson(),
-            )
-            .toList()
-        : noSponsorBlock
-            ? List.castFrom<dynamic, Map<String, int>>([])
-            : await getSkipSegments(ytVideo.id.value);
+    // final skipSegments =
+    //     cachedTrack.skipSegments != null && cachedTrack.skipSegments!.isNotEmpty
+    //         ? cachedTrack.skipSegments!
+    //             .map(
+    //               (segment) => segment.toJson(),
+    //             )
+    //             .toList()
+    //         : noSponsorBlock
+    //             ? List.castFrom<dynamic, Map<String, int>>([])
+    //             : await getSkipSegments(ytVideo.id.value);
 
     // only save when the track isn't available in the cache with same
     // matchAlgorithm
-    if (overwriteCache ||
-        cachedTrack == null ||
-        cachedTrack.mode != preferences.trackMatchAlgorithm.name) {
-      await cache.put(
-        track.id!,
-        CacheTrack.fromVideo(
-          ytVideo,
-          preferences.trackMatchAlgorithm.name,
-          skipSegments: skipSegments,
-        ),
+
+    if (cachedTrack == null && altTrack == null) {
+      await pb.collection(BackendTrack.collection).create(
+            body: BackendTrack(
+              spotifyId: track.id!,
+              youtubeId: ytVideo.id.value,
+              votes: 0,
+            ).toJson(),
+          );
+    } else if (cachedTrack != null && altTrack != null && overwriteCache) {
+      await pb.collection(BackendTrack.collection).update(
+        altTrack.id,
+        body: {
+          "votes": altTrack.data["votes"] + 1,
+        },
       );
+    } else if (cachedTrack != null && altTrack == null && overwriteCache) {
+      await pb.collection(BackendTrack.collection).create(
+            body: BackendTrack(
+              spotifyId: track.id!,
+              youtubeId: ytVideo.id.value,
+              votes: 1,
+            ).toJson(),
+          );
     }
 
     return Tuple2(
@@ -446,7 +464,7 @@ class Playback extends PersistedChangeNotifier {
         // ('audio/webm', 'video/webm' & 'image/webp') thus using 'audio/mpeg'
         // codec/mimetype for those Platforms
         ytUri: ytUri,
-        skipSegments: skipSegments,
+        skipSegments: /* skipSegments */ [],
       ),
       chosenStreamInfo,
     );
@@ -481,14 +499,17 @@ class Playback extends PersistedChangeNotifier {
     _logger.v("[Youtube Search Term] $queryString");
 
     Video ytVideo;
-    final cachedTrack = await cache.get(track.id);
-    if (cachedTrack != null &&
-        cachedTrack.mode == matchAlgorithm.name &&
-        !ignoreCache) {
+    final cachedTrack = await pb
+        .collection(BackendTrack.collection)
+        .getFullList(filter: "spotify_id = '${track.id}'", sort: "-votes")
+        .then((l) => l.isNotEmpty ? BackendTrack.fromRecord(l.first) : null);
+
+    if (cachedTrack != null && !ignoreCache) {
       _logger.v(
-        "[Playing track from cache] youtubeId: ${cachedTrack.id} mode: ${cachedTrack.mode}",
+        "[Playing track from cache] youtubeId: ${cachedTrack.youtubeId}",
       );
-      ytVideo = VideoFromCacheTrackExtension.fromCacheTrack(cachedTrack);
+      ytVideo = await VideoFromCacheTrackExtension.fromBackendTrack(
+          cachedTrack, youtube);
     } else {
       VideoSearchList videos =
           await raceMultiple(() => youtube.search.search(queryString));

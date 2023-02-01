@@ -1,4 +1,5 @@
 import 'package:spotube/entities/cache_track.dart';
+import 'package:spotube/models/track.dart';
 import 'package:spotube/utils/duration.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -29,6 +30,11 @@ extension VideoFromCacheTrackExtension on Video {
       ),
       false,
     );
+  }
+
+  static Future<Video> fromBackendTrack(
+      BackendTrack track, YoutubeExplode youtube) {
+    return youtube.videos.get(VideoId.fromString(track.youtubeId));
   }
 }
 
