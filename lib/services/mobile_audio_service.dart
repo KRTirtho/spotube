@@ -3,34 +3,38 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 
 class MobileAudioService extends BaseAudioHandler {
-  final Playback playback;
+  final Ref ref;
   AudioSession? session;
 
-  MobileAudioService(this.playback) {
+  PlaylistQueue? get playlist => ref.watch(PlaylistQueueNotifier.provider);
+  PlaylistQueueNotifier get playlistNotifier =>
+      ref.watch(PlaylistQueueNotifier.notifier);
+
+  MobileAudioService(this.ref) {
     AudioSession.instance.then((s) {
       session = s;
-      s.interruptionEventStream.listen((event) {
+      s.interruptionEventStream.listen((event) async {
         if (event.type != AudioInterruptionType.duck) {
-          playback.pause();
+          await playlistNotifier.pause();
         }
       });
     });
-    final player = playback.player;
-    player.onPlayerStateChanged.listen((state) async {
+    audioPlayer.onPlayerStateChanged.listen((state) async {
       if (state != PlayerState.completed) {
         playbackState.add(await _transformEvent());
       }
     });
 
-    player.onPositionChanged.listen((pos) async {
+    audioPlayer.onPositionChanged.listen((pos) async {
       playbackState.add(await _transformEvent());
     });
 
-    player.onPlayerComplete.listen((_) {
-      if (playback.playlist == null && playback.track == null) {
+    audioPlayer.onPlayerComplete.listen((_) {
+      if (playlist == null) {
         playbackState.add(
           PlaybackState(
             processingState: AudioProcessingState.completed,
@@ -46,34 +50,35 @@ class MobileAudioService extends BaseAudioHandler {
   }
 
   @override
-  Future<void> play() => playback.resume();
+  Future<void> play() => playlistNotifier.resume();
 
   @override
-  Future<void> pause() => playback.pause();
+  Future<void> pause() => playlistNotifier.pause();
 
   @override
-  Future<void> seek(Duration position) => playback.seekPosition(position);
+  Future<void> seek(Duration position) => playlistNotifier.seek(position);
 
   @override
   Future<void> stop() async {
-    await playback.stop();
+    await playlistNotifier.stop();
   }
 
   @override
   Future<void> skipToNext() async {
-    playback.seekForward();
+    await playlistNotifier.next();
     await super.skipToNext();
   }
 
   @override
   Future<void> skipToPrevious() async {
-    playback.seekBackward();
+    await playlistNotifier.previous();
     await super.skipToPrevious();
   }
 
   @override
-  Future<void> onTaskRemoved() {
-    playback.destroy();
+  Future<void> onTaskRemoved() async {
+    await playlistNotifier.stop();
+    await audioPlayer.release();
     return super.onTaskRemoved();
   }
 
@@ -81,7 +86,7 @@ class MobileAudioService extends BaseAudioHandler {
     return PlaybackState(
       controls: [
         MediaControl.skipToPrevious,
-        playback.player.state == PlayerState.playing
+        audioPlayer.state == PlayerState.playing
             ? MediaControl.pause
             : MediaControl.play,
         MediaControl.skipToNext,
@@ -91,12 +96,11 @@ class MobileAudioService extends BaseAudioHandler {
         MediaAction.seek,
       },
       androidCompactActionIndices: const [0, 1, 2],
-      playing: playback.player.state == PlayerState.playing,
-      updatePosition:
-          (await playback.player.getCurrentPosition()) ?? Duration.zero,
-      processingState: playback.player.state == PlayerState.paused
+      playing: audioPlayer.state == PlayerState.playing,
+      updatePosition: (await audioPlayer.getCurrentPosition()) ?? Duration.zero,
+      processingState: audioPlayer.state == PlayerState.paused
           ? AudioProcessingState.buffering
-          : playback.player.state == PlayerState.playing
+          : audioPlayer.state == PlayerState.playing
               ? AudioProcessingState.ready
               : AudioProcessingState.idle,
     );

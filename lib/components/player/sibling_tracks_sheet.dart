@@ -1,12 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class SiblingTracksSheet extends HookConsumerWidget {
   final bool floating;
@@ -17,20 +18,19 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playback = ref.watch(playbackProvider);
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+
+    final siblings = playlist?.isLoading == false
+        ? (playlist!.activeTrack as SpotubeTrack).siblings
+        : <Video>[];
+
     final borderRadius = floating
         ? BorderRadius.circular(10)
         : const BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           );
-
-    useEffect(() {
-      if (playback.siblingYtVideos.isEmpty) {
-        playback.toSpotubeTrack(playback.track!, ignoreCache: true);
-      }
-      return null;
-    }, [playback.siblingYtVideos]);
 
     return BackdropFilter(
       filter: ImageFilter.blur(
@@ -59,9 +59,9 @@ class SiblingTracksSheet extends HookConsumerWidget {
           body: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ListView.builder(
-              itemCount: playback.siblingYtVideos.length,
+              itemCount: siblings.length,
               itemBuilder: (context, index) {
-                final video = playback.siblingYtVideos[index];
+                final video = siblings[index];
                 return PlatformListTile(
                   title: PlatformText(video.title),
                   leading: Padding(
@@ -81,12 +81,18 @@ class SiblingTracksSheet extends HookConsumerWidget {
                     ),
                   ),
                   subtitle: PlatformText(video.author),
-                  enabled: playback.status != PlaybackStatus.loading,
-                  selected: video.id == playback.track!.ytTrack.id,
+                  enabled: playlist?.isLoading != true,
+                  selected: playlist?.isLoading != true &&
+                      video.id ==
+                          (playlist?.activeTrack as SpotubeTrack).ytTrack.id,
                   selectedTileColor: Theme.of(context).popupMenuTheme.color,
-                  onTap: () {
-                    if (video.id != playback.track!.ytTrack.id) {
-                      playback.changeToSiblingVideo(video, playback.track!);
+                  onTap: () async {
+                    if (playlist?.isLoading == false &&
+                        video.id !=
+                            (playlist?.activeTrack as SpotubeTrack)
+                                .ytTrack
+                                .id) {
+                      await playlistNotifier.swapSibling(video);
                     }
                   },
                 );

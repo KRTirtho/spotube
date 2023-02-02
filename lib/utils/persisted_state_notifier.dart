@@ -1,24 +1,47 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
 abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
-  get cacheKey => state.runtimeType.toString();
+  final String cacheKey;
 
-  SharedPreferences? localStorage;
+  PersistedStateNotifier(super.state, this.cacheKey) : super() {
+    _load();
+  }
 
-  PersistedStateNotifier(super.state) : super() {
-    SharedPreferences.getInstance().then(
-      (localStorage) {
-        this.localStorage = localStorage;
-        final rawState = localStorage.getString(cacheKey);
+  Future<void> _load() async {
+    final box = await Hive.openLazyBox("spotube_cache");
+    final json = await box.get(cacheKey);
 
-        if (rawState != null) {
-          state = fromJson(jsonDecode(rawState));
+    if (json != null) {
+      state = fromJson(castNestedJson(json));
+    }
+  }
+
+  Map<String, dynamic> castNestedJson(Map map) {
+    return Map.castFrom<dynamic, dynamic, String, dynamic>(
+      map.map((key, value) {
+        if (value is Map) {
+          return MapEntry(
+            key,
+            castNestedJson(value),
+          );
+        } else if (value is Iterable) {
+          return MapEntry(
+            key,
+            value.map((e) {
+              if (e is Map) return castNestedJson(e);
+              return e;
+            }).toList(),
+          );
         }
-      },
+        return MapEntry(key, value);
+      }),
     );
+  }
+
+  void save() async {
+    final box = await Hive.openLazyBox("spotube_cache");
+    box.put(cacheKey, toJson());
   }
 
   T fromJson(Map<String, dynamic> json);
@@ -28,21 +51,6 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   set state(T value) {
     if (state == value) return;
     super.state = value;
-    if (localStorage == null) {
-      SharedPreferences.getInstance().then(
-        (localStorage) {
-          this.localStorage = localStorage;
-          localStorage.setString(
-            cacheKey,
-            jsonEncode(toJson()),
-          );
-        },
-      );
-    } else {
-      localStorage?.setString(
-        cacheKey,
-        jsonEncode(toJson()),
-      );
-    }
+    save();
   }
 }

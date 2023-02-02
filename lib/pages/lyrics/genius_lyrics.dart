@@ -5,7 +5,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -23,11 +23,11 @@ class GeniusLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    Playback playback = ref.watch(playbackProvider);
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
     final geniusLyricsQuery = useQuery(
-      job: Queries.lyrics.static(playback.track?.id ?? ""),
+      job: Queries.lyrics.static(playlist?.activeTrack.id ?? ""),
       externalData: Tuple2(
-        playback.track,
+        playlist?.activeTrack,
         ref.watch(userPreferencesProvider).geniusAccessToken,
       ),
     );
@@ -40,7 +40,7 @@ class GeniusLyrics extends HookConsumerWidget {
         if (isModal != true) ...[
           Center(
             child: Text(
-              playback.track?.name ?? "",
+              playlist?.activeTrack.name ?? "",
               style: breakpoint >= Breakpoints.md
                   ? textTheme.headline3
                   : textTheme.headline4?.copyWith(
@@ -52,7 +52,7 @@ class GeniusLyrics extends HookConsumerWidget {
           Center(
             child: Text(
               TypeConversionUtils.artists_X_String<Artist>(
-                  playback.track?.artists ?? []),
+                  playlist?.activeTrack.artists ?? []),
               style: (breakpoint >= Breakpoints.md
                       ? textTheme.headline5
                       : textTheme.headline6)
@@ -72,7 +72,7 @@ class GeniusLyrics extends HookConsumerWidget {
                       return const ShimmerLyrics();
                     } else if (geniusLyricsQuery.hasError) {
                       return Text(
-                        "Sorry, no Lyrics were found for `${playback.track?.name}` :'(\n${geniusLyricsQuery.error.toString()}",
+                        "Sorry, no Lyrics were found for `${playlist?.activeTrack.name}` :'(\n${geniusLyricsQuery.error.toString()}",
                         style: textTheme.bodyText1?.copyWith(
                           color: palette.bodyTextColor,
                         ),
@@ -82,12 +82,11 @@ class GeniusLyrics extends HookConsumerWidget {
                     final lyrics = geniusLyricsQuery.data;
 
                     return Text(
-                      lyrics == null && playback.track == null
+                      lyrics == null && playlist?.activeTrack == null
                           ? "No Track being played currently"
                           : lyrics ?? "",
-                      style: textTheme.headline6?.copyWith(
-                        color: palette.bodyTextColor,
-                      ),
+                      style:
+                          TextStyle(color: palette.bodyTextColor, fontSize: 18),
                     );
                   },
                 ),

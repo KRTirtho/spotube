@@ -6,12 +6,11 @@ import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/service_utils.dart';
@@ -23,7 +22,7 @@ class PlaylistView extends HookConsumerWidget {
   PlaylistView(this.playlist, {Key? key}) : super(key: key);
 
   Future<void> playPlaylist(
-    Playback playback,
+    PlaylistQueueNotifier playlistNotifier,
     List<Track> tracks,
     WidgetRef ref, {
     Track? currentTrack,
@@ -31,34 +30,27 @@ class PlaylistView extends HookConsumerWidget {
     final sortBy = ref.read(trackCollectionSortState(playlist.id!));
     final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
     currentTrack ??= sortedTracks.first;
-    final isPlaylistPlaying =
-        playback.playlist?.id != null && playback.playlist?.id == playlist.id;
+    final isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks);
     if (!isPlaylistPlaying) {
-      await playback.playPlaylist(
-        CurrentPlaylist(
-          tracks: sortedTracks,
-          id: playlist.id!,
-          name: playlist.name!,
-          thumbnail: TypeConversionUtils.image_X_UrlString(
-            playlist.images,
-            placeholder: ImagePlaceholder.collection,
-          ),
-        ),
-        sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
+      await playlistNotifier.loadAndPlay(
+        sortedTracks,
+        active: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
       );
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
-        currentTrack.id != playback.track?.id) {
-      await playback.play(currentTrack);
+        currentTrack.id != playlistNotifier.state?.activeTrack.id) {
+      await playlistNotifier.loadAndPlay(
+        sortedTracks,
+        active: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context, ref) {
-    Playback playback = ref.watch(playbackProvider);
+    final playlistQueue = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     SpotifyApi spotify = ref.watch(spotifyProvider);
-    final isPlaylistPlaying =
-        playback.playlist?.id != null && playback.playlist?.id == playlist.id;
 
     final breakpoint = useBreakpoints();
 
@@ -67,6 +59,9 @@ class PlaylistView extends HookConsumerWidget {
       job: Queries.playlist.tracksOf(playlist.id!),
       externalData: spotify,
     );
+
+    final isPlaylistPlaying =
+        playlistNotifier.isPlayingPlaylist(tracksSnapshot.data ?? []);
 
     final titleImage = useMemoized(
         () => TypeConversionUtils.image_X_UrlString(
@@ -88,20 +83,20 @@ class PlaylistView extends HookConsumerWidget {
         if (tracksSnapshot.hasData) {
           if (!isPlaylistPlaying) {
             playPlaylist(
-              playback,
+              playlistNotifier,
               tracksSnapshot.data!,
               ref,
               currentTrack: track,
             );
           } else if (isPlaylistPlaying && track != null) {
             playPlaylist(
-              playback,
+              playlistNotifier,
               tracksSnapshot.data!,
               ref,
               currentTrack: track,
             );
           } else {
-            playback.stop();
+            playlistNotifier.stop();
           }
         }
       },
@@ -132,20 +127,20 @@ class PlaylistView extends HookConsumerWidget {
         if (tracksSnapshot.hasData) {
           if (!isPlaylistPlaying) {
             playPlaylist(
-              playback,
+              playlistNotifier,
               tracks,
               ref,
               currentTrack: track,
             );
           } else if (isPlaylistPlaying && track != null) {
             playPlaylist(
-              playback,
+              playlistNotifier,
               tracks,
               ref,
               currentTrack: track,
             );
           } else {
-            playback.stop();
+            playlistNotifier.stop();
           }
         }
       },

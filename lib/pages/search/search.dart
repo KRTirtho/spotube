@@ -15,10 +15,9 @@ import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/provider/auth_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/platform.dart';
@@ -107,7 +106,10 @@ class SearchPage extends HookConsumerWidget {
                   ),
                   HookBuilder(
                     builder: (context) {
-                      Playback playback = ref.watch(playbackProvider);
+                      final playlist =
+                          ref.watch(PlaylistQueueNotifier.provider);
+                      final playlistNotifier =
+                          ref.watch(PlaylistQueueNotifier.notifier);
                       List<AlbumSimple> albums = [];
                       List<Artist> artists = [];
                       List<Track> tracks = [];
@@ -154,36 +156,19 @@ class SearchPage extends HookConsumerWidget {
                                     String duration =
                                         "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
                                     return TrackTile(
-                                      playback,
+                                      playlist,
                                       track: track,
                                       duration: duration,
-                                      isActive:
-                                          playback.track?.id == track.value.id,
+                                      isActive: playlist?.activeTrack.id ==
+                                          track.value.id,
                                       onTrackPlayButtonPressed:
                                           (currentTrack) async {
-                                        var isPlaylistPlaying =
-                                            playback.playlist?.id != null &&
-                                                playback.playlist?.id ==
-                                                    currentTrack.id;
-                                        if (!isPlaylistPlaying) {
-                                          playback.playPlaylist(
-                                            CurrentPlaylist(
-                                              tracks: [currentTrack],
-                                              id: currentTrack.id!,
-                                              name: currentTrack.name!,
-                                              thumbnail: TypeConversionUtils
-                                                  .image_X_UrlString(
-                                                currentTrack.album?.images,
-                                                placeholder:
-                                                    ImagePlaceholder.albumArt,
-                                              ),
-                                            ),
-                                          );
-                                        } else if (isPlaylistPlaying &&
-                                            currentTrack.id != null &&
-                                            currentTrack.id !=
-                                                playback.track?.id) {
-                                          playback.play(currentTrack);
+                                        final isTrackPlaying =
+                                            playlist?.activeTrack.id !=
+                                                currentTrack.id;
+                                        if (!isTrackPlaying) {
+                                          await playlistNotifier
+                                              .loadAndPlay([currentTrack]);
                                         }
                                       },
                                     );

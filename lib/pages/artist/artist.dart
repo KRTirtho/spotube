@@ -15,12 +15,11 @@ import 'package:spotube/components/artist/artist_album_list.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
@@ -54,7 +53,8 @@ class ArtistPage extends HookConsumerWidget {
 
     final breakpoint = useBreakpoints();
 
-    final Playback playback = ref.watch(playbackProvider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
 
     final auth = ref.watch(authProvider);
 
@@ -296,28 +296,22 @@ class ArtistPage extends HookConsumerWidget {
 
                       final topTracks = topTracksQuery.data!;
 
-                      final isPlaylistPlaying =
-                          playback.playlist?.id == data.id;
+                      final isPlaylistPlaying = useMemoized(() {
+                        return playlistNotifier.isPlayingPlaylist(topTracks);
+                      }, [topTracks]);
                       playPlaylist(List<Track> tracks,
                           {Track? currentTrack}) async {
                         currentTrack ??= tracks.first;
                         if (!isPlaylistPlaying) {
-                          await playback.playPlaylist(
-                            CurrentPlaylist(
-                              tracks: tracks,
-                              id: data.id!,
-                              name: "${data.name!} To Tracks",
-                              thumbnail: TypeConversionUtils.image_X_UrlString(
-                                data.images,
-                                placeholder: ImagePlaceholder.artist,
-                              ),
-                            ),
-                            tracks.indexWhere((s) => s.id == currentTrack?.id),
-                          );
+                          playlistNotifier.loadAndPlay(tracks,
+                              active: tracks
+                                  .indexWhere((s) => s.id == currentTrack?.id));
                         } else if (isPlaylistPlaying &&
                             currentTrack.id != null &&
-                            currentTrack.id != playback.track?.id) {
-                          await playback.play(currentTrack);
+                            currentTrack.id != playlist?.activeTrack.id) {
+                          await playlistNotifier.playAt(
+                            tracks.indexWhere((s) => s.id == currentTrack?.id),
+                          );
                         }
                       }
 
@@ -352,10 +346,11 @@ class ArtistPage extends HookConsumerWidget {
                           String duration =
                               "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
                           return TrackTile(
-                            playback,
+                            playlist,
                             duration: duration,
                             track: track,
-                            isActive: playback.track?.id == track.value.id,
+                            isActive:
+                                playlist?.activeTrack.id == track.value.id,
                             onTrackPlayButtonPressed: (currentTrack) =>
                                 playPlaylist(
                               topTracks.toList(),

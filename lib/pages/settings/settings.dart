@@ -14,7 +14,6 @@ import 'package:spotube/main.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/auth_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';

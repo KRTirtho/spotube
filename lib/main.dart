@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
@@ -20,10 +19,8 @@ import 'package:spotube/collections/intents.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/audio_player_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
-import 'package:spotube/services/mobile_audio_service.dart';
 import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/themes/dark_theme.dart';
 import 'package:spotube/themes/light_theme.dart';
@@ -39,7 +36,7 @@ void main() async {
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
   await Env.configure();
-  await initializePocketBase();
+
   if (kIsDesktop) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
@@ -65,7 +62,6 @@ void main() async {
       await windowManager.show();
     });
   }
-  MobileAudioService? audioServiceHandler;
 
   Catcher(
     debugConfig: CatcherOptions(
@@ -98,36 +94,6 @@ void main() async {
           builder: (context) {
             return ProviderScope(
               overrides: [
-                playbackProvider.overrideWith(
-                  (ref) {
-                    final youtube = ref.watch(youtubeProvider);
-                    final player = ref.watch(audioPlayerProvider);
-
-                    final playback = Playback(
-                      player: player,
-                      youtube: youtube,
-                      ref: ref,
-                    );
-
-                    if (audioServiceHandler == null) {
-                      AudioService.init(
-                        builder: () => MobileAudioService(playback),
-                        config: const AudioServiceConfig(
-                          androidNotificationChannelId: 'com.krtirtho.Spotube',
-                          androidNotificationChannelName: 'Spotube',
-                          androidNotificationOngoing: true,
-                        ),
-                      ).then(
-                        (value) {
-                          playback.mobileAudioService = value;
-                          audioServiceHandler = value;
-                        },
-                      );
-                    }
-
-                    return playback;
-                  },
-                ),
                 downloaderProvider.overrideWith(
                   (ref) {
                     return Downloader(
@@ -169,6 +135,7 @@ void main() async {
       );
     },
   );
+  await initializePocketBase();
 }
 
 class Spotube extends StatefulHookConsumerWidget {

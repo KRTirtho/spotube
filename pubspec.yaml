@@ -12,6 +12,7 @@ environment:
 
 dependencies:
   adwaita: ^0.5.2
+  async: ^2.9.0
   audio_service: ^0.18.9
   audio_session: ^0.1.13
   audioplayers: ^3.0.1
@@ -31,6 +32,7 @@ dependencies:
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
+  flutter_cache_manager: ^3.3.0
   flutter_dotenv: ^5.0.2
   flutter_feather_icons: ^2.0.0+1
   flutter_hooks: ^0.18.2+1

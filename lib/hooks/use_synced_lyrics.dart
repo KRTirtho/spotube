@@ -1,16 +1,13 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 
 int useSyncedLyrics(
   WidgetRef ref,
   Map<int, String> lyricsMap,
   Duration delay,
 ) {
-  final player = ref.watch(playbackProvider.select(
-    (value) => (value.player),
-  ));
-  final stream = player.onPositionChanged;
+  final stream = PlaylistQueueNotifier.position;
 
   final currentTime = useState(0);
 

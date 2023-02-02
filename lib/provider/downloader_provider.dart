@@ -12,7 +12,6 @@ import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart
 
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -41,7 +40,7 @@ class Downloader with ChangeNotifier {
 
   final logger = getLogger(Downloader);
 
-  Playback get _playback => ref.read(playbackProvider);
+  // Playback get _playback => ref.read(playbackProvider);
 
   void addToQueue(Track baseTrack) async {
     if (kIsWeb) return;
@@ -51,13 +50,13 @@ class Downloader with ChangeNotifier {
     notifyListeners();
 
     // Using android Audio Focus to keep the app run in background
-    _playback.mobileAudioService?.session?.setActive(true);
+    // _playback.mobileAudioService?.session?.setActive(true);
     grabberQueue.add(() async {
-      final track = (await ref.read(playbackProvider).toSpotubeTrack(
-                baseTrack,
-                noSponsorBlock: true,
-              ))
-          .item1;
+      final track = await SpotubeTrack.fromFetchTrack(
+        baseTrack,
+        ref.read(userPreferencesProvider),
+      );
+
       _queue.add(() async {
         final cleanTitle = track.ytTrack.title.replaceAll(
           RegExp(r'[/\\?%*:|"<>]'),
@@ -140,9 +139,9 @@ class Downloader with ChangeNotifier {
         } finally {
           currentlyRunning--;
           inQueue.removeWhere((t) => t.id == track.id);
-          if (currentlyRunning == 0 && !_playback.isPlaying) {
-            _playback.mobileAudioService?.session?.setActive(false);
-          }
+          // if (currentlyRunning == 0 && !PlaylistProvider.isPlaying) {
+          // _playback.mobileAudioService?.session?.setActive(false);
+          // }
           notifyListeners();
         }
       });

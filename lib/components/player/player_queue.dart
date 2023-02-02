@@ -8,7 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerQueue extends HookConsumerWidget {
@@ -20,9 +20,10 @@ class PlayerQueue extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playback = ref.watch(playbackProvider);
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final controller = useAutoScrollController();
-    final tracks = playback.playlist?.tracks ?? [];
+    final tracks = playlist?.tracks ?? {};
 
     if (tracks.isEmpty) {
       return const NotFound(vertical: true);
@@ -38,9 +39,8 @@ class PlayerQueue extends HookConsumerWidget {
         PlatformTheme.of(context).textTheme?.subheading?.color;
 
     useEffect(() {
-      if (playback.track == null || playback.playlist == null) return null;
-      final index = playback.playlist!.tracks
-          .indexWhere((track) => track.id == playback.track!.id);
+      if (playlist == null) return null;
+      final index = playlist.active;
       if (index < 0) return;
       controller.scrollToIndex(
         index,
@@ -77,14 +77,6 @@ class PlayerQueue extends HookConsumerWidget {
               ),
             ),
             PlatformText.subheading("Queue"),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: PlatformText(
-                playback.playlist?.name ?? "",
-                overflow: TextOverflow.ellipsis,
-                style: PlatformTextTheme.of(context).body,
-              ),
-            ),
             const SizedBox(height: 10),
             Flexible(
               child: ListView.builder(
@@ -92,7 +84,7 @@ class PlayerQueue extends HookConsumerWidget {
                   itemCount: tracks.length,
                   shrinkWrap: true,
                   itemBuilder: (context, i) {
-                    final track = tracks.asMap().entries.elementAt(i);
+                    final track = tracks.toList().asMap().entries.elementAt(i);
                     String duration =
                         "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
                     return AutoScrollTag(
@@ -102,13 +94,15 @@ class PlayerQueue extends HookConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TrackTile(
-                          playback,
+                          playlist,
                           track: track,
                           duration: duration,
-                          isActive: playback.track?.id == track.value.id,
+                          isActive: playlist?.activeTrack.id == track.value.id,
                           onTrackPlayButtonPressed: (currentTrack) async {
-                            if (playback.track?.id == track.value.id) return;
-                            await playback.setPlaylistPosition(i);
+                            if (playlist?.activeTrack.id == track.value.id) {
+                              return;
+                            }
+                            await playlistNotifier.playAt(i);
                           },
                         ),
                       ),

@@ -13,8 +13,8 @@ import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_platform_property.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -24,21 +24,21 @@ class BottomPlayer extends HookConsumerWidget {
   final logger = getLogger(BottomPlayer);
   @override
   Widget build(BuildContext context, ref) {
-    Playback playback = ref.watch(playbackProvider);
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
     final breakpoint = useBreakpoints();
 
     String albumArt = useMemoized(
-      () => playback.track?.album?.images?.isNotEmpty == true
+      () => playlist?.activeTrack.album?.images?.isNotEmpty == true
           ? TypeConversionUtils.image_X_UrlString(
-              playback.track?.album?.images,
-              index: (playback.track?.album?.images?.length ?? 1) - 1,
+              playlist?.activeTrack.album?.images,
+              index: (playlist?.activeTrack.album?.images?.length ?? 1) - 1,
               placeholder: ImagePlaceholder.albumArt,
             )
           : Assets.albumPlaceholder.path,
-      [playback.track?.album?.images],
+      [playlist?.activeTrack.album?.images],
     );
 
     // returning an empty non spacious Container as the overlay will take
@@ -117,23 +117,26 @@ class BottomPlayer extends HookConsumerWidget {
                     height: 20,
                     constraints: const BoxConstraints(maxWidth: 200),
                     child: HookBuilder(builder: (context) {
-                      final volume = useState(playback.volume);
+                      final volumeState = ref.watch(VolumeProvider.provider);
+                      final volumeNotifier =
+                          ref.watch(VolumeProvider.provider.notifier);
+                      final volume = useState(volumeState);
 
                       useEffect(() {
-                        if (volume.value != playback.volume) {
-                          volume.value = playback.volume;
+                        if (volume.value != volumeState) {
+                          volumeNotifier.setVolume(volume.value);
                         }
                         return null;
-                      }, [playback.volume]);
+                      }, [volumeState]);
                       return Listener(
                         onPointerSignal: (event) async {
                           if (event is PointerScrollEvent) {
                             if (event.scrollDelta.dy > 0) {
                               final value = volume.value - .2;
-                              playback.setVolume(value < 0 ? 0 : value);
+                              volumeNotifier.setVolume(value < 0 ? 0 : value);
                             } else {
                               final value = volume.value + .2;
-                              playback.setVolume(value > 1 ? 1 : value);
+                              volumeNotifier.setVolume(value > 1 ? 1 : value);
                             }
                           }
                         },
@@ -147,8 +150,8 @@ class BottomPlayer extends HookConsumerWidget {
                           onChangeEnd: (value) async {
                             // You don't really need to know why but this
                             // way it works only
-                            await playback.setVolume(value);
-                            await playback.setVolume(value);
+                            await volumeNotifier.setVolume(value);
+                            await volumeNotifier.setVolume(value);
                           },
                         ),
                       );

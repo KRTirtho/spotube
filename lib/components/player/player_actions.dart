@@ -5,14 +5,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/shared/heart_button.dart';
+import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerActions extends HookConsumerWidget {
@@ -29,26 +29,26 @@ class PlayerActions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final Playback playback = ref.watch(playbackProvider);
-    final isLocalTrack = playback.playlist?.isLocal == true;
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final isLocalTrack = playlist?.activeTrack is LocalTrack;
     final downloader = ref.watch(downloaderProvider);
-    final isInQueue =
-        downloader.inQueue.any((element) => element.id == playback.track?.id);
-    final localTracks = ref.watch(localTracksProvider).value;
+    final isInQueue = downloader.inQueue
+        .any((element) => element.id == playlist?.activeTrack.id);
+    final localTracks = [] /* ref.watch(localTracksProvider).value */;
     final auth = ref.watch(authProvider);
 
     final isDownloaded = useMemoized(() {
-      return localTracks?.any(
+      return localTracks.any(
             (element) =>
-                element.name == playback.track?.name &&
-                element.album?.name == playback.track?.album?.name &&
+                element.name == playlist?.activeTrack.name &&
+                element.album?.name == playlist?.activeTrack.album?.name &&
                 TypeConversionUtils.artists_X_String<Artist>(
                         element.artists ?? []) ==
                     TypeConversionUtils.artists_X_String<Artist>(
-                        playback.track?.artists ?? []),
+                        playlist?.activeTrack.artists ?? []),
           ) ==
           true;
-    }, [localTracks, playback.track]);
+    }, [localTracks, playlist?.activeTrack]);
 
     return Row(
       mainAxisAlignment: mainAxisAlignment,
@@ -56,7 +56,7 @@ class PlayerActions extends HookConsumerWidget {
         PlatformIconButton(
           icon: const Icon(SpotubeIcons.queue),
           tooltip: 'Queue',
-          onPressed: playback.playlist != null
+          onPressed: playlist != null
               ? () {
                   showModalBottomSheet(
                     context: context,
@@ -82,7 +82,7 @@ class PlayerActions extends HookConsumerWidget {
           PlatformIconButton(
             icon: const Icon(SpotubeIcons.alternativeRoute),
             tooltip: "Alternative Track Sources",
-            onPressed: playback.track != null
+            onPressed: playlist?.activeTrack != null
                 ? () {
                     showModalBottomSheet(
                       context: context,
@@ -119,12 +119,12 @@ class PlayerActions extends HookConsumerWidget {
               icon: Icon(
                 isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
               ),
-              onPressed: playback.track != null
-                  ? () => downloader.addToQueue(playback.track!)
+              onPressed: playlist?.activeTrack != null
+                  ? () => downloader.addToQueue(playlist!.activeTrack)
                   : null,
             ),
-        if (playback.track != null && !isLocalTrack && auth.isLoggedIn)
-          TrackHeartButton(track: playback.track!),
+        if (playlist?.activeTrack != null && !isLocalTrack && auth.isLoggedIn)
+          TrackHeartButton(track: playlist!.activeTrack),
         ...(extraActions ?? [])
       ],
     );

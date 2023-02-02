@@ -1,15 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_track_details.dart';
-import 'package:spotube/hooks/playback_hooks.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/collections/intents.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class PlayerOverlay extends HookConsumerWidget {
@@ -24,16 +24,10 @@ class PlayerOverlay extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final paletteColor = usePaletteColor(albumArt, ref);
     final canShow = ref.watch(
-      playbackProvider.select(
-        (s) =>
-            s.track != null ||
-            s.isPlaying ||
-            s.status == PlaybackStatus.loading,
-      ),
+      PlaylistQueueNotifier.provider.select((s) => s != null),
     );
-
-    final onNext = useNextTrack(ref);
-    final onPrevious = usePreviousTrack(ref);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playing = useStream(PlaylistQueueNotifier.playing).data ?? false;
 
     return GestureDetector(
       onVerticalDragEnd: (details) {
@@ -83,18 +77,17 @@ class PlayerOverlay extends HookConsumerWidget {
                     Row(
                       children: [
                         IconButton(
-                            icon: Icon(
-                              SpotubeIcons.skipBack,
-                              color: paletteColor.bodyTextColor,
-                            ),
-                            onPressed: () {
-                              onPrevious();
-                            }),
+                          icon: Icon(
+                            SpotubeIcons.skipBack,
+                            color: paletteColor.bodyTextColor,
+                          ),
+                          onPressed: playlistNotifier.previous,
+                        ),
                         Consumer(
                           builder: (context, ref, _) {
                             return IconButton(
                               icon: Icon(
-                                ref.read(playbackProvider).isPlaying
+                                playing
                                     ? SpotubeIcons.pause
                                     : SpotubeIcons.play,
                                 color: paletteColor.bodyTextColor,
@@ -111,7 +104,7 @@ class PlayerOverlay extends HookConsumerWidget {
                             SpotubeIcons.skipForward,
                             color: paletteColor.bodyTextColor,
                           ),
-                          onPressed: () => onNext(),
+                          onPressed: playlistNotifier.next,
                         ),
                       ],
                     ),

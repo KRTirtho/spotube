@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
@@ -39,7 +40,7 @@ class BlacklistedElement {
 
 class BlackListNotifier
     extends PersistedStateNotifier<Set<BlacklistedElement>> {
-  BlackListNotifier() : super({});
+  BlackListNotifier() : super({}, "blacklist");
 
   static final provider =
       StateNotifierProvider<BlackListNotifier, Set<BlacklistedElement>>(
@@ -52,6 +53,20 @@ class BlackListNotifier
 
   void remove(BlacklistedElement element) {
     state = state.difference({element});
+  }
+
+  Iterable<TrackSimple> filter(Iterable<TrackSimple> tracks) {
+    return tracks.where(
+      (track) {
+        return !state
+                .contains(BlacklistedElement.track(track.id!, track.name!)) &&
+            !(track.artists ?? []).any(
+              (artist) => state.contains(
+                BlacklistedElement.artist(artist.id!, artist.name!),
+              ),
+            );
+      },
+    ).toList();
   }
 
   CurrentPlaylist filterPlaylist(CurrentPlaylist playlist) {

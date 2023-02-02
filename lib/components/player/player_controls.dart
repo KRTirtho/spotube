@@ -4,10 +4,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/hooks/playback_hooks.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
@@ -37,12 +36,9 @@ class PlayerControls extends HookConsumerWidget {
               SeekIntent: SeekAction(),
             },
         []);
-    final Playback playback = ref.watch(playbackProvider);
-
-    final onNext = useNextTrack(ref);
-    final onPrevious = usePreviousTrack(ref);
-
-    final duration = playback.currentDuration;
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playing = useStream(PlaylistQueueNotifier.playing).data ?? false;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -59,80 +55,90 @@ class PlayerControls extends HookConsumerWidget {
           constraints: const BoxConstraints(maxWidth: 600),
           child: Column(
             children: [
-              StreamBuilder<Duration>(
-                stream: playback.player.onPositionChanged,
-                builder: (context, snapshot) {
+              HookBuilder(
+                builder: (context) {
+                  final duration =
+                      useStream(PlaylistQueueNotifier.duration).data ??
+                          Duration.zero;
+                  final positionSnapshot =
+                      useStream(PlaylistQueueNotifier.position);
+                  final position = positionSnapshot.data ?? Duration.zero;
                   final totalMinutes = PrimitiveUtils.zeroPadNumStr(
                       duration.inMinutes.remainder(60));
                   final totalSeconds = PrimitiveUtils.zeroPadNumStr(
                       duration.inSeconds.remainder(60));
-                  final currentMinutes = snapshot.hasData
-                      ? PrimitiveUtils.zeroPadNumStr(
-                          snapshot.data!.inMinutes.remainder(60))
-                      : "00";
-                  final currentSeconds = snapshot.hasData
-                      ? PrimitiveUtils.zeroPadNumStr(
-                          snapshot.data!.inSeconds.remainder(60))
-                      : "00";
+                  final currentMinutes = PrimitiveUtils.zeroPadNumStr(
+                      position.inMinutes.remainder(60));
+                  final currentSeconds = PrimitiveUtils.zeroPadNumStr(
+                      position.inSeconds.remainder(60));
 
                   final sliderMax = duration.inSeconds;
-                  final sliderValue = snapshot.data?.inSeconds ?? 0;
+                  final sliderValue = position.inSeconds;
 
-                  return HookBuilder(
-                    builder: (context) {
-                      final progressStatic =
-                          (sliderMax == 0 || sliderValue > sliderMax)
-                              ? 0
-                              : sliderValue / sliderMax;
+                  final progressStatic =
+                      (sliderMax == 0 || sliderValue > sliderMax)
+                          ? 0
+                          : sliderValue / sliderMax;
 
-                      final progress = useState<num>(
-                        useMemoized(() => progressStatic, []),
-                      );
+                  final progress = useState<num>(
+                    useMemoized(() => progressStatic, []),
+                  );
 
-                      useEffect(() {
-                        progress.value = progressStatic;
-                        return null;
-                      }, [progressStatic]);
+                  useEffect(() {
+                    progress.value = progressStatic;
+                    return null;
+                  }, [progressStatic]);
 
-                      return Column(
-                        children: [
-                          PlatformTooltip(
-                            message: "Slide to seek forward or backward",
-                            child: PlatformSlider(
-                              // cannot divide by zero
-                              // there's an edge case for value being bigger
-                              // than total duration. Keeping it resolved
-                              value: progress.value.toDouble(),
-                              onChanged: (v) {
-                                progress.value = v;
-                              },
-                              onChangeEnd: (value) async {
-                                await playback.seekPosition(
-                                  Duration(
-                                    seconds: (value * sliderMax).toInt(),
-                                  ),
-                                );
-                              },
-                              activeColor: iconColor,
+                  useEffect(() {
+                    WidgetsBinding.instance.addPostFrameCallback((_) async {
+                      if (positionSnapshot.hasData &&
+                          duration == Duration.zero) {
+                        await Future.delayed(const Duration(milliseconds: 200));
+                        await playlistNotifier.pause();
+                        await Future.delayed(const Duration(milliseconds: 400));
+                        await playlistNotifier.resume();
+                      }
+                    });
+                    return null;
+                  }, [positionSnapshot.hasData, duration]);
+
+                  return Column(
+                    children: [
+                      PlatformTooltip(
+                        message: "Slide to seek forward or backward",
+                        child: PlatformSlider(
+                          // cannot divide by zero
+                          // there's an edge case for value being bigger
+                          // than total duration. Keeping it resolved
+                          value: progress.value.toDouble(),
+                          onChanged: (v) {
+                            progress.value = v;
+                          },
+                          onChangeEnd: (value) async {
+                            await playlistNotifier.seek(
+                              Duration(
+                                seconds: (value * sliderMax).toInt(),
+                              ),
+                            );
+                          },
+                          activeColor: iconColor,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            PlatformText(
+                              "$currentMinutes:$currentSeconds",
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                PlatformText(
-                                  "$currentMinutes:$currentSeconds",
-                                ),
-                                PlatformText("$totalMinutes:$totalSeconds"),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                            PlatformText("$totalMinutes:$totalSeconds"),
+                          ],
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
@@ -140,44 +146,43 @@ class PlayerControls extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   PlatformIconButton(
-                    tooltip: playback.isShuffled
+                    tooltip: playlistNotifier.isShuffled
                         ? "Unshuffle playlist"
                         : "Shuffle playlist",
                     icon: Icon(
                       SpotubeIcons.shuffle,
-                      color: playback.isShuffled
+                      color: playlistNotifier.isShuffled
                           ? PlatformTheme.of(context).primaryColor
                           : null,
                     ),
-                    onPressed: playback.playlist == null
+                    onPressed: playlist == null
                         ? null
                         : () {
-                            playback.setIsShuffled(!playback.isShuffled);
+                            if (playlistNotifier.isShuffled) {
+                              playlistNotifier.unshuffle();
+                            } else {
+                              playlistNotifier.shuffle();
+                            }
                           },
                   ),
                   PlatformIconButton(
-                      tooltip: "Previous track",
-                      icon: Icon(
-                        SpotubeIcons.skipBack,
-                        color: iconColor,
-                      ),
-                      onPressed: () {
-                        onPrevious();
-                      }),
+                    tooltip: "Previous track",
+                    icon: Icon(
+                      SpotubeIcons.skipBack,
+                      color: iconColor,
+                    ),
+                    onPressed: playlistNotifier.previous,
+                  ),
                   PlatformIconButton(
-                    tooltip: playback.isPlaying
-                        ? "Pause playback"
-                        : "Resume playback",
-                    icon: playback.status == PlaybackStatus.loading
+                    tooltip: playing ? "Pause playback" : "Resume playback",
+                    icon: playlist?.isLoading == true
                         ? const SizedBox(
                             height: 20,
                             width: 20,
                             child: PlatformCircularProgressIndicator(),
                           )
                         : Icon(
-                            playback.isPlaying
-                                ? SpotubeIcons.pause
-                                : SpotubeIcons.play,
+                            playing ? SpotubeIcons.pause : SpotubeIcons.play,
                             color: iconColor,
                           ),
                     onPressed: Actions.handler<PlayPauseIntent>(
@@ -191,7 +196,7 @@ class PlayerControls extends HookConsumerWidget {
                       SpotubeIcons.skipForward,
                       color: iconColor,
                     ),
-                    onPressed: () => onNext(),
+                    onPressed: playlistNotifier.next,
                   ),
                   PlatformIconButton(
                     tooltip: "Stop playback",
@@ -199,23 +204,23 @@ class PlayerControls extends HookConsumerWidget {
                       SpotubeIcons.stop,
                       color: iconColor,
                     ),
-                    onPressed: playback.track != null ? playback.stop : null,
+                    onPressed: playlist != null ? playlistNotifier.stop : null,
                   ),
-                  PlatformIconButton(
-                    tooltip:
-                        !playback.isLoop ? "Loop Track" : "Repeat playlist",
-                    icon: Icon(
-                      playback.isLoop
-                          ? SpotubeIcons.repeatOne
-                          : SpotubeIcons.repeat,
-                    ),
-                    onPressed:
-                        playback.track == null || playback.playlist == null
-                            ? null
-                            : () {
-                                playback.setIsLoop(!playback.isLoop);
-                              },
-                  ),
+                  // PlatformIconButton(
+                  //   tooltip:
+                  //       !playlist.isLoop ? "Loop Track" : "Repeat playlist",
+                  //   icon: Icon(
+                  //     playlist.isLoop
+                  //         ? SpotubeIcons.repeatOne
+                  //         : SpotubeIcons.repeat,
+                  //   ),
+                  //   onPressed:
+                  //       playlist.track == null || playlist.playlist == null
+                  //           ? null
+                  //           : () {
+                  //               playlist.setIsLoop(!playlist.isLoop);
+                  //             },
+                  // ),
                 ],
               ),
               const SizedBox(height: 5)

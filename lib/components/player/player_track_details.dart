@@ -4,7 +4,7 @@ import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
@@ -16,7 +16,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
-    final playback = ref.watch(playbackProvider);
+    final playback = ref.watch(PlaylistQueueNotifier.provider);
 
     return Row(
       children: [
@@ -38,7 +38,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
         if (breakpoint.isLessThanOrEqualTo(Breakpoints.md))
           Flexible(
             child: PlatformText(
-              playback.track?.name ?? "Not playing",
+              playback?.activeTrack.name ?? "Not playing",
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontWeight: FontWeight.bold, color: color),
             ),
@@ -51,12 +51,12 @@ class PlayerTrackDetails extends HookConsumerWidget {
             child: Column(
               children: [
                 PlatformText(
-                  playback.track?.name ?? "Not playing",
+                  playback?.activeTrack.name ?? "Not playing",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, color: color),
                 ),
                 TypeConversionUtils.artists_X_ClickableArtists(
-                  playback.track?.artists ?? [],
+                  playback?.activeTrack.artists ?? [],
                 )
               ],
             ),

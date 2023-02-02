@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/models/generated_secrets.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:spotube/utils/platform.dart';
@@ -17,6 +16,11 @@ enum LayoutMode {
   compact,
   extended,
   adaptive,
+}
+
+enum AudioQuality {
+  high,
+  low,
 }
 
 class UserPreferences extends PersistedChangeNotifier {

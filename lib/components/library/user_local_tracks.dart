@@ -21,9 +21,8 @@ import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/hooks/use_async_effect.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/models/current_playlist.dart';
-import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/models/local_track.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -58,7 +57,7 @@ enum SortBy {
   dateAdded,
 }
 
-final localTracksProvider = FutureProvider<List<Track>>((ref) async {
+final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
   try {
     if (kIsWeb) return [];
     final downloadLocation = ref.watch(
@@ -97,9 +96,8 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
 
             return {"metadata": metadata, "file": f, "art": imageFile.path};
           } on FfiException catch (e) {
-            if (e.message == "NoTag: reader does not contain an id3 tag") {
-              getLogger(FutureProvider<List<Track>>)
-                  .v("[Fetching metadata]", e.message);
+            if (e.message != "NoTag: reader does not contain an id3 tag") {
+              rethrow;
             }
             return {};
           } catch (e, stack) {
@@ -114,10 +112,13 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
 
     final tracks = filesWithMetadata
         .map(
-          (fileWithMetadata) => TypeConversionUtils.localTrack_X_Track(
-            fileWithMetadata["file"],
-            metadata: fileWithMetadata["metadata"],
-            art: fileWithMetadata["art"],
+          (fileWithMetadata) => LocalTrack.fromTrack(
+            track: TypeConversionUtils.localTrack_X_Track(
+              fileWithMetadata["file"],
+              metadata: fileWithMetadata["metadata"],
+              art: fileWithMetadata["art"],
+            ),
+            path: fileWithMetadata["file"].path,
           ),
         )
         .toList();
@@ -132,37 +133,36 @@ final localTracksProvider = FutureProvider<List<Track>>((ref) async {
 class UserLocalTracks extends HookConsumerWidget {
   const UserLocalTracks({Key? key}) : super(key: key);
 
-  void playLocalTracks(Playback playback, List<Track> tracks,
-      {Track? currentTrack}) async {
+  void playLocalTracks(
+    PlaylistQueueNotifier playback,
+    List<LocalTrack> tracks, {
+    LocalTrack? currentTrack,
+  }) async {
     currentTrack ??= tracks.first;
-    final isPlaylistPlaying = playback.playlist?.id == "local";
+    final isPlaylistPlaying = playback.isPlayingPlaylist(tracks);
     if (!isPlaylistPlaying) {
-      await playback.playPlaylist(
-        CurrentPlaylist(
-          tracks: tracks,
-          id: "local",
-          name: "Local Tracks",
-          thumbnail: TypeConversionUtils.image_X_UrlString(
-            null,
-            placeholder: ImagePlaceholder.collection,
-          ),
-          isLocal: true,
-        ),
-        tracks.indexWhere((s) => s.id == currentTrack?.id),
+      await playback.loadAndPlay(
+        tracks,
+        active: tracks.indexWhere((s) => s.id == currentTrack?.id),
       );
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
-        currentTrack.id != playback.track?.id) {
-      await playback.play(currentTrack);
+        currentTrack.id != playback.state?.activeTrack.id) {
+      await playback.playAt(
+        tracks.indexWhere((s) => s.id == currentTrack?.id),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
-    final playback = ref.watch(playbackProvider);
-    final isPlaylistPlaying = playback.playlist?.id == "local";
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final trackSnapshot = ref.watch(localTracksProvider);
+    final isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(
+      trackSnapshot.value ?? [],
+    );
     final isMounted = useIsMounted();
     final breakpoint = useBreakpoints();
 
@@ -198,9 +198,10 @@ class UserLocalTracks extends HookConsumerWidget {
                     ? () {
                         if (trackSnapshot.value?.isNotEmpty == true) {
                           if (!isPlaylistPlaying) {
-                            playLocalTracks(playback, trackSnapshot.value!);
+                            playLocalTracks(
+                                playlistNotifier, trackSnapshot.value!);
                           } else {
-                            playback.stop();
+                            playlistNotifier.stop();
                           }
                         }
                       }
@@ -267,17 +268,17 @@ class UserLocalTracks extends HookConsumerWidget {
                 itemBuilder: (context, index) {
                   final track = filteredTracks[index];
                   return TrackTile(
-                    playback,
+                    playlist,
                     duration:
                         "${track.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.duration?.inSeconds.remainder(60) ?? 0)}",
                     track: MapEntry(index, track),
-                    isActive: playback.track?.id == track.id,
+                    isActive: playlist?.activeTrack.id == track.id,
                     isChecked: false,
                     showCheck: false,
                     isLocal: true,
                     onTrackPlayButtonPressed: (currentTrack) {
                       return playLocalTracks(
-                        playback,
+                        playlistNotifier,
                         sortedTracks,
                         currentTrack: track,
                       );
