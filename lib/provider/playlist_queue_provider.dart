@@ -2,7 +2,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/spotube_track.dart';
@@ -81,6 +80,8 @@ class PlaylistQueue {
 
 class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   final Ref ref;
+  MobileAudioService? mobileService;
+  LinuxAudioService? linuxService;
 
   static final provider =
       StateNotifierProvider<PlaylistQueueNotifier, PlaylistQueue?>(
@@ -94,6 +95,19 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   void configure() async {
+    if (kIsMobile || kIsMacOS) {
+      mobileService = await AudioService.init(
+        builder: () => MobileAudioService(ref),
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'com.krtirtho.Spotube',
+          androidNotificationChannelName: 'Spotube',
+          androidNotificationOngoing: true,
+        ),
+      );
+    }
+    if (kIsLinux) {
+      linuxService = LinuxAudioService(ref);
+    }
     addListener((state) {
       linuxService?.player.updateProperties();
     });
@@ -137,9 +151,6 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   UserPreferences get preferences => ref.read(userPreferencesProvider);
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
-  LinuxAudioService? get linuxService => ref.read(linuxAudioServiceProvider);
-  Future<MobileAudioService?> get mobileService =>
-      ref.read(mobileAudioServiceProvider);
 
   bool get isLoaded => state != null;
   bool get isShuffled => _tempTracks.isNotEmpty;
@@ -205,14 +216,37 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     await play();
   }
 
+  Future<void> populateSibling() async {
+    if (!isLoaded || state!.isLoading) return;
+    final tracks = state!.tracks.toList();
+    final track = await (state!.activeTrack as SpotubeTrack).populatedCopy();
+    tracks[state!.active] = track;
+    state = state!.copyWith(tracks: Set.from(tracks));
+  }
+
   Future<void> play() async {
     if (!isLoaded) return;
-    pause();
-    (await mobileService)?.session?.setActive(true);
+    await pause();
+    await mobileService?.session?.setActive(true);
+    final mediaItem = MediaItem(
+      id: state!.activeTrack.id!,
+      title: state!.activeTrack.name!,
+      album: state!.activeTrack.album?.name,
+      artist: TypeConversionUtils.artists_X_String(
+          state!.activeTrack.artists ?? <ArtistSimple>[]),
+      artUri: Uri.parse(
+        TypeConversionUtils.image_X_UrlString(
+          state!.activeTrack.album?.images,
+          placeholder: ImagePlaceholder.online,
+        ),
+      ),
+      duration: state!.activeTrack.duration,
+    );
+    mobileService?.addItem(mediaItem);
     if (state!.activeTrack is LocalTrack) {
       await audioPlayer.play(
         DeviceFileSource((state!.activeTrack as LocalTrack).path),
-        mode: PlayerMode.lowLatency,
+        mode: PlayerMode.mediaPlayer,
       );
       return;
     }
@@ -224,47 +258,22 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       );
       state = state!.copyWith(tracks: Set.from(tracks));
     }
-    (await mobileService)?.addItem(
-      MediaItem(
-        id: state!.activeTrack.id!,
-        title: state!.activeTrack.name!,
-        album: state!.activeTrack.album?.name,
-        artist: TypeConversionUtils.artists_X_String(
-            state!.activeTrack.artists ?? <ArtistSimple>[]),
-        artUri: Uri.parse(
-          TypeConversionUtils.image_X_UrlString(
-            state!.activeTrack.album?.images,
-            placeholder: ImagePlaceholder.online,
-          ),
-        ),
-        duration: (state!.activeTrack as SpotubeTrack).ytTrack.duration,
-      ),
-    );
-    if (preferences.androidBytesPlay) {
-      final cached = await DefaultCacheManager()
-          .getFileFromCache(state!.activeTrack.id!)
-          .then(
-        (file) async {
-          if (file != null) return file.file;
-          final downloaded = await DefaultCacheManager()
-              .downloadFile((state!.activeTrack as SpotubeTrack).ytUri);
-          final cached = await DefaultCacheManager().putFile(
-            state!.activeTrack.id!,
-            await downloaded.file.readAsBytes(),
-            fileExtension: extension(downloaded.file.path).replaceAll('.', ''),
-          );
-          await DefaultCacheManager().removeFile(downloaded.originalUrl);
-          return cached;
-        },
-      );
+
+    mobileService?.addItem(mediaItem.copyWith(
+      duration: (state!.activeTrack as SpotubeTrack).ytTrack.duration,
+    ));
+
+    final cached =
+        await DefaultCacheManager().getFileFromCache(state!.activeTrack.id!);
+    if (preferences.androidBytesPlay && cached != null) {
       await audioPlayer.play(
-        DeviceFileSource(cached.path),
-        mode: PlayerMode.lowLatency,
+        DeviceFileSource(cached.file.path),
+        mode: PlayerMode.mediaPlayer,
       );
     } else {
       await audioPlayer.play(
         UrlSource((state!.activeTrack as SpotubeTrack).ytUri),
-        mode: PlayerMode.lowLatency,
+        mode: PlayerMode.mediaPlayer,
       );
     }
   }
@@ -299,7 +308,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   Future<void> stop() async {
-    (await mobileService)?.session?.setActive(false);
+    (mobileService)?.session?.setActive(false);
     state = null;
     _tempTracks = {};
     return audioPlayer.stop();
@@ -407,21 +416,3 @@ class VolumeProvider extends PersistedStateNotifier<double> {
     return {'volume': state};
   }
 }
-
-final linuxAudioServiceProvider = Provider<LinuxAudioService?>((ref) {
-  if (!kIsLinux) return null;
-  return LinuxAudioService(ref);
-});
-
-final mobileAudioServiceProvider =
-    Provider<Future<MobileAudioService?>>((ref) async {
-  if (!kIsMobile) return null;
-  return AudioService.init(
-    builder: () => MobileAudioService(ref),
-    config: const AudioServiceConfig(
-      androidNotificationChannelId: 'com.krtirtho.Spotube',
-      androidNotificationChannelName: 'Spotube',
-      androidNotificationOngoing: true,
-    ),
-  );
-});

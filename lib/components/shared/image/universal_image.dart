@@ -35,6 +35,8 @@ class UniversalImage extends HookWidget {
         cacheKey: path,
         scale: scale,
       );
+    } else if (path.startsWith("assets/")) {
+      return AssetImage(path);
     } else if (Uri.tryParse(path) != null) {
       return FileImage(File(path), scale: scale);
     }

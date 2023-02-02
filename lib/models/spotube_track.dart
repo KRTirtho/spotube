@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/video.dart';
 import 'package:spotube/extensions/album_simple.dart';
@@ -97,8 +101,8 @@ class SpotubeTrack extends Track {
       VideoSearchList videos = await PrimitiveUtils.raceMultiple(
         () => youtube.search.search("${artists.join(", ")} - $title"),
       );
-      siblings = videos.take(10).toList();
-      ytVideo = videos.where((video) => !video.isLive).first;
+      siblings = videos.where((video) => !video.isLive).take(10).toList();
+      ytVideo = siblings.first;
     }
 
     StreamManifest trackManifest = await PrimitiveUtils.raceMultiple(
@@ -130,6 +134,36 @@ class SpotubeTrack extends Track {
               votes: 0,
             ).toJson(),
           );
+    }
+
+    if (preferences.androidBytesPlay) {
+      await DefaultCacheManager().getFileFromCache(track.id!).then(
+        (file) async {
+          if (file != null) return file.file;
+          final List<int> bytesStore = [];
+          final bytesFuture = Completer<Uint8List>();
+
+          youtube.videos.streams.get(chosenStreamInfo).listen(
+            (data) {
+              bytesStore.addAll(data);
+            },
+            onDone: () {
+              bytesFuture.complete(Uint8List.fromList(bytesStore));
+            },
+            onError: (e) {
+              bytesFuture.completeError(e);
+            },
+          );
+
+          final cached = await DefaultCacheManager().putFile(
+            track.id!,
+            await bytesFuture.future,
+            fileExtension: chosenStreamInfo.codec.mimeType.split("/").last,
+          );
+
+          return cached;
+        },
+      );
     }
 
     return SpotubeTrack.fromTrack(
@@ -197,6 +231,37 @@ class SpotubeTrack extends Track {
         },
       );
     }
+
+    if (preferences.androidBytesPlay) {
+      await DefaultCacheManager().getFileFromCache(id!).then(
+        (file) async {
+          if (file != null) return file.file;
+          final List<int> bytesStore = [];
+          final bytesFuture = Completer<Uint8List>();
+
+          youtube.videos.streams.get(chosenStreamInfo).listen(
+            (data) {
+              bytesStore.addAll(data);
+            },
+            onDone: () {
+              bytesFuture.complete(Uint8List.fromList(bytesStore));
+            },
+            onError: (e) {
+              bytesFuture.completeError(e);
+            },
+          );
+
+          final cached = await DefaultCacheManager().putFile(
+            id!,
+            await bytesFuture.future,
+            fileExtension: chosenStreamInfo.codec.mimeType.split("/").last,
+          );
+
+          return cached;
+        },
+      );
+    }
+
     return SpotubeTrack.fromTrack(
       track: this,
       ytTrack: video,
@@ -221,6 +286,34 @@ class SpotubeTrack extends Track {
       siblings: List.castFrom<dynamic, Map<String, dynamic>>(map["siblings"])
           .map((sibling) => VideoToJson.fromJson(sibling))
           .toList(),
+    );
+  }
+
+  Future<SpotubeTrack> populatedCopy() async {
+    if (this.siblings.isNotEmpty) return this;
+    final artists = (this.artists ?? [])
+        .map((ar) => ar.name)
+        .toList()
+        .whereNotNull()
+        .toList();
+
+    final title = ServiceUtils.getTitle(
+      name!,
+      artists: artists,
+      onlyCleanArtist: true,
+    ).trim();
+    VideoSearchList videos = await PrimitiveUtils.raceMultiple(
+      () => youtube.search.search("${artists.join(", ")} - $title"),
+    );
+
+    final siblings = videos.where((video) => !video.isLive).take(10).toList();
+
+    return SpotubeTrack.fromTrack(
+      track: this,
+      ytTrack: ytTrack,
+      ytUri: ytUri,
+      skipSegments: skipSegments,
+      siblings: siblings,
     );
   }
 
