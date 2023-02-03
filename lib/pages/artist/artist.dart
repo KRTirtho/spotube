@@ -309,9 +309,7 @@ class ArtistPage extends HookConsumerWidget {
                         } else if (isPlaylistPlaying &&
                             currentTrack.id != null &&
                             currentTrack.id != playlist?.activeTrack.id) {
-                          await playlistNotifier.playAt(
-                            tracks.indexWhere((s) => s.id == currentTrack?.id),
-                          );
+                          await playlistNotifier.playTrack(currentTrack);
                         }
                       }
 

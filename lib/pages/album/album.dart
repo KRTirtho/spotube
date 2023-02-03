@@ -38,9 +38,7 @@ class AlbumPage extends HookConsumerWidget {
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
         currentTrack.id != playlist?.activeTrack.id) {
-      await playback.playAt(
-        sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
-      );
+      await playback.playTrack(currentTrack);
     }
   }
 

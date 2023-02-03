@@ -146,19 +146,19 @@ class PlayerControls extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   PlatformIconButton(
-                    tooltip: playlistNotifier.isShuffled
+                    tooltip: playlist?.isShuffled == true
                         ? "Unshuffle playlist"
                         : "Shuffle playlist",
                     icon: Icon(
                       SpotubeIcons.shuffle,
-                      color: playlistNotifier.isShuffled
+                      color: playlist?.isShuffled == true
                           ? PlatformTheme.of(context).primaryColor
                           : null,
                     ),
                     onPressed: playlist == null
                         ? null
                         : () {
-                            if (playlistNotifier.isShuffled) {
+                            if (playlist.isShuffled == true) {
                               playlistNotifier.unshuffle();
                             } else {
                               playlistNotifier.shuffle();
@@ -206,21 +206,28 @@ class PlayerControls extends HookConsumerWidget {
                     ),
                     onPressed: playlist != null ? playlistNotifier.stop : null,
                   ),
-                  // PlatformIconButton(
-                  //   tooltip:
-                  //       !playlist.isLoop ? "Loop Track" : "Repeat playlist",
-                  //   icon: Icon(
-                  //     playlist.isLoop
-                  //         ? SpotubeIcons.repeatOne
-                  //         : SpotubeIcons.repeat,
-                  //   ),
-                  //   onPressed:
-                  //       playlist.track == null || playlist.playlist == null
-                  //           ? null
-                  //           : () {
-                  //               playlist.setIsLoop(!playlist.isLoop);
-                  //             },
-                  // ),
+                  PlatformIconButton(
+                    tooltip: playlist?.isLooping != true
+                        ? "Loop Track"
+                        : "Repeat playlist",
+                    icon: Icon(
+                      playlist?.isLooping == true
+                          ? SpotubeIcons.repeatOne
+                          : SpotubeIcons.repeat,
+                      color: playlist?.isLooping == true
+                          ? PlatformTheme.of(context).primaryColor
+                          : null,
+                    ),
+                    onPressed: playlist == null || playlist.isLoading
+                        ? null
+                        : () {
+                            if (playlist.isLooping == true) {
+                              playlistNotifier.unloop();
+                            } else {
+                              playlistNotifier.loop();
+                            }
+                          },
+                  ),
                 ],
               ),
               const SizedBox(height: 5)

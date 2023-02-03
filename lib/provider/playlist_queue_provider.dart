@@ -21,6 +21,8 @@ final youtube = YoutubeExplode();
 
 class PlaylistQueue {
   final Set<Track> tracks;
+  final Set<Track> tempTracks;
+  final bool loop;
   final int active;
 
   Track get activeTrack => tracks.elementAt(active);
@@ -28,6 +30,7 @@ class PlaylistQueue {
   static Future<PlaylistQueue> fromJson(
       Map<String, dynamic> json, UserPreferences preferences) async {
     final List? tracks = json['tracks'];
+    final List? tempTracks = json['tempTracks'];
     return PlaylistQueue(
       Set.from(
         await Future.wait(
@@ -52,6 +55,28 @@ class PlaylistQueue {
         ),
       ),
       active: json['active'],
+      tempTracks: Set.from(
+        await Future.wait(
+          tempTracks?.mapIndexed(
+                (i, e) async {
+                  final jsonTrack =
+                      Map.castFrom<dynamic, dynamic, String, dynamic>(e);
+
+                  if (e["path"] != null) {
+                    return LocalTrack.fromJson(jsonTrack);
+                  } else if (i == json["active"] && !json.containsKey("path")) {
+                    return await SpotubeTrack.fromFetchTrack(
+                      Track.fromJson(jsonTrack),
+                      preferences,
+                    );
+                  } else {
+                    return Track.fromJson(jsonTrack);
+                  }
+                },
+              ) ??
+              [],
+        ),
+      ),
     );
   }
 
@@ -69,24 +94,43 @@ class PlaylistQueue {
         },
       ).toList(),
       'active': active,
+      'tempTracks': tempTracks.map(
+        (e) {
+          if (e is SpotubeTrack) {
+            return e.toJson();
+          } else if (e is LocalTrack) {
+            return e.toJson();
+          } else {
+            return e.toJson();
+          }
+        },
+      ).toList(),
     };
   }
 
   bool get isLoading =>
       activeTrack is LocalTrack ? false : activeTrack is! SpotubeTrack;
+  bool get isShuffled => tempTracks.isNotEmpty;
+  bool get isLooping => loop;
 
   PlaylistQueue(
     this.tracks, {
+    required this.tempTracks,
     this.active = 0,
-  });
+    this.loop = false,
+  }) : assert(active < tracks.length && active >= 0, "Invalid active index");
 
   PlaylistQueue copyWith({
     Set<Track>? tracks,
+    Set<Track>? tempTracks,
     int? active,
+    bool? loop,
   }) {
     return PlaylistQueue(
       tracks ?? this.tracks,
       active: active ?? this.active,
+      tempTracks: tempTracks ?? this.tempTracks,
+      loop: loop ?? this.loop,
     );
   }
 }
@@ -129,7 +173,15 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       linuxService?.player.updateProperties();
     });
 
-    audioPlayer.onPlayerComplete.listen((event) => next());
+    audioPlayer.onPlayerComplete.listen((event) async {
+      if (!isLoaded) return;
+      if (state!.isLooping) {
+        await audioPlayer.seek(Duration.zero);
+        await audioPlayer.resume();
+      } else {
+        await next();
+      }
+    });
 
     bool isPreSearching = false;
 
@@ -158,15 +210,12 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   // properties
 
-  Set<Track> _tempTracks = {};
-
   // getters
   UserPreferences get preferences => ref.read(userPreferencesProvider);
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
 
   bool get isLoaded => state != null;
-  bool get isShuffled => _tempTracks.isNotEmpty;
 
   // redirectors
   static bool get isPlaying => audioPlayer.state == PlayerState.playing;
@@ -199,12 +248,12 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   void shuffle() {
-    if (isShuffled || !isLoaded) return;
-    _tempTracks = state?.tracks ?? _tempTracks;
+    if (!isLoaded || state!.isShuffled) return;
     state = state?.copyWith(
+      tempTracks: state!.tracks,
       tracks: {
         state!.activeTrack,
-        ..._tempTracks.toList()
+        ...state!.tracks.toList()
           ..removeAt(state!.active)
           ..shuffle()
       },
@@ -213,12 +262,28 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   void unshuffle() {
-    if (!isShuffled || !isLoaded) return;
+    if (!isLoaded || !state!.isShuffled) return;
     state = state?.copyWith(
-      tracks: _tempTracks,
-      active: _tempTracks.toList().indexOf(state!.activeTrack),
+      tracks: state!.tempTracks,
+      active: state!.tempTracks
+          .toList()
+          .indexWhere((element) => element.id == state!.activeTrack.id),
+      tempTracks: {},
     );
-    _tempTracks = {};
+  }
+
+  void loop() {
+    if (!isLoaded || state!.isLooping) return;
+    state = state?.copyWith(
+      loop: true,
+    );
+  }
+
+  void unloop() {
+    if (!isLoaded || !state!.isLooping) return;
+    state = state?.copyWith(
+      loop: false,
+    );
   }
 
   Future<void> swapSibling(Video video) async {
@@ -274,7 +339,15 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
         state!.activeTrack,
         preferences,
       );
-      state = state!.copyWith(tracks: Set.from(tracks));
+      final tempTracks = state!.tempTracks
+          .map((e) =>
+              e.id == tracks[state!.active].id ? tracks[state!.active] : e)
+          .toList();
+
+      state = state!.copyWith(
+        tracks: Set.from(tracks),
+        tempTracks: Set.from(tempTracks),
+      );
     }
 
     mobileService?.addItem(mediaItem.copyWith(
@@ -296,18 +369,19 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     }
   }
 
-  Future<void> playAt(int index) async {
+  Future<void> playTrack(Track track) async {
     if (!isLoaded) return;
-    state = PlaylistQueue(
-      state!.tracks,
-      active: index,
-    );
+    final active =
+        state!.tracks.toList().indexWhere((element) => element.id == track.id);
+    if (active == -1) return;
+    state = state!.copyWith(active: active);
     return play();
   }
 
   void load(Iterable<Track> tracks, {int active = 0}) {
     state = PlaylistQueue(
       Set.from(blacklist.filter(tracks)),
+      tempTracks: {},
       active: active,
     );
   }
@@ -328,20 +402,18 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   Future<void> stop() async {
     (mobileService)?.session?.setActive(false);
     state = null;
-    _tempTracks = {};
+
     return audioPlayer.stop();
   }
 
   Future<void> next() async {
     if (!isLoaded) return;
     if (state!.active == state!.tracks.length - 1) {
-      state = PlaylistQueue(
-        state!.tracks,
+      state = state!.copyWith(
         active: 0,
       );
     } else {
-      state = PlaylistQueue(
-        state!.tracks,
+      state = state!.copyWith(
         active: state!.active + 1,
       );
     }
@@ -351,13 +423,11 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   Future<void> previous() async {
     if (!isLoaded) return;
     if (state!.active == 0) {
-      state = PlaylistQueue(
-        state!.tracks,
+      state = state!.copyWith(
         active: state!.tracks.length - 1,
       );
     } else {
-      state = PlaylistQueue(
-        state!.tracks,
+      state = state!.copyWith(
         active: state!.active - 1,
       );
     }
@@ -373,8 +443,8 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   // utility
   bool isPlayingPlaylist(Iterable<TrackSimple> playlist) {
     if (!isLoaded || playlist.isEmpty) return false;
-    if (isShuffled) {
-      final trackIds = _tempTracks.map((track) => track.id!);
+    if (state!.isShuffled) {
+      final trackIds = state!.tempTracks.map((track) => track.id!);
       return blacklist
           .filter(playlist)
           .every((track) => trackIds.contains(track.id!));

@@ -283,7 +283,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
   /// Gets value of property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> getShuffle() async {
     return DBusMethodSuccessResponse(
-        [DBusBoolean(playlistNotifier.isShuffled)]);
+        [DBusBoolean(playlist?.isShuffled ?? false)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Shuffle

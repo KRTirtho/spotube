@@ -39,10 +39,7 @@ class PlaylistView extends HookConsumerWidget {
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
         currentTrack.id != playlistNotifier.state?.activeTrack.id) {
-      await playlistNotifier.loadAndPlay(
-        sortedTracks,
-        active: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
-      );
+      await playlistNotifier.playTrack(currentTrack);
     }
   }
 

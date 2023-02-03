@@ -30,6 +30,7 @@ class PlayerActions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.provider.notifier);
     final isLocalTrack = playlist?.activeTrack is LocalTrack;
     final downloader = ref.watch(downloaderProvider);
     final isInQueue = downloader.inQueue

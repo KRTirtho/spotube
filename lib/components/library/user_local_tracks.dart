@@ -148,9 +148,7 @@ class UserLocalTracks extends HookConsumerWidget {
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
         currentTrack.id != playback.state?.activeTrack.id) {
-      await playback.playAt(
-        tracks.indexWhere((s) => s.id == currentTrack?.id),
-      );
+      await playback.playTrack(currentTrack);
     }
   }
 

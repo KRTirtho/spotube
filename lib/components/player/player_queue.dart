@@ -102,7 +102,7 @@ class PlayerQueue extends HookConsumerWidget {
                             if (playlist?.activeTrack.id == track.value.id) {
                               return;
                             }
-                            await playlistNotifier.playAt(i);
+                            await playlistNotifier.playTrack(currentTrack);
                           },
                         ),
                       ),
