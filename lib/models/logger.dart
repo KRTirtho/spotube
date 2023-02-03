@@ -7,6 +7,9 @@ import 'package:path/path.dart' as path;
 import 'package:spotube/utils/platform.dart';
 
 final _loggerFactory = SpotubeLogger();
+final logEnv = {
+  if (!kIsWeb) ...Platform.environment,
+};
 
 SpotubeLogger getLogger<T>(T owner) {
   _loggerFactory.owner = owner is String ? owner : owner.toString();
@@ -60,10 +63,9 @@ class SpotubeLogger extends Logger {
 class _SpotubeLogFilter extends DevelopmentFilter {
   @override
   bool shouldLog(LogEvent event) {
-    final env = kIsWeb ? {} : Platform.environment;
-    if ((env["DEBUG"] == "true" && event.level == Level.debug) ||
-        (env["VERBOSE"] == "true" && event.level == Level.verbose) ||
-        (env["ERROR"] == "true" && event.level == Level.error)) {
+    if ((logEnv["DEBUG"] == "true" && event.level == Level.debug) ||
+        (logEnv["VERBOSE"] == "true" && event.level == Level.verbose) ||
+        (logEnv["ERROR"] == "true" && event.level == Level.error)) {
       return true;
     }
     return super.shouldLog(event);

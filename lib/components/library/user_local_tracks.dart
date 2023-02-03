@@ -20,7 +20,6 @@ import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/hooks/use_async_effect.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -162,7 +161,6 @@ class UserLocalTracks extends HookConsumerWidget {
       trackSnapshot.value ?? [],
     );
     final isMounted = useIsMounted();
-    final breakpoint = useBreakpoints();
 
     final searchText = useState<String>("");
 
@@ -261,28 +259,34 @@ class UserLocalTracks extends HookConsumerWidget {
             }, [searchText.value, sortedTracks]);
 
             return Expanded(
-              child: ListView.builder(
-                itemCount: filteredTracks.length,
-                itemBuilder: (context, index) {
-                  final track = filteredTracks[index];
-                  return TrackTile(
-                    playlist,
-                    duration:
-                        "${track.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.duration?.inSeconds.remainder(60) ?? 0)}",
-                    track: MapEntry(index, track),
-                    isActive: playlist?.activeTrack.id == track.id,
-                    isChecked: false,
-                    showCheck: false,
-                    isLocal: true,
-                    onTrackPlayButtonPressed: (currentTrack) {
-                      return playLocalTracks(
-                        playlistNotifier,
-                        sortedTracks,
-                        currentTrack: track,
-                      );
-                    },
-                  );
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  ref.refresh(localTracksProvider);
                 },
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: filteredTracks.length,
+                  itemBuilder: (context, index) {
+                    final track = filteredTracks[index];
+                    return TrackTile(
+                      playlist,
+                      duration:
+                          "${track.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.duration?.inSeconds.remainder(60) ?? 0)}",
+                      track: MapEntry(index, track),
+                      isActive: playlist?.activeTrack.id == track.id,
+                      isChecked: false,
+                      showCheck: false,
+                      isLocal: true,
+                      onTrackPlayButtonPressed: (currentTrack) {
+                        return playLocalTracks(
+                          playlistNotifier,
+                          sortedTracks,
+                          currentTrack: track,
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             );
           },

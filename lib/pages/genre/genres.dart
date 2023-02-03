@@ -92,23 +92,29 @@ class GenrePage extends HookConsumerWidget {
         placeholder: "Filter categories or genres...",
       );
 
-      final list = Waypoint(
-        onTouchEdge: () async {
-          if (categoriesQuery.hasNextPage && isMounted()) {
-            await categoriesQuery.fetchNextPage();
-          }
+      final list = RefreshIndicator(
+        onRefresh: () async {
+          await categoriesQuery.refetchPages();
         },
-        controller: scrollController,
-        child: ListView.builder(
-          controller: scrollController,
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            if (searchText.value.isEmpty && index == categories.length - 1) {
-              return const ShimmerCategories();
+        child: Waypoint(
+          onTouchEdge: () async {
+            if (categoriesQuery.hasNextPage && isMounted()) {
+              await categoriesQuery.fetchNextPage();
             }
-            return CategoryCard(category);
           },
+          controller: scrollController,
+          child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: scrollController,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              if (searchText.value.isEmpty && index == categories.length - 1) {
+                return const ShimmerCategories();
+              }
+              return CategoryCard(category);
+            },
+          ),
         ),
       );
       return PlatformScaffold(

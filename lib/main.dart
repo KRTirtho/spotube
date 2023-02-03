@@ -39,11 +39,12 @@ void main(List<String> rawArgs) async {
     'verbose',
     abbr: 'v',
     help: 'Verbose mode',
+    defaultsTo: !kReleaseMode,
     callback: (verbose) {
       if (verbose) {
-        Platform.environment['VERBOSE'] = 'true';
-        Platform.environment['DEBUG'] = 'true';
-        Platform.environment['ERROR'] = 'true';
+        logEnv['VERBOSE'] = 'true';
+        logEnv['DEBUG'] = 'true';
+        logEnv['ERROR'] = 'true';
       }
     },
   );
@@ -102,7 +103,7 @@ void main(List<String> rawArgs) async {
   }
 
   Catcher(
-    enableLogger: arguments["verbose"] ?? !kReleaseMode,
+    enableLogger: arguments["verbose"],
     debugConfig: CatcherOptions(
       SilentReportMode(),
       [

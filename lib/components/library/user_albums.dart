@@ -62,33 +62,39 @@ class UserAlbums extends HookConsumerWidget {
       return const Center(child: ShimmerPlaybuttonCard(count: 7));
     }
 
-    return SingleChildScrollView(
-      child: Material(
-        type: MaterialType.transparency,
-        textStyle: PlatformTheme.of(context).textTheme!.body!,
-        color: PlatformTheme.of(context).scaffoldBackgroundColor,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              PlatformTextField(
-                onChanged: (value) => searchText.value = value,
-                prefixIcon: SpotubeIcons.filter,
-                placeholder: 'Filter Albums...',
-              ),
-              const SizedBox(height: 20),
-              Wrap(
-                spacing: spacing, // gap between adjacent chips
-                runSpacing: 20, // gap between lines
-                alignment: WrapAlignment.center,
-                children: albums
-                    .map((album) => AlbumCard(
-                          viewType: viewType,
-                          TypeConversionUtils.simpleAlbum_X_Album(album),
-                        ))
-                    .toList(),
-              ),
-            ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        await albumsQuery.refetch();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Material(
+          type: MaterialType.transparency,
+          textStyle: PlatformTheme.of(context).textTheme!.body!,
+          color: PlatformTheme.of(context).scaffoldBackgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                PlatformTextField(
+                  onChanged: (value) => searchText.value = value,
+                  prefixIcon: SpotubeIcons.filter,
+                  placeholder: 'Filter Albums...',
+                ),
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: spacing, // gap between adjacent chips
+                  runSpacing: 20, // gap between lines
+                  alignment: WrapAlignment.center,
+                  children: albums
+                      .map((album) => AlbumCard(
+                            viewType: viewType,
+                            TypeConversionUtils.simpleAlbum_X_Album(album),
+                          ))
+                      .toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

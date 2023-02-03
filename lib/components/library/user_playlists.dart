@@ -89,34 +89,38 @@ class UserPlaylists extends HookConsumerWidget {
               ))
           .toList(),
     ];
-    return SingleChildScrollView(
-      child: Material(
-        type: MaterialType.transparency,
-        textStyle: PlatformTheme.of(context).textTheme!.body!,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              PlatformTextField(
-                onChanged: (value) => searchText.value = value,
-                placeholder: "Filter your playlists...",
-                prefixIcon: SpotubeIcons.filter,
-              ),
-              const SizedBox(height: 20),
-              if (playlistsQuery.isLoading || !playlistsQuery.hasData)
-                const Center(child: ShimmerPlaybuttonCard(count: 7))
-              else
-                Center(
-                  child: Wrap(
-                    spacing: spacing, // gap between adjacent chips
-                    runSpacing: 20, // gap between lines
-                    alignment: breakpoint.isSm
-                        ? WrapAlignment.center
-                        : WrapAlignment.start,
-                    children: children,
-                  ),
+    return RefreshIndicator(
+      onRefresh: () => playlistsQuery.refetch(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Material(
+          type: MaterialType.transparency,
+          textStyle: PlatformTheme.of(context).textTheme!.body!,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                PlatformTextField(
+                  onChanged: (value) => searchText.value = value,
+                  placeholder: "Filter your playlists...",
+                  prefixIcon: SpotubeIcons.filter,
                 ),
-            ],
+                const SizedBox(height: 20),
+                if (playlistsQuery.isLoading || !playlistsQuery.hasData)
+                  const Center(child: ShimmerPlaybuttonCard(count: 7))
+                else
+                  Center(
+                    child: Wrap(
+                      spacing: spacing, // gap between adjacent chips
+                      runSpacing: 20, // gap between lines
+                      alignment: breakpoint.isSm
+                          ? WrapAlignment.center
+                          : WrapAlignment.start,
+                      children: children,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

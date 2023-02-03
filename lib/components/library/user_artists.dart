@@ -83,30 +83,36 @@ class UserArtists extends HookConsumerWidget {
                 ],
               ),
             )
-          : GridView.builder(
-              itemCount: filteredArtists.length,
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
-                mainAxisExtent: 250,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-              ),
-              padding: const EdgeInsets.all(10),
-              itemBuilder: (context, index) {
-                return HookBuilder(builder: (context) {
-                  if (index == artistQuery.pages.length - 1 && hasNextPage) {
-                    return Waypoint(
-                      controller: useScrollController(),
-                      isGrid: true,
-                      onTouchEdge: () {
-                        artistQuery.fetchNextPage();
-                      },
-                      child: ArtistCard(filteredArtists[index]),
-                    );
-                  }
-                  return ArtistCard(filteredArtists[index]);
-                });
+          : RefreshIndicator(
+              onRefresh: () async {
+                await artistQuery.refetchPages();
               },
+              child: GridView.builder(
+                itemCount: filteredArtists.length,
+                physics: const AlwaysScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  mainAxisExtent: 250,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                padding: const EdgeInsets.all(10),
+                itemBuilder: (context, index) {
+                  return HookBuilder(builder: (context) {
+                    if (index == artistQuery.pages.length - 1 && hasNextPage) {
+                      return Waypoint(
+                        controller: useScrollController(),
+                        isGrid: true,
+                        onTouchEdge: () {
+                          artistQuery.fetchNextPage();
+                        },
+                        child: ArtistCard(filteredArtists[index]),
+                      );
+                    }
+                    return ArtistCard(filteredArtists[index]);
+                  });
+                },
+              ),
             ),
     );
   }

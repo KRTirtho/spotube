@@ -208,142 +208,150 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                   ),
                 )
               : null,
-          body: CustomScrollView(
-            controller: controller,
-            slivers: [
-              SliverAppBar(
-                actions: [
-                  if (kIsMobile)
-                    CompactSearch(
-                      onChanged: (value) => searchText.value = value,
-                      placeholder: "Search tracks...",
-                      iconColor: color?.titleTextColor,
-                    ),
-                  if (collapsed.value) ...buttons,
-                ],
-                floating: false,
-                pinned: true,
-                expandedHeight: 400,
-                automaticallyImplyLeading: kIsMobile,
-                leading: kIsMobile
-                    ? PlatformBackButton(color: color?.titleTextColor)
-                    : null,
-                iconTheme: IconThemeData(color: color?.titleTextColor),
-                primary: true,
-                backgroundColor: color?.color,
-                title: collapsed.value
-                    ? PlatformText.headline(
-                        title,
-                        style: TextStyle(
-                          color: color?.titleTextColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )
-                    : null,
-                centerTitle: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          color?.color ?? Colors.transparent,
-                          Theme.of(context).canvasColor,
-                        ],
-                        begin: const FractionalOffset(0, 0),
-                        end: const FractionalOffset(0, 1),
-                        tileMode: TileMode.clamp,
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await tracksSnapshot.refetch();
+            },
+            child: CustomScrollView(
+              controller: controller,
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  actions: [
+                    if (kIsMobile)
+                      CompactSearch(
+                        onChanged: (value) => searchText.value = value,
+                        placeholder: "Search tracks...",
+                        iconColor: color?.titleTextColor,
                       ),
-                    ),
-                    child: Material(
-                      textStyle: PlatformTheme.of(context).textTheme!.body!,
-                      type: MaterialType.transparency,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
+                    if (collapsed.value) ...buttons,
+                  ],
+                  floating: false,
+                  pinned: true,
+                  expandedHeight: 400,
+                  automaticallyImplyLeading: kIsMobile,
+                  leading: kIsMobile
+                      ? PlatformBackButton(color: color?.titleTextColor)
+                      : null,
+                  iconTheme: IconThemeData(color: color?.titleTextColor),
+                  primary: true,
+                  backgroundColor: color?.color,
+                  title: collapsed.value
+                      ? PlatformText.headline(
+                          title,
+                          style: TextStyle(
+                            color: color?.titleTextColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      : null,
+                  centerTitle: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            color?.color ?? Colors.transparent,
+                            Theme.of(context).canvasColor,
+                          ],
+                          begin: const FractionalOffset(0, 0),
+                          end: const FractionalOffset(0, 1),
+                          tileMode: TileMode.clamp,
                         ),
-                        child: Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          alignment: WrapAlignment.center,
-                          runAlignment: WrapAlignment.center,
-                          children: [
-                            Container(
-                              constraints: const BoxConstraints(maxHeight: 200),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: UniversalImage(
-                                  path: titleImage,
-                                  placeholder: (context, url) {
-                                    return Assets.albumPlaceholder.image();
-                                  },
+                      ),
+                      child: Material(
+                        textStyle: PlatformTheme.of(context).textTheme!.body!,
+                        type: MaterialType.transparency,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ),
+                          child: Wrap(
+                            spacing: 20,
+                            runSpacing: 20,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.center,
+                            runAlignment: WrapAlignment.center,
+                            children: [
+                              Container(
+                                constraints:
+                                    const BoxConstraints(maxHeight: 200),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: UniversalImage(
+                                    path: titleImage,
+                                    placeholder: (context, url) {
+                                      return Assets.albumPlaceholder.image();
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                PlatformText.headline(
-                                  title,
-                                  style: TextStyle(
-                                    color: color?.titleTextColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                if (description != null)
-                                  PlatformText(
-                                    description!,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  PlatformText.headline(
+                                    title,
                                     style: TextStyle(
-                                      color: color?.bodyTextColor,
+                                      color: color?.titleTextColor,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.fade,
                                   ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: buttons,
-                                ),
-                              ],
-                            )
-                          ],
+                                  if (description != null)
+                                    PlatformText(
+                                      description!,
+                                      style: TextStyle(
+                                        color: color?.bodyTextColor,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.fade,
+                                    ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: buttons,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              HookBuilder(
-                builder: (context) {
-                  if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
-                    return const ShimmerTrackTile();
-                  } else if (tracksSnapshot.hasError &&
-                      tracksSnapshot.isError) {
-                    return SliverToBoxAdapter(
-                        child: PlatformText("Error ${tracksSnapshot.error}"));
-                  }
+                HookBuilder(
+                  builder: (context) {
+                    if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
+                      return const ShimmerTrackTile();
+                    } else if (tracksSnapshot.hasError &&
+                        tracksSnapshot.isError) {
+                      return SliverToBoxAdapter(
+                          child: PlatformText("Error ${tracksSnapshot.error}"));
+                    }
 
-                  return TracksTableView(
-                    List.from(
-                      (filteredTracks ?? []).map(
-                        (e) {
-                          if (e is Track) {
-                            return e;
-                          } else {
-                            return TypeConversionUtils.simpleTrack_X_Track(
-                                e, album!);
-                          }
-                        },
+                    return TracksTableView(
+                      List.from(
+                        (filteredTracks ?? []).map(
+                          (e) {
+                            if (e is Track) {
+                              return e;
+                            } else {
+                              return TypeConversionUtils.simpleTrack_X_Track(
+                                  e, album!);
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                    onTrackPlayButtonPressed: onPlay,
-                    playlistId: id,
-                    userPlaylist: isOwned,
-                  );
-                },
-              )
-            ],
+                      onTrackPlayButtonPressed: onPlay,
+                      playlistId: id,
+                      userPlaylist: isOwned,
+                    );
+                  },
+                )
+              ],
+            ),
           )),
     );
   }
