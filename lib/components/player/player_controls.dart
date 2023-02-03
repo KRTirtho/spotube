@@ -111,9 +111,11 @@ class PlayerControls extends HookConsumerWidget {
                           // there's an edge case for value being bigger
                           // than total duration. Keeping it resolved
                           value: progress.value.toDouble(),
-                          onChanged: (v) {
-                            progress.value = v;
-                          },
+                          onChanged: playlist?.isLoading == true
+                              ? null
+                              : (v) {
+                                  progress.value = v;
+                                },
                           onChangeEnd: (value) async {
                             await playlistNotifier.seek(
                               Duration(

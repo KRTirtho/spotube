@@ -33,7 +33,8 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final Auth auth = ref.watch(authProvider);
+    final auth = ref.watch(authProvider);
+    final spotify = ref.watch(spotifyProvider);
     final albumController = useScrollController();
     final playlistController = useScrollController();
     final artistController = useScrollController();
@@ -42,23 +43,27 @@ class SearchPage extends HookConsumerWidget {
     final getVariables = useCallback(
       () => Tuple2(
         ref.read(searchTermStateProvider),
-        ref.read(spotifyProvider),
+        spotify,
       ),
       [],
     );
 
     final searchTrack = useInfiniteQuery(
-        job: Queries.search.get(SearchType.track.key),
-        externalData: getVariables());
+      job: Queries.search.get(SearchType.track.key),
+      externalData: Tuple2("", spotify),
+    );
     final searchAlbum = useInfiniteQuery(
-        job: Queries.search.get(SearchType.album.key),
-        externalData: getVariables());
+      job: Queries.search.get(SearchType.album.key),
+      externalData: Tuple2("", spotify),
+    );
     final searchPlaylist = useInfiniteQuery(
-        job: Queries.search.get(SearchType.playlist.key),
-        externalData: getVariables());
+      job: Queries.search.get(SearchType.playlist.key),
+      externalData: Tuple2("", spotify),
+    );
     final searchArtist = useInfiniteQuery(
-        job: Queries.search.get(SearchType.artist.key),
-        externalData: getVariables());
+      job: Queries.search.get(SearchType.artist.key),
+      externalData: Tuple2("", spotify),
+    );
 
     void onSearch() {
       for (final query in [
@@ -68,9 +73,9 @@ class SearchPage extends HookConsumerWidget {
         searchArtist,
       ]) {
         query.enabled = false;
-        query.fetched = true;
+        query.fetched = false;
         query.setExternalData(getVariables());
-        query.refetch();
+        query.refetchPages();
       }
     }
 
@@ -150,7 +155,9 @@ class SearchPage extends HookConsumerWidget {
                                   const PlatformCircularProgressIndicator()
                                 else if (searchTrack.hasError)
                                   PlatformText(searchTrack
-                                      .error?[searchTrack.pageParams.last])
+                                          .error?[searchTrack.pageParams.last]
+                                          ?.toString() ??
+                                      "")
                                 else
                                   ...tracks.asMap().entries.map((track) {
                                     String duration =
@@ -233,8 +240,12 @@ class SearchPage extends HookConsumerWidget {
                                     !searchPlaylist.isFetchingNextPage)
                                   const PlatformCircularProgressIndicator(),
                                 if (searchPlaylist.hasError)
-                                  PlatformText(searchPlaylist
-                                      .error?[searchPlaylist.pageParams.last]),
+                                  PlatformText(
+                                    searchPlaylist.error?[
+                                                searchPlaylist.pageParams.last]
+                                            ?.toString() ??
+                                        "",
+                                  ),
                                 const SizedBox(height: 20),
                                 if (artists.isNotEmpty)
                                   PlatformText.headline("Artists"),
@@ -284,8 +295,12 @@ class SearchPage extends HookConsumerWidget {
                                     !searchArtist.isFetchingNextPage)
                                   const PlatformCircularProgressIndicator(),
                                 if (searchArtist.hasError)
-                                  PlatformText(searchArtist
-                                      .error?[searchArtist.pageParams.last]),
+                                  PlatformText(
+                                    searchArtist.error?[
+                                                searchArtist.pageParams.last]
+                                            ?.toString() ??
+                                        "",
+                                  ),
                                 const SizedBox(height: 20),
                                 if (albums.isNotEmpty)
                                   PlatformText.subheading("Albums"),
@@ -333,8 +348,12 @@ class SearchPage extends HookConsumerWidget {
                                     !searchAlbum.isFetchingNextPage)
                                   const PlatformCircularProgressIndicator(),
                                 if (searchAlbum.hasError)
-                                  PlatformText(searchAlbum
-                                      .error?[searchAlbum.pageParams.last]),
+                                  PlatformText(
+                                    searchAlbum
+                                            .error?[searchAlbum.pageParams.last]
+                                            ?.toString() ??
+                                        "",
+                                  ),
                               ],
                             ),
                           ),

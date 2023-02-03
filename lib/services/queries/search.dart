@@ -15,9 +15,9 @@ class SearchQueries {
             : lastParam + 10,
     getPreviousPageParam: (lastPage, lastParam) => lastParam - 10,
     task: (queryKey, pageParam, variables) {
+      if (variables.item1.trim().isEmpty) return [];
       final queryString = variables.item1;
       final spotify = variables.item2;
-      if (queryString.isEmpty) return [];
       final searchType = getVariable(queryKey);
       return spotify.search.get(
         queryString,
