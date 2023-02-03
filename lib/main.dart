@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/cache_keys.dart';
@@ -29,7 +32,42 @@ import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
 
 final bowl = QueryBowl();
-void main() async {
+void main(List<String> rawArgs) async {
+  final parser = ArgParser();
+
+  parser.addFlag(
+    'verbose',
+    abbr: 'v',
+    help: 'Verbose mode',
+    callback: (verbose) {
+      if (verbose) {
+        Platform.environment['VERBOSE'] = 'true';
+        Platform.environment['DEBUG'] = 'true';
+        Platform.environment['ERROR'] = 'true';
+      }
+    },
+  );
+  parser.addFlag(
+    "version",
+    help: "Print version and exit",
+    negatable: false,
+  );
+
+  parser.addFlag("help", abbr: "h", negatable: false);
+
+  final arguments = parser.parse(rawArgs);
+
+  if (arguments["help"] == true) {
+    print(parser.usage);
+    exit(0);
+  }
+
+  if (arguments["version"] == true) {
+    final package = await PackageInfo.fromPlatform();
+    print("Spotube v${package.version}");
+    exit(0);
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(CacheTrackAdapter());
@@ -64,6 +102,7 @@ void main() async {
   }
 
   Catcher(
+    enableLogger: arguments["verbose"] ?? !kReleaseMode,
     debugConfig: CatcherOptions(
       SilentReportMode(),
       [
@@ -86,7 +125,15 @@ void main() async {
       ],
     ),
     releaseConfig: CatcherOptions(SilentReportMode(), [
-      FileHandler(await getLogsPath(), printLogs: false),
+      if (arguments["verbose"] ?? false)
+        ConsoleHandler(
+          enableDeviceParameters: false,
+          enableApplicationParameters: false,
+        ),
+      FileHandler(
+        await getLogsPath(),
+        printLogs: false,
+      ),
     ]),
     runAppFunction: () {
       runApp(

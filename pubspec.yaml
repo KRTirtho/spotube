@@ -12,6 +12,7 @@ environment:
 
 dependencies:
   adwaita: ^0.5.2
+  args: ^2.3.2
   async: ^2.9.0
   audio_service: ^0.18.9
   audio_session: ^0.1.13
