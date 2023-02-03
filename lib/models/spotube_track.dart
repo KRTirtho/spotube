@@ -136,7 +136,8 @@ class SpotubeTrack extends Track {
           );
     }
 
-    if (preferences.androidBytesPlay) {
+    if (preferences.predownload &&
+        ytVideo.duration! < const Duration(minutes: 15)) {
       await DefaultCacheManager().getFileFromCache(track.id!).then(
         (file) async {
           if (file != null) return file.file;
@@ -232,7 +233,8 @@ class SpotubeTrack extends Track {
       );
     }
 
-    if (preferences.androidBytesPlay) {
+    if (preferences.predownload &&
+        video.duration! < const Duration(minutes: 15)) {
       await DefaultCacheManager().getFileFromCache(id!).then(
         (file) async {
           if (file != null) return file.file;

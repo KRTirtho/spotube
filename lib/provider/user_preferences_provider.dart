@@ -42,7 +42,7 @@ class UserPreferences extends PersistedChangeNotifier {
   LayoutMode layoutMode;
   bool rotatingAlbumArt;
 
-  bool androidBytesPlay;
+  bool predownload;
 
   UserPreferences({
     required this.geniusAccessToken,
@@ -50,7 +50,7 @@ class UserPreferences extends PersistedChangeNotifier {
     required this.themeMode,
     required this.ytSearchFormat,
     required this.layoutMode,
-    this.androidBytesPlay = true,
+    required this.predownload,
     this.saveTrackLyrics = false,
     this.accentColorScheme = Colors.green,
     this.backgroundColorScheme = Colors.grey,
@@ -70,9 +70,10 @@ class UserPreferences extends PersistedChangeNotifier {
     }
   }
 
-  void setAndroidBytesPlay(bool value) {
-    androidBytesPlay = value;
+  void setPredownload(bool value) {
+    predownload = value;
     notifyListeners();
+    updatePersistence();
   }
 
   void setThemeMode(ThemeMode mode) {
@@ -203,7 +204,7 @@ class UserPreferences extends PersistedChangeNotifier {
       orElse: () => kIsDesktop ? LayoutMode.extended : LayoutMode.compact,
     );
     rotatingAlbumArt = map["rotatingAlbumArt"] ?? rotatingAlbumArt;
-    androidBytesPlay = map["androidBytesPlay"] ?? androidBytesPlay;
+    predownload = map["predownload"] ?? predownload;
   }
 
   @override
@@ -223,7 +224,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "downloadLocation": downloadLocation,
       "layoutMode": layoutMode.name,
       "rotatingAlbumArt": rotatingAlbumArt,
-      "androidBytesPlay": androidBytesPlay,
+      "predownload": predownload,
     };
   }
 }
@@ -235,5 +236,6 @@ final userPreferencesProvider = ChangeNotifierProvider(
     themeMode: ThemeMode.system,
     ytSearchFormat: "\$MAIN_ARTIST - \$TITLE \$FEATURED_ARTISTS",
     layoutMode: kIsMobile ? LayoutMode.compact : LayoutMode.adaptive,
+    predownload: kIsMobile,
   ),
 );

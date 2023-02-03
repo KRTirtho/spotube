@@ -136,6 +136,10 @@ extension GetSkipSegments on Video {
         },
       ));
 
+      if (res.body == "Not Found") {
+        return List.castFrom<dynamic, Map<String, int>>([]);
+      }
+
       final data = jsonDecode(res.body);
       final segments = data.map((obj) {
         return Map.castFrom<String, dynamic, String, int>({

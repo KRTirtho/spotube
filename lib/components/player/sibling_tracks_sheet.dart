@@ -92,15 +92,19 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   subtitle: PlatformText(video.author),
                   enabled: playlist?.isLoading != true,
                   selected: playlist?.isLoading != true &&
-                      video.id ==
-                          (playlist?.activeTrack as SpotubeTrack).ytTrack.id,
+                      video.id.value ==
+                          (playlist?.activeTrack as SpotubeTrack)
+                              .ytTrack
+                              .id
+                              .value,
                   selectedTileColor: Theme.of(context).popupMenuTheme.color,
                   onTap: () async {
                     if (playlist?.isLoading == false &&
-                        video.id !=
+                        video.id.value !=
                             (playlist?.activeTrack as SpotubeTrack)
                                 .ytTrack
-                                .id) {
+                                .id
+                                .value) {
                       await playlistNotifier.swapSibling(video);
                     }
                   },

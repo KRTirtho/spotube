@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   final String cacheKey;
 
-  PersistedStateNotifier(super.state, this.cacheKey) : super() {
+  PersistedStateNotifier(super.state, this.cacheKey) {
     _load();
   }
 
@@ -13,7 +15,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
     final json = await box.get(cacheKey);
 
     if (json != null) {
-      state = fromJson(castNestedJson(json));
+      state = await fromJson(castNestedJson(json));
     }
   }
 
@@ -44,7 +46,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
     box.put(cacheKey, toJson());
   }
 
-  T fromJson(Map<String, dynamic> json);
+  FutureOr<T> fromJson(Map<String, dynamic> json);
   Map<String, dynamic> toJson();
 
   @override

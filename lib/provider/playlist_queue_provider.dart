@@ -14,6 +14,7 @@ import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
+import 'package:collection/collection.dart';
 
 final audioPlayer = AudioPlayer();
 final youtube = YoutubeExplode();
@@ -24,20 +25,32 @@ class PlaylistQueue {
 
   Track get activeTrack => tracks.elementAt(active);
 
-  factory PlaylistQueue.fromJson(Map<String, dynamic> json) {
+  static Future<PlaylistQueue> fromJson(
+      Map<String, dynamic> json, UserPreferences preferences) async {
+    final List? tracks = json['tracks'];
     return PlaylistQueue(
-      Set.from(json['tracks'].map(
-        (e) {
-          final json = Map.castFrom<dynamic, dynamic, String, dynamic>(e);
-          if (e["ytTrack"] != null) {
-            return SpotubeTrack.fromJson(json);
-          } else if (e["path"] != null) {
-            return LocalTrack.fromJson(json);
-          } else {
-            return Track.fromJson(json);
-          }
-        },
-      )),
+      Set.from(
+        await Future.wait(
+          tracks?.mapIndexed(
+                (i, e) async {
+                  final jsonTrack =
+                      Map.castFrom<dynamic, dynamic, String, dynamic>(e);
+
+                  if (e["path"] != null) {
+                    return LocalTrack.fromJson(jsonTrack);
+                  } else if (i == json["active"] && !json.containsKey("path")) {
+                    return await SpotubeTrack.fromFetchTrack(
+                      Track.fromJson(jsonTrack),
+                      preferences,
+                    );
+                  } else {
+                    return Track.fromJson(jsonTrack);
+                  }
+                },
+              ) ??
+              [],
+        ),
+      ),
       active: json['active'],
     );
   }
@@ -97,7 +110,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   void configure() async {
     if (kIsMobile || kIsMacOS) {
       mobileService = await AudioService.init(
-        builder: () => MobileAudioService(ref),
+        builder: () => MobileAudioService(this),
         config: const AudioServiceConfig(
           androidNotificationChannelId: 'com.krtirtho.Spotube',
           androidNotificationChannelName: 'Spotube',
@@ -106,7 +119,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       );
     }
     if (kIsLinux) {
-      linuxService = LinuxAudioService(ref);
+      linuxService = LinuxAudioService(ref, this);
     }
     addListener((state) {
       linuxService?.player.updateProperties();
@@ -160,10 +173,13 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   static bool get isPaused => audioPlayer.state == PlayerState.paused;
   static bool get isStopped => audioPlayer.state == PlayerState.stopped;
 
-  static Stream<Duration> get duration => audioPlayer.onDurationChanged;
-  static Stream<Duration> get position => audioPlayer.onPositionChanged;
+  static Stream<Duration> get duration =>
+      audioPlayer.onDurationChanged.asBroadcastStream();
+  static Stream<Duration> get position =>
+      audioPlayer.onPositionChanged.asBroadcastStream();
   static Stream<bool> get playing => audioPlayer.onPlayerStateChanged
-      .map((event) => event == PlayerState.playing);
+      .map((event) => event == PlayerState.playing)
+      .asBroadcastStream();
 
   List<Video> get siblings => state?.isLoading == false
       ? (state!.activeTrack as SpotubeTrack).siblings
@@ -192,6 +208,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
           ..removeAt(state!.active)
           ..shuffle()
       },
+      active: 0,
     );
   }
 
@@ -199,6 +216,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     if (!isShuffled || !isLoaded) return;
     state = state?.copyWith(
       tracks: _tempTracks,
+      active: _tempTracks.toList().indexOf(state!.activeTrack),
     );
     _tempTracks = {};
   }
@@ -265,7 +283,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
     final cached =
         await DefaultCacheManager().getFileFromCache(state!.activeTrack.id!);
-    if (preferences.androidBytesPlay && cached != null) {
+    if (preferences.predownload && cached != null) {
       await audioPlayer.play(
         DeviceFileSource(cached.file.path),
         mode: PlayerMode.mediaPlayer,
@@ -368,9 +386,9 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   @override
-  PlaylistQueue? fromJson(Map<String, dynamic> json) {
+  Future<PlaylistQueue>? fromJson(Map<String, dynamic> json) {
     if (json.isEmpty) return null;
-    return PlaylistQueue.fromJson(json);
+    return PlaylistQueue.fromJson(json, preferences);
   }
 
   @override

@@ -3,18 +3,16 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 
 class MobileAudioService extends BaseAudioHandler {
-  final Ref ref;
   AudioSession? session;
+  final PlaylistQueueNotifier  playlistNotifier;
 
-  PlaylistQueue? get playlist => ref.watch(PlaylistQueueNotifier.provider);
-  PlaylistQueueNotifier get playlistNotifier =>
-      ref.watch(PlaylistQueueNotifier.notifier);
+      
+  PlaylistQueue? get playlist => playlistNotifier.state;
 
-  MobileAudioService(this.ref) {
+  MobileAudioService(this.playlistNotifier) {
     AudioSession.instance.then((s) {
       session = s;
       s.interruptionEventStream.listen((event) async {

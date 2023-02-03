@@ -124,10 +124,11 @@ class BottomPlayer extends HookConsumerWidget {
 
                       useEffect(() {
                         if (volume.value != volumeState) {
-                          volumeNotifier.setVolume(volume.value);
+                          volume.value = volumeState;
                         }
                         return null;
                       }, [volumeState]);
+
                       return Listener(
                         onPointerSignal: (event) async {
                           if (event is PointerScrollEvent) {
@@ -147,12 +148,7 @@ class BottomPlayer extends HookConsumerWidget {
                           onChanged: (v) {
                             volume.value = v;
                           },
-                          onChangeEnd: (value) async {
-                            // You don't really need to know why but this
-                            // way it works only
-                            await volumeNotifier.setVolume(value);
-                            await volumeNotifier.setVolume(value);
-                          },
+                          onChangeEnd: volumeNotifier.setVolume,
                         ),
                       );
                     }),

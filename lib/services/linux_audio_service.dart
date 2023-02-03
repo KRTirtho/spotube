@@ -218,10 +218,11 @@ class _MprisMediaPlayer2 extends DBusObject {
 }
 
 class _MprisMediaPlayer2Player extends DBusObject {
-  Ref ref;
+  final Ref ref;
+  final PlaylistQueueNotifier playlistNotifier;
 
   /// Creates a new object to expose on [path].
-  _MprisMediaPlayer2Player(this.ref)
+  _MprisMediaPlayer2Player(this.ref, this.playlistNotifier)
       : super(DBusObjectPath("/org/mpris/MediaPlayer2")) {
     (() async {
       final nameStatus =
@@ -233,9 +234,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
     }());
   }
 
-  PlaylistQueue? get playlist => ref.read(PlaylistQueueNotifier.provider);
-  PlaylistQueueNotifier get playlistNotifier =>
-      ref.read(PlaylistQueueNotifier.notifier);
+  PlaylistQueue? get playlist => playlistNotifier.state;
   double get volume => ref.read(VolumeProvider.provider);
   VolumeProvider get volumeNotifier =>
       ref.read(VolumeProvider.provider.notifier);
@@ -727,9 +726,9 @@ class LinuxAudioService {
   _MprisMediaPlayer2 mp2;
   _MprisMediaPlayer2Player player;
 
-  LinuxAudioService(Ref ref)
+  LinuxAudioService(Ref ref, PlaylistQueueNotifier playlistNotifier)
       : mp2 = _MprisMediaPlayer2(),
-        player = _MprisMediaPlayer2Player(ref);
+        player = _MprisMediaPlayer2Player(ref, playlistNotifier);
 
   void dispose() {
     mp2.dispose();
