@@ -1,4 +1,11 @@
+import 'dart:convert';
+
+import 'package:catcher/catcher.dart';
+import 'package:http/http.dart';
 import 'package:spotube/entities/cache_track.dart';
+import 'package:spotube/models/logger.dart';
+import 'package:spotube/models/track.dart';
+import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/duration.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -29,6 +36,11 @@ extension VideoFromCacheTrackExtension on Video {
       ),
       false,
     );
+  }
+
+  static Future<Video> fromBackendTrack(
+      BackendTrack track, YoutubeExplode youtube) {
+    return youtube.videos.get(VideoId.fromString(track.youtubeId));
   }
 }
 
@@ -98,5 +110,50 @@ extension VideoToJson on Video {
       "title": title,
       "uploadDate": uploadDate.toString(),
     };
+  }
+}
+
+extension GetSkipSegments on Video {
+  Future<List<Map<String, int>>> getSkipSegments(
+      UserPreferences preferences) async {
+    if (!preferences.skipSponsorSegments) return [];
+    try {
+      final res = await get(Uri(
+        scheme: "https",
+        host: "sponsor.ajay.app",
+        path: "/api/skipSegments",
+        queryParameters: {
+          "videoID": id.value,
+          "category": [
+            'sponsor',
+            'selfpromo',
+            'interaction',
+            'intro',
+            'outro',
+            'music_offtopic'
+          ],
+          "actionType": 'skip'
+        },
+      ));
+
+      if (res.body == "Not Found") {
+        return List.castFrom<dynamic, Map<String, int>>([]);
+      }
+
+      final data = jsonDecode(res.body);
+      final segments = data.map((obj) {
+        return Map.castFrom<String, dynamic, String, int>({
+          "start": obj["segment"].first.toInt(),
+          "end": obj["segment"].last.toInt(),
+        });
+      }).toList();
+      getLogger(Video).v(
+        "[SponsorBlock] successfully fetched skip segments for $title | ${id.value}",
+      );
+      return List.castFrom<dynamic, Map<String, int>>(segments);
+    } catch (e, stack) {
+      Catcher.reportCheckedError(e, stack);
+      return List.castFrom<dynamic, Map<String, int>>([]);
+    }
   }
 }

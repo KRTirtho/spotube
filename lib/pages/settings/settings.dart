@@ -14,9 +14,7 @@ import 'package:spotube/main.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/auth_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsPage extends HookConsumerWidget {
@@ -309,22 +307,21 @@ class SettingsPage extends HookConsumerWidget {
                         },
                       ),
                     ),
-                    if (kIsMobile)
-                      PlatformListTile(
-                        leading: const Icon(SpotubeIcons.download),
-                        title: const PlatformText(
-                          "Pre download and play",
-                        ),
-                        subtitle: const PlatformText(
-                          "Instead of streaming audio, download bytes and play instead (Recommended for higher bandwidth users)",
-                        ),
-                        trailing: PlatformSwitch(
-                          value: preferences.androidBytesPlay,
-                          onChanged: (state) {
-                            preferences.setAndroidBytesPlay(state);
-                          },
-                        ),
+                    PlatformListTile(
+                      leading: const Icon(SpotubeIcons.download),
+                      title: const PlatformText(
+                        "Pre download and play",
                       ),
+                      subtitle: const PlatformText(
+                        "Instead of streaming audio, download bytes and play instead (Recommended for higher bandwidth users)",
+                      ),
+                      trailing: PlatformSwitch(
+                        value: preferences.predownload,
+                        onChanged: (state) {
+                          preferences.setPredownload(state);
+                        },
+                      ),
+                    ),
                     PlatformListTile(
                       leading: const Icon(SpotubeIcons.fastForward),
                       title: const PlatformText(

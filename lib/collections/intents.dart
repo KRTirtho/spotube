@@ -2,11 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -23,23 +22,22 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
     if (PlayerControls.focusNode.canRequestFocus) {
       PlayerControls.focusNode.requestFocus();
     }
-    final playback = intent.ref.read(playbackProvider);
-    if (playback.track == null) {
+    final playlist = intent.ref.read(PlaylistQueueNotifier.provider);
+    final playlistNotifier = intent.ref.read(PlaylistQueueNotifier.notifier);
+    if (playlist == null) {
       return null;
-    } else if (playback.track != null &&
-        playback.currentDuration == Duration.zero &&
-        await playback.player.getCurrentPosition() == Duration.zero) {
-      if (playback.track!.ytUri.startsWith("http")) {
-        final track = Track.fromJson(playback.track!.toJson());
-        playback.track = null;
-        await playback.play(track);
-      } else {
-        final track = playback.track;
-        playback.track = null;
-        await playback.play(track!);
-      }
+    } else if (!PlaylistQueueNotifier.isPlaying) {
+      // if (playlist.activeTrack is SpotubeTrack &&
+      //     (playlist.activeTrack as SpotubeTrack).ytUri.startsWith("http")) {
+      //   final track =
+      //       Track.fromJson((playlist.activeTrack as SpotubeTrack).toJson());
+
+      //   await playlistNotifier.play(track);
+      // } else {
+      // }
+      await playlistNotifier.play();
     } else {
-      await playback.togglePlayPause();
+      await playlistNotifier.pause();
     }
     return null;
   }
@@ -102,9 +100,9 @@ class SeekIntent extends Intent {
 class SeekAction extends Action<SeekIntent> {
   @override
   invoke(intent) async {
-    final playback = intent.ref.read(playbackProvider);
-    if ((playback.playlist == null && playback.track == null) ||
-        playback.status == PlaybackStatus.loading) {
+    final playlist = intent.ref.read(PlaylistQueueNotifier.provider);
+    final playlistNotifier = intent.ref.read(PlaylistQueueNotifier.notifier);
+    if (playlist == null || playlist.isLoading) {
       DirectionalFocusAction().invoke(
         DirectionalFocusIntent(
           intent.forward ? TraversalDirection.right : TraversalDirection.left,
@@ -113,8 +111,8 @@ class SeekAction extends Action<SeekIntent> {
       return null;
     }
     final position =
-        (await playback.player.getCurrentPosition() ?? Duration.zero).inSeconds;
-    await playback.seekPosition(
+        (await audioPlayer.getCurrentPosition() ?? Duration.zero).inSeconds;
+    await playlistNotifier.seek(
       Duration(
         seconds: intent.forward ? position + 5 : position - 5,
       ),

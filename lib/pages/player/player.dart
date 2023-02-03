@@ -16,8 +16,9 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
+import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -28,11 +29,11 @@ class PlayerView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final currentTrack = ref.watch(playbackProvider.select(
-      (value) => value.track,
+    final currentTrack = ref.watch(PlaylistQueueNotifier.provider.select(
+      (value) => value?.activeTrack,
     ));
-    final isLocalTrack = ref.watch(playbackProvider.select(
-      (value) => value.playlist?.isLocal == true,
+    final isLocalTrack = ref.watch(PlaylistQueueNotifier.provider.select(
+      (value) => value?.activeTrack is LocalTrack,
     ));
     final breakpoint = useBreakpoints();
     final canRotate = ref.watch(

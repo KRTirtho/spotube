@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:dbus/dbus.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:spotube/provider/dbus_provider.dart';
 import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -217,12 +218,12 @@ class _MprisMediaPlayer2 extends DBusObject {
 }
 
 class _MprisMediaPlayer2Player extends DBusObject {
-  Playback playback;
+  final Ref ref;
+  final PlaylistQueueNotifier playlistNotifier;
 
   /// Creates a new object to expose on [path].
-  _MprisMediaPlayer2Player({
-    required this.playback,
-  }) : super(DBusObjectPath("/org/mpris/MediaPlayer2")) {
+  _MprisMediaPlayer2Player(this.ref, this.playlistNotifier)
+      : super(DBusObjectPath("/org/mpris/MediaPlayer2")) {
     (() async {
       final nameStatus =
           await dbus.requestName("org.mpris.MediaPlayer2.spotube");
@@ -233,30 +234,39 @@ class _MprisMediaPlayer2Player extends DBusObject {
     }());
   }
 
+  PlaylistQueue? get playlist => playlistNotifier.state;
+  double get volume => ref.read(VolumeProvider.provider);
+  VolumeProvider get volumeNotifier =>
+      ref.read(VolumeProvider.provider.notifier);
+
   void dispose() {
     dbus.unregisterObject(this);
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.PlaybackStatus
   Future<DBusMethodResponse> getPlaybackStatus() async {
-    final status = playback.isPlaying
+    final status = PlaylistQueueNotifier.isPlaying
         ? "Playing"
-        : playback.playlist == null
+        : playlist == null
             ? "Stopped"
             : "Paused";
     return DBusMethodSuccessResponse([DBusString(status)]);
   }
 
+  // TODO: Implement Track Loop
+
   /// Gets value of property org.mpris.MediaPlayer2.Player.LoopStatus
   Future<DBusMethodResponse> getLoopStatus() async {
     return DBusMethodSuccessResponse([
-      playback.isLoop ? const DBusString("Track") : const DBusString("None"),
+      /* playlistNotifier.isLoop */ false
+          ? const DBusString("Track")
+          : const DBusString("None"),
     ]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.LoopStatus
   Future<DBusMethodResponse> setLoopStatus(String value) async {
-    playback.setIsLoop(value == "Track");
+    // playlistNotifier.setIsLoop(value == "Track");
     return DBusMethodSuccessResponse();
   }
 
@@ -272,46 +282,47 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> getShuffle() async {
-    return DBusMethodSuccessResponse([DBusBoolean(playback.isShuffled)]);
+    return DBusMethodSuccessResponse(
+        [DBusBoolean(playlist?.isShuffled ?? false)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Shuffle
   Future<DBusMethodResponse> setShuffle(bool value) async {
-    playback.setIsShuffled(value);
+    if (value) {
+      playlistNotifier.shuffle();
+    } else {
+      playlistNotifier.unshuffle();
+    }
     return DBusMethodSuccessResponse();
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Metadata
   Future<DBusMethodResponse> getMetadata() async {
-    if (playback.track == null) {
+    if (playlist == null || playlist!.isLoading) {
       return DBusMethodSuccessResponse([DBusDict.stringVariant({})]);
     }
-    final id = (playback.playlist != null
-            ? playback.playlist!.tracks.indexWhere(
-                (track) => playback.track!.id == track.id!,
-              )
-            : 0)
-        .abs();
+    final id = playlist!.active;
 
     return DBusMethodSuccessResponse([
       DBusDict.stringVariant({
         "mpris:trackid": DBusString("${path.value}/Track/$id"),
-        "mpris:length": DBusInt32(playback.currentDuration.inMicroseconds),
+        "mpris:length":
+            DBusInt32((await audioPlayer.getDuration())?.inMicroseconds ?? 0),
         "mpris:artUrl": DBusString(
           TypeConversionUtils.image_X_UrlString(
-            playback.track?.album?.images,
+            playlist?.activeTrack.album?.images,
             placeholder: ImagePlaceholder.albumArt,
           ),
         ),
-        "xesam:album": DBusString(playback.track!.album!.name!),
+        "xesam:album": DBusString(playlist!.activeTrack.album!.name!),
         "xesam:artist": DBusArray.string(
-          playback.track!.artists!.map((artist) => artist.name!),
+          playlist!.activeTrack.artists!.map((artist) => artist.name!),
         ),
-        "xesam:title": DBusString(playback.track!.name!),
+        "xesam:title": DBusString(playlist!.activeTrack.name!),
         "xesam:url": DBusString(
-          playback.track is SpotubeTrack
-              ? (playback.track as SpotubeTrack).ytUri
-              : playback.track!.previewUrl!,
+          playlist!.activeTrack is SpotubeTrack
+              ? (playlist!.activeTrack as SpotubeTrack).ytUri
+              : playlist!.activeTrack.previewUrl!,
         ),
         "xesam:genre": const DBusString("Unknown"),
       }),
@@ -320,19 +331,19 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Volume
   Future<DBusMethodResponse> getVolume() async {
-    return DBusMethodSuccessResponse([DBusDouble(playback.volume)]);
+    return DBusMethodSuccessResponse([DBusDouble(volume)]);
   }
 
   /// Sets property org.mpris.MediaPlayer2.Player.Volume
   Future<DBusMethodResponse> setVolume(double value) async {
-    playback.setVolume(value);
+    await volumeNotifier.setVolume(value);
     return DBusMethodSuccessResponse();
   }
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.Position
   Future<DBusMethodResponse> getPosition() async {
     return DBusMethodSuccessResponse([
-      DBusInt64((await playback.player.getDuration())?.inMicroseconds ?? 0),
+      DBusInt64((await audioPlayer.getDuration())?.inMicroseconds ?? 0),
     ]);
   }
 
@@ -350,7 +361,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
   Future<DBusMethodResponse> getCanGoNext() async {
     return DBusMethodSuccessResponse([
       DBusBoolean(
-        playback.playlist?.tracks.isNotEmpty == true,
+        (playlist?.tracks.length ?? 0) > 1,
       )
     ]);
   }
@@ -359,7 +370,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
   Future<DBusMethodResponse> getCanGoPrevious() async {
     return DBusMethodSuccessResponse([
       DBusBoolean(
-        playback.playlist?.tracks.isNotEmpty == true,
+        (playlist?.tracks.length ?? 0) > 1,
       )
     ]);
   }
@@ -386,43 +397,45 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Next()
   Future<DBusMethodResponse> doNext() async {
-    playback.seekForward();
+    await playlistNotifier.next();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Previous()
   Future<DBusMethodResponse> doPrevious() async {
-    playback.seekBackward();
+    await playlistNotifier.previous();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Pause()
   Future<DBusMethodResponse> doPause() async {
-    playback.pause();
+    playlistNotifier.pause();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.PlayPause()
   Future<DBusMethodResponse> doPlayPause() async {
-    playback.isPlaying ? playback.pause() : playback.resume();
+    PlaylistQueueNotifier.isPlaying
+        ? await playlistNotifier.pause()
+        : await playlistNotifier.resume();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Stop()
   Future<DBusMethodResponse> doStop() async {
-    playback.stop();
+    playlistNotifier.stop();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Play()
   Future<DBusMethodResponse> doPlay() async {
-    playback.resume();
+    playlistNotifier.resume();
     return DBusMethodSuccessResponse();
   }
 
   /// Implementation of org.mpris.MediaPlayer2.Player.Seek()
   Future<DBusMethodResponse> doSeek(int offset) async {
-    playback.seekPosition(Duration(microseconds: offset));
+    await playlistNotifier.seek(Duration(microseconds: offset));
     return DBusMethodSuccessResponse();
   }
 
@@ -445,8 +458,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
     );
   }
 
-  Future<void> updateProperties(Playback playback) async {
-    this.playback = playback;
+  Future<void> updateProperties() async {
     return emitPropertiesChanged(
       "org.mpris.MediaPlayer2.Player",
       changedProperties: {
@@ -714,9 +726,9 @@ class LinuxAudioService {
   _MprisMediaPlayer2 mp2;
   _MprisMediaPlayer2Player player;
 
-  LinuxAudioService(Playback playback)
+  LinuxAudioService(Ref ref, PlaylistQueueNotifier playlistNotifier)
       : mp2 = _MprisMediaPlayer2(),
-        player = _MprisMediaPlayer2Player(playback: playback);
+        player = _MprisMediaPlayer2Player(ref, playlistNotifier);
 
   void dispose() {
     mp2.dispose();

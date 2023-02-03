@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/cache_keys.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/collections/routes.dart';
@@ -19,10 +19,9 @@ import 'package:spotube/collections/intents.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/audio_player_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
-import 'package:spotube/services/mobile_audio_service.dart';
+import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/themes/dark_theme.dart';
 import 'package:spotube/themes/light_theme.dart';
 import 'package:spotube/utils/platform.dart';
@@ -36,6 +35,8 @@ void main() async {
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
+  await Env.configure();
+
   if (kIsDesktop) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
@@ -61,7 +62,6 @@ void main() async {
       await windowManager.show();
     });
   }
-  MobileAudioService? audioServiceHandler;
 
   Catcher(
     debugConfig: CatcherOptions(
@@ -72,7 +72,17 @@ void main() async {
           enableApplicationParameters: false,
         ),
         FileHandler(await getLogsPath(), printLogs: false),
-        SnackbarHandler(const Duration(seconds: 5)),
+        SnackbarHandler(
+          const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: "Dismiss",
+            onPressed: () {
+              ScaffoldMessenger.of(
+                Catcher.navigatorKey!.currentContext!,
+              ).hideCurrentSnackBar();
+            },
+          ),
+        ),
       ],
     ),
     releaseConfig: CatcherOptions(SilentReportMode(), [
@@ -84,36 +94,6 @@ void main() async {
           builder: (context) {
             return ProviderScope(
               overrides: [
-                playbackProvider.overrideWith(
-                  (ref) {
-                    final youtube = ref.watch(youtubeProvider);
-                    final player = ref.watch(audioPlayerProvider);
-
-                    final playback = Playback(
-                      player: player,
-                      youtube: youtube,
-                      ref: ref,
-                    );
-
-                    if (audioServiceHandler == null) {
-                      AudioService.init(
-                        builder: () => MobileAudioService(playback),
-                        config: const AudioServiceConfig(
-                          androidNotificationChannelId: 'com.krtirtho.Spotube',
-                          androidNotificationChannelName: 'Spotube',
-                          androidNotificationOngoing: true,
-                        ),
-                      ).then(
-                        (value) {
-                          playback.mobileAudioService = value;
-                          audioServiceHandler = value;
-                        },
-                      );
-                    }
-
-                    return playback;
-                  },
-                ),
                 downloaderProvider.overrideWith(
                   (ref) {
                     return Downloader(
@@ -155,6 +135,7 @@ void main() async {
       );
     },
   );
+  await initializePocketBase();
 }
 
 class Spotube extends StatefulHookConsumerWidget {

@@ -18,8 +18,8 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
 
@@ -27,7 +27,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:tuple/tuple.dart';
 
 class TrackTile extends HookConsumerWidget {
-  final Playback playback;
+  final PlaylistQueue? playlist;
   final MapEntry<int, Track> track;
   final String duration;
   final void Function(Track currentTrack)? onTrackPlayButtonPressed;
@@ -47,7 +47,7 @@ class TrackTile extends HookConsumerWidget {
   final void Function(bool?)? onCheckChange;
 
   TrackTile(
-    this.playback, {
+    this.playlist, {
     required this.track,
     required this.duration,
     required this.isActive,
@@ -240,8 +240,7 @@ class TrackTile extends HookConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: PlatformIconButton(
                 icon: Icon(
-                  playback.track?.id != null &&
-                          playback.track?.id == track.value.id
+                  playlist?.activeTrack.id == track.value.id
                       ? SpotubeIcons.pause
                       : SpotubeIcons.play,
                   color: Colors.white,

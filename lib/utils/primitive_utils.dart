@@ -41,4 +41,20 @@ abstract class PrimitiveUtils {
     final seconds = duration.inSeconds % 60;
     return "${hours > 0 ? "${zeroPadNumStr(hours)}:" : ""}${zeroPadNumStr(minutes)}:${zeroPadNumStr(seconds)}";
   }
+
+  static Future<T> raceMultiple<T>(
+    Future<T> Function() inner, {
+    Duration timeout = const Duration(milliseconds: 2500),
+    int retryCount = 4,
+  }) async {
+    return Future.any(
+      List.generate(retryCount, (i) {
+        if (i == 0) return inner();
+        return Future.delayed(
+          Duration(milliseconds: timeout.inMilliseconds * i),
+          inner,
+        );
+      }),
+    );
+  }
 }

@@ -12,6 +12,7 @@ environment:
 
 dependencies:
   adwaita: ^0.5.2
+  async: ^2.9.0
   audio_service: ^0.18.9
   audio_session: ^0.1.13
   audioplayers: ^3.0.1
@@ -31,6 +32,8 @@ dependencies:
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
+  flutter_cache_manager: ^3.3.0
+  flutter_dotenv: ^5.0.2
   flutter_feather_icons: ^2.0.0+1
   flutter_hooks: ^0.18.2+1
   flutter_inappwebview: ^5.7.2+3
@@ -44,6 +47,8 @@ dependencies:
   html: ^0.15.1
   http: ^0.13.5
   introduction_screen: ^3.0.2
+  json_annotation: ^4.8.0
+  json_serializable: ^6.6.0
   libadwaita: ^1.2.5
   logger: ^1.1.0
   macos_ui: ^1.7.5
@@ -59,6 +64,7 @@ dependencies:
     git:
       url: https://github.com/KRTirtho/platform_ui.git
       ref: 073cefb9c419fcb01cbdfd6ca2f9714eec23c83b
+  pocketbase: ^0.7.1+1
   popover: ^0.2.6+3
   queue: ^3.1.0+1
   scroll_to_index: ^3.0.1
@@ -96,6 +102,7 @@ flutter:
   assets:
     - assets/
     - assets/tutorial/
+    - .env
 
 flutter_icons:
   android: true

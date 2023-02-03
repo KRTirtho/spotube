@@ -11,7 +11,7 @@ import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/genius_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
-import 'package:spotube/provider/playback_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -21,14 +21,14 @@ class LyricsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    Playback playback = ref.watch(playbackProvider);
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
     String albumArt = useMemoized(
       () => TypeConversionUtils.image_X_UrlString(
-        playback.track?.album?.images,
-        index: (playback.track?.album?.images?.length ?? 1) - 1,
+        playlist?.activeTrack.album?.images,
+        index: (playlist?.activeTrack.album?.images?.length ?? 1) - 1,
         placeholder: ImagePlaceholder.albumArt,
       ),
-      [playback.track?.album?.images],
+      [playlist?.activeTrack.album?.images],
     );
     final palette = usePaletteColor(albumArt, ref);
     final index = useState(0);

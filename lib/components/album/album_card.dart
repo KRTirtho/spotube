@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
-import 'package:spotube/models/current_playlist.dart';
-import 'package:spotube/provider/playback_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -20,9 +20,10 @@ class AlbumCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    Playback playback = ref.watch(playbackProvider);
-    bool isPlaylistPlaying =
-        playback.playlist != null && playback.playlist!.id == album.id;
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playing = useStream(PlaylistQueueNotifier.playing).data ?? false;
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(album.tracks!);
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
     return PlaybuttonCard(
@@ -32,9 +33,8 @@ class AlbumCard extends HookConsumerWidget {
       ),
       viewType: viewType,
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
-      isPlaying: isPlaylistPlaying && playback.isPlaying,
-      isLoading: playback.status == PlaybackStatus.loading &&
-          playback.playlist?.id == album.id,
+      isPlaying: isPlaylistPlaying && playing,
+      isLoading: isPlaylistPlaying && playlist?.isLoading == true,
       title: album.name!,
       description:
           "Album • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
@@ -43,10 +43,10 @@ class AlbumCard extends HookConsumerWidget {
       },
       onPlaybuttonPressed: () async {
         SpotifyApi spotify = ref.read(spotifyProvider);
-        if (isPlaylistPlaying && playback.isPlaying) {
-          return playback.pause();
-        } else if (isPlaylistPlaying && !playback.isPlaying) {
-          return playback.resume();
+        if (isPlaylistPlaying && playing) {
+          return playlistNotifier.pause();
+        } else if (isPlaylistPlaying && !playing) {
+          return playlistNotifier.resume();
         }
         List<Track> tracks = (await spotify.albums.getTracks(album.id!).all())
             .map((track) =>
@@ -54,12 +54,7 @@ class AlbumCard extends HookConsumerWidget {
             .toList();
         if (tracks.isEmpty) return;
 
-        await playback.playPlaylist(CurrentPlaylist(
-          tracks: tracks,
-          id: album.id!,
-          name: album.name!,
-          thumbnail: album.images!.first.url!,
-        ));
+        await playlistNotifier.loadAndPlay(tracks);
       },
     );
   }
