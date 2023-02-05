@@ -38,7 +38,8 @@ class PlayerControls extends HookConsumerWidget {
         []);
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playing = useStream(PlaylistQueueNotifier.playing).data ?? false;
+    final playing = useStream(PlaylistQueueNotifier.playing).data ??
+        PlaylistQueueNotifier.isPlaying;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -89,6 +90,7 @@ class PlayerControls extends HookConsumerWidget {
                     return null;
                   }, [progressStatic]);
 
+                  // this is a hack to fix duration not being updated
                   useEffect(() {
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
                       if (positionSnapshot.hasData &&
@@ -199,14 +201,6 @@ class PlayerControls extends HookConsumerWidget {
                       color: iconColor,
                     ),
                     onPressed: playlistNotifier.next,
-                  ),
-                  PlatformIconButton(
-                    tooltip: "Stop playback",
-                    icon: Icon(
-                      SpotubeIcons.stop,
-                      color: iconColor,
-                    ),
-                    onPressed: playlist != null ? playlistNotifier.stop : null,
                   ),
                   PlatformIconButton(
                     tooltip: playlist?.isLooping != true

@@ -27,7 +27,8 @@ class PlayerOverlay extends HookConsumerWidget {
       PlaylistQueueNotifier.provider.select((s) => s != null),
     );
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playing = useStream(PlaylistQueueNotifier.playing).data ?? false;
+    final playing = useStream(PlaylistQueueNotifier.playing).data ??
+        PlaylistQueueNotifier.isPlaying;
 
     return GestureDetector(
       onVerticalDragEnd: (details) {

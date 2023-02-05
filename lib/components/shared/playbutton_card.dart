@@ -104,7 +104,7 @@ class PlaybuttonCard extends HookWidget {
                     ),
             );
             final addToQueueButton = PlatformIconButton(
-              onPressed: onAddToQueuePressed,
+              onPressed: isLoading ? null : onAddToQueuePressed,
               backgroundColor:
                   PlatformTheme.of(context).secondaryBackgroundColor,
               hoverColor: PlatformTheme.of(context)

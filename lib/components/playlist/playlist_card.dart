@@ -24,7 +24,8 @@ class PlaylistCard extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final playlistQueue = ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playing = useStream(PlaylistQueueNotifier.playing).data ?? false;
+    final playing = useStream(PlaylistQueueNotifier.playing).data ??
+        PlaylistQueueNotifier.isPlaying;
     final queryBowl = QueryBowl.of(context);
     final query = queryBowl.getQuery<List<Track>, SpotifyApi>(
       Queries.playlist.tracksOf(playlist.id!).queryKey,
@@ -34,6 +35,9 @@ class PlaylistCard extends HookConsumerWidget {
 
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
+
+    final updating = useState(false);
+
     return PlaybuttonCard(
       viewType: viewType,
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
@@ -43,7 +47,8 @@ class PlaylistCard extends HookConsumerWidget {
         placeholder: ImagePlaceholder.collection,
       ),
       isPlaying: isPlaylistPlaying && playing,
-      isLoading: isPlaylistPlaying && playlistQueue?.isLoading == true,
+      isLoading: (isPlaylistPlaying && playlistQueue?.isLoading == true) ||
+          updating.value,
       onTap: () {
         ServiceUtils.navigate(
           context,
@@ -52,42 +57,52 @@ class PlaylistCard extends HookConsumerWidget {
         );
       },
       onPlaybuttonPressed: () async {
-        if (isPlaylistPlaying && playing) {
-          return playlistNotifier.pause();
-        } else if (isPlaylistPlaying && !playing) {
-          return playlistNotifier.resume();
+        try {
+          updating.value = true;
+          if (isPlaylistPlaying && playing) {
+            return playlistNotifier.pause();
+          } else if (isPlaylistPlaying && !playing) {
+            return playlistNotifier.resume();
+          }
+
+          List<Track> fetchedTracks = await queryBowl.fetchQuery(
+                key: ValueKey(const Uuid().v4()),
+                Queries.playlist.tracksOf(playlist.id!),
+                externalData: ref.read(spotifyProvider),
+              ) ??
+              [];
+
+          if (fetchedTracks.isEmpty) return;
+
+          await playlistNotifier.loadAndPlay(fetchedTracks);
+          tracks.value = fetchedTracks;
+        } finally {
+          updating.value = false;
         }
-
-        List<Track> fetchedTracks = await queryBowl.fetchQuery(
-              key: ValueKey(const Uuid().v4()),
-              Queries.playlist.tracksOf(playlist.id!),
-              externalData: ref.read(spotifyProvider),
-            ) ??
-            [];
-
-        if (fetchedTracks.isEmpty) return;
-
-        await playlistNotifier.loadAndPlay(fetchedTracks);
-        tracks.value = fetchedTracks;
       },
       onAddToQueuePressed: () async {
-        if (isPlaylistPlaying) return;
-        List<Track> fetchedTracks = await queryBowl.fetchQuery(
-              key: ValueKey(const Uuid().v4()),
-              Queries.playlist.tracksOf(playlist.id!),
-              externalData: ref.read(spotifyProvider),
-            ) ??
-            [];
+        updating.value = true;
+        try {
+          if (isPlaylistPlaying) return;
+          List<Track> fetchedTracks = await queryBowl.fetchQuery(
+                key: ValueKey(const Uuid().v4()),
+                Queries.playlist.tracksOf(playlist.id!),
+                externalData: ref.read(spotifyProvider),
+              ) ??
+              [];
 
-        if (fetchedTracks.isEmpty) return;
+          if (fetchedTracks.isEmpty) return;
 
-        playlistNotifier.add(fetchedTracks);
-        tracks.value = fetchedTracks;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Added ${fetchedTracks.length} tracks to queue"),
-          ),
-        );
+          playlistNotifier.add(fetchedTracks);
+          tracks.value = fetchedTracks;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Added ${fetchedTracks.length} tracks to queue"),
+            ),
+          );
+        } finally {
+          updating.value = false;
+        }
       },
     );
   }

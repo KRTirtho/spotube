@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
@@ -76,7 +77,33 @@ class PlayerQueue extends HookConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            PlatformText.subheading("Queue"),
+            PlatformAppBar(
+              title:
+                  PlatformText.subheading("${tracks.length} tracks in Queue"),
+              backgroundColor: Colors.transparent,
+              automaticallyImplyLeading: false,
+              actions: [
+                PlatformFilledButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        PlatformTheme.of(context)
+                            .scaffoldBackgroundColor
+                            ?.withOpacity(0.5)),
+                  ),
+                  child: Row(
+                    children: const [
+                      Icon(SpotubeIcons.playlistRemove),
+                      SizedBox(width: 5),
+                      PlatformText("Clear All"),
+                    ],
+                  ),
+                  onPressed: () {
+                    playlistNotifier.stop();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             Flexible(
               child: ListView.builder(

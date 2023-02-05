@@ -24,7 +24,8 @@ class AlbumCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playing = useStream(PlaylistQueueNotifier.playing).data ?? false;
+    final playing = useStream(PlaylistQueueNotifier.playing).data ??
+        PlaylistQueueNotifier.isPlaying;
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final queryBowl = QueryBowl.of(context);
     final query = queryBowl.getQuery<List<TrackSimple>, SpotifyApi>(
@@ -33,6 +34,9 @@ class AlbumCard extends HookConsumerWidget {
     bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks.value);
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
+
+    final updating = useState(false);
+
     return PlaybuttonCard(
         imageUrl: TypeConversionUtils.image_X_UrlString(
           album.images,
@@ -49,43 +53,53 @@ class AlbumCard extends HookConsumerWidget {
           ServiceUtils.navigate(context, "/album/${album.id}", extra: album);
         },
         onPlaybuttonPressed: () async {
-          if (isPlaylistPlaying && playing) {
-            return playlistNotifier.pause();
-          } else if (isPlaylistPlaying && !playing) {
-            return playlistNotifier.resume();
-          }
+          updating.value = true;
+          try {
+            if (isPlaylistPlaying && playing) {
+              return playlistNotifier.pause();
+            } else if (isPlaylistPlaying && !playing) {
+              return playlistNotifier.resume();
+            }
 
-          await playlistNotifier.loadAndPlay(album.tracks
-                  ?.map(
-                      (e) => TypeConversionUtils.simpleTrack_X_Track(e, album))
-                  .toList() ??
-              []);
+            await playlistNotifier.loadAndPlay(album.tracks
+                    ?.map((e) =>
+                        TypeConversionUtils.simpleTrack_X_Track(e, album))
+                    .toList() ??
+                []);
+          } finally {
+            updating.value = false;
+          }
         },
         onAddToQueuePressed: () async {
           if (isPlaylistPlaying) {
             return;
           }
 
-          final fetchedTracks =
-              await queryBowl.fetchQuery<List<TrackSimple>, SpotifyApi>(
-            Queries.album.tracksOf(album.id!),
-            externalData: ref.read(spotifyProvider),
-            key: ValueKey(const Uuid().v4()),
-          );
+          updating.value = true;
+          try {
+            final fetchedTracks =
+                await queryBowl.fetchQuery<List<TrackSimple>, SpotifyApi>(
+              Queries.album.tracksOf(album.id!),
+              externalData: ref.read(spotifyProvider),
+              key: ValueKey(const Uuid().v4()),
+            );
 
-          if (fetchedTracks == null || fetchedTracks.isEmpty) return;
+            if (fetchedTracks == null || fetchedTracks.isEmpty) return;
 
-          playlistNotifier.add(
-            fetchedTracks
-                .map((e) => TypeConversionUtils.simpleTrack_X_Track(e, album))
-                .toList(),
-          );
-          tracks.value = fetchedTracks;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Added ${album.tracks?.length} tracks to queue"),
-            ),
-          );
+            playlistNotifier.add(
+              fetchedTracks
+                  .map((e) => TypeConversionUtils.simpleTrack_X_Track(e, album))
+                  .toList(),
+            );
+            tracks.value = fetchedTracks;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Added ${album.tracks?.length} tracks to queue"),
+              ),
+            );
+          } finally {
+            updating.value = false;
+          }
         });
   }
 }
