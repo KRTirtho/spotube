@@ -29,7 +29,7 @@ enum AssetTypes {
   android = "android",
 }
 
-type ReleaseResponse = {
+export type ReleaseResponse = {
   id: number;
   body: string | null | undefined;
   tag_name: string;
@@ -38,10 +38,10 @@ type ReleaseResponse = {
     name: string;
     browser_download_url: string;
   }[];
-}[];
+};
 
 type Props = {
-  data: ReleaseResponse;
+  data: ReleaseResponse[];
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({
@@ -55,7 +55,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     owner: "KRTirtho",
     repo: "spotube",
   });
-  const releaseResponse: ReleaseResponse = data.map((data) => {
+  const releaseResponse: ReleaseResponse[] = data.map((data) => {
     return {
       tag_name: data.tag_name,
       id: data.id,

@@ -11,20 +11,36 @@ import {
   Tr,
   HStack,
 } from "@chakra-ui/react";
+import { octokit } from "configurations/ocotokit";
+import { GetServerSideProps, NextPage } from "next";
 // import { GridMultiplexAd } from "components/special";
 import NavLink from "next/link";
+import { ReleaseResponse } from "./stable-downloads";
 
-const baseURL =
-  "https://nightly.link/KRTirtho/spotube/workflows/spotube-nightly/build/";
+type NightlyProps = ReleaseResponse;
 
-const DownloadLinks = Object.freeze({
-  Linux: baseURL + "Spotube-Linux-Bundle.zip",
-  Android: baseURL + "Spotube-Android-Bundle.zip",
-  Windows: baseURL + "Spotube-Windows-Bundle.zip",
-  MacOS: baseURL + "Spotube-Macos-Bundle.zip",
-});
+export const  getServerSideProps: GetServerSideProps<NightlyProps> =async () =>{
+  const { data } = await octokit.repos.getReleaseByTag({
+    owner: "KRTirtho",
+    repo: "spotube",
+    tag: "nightly",
+  });
+  return {
+    props: {
+      tag_name: data.tag_name,
+      id: data.id,
+      body: data.body,
+      assets: data.assets.map((asset) => ({
+        id: asset.id,
+        name: asset.name,
+        browser_download_url: asset.browser_download_url,
+      })),
+    }
+  } 
+}
 
-function NightlyDownloads() {
+
+const NightlyDownloads: NextPage<NightlyProps> = (props)=> {
   return (
     <>
       <VStack>
@@ -57,19 +73,24 @@ function NightlyDownloads() {
             py="2"
             w="100%"
           >
-            {Object.entries(DownloadLinks).map(([platform, url]) => {
-              const segments = url.split("/");
+            {Object.entries(props.assets).map(([_, { name, id, browser_download_url}], i) => {
+              const segments = name.split("-");
+              const platform = segments[1];
+              const executable = segments[segments.length - 1].split(".")[1];
               return (
-                <HStack key={url}>
-                  <Text w="100px">{platform}</Text>
+                <HStack key={id} py="2">
+                  <Text w="200px" textTransform="capitalize">
+                    {platform}{" "}
+                    <chakra.span color="gray.500">({executable})</chakra.span>
+                  </Text>
                   <Anchor
                     overflowWrap="break-word"
                     wordBreak="break-word"
                     w="full"
-                    href={url}
+                    href={browser_download_url}
                     color="blue.500"
                   >
-                    {segments.at(segments.length - 1)?.replace("build", "")}
+                    {name}
                   </Anchor>
                 </HStack>
               );
