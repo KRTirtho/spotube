@@ -31,6 +31,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   final String titleImage;
   final bool isPlaying;
   final void Function([Track? currentTrack]) onPlay;
+  final void Function() onAddToQueue;
   final void Function([Track? currentTrack]) onShuffledPlay;
   final void Function() onShare;
   final Widget? heartBtn;
@@ -49,6 +50,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     required this.isPlaying,
     required this.onPlay,
     required this.onShuffledPlay,
+    required this.onAddToQueue,
     required this.onShare,
     required this.routePath,
     this.heartBtn,
@@ -87,14 +89,20 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         onPressed: onShuffledPlay,
       ),
       const SizedBox(width: 5),
+      // add to queue playlist
+      if (!isPlaying)
+        PlatformIconButton(
+          onPressed: tracksSnapshot.data != null ? onAddToQueue : null,
+          icon: Icon(
+            SpotubeIcons.queueAdd,
+            color: color?.titleTextColor,
+          ),
+        ),
       // play playlist
       PlatformIconButton(
         backgroundColor: PlatformTheme.of(context).primaryColor,
         onPressed: tracksSnapshot.data != null ? onPlay : null,
-        icon: Icon(
-          isPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
-          color: PlatformTextTheme.of(context).body?.color,
-        ),
+        icon: Icon(isPlaying ? SpotubeIcons.stop : SpotubeIcons.play),
       ),
       const SizedBox(width: 10),
     ];

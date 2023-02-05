@@ -233,16 +233,38 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       : [];
 
   // modifiers
-  void add(Track track) {
-    state = state?.copyWith(
-      tracks: state!.tracks..add(track),
-    );
+  void add(List<Track> tracks) {
+    if (!isLoaded) {
+      loadAndPlay(tracks);
+    } else {
+      state = state?.copyWith(
+        tracks: state!.tracks..addAll(tracks),
+      );
+    }
   }
 
-  void remove(Track track) {
-    state = state?.copyWith(
-      tracks: state!.tracks..remove(track),
+  void remove(List<Track> tracks) {
+    if (!isLoaded) return;
+    final trackIds = tracks.map((e) => e.id!).toSet();
+    final newTracks = state!.tracks.whereNot(
+      (element) => trackIds.contains(element.id),
     );
+
+    if (newTracks.isEmpty) {
+      stop();
+      return;
+    }
+    state = state?.copyWith(
+      tracks: newTracks.toSet(),
+      active: !newTracks.contains(state!.activeTrack)
+          ? state!.active > newTracks.length - 1
+              ? newTracks.length - 1
+              : state!.active
+          : null,
+    );
+    if (state!.isLoading) {
+      play();
+    }
   }
 
   void shuffle() {
@@ -451,6 +473,16 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     return blacklist
         .filter(playlist)
         .every((track) => trackIds.contains(track.id!));
+  }
+
+  bool isTrackOnQueue(TrackSimple track) {
+    if (!isLoaded) return false;
+    if (state!.isShuffled) {
+      final trackIds = state!.tempTracks.map((track) => track.id!);
+      return trackIds.contains(track.id!);
+    }
+    final trackIds = state!.tracks.map((track) => track.id!);
+    return trackIds.contains(track.id!);
   }
 
   @override

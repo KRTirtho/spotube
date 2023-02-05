@@ -323,6 +323,27 @@ class ArtistPage extends HookConsumerWidget {
                               style:
                                   PlatformTheme.of(context).textTheme?.headline,
                             ),
+                            if (!isPlaylistPlaying)
+                              PlatformIconButton(
+                                icon: const Icon(
+                                  SpotubeIcons.queueAdd,
+                                ),
+                                onPressed: () {
+                                  playlistNotifier.add(topTracks.toList());
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      width: 300,
+                                      behavior: SnackBarBehavior.floating,
+                                      content: PlatformText(
+                                        "Added ${topTracks.length} tracks to queue",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            if (platform != TargetPlatform.linux)
+                              const SizedBox(width: 5),
                             PlatformIconButton(
                               icon: Icon(
                                 isPlaylistPlaying

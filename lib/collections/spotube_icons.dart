@@ -25,6 +25,8 @@ abstract class SpotubeIcons {
   static const heart = FeatherIcons.heart;
   static const heartFilled = Icons.favorite_rounded;
   static const queue = Icons.queue_music_rounded;
+  static const queueAdd = Icons.add_to_photos_outlined;
+  static const queueRemove = Icons.remove_outlined;
   static const download = FeatherIcons.download;
   static const done = FeatherIcons.checkCircle;
   static const alternativeRoute = Icons.alt_route_rounded;

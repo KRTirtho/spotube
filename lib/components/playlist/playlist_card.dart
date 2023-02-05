@@ -70,6 +70,25 @@ class PlaylistCard extends HookConsumerWidget {
         await playlistNotifier.loadAndPlay(fetchedTracks);
         tracks.value = fetchedTracks;
       },
+      onAddToQueuePressed: () async {
+        if (isPlaylistPlaying) return;
+        List<Track> fetchedTracks = await queryBowl.fetchQuery(
+              key: ValueKey(const Uuid().v4()),
+              Queries.playlist.tracksOf(playlist.id!),
+              externalData: ref.read(spotifyProvider),
+            ) ??
+            [];
+
+        if (fetchedTracks.isEmpty) return;
+
+        playlistNotifier.add(fetchedTracks);
+        tracks.value = fetchedTracks;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Added ${fetchedTracks.length} tracks to queue"),
+          ),
+        );
+      },
     );
   }
 }

@@ -13,6 +13,7 @@ enum PlaybuttonCardViewType { square, list }
 class PlaybuttonCard extends HookWidget {
   final void Function()? onTap;
   final void Function()? onPlaybuttonPressed;
+  final void Function()? onAddToQueuePressed;
   final String? description;
   final EdgeInsetsGeometry? margin;
   final String imageUrl;
@@ -29,6 +30,7 @@ class PlaybuttonCard extends HookWidget {
     this.margin,
     this.description,
     this.onPlaybuttonPressed,
+    this.onAddToQueuePressed,
     this.onTap,
     this.viewType = PlaybuttonCardViewType.square,
     Key? key,
@@ -101,6 +103,15 @@ class PlaybuttonCard extends HookWidget {
                       color: Colors.white,
                     ),
             );
+            final addToQueueButton = PlatformIconButton(
+              onPressed: onAddToQueuePressed,
+              backgroundColor:
+                  PlatformTheme.of(context).secondaryBackgroundColor,
+              hoverColor: PlatformTheme.of(context)
+                  .secondaryBackgroundColor
+                  ?.withOpacity(0.5),
+              icon: const Icon(SpotubeIcons.queueAdd),
+            );
             final image = Padding(
               padding: EdgeInsets.all(
                 platform == TargetPlatform.windows ? 5 : 0,
@@ -131,7 +142,16 @@ class PlaybuttonCard extends HookWidget {
                       textDirection: TextDirection.ltr,
                       bottom: 10,
                       end: 5,
-                      child: playButton,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (!isPlaying) addToQueueButton,
+                          if (platform != TargetPlatform.linux)
+                            const SizedBox(width: 5),
+                          playButton,
+                        ],
+                      ),
                     )
                   ],
                 ),
@@ -192,6 +212,8 @@ class PlaybuttonCard extends HookWidget {
                   ],
                 ),
                 const Spacer(),
+                addToQueueButton,
+                const SizedBox(width: 10),
                 playButton,
                 const SizedBox(width: 10),
               ],

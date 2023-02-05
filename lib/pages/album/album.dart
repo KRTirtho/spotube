@@ -98,8 +98,23 @@ class AlbumPage extends HookConsumerWidget {
               ref,
             );
           } else {
-            playback.stop();
+            playback.remove(
+              tracksSnapshot.data!
+                  .map((track) =>
+                      TypeConversionUtils.simpleTrack_X_Track(track, album))
+                  .toList(),
+            );
           }
+        }
+      },
+      onAddToQueue: () {
+        if (tracksSnapshot.hasData && !isAlbumPlaying) {
+          playback.add(
+            tracksSnapshot.data!
+                .map((track) =>
+                    TypeConversionUtils.simpleTrack_X_Track(track, album))
+                .toList(),
+          );
         }
       },
       onShare: () {

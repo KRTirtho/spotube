@@ -92,8 +92,13 @@ class PlaylistView extends HookConsumerWidget {
               currentTrack: track,
             );
           } else {
-            playlistNotifier.stop();
+            playlistNotifier.remove(tracksSnapshot.data!);
           }
+        }
+      },
+      onAddToQueue: () {
+        if (tracksSnapshot.hasData && !isPlaylistPlaying) {
+          playlistNotifier.add(tracksSnapshot.data!);
         }
       },
       bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),

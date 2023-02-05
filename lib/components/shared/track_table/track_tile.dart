@@ -74,6 +74,8 @@ class TrackTile extends HookConsumerWidget {
     );
     final auth = ref.watch(authProvider);
     final spotify = ref.watch(spotifyProvider);
+    final playlistQueueNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+
     final removingTrack = useState<String?>(null);
     final removeTrack = useMutation<bool, Tuple2<SpotifyApi, String>>(
       job: Mutations.playlist.removeTrackOf(playlistId ?? ""),
@@ -319,6 +321,34 @@ class TrackTile extends HookConsumerWidget {
             if (!isLocal)
               AdaptiveActions(
                 actions: [
+                  if (!playlistQueueNotifier.isTrackOnQueue(track.value))
+                    Action(
+                      icon: const Icon(SpotubeIcons.queueAdd),
+                      text: const PlatformText("Add to queue"),
+                      onPressed: () {
+                        playlistQueueNotifier.add([track.value]);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: PlatformText(
+                                "Added ${track.value.name} to queue"),
+                          ),
+                        );
+                      },
+                    )
+                  else
+                    Action(
+                      icon: const Icon(SpotubeIcons.queueRemove),
+                      text: const PlatformText("Remove from queue"),
+                      onPressed: () {
+                        playlistQueueNotifier.remove([track.value]);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: PlatformText(
+                                "Removed ${track.value.name} from queue"),
+                          ),
+                        );
+                      },
+                    ),
                   if (toggler.item3.hasData)
                     Action(
                       icon: toggler.item1
@@ -334,7 +364,7 @@ class TrackTile extends HookConsumerWidget {
                     ),
                   if (auth.isLoggedIn)
                     Action(
-                      icon: const Icon(SpotubeIcons.addFilled),
+                      icon: const Icon(SpotubeIcons.playlistAdd),
                       text: const PlatformText("Add To playlist"),
                       onPressed: actionAddToPlaylist,
                     ),
