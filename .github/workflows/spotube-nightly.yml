@@ -13,38 +13,55 @@ jobs:
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
-          flutter-version: '3.3.8'
-      - name: Get current date
+          flutter-version: "3.3.8"
+
+      - name: Getting current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - run: |
+
+      - name: Installing dependencies and configuring version
+        run: |
           sudo apt-get update -y
           sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
-      - run: |
+          curl -sS https://webi.sh/yq | sh
+          yq -i '.version |= sub("\+\d+", "-nightly-")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          flutter config --enable-linux-desktop
+          flutter pub get
+
+      - name: Installing appimage-builder
+        run: |
           wget -O appimage-builder https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
           chmod +x appimage-builder
           mv appimage-builder /usr/local/bin/
 
-      - run: |
-          curl -sS https://webi.sh/yq | sh
-          yq -i '.version |= sub("\+\d+", "-nightly-")' pubspec.yaml
-          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+      - name: Generating Secrets
+        run: |
           echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
-          flutter config --enable-linux-desktop
-          flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Building Linux application
+        run: |
           dart pub global activate flutter_distributor
           flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
           make tar
-      - run: |
-          mv build/Spotube-linux-x86_64.tar.xz dist/
-          mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64.deb
-          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
-      - uses: actions/upload-artifact@v3
+          mv build/Spotube-linux-x86_64.tar.xz dist/Spotube-linux-x86_64-nightly-${{ github.run_number }}.tar.xz
+          mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64-nightly-${{ github.run_number }}.deb
+          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64-nightly-${{ github.run_number }}.AppImage
+
+      - name: Uploading binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: Spotube-Linux-Bundle
-          path: dist/
-      - name: Setup upterm session
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file_glob: true
+          file: dist/*
+          tag: refs/tags/nightly
+          body: |
+            ## nightly-${{ github.run_number }}
+            Nightly build no. ${{ github.run_number }} of Spotube
+          overwrite: true
+
+      - name: Setting up upterm session
         if: ${{ failure() }}
         uses: lhotari/action-upterm@v1
         with:
@@ -57,28 +74,41 @@ jobs:
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
-          flutter-version: '3.3.8'
-      - run: |
+          flutter-version: "3.3.8"
+
+      - name: Installing dependencies and configuring version
+        run: |
           sudo apt-get update -y
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
-
-      - run: |
           curl -sS https://webi.sh/yq | sh
           yq -i '.version |= sub("\+\d+", "-nightly-")' pubspec.yaml
           yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
-          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
           flutter pub get
+
+      - name: Generating Secrets and key store
+        run: |
+          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
           echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
+
+      - name: Building Android apk
+        run: |
           flutter build apk
-          make apk
-      - uses: actions/upload-artifact@v2
+          mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch-nightly-${{ github.run_number }}.apk
+
+      - name: Uploading binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: Spotube-Android-Bundle
-          path: |
-            build/Spotube-android-all-arch.apk
-      - name: Setup upterm session
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/Spotube-android-all-arch-nightly-${{ github.run_number }}.apk
+          tag: refs/tags/nightly
+          body: |
+            ## nightly-${{ github.run_number }}
+            Nightly build no. ${{ github.run_number }} of Spotube
+          overwrite: true
+
+      - name: Setting up upterm session
         if: ${{ failure() }}
         uses: lhotari/action-upterm@v1
         with:
@@ -88,33 +118,43 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      # Build Windows Executable
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
-          flutter-version: '3.3.8'
-      - run: |
+          flutter-version: "3.3.8"
+
+      - name: Installing dependencies and configuring versions
+        run: |
           choco install sed make yq -y
           yq -i '.version |= sub("\+\d+", "-nightly-")' pubspec.yaml
           yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.GITHUB_RUN_NUMBER }}/" windows/runner/Runner.rc
-          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{  github.run_number  }}/" windows/runner/Runner.rc
           flutter config --enable-windows-desktop
           flutter pub get
+
+      - name: Generating Secrets
+        run: |
+          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Building for Windows x64
+        run: |
           dart pub global activate flutter_distributor
           make innoinstall
           flutter_distributor package --platform=windows --targets=exe --skip-clean
+          mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup-nightly-${{ github.run_number }}.exe
 
-      # Create Chocolatey Package
-      # setting the sha256 hash for new bundle
-      - run: mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
-
-      # Upload artifacts
-      - uses: actions/upload-artifact@v3
+      - name: Uploading binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: Spotube-Windows-Bundle
-          path: dist/
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file_glob: true
+          file: dist/*
+          tag: refs/tags/nightly
+          body: |
+            ## nightly-${{ github.run_number }}
+            Nightly build no. ${{ github.run_number }} of Spotube
+          overwrite: true
 
   build_macos:
     runs-on: macos-11
@@ -123,24 +163,39 @@ jobs:
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
-          flutter-version: '3.3.8'
-      - run: brew install yq
-      - run: yq -i '.version |= sub("\+\d+", "-nightly-")' pubspec.yaml
-      - run: yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
-      - run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
-      - run: flutter config --enable-macos-desktop
-      - run: flutter pub get
-      - run: dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
-      - run: flutter build macos
-      - run: du -sh build/macos/Build/Products/Release/spotube.app
-      - run: npm install -g appdmg
-      - run: appdmg appdmg.json build/Spotube-macos-x86_64.dmg
-      - uses: actions/upload-artifact@v2
+          flutter-version: "3.3.8"
+
+      - name: Installing dependencies and configuring versions
+        run: |
+          brew install yq
+          yq -i '.version |= sub("\+\d+", "-nightly-")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          flutter config --enable-macos-desktop
+          flutter pub get
+
+      - name: Generating Secrets
+        run: |
+          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Building for MacOS
+        run: |
+          flutter build macos
+          npm install -g appdmg
+          appdmg appdmg.json build/Spotube-macos-x86_64-nightly-${{ github.run_number }}.dmg
+
+      - name: Uploading binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: Spotube-Macos-Bundle
-          path: |
-            build/Spotube-macos-x86_64.dmg
-      - name: Setup upterm session
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/Spotube-macos-x86_64-nightly-${{ github.run_number }}.dmg
+          tag: refs/tags/nightly
+          body: |
+            ## nightly-${{ github.run_number }}
+            Nightly build no. ${{ github.run_number }} of Spotube
+          overwrite: true
+
+      - name: Setting up upterm session
         if: ${{ failure() }}
         uses: lhotari/action-upterm@v1
         with:
