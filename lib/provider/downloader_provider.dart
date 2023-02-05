@@ -13,7 +13,7 @@ import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/youtube_provider.dart';
+import 'package:spotube/services/youtube.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Comment;
 
@@ -165,7 +165,7 @@ final downloaderProvider = ChangeNotifierProvider(
     return Downloader(
       ref,
       queueInstance,
-      yt: ref.watch(youtubeProvider),
+      yt: youtube,
       downloadPath: ref.watch(
         userPreferencesProvider.select(
           (s) => s.downloadLocation,

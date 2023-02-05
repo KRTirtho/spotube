@@ -8,6 +8,7 @@ import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/linux_audio_service.dart';
 import 'package:spotube/services/mobile_audio_service.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -15,9 +16,6 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
-
-final audioPlayer = AudioPlayer();
-final youtube = YoutubeExplode();
 
 class PlaylistQueue {
   final Set<Track> tracks;

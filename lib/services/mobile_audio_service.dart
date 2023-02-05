@@ -4,12 +4,12 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 
 class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
-  final PlaylistQueueNotifier  playlistNotifier;
+  final PlaylistQueueNotifier playlistNotifier;
 
-      
   PlaylistQueue? get playlist => playlistNotifier.state;
 
   MobileAudioService(this.playlistNotifier) {

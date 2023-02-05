@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/provider/dbus_provider.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:window_manager/window_manager.dart';
 

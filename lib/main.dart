@@ -20,11 +20,11 @@ import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/audio_player_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/youtube_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
+import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/dark_theme.dart';
 import 'package:spotube/themes/light_theme.dart';
 import 'package:spotube/utils/platform.dart';
@@ -147,7 +147,7 @@ void main(List<String> rawArgs) async {
                     return Downloader(
                       ref,
                       queueInstance,
-                      yt: ref.watch(youtubeProvider),
+                      yt: youtube,
                       downloadPath: ref.watch(
                         userPreferencesProvider.select(
                           (s) => s.downloadLocation,
@@ -258,12 +258,11 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
     final backgroundMaterialColor = ref
         .watch(userPreferencesProvider.select((s) => s.backgroundColorScheme));
-    final player = ref.watch(audioPlayerProvider);
-    final youtube = ref.watch(youtubeProvider);
 
+    /// For enabling hot reload for audio player
     useEffect(() {
       return () {
-        player.dispose();
+        audioPlayer.dispose();
         youtube.close();
       };
     }, []);
