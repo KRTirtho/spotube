@@ -45,9 +45,9 @@ jobs:
           dart pub global activate flutter_distributor
           flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
           make tar
-          mv build/Spotube-linux-x86_64.tar.xz dist/Spotube-linux-x86_64-nightly-${{ github.run_number }}.tar.xz
-          mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64-nightly-${{ github.run_number }}.deb
-          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64-nightly-${{ github.run_number }}.AppImage
+          mv build/Spotube-linux-x86_64.tar.xz dist/Spotube-linux-x86_64-nightly.tar.xz
+          mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64-nightly.deb
+          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64-nightly.AppImage
 
       - name: Uploading binaries to release
         uses: svenstaro/upload-release-action@v2
@@ -95,13 +95,13 @@ jobs:
       - name: Building Android apk
         run: |
           flutter build apk
-          mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch-nightly-${{ github.run_number }}.apk
+          mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch-nightly.apk
 
       - name: Uploading binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/Spotube-android-all-arch-nightly-${{ github.run_number }}.apk
+          file: build/Spotube-android-all-arch-nightly.apk
           tag: refs/tags/nightly
           body: |
             ## nightly-${{ github.run_number }}
@@ -142,7 +142,7 @@ jobs:
           dart pub global activate flutter_distributor
           make innoinstall
           flutter_distributor package --platform=windows --targets=exe --skip-clean
-          mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup-nightly-${{ github.run_number }}.exe
+          mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup-nightly.exe
 
       - name: Uploading binaries to release
         uses: svenstaro/upload-release-action@v2
@@ -182,13 +182,13 @@ jobs:
         run: |
           flutter build macos
           npm install -g appdmg
-          appdmg appdmg.json build/Spotube-macos-x86_64-nightly-${{ github.run_number }}.dmg
+          appdmg appdmg.json build/Spotube-macos-x86_64-nightly.dmg
 
       - name: Uploading binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/Spotube-macos-x86_64-nightly-${{ github.run_number }}.dmg
+          file: build/Spotube-macos-x86_64-nightly.dmg
           tag: refs/tags/nightly
           body: |
             ## nightly-${{ github.run_number }}
