@@ -85,7 +85,7 @@ I'm always releasing newer versions of binary of the software each 2-3 month wit
 > **Note!:** If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki
 
 ## Nightly Builds
-Get the latest nightly builds of Spotube [here](https://nightly.link/KRTirtho/spotube/workflows/spotube-nightly/build)
+Get the latest nightly builds of Spotube [here](https://github.com/KRTirtho/spotube/releases/tag/nightly)
 
 # TODO:
 - [ ] Windows OS Media Control & Media Keys Support

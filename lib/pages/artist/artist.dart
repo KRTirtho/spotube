@@ -286,6 +286,11 @@ class ArtistPage extends HookConsumerWidget {
                         externalData: spotify,
                       );
 
+                      final isPlaylistPlaying =
+                          playlistNotifier.isPlayingPlaylist(
+                        topTracksQuery.data ?? <Track>[],
+                      );
+
                       if (topTracksQuery.isLoading || !topTracksQuery.hasData) {
                         return const PlatformCircularProgressIndicator();
                       } else if (topTracksQuery.hasError) {
@@ -296,10 +301,7 @@ class ArtistPage extends HookConsumerWidget {
 
                       final topTracks = topTracksQuery.data!;
 
-                      final isPlaylistPlaying = useMemoized(() {
-                        return playlistNotifier.isPlayingPlaylist(topTracks);
-                      }, [topTracks]);
-                      playPlaylist(List<Track> tracks,
+                      void playPlaylist(List<Track> tracks,
                           {Track? currentTrack}) async {
                         currentTrack ??= tracks.first;
                         if (!isPlaylistPlaying) {
@@ -321,22 +323,16 @@ class ArtistPage extends HookConsumerWidget {
                               style:
                                   PlatformTheme.of(context).textTheme?.headline,
                             ),
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(
-                                color: PlatformTheme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(50),
+                            PlatformIconButton(
+                              icon: Icon(
+                                isPlaylistPlaying
+                                    ? SpotubeIcons.stop
+                                    : SpotubeIcons.play,
+                                color: Colors.white,
                               ),
-                              child: PlatformIconButton(
-                                icon: Icon(
-                                  isPlaylistPlaying
-                                      ? SpotubeIcons.stop
-                                      : SpotubeIcons.play,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () =>
-                                    playPlaylist(topTracks.toList()),
-                              ),
+                              backgroundColor:
+                                  PlatformTheme.of(context).primaryColor,
+                              onPressed: () => playPlaylist(topTracks.toList()),
                             )
                           ],
                         ),

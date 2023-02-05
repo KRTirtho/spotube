@@ -45,7 +45,6 @@ class PlaylistView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlistQueue = ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     SpotifyApi spotify = ref.watch(spotifyProvider);
 
