@@ -77,24 +77,32 @@ class PlayerQueue extends HookConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            PlatformAppBar(
-              title:
-                  PlatformText.subheading("${tracks.length} tracks in Queue"),
-              backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              actions: [
+            Row(
+              children: [
+                const SizedBox(width: 10),
+                PlatformText(
+                  "${tracks.length} tracks in Queue",
+                  style: TextStyle(
+                    color: headlineColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                const Spacer(),
                 PlatformFilledButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(
                         PlatformTheme.of(context)
                             .scaffoldBackgroundColor
                             ?.withOpacity(0.5)),
+                    foregroundColor: MaterialStatePropertyAll(
+                        PlatformTheme.of(context).textTheme?.subheading?.color),
                   ),
                   child: Row(
                     children: const [
                       Icon(SpotubeIcons.playlistRemove),
                       SizedBox(width: 5),
-                      PlatformText("Clear All"),
+                      Text("Clear All"),
                     ],
                   ),
                   onPressed: () {
@@ -102,6 +110,7 @@ class PlayerQueue extends HookConsumerWidget {
                     Navigator.of(context).pop();
                   },
                 ),
+                const SizedBox(width: 10),
               ],
             ),
             const SizedBox(height: 10),
