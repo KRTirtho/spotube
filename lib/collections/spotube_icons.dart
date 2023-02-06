@@ -63,4 +63,6 @@ abstract class SpotubeIcons {
   static const userRemove = FeatherIcons.userX;
   static const close = FeatherIcons.x;
   static const minimize = FeatherIcons.chevronDown;
+  static const personalized = FeatherIcons.star;
+  static const genres = FeatherIcons.music;
 }

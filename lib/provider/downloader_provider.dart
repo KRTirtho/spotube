@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:queue/queue.dart';
 import 'package:path/path.dart' as path;
-import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotify/spotify.dart' hide Image, Queue;
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 
 import 'package:spotube/models/logger.dart';

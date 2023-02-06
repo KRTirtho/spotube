@@ -2,13 +2,13 @@ import 'package:catcher/catcher.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
+import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/album/album.dart';
 import 'package:spotube/pages/artist/artist.dart';
-import 'package:spotube/pages/genre/genres.dart';
 import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/desktop_login/login_tutorial.dart';
 import 'package:spotube/pages/desktop_login/desktop_login.dart';
@@ -31,8 +31,7 @@ final router = GoRouter(
       routes: [
         GoRoute(
           path: "/",
-          pageBuilder: (context, state) =>
-              SpotubePage(child: const GenrePage()),
+          pageBuilder: (context, state) => SpotubePage(child: const HomePage()),
         ),
         GoRoute(
           path: "/search",

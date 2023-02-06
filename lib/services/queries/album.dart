@@ -1,3 +1,4 @@
+import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:spotify/spotify.dart';
 
@@ -22,4 +23,28 @@ class AlbumQueries {
     return spotify.me
         .isSavedAlbums([getVariable(queryKey)]).then((value) => value.first);
   });
+
+  final newReleases = InfiniteQueryJob<Page<AlbumSimple>, SpotifyApi, int>(
+    queryKey: "new-releases",
+    initialParam: 0,
+    getNextPageParam: (lastPage, lastParam) =>
+        lastPage.items?.length == 5 ? lastPage.nextOffset : null,
+    getPreviousPageParam: (firstPage, firstParam) => firstPage.nextOffset - 6,
+    refetchOnExternalDataChange: true,
+    task: (_, pageParam, spotify) async {
+      try {
+        final albums = await Pages(
+          spotify,
+          'v1/browse/new-releases',
+          (json) => AlbumSimple.fromJson(json),
+          'albums',
+          (json) => AlbumSimple.fromJson(json),
+        ).getPage(5, pageParam);
+        return albums;
+      } catch (e, stack) {
+        Catcher.reportCheckedError(e, stack);
+        rethrow;
+      }
+    },
+  );
 }

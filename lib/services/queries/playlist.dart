@@ -1,3 +1,4 @@
+import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:spotify/spotify.dart';
 
@@ -31,6 +32,25 @@ class PlaylistQueries {
           : spotify.tracks.me.saved.all().then(
                 (tracks) => tracks.map((e) => e.track!).toList(),
               );
+    },
+  );
+
+  final featured = InfiniteQueryJob<Page<PlaylistSimple>, SpotifyApi, int>(
+    queryKey: "featured-playlists",
+    initialParam: 0,
+    getNextPageParam: (lastPage, lastParam) =>
+        lastPage.items?.length == 5 ? lastPage.nextOffset : null,
+    getPreviousPageParam: (firstPage, firstParam) => firstPage.nextOffset - 6,
+    refetchOnExternalDataChange: true,
+    task: (_, pageParam, spotify) async {
+      try {
+        final playlists =
+            await spotify.playlists.featured.getPage(5, pageParam);
+        return playlists;
+      } catch (e, stack) {
+        Catcher.reportCheckedError(e, stack);
+        rethrow;
+      }
     },
   );
 }

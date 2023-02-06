@@ -4,19 +4,16 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:tuple/tuple.dart';
 
 class GenrePage extends HookConsumerWidget {
@@ -59,16 +56,11 @@ class GenrePage extends HookConsumerWidget {
       final searchText = useState("");
       final categories = useMemoized(
         () {
-          final categories = [
-            Category()
-              ..id = "user-featured-playlists"
-              ..name = "Featured",
-            ...categoriesQuery.pages
-                .expand<Category>(
-                  (page) => page?.items ?? const Iterable.empty(),
-                )
-                .toList()
-          ];
+          final categories = categoriesQuery.pages
+              .expand<Category>(
+                (page) => page?.items ?? const Iterable.empty(),
+              )
+              .toList();
           if (searchText.value.isEmpty) {
             return categories;
           }
@@ -117,27 +109,15 @@ class GenrePage extends HookConsumerWidget {
           ),
         ),
       );
-      return PlatformScaffold(
-        appBar: kIsDesktop
-            ? PageWindowTitleBar(
-                actions: [searchbar, const SizedBox(width: 10)],
-              )
-            : null,
-        backgroundColor: PlatformProperty.all(
-          PlatformTheme.of(context).scaffoldBackgroundColor!,
-        ),
-        body: (platform == TargetPlatform.windows && kIsDesktop) || kIsMobile
-            ? Stack(
-                children: [
-                  Positioned.fill(child: list),
-                  Positioned(
-                    top: kIsMobile ? 30 : 10,
-                    right: kIsMobile ? 5 : 20,
-                    child: searchbar,
-                  ),
-                ],
-              )
-            : list,
+      return Stack(
+        children: [
+          Positioned.fill(child: list),
+          Positioned(
+            top: 0,
+            right: 10,
+            child: searchbar,
+          ),
+        ],
       );
     });
   }

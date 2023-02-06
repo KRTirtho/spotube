@@ -14,11 +14,9 @@ import 'package:spotube/services/queries/queries.dart';
 
 class CategoryCard extends HookConsumerWidget {
   final Category category;
-  final Iterable<PlaylistSimple>? playlists;
   CategoryCard(
     this.category, {
     Key? key,
-    this.playlists,
   }) : super(key: key);
 
   final logger = getLogger(CategoryCard);

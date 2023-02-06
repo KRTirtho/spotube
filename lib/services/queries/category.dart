@@ -27,10 +27,7 @@ class CategoryQueries {
     getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 6,
     task: (queryKey, pageKey, spotify) {
       final id = getVariable(queryKey);
-      return (id != "user-featured-playlists"
-              ? spotify.playlists.getByCategoryId(id)
-              : spotify.playlists.featured)
-          .getPage(5, pageKey);
+      return spotify.playlists.getByCategoryId(id).getPage(5, pageKey);
     },
   );
 }
