@@ -35,43 +35,12 @@ class Action extends StatelessWidget {
                 ),
       );
     }
-    if (backgroundColor == null) {
-      return PlatformTextButton(
-        style: TextButton.styleFrom(
-          foregroundColor:
-              backgroundColor ?? PlatformTextTheme.of(context).body?.color,
-          backgroundColor: backgroundColor,
-          padding: const EdgeInsets.all(20),
-        ),
-        onPressed: onPressed,
-        child: Row(
-          children: [
-            icon,
-            const SizedBox(width: 10),
-            text,
-          ],
-        ),
-      );
-    }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: PlatformFilledButton(
-        style: TextButton.styleFrom(
-          foregroundColor:
-              backgroundColor ?? PlatformTextTheme.of(context).body?.color,
-          backgroundColor: backgroundColor,
-          padding: const EdgeInsets.all(20),
-        ),
-        onPressed: onPressed,
-        child: Row(
-          children: [
-            icon,
-            const SizedBox(width: 10),
-            text,
-          ],
-        ),
-      ),
+    return PlatformListTile(
+      tileColor: backgroundColor,
+      onTap: onPressed,
+      leading: icon,
+      title: text,
     );
   }
 }
@@ -103,7 +72,7 @@ class AdaptiveActions extends HookWidget {
                 children: actions
                     .map(
                       (action) => SizedBox(
-                        width: 250,
+                        width: 200,
                         child: Row(
                           children: [
                             Expanded(child: action),
