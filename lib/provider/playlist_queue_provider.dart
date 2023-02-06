@@ -40,7 +40,7 @@ class PlaylistQueue {
                   if (e["path"] != null) {
                     return LocalTrack.fromJson(jsonTrack);
                   } else if (i == json["active"] && !json.containsKey("path")) {
-                    return await SpotubeTrack.fromFetchTrack(
+                    return await SpotubeTrack.fetchFromTrack(
                       Track.fromJson(jsonTrack),
                       preferences,
                     );
@@ -63,7 +63,7 @@ class PlaylistQueue {
                   if (e["path"] != null) {
                     return LocalTrack.fromJson(jsonTrack);
                   } else if (i == json["active"] && !json.containsKey("path")) {
-                    return await SpotubeTrack.fromFetchTrack(
+                    return await SpotubeTrack.fetchFromTrack(
                       Track.fromJson(jsonTrack),
                       preferences,
                     );
@@ -196,7 +196,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
           !isPreSearching) {
         isPreSearching = true;
         final tracks = state!.tracks.toList();
-        tracks[state!.active + 1] = await SpotubeTrack.fromFetchTrack(
+        tracks[state!.active + 1] = await SpotubeTrack.fetchFromTrack(
           state!.tracks.elementAt(state!.active + 1),
           preferences,
         );
@@ -355,7 +355,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     }
     if (state!.activeTrack is! SpotubeTrack) {
       final tracks = state!.tracks.toList();
-      tracks[state!.active] = await SpotubeTrack.fromFetchTrack(
+      tracks[state!.active] = await SpotubeTrack.fetchFromTrack(
         state!.activeTrack,
         preferences,
       );

@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:catcher/catcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:pocketbase/pocketbase.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/video.dart';
 import 'package:spotube/extensions/album_simple.dart';
@@ -65,7 +67,7 @@ class SpotubeTrack extends Track {
     uri = track.uri;
   }
 
-  static Future<SpotubeTrack> fromFetchTrack(
+  static Future<SpotubeTrack> fetchFromTrack(
       Track track, UserPreferences preferences) async {
     final artists = (track.artists ?? [])
         .map((ar) => ar.name)
@@ -79,16 +81,17 @@ class SpotubeTrack extends Track {
       onlyCleanArtist: true,
     ).trim();
 
-    final cachedTracks = await pb.collection(BackendTrack.collection).getList(
-          filter: "spotify_id = '${track.id}'",
-          sort: "-votes",
-          page: 0,
-          perPage: 1,
-        );
+    final cachedTracks = await Future<RecordModel?>.value(
+      pb
+          .collection(BackendTrack.collection)
+          .getFirstListItem("spotify_id = '${track.id}'"),
+    ).catchError((e, stack) {
+      Catcher.reportCheckedError(e, stack);
+      return null;
+    });
 
-    final cachedTrack = cachedTracks.items.isNotEmpty
-        ? BackendTrack.fromRecord(cachedTracks.items.first)
-        : null;
+    final cachedTrack =
+        cachedTracks != null ? BackendTrack.fromRecord(cachedTracks) : null;
 
     Video ytVideo;
     List<Video> siblings = [];
@@ -127,13 +130,17 @@ class SpotubeTrack extends Track {
     final ytUri = chosenStreamInfo.url.toString();
 
     if (cachedTrack == null) {
-      await pb.collection(BackendTrack.collection).create(
-            body: BackendTrack(
-              spotifyId: track.id!,
-              youtubeId: ytVideo.id.value,
-              votes: 0,
-            ).toJson(),
-          );
+      await Future<RecordModel?>.value(
+          pb.collection(BackendTrack.collection).create(
+                body: BackendTrack(
+                  spotifyId: track.id!,
+                  youtubeId: ytVideo.id.value,
+                  votes: 0,
+                ).toJson(),
+              )).catchError((e, stack) {
+        Catcher.reportCheckedError(e, stack);
+        return null;
+      });
     }
 
     if (preferences.predownload &&
@@ -205,32 +212,38 @@ class SpotubeTrack extends Track {
 
     final ytUri = chosenStreamInfo.url.toString();
 
-    final cachedTracks = await pb.collection(BackendTrack.collection).getList(
-          filter: "spotify_id = '$id' && youtube_id = '${video.id.value}'",
-          sort: "-votes",
-          page: 0,
-          perPage: 1,
-        );
+    final cachedTracks = await Future<RecordModel?>.value(
+      pb.collection(BackendTrack.collection).getFirstListItem(
+          "spotify_id = '$id' && youtube_id = '${video.id.value}'"),
+    ).catchError((e, stack) {
+      Catcher.reportCheckedError(e, stack);
+      return null;
+    });
 
-    final cachedTrack = cachedTracks.items.isNotEmpty
-        ? BackendTrack.fromRecord(cachedTracks.items.first)
-        : null;
+    final cachedTrack =
+        cachedTracks != null ? BackendTrack.fromRecord(cachedTracks) : null;
 
     if (cachedTrack == null) {
-      await pb.collection(BackendTrack.collection).create(
-            body: BackendTrack(
-              spotifyId: id!,
-              youtubeId: video.id.value,
-              votes: 1,
-            ).toJson(),
-          );
+      await Future<RecordModel?>.value(
+          pb.collection(BackendTrack.collection).create(
+                body: BackendTrack(
+                  spotifyId: id!,
+                  youtubeId: video.id.value,
+                  votes: 1,
+                ).toJson(),
+              )).catchError((e, stack) {
+        Catcher.reportCheckedError(e, stack);
+        return null;
+      });
     } else {
-      await pb.collection(BackendTrack.collection).update(
+      await Future<RecordModel?>.value(
+          pb.collection(BackendTrack.collection).update(
         cachedTrack.id,
-        body: {
-          "votes": cachedTrack.votes + 1,
-        },
-      );
+        body: {"votes": cachedTrack.votes + 1},
+      )).catchError((e, stack) {
+        Catcher.reportCheckedError(e, stack);
+        return null;
+      });
     }
 
     if (preferences.predownload &&

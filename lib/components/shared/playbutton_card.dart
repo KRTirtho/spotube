@@ -142,13 +142,13 @@ class PlaybuttonCard extends HookWidget {
                       textDirection: TextDirection.ltr,
                       bottom: 10,
                       end: 5,
-                      child: Row(
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           if (!isPlaying) addToQueueButton,
                           if (platform != TargetPlatform.linux)
-                            const SizedBox(width: 5),
+                            const SizedBox(height: 5),
                           playButton,
                         ],
                       ),

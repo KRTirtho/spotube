@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:collection/collection.dart';
@@ -25,12 +24,10 @@ enum AudioQuality {
 
 class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
-  String ytSearchFormat;
   String recommendationMarket;
   bool saveTrackLyrics;
   String geniusAccessToken;
   bool checkUpdate;
-  SpotubeTrackMatchAlgorithm trackMatchAlgorithm;
   AudioQuality audioQuality;
 
   MaterialColor accentColorScheme;
@@ -48,14 +45,12 @@ class UserPreferences extends PersistedChangeNotifier {
     required this.geniusAccessToken,
     required this.recommendationMarket,
     required this.themeMode,
-    required this.ytSearchFormat,
     required this.layoutMode,
     required this.predownload,
     this.saveTrackLyrics = false,
     this.accentColorScheme = Colors.green,
     this.backgroundColorScheme = Colors.grey,
     this.checkUpdate = true,
-    this.trackMatchAlgorithm = SpotubeTrackMatchAlgorithm.youtube,
     this.audioQuality = AudioQuality.high,
     this.skipSponsorSegments = true,
     this.downloadLocation = "",
@@ -100,12 +95,6 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setYtSearchFormat(String format) {
-    ytSearchFormat = format;
-    notifyListeners();
-    updatePersistence();
-  }
-
   void setAccentColorScheme(MaterialColor color) {
     accentColorScheme = color;
     notifyListeners();
@@ -120,12 +109,6 @@ class UserPreferences extends PersistedChangeNotifier {
 
   void setCheckUpdate(bool check) {
     checkUpdate = check;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setTrackMatchAlgorithm(SpotubeTrackMatchAlgorithm algorithm) {
-    trackMatchAlgorithm = algorithm;
     notifyListeners();
     updatePersistence();
   }
@@ -181,7 +164,6 @@ class UserPreferences extends PersistedChangeNotifier {
     geniusAccessToken = map["geniusAccessToken"] ??
         PrimitiveUtils.getRandomElement(lyricsSecrets);
 
-    ytSearchFormat = map["ytSearchFormat"] ?? ytSearchFormat;
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
     backgroundColorScheme = colorsMap.values
             .firstWhereOrNull((e) => e.value == map["backgroundColorScheme"]) ??
@@ -189,9 +171,6 @@ class UserPreferences extends PersistedChangeNotifier {
     accentColorScheme = colorsMap.values
             .firstWhereOrNull((e) => e.value == map["accentColorScheme"]) ??
         accentColorScheme;
-    trackMatchAlgorithm = map["trackMatchAlgorithm"] != null
-        ? SpotubeTrackMatchAlgorithm.values[map["trackMatchAlgorithm"]]
-        : trackMatchAlgorithm;
     audioQuality = map["audioQuality"] != null
         ? AudioQuality.values[map["audioQuality"]]
         : audioQuality;
@@ -213,12 +192,10 @@ class UserPreferences extends PersistedChangeNotifier {
       "saveTrackLyrics": saveTrackLyrics,
       "recommendationMarket": recommendationMarket,
       "geniusAccessToken": geniusAccessToken,
-      "ytSearchFormat": ytSearchFormat,
       "themeMode": themeMode.index,
       "backgroundColorScheme": backgroundColorScheme.value,
       "accentColorScheme": accentColorScheme.value,
       "checkUpdate": checkUpdate,
-      "trackMatchAlgorithm": trackMatchAlgorithm.index,
       "audioQuality": audioQuality.index,
       "skipSponsorSegments": skipSponsorSegments,
       "downloadLocation": downloadLocation,
@@ -234,7 +211,6 @@ final userPreferencesProvider = ChangeNotifierProvider(
     geniusAccessToken: "",
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,
-    ytSearchFormat: "\$MAIN_ARTIST - \$TITLE \$FEATURED_ARTISTS",
     layoutMode: kIsMobile ? LayoutMode.compact : LayoutMode.adaptive,
     predownload: kIsMobile,
   ),

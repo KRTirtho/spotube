@@ -52,7 +52,7 @@ class Downloader with ChangeNotifier {
     // Using android Audio Focus to keep the app run in background
     // _playback.mobileAudioService?.session?.setActive(true);
     grabberQueue.add(() async {
-      final track = await SpotubeTrack.fromFetchTrack(
+      final track = await SpotubeTrack.fetchFromTrack(
         baseTrack,
         ref.read(userPreferencesProvider),
       );

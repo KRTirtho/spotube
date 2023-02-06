@@ -9,10 +9,8 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/main.dart';
 import 'package:spotube/collections/spotify_markets.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -40,10 +38,6 @@ class SettingsPage extends HookConsumerWidget {
       if (dirStr == null) return;
       preferences.setDownloadLocation(dirStr);
     }, [preferences.downloadLocation]);
-
-    var ytSearchFormatController = useTextEditingController(
-      text: preferences.ytSearchFormat,
-    );
 
     return SafeArea(
       child: PlatformScaffold(
@@ -377,83 +371,6 @@ class SettingsPage extends HookConsumerWidget {
                             update?.call(() {});
                           },
                         ),
-                      ),
-                    ),
-                    AdaptiveListTile(
-                      leading: const Icon(SpotubeIcons.screenSearch),
-                      title: const SizedBox(
-                        height: 50,
-                        width: 200,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: AutoSizeText(
-                            "Format of the YouTube Search term",
-                            maxLines: 2,
-                          ),
-                        ),
-                      ),
-                      subtitle: const PlatformText("(Case sensitive)"),
-                      breakOn: Breakpoints.lg,
-                      trailing: (context, update) => ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 450),
-                        child: PlatformTextField(
-                          controller: ytSearchFormatController,
-                          suffix: PlatformFilledButton(
-                            child: const Icon(SpotubeIcons.save),
-                            onPressed: () {
-                              preferences.setYtSearchFormat(
-                                ytSearchFormatController.value.text,
-                              );
-                            },
-                          ),
-                          onSubmitted: (value) {
-                            preferences.setYtSearchFormat(value);
-                            update?.call(() {});
-                          },
-                        ),
-                      ),
-                    ),
-                    AdaptiveListTile(
-                      leading: const Icon(SpotubeIcons.barChart),
-                      title: SizedBox(
-                        height: 50,
-                        width: 180,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: AutoSizeText(
-                            "Track Match Algorithm",
-                            maxLines: 1,
-                            style: PlatformTextTheme.of(context).body,
-                          ),
-                        ),
-                      ),
-                      trailing: (context, update) =>
-                          PlatformDropDownMenu<SpotubeTrackMatchAlgorithm>(
-                        value: preferences.trackMatchAlgorithm,
-                        items: [
-                          PlatformDropDownMenuItem(
-                            value: SpotubeTrackMatchAlgorithm.authenticPopular,
-                            child: const PlatformText(
-                              "Popular from Author",
-                            ),
-                          ),
-                          PlatformDropDownMenuItem(
-                            value: SpotubeTrackMatchAlgorithm.popular,
-                            child: const PlatformText(
-                              "Accurately Popular",
-                            ),
-                          ),
-                          PlatformDropDownMenuItem(
-                            value: SpotubeTrackMatchAlgorithm.youtube,
-                            child: const PlatformText("YouTube's Top choice"),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            preferences.setTrackMatchAlgorithm(value);
-                            update?.call(() {});
-                          }
-                        },
                       ),
                     ),
                     PlatformText(
