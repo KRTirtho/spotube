@@ -64,6 +64,10 @@ class AboutSpotube extends HookConsumerWidget {
                       "Version:              v${packageInfo.version}",
                     ),
                     const SizedBox(height: 5),
+                    PlatformText(
+                      "Build Number:  ${packageInfo.buildNumber.replaceAll(".", " ")}",
+                    ),
+                    const SizedBox(height: 5),
                     InkWell(
                       onTap: () {
                         launchUrlString(
@@ -84,7 +88,7 @@ class AboutSpotube extends HookConsumerWidget {
                         );
                       },
                       child: const PlatformText(
-                        "License:               BSD-4-Clause",
+                        "License:              BSD-4-Clause",
                       ),
                     ),
                     const SizedBox(height: 5),
