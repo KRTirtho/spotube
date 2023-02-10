@@ -29,7 +29,7 @@ dependencies:
   file_picker: ^5.2.2
   fl_query: ^0.3.1
   fl_query_hooks: ^0.3.1
-  fluent_ui: 4.0.3
+  fluent_ui: ^4.3.0
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
@@ -52,7 +52,7 @@ dependencies:
   json_serializable: ^6.6.0
   libadwaita: ^1.2.5
   logger: ^1.1.0
-  macos_ui: ^1.7.5
+  macos_ui: ^1.9.0
   marquee: ^2.2.3
   metadata_god: ^0.3.2
   mime: ^1.0.2
@@ -64,7 +64,7 @@ dependencies:
   platform_ui:
     git:
       url: https://github.com/KRTirtho/platform_ui.git
-      ref: 073cefb9c419fcb01cbdfd6ca2f9714eec23c83b
+      ref: 339ea7922d2f881d9a72b565aeebc7e2c4b22509
   pocketbase: ^0.7.1+1
   popover: ^0.2.6+3
   queue: ^3.1.0+1
