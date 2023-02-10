@@ -7,6 +7,7 @@ import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
+import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -171,11 +172,28 @@ class SearchPage extends HookConsumerWidget {
                                       onTrackPlayButtonPressed:
                                           (currentTrack) async {
                                         final isTrackPlaying =
-                                            playlist?.activeTrack.id !=
+                                            playlist?.activeTrack.id ==
                                                 currentTrack.id;
-                                        if (!isTrackPlaying) {
-                                          await playlistNotifier
-                                              .loadAndPlay([currentTrack]);
+                                        if (!isTrackPlaying &&
+                                            context.mounted) {
+                                          final shouldPlay =
+                                              (playlist?.tracks.length ?? 0) >
+                                                      20
+                                                  ? await showPromptDialog(
+                                                      context: context,
+                                                      title:
+                                                          "Playing ${currentTrack.name}",
+                                                      message:
+                                                          "This will clear the current queue. "
+                                                          "${playlist?.tracks.length ?? 0} tracks will be removed\n"
+                                                          "Do you want to continue?",
+                                                    )
+                                                  : true;
+
+                                          if (shouldPlay) {
+                                            await playlistNotifier
+                                                .loadAndPlay([currentTrack]);
+                                          }
                                         }
                                       },
                                     );
