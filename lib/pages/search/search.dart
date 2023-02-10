@@ -16,7 +16,7 @@ import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -34,7 +34,9 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authProvider);
+    ref.watch(AuthenticationNotifier.provider);
+    final authenticationNotifier =
+        ref.watch(AuthenticationNotifier.provider.notifier);
     final spotify = ref.watch(spotifyProvider);
     final albumController = useScrollController();
     final playlistController = useScrollController();
@@ -83,7 +85,7 @@ class SearchPage extends HookConsumerWidget {
     return SafeArea(
       child: PlatformScaffold(
         appBar: kIsDesktop && !kIsMacOS ? PageWindowTitleBar() : null,
-        body: auth.isAnonymous
+        body: !authenticationNotifier.isLoggedIn
             ? const AnonymousFallback()
             : Column(
                 children: [

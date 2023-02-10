@@ -16,7 +16,7 @@ import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
@@ -56,7 +56,7 @@ class ArtistPage extends HookConsumerWidget {
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
 
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
     return SafeArea(
       child: PlatformScaffold(
@@ -163,7 +163,7 @@ class ArtistPage extends HookConsumerWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (auth.isLoggedIn)
+                                if (auth != null)
                                   HookBuilder(
                                     builder: (context) {
                                       final isFollowingQuery = useQuery(

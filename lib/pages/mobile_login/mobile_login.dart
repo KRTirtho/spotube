@@ -4,9 +4,8 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class WebViewLogin extends HookConsumerWidget {
   const WebViewLogin({Key? key}) : super(key: key);
@@ -14,7 +13,8 @@ class WebViewLogin extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final mounted = useIsMounted();
-    final auth = ref.watch(authProvider);
+    final authenticationNotifier =
+        ref.watch(AuthenticationNotifier.provider.notifier);
 
     if (kIsDesktop) {
       const Scaffold(
@@ -62,11 +62,8 @@ class WebViewLogin extends HookConsumerWidget {
                 return previousValue;
               });
 
-              final body = await ServiceUtils.getAccessToken(cookieHeader);
-              auth.setAuthState(
-                accessToken: body.accessToken,
-                authCookie: cookieHeader,
-                expiration: body.expiration,
+              authenticationNotifier.setCredentials(
+                await AuthenticationCredentials.fromCookie(cookieHeader),
               );
               if (mounted()) {
                 // ignore: use_build_context_synchronously

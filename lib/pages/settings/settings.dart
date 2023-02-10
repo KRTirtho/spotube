@@ -11,7 +11,7 @@ import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/main.dart';
 import 'package:spotube/collections/spotify_markets.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -21,7 +21,7 @@ class SettingsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
-    final Auth auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
     final pickColorScheme = useCallback((ColorSchemeType schemeType) {
       return () => showPlatformAlertDialog(context, builder: (context) {
@@ -59,7 +59,7 @@ class SettingsPage extends HookConsumerWidget {
                           .headline
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    if (auth.isAnonymous)
+                    if (auth == null)
                       AdaptiveListTile(
                         leading: Icon(
                           SpotubeIcons.login,
@@ -93,10 +93,9 @@ class SettingsPage extends HookConsumerWidget {
                           child: PlatformText(
                               "Connect with Spotify".toUpperCase()),
                         ),
-                      ),
-                    if (auth.isLoggedIn)
+                      )
+                    else
                       Builder(builder: (context) {
-                        Auth auth = ref.watch(authProvider);
                         return PlatformListTile(
                           leading: const Icon(SpotubeIcons.logout),
                           title: SizedBox(
@@ -119,7 +118,10 @@ class SettingsPage extends HookConsumerWidget {
                                   MaterialStateProperty.all(Colors.white),
                             ),
                             onPressed: () async {
-                              auth.logout();
+                              ref
+                                  .read(
+                                      AuthenticationNotifier.provider.notifier)
+                                  .logout();
                               GoRouter.of(context).pop();
                             },
                             child: const PlatformText("Logout"),

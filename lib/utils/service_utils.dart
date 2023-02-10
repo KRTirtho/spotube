@@ -8,7 +8,6 @@ import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/models/lyrics.dart';
-import 'package:spotube/models/spotify_spotube_credentials.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -244,23 +243,6 @@ abstract class ServiceUtils {
     );
 
     return subtitle;
-  }
-
-  static Future<SpotifySpotubeCredentials> getAccessToken(
-      String cookieHeader) async {
-    final res = await http.get(
-      Uri.parse(
-        "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
-      ),
-      headers: {
-        "Cookie": cookieHeader,
-        "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-      },
-    );
-    return SpotifySpotubeCredentials.fromJson(
-      jsonDecode(res.body),
-    );
   }
 
   static void navigate(BuildContext context, String location, {Object? extra}) {

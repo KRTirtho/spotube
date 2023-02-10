@@ -7,7 +7,7 @@ import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -32,9 +32,9 @@ class HeartButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
-    if (!auth.isLoggedIn) return Container();
+    if (auth == null) return Container();
 
     return PlatformIconButton(
       tooltip: tooltip,

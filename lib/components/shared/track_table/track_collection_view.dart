@@ -12,12 +12,12 @@ import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
-import 'package:spotube/provider/auth_provider.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:tuple/tuple.dart';
@@ -64,7 +64,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
     final color = usePaletteGenerator(
       context,
       titleImage,
@@ -79,7 +79,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
           ),
           onPressed: onShare,
         ),
-      if (heartBtn != null && auth.isLoggedIn) heartBtn!,
+      if (heartBtn != null && auth != null) heartBtn!,
       PlatformIconButton(
         tooltip: "Shuffle",
         icon: Icon(
@@ -194,7 +194,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
               child: searchbar,
             );
           });
-          Overlay.of(context)?.insert(entry!);
+          Overlay.of(context).insert(entry!);
         }
       });
       return () => entry?.remove();

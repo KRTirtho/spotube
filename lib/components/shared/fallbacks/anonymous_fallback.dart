@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class AnonymousFallback extends ConsumerWidget {
@@ -13,7 +13,7 @@ class AnonymousFallback extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final isLoggedIn = ref.watch(authProvider.select((s) => s.isLoggedIn));
+    final isLoggedIn = ref.watch(AuthenticationNotifier.provider) != null;
 
     if (isLoggedIn && child != null) return child!;
     return Center(

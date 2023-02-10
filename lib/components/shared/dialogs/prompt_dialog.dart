@@ -19,7 +19,8 @@ Future<bool> showPromptDialog({
         primaryActions: [
           if (platform == TargetPlatform.iOS)
             CupertinoDialogAction(
-              isDefaultAction: true,
+              isDefaultAction: false,
+              isDestructiveAction: true,
               child: PlatformText(okText),
               onPressed: () => Navigator.of(context).pop(true),
             )
@@ -32,7 +33,7 @@ Future<bool> showPromptDialog({
         secondaryActions: [
           if (platform == TargetPlatform.iOS)
             CupertinoDialogAction(
-              isDefaultAction: false,
+              isDefaultAction: true,
               child: PlatformText(cancelText),
               onPressed: () => Navigator.of(context).pop(false),
             )

@@ -7,7 +7,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LoginTutorial extends ConsumerWidget {
@@ -15,7 +15,9 @@ class LoginTutorial extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authProvider);
+    ref.watch(AuthenticationNotifier.provider);
+    final authenticationNotifier =
+        ref.watch(AuthenticationNotifier.provider.notifier);
     final key = GlobalKey<State<IntroductionScreen>>();
 
     final pageDecoration = PageDecoration(
@@ -51,7 +53,7 @@ class LoginTutorial extends ConsumerWidget {
         ),
         showBackButton: true,
         overrideDone: PlatformFilledButton(
-          onPressed: auth.isLoggedIn
+          onPressed: authenticationNotifier.isLoggedIn
               ? () {
                   ServiceUtils.navigate(context, "/");
                 }
@@ -96,7 +98,7 @@ class LoginTutorial extends ConsumerWidget {
               textAlign: TextAlign.left,
             ),
           ),
-          if (auth.isLoggedIn)
+          if (authenticationNotifier.isLoggedIn)
             PageViewModel(
               decoration: pageDecoration.copyWith(
                 bodyAlignment: Alignment.center,

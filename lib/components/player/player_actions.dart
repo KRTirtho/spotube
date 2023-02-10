@@ -10,7 +10,7 @@ import 'package:spotube/components/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -36,7 +36,7 @@ class PlayerActions extends HookConsumerWidget {
     final isInQueue = downloader.inQueue
         .any((element) => element.id == playlist?.activeTrack.id);
     final localTracks = [] /* ref.watch(localTracksProvider).value */;
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
     final isDownloaded = useMemoized(() {
       return localTracks.any(
@@ -124,7 +124,7 @@ class PlayerActions extends HookConsumerWidget {
                   ? () => downloader.addToQueue(playlist!.activeTrack)
                   : null,
             ),
-        if (playlist?.activeTrack != null && !isLocalTrack && auth.isLoggedIn)
+        if (playlist?.activeTrack != null && !isLocalTrack && auth != null)
           TrackHeartButton(track: playlist!.activeTrack),
         ...(extraActions ?? [])
       ],

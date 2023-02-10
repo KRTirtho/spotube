@@ -10,7 +10,7 @@ import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
@@ -210,10 +210,10 @@ class SidebarFooter extends HookConsumerWidget {
 
           // TODO: Remove below code after fl-query ^0.4.0
           /// Temporary fix before fl-query 0.4.0
-          final auth = ref.watch(authProvider);
+          final auth = ref.watch(AuthenticationNotifier.provider);
 
           useEffect(() {
-            if (auth.isLoggedIn && me.hasError) {
+            if (auth != null && me.hasError) {
               me.setExternalData(spotify);
               me.refetch();
             }
@@ -227,7 +227,7 @@ class SidebarFooter extends HookConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (auth.isLoggedIn && data == null)
+                  if (auth != null && data == null)
                     const Center(
                       child: PlatformCircularProgressIndicator(),
                     )

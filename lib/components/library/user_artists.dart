@@ -10,7 +10,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:tuple/tuple.dart';
@@ -20,7 +20,7 @@ class UserArtists extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
     final artistQuery = useInfiniteQuery(
       job: Queries.artist.followedByMe,
@@ -51,7 +51,7 @@ class UserArtists extends HookConsumerWidget {
           .toList();
     }, [artistQuery.pages, searchText.value]);
 
-    if (auth.isAnonymous) {
+    if (auth == null) {
       return const AnonymousFallback();
     }
 

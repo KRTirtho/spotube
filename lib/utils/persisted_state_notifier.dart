@@ -6,8 +6,13 @@ import 'package:hive/hive.dart';
 abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   final String cacheKey;
 
-  PersistedStateNotifier(super.state, this.cacheKey) {
-    _load();
+  FutureOr<void> onInit() {}
+
+  PersistedStateNotifier(
+    super.state,
+    this.cacheKey,
+  ) {
+    _load().then((_) => onInit());
   }
 
   Future<void> _load() async {

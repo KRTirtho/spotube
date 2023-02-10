@@ -9,7 +9,7 @@ import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -36,11 +36,11 @@ class GenrePage extends HookConsumerWidget {
 
     final isMounted = useIsMounted();
 
-    /// Temporary fix before fl-query 0.4.0
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
+    /// Temporary fix before fl-query 0.4.0
     useEffect(() {
-      if (auth.isLoggedIn && categoriesQuery.hasError) {
+      if (auth != null && categoriesQuery.hasError) {
         categoriesQuery.setExternalData({
           "spotify": spotify,
           "recommendationMarket": recommendationMarket,

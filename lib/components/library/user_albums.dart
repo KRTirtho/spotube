@@ -11,7 +11,7 @@ import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
@@ -23,7 +23,7 @@ class UserAlbums extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
     final albumsQuery = useQuery(
       job: Queries.album.ofMine,
       externalData: ref.watch(spotifyProvider),
@@ -55,7 +55,7 @@ class UserAlbums extends HookConsumerWidget {
           [];
     }, [albumsQuery.data, searchText.value]);
 
-    if (auth.isAnonymous) {
+    if (auth == null) {
       return const AnonymousFallback();
     }
     if (albumsQuery.isLoading || !albumsQuery.hasData) {

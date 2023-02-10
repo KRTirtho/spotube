@@ -14,7 +14,7 @@ import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:tuple/tuple.dart';
@@ -33,7 +33,7 @@ class UserPlaylists extends HookConsumerWidget {
     final viewType = MediaQuery.of(context).size.width < 480
         ? PlaybuttonCardViewType.list
         : PlaybuttonCardViewType.square;
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
     final playlistsQuery = useQuery(
       job: Queries.playlist.ofMine,
@@ -76,7 +76,7 @@ class UserPlaylists extends HookConsumerWidget {
       [playlistsQuery.data, searchText.value],
     );
 
-    if (auth.isAnonymous) {
+    if (auth == null) {
       return const AnonymousFallback();
     }
 

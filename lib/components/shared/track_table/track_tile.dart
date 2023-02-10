@@ -16,7 +16,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/auth_provider.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
@@ -72,7 +72,7 @@ class TrackTile extends HookConsumerWidget {
         ),
       ),
     );
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
     final spotify = ref.watch(spotifyProvider);
     final playlistQueueNotifier = ref.watch(PlaylistQueueNotifier.notifier);
 
@@ -362,13 +362,13 @@ class TrackTile extends HookConsumerWidget {
                         toggler.item2.mutate(Tuple2(spotify, toggler.item1));
                       },
                     ),
-                  if (auth.isLoggedIn)
+                  if (auth != null)
                     Action(
                       icon: const Icon(SpotubeIcons.playlistAdd),
                       text: const PlatformText("Add To playlist"),
                       onPressed: actionAddToPlaylist,
                     ),
-                  if (userPlaylist && auth.isLoggedIn)
+                  if (userPlaylist && auth != null)
                     Action(
                       icon: (removeTrack.isLoading || !removeTrack.hasData) &&
                               removingTrack.value == track.value.uri
