@@ -6,12 +6,15 @@ import 'package:spotube/services/queries/playlist.dart';
 import 'package:spotube/services/queries/search.dart';
 import 'package:spotube/services/queries/user.dart';
 
-abstract class Queries {
-  static final album = AlbumQueries();
-  static final artist = ArtistQueries();
-  static final category = CategoryQueries();
-  static final lyrics = LyricsQueries();
-  static final playlist = PlaylistQueries();
-  static final search = SearchQueries();
-  static final user = UserQueries();
+class Queries {
+  const Queries._();
+  final album = const AlbumQueries();
+  final artist = const ArtistQueries();
+  final category = const CategoryQueries();
+  final lyrics = const LyricsQueries();
+  final playlist = const PlaylistQueries();
+  final search = const SearchQueries();
+  final user = const UserQueries();
 }
+
+const useQueries = Queries._();

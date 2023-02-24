@@ -22,7 +22,7 @@ class UserAlbums extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final albumsQuery = Queries.album.useOfMineQuery(ref);
+    final albumsQuery = useQueries.album.ofMine(ref);
 
     final spacing = useBreakpointValue<double>(
       sm: 0,

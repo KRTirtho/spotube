@@ -5,7 +5,8 @@ import 'package:spotube/hooks/use_spotify_query.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class UserQueries {
-  Query<User, dynamic> useMe(WidgetRef ref) {
+  const UserQueries();
+  Query<User, dynamic> me(WidgetRef ref) {
     return useSpotifyQuery<User, dynamic>(
       "current-user",
       (spotify) async {

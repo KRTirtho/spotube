@@ -20,7 +20,7 @@ class UserArtists extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final artistQuery = Queries.artist.useFollowedByMeQuery(ref);
+    final artistQuery = useQueries.artist.followedByMe(ref);
 
     final hasNextPage = artistQuery.pages.isEmpty
         ? false

@@ -3,7 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/hooks/use_spotify_mutation.dart';
 
 class PlaylistMutations {
-  Mutation<bool, dynamic, bool> useToggleFavorite(
+  const PlaylistMutations();
+
+  Mutation<bool, dynamic, bool> toggleFavorite(
     WidgetRef ref,
     String playlistId, {
     List<String>? refreshQueries,
@@ -23,7 +25,7 @@ class PlaylistMutations {
     );
   }
 
-  Mutation<bool, dynamic, String> useRemoveTrackOf(
+  Mutation<bool, dynamic, String> removeTrackOf(
     WidgetRef ref,
     String playlistId,
   ) {

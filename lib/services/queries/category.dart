@@ -4,7 +4,9 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 
 class CategoryQueries {
-  InfiniteQuery<Page<Category>, dynamic, int> useList(
+  const CategoryQueries();
+
+  InfiniteQuery<Page<Category>, dynamic, int> list(
       WidgetRef ref, String recommendationMarket) {
     return useSpotifyInfiniteQuery<Page<Category>, dynamic, int>(
       "category-playlists",
@@ -26,7 +28,7 @@ class CategoryQueries {
     );
   }
 
-  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> usePlaylistsOf(
+  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> playlistsOf(
     WidgetRef ref,
     String category,
   ) {

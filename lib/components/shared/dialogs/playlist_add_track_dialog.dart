@@ -16,8 +16,8 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
-    final userPlaylists = Queries.playlist.useOfMineQuery(ref);
-    final me = Queries.user.useMe(ref);
+    final userPlaylists = useQueries.playlist.ofMine(ref);
+    final me = useQueries.user.me(ref);
     final filteredPlaylists = userPlaylists.data?.where(
       (playlist) =>
           playlist.owner?.id != null && playlist.owner!.id == me.data?.id,

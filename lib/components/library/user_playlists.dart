@@ -33,7 +33,7 @@ class UserPlaylists extends HookConsumerWidget {
         : PlaybuttonCardViewType.square;
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final playlistsQuery = Queries.playlist.useOfMineQuery(ref);
+    final playlistsQuery = useQueries.playlist.ofMine(ref);
 
     Image image = Image();
     image.height = 300;

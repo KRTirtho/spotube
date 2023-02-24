@@ -24,7 +24,7 @@ class CategoryCard extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
     final spotify = ref.watch(spotifyProvider);
-    final playlistQuery = Queries.category.usePlaylistsOf(
+    final playlistQuery = useQueries.category.playlistsOf(
       ref,
       category.id!,
     );

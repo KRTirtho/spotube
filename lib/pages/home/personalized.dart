@@ -102,9 +102,9 @@ class PersonalizedPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final featuredPlaylistsQuery = Queries.playlist.useFeaturedQuery(ref);
+    final featuredPlaylistsQuery = useQueries.playlist.featured(ref);
 
-    final newReleases = Queries.album.useNewReleasesQuery(ref);
+    final newReleases = useQueries.album.newReleases(ref);
 
     return ListView(
       children: [

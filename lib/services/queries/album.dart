@@ -7,7 +7,9 @@ import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/use_spotify_query.dart';
 
 class AlbumQueries {
-  Query<Iterable<AlbumSimple>, dynamic> useOfMineQuery(WidgetRef ref) {
+  const AlbumQueries();
+
+  Query<Iterable<AlbumSimple>, dynamic> ofMine(WidgetRef ref) {
     return useSpotifyQuery<Iterable<AlbumSimple>, dynamic>(
       "current-user-albums",
       (spotify) {
@@ -17,7 +19,7 @@ class AlbumQueries {
     );
   }
 
-  Query<List<TrackSimple>, dynamic> useTracksOfQuery(
+  Query<List<TrackSimple>, dynamic> tracksOf(
     WidgetRef ref,
     String albumId,
   ) {
@@ -33,7 +35,7 @@ class AlbumQueries {
     );
   }
 
-  Query<bool, dynamic> useIsSavedForMeQuery(
+  Query<bool, dynamic> isSavedForMe(
     WidgetRef ref,
     String album,
   ) {
@@ -46,8 +48,7 @@ class AlbumQueries {
     );
   }
 
-  InfiniteQuery<Page<AlbumSimple>, dynamic, int> useNewReleasesQuery(
-      WidgetRef ref) {
+  InfiniteQuery<Page<AlbumSimple>, dynamic, int> newReleases(WidgetRef ref) {
     return useSpotifyInfiniteQuery<Page<AlbumSimple>, dynamic, int>(
       "new-releases",
       (pageParam, spotify) async {

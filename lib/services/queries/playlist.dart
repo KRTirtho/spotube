@@ -6,7 +6,9 @@ import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/use_spotify_query.dart';
 
 class PlaylistQueries {
-  Query<bool, dynamic> useDoesUserFollowQuery(
+  const PlaylistQueries();
+
+  Query<bool, dynamic> doesUserFollow(
     WidgetRef ref,
     String playlistId,
     String userId,
@@ -21,7 +23,7 @@ class PlaylistQueries {
     );
   }
 
-  Query<Iterable<PlaylistSimple>, dynamic> useOfMineQuery(WidgetRef ref) {
+  Query<Iterable<PlaylistSimple>, dynamic> ofMine(WidgetRef ref) {
     return useSpotifyQuery<Iterable<PlaylistSimple>, dynamic>(
       "current-user-playlists",
       (spotify) {
@@ -42,7 +44,7 @@ class PlaylistQueries {
         );
   }
 
-  Query<List<Track>, dynamic> useTracksOfQuery(
+  Query<List<Track>, dynamic> tracksOfQuery(
     WidgetRef ref,
     String playlistId,
   ) {
@@ -53,7 +55,7 @@ class PlaylistQueries {
     );
   }
 
-  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> useFeaturedQuery(
+  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> featured(
     WidgetRef ref,
   ) {
     return useSpotifyInfiniteQuery<Page<PlaylistSimple>, dynamic, int>(

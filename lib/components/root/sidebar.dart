@@ -11,7 +11,6 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -194,8 +193,7 @@ class SidebarFooter extends HookConsumerWidget {
       width: 256,
       child: HookBuilder(
         builder: (context) {
-          var spotify = ref.watch(spotifyProvider);
-          final me = Queries.user.useMe(ref);
+          final me = useQueries.user.me(ref);
           final data = me.data;
 
           final avatarImg = TypeConversionUtils.image_X_UrlString(

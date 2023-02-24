@@ -22,77 +22,76 @@ class GenrePage extends HookConsumerWidget {
     final recommendationMarket = ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),
     );
-    final categoriesQuery = Queries.category.useList(ref, recommendationMarket);
+    final categoriesQuery = useQueries.category.list(ref, recommendationMarket);
 
     final isMounted = useIsMounted();
 
-    return HookBuilder(builder: (context) {
-      final searchText = useState("");
-      final categories = useMemoized(
-        () {
-          final categories = categoriesQuery.pages
-              .expand<Category>(
-                (page) => page.items ?? const Iterable.empty(),
-              )
-              .toList();
-          if (searchText.value.isEmpty) {
-            return categories;
+    final searchText = useState("");
+    final categories = useMemoized(
+      () {
+        final categories = categoriesQuery.pages
+            .expand<Category>(
+              (page) => page.items ?? const Iterable.empty(),
+            )
+            .toList();
+        if (searchText.value.isEmpty) {
+          return categories;
+        }
+        return categories
+            .map((e) => Tuple2(
+                  weightedRatio(e.name!, searchText.value),
+                  e,
+                ))
+            .sorted((a, b) => b.item1.compareTo(a.item1))
+            .where((e) => e.item1 > 50)
+            .map((e) => e.item2)
+            .toList();
+      },
+      [categoriesQuery.pages, searchText.value],
+    );
+
+    final searchbar = CompactSearch(
+      onChanged: (value) {
+        searchText.value = value;
+      },
+      placeholder: "Filter categories or genres...",
+    );
+
+    final list = RefreshIndicator(
+      onRefresh: () async {
+        await categoriesQuery.refreshAll();
+      },
+      child: Waypoint(
+        onTouchEdge: () async {
+          if (categoriesQuery.hasNextPage && isMounted()) {
+            await categoriesQuery.fetchNext();
           }
-          return categories
-              .map((e) => Tuple2(
-                    weightedRatio(e.name!, searchText.value),
-                    e,
-                  ))
-              .sorted((a, b) => b.item1.compareTo(a.item1))
-              .where((e) => e.item1 > 50)
-              .map((e) => e.item2)
-              .toList();
         },
-        [categoriesQuery.pages, searchText.value],
-      );
-
-      final searchbar = CompactSearch(
-        onChanged: (value) {
-          searchText.value = value;
-        },
-        placeholder: "Filter categories or genres...",
-      );
-
-      final list = RefreshIndicator(
-        onRefresh: () async {
-          await categoriesQuery.refreshAll();
-        },
-        child: Waypoint(
-          onTouchEdge: () async {
-            if (categoriesQuery.hasNextPage && isMounted()) {
-              await categoriesQuery.fetchNext();
-            }
-          },
+        controller: scrollController,
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: scrollController,
-          child: ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: scrollController,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              if (searchText.value.isEmpty && index == categories.length - 1) {
-                return const ShimmerCategories();
-              }
-              return CategoryCard(category);
-            },
-          ),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            if (searchText.value.isEmpty && index == categories.length - 1) {
+              return const ShimmerCategories();
+            }
+            return CategoryCard(category);
+          },
         ),
-      );
-      return Stack(
-        children: [
-          Positioned.fill(child: list),
-          Positioned(
-            top: 0,
-            right: 10,
-            child: searchbar,
-          ),
-        ],
-      );
-    });
+      ),
+    );
+
+    return Stack(
+      children: [
+        Positioned.fill(child: list),
+        Positioned(
+          top: 0,
+          right: 10,
+          child: searchbar,
+        ),
+      ],
+    );
   }
 }

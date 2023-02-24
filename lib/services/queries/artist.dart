@@ -6,7 +6,9 @@ import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/use_spotify_query.dart';
 
 class ArtistQueries {
-  Query<Artist, dynamic> useGetArtist(
+  const ArtistQueries();
+
+  Query<Artist, dynamic> get(
     WidgetRef ref,
     String artist,
   ) {
@@ -17,7 +19,7 @@ class ArtistQueries {
     );
   }
 
-  InfiniteQuery<CursorPage<Artist>, dynamic, String> useFollowedByMeQuery(
+  InfiniteQuery<CursorPage<Artist>, dynamic, String> followedByMe(
       WidgetRef ref) {
     return useSpotifyInfiniteQuery<CursorPage<Artist>, dynamic, String>(
       "user-following-artists",
@@ -35,7 +37,7 @@ class ArtistQueries {
     );
   }
 
-  Query<bool, dynamic> useDoIFollowQuery(
+  Query<bool, dynamic> doIFollow(
     WidgetRef ref,
     String artist,
   ) {
@@ -52,7 +54,7 @@ class ArtistQueries {
     );
   }
 
-  Query<Iterable<Track>, dynamic> useTopTracksOfQuery(
+  Query<Iterable<Track>, dynamic> topTracksOf(
     WidgetRef ref,
     String artist,
   ) {
@@ -65,7 +67,7 @@ class ArtistQueries {
     );
   }
 
-  InfiniteQuery<Page<Album>, dynamic, int> useAlbumsOfQuery(
+  InfiniteQuery<Page<Album>, dynamic, int> albumsOf(
     WidgetRef ref,
     String artist,
   ) {
@@ -86,7 +88,7 @@ class ArtistQueries {
     );
   }
 
-  Query<Iterable<Artist>, dynamic> useRelatedArtistsOfQuery(
+  Query<Iterable<Artist>, dynamic> relatedArtistsOf(
     WidgetRef ref,
     String artist,
   ) {

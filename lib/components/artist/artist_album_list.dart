@@ -21,7 +21,7 @@ class ArtistAlbumList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
-    final albumsQuery = Queries.artist.useAlbumsOfQuery(ref, artistId);
+    final albumsQuery = useQueries.artist.albumsOf(ref, artistId);
 
     final albums = useMemoized(() {
       return albumsQuery.pages

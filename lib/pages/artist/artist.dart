@@ -64,7 +64,7 @@ class ArtistPage extends HookConsumerWidget {
         ),
         body: HookBuilder(
           builder: (context) {
-            final artistsQuery = Queries.artist.useGetArtist(ref, artistId);
+            final artistsQuery = useQueries.artist.get(ref, artistId);
 
             if (artistsQuery.isLoading || !artistsQuery.hasData) {
               return const ShimmerArtistProfile();
@@ -162,8 +162,8 @@ class ArtistPage extends HookConsumerWidget {
                                 if (auth != null)
                                   HookBuilder(
                                     builder: (context) {
-                                      final isFollowingQuery = Queries.artist
-                                          .useDoIFollowQuery(ref, artistId);
+                                      final isFollowingQuery = useQueries.artist
+                                          .doIFollow(ref, artistId);
 
                                       if (isFollowingQuery.isLoading ||
                                           !isFollowingQuery.hasData) {
@@ -268,7 +268,7 @@ class ArtistPage extends HookConsumerWidget {
                   const SizedBox(height: 50),
                   HookBuilder(
                     builder: (context) {
-                      final topTracksQuery = Queries.artist.useTopTracksOfQuery(
+                      final topTracksQuery = useQueries.artist.topTracksOf(
                         ref,
                         artistId,
                       );
@@ -378,8 +378,7 @@ class ArtistPage extends HookConsumerWidget {
                   const SizedBox(height: 10),
                   HookBuilder(
                     builder: (context) {
-                      final relatedArtists =
-                          Queries.artist.useRelatedArtistsOfQuery(
+                      final relatedArtists = useQueries.artist.relatedArtistsOf(
                         ref,
                         artistId,
                       );

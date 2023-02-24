@@ -4,7 +4,8 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 
 class SearchQueries {
-  InfiniteQuery<List<Page>, dynamic, int> useSearchQuery(
+  const SearchQueries();
+  InfiniteQuery<List<Page>, dynamic, int> query(
     WidgetRef ref,
     String query,
     SearchType searchType,

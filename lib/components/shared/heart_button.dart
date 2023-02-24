@@ -47,17 +47,17 @@ class HeartButton extends ConsumerWidget {
 
 Tuple3<bool, Mutation<bool, dynamic, bool>, Query<User, dynamic>>
     useTrackToggleLike(Track track, WidgetRef ref) {
-  final me = Queries.user.useMe(ref);
+  final me = useQueries.user.me(ref);
 
   final savedTracks =
-      Queries.playlist.useTracksOfQuery(ref, "user-liked-tracks");
+      useQueries.playlist.tracksOfQuery(ref, "user-liked-tracks");
 
   final isLiked =
       savedTracks.data?.map((track) => track.id).contains(track.id) ?? false;
 
   final mounted = useIsMounted();
 
-  final toggleTrackLike = Mutations.track.useToggleFavorite(
+  final toggleTrackLike = useMutations.track.toggleFavorite(
     ref,
     track.id!,
     onMutate: (variables) {
@@ -92,7 +92,7 @@ class TrackHeartButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final savedTracks =
-        Queries.playlist.useTracksOfQuery(ref, "user-liked-tracks");
+        useQueries.playlist.tracksOfQuery(ref, "user-liked-tracks");
     final toggler = useTrackToggleLike(track, ref);
     if (toggler.item3.isLoading || !toggler.item3.hasData) {
       return const PlatformCircularProgressIndicator();
@@ -120,15 +120,15 @@ class PlaylistHeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final me = Queries.user.useMe(ref);
+    final me = useQueries.user.me(ref);
 
-    final isLikedQuery = Queries.playlist.useDoesUserFollowQuery(
+    final isLikedQuery = useQueries.playlist.doesUserFollow(
       ref,
       playlist.id!,
       me.data!.id!,
     );
 
-    final togglePlaylistLike = Mutations.playlist.useToggleFavorite(
+    final togglePlaylistLike = useMutations.playlist.toggleFavorite(
       ref,
       playlist.id!,
       refreshQueries: [
@@ -178,12 +178,12 @@ class AlbumHeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final me = Queries.user.useMe(ref);
+    final me = useQueries.user.me(ref);
 
-    final albumIsSaved = Queries.album.useIsSavedForMeQuery(ref, album.id!);
+    final albumIsSaved = useQueries.album.isSavedForMe(ref, album.id!);
     final isLiked = albumIsSaved.data ?? false;
 
-    final toggleAlbumLike = Mutations.album.useToggleFavorite(
+    final toggleAlbumLike = useMutations.album.toggleFavorite(
       ref,
       album.id!,
       refreshQueries: [

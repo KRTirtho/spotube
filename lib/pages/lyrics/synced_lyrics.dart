@@ -44,7 +44,7 @@ class SyncedLyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
 
-    final timedLyricsQuery = Queries.lyrics.useSynced(playlist?.activeTrack);
+    final timedLyricsQuery = useQueries.lyrics.synced(playlist?.activeTrack);
     final lyricValue = timedLyricsQuery.data;
     final lyricsMap = useMemoized(
       () =>

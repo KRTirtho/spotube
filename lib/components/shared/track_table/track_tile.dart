@@ -73,7 +73,7 @@ class TrackTile extends HookConsumerWidget {
     final playlistQueueNotifier = ref.watch(PlaylistQueueNotifier.notifier);
 
     final removingTrack = useState<String?>(null);
-    final removeTrack = Mutations.playlist.useRemoveTrackOf(
+    final removeTrack = useMutations.playlist.removeTrackOf(
       ref,
       playlistId ?? "",
     );

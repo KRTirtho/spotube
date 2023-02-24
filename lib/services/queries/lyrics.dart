@@ -7,7 +7,9 @@ import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LyricsQueries {
-  Query<String, dynamic> useStatic(
+  const LyricsQueries();
+
+  Query<String, dynamic> static(
     Track? track,
     String geniusAccessToken,
   ) {
@@ -30,7 +32,7 @@ class LyricsQueries {
     );
   }
 
-  Query<SubtitleSimple, dynamic> useSynced(
+  Query<SubtitleSimple, dynamic> synced(
     Track? track,
   ) {
     return useQuery<SubtitleSimple, dynamic>(

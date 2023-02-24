@@ -4,13 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 

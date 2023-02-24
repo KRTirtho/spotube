@@ -52,19 +52,19 @@ class SearchPage extends HookConsumerWidget {
     );
 
     final searchTrack = useInfiniteQuery(
-      job: Queries.search.get(SearchType.track.key),
+      job: useQueries.search.get(SearchType.track.key),
       externalData: Tuple2("", spotify),
     );
     final searchAlbum = useInfiniteQuery(
-      job: Queries.search.get(SearchType.album.key),
+      job: useQueries.search.get(SearchType.album.key),
       externalData: Tuple2("", spotify),
     );
     final searchPlaylist = useInfiniteQuery(
-      job: Queries.search.get(SearchType.playlist.key),
+      job: useQueries.search.get(SearchType.playlist.key),
       externalData: Tuple2("", spotify),
     );
     final searchArtist = useInfiniteQuery(
-      job: Queries.search.get(SearchType.artist.key),
+      job: useQueries.search.get(SearchType.artist.key),
       externalData: Tuple2("", spotify),
     );
 

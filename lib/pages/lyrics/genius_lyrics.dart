@@ -22,7 +22,7 @@ class GeniusLyrics extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final geniusLyricsQuery = Queries.lyrics.useStatic(
+    final geniusLyricsQuery = useQueries.lyrics.static(
       playlist?.activeTrack,
       ref.watch(userPreferencesProvider).geniusAccessToken,
     );

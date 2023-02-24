@@ -47,8 +47,8 @@ class PlaylistView extends HookConsumerWidget {
 
     final breakpoint = useBreakpoints();
 
-    final meSnapshot = Queries.user.useMe(ref);
-    final tracksSnapshot = Queries.playlist.useTracksOfQuery(ref, playlist.id!);
+    final meSnapshot = useQueries.user.me(ref);
+    final tracksSnapshot = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
 
     final isPlaylistPlaying =
         playlistNotifier.isPlayingPlaylist(tracksSnapshot.data ?? []);

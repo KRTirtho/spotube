@@ -3,7 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/hooks/use_spotify_mutation.dart';
 
 class TrackMutations {
-  Mutation<bool, dynamic, bool> useToggleFavorite(
+  const TrackMutations();
+
+  Mutation<bool, dynamic, bool> toggleFavorite(
     WidgetRef ref,
     String trackId, {
     MutationOnMutationFn<bool, bool>? onMutate,

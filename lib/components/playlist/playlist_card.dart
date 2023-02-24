@@ -68,7 +68,7 @@ class PlaylistCard extends HookConsumerWidget {
 
           List<Track> fetchedTracks = await queryBowl.fetchQuery(
                 "playlist-tracks/${playlist.id}",
-                () => Queries.playlist.tracksOf(playlist.id!, spotify),
+                () => useQueries.playlist.tracksOf(playlist.id!, spotify),
               ) ??
               [];
 
@@ -86,7 +86,7 @@ class PlaylistCard extends HookConsumerWidget {
           if (isPlaylistPlaying) return;
           List<Track> fetchedTracks = await queryBowl.fetchQuery(
                 "playlist-tracks/${playlist.id}",
-                () => Queries.playlist.tracksOf(playlist.id!, spotify),
+                () => useQueries.playlist.tracksOf(playlist.id!, spotify),
               ) ??
               [];
 
