@@ -31,7 +31,6 @@ import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
 
-final bowl = QueryBowl();
 void main(List<String> rawArgs) async {
   final parser = ArgParser();
 
@@ -70,7 +69,7 @@ void main(List<String> rawArgs) async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+  await QueryClient.initialize(cachePrefix: "oss.krtirtho.spotube");
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
@@ -173,8 +172,7 @@ void main(List<String> rawArgs) async {
                   },
                 )
               ],
-              child: QueryBowlScope(
-                bowl: bowl,
+              child: QueryClientProvider(
                 child: const Spotube(),
               ),
             );

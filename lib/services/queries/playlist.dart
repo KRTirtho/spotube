@@ -1,56 +1,79 @@
 import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/hooks/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/use_spotify_query.dart';
 
 class PlaylistQueries {
-  final doesUserFollow = QueryJob.withVariableKey<bool, SpotifyApi>(
-    preQueryKey: "playlist-is-followed",
-    task: (queryKey, spotify) {
-      final idMap = getVariable(queryKey).split(":");
+  Query<bool, dynamic> useDoesUserFollowQuery(
+    WidgetRef ref,
+    String playlistId,
+    String userId,
+  ) {
+    return useSpotifyQuery<bool, dynamic>(
+      "playlist-is-followed/$playlistId/$userId",
+      (spotify) async {
+        final result = await spotify.playlists.followedBy(playlistId, [userId]);
+        return result.first;
+      },
+      ref: ref,
+    );
+  }
 
-      return spotify.playlists.followedBy(idMap.first, [idMap.last]).then(
-        (value) => value.first,
-      );
-    },
-  );
+  Query<Iterable<PlaylistSimple>, dynamic> useOfMineQuery(WidgetRef ref) {
+    return useSpotifyQuery<Iterable<PlaylistSimple>, dynamic>(
+      "current-user-playlists",
+      (spotify) {
+        return spotify.playlists.me.all();
+      },
+      ref: ref,
+    );
+  }
 
-  final ofMine = QueryJob<Iterable<PlaylistSimple>, SpotifyApi>(
-    queryKey: "current-user-playlists",
-    task: (_, spotify) {
-      return spotify.playlists.me.all();
-    },
-  );
+  Future<List<Track>> tracksOf(String playlistId, SpotifyApi spotify) {
+    if (playlistId == "user-liked-tracks") {
+      return spotify.tracks.me.saved.all().then(
+            (tracks) => tracks.map((e) => e.track!).toList(),
+          );
+    }
+    return spotify.playlists.getTracksByPlaylistId(playlistId).all().then(
+          (value) => value.toList(),
+        );
+  }
 
-  final tracksOf = QueryJob.withVariableKey<List<Track>, SpotifyApi>(
-    preQueryKey: "playlist-tracks",
-    task: (queryKey, spotify) {
-      final id = getVariable(queryKey);
-      return id != "user-liked-tracks"
-          ? spotify.playlists.getTracksByPlaylistId(id).all().then(
-                (value) => value.toList(),
-              )
-          : spotify.tracks.me.saved.all().then(
-                (tracks) => tracks.map((e) => e.track!).toList(),
-              );
-    },
-  );
+  Query<List<Track>, dynamic> useTracksOfQuery(
+    WidgetRef ref,
+    String playlistId,
+  ) {
+    return useSpotifyQuery<List<Track>, dynamic>(
+      "playlist-tracks/$playlistId",
+      (spotify) => tracksOf(playlistId, spotify),
+      ref: ref,
+    );
+  }
 
-  final featured = InfiniteQueryJob<Page<PlaylistSimple>, SpotifyApi, int>(
-    queryKey: "featured-playlists",
-    initialParam: 0,
-    getNextPageParam: (lastPage, lastParam) =>
-        lastPage.items?.length == 5 ? lastPage.nextOffset : null,
-    getPreviousPageParam: (firstPage, firstParam) => firstPage.nextOffset - 6,
-    refetchOnExternalDataChange: true,
-    task: (_, pageParam, spotify) async {
-      try {
-        final playlists =
-            await spotify.playlists.featured.getPage(5, pageParam);
-        return playlists;
-      } catch (e, stack) {
-        Catcher.reportCheckedError(e, stack);
-        rethrow;
-      }
-    },
-  );
+  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> useFeaturedQuery(
+    WidgetRef ref,
+  ) {
+    return useSpotifyInfiniteQuery<Page<PlaylistSimple>, dynamic, int>(
+      "featured-playlists",
+      (pageParam, spotify) async {
+        try {
+          final playlists =
+              await spotify.playlists.featured.getPage(5, pageParam);
+          return playlists;
+        } catch (e, stack) {
+          Catcher.reportCheckedError(e, stack);
+          rethrow;
+        }
+      },
+      initialPage: 0,
+      nextPage: (lastPage, pages) =>
+          pages.last.isLast || (pages.last.items?.length ?? 0) < 5
+              ? null
+              : pages.last.nextOffset,
+      ref: ref,
+    );
+  }
 }

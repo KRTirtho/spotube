@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -25,17 +24,17 @@ class CategoryCard extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
     final spotify = ref.watch(spotifyProvider);
-    final playlistQuery = useInfiniteQuery(
-      job: Queries.category.playlistsOf(category.id!),
-      externalData: spotify,
+    final playlistQuery = Queries.category.usePlaylistsOf(
+      ref,
+      category.id!,
     );
     final hasNextPage = playlistQuery.pages.isEmpty
         ? false
-        : (playlistQuery.pages.last?.items?.length ?? 0) == 5;
+        : (playlistQuery.pages.last.items?.length ?? 0) == 5;
 
     final playlists = playlistQuery.pages
         .expand(
-          (page) => page?.items ?? const Iterable.empty(),
+          (page) => page.items ?? const Iterable.empty(),
         )
         .toList();
 
@@ -49,7 +48,7 @@ class CategoryCard extends HookConsumerWidget {
             ],
           ),
         ),
-        playlistQuery.hasError
+        playlistQuery.hasErrors
             ? PlatformText(
                 "Something Went Wrong\n${playlistQuery.errors.first}")
             : SizedBox(
@@ -67,7 +66,7 @@ class CategoryCard extends HookConsumerWidget {
                     child: Waypoint(
                       controller: scrollController,
                       onTouchEdge: () {
-                        playlistQuery.fetchNextPage();
+                        playlistQuery.fetchNext();
                       },
                       child: ListView(
                         scrollDirection: Axis.horizontal,

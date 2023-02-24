@@ -1,5 +1,4 @@
 import 'package:fl_query/fl_query.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,7 +7,6 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
 
@@ -47,59 +45,36 @@ class HeartButton extends ConsumerWidget {
   }
 }
 
-Tuple3<bool, Mutation<bool, Tuple2<SpotifyApi, bool>>, Query<User, SpotifyApi>>
+Tuple3<bool, Mutation<bool, dynamic, bool>, Query<User, dynamic>>
     useTrackToggleLike(Track track, WidgetRef ref) {
-  final me =
-      useQuery(job: Queries.user.me, externalData: ref.watch(spotifyProvider));
+  final me = Queries.user.useMe(ref);
 
-  final savedTracks = useQuery(
-    job: Queries.playlist.tracksOf("user-liked-tracks"),
-    externalData: ref.watch(spotifyProvider),
-  );
+  final savedTracks =
+      Queries.playlist.useTracksOfQuery(ref, "user-liked-tracks");
 
   final isLiked =
       savedTracks.data?.map((track) => track.id).contains(track.id) ?? false;
 
   final mounted = useIsMounted();
 
-  final toggleTrackLike = useMutation<bool, Tuple2<SpotifyApi, bool>>(
-    job: Mutations.track.toggleFavorite(track.id!),
-    onMutate: (variable) {
-      savedTracks.setQueryData(
-        (oldData) {
-          if (!variable.item2) {
-            return [...(oldData ?? []), track];
-          }
-
-          return oldData
-                  ?.where(
-                    (element) => element.id != track.id,
-                  )
-                  .toList() ??
-              [];
-        },
-      );
-      return track;
+  final toggleTrackLike = Mutations.track.useToggleFavorite(
+    ref,
+    track.id!,
+    onMutate: (variables) {
+      return variables;
     },
-    onData: (payload, variables, _) {
+    onError: (payload, isLiked) {
       if (!mounted()) return;
-      savedTracks.refetch();
-    },
-    onError: (payload, variables, queryContext) {
-      if (!mounted()) return;
-      savedTracks.setQueryData(
-        (oldData) {
-          if (variables.item2) {
-            return [...(oldData ?? []), track];
-          }
 
-          return oldData
-                  ?.where(
-                    (element) => element.id != track.id,
-                  )
-                  .toList() ??
-              [];
-        },
+      savedTracks.setData(
+        isLiked == true
+            ? [...(savedTracks.data ?? []), track]
+            : savedTracks.data
+                    ?.where(
+                      (element) => element.id != track.id,
+                    )
+                    .toList() ??
+                [],
       );
     },
   );
@@ -116,10 +91,8 @@ class TrackHeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final savedTracks = useQuery(
-      job: Queries.playlist.tracksOf("user-liked-tracks"),
-      externalData: ref.watch(spotifyProvider),
-    );
+    final savedTracks =
+        Queries.playlist.useTracksOfQuery(ref, "user-liked-tracks");
     final toggler = useTrackToggleLike(track, ref);
     if (toggler.item3.isLoading || !toggler.item3.hasData) {
       return const PlatformCircularProgressIndicator();
@@ -130,9 +103,7 @@ class TrackHeartButton extends HookConsumerWidget {
       isLiked: toggler.item1,
       onPressed: savedTracks.hasData
           ? () {
-              toggler.item2.mutate(
-                Tuple2(ref.read(spotifyProvider), toggler.item1),
-              );
+              toggler.item2.mutate(toggler.item1);
             }
           : null,
     );
@@ -149,26 +120,21 @@ class PlaylistHeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final me = useQuery(
-      job: Queries.user.me,
-      externalData: ref.watch(spotifyProvider),
+    final me = Queries.user.useMe(ref);
+
+    final isLikedQuery = Queries.playlist.useDoesUserFollowQuery(
+      ref,
+      playlist.id!,
+      me.data!.id!,
     );
 
-    final job =
-        Queries.playlist.doesUserFollow("${playlist.id}:${me.data?.id}");
-    final isLikedQuery = useQuery(
-      job: job,
-      externalData: ref.watch(spotifyProvider),
-    );
-
-    final togglePlaylistLike = useMutation<bool, Tuple2<SpotifyApi, bool>>(
-      job: Mutations.playlist.toggleFavorite(playlist.id!),
-      onData: (payload, variables, queryContext) async {
-        await isLikedQuery.refetch();
-        await QueryBowl.of(context)
-            .getQuery(Queries.playlist.ofMine.queryKey)
-            ?.refetch();
-      },
+    final togglePlaylistLike = Mutations.playlist.useToggleFavorite(
+      ref,
+      playlist.id!,
+      refreshQueries: [
+        isLikedQuery.key,
+        "current-user-playlists",
+      ],
     );
 
     final titleImage = useMemoized(
@@ -195,12 +161,7 @@ class PlaylistHeartButton extends HookConsumerWidget {
       color: color?.titleTextColor,
       onPressed: isLikedQuery.hasData
           ? () {
-              togglePlaylistLike.mutate(
-                Tuple2(
-                  ref.read(spotifyProvider),
-                  isLikedQuery.data!,
-                ),
-              );
+              togglePlaylistLike.mutate(isLikedQuery.data!);
             }
           : null,
     );
@@ -217,26 +178,18 @@ class AlbumHeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final spotify = ref.watch(spotifyProvider);
-    final me = useQuery(
-      job: Queries.user.me,
-      externalData: spotify,
-    );
+    final me = Queries.user.useMe(ref);
 
-    final albumIsSaved = useQuery(
-      job: Queries.album.isSavedForMe(album.id!),
-      externalData: spotify,
-    );
+    final albumIsSaved = Queries.album.useIsSavedForMeQuery(ref, album.id!);
     final isLiked = albumIsSaved.data ?? false;
 
-    final toggleAlbumLike = useMutation<bool, Tuple2<SpotifyApi, bool>>(
-      job: Mutations.album.toggleFavorite(album.id!),
-      onData: (payload, variables, queryContext) {
-        albumIsSaved.refetch();
-        QueryBowl.of(context)
-            .getQuery(Queries.album.ofMine.queryKey)
-            ?.refetch();
-      },
+    final toggleAlbumLike = Mutations.album.useToggleFavorite(
+      ref,
+      album.id!,
+      refreshQueries: [
+        albumIsSaved.key,
+        "current-user-albums",
+      ],
     );
 
     if (me.isLoading || !me.hasData) {
@@ -248,8 +201,7 @@ class AlbumHeartButton extends HookConsumerWidget {
       tooltip: isLiked ? "Remove from Favorite" : "Add to Favorite",
       onPressed: albumIsSaved.hasData
           ? () {
-              toggleAlbumLike
-                  .mutate(Tuple2(ref.read(spotifyProvider), isLiked));
+              toggleAlbumLike.mutate(isLiked);
             }
           : null,
     );

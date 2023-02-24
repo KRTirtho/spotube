@@ -1,4 +1,4 @@
-import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,7 +7,6 @@ import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
 
 class PlaylistCreateDialog extends HookConsumerWidget {
   const PlaylistCreateDialog({Key? key}) : super(key: key);
@@ -28,6 +27,8 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                 final description = useTextEditingController();
                 final public = useState(false);
                 final collaborative = useState(false);
+                final client = useQueryClient();
+                final navigator = Navigator.of(context);
 
                 onCreate() async {
                   if (playlistName.text.isEmpty) return;
@@ -39,12 +40,12 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                     public: public.value,
                     description: description.text,
                   );
-                  await QueryBowl.of(context)
+                  await client
                       .getQuery(
-                        Queries.playlist.ofMine.queryKey,
+                        "current-user-playlists",
                       )
-                      ?.refetch();
-                  Navigator.pop(context);
+                      ?.refresh();
+                  navigator.pop();
                 }
 
                 return PlatformAlertDialog(

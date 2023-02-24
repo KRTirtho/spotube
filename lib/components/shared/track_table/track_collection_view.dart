@@ -218,7 +218,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
               : null,
           body: RefreshIndicator(
             onRefresh: () async {
-              await tracksSnapshot.refetch();
+              await tracksSnapshot.refresh();
             },
             child: CustomScrollView(
               controller: controller,
@@ -333,8 +333,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                   builder: (context) {
                     if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
                       return const ShimmerTrackTile();
-                    } else if (tracksSnapshot.hasError &&
-                        tracksSnapshot.isError) {
+                    } else if (tracksSnapshot.hasError) {
                       return SliverToBoxAdapter(
                           child: PlatformText("Error ${tracksSnapshot.error}"));
                     }

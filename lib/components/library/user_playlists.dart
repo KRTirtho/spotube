@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -15,7 +14,6 @@ import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:tuple/tuple.dart';
 
@@ -35,10 +33,7 @@ class UserPlaylists extends HookConsumerWidget {
         : PlaybuttonCardViewType.square;
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final playlistsQuery = useQuery(
-      job: Queries.playlist.ofMine,
-      externalData: ref.watch(spotifyProvider),
-    );
+    final playlistsQuery = Queries.playlist.useOfMineQuery(ref);
 
     Image image = Image();
     image.height = 300;
@@ -90,7 +85,7 @@ class UserPlaylists extends HookConsumerWidget {
           .toList(),
     ];
     return RefreshIndicator(
-      onRefresh: () => playlistsQuery.refetch(),
+      onRefresh: playlistsQuery.refresh,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Material(

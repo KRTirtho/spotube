@@ -47,12 +47,7 @@ class AlbumPage extends HookConsumerWidget {
     ref.watch(PlaylistQueueNotifier.provider);
     final playback = ref.watch(PlaylistQueueNotifier.notifier);
 
-    final SpotifyApi spotify = ref.watch(spotifyProvider);
-
-    final tracksSnapshot = useQuery(
-      job: Queries.album.tracksOf(album.id!),
-      externalData: spotify,
-    );
+    final tracksSnapshot = Queries.album.useTracksOfQuery(ref, album.id!);
 
     final albumArt = useMemoized(
         () => TypeConversionUtils.image_X_UrlString(

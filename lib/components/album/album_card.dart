@@ -7,10 +7,8 @@ import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:uuid/uuid.dart';
 
 enum AlbumType {
   album,
@@ -48,15 +46,18 @@ class AlbumCard extends HookConsumerWidget {
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final queryBowl = QueryBowl.of(context);
-    final query = queryBowl.getQuery<List<TrackSimple>, SpotifyApi>(
-        Queries.album.tracksOf(album.id!).queryKey);
+    final queryBowl = QueryClient.of(context);
+    final query = queryBowl
+        .getQuery<List<TrackSimple>, SpotifyApi>("album-tracks/${album.id}");
     final tracks = useState(query?.data ?? album.tracks ?? <Track>[]);
     bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks.value);
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
 
     final updating = useState(false);
+    final spotify = ref.watch(spotifyProvider);
+
+    final scaffold = ScaffoldMessenger.of(context);
 
     return PlaybuttonCard(
         imageUrl: TypeConversionUtils.image_X_UrlString(
@@ -100,9 +101,13 @@ class AlbumCard extends HookConsumerWidget {
           try {
             final fetchedTracks =
                 await queryBowl.fetchQuery<List<TrackSimple>, SpotifyApi>(
-              Queries.album.tracksOf(album.id!),
-              externalData: ref.read(spotifyProvider),
-              key: ValueKey(const Uuid().v4()),
+              "album-tracks/${album.id}",
+              () {
+                return spotify.albums
+                    .getTracks(album.id!)
+                    .all()
+                    .then((value) => value.toList());
+              },
             );
 
             if (fetchedTracks == null || fetchedTracks.isEmpty) return;
@@ -113,7 +118,7 @@ class AlbumCard extends HookConsumerWidget {
                   .toList(),
             );
             tracks.value = fetchedTracks;
-            ScaffoldMessenger.of(context).showSnackBar(
+            scaffold.showSnackBar(
               SnackBar(
                 content: Text("Added ${album.tracks?.length} tracks to queue"),
               ),

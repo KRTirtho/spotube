@@ -1,5 +1,4 @@
 import 'package:badges/badges.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -196,10 +195,7 @@ class SidebarFooter extends HookConsumerWidget {
       child: HookBuilder(
         builder: (context) {
           var spotify = ref.watch(spotifyProvider);
-          final me = useQuery(
-            job: Queries.user.me,
-            externalData: spotify,
-          );
+          final me = Queries.user.useMe(ref);
           final data = me.data;
 
           final avatarImg = TypeConversionUtils.image_X_UrlString(
@@ -214,8 +210,7 @@ class SidebarFooter extends HookConsumerWidget {
 
           useEffect(() {
             if (auth != null && me.hasError) {
-              me.setExternalData(spotify);
-              me.refetch();
+              me.refresh();
             }
             return null;
           }, [auth, me.hasError]);

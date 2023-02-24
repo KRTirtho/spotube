@@ -1,6 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:fl_query/fl_query.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,10 +19,8 @@ import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
-import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:tuple/tuple.dart';
 
 class TrackTile extends HookConsumerWidget {
   final PlaylistQueue? playlist;
@@ -77,16 +73,9 @@ class TrackTile extends HookConsumerWidget {
     final playlistQueueNotifier = ref.watch(PlaylistQueueNotifier.notifier);
 
     final removingTrack = useState<String?>(null);
-    final removeTrack = useMutation<bool, Tuple2<SpotifyApi, String>>(
-      job: Mutations.playlist.removeTrackOf(playlistId ?? ""),
-      onData: (payload, variables, ctx) {
-        if (playlistId == null || !payload) return;
-        QueryBowl.of(context)
-            .getQuery(
-              Queries.playlist.tracksOf(playlistId!).queryKey,
-            )
-            ?.refetch();
-      },
+    final removeTrack = Mutations.playlist.useRemoveTrackOf(
+      ref,
+      playlistId ?? "",
     );
 
     void actionShare(Track track) {
@@ -359,7 +348,7 @@ class TrackTile extends HookConsumerWidget {
                           : const Icon(SpotubeIcons.heart),
                       text: const PlatformText("Save as favorite"),
                       onPressed: () {
-                        toggler.item2.mutate(Tuple2(spotify, toggler.item1));
+                        toggler.item2.mutate(toggler.item1);
                       },
                     ),
                   if (auth != null)
@@ -370,7 +359,7 @@ class TrackTile extends HookConsumerWidget {
                     ),
                   if (userPlaylist && auth != null)
                     Action(
-                      icon: (removeTrack.isLoading || !removeTrack.hasData) &&
+                      icon: (removeTrack.isMutating || !removeTrack.hasData) &&
                               removingTrack.value == track.value.uri
                           ? const Center(
                               child: PlatformCircularProgressIndicator(),
@@ -379,7 +368,7 @@ class TrackTile extends HookConsumerWidget {
                       text: const PlatformText("Remove from playlist"),
                       onPressed: () {
                         removingTrack.value = track.value.uri;
-                        removeTrack.mutate(Tuple2(spotify, track.value.uri!));
+                        removeTrack.mutate(track.value.uri!);
                       },
                     ),
                   Action(

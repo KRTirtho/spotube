@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
@@ -9,8 +8,6 @@ import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
-import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -22,35 +19,12 @@ class GenrePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
-    final spotify = ref.watch(spotifyProvider);
     final recommendationMarket = ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),
     );
-    final categoriesQuery = useInfiniteQuery(
-      job: Queries.category.list,
-      externalData: {
-        "spotify": spotify,
-        "recommendationMarket": recommendationMarket,
-      },
-    );
+    final categoriesQuery = Queries.category.useList(ref, recommendationMarket);
 
     final isMounted = useIsMounted();
-
-    final auth = ref.watch(AuthenticationNotifier.provider);
-
-    /// Temporary fix before fl-query 0.4.0
-    useEffect(() {
-      if (auth != null && categoriesQuery.hasError) {
-        categoriesQuery.setExternalData({
-          "spotify": spotify,
-          "recommendationMarket": recommendationMarket,
-        });
-        categoriesQuery.refetchPages();
-      }
-      return null;
-    }, [auth, categoriesQuery.hasError]);
-
-    /// ===================================
 
     return HookBuilder(builder: (context) {
       final searchText = useState("");
@@ -58,7 +32,7 @@ class GenrePage extends HookConsumerWidget {
         () {
           final categories = categoriesQuery.pages
               .expand<Category>(
-                (page) => page?.items ?? const Iterable.empty(),
+                (page) => page.items ?? const Iterable.empty(),
               )
               .toList();
           if (searchText.value.isEmpty) {
@@ -86,12 +60,12 @@ class GenrePage extends HookConsumerWidget {
 
       final list = RefreshIndicator(
         onRefresh: () async {
-          await categoriesQuery.refetchPages();
+          await categoriesQuery.refreshAll();
         },
         child: Waypoint(
           onTouchEdge: () async {
             if (categoriesQuery.hasNextPage && isMounted()) {
-              await categoriesQuery.fetchNextPage();
+              await categoriesQuery.fetchNext();
             }
           },
           controller: scrollController,

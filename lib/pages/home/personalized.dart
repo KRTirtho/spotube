@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,7 +9,6 @@ import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -104,30 +102,9 @@ class PersonalizedPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final spotify = ref.watch(spotifyProvider);
+    final featuredPlaylistsQuery = Queries.playlist.useFeaturedQuery(ref);
 
-    final featuredPlaylistsQuery = useInfiniteQuery(
-      job: Queries.playlist.featured,
-      externalData: spotify,
-    );
-
-    final newReleases = useInfiniteQuery(
-      job: Queries.album.newReleases,
-      externalData: spotify,
-    );
-
-    useEffect(() {
-      if (featuredPlaylistsQuery.hasError &&
-          featuredPlaylistsQuery.pages.first == null) {
-        featuredPlaylistsQuery.setExternalData(spotify);
-        featuredPlaylistsQuery.refetch();
-      }
-      if (newReleases.hasError && newReleases.pages.first == null) {
-        newReleases.setExternalData(spotify);
-        newReleases.refetch();
-      }
-      return null;
-    }, [spotify]);
+    final newReleases = Queries.album.useNewReleasesQuery(ref);
 
     return ListView(
       children: [
@@ -136,13 +113,13 @@ class PersonalizedPage extends HookConsumerWidget {
               featuredPlaylistsQuery.pages.whereType<Page<PlaylistSimple>>(),
           title: 'Featured',
           hasNextPage: featuredPlaylistsQuery.hasNextPage,
-          onFetchMore: featuredPlaylistsQuery.fetchNextPage,
+          onFetchMore: featuredPlaylistsQuery.fetchNext,
         ),
         PersonalizedItemCard(
           albums: newReleases.pages.whereType<Page<AlbumSimple>>(),
           title: 'New Releases',
           hasNextPage: newReleases.hasNextPage,
-          onFetchMore: newReleases.fetchNextPage,
+          onFetchMore: newReleases.fetchNext,
         ),
       ],
     );

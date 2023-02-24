@@ -1,5 +1,4 @@
 import 'package:fl_query/fl_query.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -65,10 +64,7 @@ class ArtistPage extends HookConsumerWidget {
         ),
         body: HookBuilder(
           builder: (context) {
-            final artistsQuery = useQuery(
-              job: Queries.artist.get(artistId),
-              externalData: spotify,
-            );
+            final artistsQuery = Queries.artist.useGetArtist(ref, artistId);
 
             if (artistsQuery.isLoading || !artistsQuery.hasData) {
               return const ShimmerArtistProfile();
@@ -166,10 +162,8 @@ class ArtistPage extends HookConsumerWidget {
                                 if (auth != null)
                                   HookBuilder(
                                     builder: (context) {
-                                      final isFollowingQuery = useQuery(
-                                        job: Queries.artist.doIFollow(artistId),
-                                        externalData: spotify,
-                                      );
+                                      final isFollowingQuery = Queries.artist
+                                          .useDoIFollowQuery(ref, artistId);
 
                                       if (isFollowingQuery.isLoading ||
                                           !isFollowingQuery.hasData) {
@@ -181,7 +175,7 @@ class ArtistPage extends HookConsumerWidget {
                                         );
                                       }
 
-                                      final queryBowl = QueryBowl.of(context);
+                                      final queryBowl = QueryClient.of(context);
 
                                       return PlatformFilledButton(
                                         onPressed: () async {
@@ -195,21 +189,14 @@ class ArtistPage extends HookConsumerWidget {
                                                     FollowingType.artist,
                                                     [artistId],
                                                   );
-                                            await isFollowingQuery.refetch();
+                                            await isFollowingQuery.refresh();
 
                                             queryBowl
-                                                .getInfiniteQuery(
-                                                  Queries.artist.followedByMe
-                                                      .queryKey,
-                                                )
-                                                ?.refetch();
+                                                .refreshInfiniteQueryAllPages(
+                                                    "user-following-artists");
                                           } finally {
-                                            QueryBowl.of(context)
-                                                .refetchQueries([
-                                              Queries.artist
-                                                  .doIFollow(artistId)
-                                                  .queryKey,
-                                            ]);
+                                            QueryClient.of(context).refreshQuery(
+                                                "user-follows-artists-query/$artistId");
                                           }
                                         },
                                         child: PlatformText(
@@ -281,9 +268,9 @@ class ArtistPage extends HookConsumerWidget {
                   const SizedBox(height: 50),
                   HookBuilder(
                     builder: (context) {
-                      final topTracksQuery = useQuery(
-                        job: Queries.artist.topTracksOf(artistId),
-                        externalData: spotify,
+                      final topTracksQuery = Queries.artist.useTopTracksOfQuery(
+                        ref,
+                        artistId,
                       );
 
                       final isPlaylistPlaying =
@@ -391,9 +378,10 @@ class ArtistPage extends HookConsumerWidget {
                   const SizedBox(height: 10),
                   HookBuilder(
                     builder: (context) {
-                      final relatedArtists = useQuery(
-                        job: Queries.artist.relatedArtistsOf(artistId),
-                        externalData: spotify,
+                      final relatedArtists =
+                          Queries.artist.useRelatedArtistsOfQuery(
+                        ref,
+                        artistId,
                       );
 
                       if (relatedArtists.isLoading || !relatedArtists.hasData) {

@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,7 +8,6 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
@@ -46,15 +44,11 @@ class PlaylistView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    SpotifyApi spotify = ref.watch(spotifyProvider);
 
     final breakpoint = useBreakpoints();
 
-    final meSnapshot = useQuery(job: Queries.user.me, externalData: spotify);
-    final tracksSnapshot = useQuery(
-      job: Queries.playlist.tracksOf(playlist.id!),
-      externalData: spotify,
-    );
+    final meSnapshot = Queries.user.useMe(ref);
+    final tracksSnapshot = Queries.playlist.useTracksOfQuery(ref, playlist.id!);
 
     final isPlaylistPlaying =
         playlistNotifier.isPlayingPlaylist(tracksSnapshot.data ?? []);

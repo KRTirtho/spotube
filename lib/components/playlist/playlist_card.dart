@@ -10,7 +10,6 @@ import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:uuid/uuid.dart';
 
 class PlaylistCard extends HookConsumerWidget {
   final PlaylistSimple playlist;
@@ -26,9 +25,9 @@ class PlaylistCard extends HookConsumerWidget {
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
-    final queryBowl = QueryBowl.of(context);
+    final queryBowl = QueryClient.of(context);
     final query = queryBowl.getQuery<List<Track>, SpotifyApi>(
-      Queries.playlist.tracksOf(playlist.id!).queryKey,
+      "playlist-tracks/${playlist.id}",
     );
     final tracks = useState(query?.data ?? []);
     bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks.value);
@@ -37,6 +36,8 @@ class PlaylistCard extends HookConsumerWidget {
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
 
     final updating = useState(false);
+    final spotify = ref.watch(spotifyProvider);
+    final scaffold = ScaffoldMessenger.of(context);
 
     return PlaybuttonCard(
       viewType: viewType,
@@ -66,9 +67,8 @@ class PlaylistCard extends HookConsumerWidget {
           }
 
           List<Track> fetchedTracks = await queryBowl.fetchQuery(
-                key: ValueKey(const Uuid().v4()),
-                Queries.playlist.tracksOf(playlist.id!),
-                externalData: ref.read(spotifyProvider),
+                "playlist-tracks/${playlist.id}",
+                () => Queries.playlist.tracksOf(playlist.id!, spotify),
               ) ??
               [];
 
@@ -85,9 +85,8 @@ class PlaylistCard extends HookConsumerWidget {
         try {
           if (isPlaylistPlaying) return;
           List<Track> fetchedTracks = await queryBowl.fetchQuery(
-                key: ValueKey(const Uuid().v4()),
-                Queries.playlist.tracksOf(playlist.id!),
-                externalData: ref.read(spotifyProvider),
+                "playlist-tracks/${playlist.id}",
+                () => Queries.playlist.tracksOf(playlist.id!, spotify),
               ) ??
               [];
 
@@ -95,7 +94,7 @@ class PlaylistCard extends HookConsumerWidget {
 
           playlistNotifier.add(fetchedTracks);
           tracks.value = fetchedTracks;
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffold.showSnackBar(
             SnackBar(
               content: Text("Added ${fetchedTracks.length} tracks to queue"),
             ),
