@@ -202,18 +202,7 @@ class SidebarFooter extends HookConsumerWidget {
             placeholder: ImagePlaceholder.artist,
           );
 
-          // TODO: Remove below code after fl-query ^0.4.0
-          /// Temporary fix before fl-query 0.4.0
           final auth = ref.watch(AuthenticationNotifier.provider);
-
-          useEffect(() {
-            if (auth != null && me.hasError) {
-              me.refresh();
-            }
-            return null;
-          }, [auth, me.hasError]);
-
-          /// ===================================
 
           return Padding(
               padding: const EdgeInsets.all(16).copyWith(left: 0),

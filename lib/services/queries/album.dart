@@ -1,5 +1,4 @@
 import 'package:catcher/catcher.dart';
-import 'package:collection/collection.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -68,13 +67,11 @@ class AlbumQueries {
       },
       ref: ref,
       initialPage: 0,
-      nextPage: (lastParam, pages) {
-        final lastPage = pages.elementAtOrNull(lastParam);
-        if (lastPage == null ||
-            lastPage.isLast ||
-            (lastPage.items ?? []).length < 5) return null;
-
-        return lastPage.nextOffset;
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 5) {
+          return null;
+        }
+        return lastPageData.nextOffset;
       },
     );
   }

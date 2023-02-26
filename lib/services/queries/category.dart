@@ -18,11 +18,11 @@ class CategoryQueries {
         return categories;
       },
       initialPage: 0,
-      nextPage: (lastPage, pages) {
-        if (pages.isEmpty) return lastPage + 1;
-        return pages.last.isLast || (pages.last.items?.length ?? 0) < 15
-            ? null
-            : pages.last.nextOffset;
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 15) {
+          return null;
+        }
+        return lastPageData.nextOffset;
       },
       ref: ref,
     );
@@ -42,10 +42,12 @@ class CategoryQueries {
         return playlists;
       },
       initialPage: 0,
-      nextPage: (lastPage, pages) =>
-          pages.last.isLast || (pages.last.items?.length ?? 0) < 5
-              ? null
-              : pages.last.nextOffset,
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 5) {
+          return null;
+        }
+        return lastPageData.nextOffset;
+      },
       ref: ref,
     );
   }

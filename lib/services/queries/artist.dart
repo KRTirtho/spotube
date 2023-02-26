@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -29,10 +28,12 @@ class ArtistQueries {
             .getPage(15, pageParam);
       },
       initialPage: "",
-      nextPage: (lastPage, pages) =>
-          pages.last.isLast || (pages.last.items?.length ?? 0) < 15
-              ? null
-              : pages.last.after,
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 15) {
+          return null;
+        }
+        return lastPageData.after;
+      },
       ref: ref,
     );
   }
@@ -77,12 +78,11 @@ class ArtistQueries {
         return spotify.artists.albums(artist).getPage(5, pageParam);
       },
       initialPage: 0,
-      nextPage: (lastPage, pages) {
-        final page = pages.elementAtOrNull(lastPage);
-        if (page == null || page.isLast || (page.items ?? []).length < 5) {
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 5) {
           return null;
         }
-        return page.nextOffset;
+        return lastPageData.nextOffset;
       },
       ref: ref,
     );

@@ -22,10 +22,14 @@ class SearchQueries {
       },
       ref: ref,
       initialPage: 0,
-      nextPage: (lastPage, pages) =>
-          pages.last.isNotEmpty && (pages.last.first.items?.length ?? 0) < 10
-              ? null
-              : pages.last.last.nextOffset,
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isEmpty) return null;
+        if ((lastPageData.first.isLast ||
+            (lastPageData.first.items ?? []).length < 10)) {
+          return null;
+        }
+        return lastPageData.first.nextOffset;
+      },
     );
   }
 }

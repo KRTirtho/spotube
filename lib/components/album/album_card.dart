@@ -48,7 +48,7 @@ class AlbumCard extends HookConsumerWidget {
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final queryBowl = QueryClient.of(context);
     final query = queryBowl
-        .getQuery<List<TrackSimple>, SpotifyApi>("album-tracks/${album.id}");
+        .getQuery<List<TrackSimple>, dynamic>("album-tracks/${album.id}");
     final tracks = useState(query?.data ?? album.tracks ?? <Track>[]);
     bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks.value);
     final int marginH =

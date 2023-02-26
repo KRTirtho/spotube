@@ -38,9 +38,15 @@ Query<DataType, ErrorType> useSpotifyQuery<DataType, ErrorType>(
   );
 
   useEffect(() {
-    query.refresh();
-    return null;
-  }, [spotify]);
+    return ref.listenManual(
+      spotifyProvider,
+      (previous, next) {
+        if (previous != next) {
+          query.refresh();
+        }
+      },
+    ).close;
+  }, [query]);
 
   return query;
 }

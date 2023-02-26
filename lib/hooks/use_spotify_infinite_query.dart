@@ -39,9 +39,15 @@ InfiniteQuery<DataType, ErrorType, PageType>
   );
 
   useEffect(() {
-    query.refreshAll();
-    return null;
-  }, [spotify]);
+    return ref.listenManual(
+      spotifyProvider,
+      (previous, next) {
+        if (previous != next) {
+          query.refreshAll();
+        }
+      },
+    ).close;
+  }, [query]);
 
   return query;
 }

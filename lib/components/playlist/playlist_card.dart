@@ -26,7 +26,7 @@ class PlaylistCard extends HookConsumerWidget {
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
     final queryBowl = QueryClient.of(context);
-    final query = queryBowl.getQuery<List<Track>, SpotifyApi>(
+    final query = queryBowl.getQuery<List<Track>, dynamic>(
       "playlist-tracks/${playlist.id}",
     );
     final tracks = useState(query?.data ?? []);

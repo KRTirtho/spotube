@@ -8,7 +8,6 @@ import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart'
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 class CategoryCard extends HookConsumerWidget {
@@ -23,14 +22,10 @@ class CategoryCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
-    final spotify = ref.watch(spotifyProvider);
     final playlistQuery = useQueries.category.playlistsOf(
       ref,
       category.id!,
     );
-    final hasNextPage = playlistQuery.pages.isEmpty
-        ? false
-        : (playlistQuery.pages.last.items?.length ?? 0) == 5;
 
     final playlists = playlistQuery.pages
         .expand(
@@ -48,7 +43,7 @@ class CategoryCard extends HookConsumerWidget {
             ],
           ),
         ),
-        playlistQuery.hasErrors
+        playlistQuery.hasPageError && !playlistQuery.hasPageData
             ? PlatformText(
                 "Something Went Wrong\n${playlistQuery.errors.first}")
             : SizedBox(
@@ -75,7 +70,7 @@ class CategoryCard extends HookConsumerWidget {
                         children: [
                           ...playlists
                               .map((playlist) => PlaylistCard(playlist)),
-                          if (hasNextPage)
+                          if (playlistQuery.hasNextPage)
                             const ShimmerPlaybuttonCard(count: 1),
                         ],
                       ),
