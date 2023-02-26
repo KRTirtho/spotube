@@ -11,7 +11,7 @@ class SearchQueries {
     SearchType searchType,
   ) {
     return useSpotifyInfiniteQuery<List<Page>, dynamic, int>(
-      "search-query/$query",
+      "search-query/${searchType.key}",
       (page, spotify) {
         if (query.trim().isEmpty) return [];
         final queryString = query;
@@ -20,6 +20,7 @@ class SearchQueries {
           types: [searchType],
         ).getPage(10, page);
       },
+      enabled: false,
       ref: ref,
       initialPage: 0,
       nextPage: (lastPage, lastPageData) {
