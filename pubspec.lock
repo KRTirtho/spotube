@@ -535,7 +535,7 @@ packages:
     description:
       path: "packages/fl_query"
       ref: new-architecture
-      resolved-ref: "64d661779a88c845e5280f3da99a2bd90bdc586b"
+      resolved-ref: "0c819d4e11572d592b5334280b8b4f2657f21459"
       url: "https://github.com/KRTirtho/fl-query.git"
     source: git
     version: "0.3.1"
@@ -544,7 +544,7 @@ packages:
     description:
       path: "packages/fl_query_hooks"
       ref: new-architecture
-      resolved-ref: "64d661779a88c845e5280f3da99a2bd90bdc586b"
+      resolved-ref: "0c819d4e11572d592b5334280b8b4f2657f21459"
       url: "https://github.com/KRTirtho/fl-query.git"
     source: git
     version: "0.3.1"
@@ -1730,10 +1730,10 @@ packages:
     dependency: "direct main"
     description:
       name: window_manager
-      sha256: "5a7bda81b8b8e5feb733d07f4bd174e64dfb412031aff5314a375118e42b498e"
+      sha256: "492806c69879f0d28e95472bbe5e8d5940ac8c6e99cc07052fe14946974555ba"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.8"
+    version: "0.3.1"
   window_size:
     dependency: "direct main"
     description:

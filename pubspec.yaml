@@ -85,7 +85,7 @@ dependencies:
   uuid: ^3.0.7
   version: ^3.0.2
   visibility_detector: ^0.3.3
-  window_manager: 0.2.8
+  window_manager: ^0.3.1
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
