@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/utils/platform.dart';
@@ -16,7 +17,7 @@ import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/player/player.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/root/root_app.dart';
-import 'package:spotube/pages/search/search.dart';
+// import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 

@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
@@ -11,7 +10,6 @@ import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:tuple/tuple.dart';
 
@@ -22,20 +20,17 @@ class UserArtists extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final artistQuery = useInfiniteQuery(
-      job: Queries.artist.followedByMe,
-      externalData: ref.watch(spotifyProvider),
-    );
+    final artistQuery = useQueries.artist.followedByMe(ref);
 
     final hasNextPage = artistQuery.pages.isEmpty
         ? false
-        : (artistQuery.pages.last?.items?.length ?? 0) == 15;
+        : (artistQuery.pages.last.items?.length ?? 0) == 15;
 
     final searchText = useState('');
 
     final filteredArtists = useMemoized(() {
       final artists = artistQuery.pages
-          .expand<Artist>((page) => page?.items ?? const Iterable.empty());
+          .expand<Artist>((page) => page.items ?? const Iterable.empty());
 
       if (searchText.value.isEmpty) {
         return artists.toList();
@@ -85,7 +80,7 @@ class UserArtists extends HookConsumerWidget {
             )
           : RefreshIndicator(
               onRefresh: () async {
-                await artistQuery.refetchPages();
+                await artistQuery.refreshAll();
               },
               child: GridView.builder(
                 itemCount: filteredArtists.length,
@@ -104,7 +99,7 @@ class UserArtists extends HookConsumerWidget {
                         controller: useScrollController(),
                         isGrid: true,
                         onTouchEdge: () {
-                          artistQuery.fetchNextPage();
+                          artistQuery.fetchNext();
                         },
                         child: ArtistCard(filteredArtists[index]),
                       );

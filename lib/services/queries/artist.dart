@@ -1,59 +1,103 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/hooks/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/use_spotify_query.dart';
 
 class ArtistQueries {
-  final get = QueryJob.withVariableKey<Artist, SpotifyApi>(
-    preQueryKey: "artist-profile",
-    task: (queryKey, externalData) =>
-        externalData.artists.get(getVariable(queryKey)),
-  );
+  const ArtistQueries();
 
-  final followedByMe = InfiniteQueryJob<CursorPage<Artist>, SpotifyApi, String>(
-    queryKey: "user-following-artists",
-    initialParam: "",
-    getNextPageParam: (lastPage, lastParam) => lastPage.after,
-    getPreviousPageParam: (lastPage, lastParam) =>
-        lastPage.metadata.previous ?? "",
-    task: (queryKey, pageKey, spotify) {
-      return spotify.me.following(FollowingType.artist).getPage(15, pageKey);
-    },
-  );
+  Query<Artist, dynamic> get(
+    WidgetRef ref,
+    String artist,
+  ) {
+    return useSpotifyQuery<Artist, dynamic>(
+      "artist-profile/$artist",
+      (spotify) => spotify.artists.get(artist),
+      ref: ref,
+    );
+  }
 
-  final doIFollow = QueryJob.withVariableKey<bool, SpotifyApi>(
-    preQueryKey: "user-follows-artists-query",
-    task: (artistId, spotify) async {
-      final result = await spotify.me.isFollowing(
-        FollowingType.artist,
-        [getVariable(artistId)],
-      );
-      return result.first;
-    },
-  );
+  InfiniteQuery<CursorPage<Artist>, dynamic, String> followedByMe(
+      WidgetRef ref) {
+    return useSpotifyInfiniteQuery<CursorPage<Artist>, dynamic, String>(
+      "user-following-artists",
+      (pageParam, spotify) async {
+        return spotify.me
+            .following(FollowingType.artist)
+            .getPage(15, pageParam);
+      },
+      initialPage: "",
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 15) {
+          return null;
+        }
+        return lastPageData.after;
+      },
+      ref: ref,
+    );
+  }
 
-  final topTracksOf = QueryJob.withVariableKey<Iterable<Track>, SpotifyApi>(
-    preQueryKey: "artist-top-track-query",
-    task: (queryKey, spotify) {
-      return spotify.artists.getTopTracks(getVariable(queryKey), "US");
-    },
-  );
+  Query<bool, dynamic> doIFollow(
+    WidgetRef ref,
+    String artist,
+  ) {
+    return useSpotifyQuery<bool, dynamic>(
+      "user-follows-artists-query/$artist",
+      (spotify) async {
+        final result = await spotify.me.isFollowing(
+          FollowingType.artist,
+          [artist],
+        );
+        return result.first;
+      },
+      ref: ref,
+    );
+  }
 
-  final albumsOf =
-      InfiniteQueryJob.withVariableKey<Page<Album>, SpotifyApi, int>(
-    preQueryKey: "artist-albums",
-    initialParam: 0,
-    getNextPageParam: (lastPage, lastParam) => lastPage.nextOffset,
-    getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 6,
-    task: (queryKey, pageKey, spotify) {
-      final id = getVariable(queryKey);
-      return spotify.artists.albums(id).getPage(5, pageKey);
-    },
-  );
+  Query<Iterable<Track>, dynamic> topTracksOf(
+    WidgetRef ref,
+    String artist,
+  ) {
+    return useSpotifyQuery<Iterable<Track>, dynamic>(
+      "artist-top-track-query/$artist",
+      (spotify) {
+        return spotify.artists.getTopTracks(artist, "US");
+      },
+      ref: ref,
+    );
+  }
 
-  final relatedArtistsOf =
-      QueryJob.withVariableKey<Iterable<Artist>, SpotifyApi>(
-    preQueryKey: "artist-related-artist-query",
-    task: (queryKey, spotify) {
-      return spotify.artists.getRelatedArtists(getVariable(queryKey));
-    },
-  );
+  InfiniteQuery<Page<Album>, dynamic, int> albumsOf(
+    WidgetRef ref,
+    String artist,
+  ) {
+    return useSpotifyInfiniteQuery<Page<Album>, dynamic, int>(
+      "artist-albums/$artist",
+      (pageParam, spotify) async {
+        return spotify.artists.albums(artist).getPage(5, pageParam);
+      },
+      initialPage: 0,
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 5) {
+          return null;
+        }
+        return lastPageData.nextOffset;
+      },
+      ref: ref,
+    );
+  }
+
+  Query<Iterable<Artist>, dynamic> relatedArtistsOf(
+    WidgetRef ref,
+    String artist,
+  ) {
+    return useSpotifyQuery<Iterable<Artist>, dynamic>(
+      "artist-related-artist-query/$artist",
+      (spotify) {
+        return spotify.artists.getRelatedArtists(artist);
+      },
+      ref: ref,
+    );
+  }
 }

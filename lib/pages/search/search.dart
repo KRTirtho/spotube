@@ -1,4 +1,5 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -17,14 +18,12 @@ import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:tuple/tuple.dart';
 import 'package:collection/collection.dart';
 
 final searchTermStateProvider = StateProvider<String>((ref) => "");
@@ -37,49 +36,29 @@ class SearchPage extends HookConsumerWidget {
     ref.watch(AuthenticationNotifier.provider);
     final authenticationNotifier =
         ref.watch(AuthenticationNotifier.provider.notifier);
-    final spotify = ref.watch(spotifyProvider);
     final albumController = useScrollController();
     final playlistController = useScrollController();
     final artistController = useScrollController();
     final breakpoint = useBreakpoints();
 
-    final getVariables = useCallback(
-      () => Tuple2(
-        ref.read(searchTermStateProvider),
-        spotify,
-      ),
-      [],
-    );
+    final searchTerm = ref.watch(searchTermStateProvider);
 
-    final searchTrack = useInfiniteQuery(
-      job: Queries.search.get(SearchType.track.key),
-      externalData: Tuple2("", spotify),
-    );
-    final searchAlbum = useInfiniteQuery(
-      job: Queries.search.get(SearchType.album.key),
-      externalData: Tuple2("", spotify),
-    );
-    final searchPlaylist = useInfiniteQuery(
-      job: Queries.search.get(SearchType.playlist.key),
-      externalData: Tuple2("", spotify),
-    );
-    final searchArtist = useInfiniteQuery(
-      job: Queries.search.get(SearchType.artist.key),
-      externalData: Tuple2("", spotify),
-    );
+    final searchTrack =
+        useQueries.search.query(ref, searchTerm, SearchType.track);
+    final searchAlbum =
+        useQueries.search.query(ref, searchTerm, SearchType.album);
+    final searchPlaylist =
+        useQueries.search.query(ref, searchTerm, SearchType.playlist);
+    final searchArtist =
+        useQueries.search.query(ref, searchTerm, SearchType.artist);
 
-    void onSearch() {
-      for (final query in [
-        searchTrack,
-        searchAlbum,
-        searchPlaylist,
-        searchArtist,
-      ]) {
-        query.enabled = false;
-        query.fetched = false;
-        query.setExternalData(getVariables());
-        query.refetchPages();
-      }
+    Future<void> onSearch() async {
+      await Future.wait([
+        searchTrack.refreshAll(),
+        searchAlbum.refreshAll(),
+        searchPlaylist.refreshAll(),
+        searchArtist.refreshAll(),
+      ]);
     }
 
     return SafeArea(
@@ -96,10 +75,6 @@ class SearchPage extends HookConsumerWidget {
                     ),
                     color: PlatformTheme.of(context).scaffoldBackgroundColor,
                     child: PlatformTextField(
-                      onChanged: (value) {
-                        ref.read(searchTermStateProvider.notifier).state =
-                            value;
-                      },
                       prefixIcon: SpotubeIcons.search,
                       prefixIconColor: PlatformProperty.only(
                         ios:
@@ -107,8 +82,14 @@ class SearchPage extends HookConsumerWidget {
                         other: null,
                       ).resolve(platform!),
                       placeholder: "Search...",
-                      onSubmitted: (value) {
-                        onSearch();
+                      onSubmitted: (value) async {
+                        ref.read(searchTermStateProvider.notifier).state =
+                            value;
+                        // Fl-Query is too fast, so we need to delay the search
+                        // to prevent spamming the API :)
+                        Timer(const Duration(milliseconds: 50), () {
+                          onSearch();
+                        });
                       },
                     ),
                   ),
@@ -127,7 +108,7 @@ class SearchPage extends HookConsumerWidget {
                         ...searchAlbum.pages,
                         ...searchPlaylist.pages,
                         ...searchArtist.pages,
-                      ].expand<Page>((page) => page ?? []).toList();
+                      ].expand<Page>((page) => page).toList();
                       for (MapEntry<int, Page> page in pages.asMap().entries) {
                         for (var item in page.value.items ?? []) {
                           if (item is AlbumSimple) {
@@ -153,12 +134,10 @@ class SearchPage extends HookConsumerWidget {
                               children: [
                                 if (tracks.isNotEmpty)
                                   PlatformText.headline("Songs"),
-                                if (searchTrack.isLoading &&
-                                    !searchTrack.isFetchingNextPage)
+                                if (searchTrack.isLoadingPage)
                                   const PlatformCircularProgressIndicator()
-                                else if (searchTrack.hasError)
-                                  PlatformText(searchTrack
-                                          .error?[searchTrack.pageParams.last]
+                                else if (searchTrack.hasPageError)
+                                  PlatformText(searchTrack.errors.lastOrNull
                                           ?.toString() ??
                                       "")
                                 else
@@ -204,10 +183,10 @@ class SearchPage extends HookConsumerWidget {
                                     tracks.isNotEmpty)
                                   Center(
                                     child: PlatformTextButton(
-                                      onPressed: searchTrack.isFetchingNextPage
+                                      onPressed: searchTrack.isRefreshingPage
                                           ? null
-                                          : () => searchTrack.fetchNextPage(),
-                                      child: searchTrack.isFetchingNextPage
+                                          : () => searchTrack.fetchNext(),
+                                      child: searchTrack.isRefreshingPage
                                           ? const PlatformCircularProgressIndicator()
                                           : const PlatformText("Load more"),
                                     ),
@@ -231,7 +210,7 @@ class SearchPage extends HookConsumerWidget {
                                     controller: playlistController,
                                     child: Waypoint(
                                       onTouchEdge: () {
-                                        searchPlaylist.fetchNextPage();
+                                        searchPlaylist.fetchNext();
                                       },
                                       controller: playlistController,
                                       child: SingleChildScrollView(
@@ -256,13 +235,11 @@ class SearchPage extends HookConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                if (searchPlaylist.isLoading &&
-                                    !searchPlaylist.isFetchingNextPage)
+                                if (searchPlaylist.isLoadingPage)
                                   const PlatformCircularProgressIndicator(),
-                                if (searchPlaylist.hasError)
+                                if (searchPlaylist.hasPageError)
                                   PlatformText(
-                                    searchPlaylist.error?[
-                                                searchPlaylist.pageParams.last]
+                                    searchPlaylist.errors.lastOrNull
                                             ?.toString() ??
                                         "",
                                   ),
@@ -283,7 +260,7 @@ class SearchPage extends HookConsumerWidget {
                                     child: Waypoint(
                                       controller: artistController,
                                       onTouchEdge: () {
-                                        searchArtist.fetchNextPage();
+                                        searchArtist.fetchNext();
                                       },
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
@@ -311,13 +288,11 @@ class SearchPage extends HookConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                if (searchArtist.isLoading &&
-                                    !searchArtist.isFetchingNextPage)
+                                if (searchArtist.isLoadingPage)
                                   const PlatformCircularProgressIndicator(),
-                                if (searchArtist.hasError)
+                                if (searchArtist.hasPageError)
                                   PlatformText(
-                                    searchArtist.error?[
-                                                searchArtist.pageParams.last]
+                                    searchArtist.errors.lastOrNull
                                             ?.toString() ??
                                         "",
                                   ),
@@ -338,7 +313,7 @@ class SearchPage extends HookConsumerWidget {
                                     child: Waypoint(
                                       controller: albumController,
                                       onTouchEdge: () {
-                                        searchAlbum.fetchNextPage();
+                                        searchAlbum.fetchNext();
                                       },
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
@@ -364,14 +339,11 @@ class SearchPage extends HookConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                if (searchAlbum.isLoading &&
-                                    !searchAlbum.isFetchingNextPage)
+                                if (searchAlbum.isLoadingPage)
                                   const PlatformCircularProgressIndicator(),
-                                if (searchAlbum.hasError)
+                                if (searchAlbum.hasPageError)
                                   PlatformText(
-                                    searchAlbum
-                                            .error?[searchAlbum.pageParams.last]
-                                            ?.toString() ??
+                                    searchAlbum.errors.lastOrNull?.toString() ??
                                         "",
                                   ),
                               ],

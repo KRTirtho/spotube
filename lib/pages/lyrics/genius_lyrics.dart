@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -10,7 +9,6 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:tuple/tuple.dart';
 
 class GeniusLyrics extends HookConsumerWidget {
   final PaletteColor palette;
@@ -24,12 +22,9 @@ class GeniusLyrics extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final geniusLyricsQuery = useQuery(
-      job: Queries.lyrics.static(playlist?.activeTrack.id ?? ""),
-      externalData: Tuple2(
-        playlist?.activeTrack,
-        ref.watch(userPreferencesProvider).geniusAccessToken,
-      ),
+    final geniusLyricsQuery = useQueries.lyrics.static(
+      playlist?.activeTrack,
+      ref.watch(userPreferencesProvider).geniusAccessToken,
     );
     final breakpoint = useBreakpoints();
     final textTheme = Theme.of(context).textTheme;
@@ -42,8 +37,8 @@ class GeniusLyrics extends HookConsumerWidget {
             child: Text(
               playlist?.activeTrack.name ?? "",
               style: breakpoint >= Breakpoints.md
-                  ? textTheme.headline3
-                  : textTheme.headline4?.copyWith(
+                  ? textTheme.displaySmall
+                  : textTheme.headlineMedium?.copyWith(
                       fontSize: 25,
                       color: palette.titleTextColor,
                     ),
@@ -54,8 +49,8 @@ class GeniusLyrics extends HookConsumerWidget {
               TypeConversionUtils.artists_X_String<Artist>(
                   playlist?.activeTrack.artists ?? []),
               style: (breakpoint >= Breakpoints.md
-                      ? textTheme.headline5
-                      : textTheme.headline6)
+                      ? textTheme.headlineSmall
+                      : textTheme.titleLarge)
                   ?.copyWith(color: palette.bodyTextColor),
             ),
           )
@@ -68,12 +63,12 @@ class GeniusLyrics extends HookConsumerWidget {
                 child: Builder(
                   builder: (context) {
                     if (geniusLyricsQuery.isLoading ||
-                        geniusLyricsQuery.isRefetching) {
+                        geniusLyricsQuery.isRefreshing) {
                       return const ShimmerLyrics();
                     } else if (geniusLyricsQuery.hasError) {
                       return Text(
                         "Sorry, no Lyrics were found for `${playlist?.activeTrack.name}` :'(\n${geniusLyricsQuery.error.toString()}",
-                        style: textTheme.bodyText1?.copyWith(
+                        style: textTheme.bodyLarge?.copyWith(
                           color: palette.bodyTextColor,
                         ),
                       );

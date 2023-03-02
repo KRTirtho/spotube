@@ -8,7 +8,6 @@
 
 #include <audioplayers_windows/audioplayers_windows_plugin.h>
 #include <catcher/catcher_plugin.h>
-#include <connectivity_plus_windows/connectivity_plus_windows_plugin.h>
 #include <metadata_god/metadata_god_plugin_c_api.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <screen_retriever/screen_retriever_plugin.h>
@@ -21,8 +20,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("AudioplayersWindowsPlugin"));
   CatcherPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("CatcherPlugin"));
-  ConnectivityPlusWindowsPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("ConnectivityPlusWindowsPlugin"));
   MetadataGodPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("MetadataGodPluginCApi"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(

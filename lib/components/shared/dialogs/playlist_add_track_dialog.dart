@@ -1,6 +1,4 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
@@ -18,14 +16,8 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
-    final userPlaylists = useQuery(
-      job: Queries.playlist.ofMine,
-      externalData: spotify,
-    );
-    final me = useQuery(
-      job: Queries.user.me,
-      externalData: spotify,
-    );
+    final userPlaylists = useQueries.playlist.ofMine(ref);
+    final me = useQueries.user.me(ref);
     final filteredPlaylists = userPlaylists.data?.where(
       (playlist) =>
           playlist.owner?.id != null && playlist.owner!.id == me.data?.id,

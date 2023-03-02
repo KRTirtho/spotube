@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,7 +11,6 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 
 class AlbumPage extends HookConsumerWidget {
   final AlbumSimple album;
@@ -47,12 +45,7 @@ class AlbumPage extends HookConsumerWidget {
     ref.watch(PlaylistQueueNotifier.provider);
     final playback = ref.watch(PlaylistQueueNotifier.notifier);
 
-    final SpotifyApi spotify = ref.watch(spotifyProvider);
-
-    final tracksSnapshot = useQuery(
-      job: Queries.album.tracksOf(album.id!),
-      externalData: spotify,
-    );
+    final tracksSnapshot = useQueries.album.tracksOf(ref, album.id!);
 
     final albumArt = useMemoized(
         () => TypeConversionUtils.image_X_UrlString(

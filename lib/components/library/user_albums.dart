@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
@@ -12,7 +11,6 @@ import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart'
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -24,10 +22,7 @@ class UserAlbums extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final albumsQuery = useQuery(
-      job: Queries.album.ofMine,
-      externalData: ref.watch(spotifyProvider),
-    );
+    final albumsQuery = useQueries.album.ofMine(ref);
 
     final spacing = useBreakpointValue<double>(
       sm: 0,
@@ -64,7 +59,7 @@ class UserAlbums extends HookConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        await albumsQuery.refetch();
+        await albumsQuery.refresh();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

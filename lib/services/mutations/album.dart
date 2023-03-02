@@ -1,22 +1,27 @@
 import 'package:fl_query/fl_query.dart';
-import 'package:spotify/spotify.dart';
-import 'package:tuple/tuple.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/hooks/use_spotify_mutation.dart';
 
 class AlbumMutations {
-  final toggleFavorite =
-      MutationJob.withVariableKey<bool, Tuple2<SpotifyApi, bool>>(
-    preMutationKey: "toggle-album-like",
-    task: (queryKey, externalData) async {
-      final albumId = getVariable(queryKey);
-      final spotify = externalData.item1;
-      final isLiked = externalData.item2;
+  const AlbumMutations();
 
-      if (isLiked) {
-        await spotify.me.removeAlbums([albumId]);
-      } else {
-        await spotify.me.saveAlbums([albumId]);
-      }
-      return !isLiked;
-    },
-  );
+  Mutation<bool, dynamic, bool> toggleFavorite(
+    WidgetRef ref,
+    String albumId, {
+    List<String>? refreshQueries,
+  }) {
+    return useSpotifyMutation<bool, dynamic, bool, dynamic>(
+      "toggle-album-like/$albumId",
+      (isLiked, spotify) async {
+        if (isLiked) {
+          await spotify.me.removeAlbums([albumId]);
+        } else {
+          await spotify.me.saveAlbums([albumId]);
+        }
+        return !isLiked;
+      },
+      ref: ref,
+      refreshQueries: refreshQueries,
+    );
+  }
 }

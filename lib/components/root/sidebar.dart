@@ -1,5 +1,4 @@
 import 'package:badges/badges.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,7 +11,6 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -195,11 +193,7 @@ class SidebarFooter extends HookConsumerWidget {
       width: 256,
       child: HookBuilder(
         builder: (context) {
-          var spotify = ref.watch(spotifyProvider);
-          final me = useQuery(
-            job: Queries.user.me,
-            externalData: spotify,
-          );
+          final me = useQueries.user.me(ref);
           final data = me.data;
 
           final avatarImg = TypeConversionUtils.image_X_UrlString(
@@ -208,19 +202,7 @@ class SidebarFooter extends HookConsumerWidget {
             placeholder: ImagePlaceholder.artist,
           );
 
-          // TODO: Remove below code after fl-query ^0.4.0
-          /// Temporary fix before fl-query 0.4.0
           final auth = ref.watch(AuthenticationNotifier.provider);
-
-          useEffect(() {
-            if (auth != null && me.hasError) {
-              me.setExternalData(spotify);
-              me.refetch();
-            }
-            return null;
-          }, [auth, me.hasError]);
-
-          /// ===================================
 
           return Padding(
               padding: const EdgeInsets.all(16).copyWith(left: 0),

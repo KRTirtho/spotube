@@ -394,54 +394,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  connectivity_plus:
-    dependency: transitive
-    description:
-      name: connectivity_plus
-      sha256: "3f8fe4e504c2d33696dac671a54909743bc6a902a9bb0902306f7a2aed7e528e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.9"
-  connectivity_plus_linux:
-    dependency: transitive
-    description:
-      name: connectivity_plus_linux
-      sha256: "3caf859d001f10407b8e48134c761483e4495ae38094ffcca97193f6c271f5e2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.1"
-  connectivity_plus_macos:
-    dependency: transitive
-    description:
-      name: connectivity_plus_macos
-      sha256: "488d2de1e47e1224ad486e501b20b088686ba1f4ee9c4420ecbc3b9824f0b920"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.6"
-  connectivity_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: connectivity_plus_platform_interface
-      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.4"
-  connectivity_plus_web:
-    dependency: transitive
-    description:
-      name: connectivity_plus_web
-      sha256: "81332be1b4baf8898fed17bb4fdef27abb7c6fd990bf98c54fd978478adf2f1a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.5"
-  connectivity_plus_windows:
-    dependency: transitive
-    description:
-      name: connectivity_plus_windows
-      sha256: "535b0404b4d5605c4dd8453d67e5d6d2ea0dd36e3b477f50f31af51b0aeab9dd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.2"
   convert:
     dependency: transitive
     description:
@@ -581,18 +533,20 @@ packages:
   fl_query:
     dependency: "direct main"
     description:
-      name: fl_query
-      sha256: "9d55b025d672aaf27766923817a7b458b5fb78631c83e6ce958faaef8c9ac61d"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/fl_query"
+      ref: new-architecture
+      resolved-ref: "0c819d4e11572d592b5334280b8b4f2657f21459"
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
     version: "0.3.1"
   fl_query_hooks:
     dependency: "direct main"
     description:
-      name: fl_query_hooks
-      sha256: "052b50587794ca6e0d0d4cb6591efcd91308c299a3779087632754a09282562e"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/fl_query_hooks"
+      ref: new-architecture
+      resolved-ref: "0c819d4e11572d592b5334280b8b4f2657f21459"
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
     version: "0.3.1"
   fluent_ui:
     dependency: "direct main"
@@ -691,10 +645,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_hooks
-      sha256: "2b202559a4ed3656bbb7aae9d8b335fb0037b23acc7ae3f377d1ba0b95c21aec"
+      sha256: "6a126f703b89499818d73305e4ce1e3de33b4ae1c5512e3b8eab4b986f46774c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.5+1"
+    version: "0.18.6"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -1062,14 +1016,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  nm:
+  mutex:
     dependency: transitive
     description:
-      name: nm
-      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
+      name: mutex
+      sha256: "03116a4e46282a671b46c12de649d72c0ed18188ffe12a8d0fc63e83f4ad88f4"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "3.0.1"
   oauth2:
     dependency: transitive
     description:
@@ -1776,10 +1730,10 @@ packages:
     dependency: "direct main"
     description:
       name: window_manager
-      sha256: "5a7bda81b8b8e5feb733d07f4bd174e64dfb412031aff5314a375118e42b498e"
+      sha256: "492806c69879f0d28e95472bbe5e8d5940ac8c6e99cc07052fe14946974555ba"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.8"
+    version: "0.3.1"
   window_size:
     dependency: "direct main"
     description:
@@ -1822,5 +1776,5 @@ packages:
     source: hosted
     version: "1.12.3"
 sdks:
-  dart: ">=2.19.0 <4.0.0"
+  dart: ">=2.19.0 <3.0.0"
   flutter: ">=3.7.0"

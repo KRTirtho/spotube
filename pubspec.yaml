@@ -27,8 +27,16 @@ dependencies:
   cupertino_icons: ^1.0.5
   dbus: ^0.7.8
   file_picker: ^5.2.2
-  fl_query: ^0.3.1
-  fl_query_hooks: ^0.3.1
+  fl_query:
+    git:
+      url: https://github.com/KRTirtho/fl-query.git
+      path: packages/fl_query
+      ref: new-architecture
+  fl_query_hooks:
+    git:
+      url: https://github.com/KRTirtho/fl-query.git
+      path: packages/fl_query_hooks
+      ref: new-architecture
   fluent_ui: ^4.3.0
   fluentui_system_icons: ^1.1.189
   flutter:
@@ -77,7 +85,7 @@ dependencies:
   uuid: ^3.0.7
   version: ^3.0.2
   visibility_detector: ^0.3.3
-  window_manager: 0.2.8
+  window_manager: ^0.3.1
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
@@ -95,8 +103,13 @@ dev_dependencies:
     sdk: flutter
   hive_generator: ^2.0.0
 
-dependency_overrides: 
+dependency_overrides:
   package_info_plus: ^3.0.2
+  fl_query:
+    git:
+      url: https://github.com/KRTirtho/fl-query.git
+      path: packages/fl_query
+      ref: new-architecture
 
 flutter:
   uses-material-design: true

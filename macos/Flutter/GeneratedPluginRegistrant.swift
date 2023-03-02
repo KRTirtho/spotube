@@ -9,7 +9,6 @@ import audio_service
 import audio_session
 import audioplayers_darwin
 import catcher
-import connectivity_plus_macos
 import device_info_plus
 import macos_ui
 import metadata_god
@@ -27,7 +26,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   AudioSessionPlugin.register(with: registry.registrar(forPlugin: "AudioSessionPlugin"))
   AudioplayersDarwinPlugin.register(with: registry.registrar(forPlugin: "AudioplayersDarwinPlugin"))
   CatcherPlugin.register(with: registry.registrar(forPlugin: "CatcherPlugin"))
-  ConnectivityPlugin.register(with: registry.registrar(forPlugin: "ConnectivityPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
   MacOSUiPlugin.register(with: registry.registrar(forPlugin: "MacOSUiPlugin"))
   MetadataGodPlugin.register(with: registry.registrar(forPlugin: "MetadataGodPlugin"))

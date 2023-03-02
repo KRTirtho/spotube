@@ -1,33 +1,65 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/map.dart';
+import 'package:spotube/extensions/page.dart';
+import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 
 class CategoryQueries {
-  final list = InfiniteQueryJob<Page<Category>, Map<String, dynamic>, int>(
-    queryKey: "categories-query",
-    initialParam: 0,
-    getNextPageParam: (lastPage, lastParam) => lastPage.nextOffset,
-    getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 16,
-    refetchOnExternalDataChange: true,
-    task: (queryKey, pageParam, data) async {
-      final SpotifyApi spotify = data["spotify"] as SpotifyApi;
-      final String recommendationMarket = data["recommendationMarket"];
-      final categories = await spotify.categories
-          .list(country: recommendationMarket)
-          .getPage(15, pageParam);
+  const CategoryQueries();
 
-      return categories;
-    },
-  );
+  InfiniteQuery<Page<Category>, dynamic, int> list(
+      WidgetRef ref, String recommendationMarket) {
+    return useSpotifyInfiniteQuery<Page<Category>, dynamic, int>(
+      "category-playlists",
+      (pageParam, spotify) async {
+        final categories = await spotify.categories
+            .list(country: recommendationMarket)
+            .getPage(15, pageParam);
 
-  final playlistsOf =
-      InfiniteQueryJob.withVariableKey<Page<PlaylistSimple>, SpotifyApi, int>(
-    preQueryKey: "category-playlists",
-    initialParam: 0,
-    getNextPageParam: (lastPage, lastParam) => lastPage.nextOffset,
-    getPreviousPageParam: (lastPage, lastParam) => lastPage.nextOffset - 6,
-    task: (queryKey, pageKey, spotify) {
-      final id = getVariable(queryKey);
-      return spotify.playlists.getByCategoryId(id).getPage(5, pageKey);
-    },
-  );
+        return categories;
+      },
+      initialPage: 0,
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 15) {
+          return null;
+        }
+        return lastPageData.nextOffset;
+      },
+      jsonConfig: JsonConfig<Page<Category>>(
+        toJson: (page) => page.toJson(),
+        fromJson: (json) => PageJson.fromJson<Category>(
+          json,
+          (json) {
+            return Category.fromJson((json as Map).castKeyDeep<String>());
+          },
+        ),
+      ),
+      ref: ref,
+    );
+  }
+
+  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> playlistsOf(
+    WidgetRef ref,
+    String category,
+  ) {
+    return useSpotifyInfiniteQuery<Page<PlaylistSimple>, dynamic, int>(
+      "category-playlists/$category",
+      (pageParam, spotify) async {
+        final playlists = await spotify.playlists
+            .getByCategoryId(category)
+            .getPage(5, pageParam);
+
+        return playlists;
+      },
+      initialPage: 0,
+      nextPage: (lastPage, lastPageData) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 5) {
+          return null;
+        }
+        return lastPageData.nextOffset;
+      },
+      ref: ref,
+    );
+  }
 }

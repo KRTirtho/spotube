@@ -44,6 +44,19 @@ class SyncedLyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
 
+    final timedLyricsQuery = useQueries.lyrics.synced(playlist?.activeTrack);
+    final lyricValue = timedLyricsQuery.data;
+    final lyricsMap = useMemoized(
+      () =>
+          lyricValue?.lyrics
+              .map((lyric) => {lyric.time.inSeconds: lyric.text})
+              .reduce((accumulator, lyricSlice) =>
+                  {...accumulator, ...lyricSlice}) ??
+          {},
+      [lyricValue],
+    );
+    final currentTime = useSyncedLyrics(ref, lyricsMap, lyricDelay);
+
     final textTheme = Theme.of(context).textTheme;
 
     useEffect(() {
@@ -55,130 +68,109 @@ class SyncedLyrics extends HookConsumerWidget {
     }, [playlist?.activeTrack]);
 
     final headlineTextStyle = (breakpoint >= Breakpoints.md
-            ? textTheme.headline3
-            : textTheme.headline4?.copyWith(fontSize: 25))
+            ? textTheme.displaySmall
+            : textTheme.headlineMedium?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
 
-    return QueryBuilder<SubtitleSimple, SpotubeTrack?>(
-        job: Queries.lyrics.synced(playlist?.activeTrack.id ?? ""),
-        externalData: playlist?.isLoading == true
-            ? playlist?.activeTrack as SpotubeTrack
-            : null,
-        builder: (context, timedLyricsQuery) {
-          return HookBuilder(builder: (context) {
-            final lyricValue = timedLyricsQuery.data;
-            final lyricsMap = useMemoized(
-              () =>
-                  lyricValue?.lyrics
-                      .map((lyric) => {lyric.time.inSeconds: lyric.text})
-                      .reduce((accumulator, lyricSlice) =>
-                          {...accumulator, ...lyricSlice}) ??
-                  {},
-              [lyricValue],
-            );
-            final currentTime = useSyncedLyrics(ref, lyricsMap, lyricDelay);
-            return Stack(
-              children: [
-                Column(
-                  children: [
-                    if (isModal != true)
-                      Center(
-                        child: SpotubeMarqueeText(
-                          text: playlist?.activeTrack.name ?? "Not Playing",
-                          style: headlineTextStyle,
-                          isHovering: true,
-                        ),
-                      ),
-                    if (isModal != true)
-                      Center(
-                        child: Text(
-                          TypeConversionUtils.artists_X_String<Artist>(
-                              playlist?.activeTrack.artists ?? []),
-                          style: breakpoint >= Breakpoints.md
-                              ? textTheme.headline5
-                              : textTheme.headline6,
-                        ),
-                      ),
-                    if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
-                      Expanded(
-                        child: ListView.builder(
-                          controller: controller,
-                          itemCount: lyricValue.lyrics.length,
-                          itemBuilder: (context, index) {
-                            final lyricSlice = lyricValue.lyrics[index];
-                            final isActive =
-                                lyricSlice.time.inSeconds == currentTime;
-
-                            if (isActive) {
-                              controller.scrollToIndex(
-                                index,
-                                preferPosition: AutoScrollPosition.middle,
-                              );
-                            }
-                            return AutoScrollTag(
-                              key: ValueKey(index),
-                              index: index,
-                              controller: controller,
-                              child: lyricSlice.text.isEmpty
-                                  ? Container()
-                                  : Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: AnimatedDefaultTextStyle(
-                                          duration:
-                                              const Duration(milliseconds: 250),
-                                          style: TextStyle(
-                                            color: isActive
-                                                ? Colors.white
-                                                : palette.bodyTextColor,
-                                            fontWeight: isActive
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
-                                            fontSize: isActive ? 30 : 26,
-                                          ),
-                                          child: Text(
-                                            lyricSlice.text,
-                                            maxLines: 2,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                            );
-                          },
-                        ),
-                      ),
-                    if (playlist?.activeTrack != null &&
-                        (lyricValue == null ||
-                            lyricValue.lyrics.isEmpty == true))
-                      const Expanded(child: ShimmerLyrics()),
-                  ],
-                ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: PlatformFilledButton(
-                      child: const Icon(
-                        SpotubeIcons.clock,
-                        size: 16,
-                      ),
-                      onPressed: () async {
-                        final delay = await showPlatformAlertDialog(
-                          context,
-                          builder: (context) => const LyricDelayAdjustDialog(),
-                        );
-                        if (delay != null) {
-                          ref.read(lyricDelayState.notifier).state = delay;
-                        }
-                      },
-                    ),
+    return HookBuilder(builder: (context) {
+      return Stack(
+        children: [
+          Column(
+            children: [
+              if (isModal != true)
+                Center(
+                  child: SpotubeMarqueeText(
+                    text: playlist?.activeTrack.name ?? "Not Playing",
+                    style: headlineTextStyle,
+                    isHovering: true,
                   ),
                 ),
-              ],
-            );
-          });
-        });
+              if (isModal != true)
+                Center(
+                  child: Text(
+                    TypeConversionUtils.artists_X_String<Artist>(
+                        playlist?.activeTrack.artists ?? []),
+                    style: breakpoint >= Breakpoints.md
+                        ? textTheme.headlineSmall
+                        : textTheme.titleLarge,
+                  ),
+                ),
+              if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
+                Expanded(
+                  child: ListView.builder(
+                    controller: controller,
+                    itemCount: lyricValue.lyrics.length,
+                    itemBuilder: (context, index) {
+                      final lyricSlice = lyricValue.lyrics[index];
+                      final isActive = lyricSlice.time.inSeconds == currentTime;
+
+                      if (isActive) {
+                        controller.scrollToIndex(
+                          index,
+                          preferPosition: AutoScrollPosition.middle,
+                        );
+                      }
+                      return AutoScrollTag(
+                        key: ValueKey(index),
+                        index: index,
+                        controller: controller,
+                        child: lyricSlice.text.isEmpty
+                            ? Container()
+                            : Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 250),
+                                    style: TextStyle(
+                                      color: isActive
+                                          ? Colors.white
+                                          : palette.bodyTextColor,
+                                      fontWeight: isActive
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      fontSize: isActive ? 30 : 26,
+                                    ),
+                                    child: Text(
+                                      lyricSlice.text,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      );
+                    },
+                  ),
+                ),
+              if (playlist?.activeTrack != null &&
+                  (lyricValue == null || lyricValue.lyrics.isEmpty == true))
+                const Expanded(child: ShimmerLyrics()),
+            ],
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: PlatformFilledButton(
+                child: const Icon(
+                  SpotubeIcons.clock,
+                  size: 16,
+                ),
+                onPressed: () async {
+                  final delay = await showPlatformAlertDialog(
+                    context,
+                    builder: (context) => const LyricDelayAdjustDialog(),
+                  );
+                  if (delay != null) {
+                    ref.read(lyricDelayState.notifier).state = delay;
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
