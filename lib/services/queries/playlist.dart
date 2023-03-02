@@ -2,6 +2,8 @@ import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/map.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/use_spotify_query.dart';
 
@@ -51,6 +53,18 @@ class PlaylistQueries {
     return useSpotifyQuery<List<Track>, dynamic>(
       "playlist-tracks/$playlistId",
       (spotify) => tracksOf(playlistId, spotify),
+      jsonConfig: playlistId == "user-liked-tracks"
+          ? JsonConfig(
+              toJson: (tracks) => <String, dynamic>{
+                'tracks': tracks.map((e) => e.toJson()).toList()
+              },
+              fromJson: (json) => (json['tracks'] as List)
+                  .map((e) => Track.fromJson(
+                        (e as Map).castKeyDeep<String>(),
+                      ))
+                  .toList(),
+            )
+          : null,
       ref: ref,
     );
   }

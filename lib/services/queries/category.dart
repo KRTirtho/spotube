@@ -1,6 +1,8 @@
 import 'package:fl_query/fl_query.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/map.dart';
+import 'package:spotube/extensions/page.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 
 class CategoryQueries {
@@ -24,6 +26,15 @@ class CategoryQueries {
         }
         return lastPageData.nextOffset;
       },
+      jsonConfig: JsonConfig<Page<Category>>(
+        toJson: (page) => page.toJson(),
+        fromJson: (json) => PageJson.fromJson<Category>(
+          json,
+          (json) {
+            return Category.fromJson((json as Map).castKeyDeep<String>());
+          },
+        ),
+      ),
       ref: ref,
     );
   }
