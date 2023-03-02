@@ -1,4 +1,4 @@
-import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -46,8 +46,8 @@ class AlbumCard extends HookConsumerWidget {
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final queryBowl = QueryClient.of(context);
-    final query = queryBowl
+    final queryClient = useQueryClient();
+    final query = queryClient
         .getQuery<List<TrackSimple>, dynamic>("album-tracks/${album.id}");
     final tracks = useState(query?.data ?? album.tracks ?? <Track>[]);
     bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks.value);
@@ -100,7 +100,7 @@ class AlbumCard extends HookConsumerWidget {
           updating.value = true;
           try {
             final fetchedTracks =
-                await queryBowl.fetchQuery<List<TrackSimple>, SpotifyApi>(
+                await queryClient.fetchQuery<List<TrackSimple>, SpotifyApi>(
               "album-tracks/${album.id}",
               () {
                 return spotify.albums

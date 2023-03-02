@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -50,15 +52,13 @@ class SearchPage extends HookConsumerWidget {
     final searchArtist =
         useQueries.search.query(ref, searchTerm, SearchType.artist);
 
-    void onSearch() {
-      for (final query in [
-        searchTrack,
-        searchAlbum,
-        searchPlaylist,
-        searchArtist,
-      ]) {
-        query.refreshAll();
-      }
+    Future<void> onSearch() async {
+      await Future.wait([
+        searchTrack.refreshAll(),
+        searchAlbum.refreshAll(),
+        searchPlaylist.refreshAll(),
+        searchArtist.refreshAll(),
+      ]);
     }
 
     return SafeArea(
@@ -82,10 +82,14 @@ class SearchPage extends HookConsumerWidget {
                         other: null,
                       ).resolve(platform!),
                       placeholder: "Search...",
-                      onSubmitted: (value) {
+                      onSubmitted: (value) async {
                         ref.read(searchTermStateProvider.notifier).state =
                             value;
-                        onSearch();
+                        // Fl-Query is too fast, so we need to delay the search
+                        // to prevent spamming the API :)
+                        Timer(const Duration(milliseconds: 50), () {
+                          onSearch();
+                        });
                       },
                     ),
                   ),

@@ -125,7 +125,7 @@ class PlaylistHeartButton extends HookConsumerWidget {
     final isLikedQuery = useQueries.playlist.doesUserFollow(
       ref,
       playlist.id!,
-      me.data!.id!,
+      me.data?.id ?? '',
     );
 
     final togglePlaylistLike = useMutations.playlist.toggleFavorite(
