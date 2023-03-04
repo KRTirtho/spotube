@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/components/shared/spotube_marquee_text.dart';
-import 'package:spotube/components/lyrics/lyric_delay_adjust_dialog.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_synced_lyrics.dart';
@@ -17,12 +14,6 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
-
-final lyricDelayState = StateProvider<Duration>(
-  (ref) {
-    return Duration.zero;
-  },
-);
 
 class SyncedLyrics extends HookConsumerWidget {
   final PaletteColor palette;
@@ -37,7 +28,6 @@ class SyncedLyrics extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final lyricDelay = ref.watch(lyricDelayState);
 
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
@@ -54,16 +44,13 @@ class SyncedLyrics extends HookConsumerWidget {
           {},
       [lyricValue],
     );
-    final currentTime = useSyncedLyrics(ref, lyricsMap, lyricDelay);
+    final currentTime = useSyncedLyrics(ref, lyricsMap);
     final textZoomLevel = useState<int>(100);
 
     final textTheme = Theme.of(context).textTheme;
 
     useEffect(() {
       controller.scrollToIndex(0);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(lyricDelayState.notifier).state = Duration.zero;
-      });
       return null;
     }, [playlist?.activeTrack]);
 
@@ -147,28 +134,6 @@ class SyncedLyrics extends HookConsumerWidget {
                   (lyricValue == null || lyricValue.lyrics.isEmpty == true))
                 const Expanded(child: ShimmerLyrics()),
             ],
-          ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: PlatformFilledButton(
-                child: const Icon(
-                  SpotubeIcons.clock,
-                  size: 16,
-                ),
-                onPressed: () async {
-                  final delay = await showPlatformAlertDialog(
-                    context,
-                    builder: (context) => const LyricDelayAdjustDialog(),
-                  );
-                  if (delay != null) {
-                    ref.read(lyricDelayState.notifier).state = delay;
-                  }
-                },
-              ),
-            ),
           ),
           Align(
             alignment: Alignment.bottomRight,
