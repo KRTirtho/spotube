@@ -9,7 +9,7 @@ import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
-import 'package:spotube/pages/lyrics/genius_lyrics.dart';
+import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/platform.dart';
@@ -41,7 +41,7 @@ class LyricsPage extends HookConsumerWidget {
 
     Widget body = [
       SyncedLyrics(palette: palette, isModal: isModal),
-      GeniusLyrics(palette: palette, isModal: isModal),
+      PlainLyrics(palette: palette, isModal: isModal),
     ][index.value];
 
     final tabbar = PreferredSize(
@@ -58,7 +58,7 @@ class LyricsPage extends HookConsumerWidget {
             color: PlatformTextTheme.of(context).caption?.color,
           ),
           PlatformTab(
-            label: "Genius",
+            label: "Plain",
             icon: const SizedBox.shrink(),
             color: PlatformTextTheme.of(context).caption?.color,
           ),
@@ -71,7 +71,7 @@ class LyricsPage extends HookConsumerWidget {
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor.withOpacity(.4),
+            color: Theme.of(context).colorScheme.background.withOpacity(.4),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),

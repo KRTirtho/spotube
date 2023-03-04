@@ -1,4 +1,3 @@
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,14 +5,13 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/components/shared/spotube_marquee_text.dart';
 import 'package:spotube/components/lyrics/lyric_delay_adjust_dialog.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_synced_lyrics.dart';
-import 'package:spotube/models/lyrics.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -44,7 +42,8 @@ class SyncedLyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
 
-    final timedLyricsQuery = useQueries.lyrics.synced(playlist?.activeTrack);
+    final timedLyricsQuery =
+        useQueries.lyrics.spotifySynced(ref, playlist?.activeTrack);
     final lyricValue = timedLyricsQuery.data;
     final lyricsMap = useMemoized(
       () =>
@@ -56,6 +55,7 @@ class SyncedLyrics extends HookConsumerWidget {
       [lyricValue],
     );
     final currentTime = useSyncedLyrics(ref, lyricsMap, lyricDelay);
+    final textZoomLevel = useState<int>(100);
 
     final textTheme = Theme.of(context).textTheme;
 
@@ -128,7 +128,8 @@ class SyncedLyrics extends HookConsumerWidget {
                                       fontWeight: isActive
                                           ? FontWeight.bold
                                           : FontWeight.normal,
-                                      fontSize: isActive ? 30 : 26,
+                                      fontSize: (isActive ? 30 : 26) *
+                                          (textZoomLevel.value / 100),
                                     ),
                                     child: Text(
                                       lyricSlice.text,
@@ -167,6 +168,15 @@ class SyncedLyrics extends HookConsumerWidget {
                   }
                 },
               ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ZoomControls(
+              value: textZoomLevel.value,
+              onChanged: (value) => textZoomLevel.value = value,
+              min: 50,
+              max: 200,
             ),
           ),
         ],
