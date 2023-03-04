@@ -6,19 +6,49 @@ import 'package:spotube/collections/spotube_icons.dart';
 class ZoomControls extends HookWidget {
   final int value;
   final ValueChanged<int> onChanged;
-  final int min;
-  final int max;
+  final int? min;
+  final int? max;
+
+  final int interval;
+  final Icon increaseIcon;
+  final Icon decreaseIcon;
+
+  final Axis direction;
+  final String unit;
 
   const ZoomControls({
     Key? key,
     required this.value,
     required this.onChanged,
-    this.min = 50,
-    this.max = 200,
+    this.min,
+    this.max,
+    this.interval = 10,
+    this.increaseIcon = const Icon(SpotubeIcons.zoomIn),
+    this.decreaseIcon = const Icon(SpotubeIcons.zoomOut),
+    this.direction = Axis.horizontal,
+    this.unit = "%",
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final actions = [
+      PlatformIconButton(
+        icon: decreaseIcon,
+        onPressed: () {
+          if (value == min) return;
+          onChanged(value - interval);
+        },
+      ),
+      PlatformText("$value$unit"),
+      PlatformIconButton(
+        icon: increaseIcon,
+        onPressed: () {
+          if (value == max) return;
+          onChanged(value + interval);
+        },
+      ),
+    ];
+
     return Container(
       decoration: BoxDecoration(
         color: PlatformTheme.of(context)
@@ -26,29 +56,21 @@ class ZoomControls extends HookWidget {
             ?.withOpacity(0.7),
         borderRadius: BorderRadius.circular(10),
       ),
-      constraints: const BoxConstraints(maxHeight: 50),
+      constraints:
+          BoxConstraints(maxHeight: direction == Axis.horizontal ? 50 : 200),
       margin: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          PlatformIconButton(
-            icon: const Icon(SpotubeIcons.zoomOut),
-            onPressed: () {
-              if (value == min) return;
-              onChanged(value - 10);
-            },
-          ),
-          PlatformText("$value%"),
-          PlatformIconButton(
-            icon: const Icon(SpotubeIcons.zoomIn),
-            onPressed: () {
-              if (value == max) return;
-              onChanged(value + 10);
-            },
-          ),
-        ],
-      ),
+      child: direction == Axis.horizontal
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: actions,
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              verticalDirection: VerticalDirection.up,
+              children: actions,
+            ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 int useSyncedLyrics(
   WidgetRef ref,
   Map<int, String> lyricsMap,
+  int delay,
 ) {
   final stream = PlaylistQueueNotifier.position;
 
@@ -12,11 +13,11 @@ int useSyncedLyrics(
 
   useEffect(() {
     return stream.listen((pos) {
-      if (lyricsMap.containsKey(pos.inSeconds)) {
-        currentTime.value = pos.inSeconds;
+      if (lyricsMap.containsKey(pos.inSeconds + delay)) {
+        currentTime.value = pos.inSeconds + delay;
       }
     }).cancel;
-  }, [lyricsMap]);
+  }, [lyricsMap, delay]);
 
   return (Duration(seconds: currentTime.value)).inSeconds;
 }

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/components/shared/spotube_marquee_text.dart';
@@ -14,6 +15,8 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
+
+final _delay = StateProvider<int>((ref) => 0);
 
 class SyncedLyrics extends HookConsumerWidget {
   final PaletteColor palette;
@@ -32,9 +35,13 @@ class SyncedLyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
 
+    final delay = ref.watch(_delay);
+
     final timedLyricsQuery =
         useQueries.lyrics.spotifySynced(ref, playlist?.activeTrack);
+
     final lyricValue = timedLyricsQuery.data;
+
     final lyricsMap = useMemoized(
       () =>
           lyricValue?.lyrics
@@ -44,13 +51,16 @@ class SyncedLyrics extends HookConsumerWidget {
           {},
       [lyricValue],
     );
-    final currentTime = useSyncedLyrics(ref, lyricsMap);
+    final currentTime = useSyncedLyrics(ref, lyricsMap, delay);
     final textZoomLevel = useState<int>(100);
 
     final textTheme = Theme.of(context).textTheme;
 
     useEffect(() {
       controller.scrollToIndex(0);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(_delay.notifier).state = 0;
+      });
       return null;
     }, [playlist?.activeTrack]);
 
@@ -137,12 +147,37 @@ class SyncedLyrics extends HookConsumerWidget {
           ),
           Align(
             alignment: Alignment.bottomRight,
-            child: ZoomControls(
-              value: textZoomLevel.value,
-              onChanged: (value) => textZoomLevel.value = value,
-              min: 50,
-              max: 200,
-            ),
+            child: Builder(builder: (context) {
+              final actions = [
+                ZoomControls(
+                  value: delay,
+                  onChanged: (value) => ref.read(_delay.notifier).state = value,
+                  interval: 1,
+                  unit: "s",
+                  increaseIcon: const Icon(SpotubeIcons.add),
+                  decreaseIcon: const Icon(SpotubeIcons.remove),
+                  direction: isModal == true ? Axis.horizontal : Axis.vertical,
+                ),
+                ZoomControls(
+                  value: textZoomLevel.value,
+                  onChanged: (value) => textZoomLevel.value = value,
+                  min: 50,
+                  max: 200,
+                ),
+              ];
+
+              return isModal == true
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: actions,
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: actions,
+                    );
+            }),
           ),
         ],
       );
