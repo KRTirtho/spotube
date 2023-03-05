@@ -535,7 +535,7 @@ packages:
     description:
       path: "packages/fl_query"
       ref: new-architecture
-      resolved-ref: b7ff1c8abe5fec140e925423248f848bf921c16c
+      resolved-ref: fbe1f9591a764a3077f75dfa22f7b2552f88cf07
       url: "https://github.com/KRTirtho/fl-query.git"
     source: git
     version: "0.3.1"
@@ -544,7 +544,7 @@ packages:
     description:
       path: "packages/fl_query_hooks"
       ref: new-architecture
-      resolved-ref: b7ff1c8abe5fec140e925423248f848bf921c16c
+      resolved-ref: fbe1f9591a764a3077f75dfa22f7b2552f88cf07
       url: "https://github.com/KRTirtho/fl-query.git"
     source: git
     version: "0.3.1"
