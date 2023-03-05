@@ -8,6 +8,7 @@ import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/hooks/use_async_effect.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -105,6 +106,15 @@ class PersonalizedPage extends HookConsumerWidget {
     final featuredPlaylistsQuery = useQueries.playlist.featured(ref);
 
     final newReleases = useQueries.album.newReleases(ref);
+
+    useAsyncEffect(() async {
+      final releases = newReleases.pages.expand(
+        (page) => page.items ?? const Iterable<AlbumSimple>.empty(),
+      );
+      if (releases.isEmpty) {
+        await newReleases.fetchNext();
+      }
+    }, null, [newReleases.pages]);
 
     return ListView(
       children: [

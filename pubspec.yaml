@@ -79,7 +79,10 @@ dependencies:
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.11
   skeleton_text: ^3.0.0
-  spotify: ^0.8.0
+  spotify:
+    git:
+      url: https://github.com/rinukkusu/spotify-dart
+      ref: 9e8ef4556942d42d74874de5491253156e7e6f43
   tuple: ^2.0.1
   url_launcher: ^6.1.7
   uuid: ^3.0.7

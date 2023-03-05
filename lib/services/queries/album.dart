@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/use_spotify_query.dart';
+import 'package:spotube/provider/user_preferences_provider.dart';
 
 class AlbumQueries {
   const AlbumQueries();
@@ -48,17 +49,17 @@ class AlbumQueries {
   }
 
   InfiniteQuery<Page<AlbumSimple>, dynamic, int> newReleases(WidgetRef ref) {
+    final market = ref
+        .watch(userPreferencesProvider.select((s) => s.recommendationMarket));
+
     return useSpotifyInfiniteQuery<Page<AlbumSimple>, dynamic, int>(
       "new-releases",
       (pageParam, spotify) async {
         try {
-          final albums = await Pages(
-            spotify,
-            'v1/browse/new-releases',
-            (json) => AlbumSimple.fromJson(json),
-            'albums',
-            (json) => AlbumSimple.fromJson(json),
-          ).getPage(5, pageParam);
+          final albums = await spotify.browse
+              .getNewReleases(country: market)
+              .getPage(5, pageParam);
+
           return albums;
         } catch (e, stack) {
           Catcher.reportCheckedError(e, stack);
@@ -68,7 +69,7 @@ class AlbumQueries {
       ref: ref,
       initialPage: 0,
       nextPage: (lastPage, lastPageData) {
-        if (lastPageData.isLast || (lastPageData.items ?? []).length < 5) {
+        if (lastPageData.isLast) {
           return null;
         }
         return lastPageData.nextOffset;

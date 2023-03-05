@@ -1481,11 +1481,12 @@ packages:
   spotify:
     dependency: "direct main"
     description:
-      name: spotify
-      sha256: db51b46216465631f90218581b97ea08b7bf5c93f1c9a7066fbf3499fe32c774
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.0"
+      path: "."
+      ref: "9e8ef4556942d42d74874de5491253156e7e6f43"
+      resolved-ref: "9e8ef4556942d42d74874de5491253156e7e6f43"
+      url: "https://github.com/rinukkusu/spotify-dart"
+    source: git
+    version: "0.9.0"
   sqflite:
     dependency: transitive
     description:
