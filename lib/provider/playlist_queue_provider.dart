@@ -188,6 +188,19 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       await linuxService?.player.updateProperties();
       final currentDuration = await audioPlayer.getDuration() ?? Duration.zero;
 
+      // skip all the activeTrack.skipSegments
+      if (state?.isLoading != true &&
+          (state?.activeTrack as SpotubeTrack).skipSegments.isNotEmpty &&
+          preferences.skipSponsorSegments) {
+        for (final segment
+            in (state!.activeTrack as SpotubeTrack).skipSegments) {
+          if ((pos.inSeconds >= segment["start"]! &&
+              pos.inSeconds < segment["end"]!)) {
+            await audioPlayer.seek(Duration(seconds: segment["end"]!));
+          }
+        }
+      }
+
       // when the track progress is above 80%, track isn't the last
       // and is not already fetched and nothing is fetching currently
       if (pos.inSeconds > currentDuration.inSeconds * .8 &&

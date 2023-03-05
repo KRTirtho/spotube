@@ -140,7 +140,7 @@ extension GetSkipSegments on Video {
         return List.castFrom<dynamic, Map<String, int>>([]);
       }
 
-      final data = jsonDecode(res.body);
+      final data = jsonDecode(res.body) as List;
       final segments = data.map((obj) {
         return Map.castFrom<String, dynamic, String, int>({
           "start": obj["segment"].first.toInt(),
