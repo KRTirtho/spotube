@@ -14,34 +14,39 @@ jobs:
           repository: KRTirtho/flutter_distributor
           ref: deb-implementation
           path: build/flutter_distributor
+
       - name: Get latest tag
         id: tag
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      # Replace Version in files
-      - run: |
+
+      - name: Replace version in files
+        run: |
           choco install sed make -y
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" windows/runner/Runner.rc
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/tools/VERIFICATION.txt
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/spotube.nuspec
 
-      # Build Windows Executable
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
-      - run: |
+
+      - name: Generating Secrets
+        run: |
           echo '${{ secrets.DOTENV_RELEASE }}' > .env
           flutter config --enable-windows-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Build Windows Executable
+        run: |
           dart pub global activate flutter_distributor
           make innoinstall
           flutter_distributor package --platform=windows --targets=exe --skip-clean
 
-      # Create Chocolatey Package
-      # setting the sha256 hash for new bundle
-      - run: |
+      - name: Create Chocolatey Package and set hash
+        run: |
           mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
           Set-Variable -Name HASH -Value (Get-FileHash dist\Spotube-windows-x86_64-setup.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
@@ -49,14 +54,14 @@ jobs:
 
       - run: mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
 
-      # Publish to Chocolatey Repository
-      - run: |
+      - name: Publish to Chocolatey Repository
+        run: |
           choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
           choco push dist/Spotube-windows-x86_64.nupkg
           echo 'published to community.chocolatey.org'
 
-      # Upload artifacts
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: Spotube-Windows-Bundle
           path: dist/
@@ -80,7 +85,6 @@ jobs:
       - run: flutter build macos
       - run: du -sh build/macos/Build/Products/Release/spotube.app
       - run: npm install -g appdmg
-      # using a versioned path for compatibility in gensums
       - run: mkdir -p build/${{ steps.tag.outputs.tag }}
       - run: appdmg appdmg.json build/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
       - uses: actions/upload-artifact@v2
@@ -90,7 +94,7 @@ jobs:
             build/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
 
   publish_linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Get latest tag
@@ -101,32 +105,46 @@ jobs:
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
+
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - run: |
+
+      - name: Install Dependencies
+        run: |
           sudo apt-get update -y
-          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
-      - run: |
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.0.0-beta.1/appimage-builder-1.0.0-677acbd-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
-          mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
-      # replacing & adding new release version with older version
-      - run: |
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libunwind-dev locate patchelf
+
+      - name: Install AppImage Tool
+        run: |
+          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x appimagetool
+          mv appimagetool /usr/local/bin/
+
+      - name: Replace Version in files
+        run: |
           sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ steps.tag.outputs.tag }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
           echo '${{ secrets.DOTENV_RELEASE }}' > .env
 
-      - run: |
+      - name: Generate Secrets
+        run: |
           flutter config --enable-linux-desktop
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Build Linux Packages
+        run: |
           dart pub global activate flutter_distributor
-          flutter_distributor package --platform=linux --targets=deb,appimage --skip-clean
+          flutter_distributor package --platform=linux --targets=deb,appimage,rpm --skip-clean
           make tar
-      - run: |
+
+      - name: Move Files to dist
+        run: |
           mv build/Spotube-linux-x86_64.tar.xz dist/
           mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64.deb
+          mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
           mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
+
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Linux-Bundle
@@ -144,11 +162,14 @@ jobs:
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
-      - run: |
+
+      - name: Install Dependencies
+        run: |
           sudo apt-get update -y
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
 
-      - run: |
+      - name: Generate Secrets and Build apk
+        run: |
           echo '${{ secrets.DOTENV_RELEASE }}' > .env
           flutter pub get
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
@@ -156,6 +177,7 @@ jobs:
           echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
           flutter build apk
           make apk
+
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Android-Bundle
@@ -193,21 +215,25 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      - run: sudo apt-get install tree -y
-      # generating checksums for all the binary
-      - run: |
+
+      - name: Install dependencies
+        run: sudo apt-get install tree -y
+
+      - name: Generate Checksums
+        run: |
           tree .
           md5sum ./Spotube-Windows-Bundle/*.{exe,nupkg} >> RELEASE.md5sum
           md5sum ./Spotube-Macos-Bundle/*.dmg >> RELEASE.md5sum
-          md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} >> RELEASE.md5sum
+          md5sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb,rpm} >> RELEASE.md5sum
           md5sum ./Spotube-Android-Bundle/*.apk >> RELEASE.md5sum
           sha256sum ./Spotube-Macos-Bundle/*.dmg >> RELEASE.sha256sum
           sha256sum ./Spotube-Windows-Bundle/*.{exe,nupkg} >> RELEASE.sha256sum
-          sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb} >> RELEASE.sha256sum
+          sha256sum ./Spotube-Linux-Bundle/*.{AppImage,tar.xz,deb,rpm} >> RELEASE.sha256sum
           sha256sum ./Spotube-Android-Bundle/*.apk >> RELEASE.sha256sum
           sed -i 's|Spotube-.*-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
-      # Upload release binary
-      - uses: ncipollo/release-action@v1
+
+      - name: Upload Release Binaries
+        uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ steps.tag.outputs.tag }}
@@ -219,9 +245,10 @@ jobs:
 
   publish_winget:
     needs: update_release
-    runs-on: windows-latest # action can only be run on windows
+    runs-on: windows-latest
     steps:
-      - uses: vedantmgoyal2009/winget-releaser@v1
+      - name: Release winget package
+        uses: vedantmgoyal2009/winget-releaser@v1
         with:
           identifier: KRTirtho.Spotube
           token: ${{ secrets.WINGET_TOKEN }}
@@ -242,7 +269,9 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      - run: |
+
+      - name: Update flathub version
+        run: |
           python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
           rm -rf spotube
           git config --global user.email "krtirtho@gmail.com"
@@ -255,7 +284,7 @@ jobs:
 
   publish_aur:
     needs: update_release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Get latest tag
@@ -263,15 +292,21 @@ jobs:
         uses: dawidd6/action-get-tag@v1
         with:
           strip_v: true
-      - uses: actions/download-artifact@v3
+
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v3
         with:
           name: Spotube-Linux-Bundle
           path: ./Spotube-Linux-Bundle
-      - run: |
+
+      - name: Update PKGBUILD versions
+        run: |
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
           sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-Linux-Bundle/Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
-      - uses: KSXGitHub/github-actions-deploy-aur@v2.6.0
+
+      - name: Release to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v2.6.0
         with:
           pkgname: spotube-bin
           pkgbuild: aur-struct/PKGBUILD
