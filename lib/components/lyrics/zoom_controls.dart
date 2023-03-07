@@ -56,8 +56,10 @@ class ZoomControls extends HookWidget {
             ?.withOpacity(0.7),
         borderRadius: BorderRadius.circular(10),
       ),
-      constraints:
-          BoxConstraints(maxHeight: direction == Axis.horizontal ? 50 : 200),
+      constraints: BoxConstraints(
+        maxHeight: direction == Axis.horizontal ? 50 : 200,
+        maxWidth: direction == Axis.vertical ? 50 : double.infinity,
+      ),
       margin: const EdgeInsets.all(8),
       child: direction == Axis.horizontal
           ? Row(

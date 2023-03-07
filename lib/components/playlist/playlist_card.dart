@@ -37,7 +37,6 @@ class PlaylistCard extends HookConsumerWidget {
 
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);
-    final scaffold = ScaffoldMessenger.of(context);
 
     return PlaybuttonCard(
       viewType: viewType,
@@ -94,11 +93,6 @@ class PlaylistCard extends HookConsumerWidget {
 
           playlistNotifier.add(fetchedTracks);
           tracks.value = fetchedTracks;
-          scaffold.showSnackBar(
-            SnackBar(
-              content: Text("Added ${fetchedTracks.length} tracks to queue"),
-            ),
-          );
         } finally {
           updating.value = false;
         }
