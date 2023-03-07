@@ -412,10 +412,14 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   void load(Iterable<Track> tracks, {int active = 0}) {
+    final activeTrack = tracks.elementAt(active);
+    final filtered = Set.from(blacklist.filter(tracks));
     state = PlaylistQueue(
       Set.from(blacklist.filter(tracks)),
       tempTracks: {},
-      active: active,
+      active: filtered
+          .toList()
+          .indexWhere((element) => element.id == activeTrack.id),
     );
   }
 
