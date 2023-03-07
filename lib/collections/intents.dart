@@ -28,14 +28,6 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
     if (playlist == null) {
       return null;
     } else if (!PlaylistQueueNotifier.isPlaying) {
-      // if (playlist.activeTrack is SpotubeTrack &&
-      //     (playlist.activeTrack as SpotubeTrack).ytUri.startsWith("http")) {
-      //   final track =
-      //       Track.fromJson((playlist.activeTrack as SpotubeTrack).toJson());
-
-      //   await playlistNotifier.play(track);
-      // } else {
-      // }
       await playlistNotifier.play();
     } else {
       await playlistNotifier.pause();

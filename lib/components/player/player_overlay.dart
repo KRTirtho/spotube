@@ -27,6 +27,7 @@ class PlayerOverlay extends HookConsumerWidget {
       PlaylistQueueNotifier.provider.select((s) => s != null),
     );
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(PlaylistQueueNotifier.provider);
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
 
@@ -87,12 +88,18 @@ class PlayerOverlay extends HookConsumerWidget {
                         Consumer(
                           builder: (context, ref, _) {
                             return IconButton(
-                              icon: Icon(
-                                playing
-                                    ? SpotubeIcons.pause
-                                    : SpotubeIcons.play,
-                                color: paletteColor.bodyTextColor,
-                              ),
+                              icon: playlist?.isLoading == true
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Icon(
+                                      playing
+                                          ? SpotubeIcons.pause
+                                          : SpotubeIcons.play,
+                                      color: paletteColor.bodyTextColor,
+                                    ),
                               onPressed: Actions.handler<PlayPauseIntent>(
                                 context,
                                 PlayPauseIntent(ref),
