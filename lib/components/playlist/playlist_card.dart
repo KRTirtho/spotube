@@ -93,6 +93,18 @@ class PlaylistCard extends HookConsumerWidget {
 
           playlistNotifier.add(fetchedTracks);
           tracks.value = fetchedTracks;
+          if (context.mounted) {
+            final snackbar = SnackBar(
+              content: Text("Added ${tracks.value.length} tracks to queue"),
+              action: SnackBarAction(
+                label: "Undo",
+                onPressed: () {
+                  playlistNotifier.remove(fetchedTracks);
+                },
+              ),
+            );
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(snackbar);
+          }
         } finally {
           updating.value = false;
         }

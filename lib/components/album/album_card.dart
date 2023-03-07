@@ -2,6 +2,7 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
@@ -9,6 +10,7 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 
 enum AlbumType {
   album,
@@ -108,21 +110,30 @@ class AlbumCard extends HookConsumerWidget {
                     .all()
                     .then((value) => value.toList());
               },
+            ).then(
+              (tracks) => tracks
+                  ?.map(
+                      (e) => TypeConversionUtils.simpleTrack_X_Track(e, album))
+                  .toList(),
             );
 
             if (fetchedTracks == null || fetchedTracks.isEmpty) return;
-
             playlistNotifier.add(
-              fetchedTracks
-                  .map((e) => TypeConversionUtils.simpleTrack_X_Track(e, album))
-                  .toList(),
+              fetchedTracks,
             );
             tracks.value = fetchedTracks;
-            scaffold.showSnackBar(
-              SnackBar(
+            if (context.mounted) {
+              final snackbar = SnackBar(
                 content: Text("Added ${album.tracks?.length} tracks to queue"),
-              ),
-            );
+                action: SnackBarAction(
+                  label: "Undo",
+                  onPressed: () {
+                    playlistNotifier.remove(fetchedTracks);
+                  },
+                ),
+              );
+              ScaffoldMessenger.maybeOf(context)?.showSnackBar(snackbar);
+            }
           } finally {
             updating.value = false;
           }
