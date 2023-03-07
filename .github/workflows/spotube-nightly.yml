@@ -40,9 +40,14 @@ jobs:
           dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
 
       - name: Building Linux application
+          # dart pub global activate flutter_distributor
         run: |
-          dart pub global activate flutter_distributor
-          QA_RPATHS=$(( 0x0001|0x0010|0x0002 )) flutter_distributor package --platform=linux --targets=deb,appimage,rpm --skip-clean
+          git clone https://github.com/KRTirtho/flutter_distributor.git flutter_distributor
+          flutter pub global activate melos
+          cd flutter_distributor
+          melos bootstrap
+          cd ..
+          dart flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=linux --targets=deb,appimage,rpm --skip-clean
           make tar
           mv build/Spotube-linux-x86_64.tar.xz dist/Spotube-linux-x86_64-nightly.tar.xz
           mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64-nightly.deb
