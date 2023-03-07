@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://github.com/KRTirtho/spotube/compare/v2.6.0...v2.7.0) (2023-03-07)
+
+
+### Features
+
+* add or remove track, playlist or album to queue support ([b8f3493](https://github.com/KRTirtho/spotube/commit/b8f3493138a9acd91d19efe67cfd1c0c7c269ae6))
+* basic command line argument support ([025c1ae](https://github.com/KRTirtho/spotube/commit/025c1ae20461c2ac9124b3ef41e21ff01f100498))
+* black list artist or track ([947c143](https://github.com/KRTirtho/spotube/commit/947c14353e15227400a6310673f3b850b2ff024f))
+* bring pre download on desktop, disable pre download for long videos ([1d82bb0](https://github.com/KRTirtho/spotube/commit/1d82bb098717c7321d3e338f071c7661987fc3be))
+* category/genre filter ([1dfec05](https://github.com/KRTirtho/spotube/commit/1dfec05eec7ee60cc9f6a3a97af37aef112063f1))
+* centralized icon collection with new icon set and nav bar labels hidden ([e7acb9e](https://github.com/KRTirtho/spotube/commit/e7acb9ed5cb02826b8da559818f1fccfcf7f143c))
+* compact search bar for genres and user_local_tracks page ([c343ccc](https://github.com/KRTirtho/spotube/commit/c343ccc2932868e3c1205d8cc625a9dfe9d78707))
+* compatibility with fl-query nextPage method change ([7617439](https://github.com/KRTirtho/spotube/commit/761743991520609dd2b2dcb12cd6e4e75a8f6925))
+* configure pocketbase, generate dart types, update playback to use server instead of hive cache ([ad90c11](https://github.com/KRTirtho/spotube/commit/ad90c11ab0c9f1aaba9ae9226d6076ea590f1a29))
+* failsafe pocketbase requests, removal of unneeded preferences options & vertical playbutton actions ([d68d150](https://github.com/KRTirtho/spotube/commit/d68d150d3f42260f889d86927378c2f746bb6993))
+* **home:** personalized section ([9080441](https://github.com/KRTirtho/spotube/commit/9080441b875ceb91260bbad79291365a98d5be95))
+* individual shuffle and repeat/loop button of player ([f79223c](https://github.com/KRTirtho/spotube/commit/f79223cd41c61d9836d25e7bc2811c6515ba00c8))
+* **lyrics:** use official spotify API for fetching lyrics and add zoom controls ([10d0660](https://github.com/KRTirtho/spotube/commit/10d0660972f008df0d11c280b681ce3b78f05d0b))
+* **mobile:** pull to refresh support in all refreshable list views ([9f959ce](https://github.com/KRTirtho/spotube/commit/9f959ce77cd95cfc34d01af1f5cf53dd4206b6a6))
+* new logo and compact search in playlist/album in mobile ([dc96cb3](https://github.com/KRTirtho/spotube/commit/dc96cb38cea8dc13738083f4850d22792d071019))
+* search/filter tracks inside playlist or album ([a06cd0d](https://github.com/KRTirtho/spotube/commit/a06cd0da84cc03a2a7cadbc80d70556cb0cf9310))
+* show snackbar on adding playlist or tracks to queue ([6bc1d32](https://github.com/KRTirtho/spotube/commit/6bc1d32a88ae516f77d149b83bcd536d2c888513))
+* **theme:** use material3 monet for colors and remove background color preference ([60ede5f](https://github.com/KRTirtho/spotube/commit/60ede5f92b732691d53850290d9667435298a857))
+* use catcher to handle exceptions ([84d94b0](https://github.com/KRTirtho/spotube/commit/84d94b05bc269a1676a261df2b12e508e10e4c0e))
+* use typed assets instead of hard coded paths ([59561ab](https://github.com/KRTirtho/spotube/commit/59561abdc2540576fc95b34b3b55def63567000a))
+* user local tracks searchbar ([e7f3f4e](https://github.com/KRTirtho/spotube/commit/e7f3f4eae49fe27a52fc3866fa4f6f2efb2aa479))
+* **user-library:** filtering support for user albums and user artists ([0b58155](https://github.com/KRTirtho/spotube/commit/0b58155d434f2de6359be77d7beee4484dbb7b2a))
+* **user-library:** search for user playlists ([af4d56f](https://github.com/KRTirtho/spotube/commit/af4d56fd41e57cbe6d87883e87e6b4469aaba52f))
+
+
+### Bug Fixes
+
+* **about:** license text hidden in the bottom of smaller screen devices ([e158dd0](https://github.com/KRTirtho/spotube/commit/e158dd0cec5657e495b538e86c412b06974a9f49))
+* **about:** wrong link of License ([a4a7f1a](https://github.com/KRTirtho/spotube/commit/a4a7f1a74f9df82927403ca93aec508a13315ae8))
+* genre and sidebar user logo not loading ([710f172](https://github.com/KRTirtho/spotube/commit/710f172dee45f60ed3e5ed83017eb538d6a626bf))
+* lyrics modal sheet out of safe area so use 80% of screen height instead of full ([3db28f4](https://github.com/KRTirtho/spotube/commit/3db28f43b4200d03f7758e8c395d8430e0f89333))
+* lyrics not changing on track change ([c809d2d](https://github.com/KRTirtho/spotube/commit/c809d2daba4beaea7c4f16c6bb0edef9efa825b8))
+* lyrics not refetching when tracked changed while being in another page and sidebar user avatar not showing on startup ([bd12675](https://github.com/KRTirtho/spotube/commit/bd126751e9594fbc926bbcad7b9a2c577fce074a))
+* macOS logo placement ([c6a5d5f](https://github.com/KRTirtho/spotube/commit/c6a5d5f7b1b1fad3a0b5e63c02c847a149e72efe))
+* mobile track collection search bar position and page_window_title_bar exception on mobile platforms ([d0aaa97](https://github.com/KRTirtho/spotube/commit/d0aaa971fe358b9cb5dc7a35cc82eaf6520f7ab4))
+* **play_overlay:** show progress indicator on song loading ([7803a48](https://github.com/KRTirtho/spotube/commit/7803a48237c91f2a57bcc86fbd30ad879142c8ff))
+* **playback:** not skipping track's  sponsorblock segments ([60a5847](https://github.com/KRTirtho/spotube/commit/60a5847ae68836bbbeef748254c674c81fa5c3ea))
+* playbutton card play state not changing ([ee46d09](https://github.com/KRTirtho/spotube/commit/ee46d0970be9e227793494a41e25c0c469847cd0))
+* **playbutton_card:** play and add to queue needs 2 clicks work ([bdd7098](https://github.com/KRTirtho/spotube/commit/bdd70984e6670813e508786e74cd2ea4a1fe1d53))
+* **playbutton_card:** play and non play state correction ([b327ffb](https://github.com/KRTirtho/spotube/commit/b327ffb1084b43e5c78e13994f65fb30b3a7e67e))
+* **playbutton_card:** title text overflow ([39ee0a9](https://github.com/KRTirtho/spotube/commit/39ee0a92a8f3d74d243db206fe034330f75c0588))
+* **playbutton:** playing state is not updating when playlist is actually playing ([9bad8c9](https://github.com/KRTirtho/spotube/commit/9bad8c9eb88f7c91091a669b642b92474df0f128))
+* **player_queue:** large clear button and macos exception ([0e43504](https://github.com/KRTirtho/spotube/commit/0e43504e18d2315fb1b7975b67bd2c596cbfb1bc))
+* **playlist_queue:** load method not preserving the active track before filtering blacklisted tracks ([42b3e11](https://github.com/KRTirtho/spotube/commit/42b3e111f844f6de6a145de2760ccfd7e97e623b))
+* pre downloading not working properly, audio service circular deps and sibling not loading for backend track ([3ccb525](https://github.com/KRTirtho/spotube/commit/3ccb525260a83ba54021a353b15ed3cda6e9c876))
+* search track play button isn't working ([0751f5e](https://github.com/KRTirtho/spotube/commit/0751f5e3173882f3aeed67027854e5054b689693))
+* **search:** grey screen, only tracks update on new search string, playlists,albums,artists show up before hitting return/submit ([a774817](https://github.com/KRTirtho/spotube/commit/a774817240ef813cb95f82f53ccb798ef9acb51d))
+* **search:** has to submit twice for search results ([f5dc76a](https://github.com/KRTirtho/spotube/commit/f5dc76a98f55f0f032a6fe4208465899f932355a))
+* titlebar maximize+restore button not working and less responsive title bar buttons ([8a6ba3b](https://github.com/KRTirtho/spotube/commit/8a6ba3b35f0b6b42cf60920e945ac2065c886ecb))
+* **track_collection_view:** hide search bar when sliver is collapsed ([3d6d244](https://github.com/KRTirtho/spotube/commit/3d6d2444beed153a2b6663d6153684b2974f4152))
+* **track_tile:**  cannot see track index above 99 ([78b3273](https://github.com/KRTirtho/spotube/commit/78b3273e441cdaa6d4a410ddfe29837dc1aa7000))
+* **track_tile:** track action popup not showing on narrow screens ([0c54f2d](https://github.com/KRTirtho/spotube/commit/0c54f2dcd4474b63db4c517b0e7332cbd3ab51e9))
+* **ui:** scaffold exception in fluent_ui ([8ce2192](https://github.com/KRTirtho/spotube/commit/8ce2192e5cb08e3a8be5ead510ab35b274bef2ef))
+* use chosen market for new release ([c6bf9b6](https://github.com/KRTirtho/spotube/commit/c6bf9b67995161a8bf7c3782188d01e8859c18e9))
+
 ## [2.6.0](https://github.com/KRTirtho/spotube/compare/v2.5.0...v2.6.0) (2022-12-09)
 
 

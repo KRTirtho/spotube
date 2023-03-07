@@ -5,7 +5,7 @@ description: A lightweight free Spotify crossplatform-client which handles
 
 publish_to: "none"
 
-version: 2.6.0+16
+version: 2.7.0+17
 
 environment:
   sdk: ">=2.17.0 <3.0.0"

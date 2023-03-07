@@ -151,7 +151,7 @@ jobs:
           path: dist/
 
   publish_android:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Get latest tag
@@ -190,7 +190,7 @@ jobs:
       - publish_macos
       - publish_linux
       - publish_android
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
     steps:
@@ -255,7 +255,7 @@ jobs:
 
   publish_flathub:
     needs: update_release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
         with:
