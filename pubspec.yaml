@@ -97,6 +97,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^2.0.0
+  pub_api_client: ^2.4.0
+  pubspec_parse: ^1.2.2
 
 dependency_overrides:
   package_info_plus: ^3.0.2

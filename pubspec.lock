@@ -1271,6 +1271,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
+  pub_api_client:
+    dependency: "direct dev"
+    description:
+      name: pub_api_client
+      sha256: d4bc6c9ec778da1a79675eab41bde456b392973216acd783156afaee69230e22
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   pub_semver:
     dependency: transitive
     description:
@@ -1279,14 +1287,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
-  pubspec_parse:
+  pubspec:
     dependency: transitive
     description:
-      name: pubspec_parse
-      sha256: "75f6614d6dde2dc68948dffbaa4fe5dae32cd700eb9fb763fe11dfb45a3c4d0a"
+      name: pubspec
+      sha256: f534a50a2b4d48dc3bc0ec147c8bd7c304280fff23b153f3f11803c4d49d927e
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "2.3.0"
+  pubspec_parse:
+    dependency: "direct dev"
+    description:
+      name: pubspec_parse
+      sha256: ec85d7d55339d85f44ec2b682a82fea340071e8978257e5a43e69f79e98ef50c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   puppeteer:
     dependency: transitive
     description:
@@ -1303,6 +1319,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0+2"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
   recase:
     dependency: transitive
     description:
@@ -1605,6 +1629,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.4"
+  uri:
+    dependency: transitive
+    description:
+      name: uri
+      sha256: "889eea21e953187c6099802b7b4cf5219ba8f3518f604a1033064d45b1b8268a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   url_launcher:
     dependency: "direct main"
     description:
