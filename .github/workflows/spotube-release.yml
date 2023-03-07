@@ -1,8 +1,16 @@
 name: Spotube Release
 on:
-  release:
-    types:
-      - published
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release"
+        required: true
+        default: "69.420.303"
+      dry_run:
+        description: "Dry run"
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   publish_chocolatey:
@@ -15,18 +23,12 @@ jobs:
           ref: deb-implementation
           path: build/flutter_distributor
 
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
-
       - name: Replace version in files
         run: |
           choco install sed make -y
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" windows/runner/Runner.rc
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/tools/VERIFICATION.txt
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" choco-struct/spotube.nuspec
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ inputs.version }}/" windows/runner/Runner.rc
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ inputs.version }}/" choco-struct/tools/VERIFICATION.txt
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ inputs.version }}/" choco-struct/spotube.nuspec
 
       - uses: subosito/flutter-action@v2.8.0
         with:
@@ -55,6 +57,7 @@ jobs:
       - run: mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
 
       - name: Publish to Chocolatey Repository
+        if: ${{ !inputs.dry_run }}
         run: |
           choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
           choco push dist/Spotube-windows-x86_64.nupkg
@@ -65,16 +68,18 @@ jobs:
         with:
           name: Spotube-Windows-Bundle
           path: dist/
+      
+      - name: Connect via SSH on failure
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
 
   publish_macos:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
-      - name: Get latest tag
-        uses: dawidd6/action-get-tag@v1
-        id: tag
-        with:
-          strip_v: true
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
@@ -85,23 +90,18 @@ jobs:
       - run: flutter build macos
       - run: du -sh build/macos/Build/Products/Release/spotube.app
       - run: npm install -g appdmg
-      - run: mkdir -p build/${{ steps.tag.outputs.tag }}
-      - run: appdmg appdmg.json build/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
+      - run: mkdir -p build/${{ inputs.version }}
+      - run: appdmg appdmg.json build/${{ inputs.version }}/Spotube-macos-x86_64.dmg
       - uses: actions/upload-artifact@v2
         with:
           name: Spotube-Macos-Bundle
           path: |
-            build/${{ steps.tag.outputs.tag }}/Spotube-macos-x86_64.dmg
+            build/${{ inputs.version }}/Spotube-macos-x86_64.dmg
 
   publish_linux:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
@@ -123,7 +123,7 @@ jobs:
 
       - name: Replace Version in files
         run: |
-          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ steps.tag.outputs.tag }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ inputs.version }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
           echo '${{ secrets.DOTENV_RELEASE }}' > .env
 
       - name: Generate Secrets
@@ -154,11 +154,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
@@ -210,11 +205,6 @@ jobs:
         with:
           name: Spotube-Android-Bundle
           path: ./Spotube-Android-Bundle
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
 
       - name: Install dependencies
         run: sudo apt-get install tree -y
@@ -232,11 +222,19 @@ jobs:
           sha256sum ./Spotube-Android-Bundle/*.apk >> RELEASE.sha256sum
           sed -i 's|Spotube-.*-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Sums-Bundle
+          path: |
+            RELEASE.md5sum
+            RELEASE.sha256sum
+
       - name: Upload Release Binaries
+        if: ${{ !inputs.dry_run }}
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v${{ steps.tag.outputs.tag }}
+          tag: v${{ inputs.version }}
           omitBodyDuringUpdate: true
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
@@ -246,6 +244,7 @@ jobs:
   publish_winget:
     needs: update_release
     runs-on: windows-latest
+    if: ${{ !inputs.dry_run }}
     steps:
       - name: Release winget package
         uses: vedantmgoyal2009/winget-releaser@v1
@@ -264,34 +263,27 @@ jobs:
       - uses: actions/checkout@v3
         with:
           path: spotube
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
 
       - name: Update flathub version
         run: |
-          python3 spotube/scripts/update_flathub_version.py ${{ steps.tag.outputs.tag }}
+          python3 spotube/scripts/update_flathub_version.py ${{ inputs.version }}
           rm -rf spotube
           git config --global user.email "krtirtho@gmail.com"
           git config --global user.name "Kingkor Roy Tirtho"
           git add .
-          git commit -m "v${{ steps.tag.outputs.tag }} Update"
-          git branch update-${{ steps.tag.outputs.tag }}
-          git switch update-${{ steps.tag.outputs.tag }}
-          git push -u origin update-${{ steps.tag.outputs.tag }}
+          git commit -m "v${{ inputs.version }} Update"
+          git branch update-${{ inputs.version }}
+          git switch update-${{ inputs.version }}
+
+      - name: Push to flathub
+        if: ${{ !inputs.dry_run }}
+        run: git push -u origin update-${{ inputs.version }}
 
   publish_aur:
     needs: update_release
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - name: Get latest tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
 
       - name: Download Linux artifacts
         uses: actions/download-artifact@v3
@@ -301,11 +293,12 @@ jobs:
 
       - name: Update PKGBUILD versions
         run: |
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ steps.tag.outputs.tag }}/" aur-struct/PKGBUILD
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ inputs.version }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
           sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-Linux-Bundle/Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
 
       - name: Release to AUR
+        if: ${{ !inputs.dry_run }}
         uses: KSXGitHub/github-actions-deploy-aur@v2.6.0
         with:
           pkgname: spotube-bin
@@ -313,4 +306,4 @@ jobs:
           commit_username: ${{ secrets.AUR_USERNAME }}
           commit_email: ${{ secrets.AUR_EMAIL }}
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: Updated to v${{ steps.tag.outputs.tag }}
+          commit_message: Updated to v${{ inputs.version }}
