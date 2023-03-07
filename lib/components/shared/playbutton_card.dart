@@ -190,32 +190,45 @@ class PlaybuttonCard extends HookWidget {
             );
 
             final list = Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // thumbnail of the playlist
-                image,
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    PlatformText(
-                      title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 5),
-                    if (description != null)
-                      PlatformText(
-                        description!,
-                        overflow: TextOverflow.fade,
-                        style: PlatformTextTheme.of(context).caption,
+                Flexible(
+                  child: Row(
+                    children: [
+                      image,
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: title,
+                                style: PlatformTextTheme.of(context)
+                                    .body
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              if (description != null)
+                                TextSpan(
+                                  text: '\n$description',
+                                  style: PlatformTextTheme.of(context).caption,
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    addToQueueButton,
+                    const SizedBox(width: 10),
+                    playButton,
+                    const SizedBox(width: 10),
                   ],
                 ),
-                const Spacer(),
-                addToQueueButton,
-                const SizedBox(width: 10),
-                playButton,
-                const SizedBox(width: 10),
               ],
             );
 
