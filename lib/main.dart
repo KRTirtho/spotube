@@ -210,6 +210,9 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         appPlatform = Theme.of(context).platform;
+        if (appPlatform == TargetPlatform.macOS) {
+          appPlatform = TargetPlatform.android;
+        }
       });
     });
   }
@@ -245,6 +248,9 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
 
   void changePlatform(TargetPlatform targetPlatform) {
     appPlatform = targetPlatform;
+    if (appPlatform == TargetPlatform.macOS) {
+      appPlatform = TargetPlatform.android;
+    }
     setState(() {});
   }
 
