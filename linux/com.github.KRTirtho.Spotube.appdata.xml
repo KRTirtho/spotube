@@ -44,30 +44,24 @@
     </screenshot>
   </screenshots>
   <launchable type="desktop-id">com.github.KRTirtho.Spotube.desktop</launchable>
-  <releases> %{{APPDATA_RELEASE}}% <release version="2.6.0" date="2022-12-09" />
-    <release
-      version="2.5.0" date="2022-10-13" />
+  <releases> 
+    %{{APPDATA_RELEASE}}%
+    <release version="2.6.0" date="2022-12-09" />
+    <release version="2.5.0" date="2022-10-13" />
     <release version="2.4.1" date="2022-09-13" />
-    <release
-      version="2.4.0" date="2022-09-09" />
+    <release version="2.4.0" date="2022-09-09" />
     <release version="2.3.1" date="2022-07-11" />
-    <release
-      version="2.2.1" date="2022-06-09" />
+    <release version="2.2.1" date="2022-06-09" />
     <release version="2.2.0" date="2022-06-05" />
-    <release
-      version="2.1.0" date="2022-05-10" />
+    <release version="2.1.0" date="2022-05-10" />
     <release version="2.0.0" date="2022-03-24" />
-    <release
-      version="1.2.0" date="2022-02-02" />
+    <release version="1.2.0" date="2022-02-02" />
     <release version="1.1.0" date="2022-01-27" />
-    <release
-      version="1.0.1" date="2022-01-15" />
+    <release version="1.0.1" date="2022-01-15" />
     <release version="1.0.0" date="2022-01-14" />
-    <release
-      version="0.0.3" date="2021-05-08" />
+    <release version="0.0.3" date="2021-05-08" />
     <release version="0.0.2" date="2021-03-31" />
-    <release
-      version="0.0.1" date="2021-03-20" />
+    <release version="0.0.1" date="2021-03-20" />
   </releases>
   <content_rating type="oars-1.1" />
   <update_contact>krtirtho@gmail.com</update_contact>
