@@ -3,7 +3,8 @@
   <id>com.github.KRTirtho.Spotube</id>
   <name>Spotube</name>
   <summary>
-  A lightweight free Spotify crossplatform-client which handles playback manually, streams music using Youtube &amp; no Spotify premium account is needed
+    A lightweight free Spotify crossplatform-client which handles playback manually, streams music
+    using Youtube &amp; no Spotify premium account is needed
   </summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-4-Clause</project_license>
@@ -15,36 +16,58 @@
   <developer_name>Kingkor Roy Tirtho</developer_name>
   <url type="homepage">https://github.com/krtirtho/spotube</url>
   <description>
-    <p>Spotube is a Flutter based lightweight Spotify client. It utilizes the power of Spotify &amp; Youtube's public API &amp; creates a hazardless, performant &amp; resource friendly User Experience</p>
+    <p>Spotube is a Flutter based lightweight Spotify client. It utilizes the power of Spotify &amp;
+      Youtube's public API &amp; creates a hazardless, performant &amp; resource friendly User
+      Experience</p>
     <p>Following are the features that currently spotube offers:</p>
     <ul>
       <li>Open Source</li>
-      <li>No telementry, diagnostics or user data collection</li>
+      <li>Anonymous/Guest Login</li>
+      <li>Cross platform</li>
+      <li>No telemetry, diagnostics or user data collection</li>
       <li>Lightweight &amp; resource friendly</li>
       <li>Native performance (Thanks to Flutter+Skia)</li>
-      <li>Playback control is on user's machine instead of server based</li>
+      <li>Playback control is on user&#39;s machine instead of server based</li>
       <li>Small size &amp; less data hungry</li>
-      <li>No spotify or youtube ads since it uses all public &amp; free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)</li>
-      <li>Lyrics</li>
+      <li>No spotify or youtube ads since it uses all public &amp; free APIs (But it&#39;s
+        recommended to support the creators by watching/liking/subscribing to the artists youtube
+        channel or add as favourite track in spotify. Mostly buying spotify premium is the best way
+        to support their valuable creations)</li>
+      <li>Synced Lyrics</li>
       <li>Downloadable track</li>
     </ul>
   </description>
   <screenshots>
     <screenshot>
-      <image type="source">https://rawcdn.githack.com/KRTirtho/spotube/ebb00cdcb68c98ee785144568a5af1690ec7e6a3/assets/spotube-screenshot.jpg</image>
+      <image type="source">
+        https://rawcdn.githack.com/KRTirtho/spotube/ebb00cdcb68c98ee785144568a5af1690ec7e6a3/assets/spotube-screenshot.jpg</image>
     </screenshot>
   </screenshots>
   <launchable type="desktop-id">com.github.KRTirtho.Spotube.desktop</launchable>
-  <releases>
-    %{{APPDATA_RELEASE}}%
+  <releases> %{{APPDATA_RELEASE}}% <release version="2.6.0" date="2022-12-09" />
+    <release
+      version="2.5.0" date="2022-10-13" />
+    <release version="2.4.1" date="2022-09-13" />
+    <release
+      version="2.4.0" date="2022-09-09" />
+    <release version="2.3.1" date="2022-07-11" />
+    <release
+      version="2.2.1" date="2022-06-09" />
+    <release version="2.2.0" date="2022-06-05" />
+    <release
+      version="2.1.0" date="2022-05-10" />
     <release version="2.0.0" date="2022-03-24" />
-    <release version="1.2.0" date="2022-02-02" />
+    <release
+      version="1.2.0" date="2022-02-02" />
     <release version="1.1.0" date="2022-01-27" />
-    <release version="1.0.1" date="2022-01-15" />
+    <release
+      version="1.0.1" date="2022-01-15" />
     <release version="1.0.0" date="2022-01-14" />
-    <release version="0.0.3" date="2021-05-08" />
+    <release
+      version="0.0.3" date="2021-05-08" />
     <release version="0.0.2" date="2021-03-31" />
-    <release version="0.0.1" date="2021-03-20" />
+    <release
+      version="0.0.1" date="2021-03-20" />
   </releases>
   <content_rating type="oars-1.1" />
   <update_contact>krtirtho@gmail.com</update_contact>
