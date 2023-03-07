@@ -480,13 +480,9 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   // utility
   bool isPlayingPlaylist(Iterable<TrackSimple> playlist) {
     if (!isLoaded || playlist.isEmpty) return false;
-    if (state!.isShuffled) {
-      final trackIds = state!.tempTracks.map((track) => track.id!);
-      return blacklist
-          .filter(playlist)
-          .every((track) => trackIds.contains(track.id!));
-    }
-    final trackIds = state!.tracks.map((track) => track.id!);
+
+    final trackIds = (state!.isShuffled ? state!.tempTracks : state!.tracks)
+        .map((track) => track.id!);
     return blacklist
         .filter(playlist)
         .every((track) => trackIds.contains(track.id!));

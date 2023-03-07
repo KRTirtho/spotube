@@ -2,7 +2,6 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
@@ -10,7 +9,6 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:fluent_ui/fluent_ui.dart' as fluent;
 
 enum AlbumType {
   album,
@@ -51,15 +49,16 @@ class AlbumCard extends HookConsumerWidget {
     final queryClient = useQueryClient();
     final query = queryClient
         .getQuery<List<TrackSimple>, dynamic>("album-tracks/${album.id}");
-    final tracks = useState(query?.data ?? album.tracks ?? <Track>[]);
-    bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks.value);
+    bool isPlaylistPlaying = useMemoized(
+      () =>
+          playlistNotifier.isPlayingPlaylist(query?.data ?? album.tracks ?? []),
+      [playlistNotifier, query?.data, album.tracks],
+    );
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
 
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);
-
-    final scaffold = ScaffoldMessenger.of(context);
 
     return PlaybuttonCard(
         imageUrl: TypeConversionUtils.image_X_UrlString(
@@ -68,7 +67,7 @@ class AlbumCard extends HookConsumerWidget {
         ),
         viewType: viewType,
         margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
-        isPlaying: isPlaylistPlaying && playing,
+        isPlaying: isPlaylistPlaying,
         isLoading: isPlaylistPlaying && playlist?.isLoading == true,
         title: album.name!,
         description:
@@ -121,7 +120,6 @@ class AlbumCard extends HookConsumerWidget {
             playlistNotifier.add(
               fetchedTracks,
             );
-            tracks.value = fetchedTracks;
             if (context.mounted) {
               final snackbar = SnackBar(
                 content: Text("Added ${album.tracks?.length} tracks to queue"),

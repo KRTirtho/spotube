@@ -43,6 +43,7 @@ class PlaylistView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
 
     final breakpoint = useBreakpoints();
@@ -50,8 +51,10 @@ class PlaylistView extends HookConsumerWidget {
     final meSnapshot = useQueries.user.me(ref);
     final tracksSnapshot = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
 
-    final isPlaylistPlaying =
-        playlistNotifier.isPlayingPlaylist(tracksSnapshot.data ?? []);
+    final isPlaylistPlaying = useMemoized(
+      () => playlistNotifier.isPlayingPlaylist(tracksSnapshot.data ?? []),
+      [playlistNotifier, tracksSnapshot.data],
+    );
 
     final titleImage = useMemoized(
         () => TypeConversionUtils.image_X_UrlString(

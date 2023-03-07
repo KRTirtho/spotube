@@ -58,7 +58,7 @@ class AlbumPage extends HookConsumerWidget {
 
     final isAlbumPlaying = useMemoized(
       () => playback.isPlayingPlaylist(tracksSnapshot.data ?? []),
-      [tracksSnapshot.data],
+      [playback, tracksSnapshot.data],
     );
     return TrackCollectionView(
       id: album.id!,

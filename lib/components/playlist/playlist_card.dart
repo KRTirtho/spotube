@@ -29,8 +29,12 @@ class PlaylistCard extends HookConsumerWidget {
     final query = queryBowl.getQuery<List<Track>, dynamic>(
       "playlist-tracks/${playlist.id}",
     );
-    final tracks = useState(query?.data ?? []);
-    bool isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks.value);
+    final tracks = useState<List<TrackSimple>?>(null);
+    bool isPlaylistPlaying = useMemoized(
+      () =>
+          playlistNotifier.isPlayingPlaylist(tracks.value ?? query?.data ?? []),
+      [playlistNotifier, tracks.value, query?.data],
+    );
 
     final int marginH =
         useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
@@ -46,7 +50,7 @@ class PlaylistCard extends HookConsumerWidget {
         playlist.images,
         placeholder: ImagePlaceholder.collection,
       ),
-      isPlaying: isPlaylistPlaying && playing,
+      isPlaying: isPlaylistPlaying,
       isLoading: (isPlaylistPlaying && playlistQueue?.isLoading == true) ||
           updating.value,
       onTap: () {
@@ -95,7 +99,7 @@ class PlaylistCard extends HookConsumerWidget {
           tracks.value = fetchedTracks;
           if (context.mounted) {
             final snackbar = SnackBar(
-              content: Text("Added ${tracks.value.length} tracks to queue"),
+              content: Text("Added ${tracks.value?.length} tracks to queue"),
               action: SnackBarAction(
                 label: "Undo",
                 onPressed: () {
