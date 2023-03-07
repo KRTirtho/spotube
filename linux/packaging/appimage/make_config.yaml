@@ -1,2 +1,13 @@
-appId: oss.krtirtho.spotube
+display_name: Spotube
 icon: assets/spotube-logo.png
+
+keywords:
+  - Music
+  - Spotify
+  - Media
+  - Streaming
+  - YouTube
+
+generic_name: Music Streaming Application
+categories:
+  - Music
