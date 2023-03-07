@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release"
+        description: "Version to release (x.x.x)"
         required: true
         default: "69.420.303"
       dry_run:
@@ -49,7 +49,7 @@ jobs:
 
       - name: Create Chocolatey Package and set hash
         run: |
-          mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
+          mv dist/**/spotube-*-windows.exe dist/Spotube-windows-x86_64-setup.exe
           Set-Variable -Name HASH -Value (Get-FileHash dist\Spotube-windows-x86_64-setup.exe).Hash
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
           make choco
