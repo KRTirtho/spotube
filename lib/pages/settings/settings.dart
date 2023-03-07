@@ -235,7 +235,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     PlatformListTile(
                       leading: const Icon(SpotubeIcons.palette),
-                      title: const PlatformText("Accent Color Scheme"),
+                      title: const PlatformText("Accent Color"),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5,
@@ -246,20 +246,6 @@ class SettingsPage extends HookConsumerWidget {
                         isActive: true,
                       ),
                       onTap: pickColorScheme(ColorSchemeType.accent),
-                    ),
-                    PlatformListTile(
-                      leading: const Icon(SpotubeIcons.colorBucket),
-                      title: const PlatformText("Background Color Scheme"),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 5,
-                      ),
-                      trailing: ColorTile(
-                        color: preferences.backgroundColorScheme,
-                        onPressed: pickColorScheme(ColorSchemeType.background),
-                        isActive: true,
-                      ),
-                      onTap: pickColorScheme(ColorSchemeType.background),
                     ),
                     PlatformListTile(
                       leading: const Icon(SpotubeIcons.album),

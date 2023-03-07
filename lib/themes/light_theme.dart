@@ -5,130 +5,41 @@ import 'package:macos_ui/macos_ui.dart';
 import 'package:spotube/extensions/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 
-final materialWhite = MaterialColor(Colors.white.value, {
-  50: Colors.white,
-  100: Colors.blueGrey[100]!,
-  200: Colors.white,
-  300: Colors.white,
-  400: Colors.blueGrey[300]!,
-  500: Colors.blueGrey,
-  600: Colors.white,
-  700: Colors.grey[700]!,
-  800: Colors.white,
-  900: Colors.white,
-});
-
-ThemeData lightTheme({
-  required MaterialColor accentMaterialColor,
-  required MaterialColor backgroundMaterialColor,
-}) {
+ThemeData theme(Color seed, Brightness brightness) {
+  final scheme = ColorScheme.fromSeed(
+    seedColor: seed,
+    shadow: Colors.black12,
+    brightness: brightness,
+  );
   return ThemeData(
     useMaterial3: true,
-    extensions: [
-      ShimmerColorTheme(
-        shimmerBackgroundColor: backgroundMaterialColor[200],
-        shimmerColor: backgroundMaterialColor[300],
-      )
-    ],
-    primaryColor: accentMaterialColor,
-    primarySwatch: accentMaterialColor,
-    buttonTheme: ButtonThemeData(
-      buttonColor: accentMaterialColor,
-    ),
-    shadowColor: Colors.grey[300],
-    backgroundColor: backgroundMaterialColor[50],
-    textTheme: TextTheme(
-      bodyText1: TextStyle(color: Colors.grey[850]),
-      headline1: TextStyle(color: Colors.grey[850]),
-      headline2: TextStyle(color: Colors.grey[850]),
-      headline3: TextStyle(color: Colors.grey[850]),
-      headline4: TextStyle(color: Colors.grey[850]),
-      headline5: TextStyle(color: Colors.grey[850]),
-      headline6: TextStyle(color: Colors.grey[850]),
-    ),
+    colorScheme: scheme,
     listTileTheme: ListTileThemeData(
-      iconColor: Colors.grey[850],
       horizontalTitleGap: 0,
+      iconColor: scheme.onSurface,
     ),
-    iconTheme: const IconThemeData(size: 16),
     inputDecorationTheme: InputDecorationTheme(
-      isDense: true,
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(
-          color: accentMaterialColor[400]!,
-          width: 2.0,
-        ),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(
-          color: Colors.grey[600]!,
-        ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
       ),
     ),
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: backgroundMaterialColor[100],
-      indicatorColor: accentMaterialColor[300],
-      selectedIconTheme: IconThemeData(
-        color: accentMaterialColor[850],
-        size: 18,
-      ),
-      unselectedIconTheme: IconThemeData(
-        color: Colors.grey[850],
-        opacity: 1,
-        size: 18,
-      ),
-      unselectedLabelTextStyle: TextStyle(
-        color: Colors.grey[850],
-      ),
-    ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: backgroundMaterialColor[50],
-      height: 45,
-      indicatorColor: accentMaterialColor[300],
-      iconTheme: MaterialStateProperty.all(
-        IconThemeData(color: Colors.grey[850], size: 18),
-      ),
+    iconTheme: IconThemeData(size: 16, color: scheme.onSurface),
+    navigationBarTheme: const NavigationBarThemeData(
       labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-    ),
-    cardTheme: CardTheme(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      color: backgroundMaterialColor[50],
-    ),
-    splashFactory: NoSplash.splashFactory,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: accentMaterialColor[800],
-        textStyle: const TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
+      height: 50,
+      iconTheme: MaterialStatePropertyAll(
+        IconThemeData(size: 18),
       ),
-    ),
-    popupMenuTheme: PopupMenuThemeData(
-      color: backgroundMaterialColor[100],
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18.0),
-      ),
-    ),
-    cardColor: backgroundMaterialColor[50],
-    canvasColor: backgroundMaterialColor[50],
-    checkboxTheme: CheckboxThemeData(
-      fillColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
-          return accentMaterialColor[500];
-        }
-        return null;
-      }),
     ),
     tabBarTheme: TabBarTheme(
-      indicator: const BoxDecoration(color: Colors.transparent),
-      labelColor: accentMaterialColor[500],
-      unselectedLabelColor: Colors.grey[850],
-      labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-      unselectedLabelStyle:
-          const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+      labelColor: scheme.primary,
+      overlayColor: MaterialStateProperty.all(Colors.transparent),
+      indicator: BoxDecoration(
+        color: scheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(15),
+      ),
     ),
   );
 }

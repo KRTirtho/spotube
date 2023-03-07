@@ -6,23 +6,6 @@ import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 
-final highContrast = MaterialColor(
-  const Color.fromARGB(255, 104, 104, 104).value,
-  const {
-    50: Colors.white,
-    100: Color.fromARGB(255, 233, 233, 233),
-    200: Color.fromARGB(255, 224, 219, 219),
-    300: Color.fromARGB(255, 207, 207, 207),
-    400: Color.fromARGB(255, 146, 146, 146),
-    500: Color.fromARGB(255, 104, 104, 104),
-    600: Color.fromARGB(255, 78, 78, 78),
-    700: Color.fromARGB(255, 61, 61, 61),
-    800: Color.fromARGB(255, 27, 27, 27),
-    850: Color.fromARGB(255, 20, 20, 20),
-    900: Colors.black,
-  },
-);
-
 final colorsMap = {
   "Red": Colors.red,
   "Pink": Colors.pink,
@@ -41,9 +24,6 @@ final colorsMap = {
   "Orange": Colors.orange,
   "DeepOrange": Colors.deepOrange,
   "Brown": Colors.brown,
-  "BlueGrey": Colors.blueGrey,
-  "Grey": Colors.grey,
-  "HighContrast": highContrast,
 };
 
 enum ColorSchemeType {
@@ -59,9 +39,7 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
-    final scheme = schemeType == ColorSchemeType.accent
-        ? preferences.accentColorScheme
-        : preferences.backgroundColorScheme;
+    final scheme = preferences.accentColorScheme;
     final active = useState<String>(colorsMap.entries.firstWhere(
       (element) {
         return scheme.value == element.value.value;

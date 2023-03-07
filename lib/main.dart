@@ -25,7 +25,6 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
-import 'package:spotube/themes/dark_theme.dart';
 import 'package:spotube/themes/light_theme.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
@@ -260,8 +259,6 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
-    final backgroundMaterialColor = ref
-        .watch(userPreferencesProvider.select((s) => s.backgroundColorScheme));
 
     /// For enabling hot reload for audio player
     useEffect(() {
@@ -282,14 +279,8 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       builder: (context, child) {
         return DragToResizeArea(child: child!);
       },
-      androidTheme: lightTheme(
-        accentMaterialColor: accentMaterialColor,
-        backgroundMaterialColor: backgroundMaterialColor,
-      ),
-      androidDarkTheme: darkTheme(
-        accentMaterialColor: accentMaterialColor,
-        backgroundMaterialColor: backgroundMaterialColor,
-      ),
+      androidTheme: theme(accentMaterialColor, Brightness.light),
+      androidDarkTheme: theme(accentMaterialColor, Brightness.dark),
       linuxTheme: linuxTheme,
       linuxDarkTheme: linuxDarkTheme,
       iosTheme: themeMode == ThemeMode.dark ? iosDarkTheme : iosTheme,

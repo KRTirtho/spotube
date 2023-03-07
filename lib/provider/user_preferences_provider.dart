@@ -31,7 +31,6 @@ class UserPreferences extends PersistedChangeNotifier {
   AudioQuality audioQuality;
 
   MaterialColor accentColorScheme;
-  MaterialColor backgroundColorScheme;
   bool skipSponsorSegments;
 
   String downloadLocation;
@@ -49,7 +48,6 @@ class UserPreferences extends PersistedChangeNotifier {
     required this.predownload,
     this.saveTrackLyrics = false,
     this.accentColorScheme = Colors.green,
-    this.backgroundColorScheme = Colors.grey,
     this.checkUpdate = true,
     this.audioQuality = AudioQuality.high,
     this.skipSponsorSegments = true,
@@ -102,7 +100,6 @@ class UserPreferences extends PersistedChangeNotifier {
   }
 
   void setBackgroundColorScheme(MaterialColor color) {
-    backgroundColorScheme = color;
     notifyListeners();
     updatePersistence();
   }
@@ -165,9 +162,6 @@ class UserPreferences extends PersistedChangeNotifier {
         PrimitiveUtils.getRandomElement(lyricsSecrets);
 
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
-    backgroundColorScheme = colorsMap.values
-            .firstWhereOrNull((e) => e.value == map["backgroundColorScheme"]) ??
-        backgroundColorScheme;
     accentColorScheme = colorsMap.values
             .firstWhereOrNull((e) => e.value == map["accentColorScheme"]) ??
         accentColorScheme;
@@ -193,7 +187,6 @@ class UserPreferences extends PersistedChangeNotifier {
       "recommendationMarket": recommendationMarket,
       "geniusAccessToken": geniusAccessToken,
       "themeMode": themeMode.index,
-      "backgroundColorScheme": backgroundColorScheme.value,
       "accentColorScheme": accentColorScheme.value,
       "checkUpdate": checkUpdate,
       "audioQuality": audioQuality.index,

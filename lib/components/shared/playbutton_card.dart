@@ -46,7 +46,7 @@ class PlaybuttonCard extends HookWidget {
           blurRadius: 10,
           offset: const Offset(0, 3),
           spreadRadius: 5,
-          color: Theme.of(context).shadowColor,
+          color: Theme.of(context).colorScheme.shadow,
         ),
         ios: null,
         macos: null,
