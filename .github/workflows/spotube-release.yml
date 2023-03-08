@@ -79,7 +79,7 @@ jobs:
   publish_macos:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
