@@ -247,7 +247,7 @@ jobs:
     if: ${{ !inputs.dry_run }}
     steps:
       - name: Release winget package
-        uses: vedantmgoyal2009/winget-releaser@v1
+        uses: vedantmgoyal2009/winget-releaser@v2
         with:
           version: ${{ inputs.version }}
           release-tag: v${{ inputs.version }}
