@@ -92,7 +92,7 @@ jobs:
       - run: npm install -g appdmg
       - run: mkdir -p build/${{ inputs.version }}
       - run: appdmg appdmg.json build/${{ inputs.version }}/Spotube-macos-x86_64.dmg
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Macos-Bundle
           path: |
@@ -173,7 +173,7 @@ jobs:
           flutter build apk
           make apk
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Android-Bundle
           path: |
