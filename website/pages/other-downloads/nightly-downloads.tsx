@@ -19,7 +19,9 @@ import { ReleaseResponse } from "./stable-downloads";
 
 type NightlyProps = ReleaseResponse;
 
-export const  getServerSideProps: GetServerSideProps<NightlyProps> =async () =>{
+export const getServerSideProps: GetServerSideProps<
+  NightlyProps
+> = async () => {
   const { data } = await octokit.repos.getReleaseByTag({
     owner: "KRTirtho",
     repo: "spotube",
@@ -35,12 +37,11 @@ export const  getServerSideProps: GetServerSideProps<NightlyProps> =async () =>{
         name: asset.name,
         browser_download_url: asset.browser_download_url,
       })),
-    }
-  } 
-}
+    },
+  };
+};
 
-
-const NightlyDownloads: NextPage<NightlyProps> = (props)=> {
+const NightlyDownloads: NextPage<NightlyProps> = (props) => {
   return (
     <>
       <VStack>
@@ -65,37 +66,46 @@ const NightlyDownloads: NextPage<NightlyProps> = (props)=> {
             </NavLink>{" "}
             Spotube
           </Text>
-          <chakra.section
-            border="2px solid"
-            borderColor="gray"
-            borderRadius="md"
-            px="4"
-            py="2"
+          <VStack
+            p="2"
             w="100%"
+            borderRadius="md"
+            spacing="4"
+            bgColor="gray.50"
+            _dark={{ bgColor: "gray.900" }}
           >
-            {Object.entries(props.assets).map(([_, { name, id, browser_download_url}], i) => {
-              const segments = name.split("-");
-              const platform = segments[1];
-              const executable = segments[segments.length - 1].split(".")[1];
-              return (
-                <HStack key={id} py="2">
-                  <Text w="200px" textTransform="capitalize">
-                    {platform}{" "}
-                    <chakra.span color="gray.500">({executable})</chakra.span>
-                  </Text>
-                  <Anchor
-                    overflowWrap="break-word"
-                    wordBreak="break-word"
-                    w="full"
-                    href={browser_download_url}
-                    color="blue.500"
+            {Object.entries(props.assets).map(
+              ([_, { name, id, browser_download_url }], i) => {
+                const segments = name.split("-");
+                const platform = segments[1];
+                const executable = segments[segments.length - 1].split(".")[1];
+                return (
+                  <HStack
+                    key={id}
+                    p="4"
+                    w="100%"
+                    borderRadius="md"
+                    bgColor="gray.100"
+                    _dark={{ bgColor: "gray.800" }}
                   >
-                    {name}
-                  </Anchor>
-                </HStack>
-              );
-            })}
-          </chakra.section>
+                    <Text w="200px" textTransform="capitalize">
+                      {platform}{" "}
+                      <chakra.span color="gray.500">({executable})</chakra.span>
+                    </Text>
+                    <Anchor
+                      overflowWrap="break-word"
+                      wordBreak="break-word"
+                      w="full"
+                      href={browser_download_url}
+                      color="blue.500"
+                    >
+                      {name}
+                    </Anchor>
+                  </HStack>
+                );
+              }
+            )}
+          </VStack>
         </VStack>
         <chakra.div w="full">
           {/* <GridMultiplexAd slot="3192619797" /> */}
@@ -103,6 +113,6 @@ const NightlyDownloads: NextPage<NightlyProps> = (props)=> {
       </VStack>
     </>
   );
-}
+};
 
 export default NightlyDownloads;

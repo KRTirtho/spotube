@@ -18,6 +18,7 @@ import {
   FaWindows,
   FaAndroid,
 } from "react-icons/fa";
+import { MdOutlineFileDownload } from "react-icons/md";
 
 const baseURL = "https://github.com/KRTirtho/spotube/releases/latest/download/";
 
@@ -88,6 +89,9 @@ const DownloadButton = () => {
           as={Anchor}
           href={currentPlatform.url}
           _hover={{ textDecoration: "none" }}
+          leftIcon={
+            <MdOutlineFileDownload fontSize="24"/>
+          }
         >
           Download for {platform} (.{currentPlatform.name})
         </Button>

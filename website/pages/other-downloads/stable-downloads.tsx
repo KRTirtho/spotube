@@ -55,18 +55,20 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     owner: "KRTirtho",
     repo: "spotube",
   });
-  const releaseResponse: ReleaseResponse[] = data.map((data) => {
-    return {
-      tag_name: data.tag_name,
-      id: data.id,
-      body: data.body,
-      assets: data.assets.map((asset) => ({
-        id: asset.id,
-        name: asset.name,
-        browser_download_url: asset.browser_download_url,
-      })),
-    };
-  });
+  const releaseResponse: ReleaseResponse[] = data
+    .map((data) => {
+      return {
+        tag_name: data.tag_name,
+        id: data.id,
+        body: data.body,
+        assets: data.assets.map((asset) => ({
+          id: asset.id,
+          name: asset.name,
+          browser_download_url: asset.browser_download_url,
+        })),
+      };
+    })
+    .filter((release) => release.tag_name !== "nightly");
   return {
     props: {
       data: releaseResponse,
@@ -76,20 +78,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 
 const StableDownloads: NextPage<Props> = ({ data }) => {
   return (
-    <VStack alignItems="stretch" m="3">
-      <Heading size="xl">Previous Versions</Heading>
-      <Text my="5">
-        If any of your version is not working correctly than you can download &
-        use previous versions of Spotube too
-      </Text>
-      <HStack alignItems="flex-start" wrap="wrap">
+    <VStack alignItems="center">
+      <VStack alignItems="stretch" m="3">
+        <Heading size="xl">Previous Versions</Heading>
+        <Text my="5">
+          If any of your version is not working correctly than you can download
+          & use previous versions of Spotube too
+        </Text>
+
         <VStack
-          alignItems="stretch"
-          w={{
-            base: "full",
-            sm: "70%",
-            md: "60%",
-          }}
+          alignItems="flex-start"
           spacing="3"
           mr="1"
         >
@@ -112,29 +110,28 @@ const StableDownloads: NextPage<Props> = ({ data }) => {
               [key in AssetTypes]: RestEndpointMethodTypes["repos"]["listReleases"]["response"]["data"][0]["assets"];
             };
             return (
-              <VStack
-                key={release.id}
-                py="3"
-                alignItems="flex-start"
-                borderBottom="1px solid grey"
-                _last={{ borderBottom: "none" }}
-              >
+              <VStack key={release.id} py="3" w="full">
                 <Heading size="md">
                   Version{" "}
-                  <Text as="span" color="green.500">
+                  <Text as="span" color="blue.500">
                     {release.tag_name}
                   </Text>{" "}
                   {i == 0 && "(Latest)"}
                 </Heading>
                 {Object.entries(releaseSome).map(([type, assets], i) => {
                   return (
-                    <HStack key={i} spacing={0} py="2" alignItems="flex-start">
+                    <HStack
+                      key={i}
+                      spacing={0}
+                      p="2"
+                      alignItems="flex-start"
+                      bgColor="gray.50"
+                      _dark={{ bgColor: "gray.900" }}
+                    >
                       <Heading
                         w={90}
                         p="2"
                         colorScheme="blue"
-                        border="2px solid"
-                        borderColor="gray"
                         borderRadius="5px 0 0 5px"
                         borderRight="none"
                         size="sm"
@@ -143,15 +140,11 @@ const StableDownloads: NextPage<Props> = ({ data }) => {
                       </Heading>
                       <VStack
                         alignItems="flex-start"
-                        border="2px solid"
-                        borderColor="gray"
-                        borderRadius={`0 5px 5px ${
-                          assets.length !== 1 ? 5 : 0
-                        }px`}
                         w={{
                           base: "full",
                           sm: "72",
                         }}
+                        spacing={2}
                       >
                         {assets.map((asset) => {
                           return (
@@ -163,6 +156,9 @@ const StableDownloads: NextPage<Props> = ({ data }) => {
                               href={asset.browser_download_url}
                               target="_blank"
                               referrerPolicy="no-referrer"
+                              bgColor="gray.100"
+                              _dark={{ bgColor: "gray.800" }}
+                              borderRadius="md"
                             >
                               {asset.name}
                             </Anchor>
@@ -191,20 +187,7 @@ const StableDownloads: NextPage<Props> = ({ data }) => {
             );
           })}
         </VStack>
-        <chakra.div
-          id="Ad"
-          w={{
-            base: "full",
-            sm: "25%",
-            md: "35%",
-          }}
-        >
-          {/* <DisplayAd slot="1391349310" /> */}
-          {/* <DisplayAd slot="6452104301" /> */}
-          {/* <DisplayAd slot="1199777626" /> */}
-          {/* <DisplayAd slot="2001723409" /> */}
-        </chakra.div>
-      </HStack>
+      </VStack>
     </VStack>
   );
 };

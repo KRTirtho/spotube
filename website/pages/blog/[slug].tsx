@@ -30,7 +30,7 @@ const BlogPost: NextPage<Props> = ({
   return (
     <VStack>
       <Head>
-        <title>Spotube - {title}</title>
+        <title>{title}</title>
       </Head>
       <Box w="full" maxH="xl" overflow="hidden" mb="5">
         <Image fit="cover" src={cover_image} alt={title} />

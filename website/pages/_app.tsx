@@ -26,28 +26,28 @@ const customTheme = extendTheme(
       }),
     },
     colors: {
-      green: {
-        50: "#d4f3df",
-        100: "#b7ecca",
-        200: "#9be4b4",
-        300: "#61d48a",
-        400: "#45cd74",
-        500: "#32ba62",
-        600: "#2b9e53",
-        700: "#238144",
-        800: "#1b6435",
-        900: "#134826",
+      blue: {
+        50: "#e6f2ff",
+        100: "#e6f2ff",
+        200: "#e6f2ff",
+        300: "#1681bd",
+        400: "#1681bd",
+        500: "#3a4da5",
+        600: "#2d3c7d",
+        700: "#1f2b55",
+        800: "#121c2e",
+        900: "#080e18",
       },
       components: {
         Link: {
           baseStyle: {
-            color: "green",
+            color: "blue",
           },
         },
       },
     },
   },
-  withDefaultColorScheme({ colorScheme: "green" })
+  withDefaultColorScheme({ colorScheme: "blue" })
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -115,7 +115,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel="manifest" href="/site.webmanifest" />
           <title>Spotube</title>
         </Head>
-        <NextNProgress color="#45cd74" />
+        <NextNProgress color="#00a7a4" />
         <chakra.div
           minH="100vh"
           display="flex"

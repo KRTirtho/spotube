@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  ButtonGroup,
   chakra,
   CloseButton,
   Flex,
@@ -48,8 +47,8 @@ const Navbar = () => {
               <Image
                 src="/spotube-logo.svg"
                 alt="Logo"
-                height="40"
-                width="40"
+                height="60"
+                width="60"
                 layout="fixed"
               />
             </NavLink>

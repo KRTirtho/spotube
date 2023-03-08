@@ -14,7 +14,10 @@ export const CodeBlock: FC<Props> = ({ children }) => {
       _dark={{
         bgColor: "gray.700",
       }}
-      w="lg"
+      w="100%"
+      whiteSpace="pre-wrap"
+      overflowX="auto"
+      wordBreak="break-word"
     >
       <chakra.code>{children}</chakra.code>
     </chakra.pre>

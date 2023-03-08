@@ -1,20 +1,29 @@
-import { Heading, VStack, chakra, HStack, Text } from "@chakra-ui/react";
+import {
+  Heading,
+  VStack,
+  chakra,
+  HStack,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import DownloadButton from "components/DownloadButton";
 import Image from "next/image";
 
 const Root = () => {
+  const textColor = useColorModeValue("#171717", "#f5f5f5");
+
   return (
     <>
       <VStack spacing="$4" alignItems="stretch">
         <chakra.section
           h="60vh"
-          bgColor="#f5f5f5"
+          bgColor={useColorModeValue("#f5f5f5", "#171717")}
           bgImage="url(/spotube-screenshot-web.jpg)"
           bgRepeat="no-repeat"
           bgSize="contain"
-          bgPos="right"
+          bgPos={useColorModeValue("right", "left")}
         >
-          <VStack mt="10" mx="6" spacing="4" alignItems="flex-start">
+          <VStack mt="10" mx="6" spacing="4" alignItems={useColorModeValue("flex-start", "flex-end")}>
             <chakra.section
               p={{ base: "5", md: "0" }}
               borderRadius="2xl"
@@ -23,10 +32,10 @@ const Root = () => {
                 md: "transparent",
               }}
             >
-              <Heading color="#212121" size="2xl">
+              <Heading color={textColor} size="2xl">
                 Spotube
               </Heading>
-              <Heading color="#212121" size="lg" maxW="500px">
+              <Heading color={textColor} size="lg" maxW="500px">
                 A fast, modern, lightweight & efficient Spotify Music Client for
                 every platform
               </Heading>
@@ -42,7 +51,8 @@ const Root = () => {
             bgRepeat="no-repeat"
             bgSize="contain"
             h="60vh"
-            alignItems="flex-end"
+            alignItems={useColorModeValue("flex-end", "flex-start")}
+            bgPos={useColorModeValue("left", "right")}
             justify="center"
           >
             <chakra.div
