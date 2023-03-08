@@ -17,7 +17,9 @@ import Footer from "components/Footer";
 import NextNProgress from "nextjs-progressbar";
 
 const customTheme = extendTheme(
-  {
+  { 
+    initialColorMode: 'system',
+    useSystemColorMode: true,
     styles: {
       global: (props: any) => ({
         body: {
