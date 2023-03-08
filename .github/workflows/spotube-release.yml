@@ -249,6 +249,8 @@ jobs:
       - name: Release winget package
         uses: vedantmgoyal2009/winget-releaser@v1
         with:
+          version: ${{ inputs.version }}
+          release-tag: v${{ inputs.version }}
           identifier: KRTirtho.Spotube
           token: ${{ secrets.WINGET_TOKEN }}
 
