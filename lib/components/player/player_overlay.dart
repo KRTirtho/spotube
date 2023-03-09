@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
@@ -59,7 +59,6 @@ class PlayerOverlay extends HookConsumerWidget {
               duration: const Duration(milliseconds: 250),
               opacity: canShow ? 1 : 0,
               child: Material(
-                textStyle: PlatformTheme.of(context).textTheme!.body!,
                 type: MaterialType.transparency,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

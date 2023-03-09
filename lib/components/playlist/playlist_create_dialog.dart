@@ -1,11 +1,9 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
 class PlaylistCreateDialog extends HookConsumerWidget {
@@ -17,10 +15,10 @@ class PlaylistCreateDialog extends HookConsumerWidget {
 
     return SizedBox(
       width: 200,
-      child: PlatformTextButton(
+      child: TextButton(
         onPressed: () {
-          showPlatformAlertDialog(
-            context,
+          showDialog(
+            context: context,
             builder: (context) {
               return HookBuilder(builder: (context) {
                 final playlistName = useTextEditingController();
@@ -48,48 +46,18 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                   navigator.pop();
                 }
 
-                return PlatformAlertDialog(
-                  macosAppIcon: Sidebar.brandLogo(),
-                  title: const PlatformText("Create a Playlist"),
-                  primaryActions: [
-                    PlatformBuilder(
-                      fallback: PlatformBuilderFallback.android,
-                      android: (context, _) {
-                        return PlatformFilledButton(
-                          onPressed: onCreate,
-                          child: const Text("Create"),
-                        );
-                      },
-                      ios: (context, data) {
-                        return CupertinoDialogAction(
-                          isDefaultAction: true,
-                          onPressed: onCreate,
-                          child: const Text("Create"),
-                        );
+                return AlertDialog(
+                  title: const Text("Create a Playlist"),
+                  actions: [
+                    OutlinedButton(
+                      child: const Text("Cancel"),
+                      onPressed: () {
+                        Navigator.pop(context);
                       },
                     ),
-                  ],
-                  secondaryActions: [
-                    PlatformBuilder(
-                      fallback: PlatformBuilderFallback.android,
-                      android: (context, _) {
-                        return PlatformFilledButton(
-                          isSecondary: true,
-                          child: const Text("Cancel"),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        );
-                      },
-                      ios: (context, data) {
-                        return CupertinoDialogAction(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          isDestructiveAction: true,
-                          child: const Text("Cancel"),
-                        );
-                      },
+                    FilledButton(
+                      onPressed: onCreate,
+                      child: const Text("Create"),
                     ),
                   ],
                   content: Container(
@@ -98,28 +66,32 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        PlatformTextField(
+                        TextField(
                           controller: playlistName,
-                          placeholder: "Name of the playlist",
-                          label: "Playlist Name",
+                          decoration: const InputDecoration(
+                            hintText: "Name of the playlist",
+                            labelText: "Playlist Name",
+                          ),
                         ),
                         const SizedBox(height: 10),
-                        PlatformTextField(
+                        TextField(
                           controller: description,
-                          placeholder: "Description...",
+                          decoration: const InputDecoration(
+                            hintText: "Description...",
+                          ),
                           keyboardType: TextInputType.multiline,
                           maxLines: 5,
                         ),
                         const SizedBox(height: 10),
-                        PlatformCheckbox(
+                        CheckboxListTile(
+                          title: const Text("Public"),
                           value: public.value,
-                          label: const PlatformText("Public"),
                           onChanged: (val) => public.value = val ?? false,
                         ),
                         const SizedBox(height: 10),
-                        PlatformCheckbox(
+                        CheckboxListTile(
+                          title: const Text("Collaborative"),
                           value: collaborative.value,
-                          label: const PlatformText("Collaborative"),
                           onChanged: (val) =>
                               collaborative.value = val ?? false,
                         ),
@@ -141,7 +113,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             Icon(SpotubeIcons.addFilled, size: 40),
-            PlatformText("Create Playlist", style: TextStyle(fontSize: 20)),
+            Text("Create Playlist", style: TextStyle(fontSize: 20)),
           ],
         ),
       ),

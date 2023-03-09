@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
@@ -36,8 +36,7 @@ class PlayerQueue extends HookConsumerWidget {
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           );
-    final headlineColor =
-        PlatformTheme.of(context).textTheme?.subheading?.color;
+    final headlineColor = Theme.of(context).textTheme.headlineSmall?.color;
 
     useEffect(() {
       if (playlist == null) return null;
@@ -61,9 +60,7 @@ class PlayerQueue extends HookConsumerWidget {
           top: 5.0,
         ),
         decoration: BoxDecoration(
-          color: PlatformTheme.of(context)
-              .scaffoldBackgroundColor
-              ?.withOpacity(0.5),
+          color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5),
           borderRadius: borderRadius,
         ),
         child: Column(
@@ -80,7 +77,7 @@ class PlayerQueue extends HookConsumerWidget {
             Row(
               children: [
                 const SizedBox(width: 10),
-                PlatformText(
+                Text(
                   "${tracks.length} tracks in Queue",
                   style: TextStyle(
                     color: headlineColor,
@@ -89,14 +86,13 @@ class PlayerQueue extends HookConsumerWidget {
                   ),
                 ),
                 const Spacer(),
-                PlatformFilledButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                        PlatformTheme.of(context)
-                            .scaffoldBackgroundColor
-                            ?.withOpacity(0.5)),
-                    foregroundColor: MaterialStatePropertyAll(
-                        PlatformTheme.of(context).textTheme?.subheading?.color),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Theme.of(context)
+                        .scaffoldBackgroundColor
+                        .withOpacity(0.5),
+                    foregroundColor:
+                        Theme.of(context).textTheme.headlineSmall?.color,
                   ),
                   child: Row(
                     children: const [

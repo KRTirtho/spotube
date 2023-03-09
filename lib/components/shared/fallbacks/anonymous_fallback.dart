@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -20,10 +20,10 @@ class AnonymousFallback extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const PlatformText("You're not logged in"),
+          const Text("You're not logged in"),
           const SizedBox(height: 10),
-          PlatformFilledButton(
-            child: const PlatformText("Login with Spotify"),
+          FilledButton(
+            child: const Text("Login with Spotify"),
             onPressed: () => ServiceUtils.navigate(context, "/settings"),
           )
         ],

@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
@@ -65,16 +65,17 @@ class UserAlbums extends HookConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         child: Material(
           type: MaterialType.transparency,
-          textStyle: PlatformTheme.of(context).textTheme!.body!,
-          color: PlatformTheme.of(context).scaffoldBackgroundColor,
+          color: Theme.of(context).scaffoldBackgroundColor,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                PlatformTextField(
+                TextField(
                   onChanged: (value) => searchText.value = value,
-                  prefixIcon: SpotubeIcons.filter,
-                  placeholder: 'Filter Albums...',
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(SpotubeIcons.filter),
+                    hintText: 'Filter albums...',
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Wrap(

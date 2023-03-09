@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/provider/authentication_provider.dart';
 
 class TokenLoginForm extends HookConsumerWidget {
@@ -25,27 +25,31 @@ class TokenLoginForm extends HookConsumerWidget {
       ),
       child: Column(
         children: [
-          PlatformTextField(
+          TextField(
             controller: directCodeController,
-            placeholder: "Spotify \"sp_dc\" Cookie",
-            label: "sp_dc Cookie",
+            decoration: const InputDecoration(
+              hintText: "Spotify \"sp_dc\" Cookie",
+              labelText: "sp_dc Cookie",
+            ),
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 10),
-          PlatformTextField(
+          TextField(
             controller: keyCodeController,
-            placeholder: "Spotify \"sp_key\" Cookie",
-            label: "sp_key Cookie",
+            decoration: const InputDecoration(
+              hintText: "Spotify \"sp_key\" Cookie",
+              labelText: "sp_key Cookie",
+            ),
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 20),
-          PlatformFilledButton(
+          FilledButton(
             onPressed: () async {
               if (keyCodeController.text.isEmpty ||
                   directCodeController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: PlatformText("Please fill in all fields"),
+                    content: Text("Please fill in all fields"),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -61,7 +65,7 @@ class TokenLoginForm extends HookConsumerWidget {
                 onDone?.call();
               }
             },
-            child: const PlatformText("Submit"),
+            child: const Text("Submit"),
           )
         ],
       ),

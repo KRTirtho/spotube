@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -17,10 +16,10 @@ class AboutSpotube extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final packageInfo = usePackageInfo();
 
-    return PlatformScaffold(
+    return Scaffold(
       appBar: PageWindowTitleBar(
-        leading: const PlatformBackButton(),
-        center: const PlatformText("About Spotube"),
+        leading: const BackButton(),
+        title: const Text("About Spotube"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -35,14 +34,15 @@ class AboutSpotube extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PlatformText.headline(
+                    Text(
                       "Spotube, a light-weight, cross-platform, free-for-all spotify client",
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const PlatformText(
+                        const Text(
                           "Founder:   Kingkor Roy Tirtho",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -60,11 +60,11 @@ class AboutSpotube extends HookConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 5),
-                    PlatformText(
+                    Text(
                       "Version:              v${packageInfo.version}",
                     ),
                     const SizedBox(height: 5),
-                    PlatformText(
+                    Text(
                       "Build Number:  ${packageInfo.buildNumber.replaceAll(".", " ")}",
                     ),
                     const SizedBox(height: 5),
@@ -75,7 +75,7 @@ class AboutSpotube extends HookConsumerWidget {
                           mode: LaunchMode.externalApplication,
                         );
                       },
-                      child: const PlatformText(
+                      child: const Text(
                         "Repository:        https://github.com/KRTirtho/spotube",
                       ),
                     ),
@@ -87,7 +87,7 @@ class AboutSpotube extends HookConsumerWidget {
                           mode: LaunchMode.externalApplication,
                         );
                       },
-                      child: const PlatformText(
+                      child: const Text(
                         "License:              BSD-4-Clause",
                       ),
                     ),
@@ -99,7 +99,7 @@ class AboutSpotube extends HookConsumerWidget {
                           mode: LaunchMode.externalApplication,
                         );
                       },
-                      child: const PlatformText(
+                      child: const Text(
                         "Bugs+Issues:     https://github.com/KRTirtho/spotube/issues",
                       ),
                     ),
@@ -178,21 +178,24 @@ class AboutSpotube extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              PlatformText.caption(
+              Text(
                 "Made with ❤️ in Bangladesh🇧🇩",
                 textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-              PlatformText.caption(
+              Text(
                 "© 2021-${DateTime.now().year} Kingkor Roy Tirtho",
                 textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 20),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 750),
                 child: SafeArea(
-                  child: PlatformText.caption(
+                  child: Text(
                     licenseText,
                     textAlign: TextAlign.justify,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
               ),

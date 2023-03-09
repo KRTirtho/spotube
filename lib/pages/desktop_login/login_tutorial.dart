@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
@@ -21,14 +21,13 @@ class LoginTutorial extends ConsumerWidget {
     final key = GlobalKey<State<IntroductionScreen>>();
 
     final pageDecoration = PageDecoration(
-      bodyTextStyle: PlatformTheme.of(context).textTheme!.body!,
-      titleTextStyle: PlatformTheme.of(context).textTheme!.subheading!,
+      bodyTextStyle: Theme.of(context).textTheme.bodyMedium!,
+      titleTextStyle: Theme.of(context).textTheme.headlineMedium!,
     );
-    return PlatformScaffold(
+    return Scaffold(
       appBar: PageWindowTitleBar(
-        hideWhenWindows: false,
-        leading: PlatformTextButton(
-          child: const PlatformText("Exit"),
+        leading: TextButton(
+          child: const Text("Exit"),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -36,29 +35,27 @@ class LoginTutorial extends ConsumerWidget {
       ),
       body: IntroductionScreen(
         key: key,
-        globalBackgroundColor:
-            PlatformTheme.of(context).scaffoldBackgroundColor,
-        overrideBack: PlatformFilledButton(
-          isSecondary: true,
-          child: const Center(child: PlatformText("Previous")),
+        globalBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        overrideBack: OutlinedButton(
+          child: const Center(child: Text("Previous")),
           onPressed: () {
             (key.currentState as IntroductionScreenState).previous();
           },
         ),
-        overrideNext: PlatformFilledButton(
-          child: const Center(child: PlatformText("Next")),
+        overrideNext: FilledButton(
+          child: const Center(child: Text("Next")),
           onPressed: () {
             (key.currentState as IntroductionScreenState).next();
           },
         ),
         showBackButton: true,
-        overrideDone: PlatformFilledButton(
+        overrideDone: FilledButton(
           onPressed: authenticationNotifier.isLoggedIn
               ? () {
                   ServiceUtils.navigate(context, "/");
                 }
               : null,
-          child: const Center(child: PlatformText("Done")),
+          child: const Center(child: Text("Done")),
         ),
         pages: [
           PageViewModel(
@@ -67,14 +64,14 @@ class LoginTutorial extends ConsumerWidget {
             image: Assets.tutorial.step1.image(),
             bodyWidget: Wrap(
               children: const [
-                PlatformText(
+                Text(
                   "First, Go to ",
                 ),
                 Hyperlink(
                   "accounts.spotify.com ",
                   "https://accounts.spotify.com",
                 ),
-                PlatformText(
+                Text(
                   "and Login/Sign up if you're not logged in",
                 ),
               ],
@@ -84,7 +81,7 @@ class LoginTutorial extends ConsumerWidget {
             decoration: pageDecoration,
             title: "Step 2",
             image: Assets.tutorial.step2.image(),
-            bodyWidget: const PlatformText(
+            bodyWidget: const Text(
               "1. Once you're logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection",
               textAlign: TextAlign.left,
             ),
@@ -93,7 +90,7 @@ class LoginTutorial extends ConsumerWidget {
             decoration: pageDecoration,
             title: "Step 3",
             image: Assets.tutorial.step3.image(),
-            bodyWidget: const PlatformText(
+            bodyWidget: const Text(
               "Copy the values of \"sp_dc\" and \"sp_key\" Cookies",
               textAlign: TextAlign.left,
             ),
@@ -114,8 +111,9 @@ class LoginTutorial extends ConsumerWidget {
               title: "Step 5",
               bodyWidget: Column(
                 children: [
-                  PlatformText.label(
+                  Text(
                     "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
                   const SizedBox(height: 10),
                   TokenLoginForm(

@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -35,23 +35,23 @@ class BlackListPage extends HookConsumerWidget {
       [blacklist, searchText.value],
     );
 
-    return PlatformScaffold(
+    return Scaffold(
       appBar: PageWindowTitleBar(
-        center: const PlatformText("Blacklist"),
+        title: const Text("Blacklist"),
         centerTitle: true,
-        leading: const PlatformBackButton(),
+        leading: const BackButton(),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: platform == TargetPlatform.windows
-                ? const EdgeInsets.all(8.0).copyWith(left: 45)
-                : const EdgeInsets.all(8.0),
-            child: PlatformTextField(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
               onChanged: (value) => searchText.value = value,
-              placeholder: "Search",
-              prefixIcon: SpotubeIcons.search,
+              decoration: const InputDecoration(
+                hintText: "Search",
+                prefixIcon: Icon(SpotubeIcons.search),
+              ),
             ),
           ),
           ListView.builder(
@@ -59,11 +59,11 @@ class BlackListPage extends HookConsumerWidget {
             itemCount: filteredBlacklist.length,
             itemBuilder: (context, index) {
               final item = filteredBlacklist.elementAt(index);
-              return PlatformListTile(
-                leading: PlatformText("${index + 1}."),
-                title: PlatformText("${item.name} (${item.type.name})"),
-                subtitle: PlatformText.caption(item.id),
-                trailing: PlatformIconButton(
+              return ListTile(
+                leading: Text("${index + 1}."),
+                title: Text("${item.name} (${item.type.name})"),
+                subtitle: Text(item.id),
+                trailing: IconButton(
                   icon: Icon(SpotubeIcons.trash, color: Colors.red[400]),
                   onPressed: () {
                     ref

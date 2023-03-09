@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -42,61 +42,32 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
       ).then((_) => Navigator.pop(context));
     }
 
-    return PlatformAlertDialog(
-      title: const PlatformText("Add to Playlist"),
-      secondaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              isSecondary: true,
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              isDestructiveAction: true,
-              child: const Text("Cancel"),
-            );
+    return AlertDialog(
+      title: const Text("Add to Playlist"),
+      actions: [
+        OutlinedButton(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
           },
         ),
-      ],
-      primaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              onPressed: onAdd,
-              child: const Text("Add"),
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: onAdd,
-              child: const Text("Add"),
-            );
-          },
+        FilledButton(
+          onPressed: onAdd,
+          child: const Text("Add"),
         ),
       ],
       content: SizedBox(
         height: 300,
         width: 300,
         child: !userPlaylists.hasData
-            ? const Center(child: PlatformCircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 shrinkWrap: true,
                 itemCount: filteredPlaylists!.length,
                 itemBuilder: (context, index) {
                   final playlist = filteredPlaylists.elementAt(index);
-                  return PlatformCheckbox(
-                    label: PlatformText(playlist.name!),
+                  return CheckboxListTile(
+                    title: Text(playlist.name!),
                     value: playlistsCheck.value[playlist.id] ?? false,
                     onChanged: (val) {
                       playlistsCheck.value = {

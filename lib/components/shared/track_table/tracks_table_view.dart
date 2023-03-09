@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/dialogs/confirm_download_dialog.dart';
@@ -71,7 +71,7 @@ class TracksTableView extends HookConsumerWidget {
             if (heading != null) heading!,
             Row(
               children: [
-                PlatformCheckbox(
+                Checkbox(
                   value: selected.value.length == sortedTracks.length,
                   onChanged: (checked) {
                     if (!showCheck.value) showCheck.value = true;
@@ -85,7 +85,7 @@ class TracksTableView extends HookConsumerWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: PlatformText(
+                  child: Text(
                     "#",
                     textAlign: TextAlign.center,
                     style: tableHeadStyle,
@@ -94,7 +94,7 @@ class TracksTableView extends HookConsumerWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      PlatformText(
+                      Text(
                         "Title",
                         style: tableHeadStyle,
                         overflow: TextOverflow.ellipsis,
@@ -108,7 +108,7 @@ class TracksTableView extends HookConsumerWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        PlatformText(
+                        Text(
                           "Album",
                           overflow: TextOverflow.ellipsis,
                           style: tableHeadStyle,
@@ -119,7 +119,7 @@ class TracksTableView extends HookConsumerWidget {
                 ],
                 if (!breakpoint.isSm) ...[
                   const SizedBox(width: 10),
-                  PlatformText("Time", style: tableHeadStyle),
+                  Text("Time", style: tableHeadStyle),
                   const SizedBox(width: 10),
                 ],
                 SortTracksDropdown(
@@ -131,44 +131,45 @@ class TracksTableView extends HookConsumerWidget {
                         .state = value;
                   },
                 ),
-                PlatformPopupMenuButton(
-                  closeAfterClick: false,
+                PopupMenuButton(
                   tooltip: "More Actions",
-                  items: [
-                    PlatformPopupMenuItem(
-                      enabled: selectedTracks.isNotEmpty,
-                      value: "download",
-                      child: Row(
-                        children: [
-                          const Icon(SpotubeIcons.download),
-                          const SizedBox(width: 5),
-                          PlatformText(
-                            "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (!userPlaylist)
-                      PlatformPopupMenuItem(
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
                         enabled: selectedTracks.isNotEmpty,
-                        value: "add-to-playlist",
+                        value: "download",
                         child: Row(
                           children: [
-                            const Icon(SpotubeIcons.playlistAdd),
+                            const Icon(SpotubeIcons.download),
                             const SizedBox(width: 5),
-                            PlatformText(
-                              "Add (${selectedTracks.length}) to Playlist",
+                            Text(
+                              "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
                             ),
                           ],
                         ),
                       ),
-                  ],
+                      if (!userPlaylist)
+                        PopupMenuItem(
+                          enabled: selectedTracks.isNotEmpty,
+                          value: "add-to-playlist",
+                          child: Row(
+                            children: [
+                              const Icon(SpotubeIcons.playlistAdd),
+                              const SizedBox(width: 5),
+                              Text(
+                                "Add (${selectedTracks.length}) to Playlist",
+                              ),
+                            ],
+                          ),
+                        ),
+                    ];
+                  },
                   onSelected: (action) async {
                     switch (action) {
                       case "download":
                         {
-                          final confirmed = await showPlatformAlertDialog(
-                            context,
+                          final confirmed = await showDialog(
+                            context: context,
                             builder: (context) {
                               return const ConfirmDownloadDialog();
                             },
@@ -183,8 +184,8 @@ class TracksTableView extends HookConsumerWidget {
                         }
                       case "add-to-playlist":
                         {
-                          await showPlatformAlertDialog(
-                            context,
+                          await showDialog(
+                            context: context,
                             builder: (context) {
                               return PlaylistAddTrackDialog(
                                 tracks: selectedTracks.toList(),

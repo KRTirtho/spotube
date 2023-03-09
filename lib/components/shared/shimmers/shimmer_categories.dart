@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/extensions/theme.dart';
 
@@ -8,7 +8,7 @@ class ShimmerCategories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = PlatformTheme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final shimmerTheme = ShimmerColorTheme(
       shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
     );

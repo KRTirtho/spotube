@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
@@ -56,25 +56,27 @@ class UserArtists extends HookConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ColoredBox(
-            color: PlatformTheme.of(context).scaffoldBackgroundColor!,
-            child: PlatformTextField(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: TextField(
               onChanged: (value) => searchText.value = value,
-              prefixIcon: SpotubeIcons.filter,
-              placeholder: 'Filter artists...',
+              decoration: const InputDecoration(
+                prefixIcon: Icon(SpotubeIcons.filter),
+                hintText: 'Filter artists...',
+              ),
             ),
           ),
         ),
       ),
-      backgroundColor: PlatformTheme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: artistQuery.pages.isEmpty
           ? Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  PlatformCircularProgressIndicator(),
+                  CircularProgressIndicator(),
                   SizedBox(width: 10),
-                  PlatformText("Loading..."),
+                  Text("Loading..."),
                 ],
               ),
             )

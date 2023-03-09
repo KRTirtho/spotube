@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
@@ -37,19 +37,30 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     if (layoutMode == LayoutMode.extended ||
         (breakpoint.isMoreThan(Breakpoints.sm) &&
             layoutMode == LayoutMode.adaptive)) return const SizedBox();
-    return PlatformBottomNavigationBar(
+    return BottomNavigationBar(
       items: [
         ...navbarTileList.map(
           (e) {
-            return PlatformBottomNavigationBarItem(
-              icon: e.icon,
+            return BottomNavigationBarItem(
+              icon: Badge(
+                backgroundColor: Theme.of(context).primaryColor,
+                isLabelVisible: e.title == "Library" && downloadCount > 0,
+                label: Text(
+                  downloadCount.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                  ),
+                ),
+                child: Icon(e.icon),
+              ),
               label: e.title,
             );
           },
         ),
       ],
-      selectedIndex: insideSelectedIndex.value,
-      onSelectedIndexChanged: (i) {
+      currentIndex: insideSelectedIndex.value,
+      onTap: (i) {
         insideSelectedIndex.value = i;
         if (navbarTileList[i].title == "Settings") {
           Sidebar.goToSettings(context);

@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
@@ -53,7 +53,10 @@ class PersonalizedItemCard extends HookWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              PlatformText.headline(title),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ],
           ),
         ),

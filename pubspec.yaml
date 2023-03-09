@@ -11,7 +11,6 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  adwaita: ^0.5.2
   args: ^2.3.2
   async: ^2.9.0
   audio_service: ^0.18.9
@@ -29,7 +28,6 @@ dependencies:
   file_picker: ^5.2.2
   fl_query: ^1.0.0-alpha.0
   fl_query_hooks: ^1.0.0-alpha.0
-  fluent_ui: ^4.3.0
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
@@ -50,9 +48,7 @@ dependencies:
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.0
   json_serializable: ^6.6.0
-  libadwaita: ^1.2.5
   logger: ^1.1.0
-  macos_ui: ^1.9.0
   marquee: ^2.2.3
   metadata_god: ^0.3.2
   mime: ^1.0.2
@@ -61,10 +57,6 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.8
   permission_handler: ^10.2.0
-  platform_ui:
-    git:
-      url: https://github.com/KRTirtho/platform_ui.git
-      ref: 339ea7922d2f881d9a72b565aeebc7e2c4b22509
   pocketbase: ^0.7.1+1
   popover: ^0.2.6+3
   queue: ^3.1.0+1

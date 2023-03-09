@@ -11,7 +11,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/cache_keys.dart';
 import 'package:spotube/collections/env.dart';
@@ -25,7 +24,7 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
-import 'package:spotube/themes/light_theme.dart';
+import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
@@ -157,8 +156,8 @@ void main(List<String> rawArgs) async {
                           logger.v(
                             "[onFileExists] download confirmation for ${track.name}",
                           );
-                          return showPlatformAlertDialog<bool>(
-                            context,
+                          return showDialog<bool>(
+                            context: context,
                             builder: (_) =>
                                 ReplaceDownloadedDialog(track: track),
                           ).then((s) => s ?? false);
@@ -206,14 +205,6 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     super.initState();
     SharedPreferences.getInstance().then(((value) => localStorage = value));
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        appPlatform = Theme.of(context).platform;
-        if (appPlatform == TargetPlatform.macOS) {
-          appPlatform = TargetPlatform.android;
-        }
-      });
-    });
   }
 
   @override
@@ -243,16 +234,6 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
     prevSize = size;
   }
 
-  TargetPlatform appPlatform = TargetPlatform.android;
-
-  void changePlatform(TargetPlatform targetPlatform) {
-    appPlatform = targetPlatform;
-    if (appPlatform == TargetPlatform.macOS) {
-      appPlatform = TargetPlatform.android;
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeMode =
@@ -268,9 +249,7 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       };
     }, []);
 
-    platform = appPlatform;
-
-    return PlatformApp.router(
+    return MaterialApp.router(
       routeInformationParser: router.routeInformationParser,
       routerDelegate: router.routerDelegate,
       routeInformationProvider: router.routeInformationProvider,
@@ -279,17 +258,10 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
       builder: (context, child) {
         return DragToResizeArea(child: child!);
       },
-      androidTheme: theme(accentMaterialColor, Brightness.light),
-      androidDarkTheme: theme(accentMaterialColor, Brightness.dark),
-      linuxTheme: linuxTheme,
-      linuxDarkTheme: linuxDarkTheme,
-      iosTheme: themeMode == ThemeMode.dark ? iosDarkTheme : iosTheme,
-      windowsTheme: windowsTheme,
-      windowsDarkTheme: windowsDarkTheme,
-      macosTheme: macosTheme,
-      macosDarkTheme: macosDarkTheme,
       themeMode: themeMode,
-      shortcuts: PlatformProperty.all({
+      theme: theme(accentMaterialColor, Brightness.light),
+      darkTheme: theme(accentMaterialColor, Brightness.dark),
+      shortcuts: {
         ...WidgetsApp.defaultShortcuts.map((key, value) {
           return MapEntry(
             LogicalKeySet.fromSet(key.triggers?.toSet() ?? {}),
@@ -324,14 +296,14 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): CloseAppIntent(),
-      }),
-      actions: PlatformProperty.all({
+      },
+      actions: {
         ...WidgetsApp.defaultActions,
         PlayPauseIntent: PlayPauseAction(),
         NavigationIntent: NavigationAction(),
         HomeTabIntent: HomeTabAction(),
         CloseAppIntent: CloseAppAction(),
-      }),
+      },
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
@@ -65,20 +65,12 @@ class PlayerView extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    return PlatformScaffold(
+    return Scaffold(
       appBar: PageWindowTitleBar(
-        hideWhenWindows: false,
         backgroundColor: Colors.transparent,
         foregroundColor: paletteColor.titleTextColor,
-        toolbarOpacity:
-            PlatformProperty.only(android: 1.0, windows: 1.0, other: 0.0)
-                .resolve(platform ?? Theme.of(context).platform),
-        leading: PlatformBackButton(
-          color: PlatformProperty.only(
-            macos: Colors.black,
-            other: paletteColor.titleTextColor,
-          ).resolve(platform!),
-        ),
+        toolbarOpacity: 1,
+        leading: BackButton(color: paletteColor.titleTextColor),
       ),
       extendBodyBehindAppBar: true,
       body: Container(
@@ -91,7 +83,6 @@ class PlayerView extends HookConsumerWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Material(
-            textStyle: PlatformTheme.of(context).textTheme!.body!,
             color: paletteColor.color.withOpacity(.5),
             child: SafeArea(
               child: Column(
@@ -104,11 +95,13 @@ class PlayerView extends HookConsumerWidget {
                           height: 30,
                           child: SpotubeMarqueeText(
                             text: currentTrack?.name ?? "Not playing",
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: paletteColor.titleTextColor,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: paletteColor.titleTextColor,
+                                ),
                             isHovering: true,
                           ),
                         ),
@@ -117,20 +110,24 @@ class PlayerView extends HookConsumerWidget {
                             TypeConversionUtils.artists_X_String<Artist>(
                               currentTrack?.artists ?? [],
                             ),
-                            style:
-                                Theme.of(context).textTheme.headline6!.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: paletteColor.bodyTextColor,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: paletteColor.bodyTextColor,
+                                ),
                           )
                         else
                           TypeConversionUtils.artists_X_ClickableArtists(
                             currentTrack?.artists ?? [],
-                            textStyle:
-                                Theme.of(context).textTheme.headline6!.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: paletteColor.bodyTextColor,
-                                    ),
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: paletteColor.bodyTextColor,
+                                ),
                             onRouteChange: (route) {
                               GoRouter.of(context).pop();
                               GoRouter.of(context).push(route);
@@ -193,7 +190,7 @@ class PlayerView extends HookConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     floatingQueue: false,
                     extraActions: [
-                      PlatformIconButton(
+                      IconButton(
                         tooltip: "Open Lyrics",
                         icon: const Icon(SpotubeIcons.music),
                         onPressed: () {
