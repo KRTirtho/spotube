@@ -46,7 +46,7 @@ Following are the features that currently Spotube offers:
 - No telemetry, diagnostics or user data collection
 - Lightweight & resource-friendly
 - Native performance (Thanks to Flutter+Skia)
-- Playback control is done on locally instead of on the server
+- Playback control is done locally instead of on the server
 - Small size & less data usage
 - No Spotify or YouTube ads since it uses all public & free APIs (It is still recommended to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify. Purchasing Spotify Premium is usually the best way to support their valuable creations.)
 - Time synced lyrics
