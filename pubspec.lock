@@ -551,14 +551,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_adaptive_scaffold:
-    dependency: "direct main"
-    description:
-      name: flutter_adaptive_scaffold
-      sha256: d5842a235ec810320c7e6dac282876d93bccf231201be6e684b016cd717c0576
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   flutter_app_builder:
     dependency: transitive
     description:
