@@ -15,7 +15,7 @@ body:
   - type: textarea
     attributes:
       label: Current Behavior
-      description: Type what you are experiencing currently.
+      description: Write what you are experiencing currently.
     validations:
       required: true
   - type: textarea
@@ -67,6 +67,6 @@ body:
   - type: textarea
     attributes:
       label: Additional information
-      description: Anything else you'd like to add or include?
+      description: Anything else you'd like to include?
     validations:
       required: false

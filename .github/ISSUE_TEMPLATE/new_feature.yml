@@ -33,6 +33,6 @@ body:
   - type: textarea
     attributes:
       label: Additional information
-      description: Anything else you'd like to add or include?
+      description: Anything else you'd like to include?
     validations:
       required: false
