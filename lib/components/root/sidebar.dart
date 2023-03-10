@@ -90,29 +90,49 @@ class Sidebar extends HookConsumerWidget {
               );
             },
           ).toList(),
-          extended: true,
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                if (kIsMacOS) macSpacer,
-                Row(
-                  children: [
-                    brandLogo(),
-                    const SizedBox(width: 10),
-                    Text(
-                      "Spotube",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ],
-                ),
-              ],
+          extended: breakpoints > Breakpoints.md,
+          leading: const SidebarHeader(),
+          trailing: const Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: SidebarFooter(),
             ),
           ),
-          trailing: const SidebarFooter(),
         ),
         Expanded(child: child)
       ],
+    );
+  }
+}
+
+class SidebarHeader extends HookWidget {
+  const SidebarHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final breakpoint = useBreakpoints();
+
+    if (breakpoint <= Breakpoints.md) {
+      return Sidebar.brandLogo();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          if (kIsMacOS) const SizedBox(height: 25),
+          Row(
+            children: [
+              Sidebar.brandLogo(),
+              const SizedBox(width: 10),
+              Text(
+                "Spotube",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -124,68 +144,67 @@ class SidebarFooter extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    return SizedBox(
-      width: 256,
-      child: HookBuilder(
-        builder: (context) {
-          final me = useQueries.user.me(ref);
-          final data = me.data;
+    final breakpoint = useBreakpoints();
+    final me = useQueries.user.me(ref);
+    final data = me.data;
 
-          final avatarImg = TypeConversionUtils.image_X_UrlString(
-            data?.images,
-            index: (data?.images?.length ?? 1) - 1,
-            placeholder: ImagePlaceholder.artist,
-          );
+    final avatarImg = TypeConversionUtils.image_X_UrlString(
+      data?.images,
+      index: (data?.images?.length ?? 1) - 1,
+      placeholder: ImagePlaceholder.artist,
+    );
 
-          final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
-          return Padding(
-              padding: const EdgeInsets.all(16).copyWith(left: 0),
+    if (breakpoint <= Breakpoints.md) {
+      return IconButton(
+        icon: const Icon(SpotubeIcons.settings),
+        onPressed: () => Sidebar.goToSettings(context),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.only(left: 12),
+      width: 250,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          if (auth != null && data == null)
+            const CircularProgressIndicator()
+          else if (data != null)
+            Flexible(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (auth != null && data == null)
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  else if (data != null)
-                    Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CircleAvatar(
-                            backgroundImage:
-                                UniversalImage.imageProvider(avatarImg),
-                            onBackgroundImageError: (exception, stackTrace) =>
-                                Assets.userPlaceholder.image(
-                              height: 16,
-                              width: 16,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Flexible(
-                            child: Text(
-                              data.displayName ?? "Guest",
-                              maxLines: 1,
-                              softWrap: false,
-                              overflow: TextOverflow.fade,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
+                  CircleAvatar(
+                    backgroundImage: UniversalImage.imageProvider(avatarImg),
+                    onBackgroundImageError: (exception, stackTrace) =>
+                        Assets.userPlaceholder.image(
+                      height: 16,
+                      width: 16,
                     ),
-                  IconButton(
-                      icon: const Icon(SpotubeIcons.settings),
-                      onPressed: () => Sidebar.goToSettings(context)),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Text(
+                      data.displayName ?? "Guest",
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ],
-              ));
-        },
+              ),
+            ),
+          IconButton(
+            icon: const Icon(SpotubeIcons.settings),
+            onPressed: () => Sidebar.goToSettings(context),
+          ),
+        ],
       ),
     );
   }

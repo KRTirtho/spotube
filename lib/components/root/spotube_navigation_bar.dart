@@ -37,11 +37,11 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     if (layoutMode == LayoutMode.extended ||
         (breakpoint.isMoreThan(Breakpoints.sm) &&
             layoutMode == LayoutMode.adaptive)) return const SizedBox();
-    return BottomNavigationBar(
-      items: [
+    return NavigationBar(
+      destinations: [
         ...navbarTileList.map(
           (e) {
-            return BottomNavigationBarItem(
+            return NavigationDestination(
               icon: Badge(
                 backgroundColor: Theme.of(context).primaryColor,
                 isLabelVisible: e.title == "Library" && downloadCount > 0,
@@ -59,8 +59,8 @@ class SpotubeNavigationBar extends HookConsumerWidget {
           },
         ),
       ],
-      currentIndex: insideSelectedIndex.value,
-      onTap: (i) {
+      selectedIndex: insideSelectedIndex.value,
+      onDestinationSelected: (i) {
         insideSelectedIndex.value = i;
         if (navbarTileList[i].title == "Settings") {
           Sidebar.goToSettings(context);
