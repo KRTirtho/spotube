@@ -30,7 +30,7 @@ ThemeData theme(Color seed, Brightness brightness) {
       indicatorSize: TabBarIndicatorSize.tab,
       labelStyle: const TextStyle(fontWeight: FontWeight.w600),
       labelColor: scheme.primary,
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
+      dividerColor: Colors.transparent,
       indicator: BoxDecoration(
         color: scheme.secondaryContainer,
         borderRadius: BorderRadius.circular(15),

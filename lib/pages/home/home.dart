@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/shared/themed_button_tab_bar.dart';
 import 'package:spotube/pages/home/genres.dart';
 import 'package:spotube/pages/home/personalized.dart';
 
@@ -10,37 +10,21 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    return DefaultTabController(
+    return const DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: const PageWindowTitleBar(
-          titleWidth: 347,
+        appBar: PageWindowTitleBar(
           centerTitle: true,
-          title: TabBar(
-            isScrollable: true,
-            tabs: [
-              Tab(text: 'Genres'),
-              Tab(text: 'Personalized'),
-            ],
+          leadingWidth: double.infinity,
+          leading: ThemedButtonsTabBar(
+            tabs: ["Genres", "Personalized"],
           ),
         ),
-        body: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          transitionBuilder: (child, animation) => SlideTransition(
-            position: animation.drive(
-              Tween<Offset>(
-                begin: const Offset(1, 0),
-                end: const Offset(0, 0),
-              ),
-            ),
-            child: child,
-          ),
-          child: const TabBarView(
-            children: [
-              GenrePage(),
-              PersonalizedPage(),
-            ],
-          ),
+        body: TabBarView(
+          children: [
+            GenrePage(),
+            PersonalizedPage(),
+          ],
         ),
       ),
     );

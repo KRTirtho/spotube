@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/themed_button_tab_bar.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
@@ -38,11 +39,10 @@ class LyricsPage extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    const tabbar = TabBar(
-      isScrollable: true,
+    const tabbar = ThemedButtonsTabBar(
       tabs: [
-        Tab(text: "Synced"),
-        Tab(text: "Plain"),
+        "Synced",
+        "Plain",
       ],
     );
 
@@ -73,10 +73,10 @@ class LyricsPage extends HookConsumerWidget {
                     ),
                   ),
                   AppBar(
-                    title: tabbar,
+                    leadingWidth: double.infinity,
+                    leading: tabbar,
                     backgroundColor: Colors.transparent,
                     automaticallyImplyLeading: false,
-                    toolbarOpacity: 1,
                     actions: [
                       IconButton(
                         icon: const Icon(SpotubeIcons.minimize),
@@ -106,11 +106,10 @@ class LyricsPage extends HookConsumerWidget {
         extendBodyBehindAppBar: true,
         appBar: !kIsMacOS
             ? const PageWindowTitleBar(
-                toolbarOpacity: 0,
                 backgroundColor: Colors.transparent,
                 title: tabbar,
               )
-            : tabbar as PreferredSizeWidget?,
+            : tabbar,
         body: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(

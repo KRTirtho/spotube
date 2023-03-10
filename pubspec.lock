@@ -289,6 +289,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.4.3"
+  buttons_tabbar:
+    dependency: "direct main"
+    description:
+      name: buttons_tabbar
+      sha256: d8a53cd3be0ce5b662d01378b1cd842eb44ee68da5abeeff3c081ee3bf614160
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.6"
   cached_network_image:
     dependency: "direct main"
     description:
