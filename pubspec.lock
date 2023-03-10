@@ -1393,6 +1393,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  simple_circular_progress_bar:
+    dependency: "direct main"
+    description:
+      name: simple_circular_progress_bar
+      sha256: e661ca942fbc617298e975b41fde19003d995de73ca6c2a1526c54d52f07151b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   skeleton_text:
     dependency: "direct main"
     description:

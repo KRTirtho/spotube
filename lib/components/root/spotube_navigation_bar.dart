@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -45,44 +47,52 @@ class SpotubeNavigationBar extends HookConsumerWidget {
         (breakpoint.isMoreThan(Breakpoints.sm) &&
             layoutMode == LayoutMode.adaptive)) return const SizedBox();
 
-    return CurvedNavigationBar(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      buttonBackgroundColor: buttonColor,
-      color: Theme.of(context).colorScheme.background,
-      height: 50,
-      items: [
-        ...navbarTileList.map(
-          (e) {
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Badge(
-                backgroundColor: Theme.of(context).primaryColor,
-                isLabelVisible: e.title == "Library" && downloadCount > 0,
-                label: Text(
-                  downloadCount.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        child: CurvedNavigationBar(
+          backgroundColor: Theme.of(context)
+              .colorScheme
+              .secondaryContainer
+              .withOpacity(0.72),
+          buttonBackgroundColor: buttonColor,
+          color: Theme.of(context).colorScheme.background,
+          height: 50,
+          items: [
+            ...navbarTileList.map(
+              (e) {
+                return MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Badge(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    isLabelVisible: e.title == "Library" && downloadCount > 0,
+                    label: Text(
+                      downloadCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    ),
+                    child: Icon(
+                      e.icon,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  e.icon,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            );
+                );
+              },
+            ),
+          ],
+          index: insideSelectedIndex.value,
+          onTap: (i) {
+            insideSelectedIndex.value = i;
+            if (navbarTileList[i].title == "Settings") {
+              Sidebar.goToSettings(context);
+              return;
+            }
+            onSelectedIndexChanged(i);
           },
         ),
-      ],
-      index: insideSelectedIndex.value,
-      onTap: (i) {
-        insideSelectedIndex.value = i;
-        if (navbarTileList[i].title == "Settings") {
-          Sidebar.goToSettings(context);
-          return;
-        }
-        onSelectedIndexChanged(i);
-      },
+      ),
     );
   }
 }

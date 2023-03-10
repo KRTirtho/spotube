@@ -14,6 +14,7 @@ class LibraryPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return const SafeArea(
+      bottom: false,
       child: DefaultTabController(
         length: 5,
         child: Scaffold(

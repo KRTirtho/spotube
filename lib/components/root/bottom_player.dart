@@ -42,10 +42,7 @@ class BottomPlayer extends HookConsumerWidget {
     if (layoutMode == LayoutMode.compact ||
         (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
             layoutMode == LayoutMode.adaptive)) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 0),
-        child: PlayerOverlay(albumArt: albumArt),
-      );
+      return PlayerOverlay(albumArt: albumArt);
     }
 
     return DecoratedBox(

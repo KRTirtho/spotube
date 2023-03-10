@@ -64,6 +64,7 @@ dependencies:
   queue: ^3.1.0+1
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.11
+  simple_circular_progress_bar: ^1.0.2
   skeleton_text: ^3.0.0
   spotify:
     git:

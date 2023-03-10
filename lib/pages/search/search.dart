@@ -62,8 +62,10 @@ class SearchPage extends HookConsumerWidget {
     }
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
-        appBar: kIsDesktop && !kIsMacOS ? PageWindowTitleBar() : null,
+        appBar: kIsDesktop && !kIsMacOS ? const PageWindowTitleBar() : null,
+        extendBody: true,
         body: !authenticationNotifier.isLoggedIn
             ? const AnonymousFallback()
             : Column(

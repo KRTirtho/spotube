@@ -180,6 +180,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     );
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
           appBar: kIsDesktop
               ? PageWindowTitleBar(

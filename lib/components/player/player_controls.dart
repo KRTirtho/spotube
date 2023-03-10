@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -58,28 +59,24 @@ class PlayerControls extends HookConsumerWidget {
             children: [
               HookBuilder(
                 builder: (context) {
-                  final duration =
-                      useStream(PlaylistQueueNotifier.duration).data ??
-                          Duration.zero;
-                  final positionSnapshot =
-                      useStream(PlaylistQueueNotifier.position);
-                  final position = positionSnapshot.data ?? Duration.zero;
+                  final progressObj = useProgress(ref);
+
+                  final progressStatic = progressObj.item1;
+                  final position = progressObj.item2;
+                  final duration = progressObj.item3;
+
                   final totalMinutes = PrimitiveUtils.zeroPadNumStr(
-                      duration.inMinutes.remainder(60));
+                    duration.inMinutes.remainder(60),
+                  );
                   final totalSeconds = PrimitiveUtils.zeroPadNumStr(
-                      duration.inSeconds.remainder(60));
+                    duration.inSeconds.remainder(60),
+                  );
                   final currentMinutes = PrimitiveUtils.zeroPadNumStr(
-                      position.inMinutes.remainder(60));
+                    position.inMinutes.remainder(60),
+                  );
                   final currentSeconds = PrimitiveUtils.zeroPadNumStr(
-                      position.inSeconds.remainder(60));
-
-                  final sliderMax = duration.inSeconds;
-                  final sliderValue = position.inSeconds;
-
-                  final progressStatic =
-                      (sliderMax == 0 || sliderValue > sliderMax)
-                          ? 0
-                          : sliderValue / sliderMax;
+                    position.inSeconds.remainder(60),
+                  );
 
                   final progress = useState<num>(
                     useMemoized(() => progressStatic, []),
@@ -89,20 +86,6 @@ class PlayerControls extends HookConsumerWidget {
                     progress.value = progressStatic;
                     return null;
                   }, [progressStatic]);
-
-                  // this is a hack to fix duration not being updated
-                  useEffect(() {
-                    WidgetsBinding.instance.addPostFrameCallback((_) async {
-                      if (positionSnapshot.hasData &&
-                          duration == Duration.zero) {
-                        await Future.delayed(const Duration(milliseconds: 200));
-                        await playlistNotifier.pause();
-                        await Future.delayed(const Duration(milliseconds: 400));
-                        await playlistNotifier.resume();
-                      }
-                    });
-                    return null;
-                  }, [positionSnapshot.hasData, duration]);
 
                   return Column(
                     children: [
@@ -121,7 +104,7 @@ class PlayerControls extends HookConsumerWidget {
                           onChangeEnd: (value) async {
                             await playlistNotifier.seek(
                               Duration(
-                                seconds: (value * sliderMax).toInt(),
+                                seconds: (value * duration.inSeconds).toInt(),
                               ),
                             );
                           },

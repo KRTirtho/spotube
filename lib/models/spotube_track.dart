@@ -86,7 +86,6 @@ class SpotubeTrack extends Track {
           .collection(BackendTrack.collection)
           .getFirstListItem("spotify_id = '${track.id}'"),
     ).catchError((e, stack) {
-      Catcher.reportCheckedError(e, stack);
       return null;
     });
 

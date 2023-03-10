@@ -58,6 +58,7 @@ class ArtistPage extends HookConsumerWidget {
     final auth = ref.watch(AuthenticationNotifier.provider);
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
         appBar: const PageWindowTitleBar(
           leading: BackButton(),

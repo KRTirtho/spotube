@@ -190,7 +190,8 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
       // skip all the activeTrack.skipSegments
       if (state?.isLoading != true &&
-          (state?.activeTrack as SpotubeTrack).skipSegments.isNotEmpty &&
+          (state?.activeTrack as SpotubeTrack?)?.skipSegments.isNotEmpty ==
+              true &&
           preferences.skipSponsorSegments) {
         for (final segment
             in (state!.activeTrack as SpotubeTrack).skipSegments) {

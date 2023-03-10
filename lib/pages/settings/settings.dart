@@ -41,9 +41,10 @@ class SettingsPage extends HookConsumerWidget {
     }, [preferences.downloadLocation]);
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
-        appBar: PageWindowTitleBar(
-          title: const Text("Settings"),
+        appBar: const PageWindowTitleBar(
+          title: Text("Settings"),
           centerTitle: true,
         ),
         body: Row(
