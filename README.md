@@ -26,7 +26,7 @@
 </p>
 
 
-Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API to create a hazardless, performant & resource friendly user-experience.
+Spotube is a [Flutter](https://flutter.dev) based lightweight Spotify client. It utilizes the power of Spotify & Youtube's public APIs to create a reliable, robust & resource-light user experience.
 
 #### <p align="center">Desktop</p>
 
@@ -35,6 +35,12 @@ Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It
 #### <p align="center">Mobile</p>
 
 ![Application Mobile Screenshot](assets/mobile-screenshots/mobile-combined.jpg)
+
+<p align="center">
+  <a href="https://discord.gg/uJ94vxB6vg">
+    <img src="https://discord.com/api/guilds/1012234096237350943/widget.png?style=banner2">
+  </a>
+</p>
 
 # Features
 
@@ -205,12 +211,6 @@ But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sou
 # Social platforms
 
 Follow me on [Twitter](https://twitter.com/@krtirtho), or join our amazing [Discord](https://discord.gg/uJ94vxB6vg) server to always get newer updates about the application.
-
-<p align="center">
-  <a href="https://discord.gg/uJ94vxB6vg">
-    <img src="https://discord.com/api/guilds/1012234096237350943/widget.png?style=banner2">
-  </a>
-</p>
 
 <b><p align="center">&copy; 2023 Spotube</p></b>
 
