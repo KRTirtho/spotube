@@ -2,12 +2,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:sidebarx/sidebarx.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/hooks/use_sidebarx_controller.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 
@@ -55,6 +58,34 @@ class Sidebar extends HookConsumerWidget {
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
+    final controller = useSidebarXController(
+      selectedIndex: selectedIndex,
+      extended: breakpoints > Breakpoints.md,
+    );
+
+    final bg = Theme.of(context).colorScheme.surfaceVariant;
+
+    final bgColor = useBrightnessValue(
+      Color.lerp(bg, Colors.white, 0.7),
+      Color.lerp(bg, Colors.black, 0.45)!,
+    );
+
+    useEffect(() {
+      controller.addListener(() {
+        onSelectedIndexChanged(controller.selectedIndex);
+      });
+      return null;
+    }, [controller]);
+
+    useEffect(() {
+      if (breakpoints > Breakpoints.md && !controller.extended) {
+        controller.setExtended(true);
+      } else if (breakpoints <= Breakpoints.md && controller.extended) {
+        controller.setExtended(false);
+      }
+      return null;
+    }, [breakpoints, controller]);
+
     if (layoutMode == LayoutMode.compact ||
         (breakpoints.isSm && layoutMode == LayoutMode.adaptive)) {
       return Scaffold(body: child);
@@ -62,41 +93,61 @@ class Sidebar extends HookConsumerWidget {
 
     return Row(
       children: [
-        NavigationRail(
-          selectedIndex: selectedIndex,
-          onDestinationSelected: onSelectedIndexChanged,
-          destinations: sidebarTileList.map(
+        SidebarX(
+          controller: controller,
+          items: sidebarTileList.map(
             (e) {
-              return NavigationRailDestination(
-                icon: Badge(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  isLabelVisible: e.title == "Library" && downloadCount > 0,
-                  label: Text(
-                    downloadCount.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                  ),
-                  child: Icon(e.icon),
-                ),
-                label: Text(
-                  e.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+              return SidebarXItem(
+                // iconWidget: Badge(
+                //   backgroundColor: Theme.of(context).primaryColor,
+                //   isLabelVisible: e.title == "Library" && downloadCount > 0,
+                //   label: Text(
+                //     downloadCount.toString(),
+                //     style: const TextStyle(
+                //       color: Colors.white,
+                //       fontSize: 10,
+                //     ),
+                //   ),
+                //   child: Icon(e.icon),
+                // ),
+                icon: e.icon,
+                label: e.title,
               );
             },
           ).toList(),
-          extended: breakpoints > Breakpoints.md,
-          leading: const SidebarHeader(),
-          trailing: const Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SidebarFooter(),
+          headerBuilder: (_, __) => const SidebarHeader(),
+          footerBuilder: (_, __) => const Padding(
+            padding: EdgeInsets.only(bottom: 5),
+            child: SidebarFooter(),
+          ),
+          showToggleButton: false,
+          theme: SidebarXTheme(
+            width: 60,
+            margin: const EdgeInsets.all(10).copyWith(bottom: 122),
+          ),
+          extendedTheme: SidebarXTheme(
+            width: 250,
+            margin: const EdgeInsets.all(10).copyWith(bottom: 122, left: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+                color: bgColor?.withOpacity(0.8),
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                )),
+            selectedItemDecoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
             ),
+            selectedIconTheme: IconThemeData(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            selectedTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+            itemTextPadding: const EdgeInsets.only(left: 10),
+            selectedItemTextPadding: const EdgeInsets.only(left: 10),
           ),
         ),
         Expanded(child: child)

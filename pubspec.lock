@@ -1393,6 +1393,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  sidebarx:
+    dependency: "direct main"
+    description:
+      name: sidebarx
+      sha256: "26a8392ceddb659c8f2c688beba6c04bcbf520b4d5decb143c5fd7253653081f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
   simple_circular_progress_bar:
     dependency: "direct main"
     description:
