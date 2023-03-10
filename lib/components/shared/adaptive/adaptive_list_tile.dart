@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/components/root/sidebar.dart';
+
 import 'package:spotube/hooks/use_breakpoints.dart';
 
 class AdaptiveListTile extends HookWidget {
@@ -26,7 +25,7 @@ class AdaptiveListTile extends HookWidget {
   Widget build(BuildContext context) {
     final breakpoint = useBreakpoints();
 
-    return PlatformListTile(
+    return ListTile(
       title: title,
       subtitle: subtitle,
       trailing:
@@ -35,13 +34,12 @@ class AdaptiveListTile extends HookWidget {
       onTap: breakpoint.isLessThan(breakOn)
           ? () {
               onTap?.call();
-              showPlatformAlertDialog(
-                context,
+              showDialog(
+                context: context,
                 barrierDismissible: true,
                 builder: (context) {
                   return StatefulBuilder(builder: (context, update) {
-                    return PlatformAlertDialog(
-                      macosAppIcon: Sidebar.brandLogo(),
+                    return AlertDialog(
                       title: title != null
                           ? Row(
                               crossAxisAlignment: CrossAxisAlignment.center,

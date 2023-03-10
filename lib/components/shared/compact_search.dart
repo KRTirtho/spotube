@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:popover/popover.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 
@@ -20,11 +20,11 @@ class CompactSearch extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformIconButton(
+    return IconButton(
       onPressed: () {
         showPopover(
           context: context,
-          backgroundColor: PlatformTheme.of(context).secondaryBackgroundColor!,
+          backgroundColor: Theme.of(context).cardColor,
           transitionDuration: const Duration(milliseconds: 100),
           barrierColor: Colors.transparent,
           arrowDxOffset: -6,
@@ -32,14 +32,13 @@ class CompactSearch extends HookWidget {
             return Container(
               padding: const EdgeInsets.all(8.0),
               width: 300,
-              child: PlatformTextField(
+              child: TextField(
                 autofocus: true,
                 onChanged: onChanged,
-                placeholder: placeholder,
-                prefixIcon: icon,
-                padding: platform == TargetPlatform.android
-                    ? const EdgeInsets.all(0)
-                    : null,
+                decoration: InputDecoration(
+                  hintText: placeholder,
+                  prefixIcon: Icon(icon),
+                ),
               ),
             );
           },

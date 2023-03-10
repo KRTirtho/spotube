@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/components/root/sidebar.dart';
+
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotube/hooks/use_package_info.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -56,18 +55,17 @@ void useUpdateChecker(WidgetRef ref) {
           (latestVersion.isPreRelease && !currentVersion.isPreRelease) ||
           (!latestVersion.isPreRelease && currentVersion.isPreRelease)) return;
       if (latestVersion <= currentVersion) return;
-      showPlatformAlertDialog(
-        context,
+      showDialog(
+        context: context,
         barrierDismissible: true,
         barrierColor: Colors.black26,
         builder: (context) {
           const url =
               "https://spotube.netlify.app/other-downloads/stable-downloads";
-          return PlatformAlertDialog(
-            macosAppIcon: Sidebar.brandLogo(),
-            title: const PlatformText("Spotube has an update"),
-            primaryActions: [
-              PlatformFilledButton(
+          return AlertDialog(
+            title: const Text("Spotube has an update"),
+            actions: [
+              FilledButton(
                 child: const Text("Download Now"),
                 onPressed: () => download(url),
               ),
@@ -79,7 +77,7 @@ void useUpdateChecker(WidgetRef ref) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const PlatformText("Read the latest "),
+                    const Text("Read the latest "),
                     AnchorButton(
                       "release notes",
                       style: const TextStyle(color: Colors.blue),

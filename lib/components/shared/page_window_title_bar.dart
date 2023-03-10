@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/utils/platform.dart';
+
 import 'package:window_manager/window_manager.dart';
 
-class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
+class PageWindowTitleBar extends StatefulHookWidget
+    implements PreferredSizeWidget {
   final Widget? leading;
   final bool automaticallyImplyLeading;
   final List<Widget>? actions;
@@ -18,13 +19,12 @@ class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
   final TextStyle? toolbarTextStyle;
   final TextStyle? titleTextStyle;
   final double? titleWidth;
-  final Widget? center;
-  final bool hideWhenWindows;
+  final Widget? title;
 
-  PageWindowTitleBar({
+  const PageWindowTitleBar({
     Key? key,
     this.actions,
-    this.center,
+    this.title,
     this.toolbarOpacity = 1,
     this.backgroundColor,
     this.actionsIconTheme,
@@ -37,13 +37,10 @@ class PageWindowTitleBar extends StatefulHookWidget with PreferredSizeWidget {
     this.titleTextStyle,
     this.titleWidth,
     this.toolbarTextStyle,
-    this.hideWhenWindows = true,
   }) : super(key: key);
 
   @override
-  Size get preferredSize => Size.fromHeight(
-        platform == TargetPlatform.windows ? 33 : kToolbarHeight,
-      );
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   State<PageWindowTitleBar> createState() => _PageWindowTitleBarState();
@@ -53,33 +50,6 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
   @override
   Widget build(BuildContext context) {
     final isMaximized = useState<bool?>(null);
-
-    useEffect(() {
-      if (platform == TargetPlatform.windows &&
-          widget.hideWhenWindows &&
-          Navigator.of(context).canPop()) {
-        final entry = OverlayEntry(
-          builder: (context) => const Positioned(
-            left: 5,
-            top: 5,
-            child: PlatformBackButton(),
-          ),
-        );
-
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Overlay.of(context)?.insert(entry);
-        });
-
-        return () {
-          entry.remove();
-        };
-      }
-      return null;
-    }, [platform, widget.hideWhenWindows]);
-
-    if (platform == TargetPlatform.windows && widget.hideWhenWindows) {
-      return const SizedBox.shrink();
-    }
 
     maximizeOrRestore() async {
       if (await windowManager.isMaximized()) {
@@ -91,42 +61,52 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
       }
     }
 
-    return PlatformAppBar(
-      actions: [
-        ...?widget.actions,
-        if (!kIsMacOS && !kIsMobile)
-          PlatformWindowButtons(
-            isMaximized: () async =>
-                isMaximized.value ?? await windowManager.isMaximized(),
-            onMaximize: maximizeOrRestore,
-            onRestore: maximizeOrRestore,
-            onMinimize: () {
-              windowManager.minimize();
-            },
-            onClose: () {
-              windowManager.close();
-            },
-            showCloseButton: true,
-            showMaximizeButton: true,
-            showMinimizeButton: true,
-          ),
-      ],
-      onDrag: () {
-        if (kIsDesktop) windowManager.startDragging();
+    return GestureDetector(
+      onHorizontalDragStart: (details) {
+        if (kIsDesktop) {
+          windowManager.startDragging();
+        }
       },
-      title: widget.center,
-      toolbarOpacity: widget.toolbarOpacity,
-      backgroundColor: widget.backgroundColor,
-      actionsIconTheme: widget.actionsIconTheme,
-      automaticallyImplyLeading: widget.automaticallyImplyLeading,
-      centerTitle: widget.centerTitle,
-      foregroundColor: widget.foregroundColor,
-      leading: widget.leading,
-      leadingWidth: widget.leadingWidth,
-      titleSpacing: widget.titleSpacing,
-      titleTextStyle: widget.titleTextStyle,
-      titleWidth: widget.titleWidth,
-      toolbarTextStyle: widget.toolbarTextStyle,
+      onVerticalDragStart: (details) {
+        if (kIsDesktop) {
+          windowManager.startDragging();
+        }
+      },
+      child: AppBar(
+        leading: widget.leading,
+        automaticallyImplyLeading: widget.automaticallyImplyLeading,
+        actions: [
+          ...?widget.actions,
+          if (kIsDesktop && !kIsMacOS) ...[
+            IconButton(
+              icon: const Icon(Icons.minimize),
+              onPressed: () => windowManager.minimize(),
+            ),
+            IconButton(
+              icon: Icon(
+                isMaximized.value ?? false
+                    ? Icons.fullscreen_exit
+                    : Icons.fullscreen,
+              ),
+              onPressed: maximizeOrRestore,
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => windowManager.close(),
+            ),
+          ]
+        ],
+        backgroundColor: widget.backgroundColor,
+        foregroundColor: widget.foregroundColor,
+        actionsIconTheme: widget.actionsIconTheme,
+        centerTitle: widget.centerTitle,
+        titleSpacing: widget.titleSpacing,
+        toolbarOpacity: widget.toolbarOpacity,
+        leadingWidth: widget.leadingWidth,
+        toolbarTextStyle: widget.toolbarTextStyle,
+        titleTextStyle: widget.titleTextStyle,
+        title: widget.title,
+      ),
     );
   }
 }

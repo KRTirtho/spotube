@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:spotube/extensions/theme.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
@@ -12,7 +12,7 @@ class ShimmerLyrics extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = PlatformTheme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final shimmerTheme = ShimmerColorTheme(
       shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
       shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],

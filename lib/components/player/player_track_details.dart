@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
@@ -37,7 +37,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
           ),
         if (breakpoint.isLessThanOrEqualTo(Breakpoints.md))
           Flexible(
-            child: PlatformText(
+            child: Text(
               playback?.activeTrack.name ?? "Not playing",
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontWeight: FontWeight.bold, color: color),
@@ -50,7 +50,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
             flex: 1,
             child: Column(
               children: [
-                PlatformText(
+                Text(
                   playback?.activeTrack.name ?? "Not playing",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, color: color),

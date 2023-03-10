@@ -1,13 +1,13 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 abstract class SpotubeIcons {
-  static const home = FluentIcons.home;
+  static const home = FluentIcons.home_12_regular;
   static const search = FeatherIcons.search;
-  static const library = FluentIcons.library;
+  static const library = FluentIcons.library_16_regular;
   static const music = FeatherIcons.music;
-  static const play = FluentIcons.play;
+  static const play = FluentIcons.play_12_regular;
   static const pause = FeatherIcons.pause;
   static const skipForward = FeatherIcons.skipForward;
   static const skipBack = FeatherIcons.skipBack;
@@ -16,8 +16,8 @@ abstract class SpotubeIcons {
   static const refresh = FeatherIcons.refreshCw;
   static const settings = FeatherIcons.settings;
   static const shuffle = FeatherIcons.shuffle;
-  static const repeat = FluentIcons.repeat_all;
-  static const repeatOne = FluentIcons.repeat_one;
+  static const repeat = FluentIcons.arrow_repeat_all_16_regular;
+  static const repeatOne = Icons.repeat_one_rounded;
   static const remove = FeatherIcons.minus;
   static const removeFilled = FeatherIcons.minusCircle;
   static const add = FeatherIcons.plus;

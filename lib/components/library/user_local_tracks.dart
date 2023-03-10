@@ -12,7 +12,7 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/compact_search.dart';
@@ -189,7 +189,7 @@ class UserLocalTracks extends HookConsumerWidget {
           child: Row(
             children: [
               const SizedBox(width: 10),
-              PlatformFilledButton(
+              FilledButton(
                 onPressed: trackSnapshot.value != null
                     ? () {
                         if (trackSnapshot.value?.isNotEmpty == true) {
@@ -221,7 +221,7 @@ class UserLocalTracks extends HookConsumerWidget {
                 },
               ),
               const SizedBox(width: 10),
-              PlatformFilledButton(
+              FilledButton(
                 child: const Icon(SpotubeIcons.refresh),
                 onPressed: () {
                   ref.refresh(localTracksProvider);

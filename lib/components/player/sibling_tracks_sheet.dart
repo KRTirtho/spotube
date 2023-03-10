@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
@@ -50,16 +50,15 @@ class SiblingTracksSheet extends HookConsumerWidget {
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: PlatformTheme.of(context)
-              .scaffoldBackgroundColor!
-              .withOpacity(.3),
+          color: Theme.of(context).scaffoldBackgroundColor.withOpacity(.3),
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: PlatformAppBar(
+          appBar: AppBar(
             centerTitle: true,
-            title: PlatformText.subheading(
+            title: Text(
               'Alternative Tracks Sources',
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
@@ -71,8 +70,8 @@ class SiblingTracksSheet extends HookConsumerWidget {
               itemCount: siblings.length,
               itemBuilder: (context, index) {
                 final video = siblings[index];
-                return PlatformListTile(
-                  title: PlatformText(video.title),
+                return ListTile(
+                  title: Text(video.title),
                   leading: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: UniversalImage(
@@ -84,12 +83,12 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  trailing: PlatformText(
+                  trailing: Text(
                     PrimitiveUtils.toReadableDuration(
                       video.duration ?? Duration.zero,
                     ),
                   ),
-                  subtitle: PlatformText(video.author),
+                  subtitle: Text(video.author),
                   enabled: playlist?.isLoading != true,
                   selected: playlist?.isLoading != true &&
                       video.id.value ==

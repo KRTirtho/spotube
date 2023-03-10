@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_artist_profile.dart';
@@ -33,13 +33,13 @@ class ArtistPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     SpotifyApi spotify = ref.watch(spotifyProvider);
     final parentScrollController = useScrollController();
-    final textTheme = PlatformTheme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
     final chipTextVariant = useBreakpointValue(
-      sm: textTheme!.caption,
-      md: textTheme.body,
-      lg: textTheme.subheading,
-      xl: textTheme.headline,
-      xxl: textTheme.headline,
+      sm: textTheme.bodySmall,
+      md: textTheme.bodyMedium,
+      lg: textTheme.bodyLarge,
+      xl: textTheme.titleSmall,
+      xxl: textTheme.titleMedium,
     );
 
     final avatarWidth = useBreakpointValue(
@@ -58,9 +58,9 @@ class ArtistPage extends HookConsumerWidget {
     final auth = ref.watch(AuthenticationNotifier.provider);
 
     return SafeArea(
-      child: PlatformScaffold(
-        appBar: PageWindowTitleBar(
-          leading: const PlatformBackButton(),
+      child: Scaffold(
+        appBar: const PageWindowTitleBar(
+          leading: BackButton(),
         ),
         body: HookBuilder(
           builder: (context) {
@@ -70,7 +70,7 @@ class ArtistPage extends HookConsumerWidget {
               return const ShimmerArtistProfile();
             } else if (artistsQuery.hasError) {
               return Center(
-                child: PlatformText(artistsQuery.error.toString()),
+                child: Text(artistsQuery.error.toString()),
               );
             }
 
@@ -116,7 +116,7 @@ class ArtistPage extends HookConsumerWidget {
                                   decoration: BoxDecoration(
                                       color: Colors.blue,
                                       borderRadius: BorderRadius.circular(50)),
-                                  child: PlatformText(
+                                  child: Text(
                                     data.type!.toUpperCase(),
                                     style: chipTextVariant?.copyWith(
                                       color: Colors.white,
@@ -132,7 +132,7 @@ class ArtistPage extends HookConsumerWidget {
                                         color: Colors.red[400],
                                         borderRadius:
                                             BorderRadius.circular(50)),
-                                    child: PlatformText(
+                                    child: Text(
                                       "Blacklisted",
                                       style: chipTextVariant?.copyWith(
                                         color: Colors.white,
@@ -142,18 +142,18 @@ class ArtistPage extends HookConsumerWidget {
                                 ]
                               ],
                             ),
-                            PlatformText(
+                            Text(
                               data.name!,
                               style: breakpoint.isSm
-                                  ? textTheme.subheading
-                                  : textTheme.headline,
+                                  ? textTheme.headlineSmall
+                                  : textTheme.headlineMedium,
                             ),
-                            PlatformText(
+                            Text(
                               "${PrimitiveUtils.toReadableNumber(data.followers!.total!.toDouble())} followers",
-                              style: breakpoint.isSm
-                                  ? textTheme.body
-                                  : textTheme.body
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                              style: textTheme.bodyMedium?.copyWith(
+                                fontWeight:
+                                    breakpoint.isSm ? null : FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 20),
                             Row(
@@ -170,14 +170,13 @@ class ArtistPage extends HookConsumerWidget {
                                         return const SizedBox(
                                           height: 20,
                                           width: 20,
-                                          child:
-                                              PlatformCircularProgressIndicator(),
+                                          child: CircularProgressIndicator(),
                                         );
                                       }
 
                                       final queryBowl = QueryClient.of(context);
 
-                                      return PlatformFilledButton(
+                                      return FilledButton(
                                         onPressed: () async {
                                           try {
                                             isFollowingQuery.data!
@@ -199,7 +198,7 @@ class ArtistPage extends HookConsumerWidget {
                                                 "user-follows-artists-query/$artistId");
                                           }
                                         },
-                                        child: PlatformText(
+                                        child: Text(
                                           isFollowingQuery.data!
                                               ? "Following"
                                               : "Follow",
@@ -208,7 +207,7 @@ class ArtistPage extends HookConsumerWidget {
                                     },
                                   ),
                                 const SizedBox(width: 5),
-                                PlatformIconButton(
+                                IconButton(
                                   tooltip: "Add to blacklisted artists",
                                   icon: Icon(
                                     SpotubeIcons.userRemove,
@@ -216,8 +215,10 @@ class ArtistPage extends HookConsumerWidget {
                                         ? Colors.red[400]
                                         : Colors.white,
                                   ),
-                                  backgroundColor:
-                                      isBlackListed ? Colors.red[400] : null,
+                                  style: IconButton.styleFrom(
+                                    backgroundColor:
+                                        isBlackListed ? Colors.red[400] : null,
+                                  ),
                                   onPressed: () async {
                                     if (isBlackListed) {
                                       ref
@@ -238,7 +239,7 @@ class ArtistPage extends HookConsumerWidget {
                                     }
                                   },
                                 ),
-                                PlatformIconButton(
+                                IconButton(
                                   icon: const Icon(SpotubeIcons.share),
                                   onPressed: () async {
                                     await Clipboard.setData(
@@ -250,7 +251,7 @@ class ArtistPage extends HookConsumerWidget {
                                       const SnackBar(
                                         width: 300,
                                         behavior: SnackBarBehavior.floating,
-                                        content: PlatformText(
+                                        content: Text(
                                           "Artist URL copied to clipboard",
                                           textAlign: TextAlign.center,
                                         ),
@@ -279,10 +280,10 @@ class ArtistPage extends HookConsumerWidget {
                       );
 
                       if (topTracksQuery.isLoading || !topTracksQuery.hasData) {
-                        return const PlatformCircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (topTracksQuery.hasError) {
                         return Center(
-                          child: PlatformText(topTracksQuery.error.toString()),
+                          child: Text(topTracksQuery.error.toString()),
                         );
                       }
 
@@ -305,13 +306,12 @@ class ArtistPage extends HookConsumerWidget {
                       return Column(children: [
                         Row(
                           children: [
-                            PlatformText(
+                            Text(
                               "Top Tracks",
-                              style:
-                                  PlatformTheme.of(context).textTheme?.headline,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                             if (!isPlaylistPlaying)
-                              PlatformIconButton(
+                              IconButton(
                                 icon: const Icon(
                                   SpotubeIcons.queueAdd,
                                 ),
@@ -321,7 +321,7 @@ class ArtistPage extends HookConsumerWidget {
                                     SnackBar(
                                       width: 300,
                                       behavior: SnackBarBehavior.floating,
-                                      content: PlatformText(
+                                      content: Text(
                                         "Added ${topTracks.length} tracks to queue",
                                         textAlign: TextAlign.center,
                                       ),
@@ -329,17 +329,17 @@ class ArtistPage extends HookConsumerWidget {
                                   );
                                 },
                               ),
-                            if (platform != TargetPlatform.linux)
-                              const SizedBox(width: 5),
-                            PlatformIconButton(
+                            const SizedBox(width: 5),
+                            IconButton(
                               icon: Icon(
                                 isPlaylistPlaying
                                     ? SpotubeIcons.stop
                                     : SpotubeIcons.play,
                                 color: Colors.white,
                               ),
-                              backgroundColor:
-                                  PlatformTheme.of(context).primaryColor,
+                              style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                              ),
                               onPressed: () => playPlaylist(topTracks.toList()),
                             )
                           ],
@@ -364,16 +364,16 @@ class ArtistPage extends HookConsumerWidget {
                     },
                   ),
                   const SizedBox(height: 50),
-                  PlatformText(
+                  Text(
                     "Albums",
-                    style: PlatformTheme.of(context).textTheme?.headline,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 10),
                   ArtistAlbumList(artistId),
                   const SizedBox(height: 20),
-                  PlatformText(
+                  Text(
                     "Fans also likes",
-                    style: PlatformTheme.of(context).textTheme?.headline,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 10),
                   HookBuilder(
@@ -384,10 +384,10 @@ class ArtistPage extends HookConsumerWidget {
                       );
 
                       if (relatedArtists.isLoading || !relatedArtists.hasData) {
-                        return const PlatformCircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (relatedArtists.hasError) {
                         return Center(
-                          child: PlatformText(relatedArtists.error.toString()),
+                          child: Text(relatedArtists.error.toString()),
                         );
                       }
 

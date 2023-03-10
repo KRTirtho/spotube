@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
@@ -39,13 +39,15 @@ class CategoryCard extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              PlatformText.headline(category.name ?? "Unknown"),
+              Text(
+                category.name ?? "Unknown",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ],
           ),
         ),
         playlistQuery.hasPageError && !playlistQuery.hasPageData
-            ? PlatformText(
-                "Something Went Wrong\n${playlistQuery.errors.first}")
+            ? Text("Something Went Wrong\n${playlistQuery.errors.first}")
             : SizedBox(
                 height: 245,
                 child: ScrollConfiguration(

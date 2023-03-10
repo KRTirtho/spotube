@@ -3,12 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 
@@ -35,8 +33,8 @@ class RootApp extends HookConsumerWidget {
     useEffect(() {
       downloader.onFileExists = (track) async {
         if (!isMounted()) return false;
-        return await showPlatformAlertDialog<bool>(
-              context,
+        return await showDialog<bool>(
+              context: context,
               builder: (context) => ReplaceDownloadedDialog(
                 track: track,
               ),
@@ -49,7 +47,7 @@ class RootApp extends HookConsumerWidget {
     // checks for latest version of the application
     useUpdateChecker(ref);
 
-    final backgroundColor = PlatformTheme.of(context).scaffoldBackgroundColor!;
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     useEffect(() {
       SystemChrome.setSystemUIOverlayStyle(
@@ -63,10 +61,7 @@ class RootApp extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    return PlatformScaffold(
-      appBar: platform == TargetPlatform.windows
-          ? PageWindowTitleBar(hideWhenWindows: false) as PreferredSizeWidget?
-          : null,
+    return Scaffold(
       body: Sidebar(
         selectedIndex: index.value,
         onSelectedIndexChanged: (i) {

@@ -1,16 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/root/sidebar.dart';
 
 class ConfirmDownloadDialog extends StatelessWidget {
   const ConfirmDownloadDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return PlatformAlertDialog(
-      macosAppIcon: Sidebar.brandLogo(),
+    return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.all(15),
         child: Row(
@@ -62,47 +59,20 @@ class ConfirmDownloadDialog extends StatelessWidget {
           ),
         ),
       ),
-      primaryActions: [
-        PlatformBuilder(
-          android: (context, _) {
-            return PlatformFilledButton(
-              style: const ButtonStyle(
-                foregroundColor: MaterialStatePropertyAll(Colors.white),
-                backgroundColor: MaterialStatePropertyAll(Colors.red),
-              ),
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text("Accept"),
-            );
+      actions: [
+        OutlinedButton(
+          child: const Text("Decline"),
+          onPressed: () {
+            Navigator.pop(context, false);
           },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () => Navigator.of(context).pop(true),
-              isDestructiveAction: true,
-              child: const Text("Accept"),
-            );
-          },
-        )
-      ],
-      secondaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              child: const Text("Decline"),
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-              isDefaultAction: true,
-              child: const Text("Decline"),
-            );
-          },
+        ),
+        FilledButton(
+          style: FilledButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.red,
+          ),
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text("Accept"),
         ),
       ],
     );

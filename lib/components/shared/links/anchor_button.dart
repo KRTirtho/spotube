@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
 
 class AnchorButton<T> extends HookWidget {
   final String text;
@@ -29,7 +28,7 @@ class AnchorButton<T> extends HookWidget {
       onTap: onTap,
       child: MouseRegion(
         cursor: MaterialStateMouseCursor.clickable,
-        child: PlatformText(
+        child: Text(
           text,
           style: style.copyWith(
             decoration:

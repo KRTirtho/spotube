@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/components/root/sidebar.dart';
+
 import 'package:spotube/provider/user_preferences_provider.dart';
 
 final colorsMap = {
@@ -59,48 +57,18 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
       Navigator.pop(context);
     }
 
-    return PlatformAlertDialog(
-      macosAppIcon: Sidebar.brandLogo(),
+    return AlertDialog(
       title: Text("Pick ${schemeType.name} color scheme"),
-      primaryActions: [
-        PlatformBuilder(
-          android: (context, data) {
-            return PlatformFilledButton(
-              onPressed: onOk,
-              child: const Text("Save"),
-            );
+      actions: [
+        OutlinedButton(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
           },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: onOk,
-              isDefaultAction: true,
-              child: const Text("Save"),
-            );
-          },
-          fallback: PlatformBuilderFallback.android,
         ),
-      ],
-      secondaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              isSecondary: true,
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              isDestructiveAction: true,
-              child: const Text("Cancel"),
-            );
-          },
+        FilledButton(
+          onPressed: onOk,
+          child: const Text("Save"),
         ),
       ],
       content: SizedBox(

@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
@@ -94,15 +94,16 @@ class UserPlaylists extends HookConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         child: Material(
           type: MaterialType.transparency,
-          textStyle: PlatformTheme.of(context).textTheme!.body!,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                PlatformTextField(
+                TextField(
                   onChanged: (value) => searchText.value = value,
-                  placeholder: "Filter your playlists...",
-                  prefixIcon: SpotubeIcons.filter,
+                  decoration: const InputDecoration(
+                    hintText: "Filter your playlists...",
+                    prefixIcon: Icon(SpotubeIcons.filter),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 if (playlistsQuery.isLoading || !playlistsQuery.hasData)

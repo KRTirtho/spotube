@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
@@ -62,7 +62,7 @@ class SearchPage extends HookConsumerWidget {
     }
 
     return SafeArea(
-      child: PlatformScaffold(
+      child: Scaffold(
         appBar: kIsDesktop && !kIsMacOS ? PageWindowTitleBar() : null,
         body: !authenticationNotifier.isLoggedIn
             ? const AnonymousFallback()
@@ -73,15 +73,12 @@ class SearchPage extends HookConsumerWidget {
                       horizontal: 20,
                       vertical: 10,
                     ),
-                    color: PlatformTheme.of(context).scaffoldBackgroundColor,
-                    child: PlatformTextField(
-                      prefixIcon: SpotubeIcons.search,
-                      prefixIconColor: PlatformProperty.only(
-                        ios:
-                            PlatformTheme.of(context).textTheme?.caption?.color,
-                        other: null,
-                      ).resolve(platform!),
-                      placeholder: "Search...",
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(SpotubeIcons.search),
+                        hintText: "Search...",
+                      ),
                       onSubmitted: (value) async {
                         ref.read(searchTermStateProvider.notifier).state =
                             value;
@@ -133,11 +130,15 @@ class SearchPage extends HookConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if (tracks.isNotEmpty)
-                                  PlatformText.headline("Songs"),
+                                  Text(
+                                    "Songs",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge!,
+                                  ),
                                 if (searchTrack.isLoadingPage)
-                                  const PlatformCircularProgressIndicator()
+                                  const CircularProgressIndicator()
                                 else if (searchTrack.hasPageError)
-                                  PlatformText(searchTrack.errors.lastOrNull
+                                  Text(searchTrack.errors.lastOrNull
                                           ?.toString() ??
                                       "")
                                 else
@@ -182,17 +183,21 @@ class SearchPage extends HookConsumerWidget {
                                 if (searchTrack.hasNextPage &&
                                     tracks.isNotEmpty)
                                   Center(
-                                    child: PlatformTextButton(
+                                    child: TextButton(
                                       onPressed: searchTrack.isRefreshingPage
                                           ? null
                                           : () => searchTrack.fetchNext(),
                                       child: searchTrack.isRefreshingPage
-                                          ? const PlatformCircularProgressIndicator()
-                                          : const PlatformText("Load more"),
+                                          ? const CircularProgressIndicator()
+                                          : const Text("Load more"),
                                     ),
                                   ),
                                 if (playlists.isNotEmpty)
-                                  PlatformText.headline("Playlists"),
+                                  Text(
+                                    "Playlists",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge!,
+                                  ),
                                 const SizedBox(height: 10),
                                 ScrollConfiguration(
                                   behavior:
@@ -236,16 +241,20 @@ class SearchPage extends HookConsumerWidget {
                                   ),
                                 ),
                                 if (searchPlaylist.isLoadingPage)
-                                  const PlatformCircularProgressIndicator(),
+                                  const CircularProgressIndicator(),
                                 if (searchPlaylist.hasPageError)
-                                  PlatformText(
+                                  Text(
                                     searchPlaylist.errors.lastOrNull
                                             ?.toString() ??
                                         "",
                                   ),
                                 const SizedBox(height: 20),
                                 if (artists.isNotEmpty)
-                                  PlatformText.headline("Artists"),
+                                  Text(
+                                    "Artists",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge!,
+                                  ),
                                 const SizedBox(height: 10),
                                 ScrollConfiguration(
                                   behavior:
@@ -289,16 +298,21 @@ class SearchPage extends HookConsumerWidget {
                                   ),
                                 ),
                                 if (searchArtist.isLoadingPage)
-                                  const PlatformCircularProgressIndicator(),
+                                  const CircularProgressIndicator(),
                                 if (searchArtist.hasPageError)
-                                  PlatformText(
+                                  Text(
                                     searchArtist.errors.lastOrNull
                                             ?.toString() ??
                                         "",
                                   ),
                                 const SizedBox(height: 20),
                                 if (albums.isNotEmpty)
-                                  PlatformText.subheading("Albums"),
+                                  Text(
+                                    "Albums",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!,
+                                  ),
                                 const SizedBox(height: 10),
                                 ScrollConfiguration(
                                   behavior:
@@ -340,9 +354,9 @@ class SearchPage extends HookConsumerWidget {
                                   ),
                                 ),
                                 if (searchAlbum.isLoadingPage)
-                                  const PlatformCircularProgressIndicator(),
+                                  const CircularProgressIndicator(),
                                 if (searchAlbum.hasPageError)
-                                  PlatformText(
+                                  Text(
                                     searchAlbum.errors.lastOrNull?.toString() ??
                                         "",
                                   ),
