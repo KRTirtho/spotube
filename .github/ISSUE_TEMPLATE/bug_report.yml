@@ -1,5 +1,6 @@
 name: 🐛 Bug
 description: Report a bug or an incorrect behavior
+title: "Write the title here"
 labels:
   - bug
 
@@ -57,7 +58,7 @@ body:
         - "GitHub Actions (Nightly Binary)"
         - "F-Droid (Android)"
         - "Arch User Repository (AUR)"
-        - "FlatHub (Flatpak)"
+        - "Flathub (Flatpak)"
         - "chocolatey (Windows)"
         - "WinGet (Windows)"
         - "Scoop (Windows)"
