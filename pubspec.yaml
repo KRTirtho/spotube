@@ -24,6 +24,7 @@ dependencies:
       url: https://github.com/ThexXTURBOXx/catcher
   collection: ^1.15.0
   cupertino_icons: ^1.0.5
+  curved_navigation_bar: ^1.0.3
   dbus: ^0.7.8
   file_picker: ^5.2.2
   fl_query: ^1.0.0-alpha.0
