@@ -41,8 +41,6 @@ class Sidebar extends HookConsumerWidget {
     );
   }
 
-  static Widget macSpacer = const SizedBox(height: 25);
-
   static void goToSettings(BuildContext context) {
     GoRouter.of(context).go("/settings");
   }
@@ -93,61 +91,76 @@ class Sidebar extends HookConsumerWidget {
 
     return Row(
       children: [
-        SidebarX(
-          controller: controller,
-          items: sidebarTileList.map(
-            (e) {
-              return SidebarXItem(
-                // iconWidget: Badge(
-                //   backgroundColor: Theme.of(context).primaryColor,
-                //   isLabelVisible: e.title == "Library" && downloadCount > 0,
-                //   label: Text(
-                //     downloadCount.toString(),
-                //     style: const TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 10,
-                //     ),
-                //   ),
-                //   child: Icon(e.icon),
-                // ),
-                icon: e.icon,
-                label: e.title,
-              );
-            },
-          ).toList(),
-          headerBuilder: (_, __) => const SidebarHeader(),
-          footerBuilder: (_, __) => const Padding(
-            padding: EdgeInsets.only(bottom: 5),
-            child: SidebarFooter(),
-          ),
-          showToggleButton: false,
-          theme: SidebarXTheme(
-            width: 60,
-            margin: const EdgeInsets.all(10).copyWith(bottom: 122),
-          ),
-          extendedTheme: SidebarXTheme(
-            width: 250,
-            margin: const EdgeInsets.all(10).copyWith(bottom: 122, left: 0),
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            decoration: BoxDecoration(
+        SafeArea(
+          child: SidebarX(
+            controller: controller,
+            items: sidebarTileList.map(
+              (e) {
+                return SidebarXItem(
+                  // iconWidget: Badge(
+                  //   backgroundColor: Theme.of(context).primaryColor,
+                  //   isLabelVisible: e.title == "Library" && downloadCount > 0,
+                  //   label: Text(
+                  //     downloadCount.toString(),
+                  //     style: const TextStyle(
+                  //       color: Colors.white,
+                  //       fontSize: 10,
+                  //     ),
+                  //   ),
+                  //   child: Icon(e.icon),
+                  // ),
+                  icon: e.icon,
+                  label: e.title,
+                );
+              },
+            ).toList(),
+            headerBuilder: (_, __) => const SidebarHeader(),
+            footerBuilder: (_, __) => const Padding(
+              padding: EdgeInsets.only(bottom: 5),
+              child: SidebarFooter(),
+            ),
+            showToggleButton: false,
+            theme: SidebarXTheme(
+              width: 50,
+              margin: EdgeInsets.only(bottom: 10, top: kIsMacOS ? 35 : 5),
+              selectedItemDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              ),
+              selectedIconTheme: IconThemeData(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            extendedTheme: SidebarXTheme(
+              width: 250,
+              margin: EdgeInsets.only(
+                bottom: 10,
+                left: 0,
+                top: kIsMacOS ? 35 : 5,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
                 color: bgColor?.withOpacity(0.8),
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomRight: Radius.circular(10),
-                )),
-            selectedItemDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            ),
-            selectedIconTheme: IconThemeData(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            selectedTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w600,
                 ),
-            itemTextPadding: const EdgeInsets.only(left: 10),
-            selectedItemTextPadding: const EdgeInsets.only(left: 10),
+              ),
+              selectedItemDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              ),
+              selectedIconTheme: IconThemeData(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              selectedTextStyle:
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+              itemTextPadding: const EdgeInsets.only(left: 10),
+              selectedItemTextPadding: const EdgeInsets.only(left: 10),
+            ),
           ),
         ),
         Expanded(child: child)
@@ -164,7 +177,12 @@ class SidebarHeader extends HookWidget {
     final breakpoint = useBreakpoints();
 
     if (breakpoint <= Breakpoints.md) {
-      return Sidebar.brandLogo();
+      return Container(
+        height: 40,
+        width: 40,
+        margin: const EdgeInsets.only(bottom: 5),
+        child: Sidebar.brandLogo(),
+      );
     }
 
     return Padding(

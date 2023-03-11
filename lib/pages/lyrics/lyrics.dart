@@ -8,6 +8,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/themed_button_tab_bar.dart';
+import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
@@ -32,6 +33,7 @@ class LyricsPage extends HookConsumerWidget {
       [playlist?.activeTrack.album?.images],
     );
     final palette = usePaletteColor(albumArt, ref);
+    final breakpoint = useBreakpoints();
 
     useCustomStatusBarColor(
       palette.color,
@@ -102,33 +104,39 @@ class LyricsPage extends HookConsumerWidget {
     }
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: !kIsMacOS
-            ? const PageWindowTitleBar(
-                backgroundColor: Colors.transparent,
-                title: tabbar,
-              )
-            : tabbar,
-        body: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: UniversalImage.imageProvider(albumArt),
-              fit: BoxFit.cover,
+      child: SafeArea(
+        bottom: breakpoint > Breakpoints.md,
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: !kIsMacOS
+              ? const PageWindowTitleBar(
+                  backgroundColor: Colors.transparent,
+                  title: tabbar,
+                )
+              : tabbar,
+          body: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: UniversalImage.imageProvider(albumArt),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+              ),
             ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: ColoredBox(
-              color: palette.color.withOpacity(.7),
-              child: SafeArea(
-                child: TabBarView(
-                  children: [
-                    SyncedLyrics(palette: palette, isModal: isModal),
-                    PlainLyrics(palette: palette, isModal: isModal),
-                  ],
+            margin: const EdgeInsets.only(bottom: 10),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: ColoredBox(
+                color: palette.color.withOpacity(.7),
+                child: SafeArea(
+                  child: TabBarView(
+                    children: [
+                      SyncedLyrics(palette: palette, isModal: isModal),
+                      PlainLyrics(palette: palette, isModal: isModal),
+                    ],
+                  ),
                 ),
               ),
             ),
