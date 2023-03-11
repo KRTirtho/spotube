@@ -44,38 +44,40 @@ class UserDownloads extends HookConsumerWidget {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: downloader.inQueue.length,
-            itemBuilder: (context, index) {
-              final track = downloader.inQueue.elementAt(index);
-              return ListTile(
-                title: Text(track.name ?? ''),
-                leading: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: UniversalImage(
-                      height: 40,
-                      width: 40,
-                      path: TypeConversionUtils.image_X_UrlString(
-                        track.album?.images,
-                        placeholder: ImagePlaceholder.albumArt,
+          child: SafeArea(
+            child: ListView.builder(
+              itemCount: downloader.inQueue.length,
+              itemBuilder: (context, index) {
+                final track = downloader.inQueue.elementAt(index);
+                return ListTile(
+                  title: Text(track.name ?? ''),
+                  leading: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: UniversalImage(
+                        height: 40,
+                        width: 40,
+                        path: TypeConversionUtils.image_X_UrlString(
+                          track.album?.images,
+                          placeholder: ImagePlaceholder.albumArt,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                trailing: const SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: CircularProgressIndicator(),
-                ),
-                subtitle: Text(
-                  TypeConversionUtils.artists_X_String(
-                    track.artists ?? <Artist>[],
+                  trailing: const SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(),
                   ),
-                ),
-              );
-            },
+                  subtitle: Text(
+                    TypeConversionUtils.artists_X_String(
+                      track.artists ?? <Artist>[],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],

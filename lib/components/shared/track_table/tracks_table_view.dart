@@ -260,8 +260,12 @@ class TracksTableView extends HookConsumerWidget {
           ];
 
     if (isSliver) {
-      return SliverList(delegate: SliverChildListDelegate(children));
+      return SliverSafeArea(
+        sliver: SliverList(delegate: SliverChildListDelegate(children)),
+      );
     }
-    return ListView(children: children);
+    return SafeArea(
+      child: ListView(children: children),
+    );
   }
 }

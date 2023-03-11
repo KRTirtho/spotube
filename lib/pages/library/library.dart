@@ -13,10 +13,10 @@ class LibraryPage extends HookConsumerWidget {
   const LibraryPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
-    return const SafeArea(
-      bottom: false,
-      child: DefaultTabController(
-        length: 5,
+    return const DefaultTabController(
+      length: 5,
+      child: SafeArea(
+        bottom: false,
         child: Scaffold(
           appBar: PageWindowTitleBar(
             centerTitle: true,

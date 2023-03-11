@@ -84,31 +84,34 @@ class UserArtists extends HookConsumerWidget {
               onRefresh: () async {
                 await artistQuery.refreshAll();
               },
-              child: GridView.builder(
-                itemCount: filteredArtists.length,
-                physics: const AlwaysScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  mainAxisExtent: 250,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
+              child: SafeArea(
+                child: GridView.builder(
+                  itemCount: filteredArtists.length,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                    mainAxisExtent: 250,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  itemBuilder: (context, index) {
+                    return HookBuilder(builder: (context) {
+                      if (index == artistQuery.pages.length - 1 &&
+                          hasNextPage) {
+                        return Waypoint(
+                          controller: useScrollController(),
+                          isGrid: true,
+                          onTouchEdge: () {
+                            artistQuery.fetchNext();
+                          },
+                          child: ArtistCard(filteredArtists[index]),
+                        );
+                      }
+                      return ArtistCard(filteredArtists[index]);
+                    });
+                  },
                 ),
-                padding: const EdgeInsets.all(10),
-                itemBuilder: (context, index) {
-                  return HookBuilder(builder: (context) {
-                    if (index == artistQuery.pages.length - 1 && hasNextPage) {
-                      return Waypoint(
-                        controller: useScrollController(),
-                        isGrid: true,
-                        onTouchEdge: () {
-                          artistQuery.fetchNext();
-                        },
-                        child: ArtistCard(filteredArtists[index]),
-                      );
-                    }
-                    return ArtistCard(filteredArtists[index]);
-                  });
-                },
               ),
             ),
     );

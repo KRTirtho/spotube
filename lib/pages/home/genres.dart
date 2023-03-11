@@ -77,7 +77,7 @@ class GenrePage extends HookConsumerWidget {
             if (searchText.value.isEmpty && index == categories.length - 1) {
               return const ShimmerCategories();
             }
-            return CategoryCard(category);
+            return SafeArea(child: CategoryCard(category));
           },
         ),
       ),

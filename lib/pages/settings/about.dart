@@ -17,9 +17,9 @@ class AboutSpotube extends HookConsumerWidget {
     final packageInfo = usePackageInfo();
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
-        leading: const BackButton(),
-        title: const Text("About Spotube"),
+      appBar: const PageWindowTitleBar(
+        leading: BackButton(),
+        title: Text("About Spotube"),
       ),
       body: SingleChildScrollView(
         child: Padding(

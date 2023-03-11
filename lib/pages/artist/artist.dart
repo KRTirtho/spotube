@@ -85,325 +85,338 @@ class ArtistPage extends HookConsumerWidget {
             return SingleChildScrollView(
               controller: parentScrollController,
               padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    runAlignment: WrapAlignment.center,
-                    children: [
-                      const SizedBox(width: 50),
-                      CircleAvatar(
-                        radius: avatarWidth,
-                        backgroundImage: UniversalImage.imageProvider(
-                          TypeConversionUtils.image_X_UrlString(
-                            data.images,
-                            placeholder: ImagePlaceholder.artist,
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      runAlignment: WrapAlignment.center,
+                      children: [
+                        const SizedBox(width: 50),
+                        CircleAvatar(
+                          radius: avatarWidth,
+                          backgroundImage: UniversalImage.imageProvider(
+                            TypeConversionUtils.image_X_UrlString(
+                              data.images,
+                              placeholder: ImagePlaceholder.artist,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: Text(
-                                    data.type!.toUpperCase(),
-                                    style: chipTextVariant?.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                if (isBlackListed) ...[
-                                  const SizedBox(width: 5),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
                                   Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 5),
                                     decoration: BoxDecoration(
-                                        color: Colors.red[400],
+                                        color: Colors.blue,
                                         borderRadius:
                                             BorderRadius.circular(50)),
                                     child: Text(
-                                      "Blacklisted",
+                                      data.type!.toUpperCase(),
                                       style: chipTextVariant?.copyWith(
                                         color: Colors.white,
                                       ),
                                     ),
                                   ),
-                                ]
-                              ],
-                            ),
-                            Text(
-                              data.name!,
-                              style: breakpoint.isSm
-                                  ? textTheme.headlineSmall
-                                  : textTheme.headlineMedium,
-                            ),
-                            Text(
-                              "${PrimitiveUtils.toReadableNumber(data.followers!.total!.toDouble())} followers",
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontWeight:
-                                    breakpoint.isSm ? null : FontWeight.bold,
+                                  if (isBlackListed) ...[
+                                    const SizedBox(width: 5),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      decoration: BoxDecoration(
+                                          color: Colors.red[400],
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                      child: Text(
+                                        "Blacklisted",
+                                        style: chipTextVariant?.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (auth != null)
-                                  HookBuilder(
-                                    builder: (context) {
-                                      final isFollowingQuery = useQueries.artist
-                                          .doIFollow(ref, artistId);
+                              Text(
+                                data.name!,
+                                style: breakpoint.isSm
+                                    ? textTheme.headlineSmall
+                                    : textTheme.headlineMedium,
+                              ),
+                              Text(
+                                "${PrimitiveUtils.toReadableNumber(data.followers!.total!.toDouble())} followers",
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontWeight:
+                                      breakpoint.isSm ? null : FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (auth != null)
+                                    HookBuilder(
+                                      builder: (context) {
+                                        final isFollowingQuery = useQueries
+                                            .artist
+                                            .doIFollow(ref, artistId);
 
-                                      if (isFollowingQuery.isLoading ||
-                                          !isFollowingQuery.hasData) {
-                                        return const SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
+                                        if (isFollowingQuery.isLoading ||
+                                            !isFollowingQuery.hasData) {
+                                          return const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
 
-                                      final queryBowl = QueryClient.of(context);
+                                        final queryBowl =
+                                            QueryClient.of(context);
 
-                                      return FilledButton(
-                                        onPressed: () async {
-                                          try {
+                                        return FilledButton(
+                                          onPressed: () async {
+                                            try {
+                                              isFollowingQuery.data!
+                                                  ? await spotify.me.unfollow(
+                                                      FollowingType.artist,
+                                                      [artistId],
+                                                    )
+                                                  : await spotify.me.follow(
+                                                      FollowingType.artist,
+                                                      [artistId],
+                                                    );
+                                              await isFollowingQuery.refresh();
+
+                                              queryBowl
+                                                  .refreshInfiniteQueryAllPages(
+                                                      "user-following-artists");
+                                            } finally {
+                                              QueryClient.of(context).refreshQuery(
+                                                  "user-follows-artists-query/$artistId");
+                                            }
+                                          },
+                                          child: Text(
                                             isFollowingQuery.data!
-                                                ? await spotify.me.unfollow(
-                                                    FollowingType.artist,
-                                                    [artistId],
-                                                  )
-                                                : await spotify.me.follow(
-                                                    FollowingType.artist,
-                                                    [artistId],
-                                                  );
-                                            await isFollowingQuery.refresh();
+                                                ? "Following"
+                                                : "Follow",
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  const SizedBox(width: 5),
+                                  IconButton(
+                                    tooltip: "Add to blacklisted artists",
+                                    icon: Icon(
+                                      SpotubeIcons.userRemove,
+                                      color: !isBlackListed
+                                          ? Colors.red[400]
+                                          : Colors.white,
+                                    ),
+                                    style: IconButton.styleFrom(
+                                      backgroundColor: isBlackListed
+                                          ? Colors.red[400]
+                                          : null,
+                                    ),
+                                    onPressed: () async {
+                                      if (isBlackListed) {
+                                        ref
+                                            .read(BlackListNotifier
+                                                .provider.notifier)
+                                            .remove(
+                                              BlacklistedElement.artist(
+                                                  data.id!, data.name!),
+                                            );
+                                      } else {
+                                        ref
+                                            .read(BlackListNotifier
+                                                .provider.notifier)
+                                            .add(
+                                              BlacklistedElement.artist(
+                                                  data.id!, data.name!),
+                                            );
+                                      }
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(SpotubeIcons.share),
+                                    onPressed: () async {
+                                      await Clipboard.setData(
+                                        ClipboardData(
+                                            text: data.externalUrls?.spotify),
+                                      );
 
-                                            queryBowl
-                                                .refreshInfiniteQueryAllPages(
-                                                    "user-following-artists");
-                                          } finally {
-                                            QueryClient.of(context).refreshQuery(
-                                                "user-follows-artists-query/$artistId");
-                                          }
-                                        },
-                                        child: Text(
-                                          isFollowingQuery.data!
-                                              ? "Following"
-                                              : "Follow",
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          width: 300,
+                                          behavior: SnackBarBehavior.floating,
+                                          content: Text(
+                                            "Artist URL copied to clipboard",
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
                                       );
                                     },
-                                  ),
-                                const SizedBox(width: 5),
-                                IconButton(
-                                  tooltip: "Add to blacklisted artists",
-                                  icon: Icon(
-                                    SpotubeIcons.userRemove,
-                                    color: !isBlackListed
-                                        ? Colors.red[400]
-                                        : Colors.white,
-                                  ),
-                                  style: IconButton.styleFrom(
-                                    backgroundColor:
-                                        isBlackListed ? Colors.red[400] : null,
-                                  ),
-                                  onPressed: () async {
-                                    if (isBlackListed) {
-                                      ref
-                                          .read(BlackListNotifier
-                                              .provider.notifier)
-                                          .remove(
-                                            BlacklistedElement.artist(
-                                                data.id!, data.name!),
-                                          );
-                                    } else {
-                                      ref
-                                          .read(BlackListNotifier
-                                              .provider.notifier)
-                                          .add(
-                                            BlacklistedElement.artist(
-                                                data.id!, data.name!),
-                                          );
-                                    }
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(SpotubeIcons.share),
-                                  onPressed: () async {
-                                    await Clipboard.setData(
-                                      ClipboardData(
-                                          text: data.externalUrls?.spotify),
-                                    );
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 50),
+                    HookBuilder(
+                      builder: (context) {
+                        final topTracksQuery = useQueries.artist.topTracksOf(
+                          ref,
+                          artistId,
+                        );
 
+                        final isPlaylistPlaying =
+                            playlistNotifier.isPlayingPlaylist(
+                          topTracksQuery.data ?? <Track>[],
+                        );
+
+                        if (topTracksQuery.isLoading ||
+                            !topTracksQuery.hasData) {
+                          return const CircularProgressIndicator();
+                        } else if (topTracksQuery.hasError) {
+                          return Center(
+                            child: Text(topTracksQuery.error.toString()),
+                          );
+                        }
+
+                        final topTracks = topTracksQuery.data!;
+
+                        void playPlaylist(List<Track> tracks,
+                            {Track? currentTrack}) async {
+                          currentTrack ??= tracks.first;
+                          if (!isPlaylistPlaying) {
+                            playlistNotifier.loadAndPlay(tracks,
+                                active: tracks.indexWhere(
+                                    (s) => s.id == currentTrack?.id));
+                          } else if (isPlaylistPlaying &&
+                              currentTrack.id != null &&
+                              currentTrack.id != playlist?.activeTrack.id) {
+                            await playlistNotifier.playTrack(currentTrack);
+                          }
+                        }
+
+                        return Column(children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Top Tracks",
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              if (!isPlaylistPlaying)
+                                IconButton(
+                                  icon: const Icon(
+                                    SpotubeIcons.queueAdd,
+                                  ),
+                                  onPressed: () {
+                                    playlistNotifier.add(topTracks.toList());
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                         width: 300,
                                         behavior: SnackBarBehavior.floating,
                                         content: Text(
-                                          "Artist URL copied to clipboard",
+                                          "Added ${topTracks.length} tracks to queue",
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
                                     );
                                   },
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 50),
-                  HookBuilder(
-                    builder: (context) {
-                      final topTracksQuery = useQueries.artist.topTracksOf(
-                        ref,
-                        artistId,
-                      );
-
-                      final isPlaylistPlaying =
-                          playlistNotifier.isPlayingPlaylist(
-                        topTracksQuery.data ?? <Track>[],
-                      );
-
-                      if (topTracksQuery.isLoading || !topTracksQuery.hasData) {
-                        return const CircularProgressIndicator();
-                      } else if (topTracksQuery.hasError) {
-                        return Center(
-                          child: Text(topTracksQuery.error.toString()),
-                        );
-                      }
-
-                      final topTracks = topTracksQuery.data!;
-
-                      void playPlaylist(List<Track> tracks,
-                          {Track? currentTrack}) async {
-                        currentTrack ??= tracks.first;
-                        if (!isPlaylistPlaying) {
-                          playlistNotifier.loadAndPlay(tracks,
-                              active: tracks
-                                  .indexWhere((s) => s.id == currentTrack?.id));
-                        } else if (isPlaylistPlaying &&
-                            currentTrack.id != null &&
-                            currentTrack.id != playlist?.activeTrack.id) {
-                          await playlistNotifier.playTrack(currentTrack);
-                        }
-                      }
-
-                      return Column(children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Top Tracks",
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                            if (!isPlaylistPlaying)
-                              IconButton(
-                                icon: const Icon(
-                                  SpotubeIcons.queueAdd,
                                 ),
-                                onPressed: () {
-                                  playlistNotifier.add(topTracks.toList());
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      width: 300,
-                                      behavior: SnackBarBehavior.floating,
-                                      content: Text(
-                                        "Added ${topTracks.length} tracks to queue",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                },
+                              const SizedBox(width: 5),
+                              IconButton(
+                                icon: Icon(
+                                  isPlaylistPlaying
+                                      ? SpotubeIcons.stop
+                                      : SpotubeIcons.play,
+                                  color: Colors.white,
+                                ),
+                                style: IconButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                ),
+                                onPressed: () =>
+                                    playPlaylist(topTracks.toList()),
+                              )
+                            ],
+                          ),
+                          ...topTracks.toList().asMap().entries.map((track) {
+                            String duration =
+                                "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                            return TrackTile(
+                              playlist,
+                              duration: duration,
+                              track: track,
+                              isActive:
+                                  playlist?.activeTrack.id == track.value.id,
+                              onTrackPlayButtonPressed: (currentTrack) =>
+                                  playPlaylist(
+                                topTracks.toList(),
+                                currentTrack: track.value,
                               ),
-                            const SizedBox(width: 5),
-                            IconButton(
-                              icon: Icon(
-                                isPlaylistPlaying
-                                    ? SpotubeIcons.stop
-                                    : SpotubeIcons.play,
-                                color: Colors.white,
-                              ),
-                              style: IconButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColor,
-                              ),
-                              onPressed: () => playPlaylist(topTracks.toList()),
-                            )
-                          ],
-                        ),
-                        ...topTracks.toList().asMap().entries.map((track) {
-                          String duration =
-                              "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                          return TrackTile(
-                            playlist,
-                            duration: duration,
-                            track: track,
-                            isActive:
-                                playlist?.activeTrack.id == track.value.id,
-                            onTrackPlayButtonPressed: (currentTrack) =>
-                                playPlaylist(
-                              topTracks.toList(),
-                              currentTrack: track.value,
-                            ),
-                          );
-                        }),
-                      ]);
-                    },
-                  ),
-                  const SizedBox(height: 50),
-                  Text(
-                    "Albums",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 10),
-                  ArtistAlbumList(artistId),
-                  const SizedBox(height: 20),
-                  Text(
-                    "Fans also likes",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 10),
-                  HookBuilder(
-                    builder: (context) {
-                      final relatedArtists = useQueries.artist.relatedArtistsOf(
-                        ref,
-                        artistId,
-                      );
-
-                      if (relatedArtists.isLoading || !relatedArtists.hasData) {
-                        return const CircularProgressIndicator();
-                      } else if (relatedArtists.hasError) {
-                        return Center(
-                          child: Text(relatedArtists.error.toString()),
+                            );
+                          }),
+                        ]);
+                      },
+                    ),
+                    const SizedBox(height: 50),
+                    Text(
+                      "Albums",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 10),
+                    ArtistAlbumList(artistId),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Fans also likes",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 10),
+                    HookBuilder(
+                      builder: (context) {
+                        final relatedArtists =
+                            useQueries.artist.relatedArtistsOf(
+                          ref,
+                          artistId,
                         );
-                      }
 
-                      return Center(
-                        child: Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          children: relatedArtists.data!
-                              .map((artist) => ArtistCard(artist))
-                              .toList(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                        if (relatedArtists.isLoading ||
+                            !relatedArtists.hasData) {
+                          return const CircularProgressIndicator();
+                        } else if (relatedArtists.hasError) {
+                          return Center(
+                            child: Text(relatedArtists.error.toString()),
+                          );
+                        }
+
+                        return Center(
+                          child: Wrap(
+                            spacing: 20,
+                            runSpacing: 20,
+                            children: relatedArtists.data!
+                                .map((artist) => ArtistCard(artist))
+                                .toList(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },

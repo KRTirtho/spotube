@@ -75,21 +75,23 @@ class PersonalizedItemCard extends HookWidget {
               child: Waypoint(
                 controller: scrollController,
                 onTouchEdge: hasNextPage ? onFetchMore : null,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  controller: scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: [
-                    ...?playlistItems
-                        ?.map((playlist) => PlaylistCard(playlist)),
-                    ...?albumItems?.map(
-                      (album) => AlbumCard(
-                        TypeConversionUtils.simpleAlbum_X_Album(album),
+                child: SafeArea(
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    controller: scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      ...?playlistItems
+                          ?.map((playlist) => PlaylistCard(playlist)),
+                      ...?albumItems?.map(
+                        (album) => AlbumCard(
+                          TypeConversionUtils.simpleAlbum_X_Album(album),
+                        ),
                       ),
-                    ),
-                    if (hasNextPage) const ShimmerPlaybuttonCard(count: 1),
-                  ],
+                      if (hasNextPage) const ShimmerPlaybuttonCard(count: 1),
+                    ],
+                  ),
                 ),
               ),
             ),

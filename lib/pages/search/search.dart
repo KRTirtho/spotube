@@ -65,7 +65,6 @@ class SearchPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         appBar: kIsDesktop && !kIsMacOS ? const PageWindowTitleBar() : null,
-        extendBody: true,
         body: !authenticationNotifier.isLoggedIn
             ? const AnonymousFallback()
             : Column(
@@ -128,241 +127,250 @@ class SearchPage extends HookConsumerWidget {
                               vertical: 8,
                               horizontal: 20,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (tracks.isNotEmpty)
-                                  Text(
-                                    "Songs",
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge!,
-                                  ),
-                                if (searchTrack.isLoadingPage)
-                                  const CircularProgressIndicator()
-                                else if (searchTrack.hasPageError)
-                                  Text(searchTrack.errors.lastOrNull
-                                          ?.toString() ??
-                                      "")
-                                else
-                                  ...tracks.asMap().entries.map((track) {
-                                    String duration =
-                                        "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                                    return TrackTile(
-                                      playlist,
-                                      track: track,
-                                      duration: duration,
-                                      isActive: playlist?.activeTrack.id ==
-                                          track.value.id,
-                                      onTrackPlayButtonPressed:
-                                          (currentTrack) async {
-                                        final isTrackPlaying =
-                                            playlist?.activeTrack.id ==
-                                                currentTrack.id;
-                                        if (!isTrackPlaying &&
-                                            context.mounted) {
-                                          final shouldPlay =
-                                              (playlist?.tracks.length ?? 0) >
-                                                      20
-                                                  ? await showPromptDialog(
-                                                      context: context,
-                                                      title:
-                                                          "Playing ${currentTrack.name}",
-                                                      message:
-                                                          "This will clear the current queue. "
-                                                          "${playlist?.tracks.length ?? 0} tracks will be removed\n"
-                                                          "Do you want to continue?",
-                                                    )
-                                                  : true;
+                            child: SafeArea(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (tracks.isNotEmpty)
+                                    Text(
+                                      "Songs",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!,
+                                    ),
+                                  if (searchTrack.isLoadingPage)
+                                    const CircularProgressIndicator()
+                                  else if (searchTrack.hasPageError)
+                                    Text(searchTrack.errors.lastOrNull
+                                            ?.toString() ??
+                                        "")
+                                  else
+                                    ...tracks.asMap().entries.map((track) {
+                                      String duration =
+                                          "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                                      return TrackTile(
+                                        playlist,
+                                        track: track,
+                                        duration: duration,
+                                        isActive: playlist?.activeTrack.id ==
+                                            track.value.id,
+                                        onTrackPlayButtonPressed:
+                                            (currentTrack) async {
+                                          final isTrackPlaying =
+                                              playlist?.activeTrack.id ==
+                                                  currentTrack.id;
+                                          if (!isTrackPlaying &&
+                                              context.mounted) {
+                                            final shouldPlay =
+                                                (playlist?.tracks.length ?? 0) >
+                                                        20
+                                                    ? await showPromptDialog(
+                                                        context: context,
+                                                        title:
+                                                            "Playing ${currentTrack.name}",
+                                                        message:
+                                                            "This will clear the current queue. "
+                                                            "${playlist?.tracks.length ?? 0} tracks will be removed\n"
+                                                            "Do you want to continue?",
+                                                      )
+                                                    : true;
 
-                                          if (shouldPlay) {
-                                            await playlistNotifier
-                                                .loadAndPlay([currentTrack]);
+                                            if (shouldPlay) {
+                                              await playlistNotifier
+                                                  .loadAndPlay([currentTrack]);
+                                            }
                                           }
-                                        }
-                                      },
-                                    );
-                                  }),
-                                if (searchTrack.hasNextPage &&
-                                    tracks.isNotEmpty)
-                                  Center(
-                                    child: TextButton(
-                                      onPressed: searchTrack.isRefreshingPage
-                                          ? null
-                                          : () => searchTrack.fetchNext(),
-                                      child: searchTrack.isRefreshingPage
-                                          ? const CircularProgressIndicator()
-                                          : const Text("Load more"),
+                                        },
+                                      );
+                                    }),
+                                  if (searchTrack.hasNextPage &&
+                                      tracks.isNotEmpty)
+                                    Center(
+                                      child: TextButton(
+                                        onPressed: searchTrack.isRefreshingPage
+                                            ? null
+                                            : () => searchTrack.fetchNext(),
+                                        child: searchTrack.isRefreshingPage
+                                            ? const CircularProgressIndicator()
+                                            : const Text("Load more"),
+                                      ),
                                     ),
-                                  ),
-                                if (playlists.isNotEmpty)
-                                  Text(
-                                    "Playlists",
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge!,
-                                  ),
-                                const SizedBox(height: 10),
-                                ScrollConfiguration(
-                                  behavior:
-                                      ScrollConfiguration.of(context).copyWith(
-                                    dragDevices: {
-                                      PointerDeviceKind.touch,
-                                      PointerDeviceKind.mouse,
-                                    },
-                                  ),
-                                  child: Scrollbar(
-                                    scrollbarOrientation:
-                                        breakpoint > Breakpoints.md
-                                            ? ScrollbarOrientation.bottom
-                                            : ScrollbarOrientation.top,
-                                    controller: playlistController,
-                                    child: Waypoint(
-                                      onTouchEdge: () {
-                                        searchPlaylist.fetchNext();
+                                  if (playlists.isNotEmpty)
+                                    Text(
+                                      "Playlists",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!,
+                                    ),
+                                  const SizedBox(height: 10),
+                                  ScrollConfiguration(
+                                    behavior: ScrollConfiguration.of(context)
+                                        .copyWith(
+                                      dragDevices: {
+                                        PointerDeviceKind.touch,
+                                        PointerDeviceKind.mouse,
                                       },
+                                    ),
+                                    child: Scrollbar(
+                                      scrollbarOrientation:
+                                          breakpoint > Breakpoints.md
+                                              ? ScrollbarOrientation.bottom
+                                              : ScrollbarOrientation.top,
                                       controller: playlistController,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
+                                      child: Waypoint(
+                                        onTouchEdge: () {
+                                          searchPlaylist.fetchNext();
+                                        },
                                         controller: playlistController,
-                                        child: Row(
-                                          children: [
-                                            ...playlists.mapIndexed(
-                                              (i, playlist) {
-                                                if (i == playlists.length - 1 &&
-                                                    searchPlaylist
-                                                        .hasNextPage) {
-                                                  return const ShimmerPlaybuttonCard(
-                                                      count: 1);
-                                                }
-                                                return PlaylistCard(playlist);
-                                              },
-                                            ),
-                                          ],
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          controller: playlistController,
+                                          child: Row(
+                                            children: [
+                                              ...playlists.mapIndexed(
+                                                (i, playlist) {
+                                                  if (i ==
+                                                          playlists.length -
+                                                              1 &&
+                                                      searchPlaylist
+                                                          .hasNextPage) {
+                                                    return const ShimmerPlaybuttonCard(
+                                                        count: 1);
+                                                  }
+                                                  return PlaylistCard(playlist);
+                                                },
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                if (searchPlaylist.isLoadingPage)
-                                  const CircularProgressIndicator(),
-                                if (searchPlaylist.hasPageError)
-                                  Text(
-                                    searchPlaylist.errors.lastOrNull
-                                            ?.toString() ??
-                                        "",
-                                  ),
-                                const SizedBox(height: 20),
-                                if (artists.isNotEmpty)
-                                  Text(
-                                    "Artists",
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge!,
-                                  ),
-                                const SizedBox(height: 10),
-                                ScrollConfiguration(
-                                  behavior:
-                                      ScrollConfiguration.of(context).copyWith(
-                                    dragDevices: {
-                                      PointerDeviceKind.touch,
-                                      PointerDeviceKind.mouse,
-                                    },
-                                  ),
-                                  child: Scrollbar(
-                                    controller: artistController,
-                                    child: Waypoint(
+                                  if (searchPlaylist.isLoadingPage)
+                                    const CircularProgressIndicator(),
+                                  if (searchPlaylist.hasPageError)
+                                    Text(
+                                      searchPlaylist.errors.lastOrNull
+                                              ?.toString() ??
+                                          "",
+                                    ),
+                                  const SizedBox(height: 20),
+                                  if (artists.isNotEmpty)
+                                    Text(
+                                      "Artists",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!,
+                                    ),
+                                  const SizedBox(height: 10),
+                                  ScrollConfiguration(
+                                    behavior: ScrollConfiguration.of(context)
+                                        .copyWith(
+                                      dragDevices: {
+                                        PointerDeviceKind.touch,
+                                        PointerDeviceKind.mouse,
+                                      },
+                                    ),
+                                    child: Scrollbar(
                                       controller: artistController,
-                                      onTouchEdge: () {
-                                        searchArtist.fetchNext();
-                                      },
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
+                                      child: Waypoint(
                                         controller: artistController,
-                                        child: Row(
-                                          children: [
-                                            ...artists.mapIndexed(
-                                              (i, artist) {
-                                                if (i == artists.length - 1 &&
-                                                    searchArtist.hasNextPage) {
+                                        onTouchEdge: () {
+                                          searchArtist.fetchNext();
+                                        },
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          controller: artistController,
+                                          child: Row(
+                                            children: [
+                                              ...artists.mapIndexed(
+                                                (i, artist) {
+                                                  if (i == artists.length - 1 &&
+                                                      searchArtist
+                                                          .hasNextPage) {
+                                                    return const ShimmerPlaybuttonCard(
+                                                        count: 1);
+                                                  }
+                                                  return Container(
+                                                    margin: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 15),
+                                                    child: ArtistCard(artist),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (searchArtist.isLoadingPage)
+                                    const CircularProgressIndicator(),
+                                  if (searchArtist.hasPageError)
+                                    Text(
+                                      searchArtist.errors.lastOrNull
+                                              ?.toString() ??
+                                          "",
+                                    ),
+                                  const SizedBox(height: 20),
+                                  if (albums.isNotEmpty)
+                                    Text(
+                                      "Albums",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!,
+                                    ),
+                                  const SizedBox(height: 10),
+                                  ScrollConfiguration(
+                                    behavior: ScrollConfiguration.of(context)
+                                        .copyWith(
+                                      dragDevices: {
+                                        PointerDeviceKind.touch,
+                                        PointerDeviceKind.mouse,
+                                      },
+                                    ),
+                                    child: Scrollbar(
+                                      controller: albumController,
+                                      child: Waypoint(
+                                        controller: albumController,
+                                        onTouchEdge: () {
+                                          searchAlbum.fetchNext();
+                                        },
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          controller: albumController,
+                                          child: Row(
+                                            children: [
+                                              ...albums.mapIndexed((i, album) {
+                                                if (i == albums.length - 1 &&
+                                                    searchAlbum.hasNextPage) {
                                                   return const ShimmerPlaybuttonCard(
                                                       count: 1);
                                                 }
-                                                return Container(
-                                                  margin: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 15),
-                                                  child: ArtistCard(artist),
+                                                return AlbumCard(
+                                                  TypeConversionUtils
+                                                      .simpleAlbum_X_Album(
+                                                    album,
+                                                  ),
                                                 );
-                                              },
-                                            ),
-                                          ],
+                                              }),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                if (searchArtist.isLoadingPage)
-                                  const CircularProgressIndicator(),
-                                if (searchArtist.hasPageError)
-                                  Text(
-                                    searchArtist.errors.lastOrNull
-                                            ?.toString() ??
-                                        "",
-                                  ),
-                                const SizedBox(height: 20),
-                                if (albums.isNotEmpty)
-                                  Text(
-                                    "Albums",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!,
-                                  ),
-                                const SizedBox(height: 10),
-                                ScrollConfiguration(
-                                  behavior:
-                                      ScrollConfiguration.of(context).copyWith(
-                                    dragDevices: {
-                                      PointerDeviceKind.touch,
-                                      PointerDeviceKind.mouse,
-                                    },
-                                  ),
-                                  child: Scrollbar(
-                                    controller: albumController,
-                                    child: Waypoint(
-                                      controller: albumController,
-                                      onTouchEdge: () {
-                                        searchAlbum.fetchNext();
-                                      },
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        controller: albumController,
-                                        child: Row(
-                                          children: [
-                                            ...albums.mapIndexed((i, album) {
-                                              if (i == albums.length - 1 &&
-                                                  searchAlbum.hasNextPage) {
-                                                return const ShimmerPlaybuttonCard(
-                                                    count: 1);
-                                              }
-                                              return AlbumCard(
-                                                TypeConversionUtils
-                                                    .simpleAlbum_X_Album(
-                                                  album,
-                                                ),
-                                              );
-                                            }),
-                                          ],
-                                        ),
-                                      ),
+                                  if (searchAlbum.isLoadingPage)
+                                    const CircularProgressIndicator(),
+                                  if (searchAlbum.hasPageError)
+                                    Text(
+                                      searchAlbum.errors.lastOrNull
+                                              ?.toString() ??
+                                          "",
                                     ),
-                                  ),
-                                ),
-                                if (searchAlbum.isLoadingPage)
-                                  const CircularProgressIndicator(),
-                                if (searchAlbum.hasPageError)
-                                  Text(
-                                    searchAlbum.errors.lastOrNull?.toString() ??
-                                        "",
-                                  ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),

@@ -63,11 +63,9 @@ class UserAlbums extends HookConsumerWidget {
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Material(
-          type: MaterialType.transparency,
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SafeArea(
             child: Column(
               children: [
                 TextField(
