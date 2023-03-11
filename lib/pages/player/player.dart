@@ -11,7 +11,6 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/shared/spotube_marquee_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
@@ -93,8 +92,8 @@ class PlayerView extends HookConsumerWidget {
                       children: [
                         SizedBox(
                           height: 30,
-                          child: SpotubeMarqueeText(
-                            text: currentTrack?.name ?? "Not playing",
+                          child: Text(
+                            currentTrack?.name ?? "Not playing",
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall
@@ -102,7 +101,6 @@ class PlayerView extends HookConsumerWidget {
                                   fontWeight: FontWeight.bold,
                                   color: paletteColor.titleTextColor,
                                 ),
-                            isHovering: true,
                           ),
                         ),
                         if (isLocalTrack)

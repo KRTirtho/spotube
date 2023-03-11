@@ -35,16 +35,20 @@ class CategoryQueries {
     );
   }
 
-  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> playlistsOf(
+  InfiniteQuery<Page<PlaylistSimple?>, dynamic, int> playlistsOf(
     WidgetRef ref,
     String category,
   ) {
-    return useSpotifyInfiniteQuery<Page<PlaylistSimple>, dynamic, int>(
+    return useSpotifyInfiniteQuery<Page<PlaylistSimple?>, dynamic, int>(
       "category-playlists/$category",
       (pageParam, spotify) async {
-        final playlists = await spotify.playlists
-            .getByCategoryId(category)
-            .getPage(5, pageParam);
+        final playlists = await Pages<PlaylistSimple?>(
+          spotify,
+          "v1/browse/categories/$category/playlists",
+          (json) => json == null ? null : PlaylistSimple.fromJson(json),
+          'playlists',
+          (json) => PlaylistsFeatured.fromJson(json),
+        ).getPage(5, pageParam);
 
         return playlists;
       },

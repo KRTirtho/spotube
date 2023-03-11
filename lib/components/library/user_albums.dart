@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
-import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
@@ -28,9 +27,6 @@ class UserAlbums extends HookConsumerWidget {
       sm: 0,
       others: 20,
     );
-    final viewType = MediaQuery.of(context).size.width < 480
-        ? PlaybuttonCardViewType.list
-        : PlaybuttonCardViewType.square;
 
     final searchText = useState('');
 
@@ -82,7 +78,6 @@ class UserAlbums extends HookConsumerWidget {
                   alignment: WrapAlignment.center,
                   children: albums
                       .map((album) => AlbumCard(
-                            viewType: viewType,
                             TypeConversionUtils.simpleAlbum_X_Album(album),
                           ))
                       .toList(),

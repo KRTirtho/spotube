@@ -6,7 +6,6 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
-import 'package:spotube/components/shared/spotube_marquee_text.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_synced_lyrics.dart';
@@ -69,118 +68,115 @@ class SyncedLyrics extends HookConsumerWidget {
             : textTheme.headlineMedium?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
 
-    return HookBuilder(builder: (context) {
-      return Stack(
-        children: [
-          Column(
-            children: [
-              if (isModal != true)
-                Center(
-                  child: SpotubeMarqueeText(
-                    text: playlist?.activeTrack.name ?? "Not Playing",
-                    style: headlineTextStyle,
-                    isHovering: true,
-                  ),
+    return Stack(
+      children: [
+        Column(
+          children: [
+            if (isModal != true)
+              Center(
+                child: Text(
+                  playlist?.activeTrack.name ?? "Not Playing",
+                  style: headlineTextStyle,
                 ),
-              if (isModal != true)
-                Center(
-                  child: Text(
-                    TypeConversionUtils.artists_X_String<Artist>(
-                        playlist?.activeTrack.artists ?? []),
-                    style: breakpoint >= Breakpoints.md
-                        ? textTheme.headlineSmall
-                        : textTheme.titleLarge,
-                  ),
+              ),
+            if (isModal != true)
+              Center(
+                child: Text(
+                  TypeConversionUtils.artists_X_String<Artist>(
+                      playlist?.activeTrack.artists ?? []),
+                  style: breakpoint >= Breakpoints.md
+                      ? textTheme.headlineSmall
+                      : textTheme.titleLarge,
                 ),
-              if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
-                Expanded(
-                  child: ListView.builder(
-                    controller: controller,
-                    itemCount: lyricValue.lyrics.length,
-                    itemBuilder: (context, index) {
-                      final lyricSlice = lyricValue.lyrics[index];
-                      final isActive = lyricSlice.time.inSeconds == currentTime;
+              ),
+            if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  controller: controller,
+                  itemCount: lyricValue.lyrics.length,
+                  itemBuilder: (context, index) {
+                    final lyricSlice = lyricValue.lyrics[index];
+                    final isActive = lyricSlice.time.inSeconds == currentTime;
 
-                      if (isActive) {
-                        controller.scrollToIndex(
-                          index,
-                          preferPosition: AutoScrollPosition.middle,
-                        );
-                      }
-                      return AutoScrollTag(
-                        key: ValueKey(index),
-                        index: index,
-                        controller: controller,
-                        child: lyricSlice.text.isEmpty
-                            ? Container()
-                            : Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: AnimatedDefaultTextStyle(
-                                    duration: const Duration(milliseconds: 250),
-                                    style: TextStyle(
-                                      color: isActive
-                                          ? Colors.white
-                                          : palette.bodyTextColor,
-                                      fontWeight: isActive
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      fontSize: (isActive ? 30 : 26) *
-                                          (textZoomLevel.value / 100),
-                                    ),
-                                    child: Text(
-                                      lyricSlice.text,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                    ),
+                    if (isActive) {
+                      controller.scrollToIndex(
+                        index,
+                        preferPosition: AutoScrollPosition.middle,
+                      );
+                    }
+                    return AutoScrollTag(
+                      key: ValueKey(index),
+                      index: index,
+                      controller: controller,
+                      child: lyricSlice.text.isEmpty
+                          ? Container()
+                          : Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: AnimatedDefaultTextStyle(
+                                  duration: const Duration(milliseconds: 250),
+                                  style: TextStyle(
+                                    color: isActive
+                                        ? Colors.white
+                                        : palette.bodyTextColor,
+                                    fontWeight: isActive
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: (isActive ? 30 : 26) *
+                                        (textZoomLevel.value / 100),
+                                  ),
+                                  child: Text(
+                                    lyricSlice.text,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
-                      );
-                    },
-                  ),
-                ),
-              if (playlist?.activeTrack != null &&
-                  (lyricValue == null || lyricValue.lyrics.isEmpty == true))
-                const Expanded(child: ShimmerLyrics()),
-            ],
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Builder(builder: (context) {
-              final actions = [
-                ZoomControls(
-                  value: delay,
-                  onChanged: (value) => ref.read(_delay.notifier).state = value,
-                  interval: 1,
-                  unit: "s",
-                  increaseIcon: const Icon(SpotubeIcons.add),
-                  decreaseIcon: const Icon(SpotubeIcons.remove),
-                  direction: isModal == true ? Axis.horizontal : Axis.vertical,
-                ),
-                ZoomControls(
-                  value: textZoomLevel.value,
-                  onChanged: (value) => textZoomLevel.value = value,
-                  min: 50,
-                  max: 200,
-                ),
-              ];
-
-              return isModal == true
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: actions,
-                    )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: actions,
+                            ),
                     );
-            }),
-          ),
-        ],
-      );
-    });
+                  },
+                ),
+              ),
+            if (playlist?.activeTrack != null &&
+                (lyricValue == null || lyricValue.lyrics.isEmpty == true))
+              const Expanded(child: ShimmerLyrics()),
+          ],
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Builder(builder: (context) {
+            final actions = [
+              ZoomControls(
+                value: delay,
+                onChanged: (value) => ref.read(_delay.notifier).state = value,
+                interval: 1,
+                unit: "s",
+                increaseIcon: const Icon(SpotubeIcons.add),
+                decreaseIcon: const Icon(SpotubeIcons.remove),
+                direction: isModal == true ? Axis.horizontal : Axis.vertical,
+              ),
+              ZoomControls(
+                value: textZoomLevel.value,
+                onChanged: (value) => textZoomLevel.value = value,
+                min: 50,
+                max: 200,
+              ),
+            ];
+
+            return isModal == true
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: actions,
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: actions,
+                  );
+          }),
+        ),
+      ],
+    );
   }
 }

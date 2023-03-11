@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
-import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
@@ -28,9 +27,6 @@ class UserPlaylists extends HookConsumerWidget {
       sm: 0,
       others: 20,
     );
-    final viewType = MediaQuery.of(context).size.width < 480
-        ? PlaybuttonCardViewType.list
-        : PlaybuttonCardViewType.square;
     final auth = ref.watch(AuthenticationNotifier.provider);
 
     final playlistsQuery = useQueries.playlist.ofMine(ref);
@@ -81,12 +77,7 @@ class UserPlaylists extends HookConsumerWidget {
 
     final children = [
       const PlaylistCreateDialog(),
-      ...playlists
-          .map((playlist) => PlaylistCard(
-                playlist,
-                viewType: viewType,
-              ))
-          .toList(),
+      ...playlists.map((playlist) => PlaylistCard(playlist)).toList(),
     ];
     return RefreshIndicator(
       onRefresh: playlistsQuery.refresh,

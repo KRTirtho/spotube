@@ -13,11 +13,9 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistCard extends HookConsumerWidget {
   final PlaylistSimple playlist;
-  final PlaybuttonCardViewType viewType;
   const PlaylistCard(
     this.playlist, {
     Key? key,
-    this.viewType = PlaybuttonCardViewType.square,
   }) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
@@ -43,9 +41,9 @@ class PlaylistCard extends HookConsumerWidget {
     final spotify = ref.watch(spotifyProvider);
 
     return PlaybuttonCard(
-      viewType: viewType,
       margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
       title: playlist.name!,
+      description: playlist.description,
       imageUrl: TypeConversionUtils.image_X_UrlString(
         playlist.images,
         placeholder: ImagePlaceholder.collection,

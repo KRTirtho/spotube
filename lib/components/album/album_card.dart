@@ -33,11 +33,9 @@ enum AlbumType {
 
 class AlbumCard extends HookConsumerWidget {
   final Album album;
-  final PlaybuttonCardViewType viewType;
   const AlbumCard(
     this.album, {
     Key? key,
-    this.viewType = PlaybuttonCardViewType.square,
   }) : super(key: key);
 
   @override
@@ -65,7 +63,6 @@ class AlbumCard extends HookConsumerWidget {
           album.images,
           placeholder: ImagePlaceholder.collection,
         ),
-        viewType: viewType,
         margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
         isPlaying: isPlaylistPlaying,
         isLoading: isPlaylistPlaying && playlist?.isLoading == true,

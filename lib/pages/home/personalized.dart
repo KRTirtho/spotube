@@ -47,22 +47,20 @@ class PersonalizedItemCard extends HookWidget {
         )
         .toList();
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
-        ),
-        SizedBox(
-          height: playlists != null ? 245 : 285,
-          child: ScrollConfiguration(
+          ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(
               dragDevices: {
                 PointerDeviceKind.touch,
@@ -75,12 +73,13 @@ class PersonalizedItemCard extends HookWidget {
               child: Waypoint(
                 controller: scrollController,
                 onTouchEdge: hasNextPage ? onFetchMore : null,
-                child: SafeArea(
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    controller: scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  controller: scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       ...?playlistItems
                           ?.map((playlist) => PlaylistCard(playlist)),
@@ -96,8 +95,8 @@ class PersonalizedItemCard extends HookWidget {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -111,22 +110,27 @@ class PersonalizedPage extends HookConsumerWidget {
 
     final newReleases = useQueries.album.newReleases(ref);
 
-    return ListView(
-      children: [
-        PersonalizedItemCard(
-          playlists:
-              featuredPlaylistsQuery.pages.whereType<Page<PlaylistSimple>>(),
-          title: 'Featured',
-          hasNextPage: featuredPlaylistsQuery.hasNextPage,
-          onFetchMore: featuredPlaylistsQuery.fetchNext,
+    return SingleChildScrollView(
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PersonalizedItemCard(
+              playlists: featuredPlaylistsQuery.pages
+                  .whereType<Page<PlaylistSimple>>(),
+              title: 'Featured',
+              hasNextPage: featuredPlaylistsQuery.hasNextPage,
+              onFetchMore: featuredPlaylistsQuery.fetchNext,
+            ),
+            PersonalizedItemCard(
+              albums: newReleases.pages.whereType<Page<AlbumSimple>>(),
+              title: 'New Releases',
+              hasNextPage: newReleases.hasNextPage,
+              onFetchMore: newReleases.fetchNext,
+            ),
+          ],
         ),
-        PersonalizedItemCard(
-          albums: newReleases.pages.whereType<Page<AlbumSimple>>(),
-          title: 'New Releases',
-          hasNextPage: newReleases.hasNextPage,
-          onFetchMore: newReleases.fetchNext,
-        ),
-      ],
+      ),
     );
   }
 }
