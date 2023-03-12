@@ -1,82 +1,61 @@
 name: 🐛 Bug
-description: Report a bug or incorrect behavior
-title: "[Bug] <title>"
+description: Report a bug or an incorrect behavior
+title: "Write the title here"
 labels:
   - bug
-  - good first issue
-assignees:
-  - KRTirtho
+
 body:
   - type: checkboxes
     attributes:
       label: Is there an existing issue for this?
-      description: Please search to see if an issue already exists for the bug you encountered.
+      description: Make sure to check if this issue is a duplicate.
       options:
         - label: I have searched the existing issues
           required: true
   - type: textarea
     attributes:
       label: Current Behavior
-      description: Tell us what you're experiencing concisely.
+      description: Write what you are experiencing currently.
     validations:
       required: true
   - type: textarea
     attributes:
       label: Expected Behavior
-      description: Let us know what you expected to happen concisely.
+      description: Write what you expected to happen.
     validations:
       required: true
   - type: textarea
     attributes:
-      label: Steps To Reproduce
-      description: Steps to reproduce the behavior.
+      label: Steps to reproduce
+      description: Steps to reproduce the issue. A not well written description might delay the resolve of it.
       placeholder: |
-        1. In this environment...
-        2. With this config...
-        3. Run '...'
-        4. See error...
+        1. I opened the app
+        2. I did this
+        3. And that
+        4. Then this happened
     validations:
-      required: false
+      required: true
   - type: input
-    attributes:
-      label: Spotube Version
-      description: In which version of Spotube did you encounter this bug?
-      placeholder: e.g. v2.3.0
-  - type: dropdown
-    attributes:
+      attributes:
       label: Operating System
-      description: In which OS you're experiencing the bug?
-      multiple: true
-      options:
-        - "Android"
-        - "Linux"
-        - "Windows"
-        - "Mac OS"
+      description: The OS in which you used Spotube to face the issue.
+      placeholder: Android, Linux, macOS or Windows? Make sure to include the version too.
     validations:
       required: true
   - type: input
     attributes:
-      label: Linux Distribution (if applicable)
-      description: Tell us in what Linux Distribution you're experiencing the bug.
-      placeholder: Arch Linux
-    validations:
-      required: false
-  - type: input
-    attributes:
-      label: Operating System Version
-      description: In which version of your OS you're experiencing the bug?
-      placeholder: e.g. Android 10
-    validations:
-      required: true
+      label: Spotube version
+      description: In which version of Spotube did you encounter this bug?
+      placeholder: (e.g.) v2.7.0
   - type: dropdown
     attributes:
-      label: Installation Source
-      description: How did you install Spotube?
+      label: Installation source
+      description: Where did you install Spotube from?
       multiple: true
       options:
-        - "Official Website (spotube.netlify.app)"
-        - "Github Release (Binary)"
-        - "Github Actions (Nightly Binary)"
+        - "Website (spotube.netlify.app)"
+        - "GitHub Releases (Binary)"
+        - "GitHub Actions (Nightly Binary)"
         - "F-Droid (Android)"
         - "Arch User Repository (AUR)"
         - "Flathub (Flatpak)"
@@ -85,10 +64,9 @@ body:
         - "Scoop (Windows)"
     validations:
       required: true
-
   - type: textarea
     attributes:
       label: Additional information
-      description: Anything else you'd like to add?
+      description: Anything else you'd like to include?
     validations:
       required: false
