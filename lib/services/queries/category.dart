@@ -1,5 +1,4 @@
 import 'package:fl_query/fl_query.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
@@ -9,8 +8,6 @@ class CategoryQueries {
 
   InfiniteQuery<Page<Category>, dynamic, int> list(
       WidgetRef ref, String recommendationMarket) {
-    final context = useContext();
-
     return useSpotifyInfiniteQuery<Page<Category>, dynamic, int>(
       "category-playlists",
       (pageParam, spotify) async {
@@ -30,10 +27,6 @@ class CategoryQueries {
         }
         return lastPageData.nextOffset;
       },
-      refreshConfig: RefreshConfig.withDefaults(
-        context,
-        staleDuration: const Duration(minutes: 30),
-      ),
       ref: ref,
     );
   }

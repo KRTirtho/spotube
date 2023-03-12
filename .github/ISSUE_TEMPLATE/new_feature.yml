@@ -1,53 +1,38 @@
 name: ✨ New Feature
-assignees:
-  - KRTirtho
 description: Suggest an idea
-title: "[Feature] <title>"
+title: "Write the title here"
 labels:
   - enhancement
-  - good first issue
 
 body:
   - type: checkboxes
     attributes:
       label: Is there an existing issue for this?
-      description: Please search to see if an issue already exists for the bug you encountered.
+      description: Make sure to check if this issue is a duplicate.
       options:
         - label: I have searched the existing issues
           required: true
-  - type: dropdown
-    attributes:
-      label: Category of the Feature
-      description: In which category you think your feature belongs to.
-      multiple: true
-      options:
-        - UI Improvements
-        - Logical Improvements
-        - More Efficiency
-        - Performance Improvements
-        - UX Improvements
-        - Code Refactor
-        - Unable to categorize
-  - type: input
-    attributes:
-      label: Credits
-      description: Who've contributed to this idea of this feature?
-    validations:
-      required: true
   - type: textarea
     attributes:
       label: Pain
       description: Explain the pain you're experiencing.
-      placeholder: e.g. I don't like that I've to do this...
+      placeholder: I don't like that I've to do this / I'd like to have that
     validations:
       required: true
   - type: textarea
     attributes:
-      label: Suggested Solution
-      description: Tell us about your solution
+      label: Suggested solution
+      description: Tell us about a solution you can think of
+      placeholder: You could add that / change this / use that
     validations:
       required: true
   - type: textarea
     attributes:
-      label: Useful resources/references
-      description: Provide us with some useful resources/references which will help us implement your solution.
+      label: Useful resources
+      description: Provide us with some useful resource which could help us implement your suggestion.
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: Anything else you'd like to include?
+    validations:
+      required: false

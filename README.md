@@ -26,7 +26,7 @@
 </p>
 
 
-Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It utilizes the power of Spotify & Youtube's public API & creates a hazardless, performant & resource friendly User Experience
+Spotube is a [Flutter](https://flutter.dev) based lightweight Spotify client. It utilizes the power of Spotify & Youtube's public APIs to create a reliable, robust & resource-light user experience.
 
 #### <p align="center">Desktop</p>
 
@@ -44,21 +44,21 @@ Spotube is a [Flutter](https://flutter.dev) based lightweight spotify client. It
 
 # Features
 
-Following are the features that currently spotube offers:
+Following are the features that currently Spotube offers:
 
-- Open Source
-- Anonymous/Guest Login
-- Cross platform
+- Open source/libre software
+- Anonymous/guest login
+- Cross platform support
 - No telemetry, diagnostics or user data collection
-- Lightweight & resource friendly
+- Lightweight & resource-friendly
 - Native performance (Thanks to Flutter+Skia)
-- Playback control is on user's machine instead of server based
-- Small size & less data hungry
-- No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
-- Synced Lyrics
-- Downloadable track
+- Playback control is done locally instead of on the server
+- Small size & less data usage
+- No Spotify or YouTube ads since it uses all public & free APIs (It is still recommended to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify. Purchasing Spotify Premium is usually the best way to support their valuable creations.)
+- Time synced lyrics
+- Downloadable tracks
 
-# Support this project
+# Support development
 
 <a href="https://patreon.com/krtirtho"><img src="https://user-images.githubusercontent.com/61944859/180249027-678b01b8-c336-451e-b147-6d84a5b9d0e7.png" width="250"/></a>
 [!["Donate to out Collective"](https://opencollective.com/spotube/donate/button.png?color=blue)](https://opencollective.com/spotube)
@@ -66,27 +66,27 @@ Following are the features that currently spotube offers:
 
 # Installation
 
-I'm always releasing newer versions of binary of the software each 2-3 month with minor changes & each 6-8 month with major changes. Grab the binaries
+I'm always releasing newer versions of binaries of the software every 2-3 months with minor changes & every 6-8 months with major changes. Grab them!
 
 | Platform                                        | Package/Installation Method                                                                                                                                                                                                                                                                                                     |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Android                                         | [<img width='240' alt='Android Download' src='https://www.remcsteuben.com/sites/default/files/images/apkdaddy%20download.png'/>][android-dlink]<br/>[<img width='240' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink]       |
-| Debian/Ubuntu                                   | [<img width='240' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                                                      |
-| Fedora/OpenSuse                                 | [<img width='240' alt='Linux Fedora/OpenSuse Download' src='https://user-images.githubusercontent.com/61944859/223638350-5926b9da-04d6-4edd-931d-ad533e4ff058.png'/>][rpm-dlink] <br/> For Fedora: `sudo dnf install ./Spotube-linux-x86_64.rpm`<br/> For OpenSuse: `sudo zypper in ./Spotube-linux-x86_64.rpm` |
-| Flatpak                                         | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>                                                                                        |
+| Android                                         | [<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/114044633/223920025-83687de0-e463-4c5d-8122-e06e4bb7d40c.png'/>][android-dlink]<br/>[<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink]       |
+| Debian/Ubuntu                                   | [<img width='220' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                                                      |
+| Fedora/OpenSuse                                 | [<img width='220' alt='Linux Fedora/OpenSuse Download' src='https://user-images.githubusercontent.com/61944859/223638350-5926b9da-04d6-4edd-931d-ad533e4ff058.png'/>][rpm-dlink] <br/> For Fedora: `sudo dnf install ./Spotube-linux-x86_64.rpm`<br/> For OpenSuse: `sudo zypper in ./Spotube-linux-x86_64.rpm` |
+| Flatpak                                         | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='220' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>                                                                                        |
 | Arch/Manjaro                                    | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin`                                                                                                                                                                                                                                                             |
-| AppImage                                        | [<img width='240' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note**: AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed                                  |
-| Linux (tarball)                                 | [<img width='240' alt='Tarball Download' src='https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png'/>][linux-dlink]                                                                                                                                                            |
-| Windows                                         | [<img width='240' alt='Windows Download' src='https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg'/>][win32-dlink]                                                                                                                                                                                  |
-| Windows (Chocolatey)                            | `choco install spotube`                                                                                                                                                                                                                                                                                                         |
+| AppImage                                        | [<img width='220' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note**: AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed                                  |
+| Linux (tarball)                                 | [<img width='220' alt='Tarball Download' src='https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png'/>][linux-dlink]                                                                                                                                                            |
+| Windows                                         | [<img width='220' alt='Windows Download' src='https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg'/>][win32-dlink]                                                                                                                                                                                  |
+| Windows (<a href="https://chocolatey.org">Chocolatey</a>)                            | `choco install spotube`                                                                                                                                                                                                                                                                                                         |
 | Windows (<a href="https://scoop.sh/">Scoop</a>) | `scoop bucket add extras`  <br/> `scoop install spotube`                                                                                                                                                                                                                                                                        |
-| Windows (WinGet)                                | `winget install --id KRTirtho.Spotube`                                                                                                                                                                                                                                                                                          |
-| MacOS                                           | [<img width='240' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink]                                                                                                                                                                                             |
+| Windows (<a href="https://github.com/microsoft/winget-cli">WinGet</a>)                           | `winget install --id KRTirtho.Spotube`                                                                                                                                                                                                                                                                                          |
+| MacOS                                           | [<img width='220' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink]                                                                                                                                                                                             |
 
 > **Note!:** If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki
 
 ## Nightly Builds
-Get the latest nightly builds of Spotube [here](https://github.com/KRTirtho/spotube/releases/tag/nightly)
+Get the latest nightly builds of Spotube [here](https://github.com/KRTirtho/spotube/releases/tag/nightly).
 
 # TODO:
 - [ ] Windows OS Media Control & Media Keys Support
@@ -96,26 +96,26 @@ Get the latest nightly builds of Spotube [here](https://github.com/KRTirtho/spot
 
 # Building from source
 
-You can find the details [here](CONTRIBUTION.md#your-first-code-contribution)
+You can find the details [here](CONTRIBUTION.md#your-first-code-contribution).
 
-# Things that don't work
+# Things that do not work
 
-- Shows & Podcasts aren't supported as it'd require premium anyway
+- Shows & Podcasts are not supported, as a premium subscription would be needed for that functionality.
 
 # License
 
 [BSD-4-Clause](/LICENSE)
 
-But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p)
+But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
 
-# Financial Contributors
+# Financial contributors
 ## Backers
 ![Backers](https://opencollective.com/spotube/backer.svg?button=false)
 ![Donors](https://opencollective.com/spotube/tiers/donor.svg?button=false)
 
 ## Sponsors
 <p align="center">
-  <img src="https://opencollective.com/spotube/tiers/sponsor.svg" alt="Sponsor Spotube" width="69%">
+  <img src="https://opencollective.com/spotube/tiers/sponsor.svg" alt="Sponsor Spotube" width="69%"> <!-- nice. -->
 </p>
 
 # Library/Plugin/Framework Credits
@@ -201,20 +201,18 @@ But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sou
 1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.
 1. [window_size](https://github.com/google/flutter-desktop-embedding.git) - Allows resizing and repositioning the window containing Flutter.
 
-# The Team
+# The team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
-# Social handlers
+# Social platforms
 
-Follow me on [Twitter](https://twitter.com/@krtirtho) for newer updates about this application
+Follow me on [Twitter](https://twitter.com/@krtirtho), or join our amazing [Discord](https://discord.gg/uJ94vxB6vg) server to always get newer updates about the application.
 
-
-<p align="center">&copy; 2022 Spotube</p>
-
+<b><p align="center">&copy; 2023 Spotube</p></b>
 
 <!-- Variables/Text References -->
 [win32-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe

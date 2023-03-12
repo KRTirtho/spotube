@@ -16,8 +16,8 @@ Query<DataType, ErrorType> useSpotifyQuery<DataType, ErrorType>(
   final SpotifyQueryFn<DataType> queryFn, {
   required WidgetRef ref,
   final DataType? initial,
-  final RetryConfig retryConfig = DefaultConstants.retryConfig,
-  final RefreshConfig refreshConfig = DefaultConstants.refreshConfig,
+  final RetryConfig? retryConfig,
+  final RefreshConfig? refreshConfig,
   final JsonConfig<DataType>? jsonConfig,
   final ValueChanged<DataType>? onData,
   final ValueChanged<ErrorType>? onError,
