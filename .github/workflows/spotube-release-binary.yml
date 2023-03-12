@@ -1,0 +1,330 @@
+name: Spotube Release Binary
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release (x.x.x)
+        default: 69.420.303
+        required: true
+      branch:
+        description: Branch to release
+        default: master
+        required: true
+      channel:
+        type: choice
+        description: Release Channel
+        required: true
+        options:
+          - stable
+          - nightly
+        default: nightly
+      dry_run:
+        description: Dry run
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+      - uses: subosito/flutter-action@v2.8.0
+        with:
+          cache: true
+
+      - name: Replace pubspec version (nightly)
+        if: ${{ inputs.channel == "nightly" }}
+        run: |
+          choco install sed make yq -y
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel }}.${{ github.run_number }}" >> $env:GITHUB_ENV
+
+      - name: Replace pubspec version (stable)
+        if: ${{ inputs.channel == "stable" }}
+        run: |
+          "BUILD_VERSION=${{ inputs.version }}" >> $env:GITHUB_ENV
+
+      - name: Replace version in files
+        run: |
+          choco install sed make -y
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.BUILD_VERSION }}/" windows/runner/Runner.rc
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.BUILD_VERSION }}/" choco-struct/tools/VERIFICATION.txt
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.BUILD_VERSION }}/" choco-struct/spotube.nuspec
+
+      - name: Create Stable .env
+        if: ${{ inputs.channel == "stable" }}
+        run: echo '${{ secrets.DOTENV_RELEASE }}' > .env
+
+      - name: Create Nightly .env
+        if: ${{ inputs.channel == "nightly" }}
+        run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+
+      - name: Generating Secrets
+        run: |
+          flutter config --enable-windows-desktop
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Build Windows Executable
+        run: |
+          dart pub global activate flutter_distributor
+          make innoinstall
+          flutter_distributor package --platform=windows --targets=exe --skip-clean
+          mv dist/**/spotube-*-windows.exe dist/Spotube-windows-x86_64-setup.exe
+
+      - name: Create Chocolatey Package and set hash
+        if: ${{ inputs.channel == "stable" }}
+        run: |
+          Set-Variable -Name HASH -Value (Get-FileHash dist\Spotube-windows-x86_64-setup.exe).Hash
+          sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
+          make choco
+          mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Release-Binaries
+          path: dist/
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+      - uses: subosito/flutter-action@v2.8.0
+        with:
+          cache: true
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libunwind-dev locate patchelf
+
+      - name: Install AppImage Tool
+        run: |
+          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x appimagetool
+          mv appimagetool /usr/local/bin/
+
+      - name: Replace pubspec version (nightly)
+        if: ${{ inputs.channel == "nightly" }}
+        run: |
+          curl -sS https://webi.sh/yq | sh
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Replace pubspec version (stable)
+        if: ${{ inputs.channel == "stable" }}
+        run: |
+          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Create Stable .env
+        if: ${{ inputs.channel == "stable" }}
+        run: echo '${{ secrets.DOTENV_RELEASE }}' > .env
+
+      - name: Create Nightly .env
+        if: ${{ inputs.channel == "nightly" }}
+        run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+
+      - name: Replace Version in files
+        run: |
+          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ env.BUILD_VERSION }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+
+      - name: Generate Secrets
+        run: |
+          flutter config --enable-linux-desktop
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Build Linux Packages
+        run: |
+          dart pub global activate flutter_distributor
+          flutter_distributor package --platform=linux --targets=deb,appimage,rpm --skip-clean
+          make tar
+
+      - name: Move Files to dist
+        run: |
+          mv build/Spotube-linux-x86_64.tar.xz dist/
+          mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64.deb
+          mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
+          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Release-Binaries
+          path: dist/
+
+  android:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+      - uses: subosito/flutter-action@v2.8.0
+        with:
+          cache: true
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+
+      - name: Replace pubspec version (nightly)
+        if: ${{ inputs.channel == "nightly" }}
+        run: |
+          curl -sS https://webi.sh/yq | sh
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Replace pubspec version (stable)
+        if: ${{ inputs.channel == "stable" }}
+        run: |
+          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Create Stable .env
+        if: ${{ inputs.channel == "stable" }}
+        run: echo '${{ secrets.DOTENV_RELEASE }}' > .env
+
+      - name: Create Nightly .env
+        if: ${{ inputs.channel == "nightly" }}
+        run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+
+      - name: Generate Secrets and Build apk
+        run: |
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Sign Apk
+        run: |
+          echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
+          echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
+
+      - name: Build Apk
+        run: |
+          flutter build apk
+          mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Release-Binaries
+          path: |
+            build/Spotube-android-all-arch.apk
+
+  macos:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+      - uses: subosito/flutter-action@v2.8.0
+        with:
+          cache: true
+
+      - name: Replace pubspec version (nightly)
+        if: ${{ inputs.channel == "nightly" }}
+        run: |
+          brew install yq
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Replace pubspec version (stable)
+        if: ${{ inputs.channel == "stable" }}
+        run: |
+          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Create Stable .env
+        if: ${{ inputs.channel == "stable" }}
+        run: echo '${{ secrets.DOTENV_RELEASE }}' > .env
+
+      - name: Create Nightly .env
+        if: ${{ inputs.channel == "nightly" }}
+        run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+
+      - name: Generate Secrets
+        run: |
+          flutter pub get
+          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+
+      - name: Build Macos App
+        run: |
+          flutter config --enable-macos-desktop
+          flutter build macos
+          du -sh build/macos/Build/Products/Release/spotube.app
+
+      - name: Package Macos App
+        run: |
+          npm install -g appdmg
+          mkdir -p build/${{ env.BUILD_VERSION }}
+          appdmg appdmg.json build/Spotube-macos-x86_64.dmg
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Release-Binaries
+          path: |
+            build/Spotube-macos-x86_64.dmg
+
+  upload:
+    runs-on: ubuntu-22.04
+    needs:
+      - windows
+      - linux
+      - android
+      - macos
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Release-Bundle
+          path: ./Spotube-Release-Bundle
+
+      - name: Install dependencies
+        run: sudo apt-get install tree -y
+
+      - name: Generate Checksums
+        run: |
+          tree .
+          md5sum ./Spotube-Release-Bundle/* >> RELEASE.md5sum
+          sha256sum ./Spotube-Macos-Bundle/* >> RELEASE.sha256sum
+          sed -i 's|Spotube-Release-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Spotube-Release-Bundle
+          path: |
+            RELEASE.md5sum
+            RELEASE.sha256sum
+
+      - name: Upload Release Binaries (stable)
+        if: ${{ !inputs.dry_run && inputs.channel == "stable" }}
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ inputs.version }}
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          allowUpdates: true
+          artifacts: Spotube-Release-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum
+
+      - name: Upload Release Binaries (nightly)
+        if: ${{ !inputs.dry_run && inputs.channel == "nightly" }}
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: nightly
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          allowUpdates: true
+          artifacts: Spotube-Release-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum

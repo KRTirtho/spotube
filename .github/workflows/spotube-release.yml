@@ -17,11 +17,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
-        with:
-          repository: KRTirtho/flutter_distributor
-          ref: deb-implementation
-          path: build/flutter_distributor
 
       - name: Replace version in files
         run: |
