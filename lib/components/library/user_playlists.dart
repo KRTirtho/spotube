@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
@@ -34,6 +33,7 @@ class UserPlaylists extends HookConsumerWidget {
     final likedTracksPlaylist = useMemoized(
         () => PlaylistSimple()
           ..name = "Liked Tracks"
+          ..description = "All your liked tracks"
           ..type = "playlist"
           ..collaborative = false
           ..public = false
@@ -75,42 +75,32 @@ class UserPlaylists extends HookConsumerWidget {
       return const AnonymousFallback();
     }
 
-    final children = [
-      const PlaylistCreateDialog(),
-      ...playlists.map((playlist) => PlaylistCard(playlist)).toList(),
-    ];
     return RefreshIndicator(
       onRefresh: playlistsQuery.refresh,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SafeArea(
-            child: Column(
-              children: [
-                TextField(
-                  onChanged: (value) => searchText.value = value,
-                  decoration: const InputDecoration(
-                    hintText: "Filter your playlists...",
-                    prefixIcon: Icon(SpotubeIcons.filter),
-                  ),
+        padding: const EdgeInsets.all(8.0),
+        child: SafeArea(
+          child: Column(
+            children: [
+              TextField(
+                onChanged: (value) => searchText.value = value,
+                decoration: const InputDecoration(
+                  hintText: "Filter your playlists...",
+                  prefixIcon: Icon(SpotubeIcons.filter),
                 ),
-                const SizedBox(height: 20),
-                if (playlistsQuery.isLoading || !playlistsQuery.hasData)
-                  const Center(child: ShimmerPlaybuttonCard(count: 7))
-                else
-                  Center(
-                    child: Wrap(
-                      spacing: spacing, // gap between adjacent chips
-                      runSpacing: 20, // gap between lines
-                      alignment: breakpoint.isSm
-                          ? WrapAlignment.center
-                          : WrapAlignment.start,
-                      children: children,
-                    ),
-                  ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+              if (playlistsQuery.isLoading || !playlistsQuery.hasData)
+                const Center(child: ShimmerPlaybuttonCard(count: 7))
+              else
+                Wrap(
+                  runSpacing: 10,
+                  children: playlists
+                      .map((playlist) => PlaylistCard(playlist))
+                      .toList(),
+                ),
+            ],
           ),
         ),
       ),

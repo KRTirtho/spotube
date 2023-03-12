@@ -44,7 +44,7 @@ class CategoryCard extends HookConsumerWidget {
         children: [
           Text(
             category.name!,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(

@@ -99,7 +99,7 @@ class PlaybuttonCard extends HookWidget {
                   Positioned.directional(
                     textDirection: TextDirection.ltr,
                     end: end,
-                    bottom: -5,
+                    bottom: -size * .15,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [

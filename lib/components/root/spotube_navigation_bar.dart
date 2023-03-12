@@ -24,6 +24,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final downloadCount = ref.watch(
       downloaderProvider.select((s) => s.currentlyRunning),
     );
@@ -34,8 +35,8 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final insideSelectedIndex = useState<int>(selectedIndex);
 
     final buttonColor = useBrightnessValue(
-      Theme.of(context).colorScheme.inversePrimary,
-      Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      theme.colorScheme.inversePrimary,
+      theme.colorScheme.primary.withOpacity(0.2),
     );
 
     useEffect(() {
@@ -51,12 +52,10 @@ class SpotubeNavigationBar extends HookConsumerWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: CurvedNavigationBar(
-          backgroundColor: Theme.of(context)
-              .colorScheme
-              .secondaryContainer
-              .withOpacity(0.72),
+          backgroundColor:
+              theme.colorScheme.secondaryContainer.withOpacity(0.72),
           buttonBackgroundColor: buttonColor,
-          color: Theme.of(context).colorScheme.background,
+          color: theme.colorScheme.background,
           height: 50,
           items: [
             ...navbarTileList.map(
@@ -64,18 +63,11 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                 return MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: Badge(
-                    backgroundColor: Theme.of(context).primaryColor,
                     isLabelVisible: e.title == "Library" && downloadCount > 0,
-                    label: Text(
-                      downloadCount.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                    ),
+                    label: Text(downloadCount.toString()),
                     child: Icon(
                       e.icon,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                 );

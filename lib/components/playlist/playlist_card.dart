@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -34,14 +33,11 @@ class PlaylistCard extends HookConsumerWidget {
       [playlistNotifier, tracks.value, query?.data],
     );
 
-    final int marginH =
-        useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
-
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);
 
     return PlaybuttonCard(
-      margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       title: playlist.name!,
       description: playlist.description,
       imageUrl: TypeConversionUtils.image_X_UrlString(

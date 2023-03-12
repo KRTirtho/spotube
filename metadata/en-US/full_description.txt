@@ -1,4 +1,4 @@
-A lightweight free Spotify crossplatform-client (desktop: Mac, Linux, Windows, mobile: Android) which handles playback manually, streams music using Youtube & no Spotify premium account is needed
+Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop & mobile!
 
 
 Features:
