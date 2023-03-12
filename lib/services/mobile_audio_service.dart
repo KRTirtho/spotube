@@ -30,16 +30,6 @@ class MobileAudioService extends BaseAudioHandler {
     audioPlayer.onPositionChanged.listen((pos) async {
       playbackState.add(await _transformEvent());
     });
-
-    audioPlayer.onPlayerComplete.listen((_) {
-      if (playlist == null) {
-        playbackState.add(
-          PlaybackState(
-            processingState: AudioProcessingState.completed,
-          ),
-        );
-      }
-    });
   }
 
   void addItem(MediaItem item) {
