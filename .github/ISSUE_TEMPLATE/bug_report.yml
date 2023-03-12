@@ -36,7 +36,7 @@ body:
     validations:
       required: true
   - type: input
-      attributes:
+    attributes:
       label: Operating System
       description: The OS in which you used Spotube to face the issue.
       placeholder: Android, Linux, macOS or Windows? Make sure to include the version too.
