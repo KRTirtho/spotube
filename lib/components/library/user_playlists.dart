@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
@@ -82,22 +83,32 @@ class UserPlaylists extends HookConsumerWidget {
         child: SafeArea(
           child: Column(
             children: [
-              TextField(
-                onChanged: (value) => searchText.value = value,
-                decoration: const InputDecoration(
-                  hintText: "Filter your playlists...",
-                  prefixIcon: Icon(SpotubeIcons.filter),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  onChanged: (value) => searchText.value = value,
+                  decoration: const InputDecoration(
+                    hintText: "Filter your playlists...",
+                    prefixIcon: Icon(SpotubeIcons.filter),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
               if (playlistsQuery.isLoading || !playlistsQuery.hasData)
                 const Center(child: ShimmerPlaybuttonCard(count: 7))
               else
                 Wrap(
                   runSpacing: 10,
-                  children: playlists
-                      .map((playlist) => PlaylistCard(playlist))
-                      .toList(),
+                  alignment: WrapAlignment.center,
+                  children: [
+                    Row(
+                      children: const [
+                        SizedBox(width: 10),
+                        PlaylistCreateDialog(),
+                        SizedBox(width: 10),
+                      ],
+                    ),
+                    ...playlists.map((playlist) => PlaylistCard(playlist))
+                  ],
                 ),
             ],
           ),
