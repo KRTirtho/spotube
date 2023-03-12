@@ -43,7 +43,7 @@ jobs:
           # dart pub global activate flutter_distributor
         run: |
           git clone https://github.com/KRTirtho/flutter_distributor.git flutter_distributor
-          flutter pub global activate melos
+          flutter pub global activate melos 2.9.0
           cd flutter_distributor
           melos bootstrap
           cd ..
