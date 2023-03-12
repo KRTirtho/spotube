@@ -6,10 +6,6 @@ on:
         description: Version to release (x.x.x)
         default: 69.420.303
         required: true
-      branch:
-        description: Branch to release
-        default: master
-        required: true
       channel:
         type: choice
         description: Release Channel
@@ -29,8 +25,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.branch }}
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
@@ -94,8 +88,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.branch }}
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
@@ -168,8 +160,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.branch }}
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
@@ -225,8 +215,6 @@ jobs:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.branch }}
       - uses: subosito/flutter-action@v2.8.0
         with:
           cache: true
