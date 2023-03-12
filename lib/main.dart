@@ -172,6 +172,7 @@ void main(List<String> rawArgs) async {
                 )
               ],
               child: QueryClientProvider(
+                staleDuration: const Duration(minutes: 30),
                 child: const Spotube(),
               ),
             );

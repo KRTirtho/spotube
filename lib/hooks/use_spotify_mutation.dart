@@ -10,7 +10,7 @@ Mutation<DataType, ErrorType, VariablesType>
   Future<DataType> Function(VariablesType variables, SpotifyApi spotify)
       mutationFn, {
   required WidgetRef ref,
-  RetryConfig retryConfig = DefaultConstants.retryConfig,
+  RetryConfig? retryConfig,
   MutationOnDataFn<DataType, RecoveryType>? onData,
   MutationOnErrorFn<ErrorType, RecoveryType>? onError,
   MutationOnMutationFn<VariablesType, RecoveryType>? onMutate,

@@ -27,8 +27,8 @@ dependencies:
   cupertino_icons: ^1.0.5
   dbus: ^0.7.8
   file_picker: ^5.2.2
-  fl_query: ^1.0.0-alpha.0
-  fl_query_hooks: ^1.0.0-alpha.0
+  fl_query: ^1.0.0-alpha.2
+  fl_query_hooks: ^1.0.0-alpha.2
   fluent_ui: ^4.3.0
   fluentui_system_icons: ^1.1.189
   flutter:

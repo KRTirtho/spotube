@@ -534,18 +534,18 @@ packages:
     dependency: "direct main"
     description:
       name: fl_query
-      sha256: d9ebed8f024ef8e1eb9770d632ed738539dc576374a3498d5344d6ab27708563
+      sha256: b119e0d7e4cb615780f6cab00e7b40f88f8f549d9f8d20f6e1076e08cbf97c42
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.1"
+    version: "1.0.0-alpha.2"
   fl_query_hooks:
     dependency: "direct main"
     description:
       name: fl_query_hooks
-      sha256: "868974a332ff28ffd837edf995b8c579dac0e590215d8f4d13ce84c7b6f2e53c"
+      sha256: "9a4263cc5e1ef6e246089602256011172a9d3be212c41c08d67bc365ce6fec22"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.1"
+    version: "1.0.0-alpha.2"
   fluent_ui:
     dependency: "direct main"
     description:
