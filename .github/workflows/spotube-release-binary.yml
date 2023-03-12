@@ -273,8 +273,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: Spotube-Release-Bundle
-          path: ./Spotube-Release-Bundle
+          name: Spotube-Release-Binaries
+          path: ./Spotube-Release-Binaries
 
       - name: Install dependencies
         run: sudo apt-get install tree -y
@@ -282,13 +282,13 @@ jobs:
       - name: Generate Checksums
         run: |
           tree .
-          md5sum ./Spotube-Release-Bundle/* >> RELEASE.md5sum
+          md5sum ./Spotube-Release-Binaries/* >> RELEASE.md5sum
           sha256sum ./Spotube-Macos-Bundle/* >> RELEASE.sha256sum
-          sed -i 's|Spotube-Release-Bundle/||' RELEASE.sha256sum RELEASE.md5sum
+          sed -i 's|Spotube-Release-Binaries/||' RELEASE.sha256sum RELEASE.md5sum
 
       - uses: actions/upload-artifact@v3
         with:
-          name: Spotube-Release-Bundle
+          name: Spotube-Release-Binaries
           path: |
             RELEASE.md5sum
             RELEASE.sha256sum
@@ -303,7 +303,7 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Release-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
 
       - name: Upload Release Binaries (nightly)
         if: ${{ !inputs.dry_run && inputs.channel == 'nightly' }}
@@ -315,4 +315,4 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Release-Bundle/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
