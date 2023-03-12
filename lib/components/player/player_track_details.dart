@@ -16,6 +16,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final breakpoint = useBreakpoints();
     final playback = ref.watch(PlaylistQueueNotifier.provider);
 
@@ -50,19 +51,16 @@ class PlayerTrackDetails extends HookConsumerWidget {
                 Text(
                   playback?.activeTrack.name ?? "",
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: color,
-                      ),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: color,
+                  ),
                 ),
                 Text(
                   TypeConversionUtils.artists_X_String<Artist>(
                     playback?.activeTrack.artists ?? [],
                   ),
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(color: color),
+                  style: theme.textTheme.bodySmall!.copyWith(color: color),
                 )
               ],
             ),

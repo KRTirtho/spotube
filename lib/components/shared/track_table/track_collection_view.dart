@@ -64,6 +64,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
     final color = usePaletteGenerator(
       context,
@@ -101,7 +102,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
       // play playlist
       IconButton(
         style: IconButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: theme.colorScheme.primary,
         ),
         onPressed: tracksSnapshot.data != null ? onPlay : null,
         icon: Icon(isPlaying ? SpotubeIcons.stop : SpotubeIcons.play),
@@ -138,7 +139,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     }, [tracksSnapshot.data, searchText.value]);
 
     useCustomStatusBarColor(
-      color?.color ?? Theme.of(context).scaffoldBackgroundColor,
+      color?.color ?? theme.scaffoldBackgroundColor,
       GoRouter.of(context).location == routePath,
     );
 
@@ -168,11 +169,11 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         decoration: InputDecoration(
           hintText: "Search tracks...",
           hintStyle: TextStyle(color: color?.titleTextColor),
-          border: Theme.of(context).inputDecorationTheme.border?.copyWith(
-                borderSide: BorderSide(
-                  color: color?.titleTextColor ?? Colors.white,
-                ),
-              ),
+          border: theme.inputDecorationTheme.border?.copyWith(
+            borderSide: BorderSide(
+              color: color?.titleTextColor ?? Colors.white,
+            ),
+          ),
           prefixIconColor: color?.titleTextColor,
           prefixIcon: const Icon(SpotubeIcons.search),
         ),
@@ -228,11 +229,10 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                   title: collapsed.value
                       ? Text(
                           title,
-                          style:
-                              Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    color: color?.titleTextColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                          style: theme.textTheme.titleLarge!.copyWith(
+                            color: color?.titleTextColor,
+                            fontWeight: FontWeight.w600,
+                          ),
                         )
                       : null,
                   centerTitle: true,
@@ -242,7 +242,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         gradient: LinearGradient(
                           colors: [
                             color?.color ?? Colors.transparent,
-                            Theme.of(context).canvasColor,
+                            theme.canvasColor,
                           ],
                           begin: const FractionalOffset(0, 0),
                           end: const FractionalOffset(0, 1),
@@ -282,13 +282,10 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                 children: [
                                   Text(
                                     title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(
-                                          color: color?.titleTextColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                    style: theme.textTheme.titleLarge!.copyWith(
+                                      color: color?.titleTextColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                   if (description != null)
                                     Text(

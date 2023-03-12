@@ -79,7 +79,6 @@ class UserPlaylists extends HookConsumerWidget {
       onRefresh: playlistsQuery.refresh,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(8.0),
         child: SafeArea(
           child: Column(
             children: [

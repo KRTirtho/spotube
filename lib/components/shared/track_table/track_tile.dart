@@ -174,6 +174,7 @@ class TrackTile extends HookConsumerWidget {
     );
 
     final toggler = useTrackToggleLike(track.value, ref);
+    final theme = Theme.of(context);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
@@ -181,7 +182,7 @@ class TrackTile extends HookConsumerWidget {
         color: isBlackListed
             ? Colors.red[100]
             : isActive
-                ? Theme.of(context).popupMenuTheme.color
+                ? theme.popupMenuTheme.color
                 : Colors.transparent,
         borderRadius: BorderRadius.circular(isActive ? 10 : 0),
       ),
@@ -234,8 +235,8 @@ class TrackTile extends HookConsumerWidget {
                   color: Colors.white,
                 ),
                 style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  hoverColor: Theme.of(context).primaryColor.withOpacity(0.5),
+                  backgroundColor: theme.colorScheme.primary,
+                  hoverColor: theme.colorScheme.primary.withOpacity(0.5),
                 ),
                 onPressed: !isBlackListed
                     ? () => onTrackPlayButtonPressed?.call(

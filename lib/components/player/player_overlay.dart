@@ -30,7 +30,8 @@ class PlayerOverlay extends HookConsumerWidget {
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
 
-    final textColor = Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.primary;
 
     const radius = BorderRadius.only(
       topLeft: Radius.circular(10),
@@ -54,10 +55,7 @@ class PlayerOverlay extends HookConsumerWidget {
             width: MediaQuery.of(context).size.width,
             height: canShow ? 53 : 0,
             decoration: BoxDecoration(
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondaryContainer
-                  .withOpacity(.8),
+              color: theme.colorScheme.secondaryContainer.withOpacity(.8),
               borderRadius: radius,
             ),
             child: AnimatedOpacity(
@@ -81,7 +79,7 @@ class PlayerOverlay extends HookConsumerWidget {
                               minHeight: 2,
                               backgroundColor: Colors.transparent,
                               valueColor: AlwaysStoppedAnimation(
-                                Theme.of(context).colorScheme.primary,
+                                theme.colorScheme.primary,
                               ),
                             );
                           },

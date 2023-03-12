@@ -33,7 +33,8 @@ class ArtistPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     SpotifyApi spotify = ref.watch(spotifyProvider);
     final parentScrollController = useScrollController();
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     final chipTextVariant = useBreakpointValue(
       sm: textTheme.bodySmall,
       md: textTheme.bodyMedium,
@@ -42,12 +43,14 @@ class ArtistPage extends HookConsumerWidget {
       xxl: textTheme.titleMedium,
     );
 
+    final mediaQuery = MediaQuery.of(context);
+
     final avatarWidth = useBreakpointValue(
-      sm: MediaQuery.of(context).size.width * 0.50,
-      md: MediaQuery.of(context).size.width * 0.40,
-      lg: MediaQuery.of(context).size.width * 0.18,
-      xl: MediaQuery.of(context).size.width * 0.18,
-      xxl: MediaQuery.of(context).size.width * 0.18,
+      sm: mediaQuery.size.width * 0.50,
+      md: mediaQuery.size.width * 0.40,
+      lg: mediaQuery.size.width * 0.18,
+      xl: mediaQuery.size.width * 0.18,
+      xxl: mediaQuery.size.width * 0.18,
     );
 
     final breakpoint = useBreakpoints();
@@ -316,8 +319,7 @@ class ArtistPage extends HookConsumerWidget {
                             children: [
                               Text(
                                 "Top Tracks",
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                style: theme.textTheme.headlineSmall,
                               ),
                               if (!isPlaylistPlaying)
                                 IconButton(
@@ -347,8 +349,7 @@ class ArtistPage extends HookConsumerWidget {
                                   color: Colors.white,
                                 ),
                                 style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
+                                  backgroundColor: theme.colorScheme.primary,
                                 ),
                                 onPressed: () =>
                                     playPlaylist(topTracks.toList()),
@@ -377,14 +378,14 @@ class ArtistPage extends HookConsumerWidget {
                     const SizedBox(height: 50),
                     Text(
                       "Albums",
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style: theme.textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 10),
                     ArtistAlbumList(artistId),
                     const SizedBox(height: 20),
                     Text(
                       "Fans also likes",
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style: theme.textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 10),
                     HookBuilder(

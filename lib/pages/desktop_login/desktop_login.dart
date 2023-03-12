@@ -13,6 +13,8 @@ class DesktopLoginPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final breakpoint = useBreakpoints();
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.surfaceVariant.withOpacity(.3);
 
     return SafeArea(
       child: Scaffold(
@@ -25,7 +27,7 @@ class DesktopLoginPage extends HookConsumerWidget {
               margin: const EdgeInsets.all(10),
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: color,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -36,11 +38,11 @@ class DesktopLoginPage extends HookConsumerWidget {
                   ),
                   Text(
                     "Add your spotify credentials to get started",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: theme.textTheme.titleMedium,
                   ),
                   Text(
                     "Don't worry, any of your credentials won't be collected or shared with anyone",
-                    style: Theme.of(context).textTheme.labelMedium,
+                    style: theme.textTheme.labelMedium,
                   ),
                   const SizedBox(height: 10),
                   TokenLoginForm(

@@ -21,6 +21,7 @@ class SettingsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
     final auth = ref.watch(AuthenticationNotifier.provider);
+    final theme = Theme.of(context);
 
     final pickColorScheme = useCallback((ColorSchemeType schemeType) {
       return () => showDialog(
@@ -57,16 +58,14 @@ class SettingsPage extends HookConsumerWidget {
                   children: [
                     Text(
                       " Account",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     if (auth == null)
                       AdaptiveListTile(
                         leading: Icon(
                           SpotubeIcons.login,
-                          color: Theme.of(context).primaryColor,
+                          color: theme.colorScheme.primary,
                         ),
                         title: SizedBox(
                           height: 50,
@@ -77,7 +76,7 @@ class SettingsPage extends HookConsumerWidget {
                               "Login with your Spotify account",
                               maxLines: 1,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                                color: theme.colorScheme.primary,
                               ),
                             ),
                           ),
@@ -131,9 +130,7 @@ class SettingsPage extends HookConsumerWidget {
                       }),
                     Text(
                       " Appearance",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
@@ -217,9 +214,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     Text(
                       " Playback",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
@@ -279,9 +274,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     Text(
                       " Search",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
@@ -312,9 +305,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     Text(
                       " Downloads",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     ListTile(
@@ -337,9 +328,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     Text(
                       " About",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(

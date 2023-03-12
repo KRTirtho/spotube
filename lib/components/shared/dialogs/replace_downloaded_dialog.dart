@@ -13,6 +13,7 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final groupValue = ref.watch(replaceDownloadedFileState);
+    final theme = Theme.of(context);
 
     return AlertDialog(
       title: Text("Track ${track.name} Already Exists"),
@@ -23,7 +24,7 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
           RadioListTile<bool>(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            activeColor: Theme.of(context).primaryColor,
+            activeColor: theme.colorScheme.primary,
             value: true,
             groupValue: groupValue,
             onChanged: (value) {
@@ -36,7 +37,7 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
           RadioListTile<bool>(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            activeColor: Theme.of(context).primaryColor,
+            activeColor: theme.colorScheme.primary,
             value: false,
             groupValue: groupValue,
             onChanged: (value) {

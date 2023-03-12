@@ -19,6 +19,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
 
@@ -50,7 +51,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: Theme.of(context).scaffoldBackgroundColor.withOpacity(.3),
+          color: theme.scaffoldBackgroundColor.withOpacity(.3),
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -58,7 +59,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
             centerTitle: true,
             title: Text(
               'Alternative Tracks Sources',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: theme.textTheme.headlineSmall,
             ),
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
@@ -96,7 +97,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
                               .ytTrack
                               .id
                               .value,
-                  selectedTileColor: Theme.of(context).popupMenuTheme.color,
+                  selectedTileColor: theme.popupMenuTheme.color,
                   onTap: () async {
                     if (playlist?.isLoading == false &&
                         video.id.value !=

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -9,12 +10,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+final _licenseProvider = FutureProvider<String>((ref) async {
+  return await rootBundle.loadString("LICENSE");
+});
+
 class AboutSpotube extends HookConsumerWidget {
   const AboutSpotube({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
     final packageInfo = usePackageInfo();
+    final license = ref.watch(_licenseProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
@@ -36,7 +43,7 @@ class AboutSpotube extends HookConsumerWidget {
                   children: [
                     Text(
                       "Spotube, a light-weight, cross-platform, free-for-all spotify client",
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -181,21 +188,35 @@ class AboutSpotube extends HookConsumerWidget {
               Text(
                 "Made with ❤️ in Bangladesh🇧🇩",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: theme.textTheme.bodySmall,
               ),
               Text(
                 "© 2021-${DateTime.now().year} Kingkor Roy Tirtho",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: theme.textTheme.bodySmall,
               ),
               const SizedBox(height: 20),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 750),
                 child: SafeArea(
-                  child: Text(
-                    licenseText,
-                    textAlign: TextAlign.justify,
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: license.when(
+                    data: (data) {
+                      return Text(
+                        data,
+                        style: theme.textTheme.bodySmall,
+                      );
+                    },
+                    loading: () {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    error: (e, s) {
+                      return Text(
+                        e.toString(),
+                        style: theme.textTheme.bodySmall,
+                      );
+                    },
                   ),
                 ),
               ),
@@ -206,18 +227,3 @@ class AboutSpotube extends HookConsumerWidget {
     );
   }
 }
-
-const licenseText = """
-BSD-4-Clause License
-
-Copyright (c) 2022 Kingkor Roy Tirtho. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-3. All advertising materials mentioning features or use of this software must display the following acknowledgement:
-This product includes software developed by Kingkor Roy Tirtho.
-4. Neither the name of the Software nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY KINGKOR ROY TIRTHO AND CONTRIBUTORS  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL KINGKOR ROY TIRTHO AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-""";

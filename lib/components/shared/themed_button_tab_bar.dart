@@ -11,9 +11,10 @@ class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final bgColor = useBrightnessValue(
-      Theme.of(context).colorScheme.primaryContainer,
-      Color.lerp(Theme.of(context).colorScheme.primary, Colors.black, 0.7)!,
+      theme.colorScheme.primaryContainer,
+      Color.lerp(theme.colorScheme.primary, Colors.black, 0.7)!,
     );
 
     final breakpoint = useBreakpointValue(
@@ -34,18 +35,18 @@ class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
           color: bgColor,
           borderRadius: BorderRadius.circular(15),
         ),
-        labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
+        labelStyle: theme.textTheme.labelLarge?.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.bold,
+        ),
         borderWidth: 0,
         unselectedDecoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: theme.colorScheme.background,
           borderRadius: BorderRadius.circular(15),
         ),
-        unselectedLabelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+        unselectedLabelStyle: theme.textTheme.labelLarge?.copyWith(
+          color: theme.colorScheme.primary,
+        ),
         tabs: tabs.map((tab) {
           return Tab(text: "   $tab   ");
         }).toList(),

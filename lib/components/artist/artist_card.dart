@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/hooks/use_breakpoint_value.dart';
+import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -15,6 +16,7 @@ class ArtistCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final backgroundImage = UniversalImage.imageProvider(
       TypeConversionUtils.image_X_UrlString(
         artist.images,
@@ -29,46 +31,53 @@ class ArtistCard extends HookConsumerWidget {
       ),
     );
 
-    return SizedBox(
-      height: 240,
-      width: 200,
-      child: InkWell(
-        onTap: () {
-          ServiceUtils.navigate(context, "/artist/${artist.id}");
-        },
-        borderRadius: BorderRadius.circular(8),
-        child: HoverBuilder(builder: (context, isHovering) {
-          return Ink(
-            width: 200,
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                  spreadRadius: 5,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ],
-              border: isBlackListed
-                  ? Border.all(
-                      color: Colors.red[400]!,
-                      width: 2,
-                    )
-                  : null,
-            ),
+    final radius = BorderRadius.circular(15);
+
+    final double size = useBreakpointValue<double>(
+      sm: 130,
+      md: 150,
+      others: 170,
+    );
+
+    return Container(
+      width: size,
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      child: Material(
+        shadowColor: theme.colorScheme.background,
+        color: Color.lerp(
+          theme.colorScheme.surfaceVariant,
+          theme.colorScheme.surface,
+          useBrightnessValue(.9, .7),
+        ),
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: isBlackListed
+              ? const BorderSide(
+                  color: Colors.red,
+                  width: 2,
+                )
+              : BorderSide.none,
+        ),
+        child: InkWell(
+            onTap: () {
+              ServiceUtils.navigate(context, "/artist/${artist.id}");
+            },
+            borderRadius: radius,
             child: Padding(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(12),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Stack(
                     children: [
-                      CircleAvatar(
-                        maxRadius: 80,
-                        minRadius: 20,
-                        backgroundImage: backgroundImage,
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: size,
+                        ),
+                        child: CircleAvatar(
+                          backgroundImage: backgroundImage,
+                          radius: size / 2,
+                        ),
                       ),
                       Positioned(
                         right: 0,
@@ -92,19 +101,19 @@ class ArtistCard extends HookConsumerWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 10),
                   AutoSizeText(
                     artist.name!,
-                    maxLines: 2,
+                    maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
-            ),
-          );
-        }),
+            )),
       ),
     );
   }

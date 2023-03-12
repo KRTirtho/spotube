@@ -33,6 +33,7 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     ref.watch(AuthenticationNotifier.provider);
     final authenticationNotifier =
         ref.watch(AuthenticationNotifier.provider.notifier);
@@ -74,7 +75,7 @@ class SearchPage extends HookConsumerWidget {
                       horizontal: 20,
                       vertical: 10,
                     ),
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: theme.scaffoldBackgroundColor,
                     child: TextField(
                       decoration: const InputDecoration(
                         prefixIcon: Icon(SpotubeIcons.search),
@@ -134,9 +135,7 @@ class SearchPage extends HookConsumerWidget {
                                   if (tracks.isNotEmpty)
                                     Text(
                                       "Songs",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!,
+                                      style: theme.textTheme.titleLarge!,
                                     ),
                                   if (searchTrack.isLoadingPage)
                                     const CircularProgressIndicator()
@@ -198,9 +197,7 @@ class SearchPage extends HookConsumerWidget {
                                   if (playlists.isNotEmpty)
                                     Text(
                                       "Playlists",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!,
+                                      style: theme.textTheme.titleLarge!,
                                     ),
                                   const SizedBox(height: 10),
                                   ScrollConfiguration(
@@ -258,9 +255,7 @@ class SearchPage extends HookConsumerWidget {
                                   if (artists.isNotEmpty)
                                     Text(
                                       "Artists",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!,
+                                      style: theme.textTheme.titleLarge!,
                                     ),
                                   const SizedBox(height: 10),
                                   ScrollConfiguration(
@@ -317,9 +312,7 @@ class SearchPage extends HookConsumerWidget {
                                   if (albums.isNotEmpty)
                                     Text(
                                       "Albums",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!,
+                                      style: theme.textTheme.titleMedium!,
                                     ),
                                   const SizedBox(height: 10),
                                   ScrollConfiguration(

@@ -61,7 +61,8 @@ class Sidebar extends HookConsumerWidget {
       extended: breakpoints > Breakpoints.md,
     );
 
-    final bg = Theme.of(context).colorScheme.surfaceVariant;
+    final theme = Theme.of(context);
+    final bg = theme.colorScheme.surfaceVariant;
 
     final bgColor = useBrightnessValue(
       Color.lerp(bg, Colors.white, 0.7),
@@ -98,7 +99,7 @@ class Sidebar extends HookConsumerWidget {
               (e) {
                 return SidebarXItem(
                   // iconWidget: Badge(
-                  //   backgroundColor: Theme.of(context).primaryColor,
+                  //   backgroundColor: theme.colorScheme.primary,
                   //   isLabelVisible: e.title == "Library" && downloadCount > 0,
                   //   label: Text(
                   //     downloadCount.toString(),
@@ -125,10 +126,10 @@ class Sidebar extends HookConsumerWidget {
               margin: EdgeInsets.only(bottom: 10, top: kIsMacOS ? 35 : 5),
               selectedItemDecoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                color: theme.colorScheme.primary.withOpacity(0.1),
               ),
               selectedIconTheme: IconThemeData(
-                color: Theme.of(context).colorScheme.primary,
+                color: theme.colorScheme.primary,
               ),
             ),
             extendedTheme: SidebarXTheme(
@@ -148,16 +149,15 @@ class Sidebar extends HookConsumerWidget {
               ),
               selectedItemDecoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                color: theme.colorScheme.primary.withOpacity(0.1),
               ),
               selectedIconTheme: IconThemeData(
-                color: Theme.of(context).colorScheme.primary,
+                color: theme.colorScheme.primary,
               ),
-              selectedTextStyle:
-                  Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+              selectedTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
               itemTextPadding: const EdgeInsets.only(left: 10),
               selectedItemTextPadding: const EdgeInsets.only(left: 10),
             ),
@@ -175,6 +175,7 @@ class SidebarHeader extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final breakpoint = useBreakpoints();
+    final theme = Theme.of(context);
 
     if (breakpoint <= Breakpoints.md) {
       return Container(
@@ -196,7 +197,7 @@ class SidebarHeader extends HookWidget {
               const SizedBox(width: 10),
               Text(
                 "Spotube",
-                style: Theme.of(context).textTheme.titleLarge,
+                style: theme.textTheme.titleLarge,
               ),
             ],
           ),
@@ -213,6 +214,7 @@ class SidebarFooter extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final breakpoint = useBreakpoints();
     final me = useQueries.user.me(ref);
     final data = me.data;
@@ -260,9 +262,7 @@ class SidebarFooter extends HookConsumerWidget {
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.fade,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
+                      style: theme.textTheme.bodyMedium
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),

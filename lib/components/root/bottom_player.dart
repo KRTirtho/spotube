@@ -40,7 +40,8 @@ class BottomPlayer extends HookConsumerWidget {
       [playlist?.activeTrack.album?.images],
     );
 
-    final bg = Theme.of(context).colorScheme.surfaceVariant;
+    final theme = Theme.of(context);
+    final bg = theme.colorScheme.surfaceVariant;
 
     final bgColor = useBrightnessValue(
       Color.lerp(bg, Colors.white, 0.7),
@@ -62,7 +63,7 @@ class BottomPlayer extends HookConsumerWidget {
           decoration: BoxDecoration(color: bgColor?.withOpacity(0.8)),
           child: Material(
             type: MaterialType.transparency,
-            textStyle: Theme.of(context).textTheme.bodyMedium!,
+            textStyle: theme.textTheme.bodyMedium!,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

@@ -67,7 +67,8 @@ class ShimmerTrackTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final shimmerTheme = ShimmerColorTheme(
       shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
       shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],
@@ -83,9 +84,8 @@ class ShimmerTrackTile extends StatelessWidget {
               size: const Size(double.infinity, 50),
               painter: ShimmerTrackTilePainter(
                 background: shimmerTheme.shimmerBackgroundColor ??
-                    Theme.of(context).scaffoldBackgroundColor,
-                foreground:
-                    shimmerTheme.shimmerColor ?? Theme.of(context).cardColor,
+                    theme.scaffoldBackgroundColor,
+                foreground: shimmerTheme.shimmerColor ?? theme.cardColor,
               ),
             ),
           );
@@ -101,9 +101,8 @@ class ShimmerTrackTile extends StatelessWidget {
             size: const Size(double.infinity, 50),
             painter: ShimmerTrackTilePainter(
               background: shimmerTheme.shimmerBackgroundColor ??
-                  Theme.of(context).scaffoldBackgroundColor,
-              foreground:
-                  shimmerTheme.shimmerColor ?? Theme.of(context).cardColor,
+                  theme.scaffoldBackgroundColor,
+              foreground: shimmerTheme.shimmerColor ?? theme.cardColor,
             ),
           ),
         ),

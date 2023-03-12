@@ -19,10 +19,11 @@ class LoginTutorial extends ConsumerWidget {
     final authenticationNotifier =
         ref.watch(AuthenticationNotifier.provider.notifier);
     final key = GlobalKey<State<IntroductionScreen>>();
+    final theme = Theme.of(context);
 
     final pageDecoration = PageDecoration(
-      bodyTextStyle: Theme.of(context).textTheme.bodyMedium!,
-      titleTextStyle: Theme.of(context).textTheme.headlineMedium!,
+      bodyTextStyle: theme.textTheme.bodyMedium!,
+      titleTextStyle: theme.textTheme.headlineMedium!,
     );
     return Scaffold(
       appBar: PageWindowTitleBar(
@@ -35,7 +36,7 @@ class LoginTutorial extends ConsumerWidget {
       ),
       body: IntroductionScreen(
         key: key,
-        globalBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        globalBackgroundColor: theme.scaffoldBackgroundColor,
         overrideBack: OutlinedButton(
           child: const Center(child: Text("Previous")),
           onPressed: () {
@@ -113,7 +114,7 @@ class LoginTutorial extends ConsumerWidget {
                 children: [
                   Text(
                     "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
-                    style: Theme.of(context).textTheme.labelMedium,
+                    style: theme.textTheme.labelMedium,
                   ),
                   const SizedBox(height: 10),
                   TokenLoginForm(

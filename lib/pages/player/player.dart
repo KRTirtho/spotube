@@ -28,6 +28,7 @@ class PlayerView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final currentTrack = ref.watch(PlaylistQueueNotifier.provider.select(
       (value) => value?.activeTrack,
     ));
@@ -94,13 +95,10 @@ class PlayerView extends HookConsumerWidget {
                           height: 30,
                           child: Text(
                             currentTrack?.name ?? "Not playing",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: paletteColor.titleTextColor,
-                                ),
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: paletteColor.titleTextColor,
+                            ),
                           ),
                         ),
                         if (isLocalTrack)
@@ -108,24 +106,18 @@ class PlayerView extends HookConsumerWidget {
                             TypeConversionUtils.artists_X_String<Artist>(
                               currentTrack?.artists ?? [],
                             ),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: paletteColor.bodyTextColor,
-                                ),
+                            style: theme.textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: paletteColor.bodyTextColor,
+                            ),
                           )
                         else
                           TypeConversionUtils.artists_X_ClickableArtists(
                             currentTrack?.artists ?? [],
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: paletteColor.bodyTextColor,
-                                ),
+                            textStyle: theme.textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: paletteColor.bodyTextColor,
+                            ),
                             onRouteChange: (route) {
                               GoRouter.of(context).pop();
                               GoRouter.of(context).push(route);

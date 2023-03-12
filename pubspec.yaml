@@ -102,6 +102,7 @@ flutter:
     - assets/
     - assets/tutorial/
     - .env
+    - LICENSE
 
 flutter_icons:
   android: true

@@ -37,11 +37,6 @@ class PlaybuttonCard extends HookWidget {
     final theme = Theme.of(context);
     final radius = BorderRadius.circular(15);
 
-    final shadowColor = useBrightnessValue(
-      theme.colorScheme.background,
-      theme.colorScheme.background,
-    );
-
     final double size = useBreakpointValue<double>(
       sm: 130,
       md: 150,
@@ -64,7 +59,7 @@ class PlaybuttonCard extends HookWidget {
           useBrightnessValue(.9, .7),
         ),
         borderRadius: radius,
-        shadowColor: shadowColor,
+        shadowColor: theme.colorScheme.background,
         elevation: 3,
         child: InkWell(
           mouseCursor: SystemMouseCursors.click,

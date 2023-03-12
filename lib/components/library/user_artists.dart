@@ -18,6 +18,7 @@ class UserArtists extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
 
     final artistQuery = useQueries.artist.followedByMe(ref);
@@ -46,6 +47,8 @@ class UserArtists extends HookConsumerWidget {
           .toList();
     }, [artistQuery.pages, searchText.value]);
 
+    final controller = useScrollController();
+
     if (auth == null) {
       return const AnonymousFallback();
     }
@@ -56,7 +59,7 @@ class UserArtists extends HookConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ColoredBox(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: theme.scaffoldBackgroundColor,
             child: TextField(
               onChanged: (value) => searchText.value = value,
               decoration: const InputDecoration(
@@ -67,7 +70,7 @@ class UserArtists extends HookConsumerWidget {
           ),
         ),
       ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: artistQuery.pages.isEmpty
           ? Padding(
               padding: const EdgeInsets.all(20),
@@ -84,33 +87,30 @@ class UserArtists extends HookConsumerWidget {
               onRefresh: () async {
                 await artistQuery.refreshAll();
               },
-              child: SafeArea(
-                child: GridView.builder(
-                  itemCount: filteredArtists.length,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 200,
-                    mainAxisExtent: 250,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
+              child: SingleChildScrollView(
+                controller: controller,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: SafeArea(
+                    child: Center(
+                      child: Wrap(
+                        spacing: 15,
+                        runSpacing: 5,
+                        children: filteredArtists.mapIndexed((index, artist) {
+                          if (index == artistQuery.pages.length - 1 &&
+                              hasNextPage) {
+                            return Waypoint(
+                              controller: controller,
+                              isGrid: true,
+                              onTouchEdge: artistQuery.fetchNext,
+                              child: ArtistCard(artist),
+                            );
+                          }
+                          return ArtistCard(artist);
+                        }).toList(),
+                      ),
+                    ),
                   ),
-                  padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) {
-                    return HookBuilder(builder: (context) {
-                      if (index == artistQuery.pages.length - 1 &&
-                          hasNextPage) {
-                        return Waypoint(
-                          controller: useScrollController(),
-                          isGrid: true,
-                          onTouchEdge: () {
-                            artistQuery.fetchNext();
-                          },
-                          child: ArtistCard(filteredArtists[index]),
-                        );
-                      }
-                      return ArtistCard(filteredArtists[index]);
-                    });
-                  },
                 ),
               ),
             ),

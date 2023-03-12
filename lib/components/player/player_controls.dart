@@ -41,6 +41,7 @@ class PlayerControls extends HookConsumerWidget {
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
+    final theme = Theme.of(context);
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -139,7 +140,7 @@ class PlayerControls extends HookConsumerWidget {
                     icon: Icon(
                       SpotubeIcons.shuffle,
                       color: playlist?.isShuffled == true
-                          ? Theme.of(context).primaryColor
+                          ? theme.colorScheme.primary
                           : null,
                     ),
                     onPressed: playlist == null
@@ -194,7 +195,7 @@ class PlayerControls extends HookConsumerWidget {
                           ? SpotubeIcons.repeatOne
                           : SpotubeIcons.repeat,
                       color: playlist?.isLooping == true
-                          ? Theme.of(context).primaryColor
+                          ? theme.colorScheme.primary
                           : null,
                     ),
                     onPressed: playlist == null || playlist.isLoading

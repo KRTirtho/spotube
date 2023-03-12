@@ -91,7 +91,7 @@ class ShimmerPlaybuttonCard extends HookWidget {
       others: const Size(170, 240),
     );
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = theme.brightness == Brightness.dark;
     final bgColor = theme.colorScheme.surfaceVariant.withOpacity(.2);
     final fgColor = Color.lerp(
       theme.colorScheme.surfaceVariant,

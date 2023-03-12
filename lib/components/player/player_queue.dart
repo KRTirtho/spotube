@@ -36,7 +36,8 @@ class PlayerQueue extends HookConsumerWidget {
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           );
-    final headlineColor = Theme.of(context).textTheme.headlineSmall?.color;
+    final theme = Theme.of(context);
+    final headlineColor = theme.textTheme.headlineSmall?.color;
 
     useEffect(() {
       if (playlist == null) return null;
@@ -60,7 +61,7 @@ class PlayerQueue extends HookConsumerWidget {
           top: 5.0,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5),
+          color: theme.scaffoldBackgroundColor.withOpacity(0.5),
           borderRadius: borderRadius,
         ),
         child: Column(
@@ -88,11 +89,9 @@ class PlayerQueue extends HookConsumerWidget {
                 const Spacer(),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: Theme.of(context)
-                        .scaffoldBackgroundColor
-                        .withOpacity(0.5),
-                    foregroundColor:
-                        Theme.of(context).textTheme.headlineSmall?.color,
+                    backgroundColor:
+                        theme.scaffoldBackgroundColor.withOpacity(0.5),
+                    foregroundColor: theme.textTheme.headlineSmall?.color,
                   ),
                   child: Row(
                     children: const [
