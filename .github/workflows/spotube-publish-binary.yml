@@ -18,8 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: flathub/com.github.KRTirtho.Spotube
-          token: ${{ secrets.FLATHUB_TOKEN }}
+          repository: KRTirtho/com.github.KRTirtho.Spotube
+
       - uses: actions/checkout@v3
         with:
           path: spotube
@@ -36,7 +36,7 @@ jobs:
           git switch update-${{ inputs.version }}
 
       - name: Push to flathub
-        if: ${{ !inputs.dry_run }}
+        # if: ${{ !inputs.dry_run }}
         run: git push -u origin update-${{ inputs.version }}
 
   aur:
