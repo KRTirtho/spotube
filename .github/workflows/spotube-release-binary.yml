@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 69.420.303
+        default: 2.7.0
         required: true
       channel:
         type: choice
@@ -283,7 +283,7 @@ jobs:
         run: |
           tree .
           md5sum ./Spotube-Release-Binaries/* >> RELEASE.md5sum
-          sha256sum ./Spotube-Macos-Bundle/* >> RELEASE.sha256sum
+          sha256sum ./Spotube-Release-Binaries/* >> RELEASE.sha256sum
           sed -i 's|Spotube-Release-Binaries/||' RELEASE.sha256sum RELEASE.md5sum
 
       - uses: actions/upload-artifact@v3
