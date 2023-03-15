@@ -1,0 +1,97 @@
+name: Spotube Publish Binary
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release (x.x.x)
+        default: 2.7.0
+        required: true
+      dry_run:
+        description: Dry run
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  flathub:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: KRTirtho/com.github.KRTirtho.Spotube
+          token: ${{ secrets.FLATHUB_TOKEN }}
+
+      - uses: actions/checkout@v3
+        with:
+          path: spotube
+
+      - name: Update flathub version
+        run: |
+          python3 spotube/scripts/update_flathub_version.py ${{ inputs.version }}
+          rm -rf spotube
+          git config --global user.email "krtirtho@gmail.com"
+          git config --global user.name "Kingkor Roy Tirtho"
+          git add .
+          git commit -m "v${{ inputs.version }} Update"
+          git branch update-${{ inputs.version }}
+          git switch update-${{ inputs.version }}
+
+      - name: Push to flathub
+        if: ${{ !inputs.dry_run }}
+        run: git push -u origin update-${{ inputs.version }}
+
+  aur:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          version: tags/v${{ inputs.version }} # mind the "v" prefix
+          file: Spotube-linux-x86_64.tar.xz
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update PKGBUILD versions
+        run: |
+          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ inputs.version }}/" aur-struct/PKGBUILD
+          sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
+          sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
+
+      - name: Release to AUR
+        if: ${{ !inputs.dry_run }}
+        uses: KSXGitHub/github-actions-deploy-aur@v2.6.0
+        with:
+          pkgname: spotube-bin
+          pkgbuild: aur-struct/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Updated to v${{ inputs.version }}
+
+  winget:
+    runs-on: windows-latest
+    steps:
+      - name: Release winget package
+        if: ${{ !inputs.dry_run }}
+        uses: vedantmgoyal2009/winget-releaser@v2
+        with:
+          version: ${{ inputs.version }}
+          release-tag: v${{ inputs.version }}
+          identifier: KRTirtho.Spotube
+          token: ${{ secrets.WINGET_TOKEN }}
+
+  chocolatey:
+    runs-on: windows-latest
+    steps:
+      - uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          version: tags/v${{ inputs.version }} # mind the "v" prefix
+          file: Spotube-windows-x86_64.nupkg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Chocolatey
+        run: choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
+
+      - name: Publish to Chocolatey Repository
+        if: ${{ !inputs.dry_run }}
+        run: choco push Spotube-windows-x86_64.nupkg
