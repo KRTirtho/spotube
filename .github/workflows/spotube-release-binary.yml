@@ -18,7 +18,7 @@ on:
         description: Dry run
         required: true
         type: boolean
-        default: false
+        default: true
 
 jobs:
   windows:
