@@ -2,6 +2,7 @@
     "cmake.configureOnOpen": false,
     "cSpell.words": [
       "Mpris",
-      "Spotube"
+      "Spotube",
+      "winget"
     ]
 }
