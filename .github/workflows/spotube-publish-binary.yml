@@ -37,7 +37,7 @@ jobs:
           git switch update-${{ inputs.version }}
 
       - name: Push to flathub
-        # if: ${{ !inputs.dry_run }}
+        if: ${{ !inputs.dry_run }}
         run: git push -u origin update-${{ inputs.version }}
 
   aur:
