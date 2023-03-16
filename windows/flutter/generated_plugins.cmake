@@ -8,6 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   metadata_god
   permission_handler_windows
   screen_retriever
+  system_theme
   url_launcher_windows
   window_manager
   window_size

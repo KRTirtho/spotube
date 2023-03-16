@@ -1,4 +1,4 @@
-import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -59,6 +59,8 @@ class ArtistPage extends HookConsumerWidget {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
 
     final auth = ref.watch(AuthenticationNotifier.provider);
+
+    final queryClient = useQueryClient();
 
     return SafeArea(
       bottom: false,
@@ -172,6 +174,30 @@ class ArtistPage extends HookConsumerWidget {
                                             .artist
                                             .doIFollow(ref, artistId);
 
+                                        final followUnfollow =
+                                            useCallback(() async {
+                                          try {
+                                            isFollowingQuery.data!
+                                                ? await spotify.me.unfollow(
+                                                    FollowingType.artist,
+                                                    [artistId],
+                                                  )
+                                                : await spotify.me.follow(
+                                                    FollowingType.artist,
+                                                    [artistId],
+                                                  );
+                                            await isFollowingQuery.refresh();
+
+                                            queryClient
+                                                .refreshInfiniteQueryAllPages(
+                                                    "user-following-artists");
+                                          } finally {
+                                            queryClient.refreshQuery(
+                                              "user-follows-artists-query/$artistId",
+                                            );
+                                          }
+                                        }, [isFollowingQuery]);
+
                                         if (isFollowingQuery.isLoading ||
                                             !isFollowingQuery.hasData) {
                                           return const SizedBox(
@@ -181,36 +207,16 @@ class ArtistPage extends HookConsumerWidget {
                                           );
                                         }
 
-                                        final queryBowl =
-                                            QueryClient.of(context);
+                                        if (isFollowingQuery.data!) {
+                                          return OutlinedButton(
+                                            onPressed: followUnfollow,
+                                            child: const Text("Following"),
+                                          );
+                                        }
 
                                         return FilledButton(
-                                          onPressed: () async {
-                                            try {
-                                              isFollowingQuery.data!
-                                                  ? await spotify.me.unfollow(
-                                                      FollowingType.artist,
-                                                      [artistId],
-                                                    )
-                                                  : await spotify.me.follow(
-                                                      FollowingType.artist,
-                                                      [artistId],
-                                                    );
-                                              await isFollowingQuery.refresh();
-
-                                              queryBowl
-                                                  .refreshInfiniteQueryAllPages(
-                                                      "user-following-artists");
-                                            } finally {
-                                              QueryClient.of(context).refreshQuery(
-                                                  "user-follows-artists-query/$artistId");
-                                            }
-                                          },
-                                          child: Text(
-                                            isFollowingQuery.data!
-                                                ? "Following"
-                                                : "Follow",
-                                          ),
+                                          onPressed: followUnfollow,
+                                          child: const Text("Follow"),
                                         );
                                       },
                                     ),

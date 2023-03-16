@@ -69,6 +69,7 @@ dependencies:
     git:
       url: https://github.com/rinukkusu/spotify-dart
       ref: 9e8ef4556942d42d74874de5491253156e7e6f43
+  system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
   tuple: ^2.0.1
   url_launcher: ^6.1.7

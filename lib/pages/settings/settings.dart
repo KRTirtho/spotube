@@ -67,17 +67,13 @@ class SettingsPage extends HookConsumerWidget {
                           SpotubeIcons.login,
                           color: theme.colorScheme.primary,
                         ),
-                        title: SizedBox(
-                          height: 50,
-                          width: 200,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: AutoSizeText(
-                              "Login with your Spotify account",
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: theme.colorScheme.primary,
-                              ),
+                        title: Align(
+                          alignment: Alignment.centerLeft,
+                          child: AutoSizeText(
+                            "Login with your Spotify account",
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: theme.colorScheme.primary,
                             ),
                           ),
                         ),
@@ -197,7 +193,7 @@ class SettingsPage extends HookConsumerWidget {
                         horizontal: 15,
                         vertical: 5,
                       ),
-                      trailing: ColorTile(
+                      trailing: ColorTile.compact(
                         color: preferences.accentColorScheme,
                         onPressed: pickColorScheme(ColorSchemeType.accent),
                         isActive: true,
