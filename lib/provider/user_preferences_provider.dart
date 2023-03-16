@@ -30,7 +30,7 @@ class UserPreferences extends PersistedChangeNotifier {
   bool checkUpdate;
   AudioQuality audioQuality;
 
-  MaterialColor accentColorScheme;
+  Color accentColorScheme;
   bool skipSponsorSegments;
 
   String downloadLocation;
@@ -93,7 +93,7 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setAccentColorScheme(MaterialColor color) {
+  void setAccentColorScheme(Color color) {
     accentColorScheme = color;
     notifyListeners();
     updatePersistence();

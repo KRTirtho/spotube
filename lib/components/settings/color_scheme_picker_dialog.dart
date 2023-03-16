@@ -3,8 +3,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:system_theme/system_theme.dart';
 
-final colorsMap = {
+final Map<String, Color> colorsMap = {
+  "System": SystemTheme.accentColor.accent,
   "Red": Colors.red,
   "Pink": Colors.pink,
   "Purple": Colors.purple,
@@ -23,15 +25,8 @@ final colorsMap = {
   "Brown": Colors.brown,
 };
 
-enum ColorSchemeType {
-  accent,
-  background,
-}
-
 class ColorSchemePickerDialog extends HookConsumerWidget {
-  final ColorSchemeType schemeType;
-  const ColorSchemePickerDialog({required this.schemeType, Key? key})
-      : super(key: key);
+  const ColorSchemePickerDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -44,20 +39,12 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
     ).key);
 
     onOk() {
-      switch (schemeType) {
-        case ColorSchemeType.accent:
-          preferences.setAccentColorScheme(colorsMap[active.value]!);
-          break;
-        default:
-          preferences.setBackgroundColorScheme(
-            colorsMap[active.value]!,
-          );
-      }
+      preferences.setAccentColorScheme(colorsMap[active.value]!);
       Navigator.pop(context);
     }
 
     return AlertDialog(
-      title: Text("Pick ${schemeType.name} color scheme"),
+      title: const Text("Pick color scheme"),
       actions: [
         OutlinedButton(
           child: const Text("Cancel"),
@@ -96,7 +83,7 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
 }
 
 class ColorTile extends StatelessWidget {
-  final MaterialColor color;
+  final Color color;
   final bool isActive;
   final void Function()? onPressed;
   final String? tooltip;
@@ -111,7 +98,7 @@ class ColorTile extends StatelessWidget {
   }) : super(key: key);
 
   factory ColorTile.compact({
-    required MaterialColor color,
+    required Color color,
     bool isActive = false,
     void Function()? onPressed,
     String? tooltip = "",
@@ -138,7 +125,11 @@ class ColorTile extends StatelessWidget {
         border: isActive
             ? Border.fromBorderSide(
                 BorderSide(
-                  color: color[100]!,
+                  color: Color.lerp(
+                    theme.colorScheme.primary,
+                    theme.colorScheme.onPrimary,
+                    0.5,
+                  )!,
                   width: 4,
                 ),
               )
@@ -149,16 +140,13 @@ class ColorTile extends StatelessWidget {
     );
 
     if (isCompact) {
-      return Tooltip(
-        message: tooltip,
-        child: GestureDetector(
-          onTap: onPressed,
-          child: lead,
-        ),
+      return GestureDetector(
+        onTap: onPressed,
+        child: lead,
       );
     }
 
-    final colorScheme = ColorScheme.fromSwatch(primarySwatch: color);
+    final colorScheme = ColorScheme.fromSeed(seedColor: color);
 
     final palette = [
       colorScheme.primary,
@@ -173,46 +161,43 @@ class ColorTile extends StatelessWidget {
       colorScheme.onSurface,
     ];
 
-    return Tooltip(
-      message: tooltip,
-      child: GestureDetector(
-        onTap: onPressed,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                lead,
-                const SizedBox(width: 10),
-                Text(
-                  tooltip!,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              lead,
+              const SizedBox(width: 10),
+              Text(
+                tooltip!,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            alignment: WrapAlignment.start,
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              ...palette.map(
+                (e) => Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    color: e,
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.start,
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                ...palette.map(
-                  (e) => Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: e,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

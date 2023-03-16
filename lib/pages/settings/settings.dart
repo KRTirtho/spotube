@@ -23,13 +23,11 @@ class SettingsPage extends HookConsumerWidget {
     final auth = ref.watch(AuthenticationNotifier.provider);
     final theme = Theme.of(context);
 
-    final pickColorScheme = useCallback((ColorSchemeType schemeType) {
+    final pickColorScheme = useCallback(() {
       return () => showDialog(
           context: context,
           builder: (context) {
-            return ColorSchemePickerDialog(
-              schemeType: schemeType,
-            );
+            return const ColorSchemePickerDialog();
           });
     }, []);
 
@@ -195,10 +193,10 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                       trailing: ColorTile.compact(
                         color: preferences.accentColorScheme,
-                        onPressed: pickColorScheme(ColorSchemeType.accent),
+                        onPressed: pickColorScheme(),
                         isActive: true,
                       ),
-                      onTap: pickColorScheme(ColorSchemeType.accent),
+                      onTap: pickColorScheme(),
                     ),
                     SwitchListTile(
                       secondary: const Icon(SpotubeIcons.album),

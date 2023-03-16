@@ -28,6 +28,7 @@ import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
+import 'package:system_theme/system_theme.dart';
 
 void main(List<String> rawArgs) async {
   final parser = ArgParser();
@@ -67,6 +68,7 @@ void main(List<String> rawArgs) async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemTheme.accentColor.load();
   await QueryClient.initialize(cachePrefix: "oss.krtirtho.spotube");
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
