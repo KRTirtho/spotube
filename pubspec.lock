@@ -330,6 +330,14 @@ packages:
       url: "https://github.com/ThexXTURBOXx/catcher"
     source: git
     version: "0.7.1"
+  change_case:
+    dependency: transitive
+    description:
+      name: change_case
+      sha256: f4e08feaa845e75e4f5ad2b0e15f24813d7ea6c27e7b78252f0c17f752cf1157
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   characters:
     dependency: transitive
     description:
@@ -782,6 +790,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  gsettings:
+    dependency: transitive
+    description:
+      name: gsettings
+      sha256: fe90d719e09a6f36607021047e642068a0c98839d9633db00b91633420ae8b0d
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.7"
   hive:
     dependency: "direct main"
     description:
@@ -1564,6 +1580,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  titlebar_buttons:
+    dependency: "direct main"
+    description:
+      name: titlebar_buttons
+      sha256: babf62b48b80f290b9ef8b0135df7d9e9bebcb9c27e8380a53df9bb72f3fb03c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   tuple:
     dependency: "direct main"
     description:
