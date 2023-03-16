@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/KRTirtho/spotube/actions/workflows/spotube-nightly.yml">
-    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-nightly.yml?color=1585be&style=flat-square">
+  <a href="https://github.com/KRTirtho/spotube/actions/workflows/spotube-release-binary.yml">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?color=1585be&style=flat-square">
   </a>
   <a href="https://github.com/KRTirtho/Spotube/releases">
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/KRTirtho/spotube?color=1585be&style=flat-square"/>
@@ -206,6 +206,7 @@ But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sou
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
+- [RaptaG](https://github.com/raptag) - The Github Moderator and Community Manager
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
 # Social platforms

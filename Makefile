@@ -19,7 +19,7 @@ tar:
 		&& cp linux/spotube.desktop $(TEMP_DIR)\
 		&& cp assets/spotube-logo.png $(TEMP_DIR)\
 		&& cp linux/com.github.KRTirtho.Spotube.appdata.xml $(TEMP_DIR)\
-		&& tar -cJf build/Spotube-linux-x86_64.tar.xz -C $(TEMP_DIR) .\
+		&& tar -cJf build/spotube-linux-${VERSION}-x86_64.tar.xz -C $(TEMP_DIR) .\
 		&& rm -rf $(TEMP_DIR)
 
 appimage:

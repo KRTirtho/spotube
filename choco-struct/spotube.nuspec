@@ -22,22 +22,24 @@
     <docsUrl>https://github.com/KRTirtho/spotube#readme</docsUrl>
     <bugTrackerUrl>https://github.com/KRTirtho/spotube/issues/new</bugTrackerUrl>
     <tags>spotube music audio spotify youtube flutter</tags>
-    <summary>Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop &amp; mobile!</summary>
+    <summary>🎧 Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop &amp; mobile! </summary>
     <description>
     Spotube is a Flutter based lightweight spotify client. It utilizes the power 
     of Spotify  &amp; Youtube's public API  &amp; creates a hazardless, performant  &amp; resource
     friendly User Experience
 
     # Features
-    - Open Source
-    - No telementry, diagnostics or user data collection
-    - Lightweight  &amp; resource friendly
+    - Open source/libre software
+    - Anonymous/guest login
+    - Cross platform support
+    - No telemetry, diagnostics or user data collection
+    - Lightweight &amp; resource-friendly
     - Native performance (Thanks to Flutter+Skia)
-    - Playback control is on user's machine instead of server based
-    - Small size  &amp; less data hungry
-    - No spotify or youtube ads since it uses all public  &amp; free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
-    - Lyrics
-    - Downloadable track (WIP)
+    - Playback control is done locally instead of on the server
+    - Small size &amp; less data usage
+    - No Spotify or YouTube ads since it uses all public &amp; free APIs (It is still recommended to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify. Purchasing Spotify Premium is usually the best way to support their valuable creations.)
+    - Time synced lyrics
+    - Downloadable tracks
     </description>
     <releaseNotes>https://github.com/KRTirtho/spotube/releases/tag/v%{{SPOTUBE_VERSION}}%</releaseNotes>
   </metadata>
