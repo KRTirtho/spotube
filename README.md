@@ -206,7 +206,7 @@ But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sou
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
-- [RaptaG](https://github.com/raptag) - The Github Moderator and Community Manager
+- [RaptaG](https://github.com/raptag) - The GitHub Moderator and Community Manager
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
 # Social platforms
