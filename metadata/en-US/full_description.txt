@@ -1,15 +1,15 @@
-A lightweight free Spotify crossplatform-client (desktop: Mac, Linux, Windows, mobile: Android) which handles playback manually, streams music using Youtube & no Spotify premium account is needed
+Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop & mobile!
 
 
 Features:
-* Open Source
-* Anonymous/Guest Login
-* Cross platform
+* Open source/libre software
+* Anonymous/guest login
+* Cross platform support
 * No telemetry, diagnostics or user data collection
-* Lightweight & resource friendly
+* Lightweight & resource-friendly
 * Native performance (Thanks to Flutter+Skia)
-* Playback control is on user's machine instead of server based
-* Small size & less data hungry
-* No spotify or youtube ads since it uses all public & free APIs (But it's recommended to support the creators by watching/liking/subscribing to the artists youtube channel or add as favourite track in spotify. Mostly buying spotify premium is the best way to support their valuable creations)
-* Synced Lyrics
-* Downloadable track
+* Playback control is done locally instead of on the server
+* Small size & less data usage
+* No Spotify or YouTube ads since it uses all public & free APIs (It is still recommended to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify. Purchasing Spotify Premium is usually the best way to support their valuable creations.)
+* Time synced lyrics
+* Downloadable tracks

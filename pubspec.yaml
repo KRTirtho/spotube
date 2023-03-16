@@ -1,7 +1,5 @@
 name: spotube
-description: A lightweight free Spotify crossplatform-client which handles
-  playback manually, streams music using Youtube & no Spotify premium account is
-  needed
+description: Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop & mobile!
 
 publish_to: "none"
 
