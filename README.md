@@ -219,7 +219,7 @@ Follow me on [Twitter](https://twitter.com/@krtirtho), or join our amazing [Disc
 [win32-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe
 [deb-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.deb
 [rpm-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.rpm
-[linux-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.tar.xz
+[linux-dlink]: https://github.com/KRTirtho/spotube/releases/latest
 [appimage-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage
 [mac-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg
 [android-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk
