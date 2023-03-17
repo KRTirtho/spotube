@@ -174,6 +174,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
               color: color?.titleTextColor ?? Colors.white,
             ),
           ),
+          isDense: true,
           prefixIconColor: color?.titleTextColor,
           prefixIcon: const Icon(SpotubeIcons.search),
         ),
@@ -269,9 +270,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   child: UniversalImage(
                                     path: titleImage,
-                                    placeholder: (context, url) {
-                                      return Assets.albumPlaceholder.image();
-                                    },
+                                    placeholder: Assets.albumPlaceholder.path,
                                   ),
                                 ),
                               ),

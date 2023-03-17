@@ -14,6 +14,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/cache_keys.dart';
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/collections/routes.dart';
@@ -69,6 +70,7 @@ void main(List<String> rawArgs) async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await SystemTheme.accentColor.load();
+  colorsMap["System"] = SystemTheme.accentColor.accent;
   await QueryClient.initialize(cachePrefix: "oss.krtirtho.spotube");
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());

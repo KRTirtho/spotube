@@ -33,12 +33,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(4),
               child: UniversalImage(
                 path: albumArt ?? "",
-                placeholder: (context, url) {
-                  return Assets.albumPlaceholder.image(
-                    height: 50,
-                    width: 50,
-                  );
-                },
+                placeholder: Assets.albumPlaceholder.path,
               ),
             ),
           ),

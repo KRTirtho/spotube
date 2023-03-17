@@ -16,13 +16,13 @@ class CategoryQueries {
               country: recommendationMarket,
               locale: 'en_US',
             )
-            .getPage(15, pageParam);
+            .getPage(8, pageParam);
 
         return categories;
       },
       initialPage: 0,
       nextPage: (lastPage, lastPageData) {
-        if (lastPageData.isLast || (lastPageData.items ?? []).length < 15) {
+        if (lastPageData.isLast || (lastPageData.items ?? []).length < 8) {
           return null;
         }
         return lastPageData.nextOffset;

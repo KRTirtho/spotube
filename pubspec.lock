@@ -554,14 +554,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0-alpha.2"
-  fluent_ui:
-    dependency: "direct main"
-    description:
-      name: fluent_ui
-      sha256: "29d85b74ee8d051bed9b5234afd50af4a693fef91f4e79657644051c23d789fb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.4.1"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -679,11 +671,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_mailer:
     dependency: transitive
     description:
@@ -1286,14 +1273,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   riverpod:
     dependency: transitive
     description:
@@ -1318,14 +1297,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.6"
-  scroll_pos:
-    dependency: transitive
-    description:
-      name: scroll_pos
-      sha256: cfca311b6b8d51538ff90e206fbe6ce3b36e7125ea6da4a40eb626c7f9f083b1
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.0"
   scroll_to_index:
     dependency: "direct main"
     description:
@@ -1807,4 +1778,4 @@ packages:
     version: "1.12.3"
 sdks:
   dart: ">=2.19.0 <3.0.0"
-  flutter: ">=3.7.0"
+  flutter: ">=3.3.0"

@@ -11,7 +11,7 @@ class UniversalImage extends HookWidget {
   final double? height;
   final double? width;
   final double scale;
-  final PlaceholderWidgetBuilder? placeholder;
+  final String? placeholder;
   const UniversalImage({
     required this.path,
     this.height,
@@ -46,16 +46,17 @@ class UniversalImage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     if (path.startsWith("http")) {
-      return CachedNetworkImage(
-        imageUrl: path,
+      return FadeInImage(
+        image: CachedNetworkImageProvider(
+          path,
+          maxHeight: height?.toInt(),
+          maxWidth: width?.toInt(),
+          cacheKey: path,
+          scale: scale,
+        ),
         height: height,
         width: width,
-        maxWidthDiskCache: width?.toInt(),
-        maxHeightDiskCache: height?.toInt(),
-        memCacheHeight: height?.toInt(),
-        memCacheWidth: width?.toInt(),
-        placeholder: placeholder,
-        cacheKey: path,
+        placeholder: AssetImage(placeholder ?? Assets.placeholder.path),
       );
     } else if (Uri.tryParse(path) != null && !path.startsWith("assets")) {
       return Image.file(
@@ -66,14 +67,14 @@ class UniversalImage extends HookWidget {
         cacheWidth: width?.toInt(),
         scale: scale,
         errorBuilder: (context, error, stackTrace) {
-          return placeholder?.call(context, error.toString()) ??
-              Assets.placeholder.image(
-                width: width,
-                height: height,
-                cacheHeight: height?.toInt(),
-                cacheWidth: width?.toInt(),
-                scale: scale,
-              );
+          return Image.asset(
+            placeholder ?? Assets.placeholder.path,
+            width: width,
+            height: height,
+            cacheHeight: height?.toInt(),
+            cacheWidth: width?.toInt(),
+            scale: scale,
+          );
         },
       );
     } else if (path.startsWith("assets")) {
@@ -85,14 +86,14 @@ class UniversalImage extends HookWidget {
         cacheWidth: width?.toInt(),
         scale: scale,
         errorBuilder: (context, error, stackTrace) {
-          return placeholder?.call(context, error.toString()) ??
-              Assets.placeholder.image(
-                width: width,
-                height: height,
-                cacheHeight: height?.toInt(),
-                cacheWidth: width?.toInt(),
-                scale: scale,
-              );
+          return Image.asset(
+            placeholder ?? Assets.placeholder.path,
+            width: width,
+            height: height,
+            cacheHeight: height?.toInt(),
+            cacheWidth: width?.toInt(),
+            scale: scale,
+          );
         },
       );
     }
@@ -105,14 +106,14 @@ class UniversalImage extends HookWidget {
       cacheWidth: width?.toInt(),
       scale: scale,
       errorBuilder: (context, error, stackTrace) {
-        return placeholder?.call(context, error.toString()) ??
-            Assets.placeholder.image(
-              width: width,
-              height: height,
-              cacheHeight: height?.toInt(),
-              cacheWidth: width?.toInt(),
-              scale: scale,
-            );
+        return Image.asset(
+          placeholder ?? Assets.placeholder.path,
+          width: width,
+          height: height,
+          cacheHeight: height?.toInt(),
+          cacheWidth: width?.toInt(),
+          scale: scale,
+        );
       },
     );
   }

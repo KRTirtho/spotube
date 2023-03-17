@@ -84,10 +84,7 @@ class PlaybuttonCard extends HookWidget {
                       borderRadius: radius,
                       child: UniversalImage(
                         path: imageUrl,
-                        placeholder: (context, url) {
-                          return Assets.albumPlaceholder
-                              .image(fit: BoxFit.cover);
-                        },
+                        placeholder: Assets.albumPlaceholder.path,
                       ),
                     ),
                   ),

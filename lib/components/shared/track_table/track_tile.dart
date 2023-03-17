@@ -216,12 +216,7 @@ class TrackTile extends HookConsumerWidget {
                   path: thumbnailUrl,
                   height: 40,
                   width: 40,
-                  placeholder: (context, url) {
-                    return Assets.albumPlaceholder.image(
-                      height: 40,
-                      width: 40,
-                    );
-                  },
+                  placeholder: Assets.albumPlaceholder.path,
                 ),
               ),
             ),
