@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/models/generated_secrets.dart';
 import 'package:spotube/utils/persisted_change_notifier.dart';
-import 'package:collection/collection.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:path/path.dart' as path;
@@ -30,7 +29,7 @@ class UserPreferences extends PersistedChangeNotifier {
   bool checkUpdate;
   AudioQuality audioQuality;
 
-  Color accentColorScheme;
+  SpotubeColor accentColorScheme;
   bool skipSponsorSegments;
 
   String downloadLocation;
@@ -46,8 +45,8 @@ class UserPreferences extends PersistedChangeNotifier {
     required this.themeMode,
     required this.layoutMode,
     required this.predownload,
+    required this.accentColorScheme,
     this.saveTrackLyrics = false,
-    this.accentColorScheme = Colors.green,
     this.checkUpdate = true,
     this.audioQuality = AudioQuality.high,
     this.skipSponsorSegments = true,
@@ -93,7 +92,7 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setAccentColorScheme(Color color) {
+  void setAccentColorScheme(SpotubeColor color) {
     accentColorScheme = color;
     notifyListeners();
     updatePersistence();
@@ -162,9 +161,9 @@ class UserPreferences extends PersistedChangeNotifier {
         PrimitiveUtils.getRandomElement(lyricsSecrets);
 
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
-    accentColorScheme = colorsMap.values
-            .firstWhereOrNull((e) => e.value == map["accentColorScheme"]) ??
-        accentColorScheme;
+    accentColorScheme = map["accentColorScheme"] != null
+        ? SpotubeColor.fromString(map["accentColorScheme"])
+        : accentColorScheme;
     audioQuality = map["audioQuality"] != null
         ? AudioQuality.values[map["audioQuality"]]
         : audioQuality;
@@ -187,7 +186,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "recommendationMarket": recommendationMarket,
       "geniusAccessToken": geniusAccessToken,
       "themeMode": themeMode.index,
-      "accentColorScheme": accentColorScheme.value,
+      "accentColorScheme": accentColorScheme.toString(),
       "checkUpdate": checkUpdate,
       "audioQuality": audioQuality.index,
       "skipSponsorSegments": skipSponsorSegments,
@@ -201,6 +200,7 @@ class UserPreferences extends PersistedChangeNotifier {
 
 final userPreferencesProvider = ChangeNotifierProvider(
   (_) => UserPreferences(
+    accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
     geniusAccessToken: "",
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,

@@ -5,24 +5,42 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:system_theme/system_theme.dart';
 
-final Map<String, Color> colorsMap = {
-  "System": SystemTheme.accentColor.accent,
-  "Red": Colors.red,
-  "Pink": Colors.pink,
-  "Purple": Colors.purple,
-  "DeepPurple": Colors.deepPurple,
-  "Indigo": Colors.indigo,
-  "Blue": Colors.blue,
-  "LightBlue": Colors.lightBlue,
-  "Cyan": Colors.cyan,
-  "Teal": Colors.teal,
-  "Green": Colors.green,
-  "LightGreen": Colors.lightGreen,
-  "Yellow": Colors.yellow,
-  "Amber": Colors.amber,
-  "Orange": Colors.orange,
-  "DeepOrange": Colors.deepOrange,
-  "Brown": Colors.brown,
+class SpotubeColor extends Color {
+  final String name;
+
+  const SpotubeColor(int color, {required this.name}) : super(color);
+
+  const SpotubeColor.from(int value, {required this.name}) : super(value);
+
+  factory SpotubeColor.fromString(String string) {
+    final slices = string.split(":");
+    return SpotubeColor(int.parse(slices.last), name: slices.first);
+  }
+
+  @override
+  String toString() {
+    return "$name:$value";
+  }
+}
+
+final Set<SpotubeColor> colorsMap = {
+  SpotubeColor(SystemTheme.accentColor.accent.value, name: "System"),
+  SpotubeColor(Colors.red.value, name: "Red"),
+  SpotubeColor(Colors.pink.value, name: "Pink"),
+  SpotubeColor(Colors.purple.value, name: "Purple"),
+  SpotubeColor(Colors.deepPurple.value, name: "DeepPurple"),
+  SpotubeColor(Colors.indigo.value, name: "Indigo"),
+  SpotubeColor(Colors.blue.value, name: "Blue"),
+  SpotubeColor(Colors.lightBlue.value, name: "LightBlue"),
+  SpotubeColor(Colors.cyan.value, name: "Cyan"),
+  SpotubeColor(Colors.teal.value, name: "Teal"),
+  SpotubeColor(Colors.green.value, name: "Green"),
+  SpotubeColor(Colors.lightGreen.value, name: "LightGreen"),
+  SpotubeColor(Colors.yellow.value, name: "Yellow"),
+  SpotubeColor(Colors.amber.value, name: "Amber"),
+  SpotubeColor(Colors.orange.value, name: "Orange"),
+  SpotubeColor(Colors.deepOrange.value, name: "DeepOrange"),
+  SpotubeColor(Colors.brown.value, name: "Brown"),
 };
 
 class ColorSchemePickerDialog extends HookConsumerWidget {
@@ -32,14 +50,20 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
     final scheme = preferences.accentColorScheme;
-    final active = useState<String>(colorsMap.entries.firstWhere(
+    final active = useState<String>(colorsMap.firstWhere(
       (element) {
-        return scheme.value == element.value.value;
+        return scheme.name == element.name;
       },
-    ).key);
+    ).name);
 
     onOk() {
-      preferences.setAccentColorScheme(colorsMap[active.value]!);
+      preferences.setAccentColorScheme(
+        colorsMap.firstWhere(
+          (element) {
+            return element.name == active.value;
+          },
+        ),
+      );
       Navigator.pop(context);
     }
 
@@ -66,14 +90,14 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
           },
           itemCount: colorsMap.length,
           itemBuilder: (context, index) {
-            final color = colorsMap.entries.elementAt(index);
+            final color = colorsMap.elementAt(index);
             return ColorTile(
-              color: color.value,
-              isActive: active.value == color.key,
+              color: color,
+              isActive: active.value == color.name,
               onPressed: () {
-                active.value = color.key;
+                active.value = color.name;
               },
-              tooltip: color.key,
+              tooltip: color.name,
             );
           },
         ),
