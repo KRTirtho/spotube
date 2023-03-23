@@ -21,12 +21,13 @@ class ShimmerArtistProfile extends HookWidget {
         shimmerTheme.shimmerBackgroundColor ?? Colors.grey;
 
     final avatarWidth = useBreakpointValue(
-      sm: MediaQuery.of(context).size.width * 0.80,
-      md: MediaQuery.of(context).size.width * 0.50,
-      lg: MediaQuery.of(context).size.width * 0.30,
-      xl: MediaQuery.of(context).size.width * 0.30,
-      xxl: MediaQuery.of(context).size.width * 0.30,
-    );
+          sm: MediaQuery.of(context).size.width * 0.80,
+          md: MediaQuery.of(context).size.width * 0.50,
+          lg: MediaQuery.of(context).size.width * 0.30,
+          xl: MediaQuery.of(context).size.width * 0.30,
+          xxl: MediaQuery.of(context).size.width * 0.30,
+        ) ??
+        0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

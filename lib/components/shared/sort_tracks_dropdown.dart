@@ -51,7 +51,7 @@ class SortTracksDropdown extends StatelessWidget {
       },
       onSelected: onChanged,
       tooltip: "Sort tracks",
-      child: const Icon(SpotubeIcons.sort),
+      icon: const Icon(SpotubeIcons.sort),
     );
   }
 }

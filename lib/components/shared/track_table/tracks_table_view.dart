@@ -197,7 +197,7 @@ class TracksTableView extends HookConsumerWidget {
                       default:
                     }
                   },
-                  child: const Icon(SpotubeIcons.moreVertical),
+                  icon: const Icon(SpotubeIcons.moreVertical),
                 ),
                 const SizedBox(width: 10),
               ],
@@ -205,57 +205,81 @@ class TracksTableView extends HookConsumerWidget {
             ...sortedTracks.asMap().entries.map((track) {
               String duration =
                   "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-              return InkWell(
-                onLongPress: () {
-                  showCheck.value = true;
-                  selected.value = [...selected.value, track.value.id!];
-                },
-                onTap: () {
-                  if (showCheck.value) {
-                    final alreadyChecked =
-                        selected.value.contains(track.value.id);
-                    if (alreadyChecked) {
-                      selected.value = selected.value
-                          .where((id) => id != track.value.id)
-                          .toList();
-                    } else {
-                      selected.value = [...selected.value, track.value.id!];
-                    }
-                  } else {
-                    final isBlackListed = ref.read(
-                      BlackListNotifier.provider.select(
-                        (blacklist) => blacklist.contains(
-                          BlacklistedElement.track(
-                              track.value.id!, track.value.name!),
-                        ),
-                      ),
-                    );
-                    if (!isBlackListed) {
-                      onTrackPlayButtonPressed?.call(track.value);
-                    }
-                  }
-                },
-                child: TrackTile(
-                  playlist,
-                  playlistId: playlistId,
-                  track: track,
-                  duration: duration,
-                  userPlaylist: userPlaylist,
-                  isActive: playlist?.activeTrack.id == track.value.id,
-                  onTrackPlayButtonPressed: onTrackPlayButtonPressed,
-                  isChecked: selected.value.contains(track.value.id),
-                  showCheck: showCheck.value,
-                  onCheckChange: (checked) {
-                    if (checked == true) {
-                      selected.value = [...selected.value, track.value.id!];
-                    } else {
-                      selected.value = selected.value
-                          .where((id) => id != track.value.id)
-                          .toList();
-                    }
-                  },
-                ),
-              );
+              return Consumer(builder: (context, ref, _) {
+                final isBlackListed = ref.watch(
+                  BlackListNotifier.provider.select(
+                    (blacklist) => blacklist.contains(
+                      BlacklistedElement.track(
+                          track.value.id!, track.value.name!),
+                    ),
+                  ),
+                );
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onLongPress: isBlackListed
+                        ? null
+                        : () {
+                            showCheck.value = true;
+                            selected.value = [
+                              ...selected.value,
+                              track.value.id!
+                            ];
+                          },
+                    onTap: isBlackListed
+                        ? null
+                        : () {
+                            if (showCheck.value) {
+                              final alreadyChecked =
+                                  selected.value.contains(track.value.id);
+                              if (alreadyChecked) {
+                                selected.value = selected.value
+                                    .where((id) => id != track.value.id)
+                                    .toList();
+                              } else {
+                                selected.value = [
+                                  ...selected.value,
+                                  track.value.id!
+                                ];
+                              }
+                            } else {
+                              final isBlackListed = ref.read(
+                                BlackListNotifier.provider.select(
+                                  (blacklist) => blacklist.contains(
+                                    BlacklistedElement.track(
+                                        track.value.id!, track.value.name!),
+                                  ),
+                                ),
+                              );
+                              if (!isBlackListed) {
+                                onTrackPlayButtonPressed?.call(track.value);
+                              }
+                            }
+                          },
+                    child: TrackTile(
+                      playlist,
+                      playlistId: playlistId,
+                      track: track,
+                      duration: duration,
+                      userPlaylist: userPlaylist,
+                      isActive: playlist?.activeTrack.id == track.value.id,
+                      onTrackPlayButtonPressed: onTrackPlayButtonPressed,
+                      isChecked: selected.value.contains(track.value.id),
+                      showCheck: showCheck.value,
+                      onCheckChange: (checked) {
+                        if (checked == true) {
+                          selected.value = [...selected.value, track.value.id!];
+                        } else {
+                          selected.value = selected.value
+                              .where((id) => id != track.value.id)
+                              .toList();
+                        }
+                      },
+                    ),
+                  ),
+                );
+              });
             }).toList(),
           ];
 

@@ -7,6 +7,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/utils/platform.dart';
 
 class PlaybuttonCard extends HookWidget {
   final void Function()? onTap;
@@ -34,52 +35,70 @@ class PlaybuttonCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textsKey = useMemoized(() => GlobalKey(), []);
     final theme = Theme.of(context);
     final radius = BorderRadius.circular(15);
 
     final double size = useBreakpointValue<double>(
-      sm: 130,
-      md: 150,
-      others: 170,
-    );
+          sm: 130,
+          md: 150,
+          others: 170,
+        ) ??
+        170;
 
     final end = useBreakpointValue<double>(
-      sm: 5,
-      md: 7,
-      others: 10,
+          sm: 15,
+          others: 20,
+        ) ??
+        20;
+
+    final textsHeight = useState(
+      (textsKey.currentContext?.findRenderObject() as RenderBox?)
+              ?.size
+              .height ??
+          110.00,
     );
 
-    return Container(
-      constraints: BoxConstraints(maxWidth: size),
-      margin: margin,
-      child: Material(
-        color: Color.lerp(
-          theme.colorScheme.surfaceVariant,
-          theme.colorScheme.surface,
-          useBrightnessValue(.9, .7),
-        ),
-        borderRadius: radius,
-        shadowColor: theme.colorScheme.background,
-        elevation: 3,
-        child: InkWell(
-          mouseCursor: SystemMouseCursors.click,
-          onTap: onTap,
-          borderRadius: radius,
-          splashFactory: theme.splashFactory,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        textsHeight.value =
+            (textsKey.currentContext?.findRenderObject() as RenderBox?)
+                    ?.size
+                    .height ??
+                textsHeight.value;
+      });
+      return null;
+    }, [textsKey]);
+
+    return Stack(
+      children: [
+        Container(
+          constraints: BoxConstraints(maxWidth: size),
+          margin: margin,
+          child: Material(
+            color: Color.lerp(
+              theme.colorScheme.surfaceVariant,
+              theme.colorScheme.surface,
+              useBrightnessValue(.9, .7),
+            ),
+            borderRadius: radius,
+            shadowColor: theme.colorScheme.background,
+            elevation: 3,
+            child: InkWell(
+              mouseCursor: SystemMouseCursors.click,
+              onTap: onTap,
+              borderRadius: radius,
+              splashFactory: theme.splashFactory,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(
+                  Padding(
+                    padding: const EdgeInsets.only(
                       left: 8,
                       right: 8,
                       top: 8,
                     ),
-                    constraints: BoxConstraints(maxHeight: size),
                     child: ClipRRect(
                       borderRadius: radius,
                       child: UniversalImage(
@@ -88,77 +107,79 @@ class PlaybuttonCard extends HookWidget {
                       ),
                     ),
                   ),
-                  Positioned.directional(
-                    textDirection: TextDirection.ltr,
-                    end: end,
-                    bottom: -size * .15,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (!isPlaying)
-                          IconButton(
-                            style: IconButton.styleFrom(
-                              backgroundColor: theme.colorScheme.background,
-                              foregroundColor: theme.colorScheme.primary,
-                              minimumSize: const Size.square(10),
-                            ),
-                            icon: const Icon(SpotubeIcons.queueAdd),
-                            onPressed: isLoading ? null : onAddToQueuePressed,
-                          ),
-                        const SizedBox(height: 5),
-                        IconButton(
-                          style: IconButton.styleFrom(
-                            backgroundColor: theme.colorScheme.primaryContainer,
-                            foregroundColor: theme.colorScheme.primary,
-                            minimumSize: const Size.square(10),
-                          ),
-                          icon: isLoading
-                              ? SizedBox.fromSize(
-                                  size: const Size.square(15),
-                                  child: const CircularProgressIndicator(
-                                      strokeWidth: 2),
-                                )
-                              : isPlaying
-                                  ? const Icon(SpotubeIcons.pause)
-                                  : const Icon(SpotubeIcons.play),
-                          onPressed: isLoading ? null : onPlaybuttonPressed,
+                  Column(
+                    key: textsKey,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: AutoSizeText(
+                          title,
+                          maxLines: 1,
+                          minFontSize: theme.textTheme.bodyMedium!.fontSize!,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    ),
+                      ),
+                      if (description != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: AutoSizeText(
+                            description!,
+                            maxLines: 2,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color:
+                                  theme.colorScheme.onSurface.withOpacity(.5),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      const SizedBox(height: 10),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: AutoSizeText(
-                    title,
-                    maxLines: 1,
-                    minFontSize: theme.textTheme.bodyMedium!.fontSize!,
-                    overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 300),
+          right: end,
+          bottom: textsHeight.value - (kIsMobile ? 5 : 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!isPlaying)
+                IconButton(
+                  style: IconButton.styleFrom(
+                    backgroundColor: theme.colorScheme.background,
+                    foregroundColor: theme.colorScheme.primary,
+                    minimumSize: const Size.square(10),
                   ),
+                  icon: const Icon(SpotubeIcons.queueAdd),
+                  onPressed: isLoading ? null : onAddToQueuePressed,
                 ),
+              const SizedBox(height: 5),
+              IconButton(
+                style: IconButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primaryContainer,
+                  foregroundColor: theme.colorScheme.primary,
+                  minimumSize: const Size.square(10),
+                ),
+                icon: isLoading
+                    ? SizedBox.fromSize(
+                        size: const Size.square(15),
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : isPlaying
+                        ? const Icon(SpotubeIcons.pause)
+                        : const Icon(SpotubeIcons.play),
+                onPressed: isLoading ? null : onPlaybuttonPressed,
               ),
-              if (description != null)
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: AutoSizeText(
-                      description!,
-                      maxLines: 2,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(.5),
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              const SizedBox(height: 10),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }

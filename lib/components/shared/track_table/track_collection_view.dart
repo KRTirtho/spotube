@@ -100,12 +100,13 @@ class TrackCollectionView<T> extends HookConsumerWidget {
           ),
         ),
       // play playlist
-      IconButton(
-        style: IconButton.styleFrom(
-          backgroundColor: theme.colorScheme.primary,
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: const CircleBorder(),
+          backgroundColor: theme.colorScheme.inversePrimary,
         ),
         onPressed: tracksSnapshot.data != null ? onPlay : null,
-        icon: Icon(isPlaying ? SpotubeIcons.stop : SpotubeIcons.play),
+        child: Icon(isPlaying ? SpotubeIcons.stop : SpotubeIcons.play),
       ),
       const SizedBox(width: 10),
     ];

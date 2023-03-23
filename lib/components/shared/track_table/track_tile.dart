@@ -179,18 +179,16 @@ class TrackTile extends HookConsumerWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       decoration: BoxDecoration(
-        color: isBlackListed
-            ? Colors.red[100]
-            : isActive
-                ? theme.popupMenuTheme.color
-                : Colors.transparent,
-        borderRadius: BorderRadius.circular(isActive ? 10 : 0),
+        color: isActive
+            ? theme.colorScheme.surfaceVariant.withOpacity(0.5)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Material(
         type: MaterialType.transparency,
         child: Row(
           children: [
-            if (showCheck)
+            if (showCheck && !isBlackListed)
               Checkbox(
                 value: isChecked,
                 onChanged: (s) => onCheckChange?.call(s),
@@ -222,22 +220,21 @@ class TrackTile extends HookConsumerWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                icon: Icon(
-                  playlist?.activeTrack.id == track.value.id
-                      ? SpotubeIcons.pause
-                      : SpotubeIcons.play,
-                  color: Colors.white,
-                ),
-                style: IconButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primary,
-                  hoverColor: theme.colorScheme.primary.withOpacity(0.5),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.inversePrimary,
+                  shape: const CircleBorder(),
                 ),
                 onPressed: !isBlackListed
                     ? () => onTrackPlayButtonPressed?.call(
                           track.value,
                         )
                     : null,
+                child: Icon(
+                  playlist?.activeTrack.id == track.value.id
+                      ? SpotubeIcons.pause
+                      : SpotubeIcons.play,
+                ),
               ),
             ),
             Expanded(

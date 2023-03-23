@@ -50,7 +50,11 @@ class UserAlbums extends HookConsumerWidget {
       return const AnonymousFallback();
     }
     if (albumsQuery.isLoading || !albumsQuery.hasData) {
-      return const Center(child: ShimmerPlaybuttonCard(count: 7));
+      return Container(
+        alignment: Alignment.topLeft,
+        padding: const EdgeInsets.all(16.0),
+        child: const ShimmerPlaybuttonCard(count: 7),
+      );
     }
 
     return RefreshIndicator(
@@ -63,6 +67,7 @@ class UserAlbums extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: SafeArea(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
                   onChanged: (value) => searchText.value = value,
