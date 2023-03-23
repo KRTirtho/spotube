@@ -68,18 +68,16 @@ class GenrePage extends HookConsumerWidget {
           }
         },
         controller: scrollController,
-        child: SafeArea(
-          child: ListView.builder(
-            controller: scrollController,
-            itemCount: categories.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              if (searchText.value.isEmpty && index == categories.length - 1) {
-                return const ShimmerCategories();
-              }
-              return CategoryCard(categories[index]);
-            },
-          ),
+        child: ListView.builder(
+          controller: scrollController,
+          itemCount: categories.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            if (searchText.value.isEmpty && index == categories.length - 1) {
+              return const ShimmerCategories();
+            }
+            return CategoryCard(categories[index]);
+          },
         ),
       ),
     );

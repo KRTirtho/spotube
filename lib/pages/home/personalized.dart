@@ -110,24 +110,22 @@ class PersonalizedPage extends HookConsumerWidget {
 
     final newReleases = useQueries.album.newReleases(ref);
 
-    return SafeArea(
-      child: ListView(
-        children: [
-          PersonalizedItemCard(
-            playlists:
-                featuredPlaylistsQuery.pages.whereType<Page<PlaylistSimple>>(),
-            title: 'Featured',
-            hasNextPage: featuredPlaylistsQuery.hasNextPage,
-            onFetchMore: featuredPlaylistsQuery.fetchNext,
-          ),
-          PersonalizedItemCard(
-            albums: newReleases.pages.whereType<Page<AlbumSimple>>(),
-            title: 'New Releases',
-            hasNextPage: newReleases.hasNextPage,
-            onFetchMore: newReleases.fetchNext,
-          ),
-        ],
-      ),
+    return ListView(
+      children: [
+        PersonalizedItemCard(
+          playlists:
+              featuredPlaylistsQuery.pages.whereType<Page<PlaylistSimple>>(),
+          title: 'Featured',
+          hasNextPage: featuredPlaylistsQuery.hasNextPage,
+          onFetchMore: featuredPlaylistsQuery.fetchNext,
+        ),
+        PersonalizedItemCard(
+          albums: newReleases.pages.whereType<Page<AlbumSimple>>(),
+          title: 'New Releases',
+          hasNextPage: newReleases.hasNextPage,
+          onFetchMore: newReleases.fetchNext,
+        ),
+      ],
     );
   }
 }
