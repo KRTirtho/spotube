@@ -1,10 +1,3 @@
-
-# 🚨 DO NOT INSTALL Spotube FROM `PLAY STORE`
-## There's an unofficial + `illegal` clone/copycat of Spotube available on `Play Store` that is full of malware, ads and trackers. To help take down this illegal copycat/clone, please FOLLOW THIS GUIDE : [wiki/Report-Spotube-Copycat-on-PlayStore](https://github.com/KRTirtho/spotube/wiki/Report-Spotube-Copycat-on-Playstore)
-
-Follow this issue thread to get updates on the progress of the legal action against the illegal copycat/clone: https://github.com/KRTirtho/spotube/issues/448
-
-
 <p align="center"><img width="700" src="assets/spotube_banner.png" alt="Spotube Logo"></p>
 
 <p align="center">
