@@ -13,6 +13,13 @@ import 'package:spotube/hooks/use_update_checker.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 
+const rootPaths = {
+  0: "/",
+  1: "/search",
+  2: "/library",
+  3: "/lyrics",
+};
+
 class RootApp extends HookConsumerWidget {
   final Widget child;
   const RootApp({
@@ -25,13 +32,6 @@ class RootApp extends HookConsumerWidget {
     final index = useState(0);
     final isMounted = useIsMounted();
     final auth = ref.watch(AuthenticationNotifier.provider);
-
-    final rootPaths = [
-      "/",
-      if (auth != null) "/search",
-      "/library",
-      if (auth != null) "/lyrics",
-    ].asMap();
 
     final downloader = ref.watch(downloaderProvider);
     useEffect(() {
