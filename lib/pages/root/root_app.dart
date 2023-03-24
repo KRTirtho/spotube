@@ -8,6 +8,7 @@ import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 
 const rootPaths = {
@@ -28,6 +29,7 @@ class RootApp extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final index = useState(0);
     final isMounted = useIsMounted();
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
     final downloader = ref.watch(downloaderProvider);
     useEffect(() {

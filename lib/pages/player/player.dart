@@ -17,6 +17,7 @@ import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -29,6 +30,7 @@ class PlayerView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
+    final auth = ref.watch(AuthenticationNotifier.provider);
     final currentTrack = ref.watch(PlaylistQueueNotifier.provider.select(
       (value) => value?.activeTrack,
     ));
@@ -180,32 +182,33 @@ class PlayerView extends HookConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     floatingQueue: false,
                     extraActions: [
-                      IconButton(
-                        tooltip: "Open Lyrics",
-                        icon: const Icon(SpotubeIcons.music),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isDismissible: true,
-                            enableDrag: true,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.black38,
-                            barrierColor: Colors.black12,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
+                      if (auth != null)
+                        IconButton(
+                          tooltip: "Open Lyrics",
+                          icon: const Icon(SpotubeIcons.music),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isDismissible: true,
+                              enableDrag: true,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.black38,
+                              barrierColor: Colors.black12,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
                               ),
-                            ),
-                            constraints: BoxConstraints(
-                              maxHeight:
-                                  MediaQuery.of(context).size.height * 0.8,
-                            ),
-                            builder: (context) =>
-                                const LyricsPage(isModal: true),
-                          );
-                        },
-                      )
+                              constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.of(context).size.height * 0.8,
+                              ),
+                              builder: (context) =>
+                                  const LyricsPage(isModal: true),
+                            );
+                          },
+                        )
                     ],
                   ),
                   PlayerControls(iconColor: paletteColor.bodyTextColor),

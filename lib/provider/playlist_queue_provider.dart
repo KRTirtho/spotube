@@ -152,7 +152,10 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   void configure() async {
     if (kIsMobile || kIsMacOS) {
       mobileService = await AudioService.init(
-        builder: () => MobileAudioService(this),
+        builder: () => MobileAudioService(
+          this,
+          ref.read(VolumeProvider.provider.notifier),
+        ),
         config: const AudioServiceConfig(
           androidNotificationChannelId: 'com.krtirtho.Spotube',
           androidNotificationChannelName: 'Spotube',
