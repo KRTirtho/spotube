@@ -57,9 +57,12 @@ class SpotubeNavigationBar extends HookConsumerWidget {
           buttonBackgroundColor: buttonColor,
           color: theme.colorScheme.background,
           height: 50,
-          items: [
-            ...navbarTileList.map(
-              (e) {
+          animationDuration: const Duration(milliseconds: 350),
+          items: navbarTileList.map(
+            (e) {
+              /// Using this [Builder] as an workaround for the first item's
+              /// icon color not updating unless navigating to another page
+              return Builder(builder: (context) {
                 return MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: Badge(
@@ -67,13 +70,13 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                     label: Text(downloadCount.toString()),
                     child: Icon(
                       e.icon,
-                      color: theme.colorScheme.primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 );
-              },
-            ),
-          ],
+              });
+            },
+          ).toList(),
           index: insideSelectedIndex.value,
           onTap: (i) {
             insideSelectedIndex.value = i;
