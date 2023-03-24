@@ -10,14 +10,8 @@ import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-
-const rootPaths = {
-  0: "/",
-  1: "/search",
-  2: "/library",
-  3: "/lyrics",
-};
 
 class RootApp extends HookConsumerWidget {
   final Widget child;
@@ -30,6 +24,14 @@ class RootApp extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final index = useState(0);
     final isMounted = useIsMounted();
+    final auth = ref.watch(AuthenticationNotifier.provider);
+
+    final rootPaths = [
+      "/",
+      if (auth != null) "/search",
+      "/library",
+      if (auth != null) "/lyrics",
+    ].asMap();
 
     final downloader = ref.watch(downloaderProvider);
     useEffect(() {

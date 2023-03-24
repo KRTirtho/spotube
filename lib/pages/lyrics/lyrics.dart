@@ -5,12 +5,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -38,6 +40,17 @@ class LyricsPage extends HookConsumerWidget {
       true,
       noSetBGColor: true,
     );
+
+    final auth = ref.watch(AuthenticationNotifier.provider);
+
+    if (auth == null) {
+      return PlatformScaffold(
+        appBar: !kIsMacOS && platform != TargetPlatform.windows && !isModal
+            ? PageWindowTitleBar()
+            : null,
+        body: const AnonymousFallback(),
+      );
+    }
 
     Widget body = [
       SyncedLyrics(palette: palette, isModal: isModal),
