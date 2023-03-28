@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +20,6 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
@@ -38,9 +38,6 @@ class PlayerView extends HookConsumerWidget {
       (value) => value?.activeTrack is LocalTrack,
     ));
     final breakpoint = useBreakpoints();
-    final canRotate = ref.watch(
-      userPreferencesProvider.select((s) => s.rotatingAlbumArt),
-    );
 
     useEffect(() {
       if (breakpoint.isMoreThan(Breakpoints.md)) {
@@ -75,7 +72,7 @@ class PlayerView extends HookConsumerWidget {
         leading: BackButton(color: paletteColor.titleTextColor),
       ),
       extendBodyBehindAppBar: true,
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: UniversalImage.imageProvider(albumArt),
@@ -84,31 +81,39 @@ class PlayerView extends HookConsumerWidget {
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Material(
-            color: paletteColor.color.withOpacity(.5),
-            child: SafeArea(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: UniversalImage(
+                      path: albumArt,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    alignment: Alignment.centerLeft,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 30,
-                          child: Text(
-                            currentTrack?.name ?? "Not playing",
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: paletteColor.titleTextColor,
-                            ),
+                        AutoSizeText(
+                          currentTrack?.name ?? "Not playing",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: paletteColor.titleTextColor,
                           ),
+                          maxLines: 1,
+                          textAlign: TextAlign.start,
                         ),
                         if (isLocalTrack)
                           Text(
                             TypeConversionUtils.artists_X_String<Artist>(
                               currentTrack?.artists ?? [],
                             ),
-                            style: theme.textTheme.titleLarge!.copyWith(
+                            style: theme.textTheme.bodyMedium!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: paletteColor.bodyTextColor,
                             ),
@@ -116,7 +121,7 @@ class PlayerView extends HookConsumerWidget {
                         else
                           TypeConversionUtils.artists_X_ClickableArtists(
                             currentTrack?.artists ?? [],
-                            textStyle: theme.textTheme.titleLarge!.copyWith(
+                            textStyle: theme.textTheme.bodyMedium!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: paletteColor.bodyTextColor,
                             ),
@@ -128,55 +133,8 @@ class PlayerView extends HookConsumerWidget {
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  HookBuilder(builder: (context) {
-                    final ticker = useSingleTickerProvider();
-                    final controller = useAnimationController(
-                      duration: const Duration(seconds: 10),
-                      vsync: ticker,
-                    );
-
-                    useEffect(
-                      () {
-                        controller.repeat();
-                        if (!canRotate) controller.stop();
-                        return null;
-                      },
-                      [controller],
-                    );
-                    return RotationTransition(
-                      turns: Tween(begin: 0.0, end: 1.0).animate(controller),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: canRotate
-                              ? Border.all(
-                                  color: paletteColor.titleTextColor,
-                                  width: 2,
-                                )
-                              : null,
-                          borderRadius:
-                              !canRotate ? BorderRadius.circular(15) : null,
-                          shape:
-                              canRotate ? BoxShape.circle : BoxShape.rectangle,
-                        ),
-                        child: !canRotate
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: UniversalImage(
-                                  path: albumArt,
-                                  width: MediaQuery.of(context).size.width *
-                                      (breakpoint.isSm ? 0.8 : 0.5),
-                                ),
-                              )
-                            : CircleAvatar(
-                                backgroundImage:
-                                    UniversalImage.imageProvider(albumArt),
-                                radius: MediaQuery.of(context).size.width *
-                                    (breakpoint.isSm ? 0.4 : 0.3),
-                              ),
-                      ),
-                    );
-                  }),
+                  const SizedBox(height: 40),
+                  PlayerControls(iconColor: paletteColor.bodyTextColor),
                   const Spacer(),
                   PlayerActions(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -211,7 +169,6 @@ class PlayerView extends HookConsumerWidget {
                         )
                     ],
                   ),
-                  PlayerControls(iconColor: paletteColor.bodyTextColor),
                 ],
               ),
             ),
