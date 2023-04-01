@@ -17,7 +17,6 @@ import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/player/player.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/root/root_app.dart';
-// import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
