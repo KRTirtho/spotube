@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_ui/platform_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,6 +69,7 @@ void main(List<String> rawArgs) async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
+  MetadataGod.initialize();
   await QueryClient.initialize(cachePrefix: "oss.krtirtho.spotube");
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());

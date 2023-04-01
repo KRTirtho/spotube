@@ -704,10 +704,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: aedbf045f72c7ed778d1cfc8bff0ceae28519d258e3f477abd70ce375ae8cdda
+      sha256: "34f5becca2df35955b2ec5e875349028ea609a826de7aade4de80534cf876b27"
       url: "https://pub.dev"
     source: hosted
-    version: "1.62.1"
+    version: "1.72.1"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -1002,10 +1002,10 @@ packages:
     dependency: "direct main"
     description:
       name: metadata_god
-      sha256: a2a54285d363f15baa261abc16eb5f1b95397c7838a29c9c98d2a684e6fe052c
+      sha256: "02de939fc2dcfdc959ed34768eecc97038b6e95ebaa3415f9f7582d71a2ad047"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.2"
+    version: "0.4.1"
   mime:
     dependency: "direct main"
     description:
@@ -1807,5 +1807,5 @@ packages:
     source: hosted
     version: "1.12.3"
 sdks:
-  dart: ">=2.19.0 <3.0.0"
+  dart: ">=2.19.2 <3.0.0"
   flutter: ">=3.7.0"
