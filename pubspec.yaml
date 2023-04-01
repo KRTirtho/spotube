@@ -49,7 +49,7 @@ dependencies:
   json_annotation: ^4.8.0
   json_serializable: ^6.6.0
   logger: ^1.1.0
-  metadata_god: ^0.3.2
+  metadata_god: ^0.4.1
   mime: ^1.0.2
   package_info_plus: ^3.0.2
   palette_generator: ^0.3.3

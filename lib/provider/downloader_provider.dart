@@ -108,8 +108,8 @@ class Downloader with ChangeNotifier {
           final response = await get(Uri.parse(imageUri));
 
           await MetadataGod.writeMetadata(
-            file.path,
-            Metadata(
+            file: file.path,
+            metadata: Metadata(
               title: track.name,
               artist: track.artists?.map((a) => a.name).join(", "),
               album: track.album?.name,
@@ -123,7 +123,7 @@ class Downloader with ChangeNotifier {
               fileSize: file.lengthSync(),
               trackTotal: track.album?.tracks?.length,
               picture: response.headers['content-type'] != null
-                  ? Image(
+                  ? Picture(
                       data: response.bodyBytes,
                       mimeType: response.headers['content-type']!,
                     )

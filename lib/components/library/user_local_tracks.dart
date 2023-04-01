@@ -77,18 +77,18 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
       }).map(
         (f) async {
           try {
-            final metadata = await MetadataGod.getMetadata(f.path);
+            final metadata = await MetadataGod.readMetadata(file: f.path);
 
             final imageFile = File(join(
               (await getTemporaryDirectory()).path,
               "spotube",
               basenameWithoutExtension(f.path) +
-                  imgMimeToExt[metadata?.picture?.mimeType ?? "image/jpeg"]!,
+                  imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
             ));
-            if (!await imageFile.exists() && metadata?.picture != null) {
+            if (!await imageFile.exists() && metadata.picture != null) {
               await imageFile.create(recursive: true);
               await imageFile.writeAsBytes(
-                metadata?.picture?.data ?? [],
+                metadata.picture?.data ?? [],
                 mode: FileMode.writeOnly,
               );
             }

@@ -5,7 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
   catcher
-  metadata_god
   screen_retriever
   system_theme
   url_launcher_linux
@@ -14,6 +13,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
+  metadata_god
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
