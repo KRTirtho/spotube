@@ -156,7 +156,7 @@ class PlayerView extends HookConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    PlayerControls(color: bodyTextColor),
+                    PlayerControls(palette: palette),
                     const Spacer(),
                     PlayerActions(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

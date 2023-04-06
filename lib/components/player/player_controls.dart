@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
@@ -11,10 +12,10 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
-  final Color? color;
+  final PaletteGenerator? palette;
 
   PlayerControls({
-    this.color,
+    this.palette,
     Key? key,
   }) : super(key: key);
 
@@ -42,6 +43,32 @@ class PlayerControls extends HookConsumerWidget {
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
     final theme = Theme.of(context);
+
+    final isDominantColorDark = ThemeData.estimateBrightnessForColor(
+          palette?.dominantColor?.color ?? theme.colorScheme.primary,
+        ) ==
+        Brightness.dark;
+
+    final dominantColor = isDominantColorDark
+        ? palette?.mutedColor ?? palette?.dominantColor
+        : palette?.dominantColor;
+
+    final sliderColor =
+        palette?.dominantColor?.titleTextColor ?? theme.colorScheme.primary;
+
+    final buttonStyle = IconButton.styleFrom(
+      backgroundColor: dominantColor?.color.withOpacity(0.2) ??
+          theme.colorScheme.surface.withOpacity(0.4),
+      minimumSize: const Size(28, 28),
+    );
+
+    final activeButtonStyle = IconButton.styleFrom(
+      backgroundColor:
+          dominantColor?.titleTextColor ?? theme.colorScheme.primaryContainer,
+      foregroundColor:
+          dominantColor?.color ?? theme.colorScheme.onPrimaryContainer,
+      minimumSize: const Size(28, 28),
+    );
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -109,8 +136,8 @@ class PlayerControls extends HookConsumerWidget {
                               ),
                             );
                           },
-                          activeColor: color,
-                          inactiveColor: color?.withOpacity(0.15),
+                          activeColor: sliderColor,
+                          inactiveColor: sliderColor.withOpacity(0.15),
                         ),
                       ),
                       Padding(
@@ -118,8 +145,8 @@ class PlayerControls extends HookConsumerWidget {
                           horizontal: 8.0,
                         ),
                         child: DefaultTextStyle(
-                          style:
-                              theme.textTheme.bodySmall!.copyWith(color: color),
+                          style: theme.textTheme.bodySmall!
+                              .copyWith(color: dominantColor?.titleTextColor),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -140,12 +167,10 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: playlist?.isShuffled == true
                         ? "Unshuffle playlist"
                         : "Shuffle playlist",
-                    icon: Icon(
-                      SpotubeIcons.shuffle,
-                      color: playlist?.isShuffled == true
-                          ? theme.colorScheme.primary
-                          : null,
-                    ),
+                    icon: const Icon(SpotubeIcons.shuffle),
+                    style: playlist?.isShuffled == true
+                        ? activeButtonStyle
+                        : buttonStyle,
                     onPressed: playlist == null
                         ? null
                         : () {
@@ -158,10 +183,8 @@ class PlayerControls extends HookConsumerWidget {
                   ),
                   IconButton(
                     tooltip: "Previous track",
-                    icon: Icon(
-                      SpotubeIcons.skipBack,
-                      color: color,
-                    ),
+                    icon: const Icon(SpotubeIcons.skipBack),
+                    style: buttonStyle,
                     onPressed: playlistNotifier.previous,
                   ),
                   IconButton(
@@ -174,8 +197,15 @@ class PlayerControls extends HookConsumerWidget {
                           )
                         : Icon(
                             playing ? SpotubeIcons.pause : SpotubeIcons.play,
-                            color: color,
                           ),
+                    style: IconButton.styleFrom(
+                      backgroundColor:
+                          dominantColor?.color ?? theme.colorScheme.primary,
+                      foregroundColor: dominantColor?.titleTextColor ??
+                          theme.colorScheme.onPrimary,
+                      padding: const EdgeInsets.all(12),
+                      iconSize: 30,
+                    ),
                     onPressed: Actions.handler<PlayPauseIntent>(
                       context,
                       PlayPauseIntent(ref),
@@ -183,10 +213,8 @@ class PlayerControls extends HookConsumerWidget {
                   ),
                   IconButton(
                     tooltip: "Next track",
-                    icon: Icon(
-                      SpotubeIcons.skipForward,
-                      color: color,
-                    ),
+                    icon: const Icon(SpotubeIcons.skipForward),
+                    style: buttonStyle,
                     onPressed: playlistNotifier.next,
                   ),
                   IconButton(
@@ -197,10 +225,10 @@ class PlayerControls extends HookConsumerWidget {
                       playlist?.isLooping == true
                           ? SpotubeIcons.repeatOne
                           : SpotubeIcons.repeat,
-                      color: playlist?.isLooping == true
-                          ? theme.colorScheme.primary
-                          : null,
                     ),
+                    style: playlist?.isLooping == true
+                        ? activeButtonStyle
+                        : buttonStyle,
                     onPressed: playlist == null || playlist.isLoading
                         ? null
                         : () {
