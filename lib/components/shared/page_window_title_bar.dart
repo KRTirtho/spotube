@@ -68,7 +68,7 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
         automaticallyImplyLeading: widget.automaticallyImplyLeading,
         actions: [
           ...?widget.actions,
-          const WindowTitleBarButtons(),
+          WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
         ],
         backgroundColor: widget.backgroundColor,
         foregroundColor: widget.foregroundColor,
@@ -86,7 +86,11 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
 }
 
 class WindowTitleBarButtons extends HookWidget {
-  const WindowTitleBarButtons({Key? key}) : super(key: key);
+  final Color? foregroundColor;
+  const WindowTitleBarButtons({
+    Key? key,
+    this.foregroundColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +114,7 @@ class WindowTitleBarButtons extends HookWidget {
       final theme = Theme.of(context);
       final colors = WindowButtonColors(
         normal: Colors.transparent,
-        iconNormal: theme.colorScheme.onBackground,
+        iconNormal: foregroundColor ?? theme.colorScheme.onBackground,
         mouseOver: theme.colorScheme.onBackground.withOpacity(0.1),
         mouseDown: theme.colorScheme.onBackground.withOpacity(0.2),
         iconMouseOver: theme.colorScheme.onBackground,
@@ -119,7 +123,7 @@ class WindowTitleBarButtons extends HookWidget {
 
       final closeColors = WindowButtonColors(
         normal: Colors.transparent,
-        iconNormal: theme.colorScheme.onBackground,
+        iconNormal: foregroundColor ?? theme.colorScheme.onBackground,
         mouseOver: Colors.red,
         mouseDown: Colors.red[800]!,
         iconMouseOver: Colors.white,

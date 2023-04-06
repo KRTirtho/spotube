@@ -11,10 +11,10 @@ import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
-  final Color? iconColor;
+  final Color? color;
 
   PlayerControls({
-    this.iconColor,
+    this.color,
     Key? key,
   }) : super(key: key);
 
@@ -109,21 +109,24 @@ class PlayerControls extends HookConsumerWidget {
                               ),
                             );
                           },
-                          activeColor: iconColor,
+                          activeColor: color,
+                          inactiveColor: color?.withOpacity(0.15),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8.0,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "$currentMinutes:$currentSeconds",
-                            ),
-                            Text("$totalMinutes:$totalSeconds"),
-                          ],
+                        child: DefaultTextStyle(
+                          style:
+                              theme.textTheme.bodySmall!.copyWith(color: color),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("$currentMinutes:$currentSeconds"),
+                              Text("$totalMinutes:$totalSeconds"),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -157,7 +160,7 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: "Previous track",
                     icon: Icon(
                       SpotubeIcons.skipBack,
-                      color: iconColor,
+                      color: color,
                     ),
                     onPressed: playlistNotifier.previous,
                   ),
@@ -171,7 +174,7 @@ class PlayerControls extends HookConsumerWidget {
                           )
                         : Icon(
                             playing ? SpotubeIcons.pause : SpotubeIcons.play,
-                            color: iconColor,
+                            color: color,
                           ),
                     onPressed: Actions.handler<PlayPauseIntent>(
                       context,
@@ -182,7 +185,7 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: "Next track",
                     icon: Icon(
                       SpotubeIcons.skipForward,
-                      color: iconColor,
+                      color: color,
                     ),
                     onPressed: playlistNotifier.next,
                   ),

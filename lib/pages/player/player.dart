@@ -1,13 +1,11 @@
-import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_controls.dart';
@@ -56,120 +54,145 @@ class PlayerView extends HookConsumerWidget {
       [currentTrack?.album?.images],
     );
 
-    final PaletteColor paletteColor = usePaletteColor(albumArt, ref);
+    final palette = usePaletteGenerator(albumArt);
+    final bgColor = palette.dominantColor?.color ?? theme.colorScheme.primary;
+    final titleTextColor = palette.dominantColor?.titleTextColor;
+    final bodyTextColor = palette.dominantColor?.bodyTextColor;
 
     useCustomStatusBarColor(
-      paletteColor.color,
+      bgColor,
       GoRouter.of(context).location == "/player",
       noSetBGColor: true,
     );
 
-    return Scaffold(
-      appBar: PageWindowTitleBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: paletteColor.titleTextColor,
-        toolbarOpacity: 1,
-        leading: BackButton(color: paletteColor.titleTextColor),
-      ),
-      extendBodyBehindAppBar: true,
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: UniversalImage.imageProvider(albumArt),
-            fit: BoxFit.cover,
-          ),
+    return IconTheme(
+      data: theme.iconTheme.copyWith(color: bodyTextColor),
+      child: Scaffold(
+        appBar: PageWindowTitleBar(
+          backgroundColor: Colors.transparent,
+          foregroundColor: titleTextColor,
+          toolbarOpacity: 1,
+          leading: const BackButton(),
         ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: UniversalImage(
-                      path: albumArt,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AutoSizeText(
-                          currentTrack?.name ?? "Not playing",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: paletteColor.titleTextColor,
+        extendBodyBehindAppBar: true,
+        body: Container(
+          decoration: BoxDecoration(
+            color: palette.dominantColor?.color,
+            gradient: LinearGradient(
+              colors: [
+                palette.dominantColor?.color ?? theme.colorScheme.primary,
+                palette.mutedColor?.color ?? theme.colorScheme.secondary,
+              ],
+              transform: const GradientRotation(0.5),
+            ),
+          ),
+          alignment: Alignment.center,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 580),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            offset: Offset(0, 0),
                           ),
-                          maxLines: 1,
-                          textAlign: TextAlign.start,
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: UniversalImage(
+                          path: albumArt,
+                          placeholder: Assets.albumPlaceholder.path,
                         ),
-                        if (isLocalTrack)
-                          Text(
-                            TypeConversionUtils.artists_X_String<Artist>(
-                              currentTrack?.artists ?? [],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            currentTrack?.name ?? "Not playing",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: titleTextColor,
                             ),
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: paletteColor.bodyTextColor,
-                            ),
-                          )
-                        else
-                          TypeConversionUtils.artists_X_ClickableArtists(
-                            currentTrack?.artists ?? [],
-                            textStyle: theme.textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: paletteColor.bodyTextColor,
-                            ),
-                            onRouteChange: (route) {
-                              GoRouter.of(context).pop();
-                              GoRouter.of(context).push(route);
-                            },
+                            maxLines: 1,
+                            textAlign: TextAlign.start,
                           ),
+                          if (isLocalTrack)
+                            Text(
+                              TypeConversionUtils.artists_X_String<Artist>(
+                                currentTrack?.artists ?? [],
+                              ),
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: bodyTextColor,
+                              ),
+                            )
+                          else
+                            TypeConversionUtils.artists_X_ClickableArtists(
+                              currentTrack?.artists ?? [],
+                              textStyle: theme.textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: bodyTextColor,
+                              ),
+                              onRouteChange: (route) {
+                                GoRouter.of(context).pop();
+                                GoRouter.of(context).push(route);
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    PlayerControls(color: bodyTextColor),
+                    const Spacer(),
+                    PlayerActions(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      floatingQueue: false,
+                      extraActions: [
+                        if (auth != null)
+                          IconButton(
+                            tooltip: "Open Lyrics",
+                            icon: const Icon(SpotubeIcons.music),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isDismissible: true,
+                                enableDrag: true,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.black38,
+                                barrierColor: Colors.black12,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                constraints: BoxConstraints(
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                ),
+                                builder: (context) =>
+                                    const LyricsPage(isModal: true),
+                              );
+                            },
+                          )
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 40),
-                  PlayerControls(iconColor: paletteColor.bodyTextColor),
-                  const Spacer(),
-                  PlayerActions(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    floatingQueue: false,
-                    extraActions: [
-                      if (auth != null)
-                        IconButton(
-                          tooltip: "Open Lyrics",
-                          icon: const Icon(SpotubeIcons.music),
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isDismissible: true,
-                              enableDrag: true,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.black38,
-                              barrierColor: Colors.black12,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              ),
-                              constraints: BoxConstraints(
-                                maxHeight:
-                                    MediaQuery.of(context).size.height * 0.8,
-                              ),
-                              builder: (context) =>
-                                  const LyricsPage(isModal: true),
-                            );
-                          },
-                        )
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

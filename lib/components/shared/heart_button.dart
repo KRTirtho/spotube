@@ -144,10 +144,7 @@ class PlaylistHeartButton extends HookConsumerWidget {
             ),
         [playlist.images]);
 
-    final color = usePaletteGenerator(
-      context,
-      titleImage,
-    ).dominantColor;
+    final color = usePaletteGenerator(titleImage).dominantColor;
 
     if (me.isLoading || !me.hasData) {
       return const CircularProgressIndicator();

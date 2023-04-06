@@ -12,6 +12,7 @@ final _paletteColorState = StateProvider<PaletteColor>(
 
 PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
   final context = useContext();
+  final theme = Theme.of(context);
   final paletteColor = ref.watch(_paletteColorState);
   final mounted = useIsMounted();
 
@@ -25,7 +26,7 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
         ),
       );
       if (!mounted()) return;
-      final color = Theme.of(context).brightness == Brightness.light
+      final color = theme.brightness == Brightness.light
           ? palette.lightMutedColor ?? palette.lightVibrantColor
           : palette.darkMutedColor ?? palette.darkVibrantColor;
       if (color != null) {
@@ -38,10 +39,7 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
   return paletteColor;
 }
 
-PaletteGenerator usePaletteGenerator(
-  BuildContext context,
-  String imageUrl,
-) {
+PaletteGenerator usePaletteGenerator(String imageUrl) {
   final palette = useState(PaletteGenerator.fromColors([]));
   final mounted = useIsMounted();
 

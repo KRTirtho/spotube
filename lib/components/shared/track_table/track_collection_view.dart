@@ -66,10 +66,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final color = usePaletteGenerator(
-      context,
-      titleImage,
-    ).dominantColor;
+    final color = usePaletteGenerator(titleImage).dominantColor;
 
     final List<Widget> buttons = [
       if (showShare)
