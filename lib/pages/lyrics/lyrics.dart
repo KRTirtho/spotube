@@ -73,7 +73,7 @@ class LyricsPage extends HookConsumerWidget {
               ),
             ),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
               child: Column(
                 children: [
                   const SizedBox(height: 5),

@@ -145,8 +145,9 @@ class PlayerControls extends HookConsumerWidget {
                           horizontal: 8.0,
                         ),
                         child: DefaultTextStyle(
-                          style: theme.textTheme.bodySmall!
-                              .copyWith(color: dominantColor?.titleTextColor),
+                          style: theme.textTheme.bodySmall!.copyWith(
+                            color: palette?.dominantColor?.bodyTextColor,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -204,7 +205,7 @@ class PlayerControls extends HookConsumerWidget {
                       foregroundColor: dominantColor?.titleTextColor ??
                           theme.colorScheme.onPrimary,
                       padding: const EdgeInsets.all(12),
-                      iconSize: 30,
+                      iconSize: 24,
                     ),
                     onPressed: Actions.handler<PlayPauseIntent>(
                       context,
