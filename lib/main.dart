@@ -113,17 +113,6 @@ void main(List<String> rawArgs) async {
           enableApplicationParameters: false,
         ),
         FileHandler(await getLogsPath(), printLogs: false),
-        SnackbarHandler(
-          const Duration(seconds: 5),
-          action: SnackBarAction(
-            label: "Dismiss",
-            onPressed: () {
-              ScaffoldMessenger.of(
-                Catcher.navigatorKey!.currentContext!,
-              ).hideCurrentSnackBar();
-            },
-          ),
-        ),
       ],
     ),
     releaseConfig: CatcherOptions(SilentReportMode(), [

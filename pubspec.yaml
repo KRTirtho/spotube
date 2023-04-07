@@ -9,11 +9,6 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  animate_gradient:
-    git:
-      url: https://github.com/Vikaskumar75/Animated-Gradient
-      ref: 2e02ab5d1cb60fc172a5f15f6e91bd34a050af23
-  animated_gradient: ^0.0.2
   args: ^2.3.2
   async: ^2.9.0
   audio_service: ^0.18.9

@@ -70,6 +70,18 @@ class PlayerControls extends HookConsumerWidget {
       minimumSize: const Size(28, 28),
     );
 
+    final accentColor = palette?.lightVibrantColor ??
+        palette?.darkVibrantColor ??
+        dominantColor;
+
+    final resumePauseStyle = IconButton.styleFrom(
+      backgroundColor: accentColor?.color ?? theme.colorScheme.primary,
+      foregroundColor:
+          accentColor?.titleTextColor ?? theme.colorScheme.onPrimary,
+      padding: const EdgeInsets.all(12),
+      iconSize: 24,
+    );
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -199,14 +211,7 @@ class PlayerControls extends HookConsumerWidget {
                         : Icon(
                             playing ? SpotubeIcons.pause : SpotubeIcons.play,
                           ),
-                    style: IconButton.styleFrom(
-                      backgroundColor:
-                          dominantColor?.color ?? theme.colorScheme.primary,
-                      foregroundColor: dominantColor?.titleTextColor ??
-                          theme.colorScheme.onPrimary,
-                      padding: const EdgeInsets.all(12),
-                      iconSize: 24,
-                    ),
+                    style: resumePauseStyle,
                     onPressed: Actions.handler<PlayPauseIntent>(
                       context,
                       PlayPauseIntent(ref),

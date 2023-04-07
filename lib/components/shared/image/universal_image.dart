@@ -12,11 +12,13 @@ class UniversalImage extends HookWidget {
   final double? width;
   final double scale;
   final String? placeholder;
+  final BoxFit? fit;
   const UniversalImage({
     required this.path,
     this.height,
     this.width,
     this.placeholder,
+    this.fit,
     this.scale = 1,
     Key? key,
   }) : super(key: key);
@@ -57,6 +59,7 @@ class UniversalImage extends HookWidget {
         height: height,
         width: width,
         placeholder: AssetImage(placeholder ?? Assets.placeholder.path),
+        fit: fit,
       );
     } else if (Uri.tryParse(path) != null && !path.startsWith("assets")) {
       return Image.file(
@@ -66,6 +69,7 @@ class UniversalImage extends HookWidget {
         cacheHeight: height?.toInt(),
         cacheWidth: width?.toInt(),
         scale: scale,
+        fit: fit,
         errorBuilder: (context, error, stackTrace) {
           return Image.asset(
             placeholder ?? Assets.placeholder.path,
@@ -85,6 +89,7 @@ class UniversalImage extends HookWidget {
         cacheHeight: height?.toInt(),
         cacheWidth: width?.toInt(),
         scale: scale,
+        fit: fit,
         errorBuilder: (context, error, stackTrace) {
           return Image.asset(
             placeholder ?? Assets.placeholder.path,
@@ -105,6 +110,7 @@ class UniversalImage extends HookWidget {
       cacheHeight: height?.toInt(),
       cacheWidth: width?.toInt(),
       scale: scale,
+      fit: fit,
       errorBuilder: (context, error, stackTrace) {
         return Image.asset(
           placeholder ?? Assets.placeholder.path,

@@ -17,23 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
-  animate_gradient:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "2e02ab5d1cb60fc172a5f15f6e91bd34a050af23"
-      resolved-ref: "2e02ab5d1cb60fc172a5f15f6e91bd34a050af23"
-      url: "https://github.com/Vikaskumar75/Animated-Gradient"
-    source: git
-    version: "0.0.2"
-  animated_gradient:
-    dependency: "direct main"
-    description:
-      name: animated_gradient
-      sha256: "9c0c52a093817ae42550e3affec6973a7bae7186d1d5d58749ca9689da3ba245"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   app_package_maker:
     dependency: transitive
     description:
