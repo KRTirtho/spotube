@@ -105,7 +105,7 @@ class AnimateGradient extends HookWidget {
 
     return AnimatedBuilder(
       animation: animation,
-      child: child,
+      child: useMemoized(() => child, [child]),
       builder: (BuildContext context, Widget? child) {
         return Container(
           decoration: BoxDecoration(

@@ -82,7 +82,7 @@ class PlayerView extends HookConsumerWidget {
           primaryEnd: Alignment.bottomLeft,
           secondaryBegin: Alignment.bottomRight,
           secondaryEnd: Alignment.topRight,
-          duration: const Duration(seconds: 25),
+          duration: const Duration(seconds: 15),
           primaryColors: [
             palette.dominantColor?.color ?? theme.colorScheme.primary,
             palette.mutedColor?.color ?? theme.colorScheme.secondary,
