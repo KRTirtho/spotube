@@ -133,23 +133,23 @@ class SettingsPage extends HookConsumerWidget {
                       subtitle: const Text(
                         "Override responsive layout mode settings",
                       ),
-                      trailing: (context, update) => DropdownMenu<LayoutMode>(
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(
+                      trailing: (context, update) => DropdownButton<LayoutMode>(
+                        items: const [
+                          DropdownMenuItem(
                             value: LayoutMode.adaptive,
-                            label: "Adaptive",
+                            child: Text("Adaptive"),
                           ),
-                          DropdownMenuEntry(
+                          DropdownMenuItem(
                             value: LayoutMode.compact,
-                            label: "Compact",
+                            child: Text("Compact"),
                           ),
-                          DropdownMenuEntry(
+                          DropdownMenuItem(
                             value: LayoutMode.extended,
-                            label: "Extended",
+                            child: Text("Extended"),
                           ),
                         ],
-                        initialSelection: preferences.layoutMode,
-                        onSelected: (value) {
+                        value: preferences.layoutMode,
+                        onChanged: (value) {
                           if (value != null) {
                             preferences.setLayoutMode(value);
                             update?.call(() {});
@@ -160,23 +160,23 @@ class SettingsPage extends HookConsumerWidget {
                     AdaptiveListTile(
                       leading: const Icon(SpotubeIcons.darkMode),
                       title: const Text("Theme"),
-                      trailing: (context, update) => DropdownMenu<ThemeMode>(
-                        initialSelection: preferences.themeMode,
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(
+                      trailing: (context, update) => DropdownButton<ThemeMode>(
+                        value: preferences.themeMode,
+                        items: const [
+                          DropdownMenuItem(
                             value: ThemeMode.dark,
-                            label: "Dark",
+                            child: Text("Dark"),
                           ),
-                          DropdownMenuEntry(
+                          DropdownMenuItem(
                             value: ThemeMode.light,
-                            label: "Light",
+                            child: Text("Light"),
                           ),
-                          DropdownMenuEntry(
+                          DropdownMenuItem(
                             value: ThemeMode.system,
-                            label: "System",
+                            child: Text("System"),
                           ),
                         ],
-                        onSelected: (value) {
+                        onChanged: (value) {
                           if (value != null) {
                             preferences.setThemeMode(value);
                             update?.call(() {});
@@ -214,19 +214,20 @@ class SettingsPage extends HookConsumerWidget {
                     AdaptiveListTile(
                       leading: const Icon(SpotubeIcons.audioQuality),
                       title: const Text("Audio Quality"),
-                      trailing: (context, update) => DropdownMenu<AudioQuality>(
-                        initialSelection: preferences.audioQuality,
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(
+                      trailing: (context, update) =>
+                          DropdownButton<AudioQuality>(
+                        value: preferences.audioQuality,
+                        items: const [
+                          DropdownMenuItem(
                             value: AudioQuality.high,
-                            label: "High",
+                            child: Text("High"),
                           ),
-                          DropdownMenuEntry(
+                          DropdownMenuItem(
                             value: AudioQuality.low,
-                            label: "Low",
+                            child: Text("Low"),
                           ),
                         ],
-                        onSelected: (value) {
+                        onChanged: (value) {
                           if (value != null) {
                             preferences.setAudioQuality(value);
                             update?.call(() {});
