@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.1](https://github.com/KRTirtho/spotube/compare/v2.7.0...v2.7.1) (2023-04-10)
+
+
+### Bug Fixes
+
+* fallback for lyrics when anonymous ([f160ec7](https://github.com/KRTirtho/spotube/commit/f160ec767d9941d33f83aba1752b28df629d0e10))
+* **android:** audio notification stuck in play state ([448c9b3](https://github.com/KRTirtho/spotube/commit/448c9b39f407668ad92a695afe3c9741baeca20d))
+* **macos:** crashing on startup ([c46b428](https://github.com/KRTirtho/spotube/commit/c46b4284b1d46a614cbcebc8c2f2e52714921b9b))
+* spotify query hooks overriding default query params ([ec9a02e](https://github.com/KRTirtho/spotube/commit/ec9a02e8b8d988e15ed58027054d2a9090d98873))
+
 ## [2.7.0](https://github.com/KRTirtho/spotube/compare/v2.6.0...v2.7.0) (2023-03-07)
 
 

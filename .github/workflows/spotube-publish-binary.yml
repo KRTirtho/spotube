@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 2.7.0
+        default: 2.7.1
         required: true
       dry_run:
         description: Dry run
