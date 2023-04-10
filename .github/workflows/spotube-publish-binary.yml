@@ -11,10 +11,16 @@ on:
         required: true
         type: boolean
         default: true
+      jobs:
+        description: Jobs to run
+        required: true
+        type: string
+        default: "flathub,aur,winget,chocolatey"
 
 jobs:
   flathub:
     runs-on: ubuntu-22.04
+    if: contains(inputs.jobs, 'flathub')
     steps:
       - uses: actions/checkout@v3
         with:
@@ -42,6 +48,7 @@ jobs:
 
   aur:
     runs-on: ubuntu-22.04
+    if: contains(inputs.jobs, 'aur')
     steps:
       - uses: actions/checkout@v3
 
@@ -70,6 +77,7 @@ jobs:
 
   winget:
     runs-on: windows-latest
+    if: contains(inputs.jobs, 'winget')
     steps:
       - name: Release winget package
         if: ${{ !inputs.dry_run }}
@@ -82,6 +90,7 @@ jobs:
 
   chocolatey:
     runs-on: windows-latest
+    if: contains(inputs.jobs, 'chocolatey')
     steps:
       - uses: dsaltares/fetch-gh-release-asset@master
         with:
