@@ -141,7 +141,10 @@ jobs:
       - name: Build Linux Packages
         run: |
           dart pub global activate flutter_distributor
-          flutter_distributor package --platform=linux --targets=deb,appimage,rpm --skip-clean
+          alias dpkg-deb="dpkg-deb --Zxz"
+          flutter_distributor package --platform=linux --targets=appimage
+          flutter_distributor package --platform=linux --targets=rpm
+          flutter_distributor package --platform=linux --targets=deb
 
       - name: Create tar.xz (stable)
         if: ${{ inputs.channel == 'stable' }}
