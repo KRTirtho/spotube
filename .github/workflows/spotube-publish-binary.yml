@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version to release (x.x.x)
+        description: Version to publish (x.x.x)
         default: 2.7.1
         required: true
       dry_run:
@@ -12,7 +12,7 @@ on:
         type: boolean
         default: true
       jobs:
-        description: Jobs to run
+        description: Jobs to run (flathub,aur,winget,chocolatey)
         required: true
         type: string
         default: "flathub,aur,winget,chocolatey"
