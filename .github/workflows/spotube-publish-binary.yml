@@ -48,14 +48,14 @@ jobs:
       - uses: dsaltares/fetch-gh-release-asset@master
         with:
           version: tags/v${{ inputs.version }} # mind the "v" prefix
-          file: Spotube-linux-x86_64.tar.xz
+          file: spotube-linux-${{inputs.version}}-x86_64.tar.xz 
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update PKGBUILD versions
         run: |
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ inputs.version }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
-          sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
+          sed -i "s/%{{LINUX_MD5}}%/`md5sum spotube-linux-${{inputs.version}}-x86_64.tar.xz  | awk '{print $1}'`/" aur-struct/PKGBUILD
 
       - name: Release to AUR
         if: ${{ !inputs.dry_run }}
