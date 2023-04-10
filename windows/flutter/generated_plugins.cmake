@@ -5,9 +5,12 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   catcher
+  desktop_multi_window
+  native_context_menu
   permission_handler_windows
   screen_retriever
   system_theme
+  system_tray
   url_launcher_windows
   window_manager
   window_size

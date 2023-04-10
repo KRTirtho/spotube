@@ -5,8 +5,11 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
   catcher
+  desktop_multi_window
+  native_context_menu
   screen_retriever
   system_theme
+  system_tray
   url_launcher_linux
   window_manager
   window_size

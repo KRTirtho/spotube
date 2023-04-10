@@ -21,6 +21,11 @@ enum AudioQuality {
   low,
 }
 
+enum CloseBehavior {
+  minimizeToTray,
+  close,
+}
+
 class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
   String recommendationMarket;
@@ -35,9 +40,12 @@ class UserPreferences extends PersistedChangeNotifier {
   String downloadLocation;
 
   LayoutMode layoutMode;
-  bool rotatingAlbumArt;
 
   bool predownload;
+
+  CloseBehavior closeBehavior;
+
+  bool showSystemTrayIcon;
 
   UserPreferences({
     required this.geniusAccessToken,
@@ -51,7 +59,8 @@ class UserPreferences extends PersistedChangeNotifier {
     this.audioQuality = AudioQuality.high,
     this.skipSponsorSegments = true,
     this.downloadLocation = "",
-    this.rotatingAlbumArt = true,
+    this.closeBehavior = CloseBehavior.minimizeToTray,
+    this.showSystemTrayIcon = true,
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
@@ -134,8 +143,14 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setRotatingAlbumArt(bool should) {
-    rotatingAlbumArt = should;
+  void setCloseBehavior(CloseBehavior behavior) {
+    closeBehavior = behavior;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setShowSystemTrayIcon(bool show) {
+    showSystemTrayIcon = show;
     notifyListeners();
     updatePersistence();
   }
@@ -175,8 +190,14 @@ class UserPreferences extends PersistedChangeNotifier {
       (mode) => mode.name == map["layoutMode"],
       orElse: () => kIsDesktop ? LayoutMode.extended : LayoutMode.compact,
     );
-    rotatingAlbumArt = map["rotatingAlbumArt"] ?? rotatingAlbumArt;
+
     predownload = map["predownload"] ?? predownload;
+
+    closeBehavior = map["closeBehavior"] != null
+        ? CloseBehavior.values[map["closeBehavior"]]
+        : closeBehavior;
+
+    showSystemTrayIcon = map["showSystemTrayIcon"] ?? showSystemTrayIcon;
   }
 
   @override
@@ -192,8 +213,9 @@ class UserPreferences extends PersistedChangeNotifier {
       "skipSponsorSegments": skipSponsorSegments,
       "downloadLocation": downloadLocation,
       "layoutMode": layoutMode.name,
-      "rotatingAlbumArt": rotatingAlbumArt,
       "predownload": predownload,
+      "closeBehavior": closeBehavior.index,
+      "showSystemTrayIcon": showSystemTrayIcon,
     };
   }
 }

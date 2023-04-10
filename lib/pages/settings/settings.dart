@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -198,14 +199,6 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(),
                     ),
-                    SwitchListTile(
-                      secondary: const Icon(SpotubeIcons.album),
-                      title: const Text("Rotating Album Art"),
-                      value: preferences.rotatingAlbumArt,
-                      onChanged: (state) {
-                        preferences.setRotatingAlbumArt(state);
-                      },
-                    ),
                     Text(
                       " Playback",
                       style: theme.textTheme.headlineSmall
@@ -321,6 +314,43 @@ class SettingsPage extends HookConsumerWidget {
                         preferences.setSaveTrackLyrics(state);
                       },
                     ),
+                    if (DesktopTools.platform.isDesktop) ...[
+                      Text(
+                        " Desktop",
+                        style: theme.textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      AdaptiveListTile(
+                        leading: const Icon(SpotubeIcons.close),
+                        title: const Text("Close Behavior"),
+                        trailing: (context, update) =>
+                            DropdownButton<CloseBehavior>(
+                          value: preferences.closeBehavior,
+                          items: const [
+                            DropdownMenuItem(
+                              value: CloseBehavior.close,
+                              child: Text("Close"),
+                            ),
+                            DropdownMenuItem(
+                              value: CloseBehavior.minimizeToTray,
+                              child: Text("Minimize to Tray"),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) {
+                              preferences.setCloseBehavior(value);
+                              update?.call(() {});
+                            }
+                          },
+                        ),
+                      ),
+                      SwitchListTile(
+                        secondary: const Icon(SpotubeIcons.tray),
+                        title: const Text("Show System Tray Icon"),
+                        value: preferences.showSystemTrayIcon,
+                        onChanged: preferences.setShowSystemTrayIcon,
+                      ),
+                    ],
                     Text(
                       " About",
                       style: theme.textTheme.headlineSmall

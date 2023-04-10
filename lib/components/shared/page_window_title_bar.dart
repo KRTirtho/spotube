@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:titlebar_buttons/titlebar_buttons.dart';
 import 'package:window_manager/window_manager.dart';
@@ -85,7 +87,7 @@ class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
   }
 }
 
-class WindowTitleBarButtons extends HookWidget {
+class WindowTitleBarButtons extends HookConsumerWidget {
   final Color? foregroundColor;
   const WindowTitleBarButtons({
     Key? key,
@@ -93,9 +95,19 @@ class WindowTitleBarButtons extends HookWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final closeBehavior =
+        ref.watch(userPreferencesProvider.select((s) => s.closeBehavior));
     final isMaximized = useState<bool?>(null);
     const type = ThemeType.auto;
+
+    void onClose() {
+      if (closeBehavior == CloseBehavior.close) {
+        windowManager.close();
+      } else {
+        windowManager.hide();
+      }
+    }
 
     useEffect(() {
       if (kIsDesktop) {
@@ -157,7 +169,7 @@ class WindowTitleBarButtons extends HookWidget {
               ),
             CloseWindowButton(
               colors: closeColors,
-              onPressed: windowManager.close,
+              onPressed: onClose,
             ),
           ],
         ),
@@ -187,7 +199,7 @@ class WindowTitleBarButtons extends HookWidget {
           ),
           DecoratedCloseButton(
             type: type,
-            onPressed: windowManager.close,
+            onPressed: onClose,
           ),
         ],
       ),

@@ -67,4 +67,5 @@ abstract class SpotubeIcons {
   static const genres = FeatherIcons.music;
   static const zoomIn = FeatherIcons.zoomIn;
   static const zoomOut = FeatherIcons.zoomOut;
+  static const tray = FeatherIcons.chevronDown;
 }

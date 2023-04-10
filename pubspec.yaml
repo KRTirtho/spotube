@@ -82,6 +82,8 @@ dependencies:
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
   youtube_explode_dart: ^1.12.1
+  flutter_desktop_tools:
+    path: ../flutter_desktop_tools
 
 dev_dependencies:
   build_runner: ^2.3.2

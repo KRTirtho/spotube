@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -7,13 +6,13 @@ import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/collections/cache_keys.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/entities/cache_track.dart';
@@ -26,10 +25,9 @@ import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';
-import 'package:spotube/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:window_size/window_size.dart';
 import 'package:system_theme/system_theme.dart';
+
+import 'hooks/use_init_sys_tray.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final parser = ArgParser();
@@ -69,6 +67,15 @@ Future<void> main(List<String> rawArgs) async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
+  await DesktopTools.ensureInitialized(
+    DesktopWindowOptions(
+      hideTitleBar: true,
+      title: "Spotube",
+      backgroundColor: Colors.transparent,
+      minimumSize: const Size(300, 700),
+    ),
+  );
+
   await SystemTheme.accentColor.load();
   MetadataGod.initialize();
   await QueryClient.initialize(cachePrefix: "oss.krtirtho.spotube");
@@ -76,32 +83,6 @@ Future<void> main(List<String> rawArgs) async {
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
   await Env.configure();
-
-  if (kIsDesktop) {
-    await windowManager.ensureInitialized();
-    WindowOptions windowOptions = const WindowOptions(
-      center: true,
-      backgroundColor: Colors.transparent,
-      titleBarStyle: TitleBarStyle.hidden,
-      title: "Spotube",
-    );
-    setWindowMinSize(const Size(kReleaseMode ? 1020 : 300, 700));
-    await windowManager.waitUntilReadyToShow(windowOptions, () async {
-      final localStorage = await SharedPreferences.getInstance();
-      final rawSize = localStorage.getString(LocalStorageKeys.windowSizeInfo);
-      final savedSize = rawSize != null ? json.decode(rawSize) : null;
-      final wasMaximized = savedSize?["maximized"] ?? false;
-      final double? height = savedSize?["height"];
-      final double? width = savedSize?["width"];
-      await windowManager.setResizable(true);
-      if (wasMaximized) {
-        await windowManager.maximize();
-      } else if (height != null && width != null) {
-        await windowManager.setSize(Size(width, height));
-      }
-      await windowManager.show();
-    });
-  }
 
   Catcher(
     enableLogger: arguments["verbose"],
@@ -188,44 +169,14 @@ class Spotube extends StatefulHookConsumerWidget {
       context.findAncestorStateOfType<SpotubeState>()!;
 }
 
-class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
+class SpotubeState extends ConsumerState<Spotube> {
   final logger = getLogger(Spotube);
   SharedPreferences? localStorage;
-
-  Size? prevSize;
 
   @override
   void initState() {
     super.initState();
     SharedPreferences.getInstance().then(((value) => localStorage = value));
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeMetrics() async {
-    super.didChangeMetrics();
-    if (kIsMobile) return;
-    final size = await windowManager.getSize();
-    final windowSameDimension =
-        prevSize?.width == size.width && prevSize?.height == size.height;
-
-    if (localStorage == null || windowSameDimension) return;
-    final isMaximized = await windowManager.isMaximized();
-    localStorage!.setString(
-      LocalStorageKeys.windowSizeInfo,
-      jsonEncode({
-        'maximized': isMaximized,
-        'width': size.width,
-        'height': size.height,
-      }),
-    );
-    prevSize = size;
   }
 
   @override
@@ -234,6 +185,8 @@ class SpotubeState extends ConsumerState<Spotube> with WidgetsBindingObserver {
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+
+    useInitSysTray(ref);
 
     /// For enabling hot reload for audio player
     useEffect(() {
