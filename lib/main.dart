@@ -31,7 +31,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
 import 'package:system_theme/system_theme.dart';
 
-void main(List<String> rawArgs) async {
+Future<void> main(List<String> rawArgs) async {
   final parser = ArgParser();
 
   parser.addFlag(
