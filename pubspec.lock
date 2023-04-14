@@ -1452,6 +1452,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smtc_windows:
+    dependency: "direct main"
+    description:
+      path: "../smtc_windows/packages/smtc_windows"
+      relative: true
+    source: path
+    version: "0.0.1"
   source_gen:
     dependency: transitive
     description:

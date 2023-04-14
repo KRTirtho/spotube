@@ -11,6 +11,7 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/linux_audio_service.dart';
 import 'package:spotube/services/mobile_audio_service.dart';
+import 'package:spotube/services/windows_audio_service.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -137,6 +138,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   final Ref ref;
   MobileAudioService? mobileService;
   LinuxAudioService? linuxService;
+  WindowsAudioService? windowsService;
 
   static final provider =
       StateNotifierProvider<PlaylistQueueNotifier, PlaylistQueue?>(
@@ -165,6 +167,9 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     }
     if (kIsLinux) {
       linuxService = LinuxAudioService(ref, this);
+    }
+    if (kIsWindows) {
+      windowsService = WindowsAudioService(ref, this);
     }
     addListener((state) {
       linuxService?.player.updateProperties();
@@ -363,6 +368,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       duration: state!.activeTrack.duration,
     );
     mobileService?.addItem(mediaItem);
+    windowsService?.addTrack(state!.activeTrack);
     if (state!.activeTrack is LocalTrack) {
       await audioPlayer.play(
         DeviceFileSource((state!.activeTrack as LocalTrack).path),
@@ -511,6 +517,12 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   @override
   Map<String, dynamic> toJson() {
     return state?.toJson() ?? {};
+  }
+
+  @override
+  void dispose() {
+    windowsService?.dispose();
+    super.dispose();
   }
 }
 
