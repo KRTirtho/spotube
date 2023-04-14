@@ -610,9 +610,11 @@ packages:
   flutter_desktop_tools:
     dependency: "direct main"
     description:
-      path: "../flutter_desktop_tools"
-      relative: true
-    source: path
+      path: "."
+      ref: "2fca12d1767dad41421e846383d99ac26e29d202"
+      resolved-ref: "2fca12d1767dad41421e846383d99ac26e29d202"
+      url: "https://github.com/KRTirtho/flutter_desktop_tools.git"
+    source: git
     version: "0.0.1"
   flutter_distributor:
     dependency: "direct dev"
@@ -1455,9 +1457,11 @@ packages:
   smtc_windows:
     dependency: "direct main"
     description:
-      path: "../smtc_windows/packages/smtc_windows"
-      relative: true
-    source: path
+      path: "packages/smtc_windows"
+      ref: "6cc93624b8fab8d7727c8693e91577a7413ccd13"
+      resolved-ref: "6cc93624b8fab8d7727c8693e91577a7413ccd13"
+      url: "https://github.com/KRTirtho/smtc_windows.git"
+    source: git
     version: "0.0.1"
   source_gen:
     dependency: transitive

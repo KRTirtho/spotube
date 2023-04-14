@@ -15,7 +15,8 @@ class WindowsAudioService {
 
   final subscriptions = <StreamSubscription>[];
 
-  WindowsAudioService(this.ref, this.playlistNotifier) : smtc = SMTCWindows() {
+  WindowsAudioService(this.ref, this.playlistNotifier)
+      : smtc = SMTCWindows(enabled: false) {
     smtc.setPlaybackStatus(PlaybackStatus.Stopped);
     final buttonStream = smtc.buttonPressStream.listen((event) {
       switch (event) {
@@ -50,9 +51,11 @@ class WindowsAudioService {
           break;
         case PlayerState.stopped:
           await smtc.setPlaybackStatus(PlaybackStatus.Stopped);
+          await smtc.disableSmtc();
           break;
         case PlayerState.completed:
           await smtc.setPlaybackStatus(PlaybackStatus.Changing);
+          await smtc.disableSmtc();
           break;
         default:
           break;
@@ -77,12 +80,14 @@ class WindowsAudioService {
   }
 
   Future<void> addTrack(Track track) async {
+    if (!smtc.enabled) {
+      await smtc.enableSmtc();
+    }
     await smtc.updateMetadata(MusicMetadata(
       title: track.name!,
       albumArtist: track.artists?.first.name ?? "Unknown",
       artist: TypeConversionUtils.artists_X_String<Artist>(track.artists ?? []),
       album: track.album?.name ?? "Unknown",
-      trackNumber: track.trackNumber ?? 0,
       thumbnail: TypeConversionUtils.image_X_UrlString(
         track.album?.images ?? [],
         placeholder: ImagePlaceholder.albumArt,
@@ -91,6 +96,7 @@ class WindowsAudioService {
   }
 
   void dispose() {
+    smtc.disableSmtc();
     smtc.dispose();
     for (var element in subscriptions) {
       element.cancel();
