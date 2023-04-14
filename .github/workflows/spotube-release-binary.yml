@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 2.7.0
+        default: 2.7.1
         required: true
       channel:
         type: choice
@@ -68,7 +68,7 @@ jobs:
           dart pub global activate flutter_distributor
           make innoinstall
           flutter_distributor package --platform=windows --targets=exe --skip-clean
-          mv dist/**/spotube-*-windows.exe dist/Spotube-windows-x86_64-setup.exe
+          mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
 
       - name: Create Chocolatey Package and set hash
         if: ${{ inputs.channel == 'stable' }}
@@ -141,7 +141,10 @@ jobs:
       - name: Build Linux Packages
         run: |
           dart pub global activate flutter_distributor
-          flutter_distributor package --platform=linux --targets=deb,appimage,rpm --skip-clean
+          alias dpkg-deb="dpkg-deb --Zxz"
+          flutter_distributor package --platform=linux --targets=appimage
+          flutter_distributor package --platform=linux --targets=rpm
+          flutter_distributor package --platform=linux --targets=deb
 
       - name: Create tar.xz (stable)
         if: ${{ inputs.channel == 'stable' }}

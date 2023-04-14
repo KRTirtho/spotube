@@ -46,7 +46,7 @@ body:
     attributes:
       label: Spotube version
       description: In which version of Spotube did you encounter this bug?
-      placeholder: (e.g.) v2.7.0
+      placeholder: (e.g.) v2.7.1
   - type: dropdown
     attributes:
       label: Installation source

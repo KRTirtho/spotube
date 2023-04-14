@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 2.7.0+17
+version: 2.7.1+18
 
 environment:
   sdk: ">=2.17.0 <3.0.0"

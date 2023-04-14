@@ -3,18 +3,24 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version to release (x.x.x)
-        default: 2.7.0
+        description: Version to publish (x.x.x)
+        default: 2.7.1
         required: true
       dry_run:
         description: Dry run
         required: true
         type: boolean
         default: true
+      jobs:
+        description: Jobs to run (flathub,aur,winget,chocolatey)
+        required: true
+        type: string
+        default: "flathub,aur,winget,chocolatey"
 
 jobs:
   flathub:
     runs-on: ubuntu-22.04
+    if: contains(inputs.jobs, 'flathub')
     steps:
       - uses: actions/checkout@v3
         with:
@@ -42,20 +48,21 @@ jobs:
 
   aur:
     runs-on: ubuntu-22.04
+    if: contains(inputs.jobs, 'aur')
     steps:
       - uses: actions/checkout@v3
 
       - uses: dsaltares/fetch-gh-release-asset@master
         with:
           version: tags/v${{ inputs.version }} # mind the "v" prefix
-          file: Spotube-linux-x86_64.tar.xz
+          file: spotube-linux-${{inputs.version}}-x86_64.tar.xz 
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update PKGBUILD versions
         run: |
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ inputs.version }}/" aur-struct/PKGBUILD
           sed -i "s/%{{PKGREL}}%/1/" aur-struct/PKGBUILD
-          sed -i "s/%{{LINUX_MD5}}%/`md5sum Spotube-linux-x86_64.tar.xz | awk '{print $1}'`/" aur-struct/PKGBUILD
+          sed -i "s/%{{LINUX_MD5}}%/`md5sum spotube-linux-${{inputs.version}}-x86_64.tar.xz  | awk '{print $1}'`/" aur-struct/PKGBUILD
 
       - name: Release to AUR
         if: ${{ !inputs.dry_run }}
@@ -70,6 +77,7 @@ jobs:
 
   winget:
     runs-on: windows-latest
+    if: contains(inputs.jobs, 'winget')
     steps:
       - name: Release winget package
         if: ${{ !inputs.dry_run }}
@@ -82,6 +90,7 @@ jobs:
 
   chocolatey:
     runs-on: windows-latest
+    if: contains(inputs.jobs, 'chocolatey')
     steps:
       - uses: dsaltares/fetch-gh-release-asset@master
         with:
