@@ -11,6 +11,7 @@ requires:
   - gstreamer1-plugins-base-tools
   - gstreamer1-plugins-base-devel
   - gstreamer1-plugins-good
+  - libappindicator
 
 display_name: Spotube
 
