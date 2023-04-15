@@ -85,7 +85,7 @@ dependencies:
   flutter_desktop_tools:
     git:
       url: https://github.com/KRTirtho/flutter_desktop_tools.git
-      ref: 2fca12d1767dad41421e846383d99ac26e29d202
+      ref: 3c07755ad33fb28a042da0ed26e31086ca318e21
   smtc_windows:
     git:
       url: https://github.com/KRTirtho/smtc_windows.git

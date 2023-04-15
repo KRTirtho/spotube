@@ -611,8 +611,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2fca12d1767dad41421e846383d99ac26e29d202"
-      resolved-ref: "2fca12d1767dad41421e846383d99ac26e29d202"
+      ref: "3c07755ad33fb28a042da0ed26e31086ca318e21"
+      resolved-ref: "3c07755ad33fb28a042da0ed26e31086ca318e21"
       url: "https://github.com/KRTirtho/flutter_desktop_tools.git"
     source: git
     version: "0.0.1"
