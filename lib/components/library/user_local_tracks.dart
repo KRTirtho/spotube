@@ -94,12 +94,10 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
             }
 
             return {"metadata": metadata, "file": f, "art": imageFile.path};
-          } on FfiException catch (e) {
-            if (e.message != "NoTag: reader does not contain an id3 tag") {
-              rethrow;
-            }
-            return {};
           } catch (e, stack) {
+            if (e is FfiException) {
+              return {};
+            }
             Catcher.reportCheckedError(e, stack);
             return {};
           }
