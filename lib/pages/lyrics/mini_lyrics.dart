@@ -25,16 +25,14 @@ class MiniLyricsPage extends HookConsumerWidget {
     final theme = Theme.of(context);
     final update = useForceUpdate();
     final prevSize = useRef<Size?>(null);
+    final wasMaximized = useRef<bool>(false);
 
     final playlistQueue = ref.watch(PlaylistQueueNotifier.provider);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         prevSize.value = await DesktopTools.window.getSize();
-        await DesktopTools.window.setMinimumSize(const Size(300, 300));
-        await DesktopTools.window.setAlwaysOnTop(true);
-        if (!kIsLinux) await DesktopTools.window.setHasShadow(false);
-        await DesktopTools.window.setSize(const Size(400, 500));
+        wasMaximized.value = await DesktopTools.window.isMaximized();
       });
       return null;
     }, []);
@@ -106,13 +104,20 @@ class MiniLyricsPage extends HookConsumerWidget {
                       await DesktopTools.window
                           .setMinimumSize(const Size(300, 700));
                       await DesktopTools.window.setAlwaysOnTop(false);
-                      await DesktopTools.window.setSize(prevSize.value!);
+                      if (wasMaximized.value) {
+                        await DesktopTools.window.maximize();
+                      } else {
+                        await DesktopTools.window.setSize(prevSize.value!);
+                      }
                       await DesktopTools.window.setAlignment(Alignment.center);
                       if (!kIsLinux) {
                         await DesktopTools.window.setHasShadow(true);
                       }
+                      await Future.delayed(const Duration(milliseconds: 200));
                     } finally {
-                      if (context.mounted) GoRouter.of(context).go('/');
+                      if (context.mounted) {
+                        GoRouter.of(context).go('/lyrics');
+                      }
                     }
                   },
                 ),

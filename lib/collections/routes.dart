@@ -51,15 +51,6 @@ final router = GoRouter(
           name: "Lyrics",
           pageBuilder: (context, state) =>
               const SpotubePage(child: LyricsPage()),
-          routes: [
-            GoRoute(
-              path: "mini",
-              parentNavigatorKey: rootNavigatorKey,
-              pageBuilder: (context, state) => const SpotubePage(
-                child: MiniLyricsPage(),
-              ),
-            ),
-          ],
         ),
         GoRoute(
           path: "/settings",
@@ -105,6 +96,13 @@ final router = GoRouter(
           },
         ),
       ],
+    ),
+    GoRoute(
+      path: "/mini-player",
+      parentNavigatorKey: rootNavigatorKey,
+      pageBuilder: (context, state) => const SpotubePage(
+        child: MiniLyricsPage(),
+      ),
     ),
     GoRoute(
       path: "/login",

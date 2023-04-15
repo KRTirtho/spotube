@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,6 +18,7 @@ import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class BottomPlayer extends HookConsumerWidget {
@@ -130,8 +132,24 @@ class BottomPlayer extends HookConsumerWidget {
                           IconButton(
                             tooltip: 'Mini Player',
                             icon: const Icon(SpotubeIcons.miniPlayer),
-                            onPressed: () {
-                              GoRouter.of(context).push('/lyrics/mini');
+                            onPressed: () async {
+                              await DesktopTools.window.setMinimumSize(
+                                const Size(300, 300),
+                              );
+                              await DesktopTools.window.setAlwaysOnTop(true);
+                              if (!kIsLinux) {
+                                await DesktopTools.window.setHasShadow(false);
+                              }
+                              await DesktopTools.window
+                                  .setAlignment(Alignment.topRight);
+                              await DesktopTools.window
+                                  .setSize(const Size(400, 500));
+                              await Future.delayed(
+                                const Duration(milliseconds: 100),
+                                () async {
+                                  GoRouter.of(context).go('/mini-player');
+                                },
+                              );
                             },
                           ),
                         ],
