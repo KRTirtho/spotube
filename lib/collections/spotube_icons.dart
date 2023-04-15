@@ -68,4 +68,8 @@ abstract class SpotubeIcons {
   static const zoomIn = FeatherIcons.zoomIn;
   static const zoomOut = FeatherIcons.zoomOut;
   static const tray = FeatherIcons.chevronDown;
+  static const miniPlayer = Icons.picture_in_picture_rounded;
+  static const maximize = FeatherIcons.maximize2;
+  static const pinOn = Icons.push_pin_rounded;
+  static const pinOff = Icons.push_pin_outlined;
 }

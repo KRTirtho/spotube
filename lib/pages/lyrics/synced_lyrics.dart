@@ -20,10 +20,12 @@ final _delay = StateProvider<int>((ref) => 0);
 class SyncedLyrics extends HookConsumerWidget {
   final PaletteColor palette;
   final bool? isModal;
+  final int defaultTextZoom;
 
   const SyncedLyrics({
     required this.palette,
     this.isModal,
+    this.defaultTextZoom = 100,
     Key? key,
   }) : super(key: key);
 
@@ -51,7 +53,7 @@ class SyncedLyrics extends HookConsumerWidget {
       [lyricValue],
     );
     final currentTime = useSyncedLyrics(ref, lyricsMap, delay);
-    final textZoomLevel = useState<int>(100);
+    final textZoomLevel = useState<int>(defaultTextZoom);
 
     final textTheme = Theme.of(context).textTheme;
 

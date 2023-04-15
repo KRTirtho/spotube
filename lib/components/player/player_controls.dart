@@ -13,9 +13,11 @@ import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final PaletteGenerator? palette;
+  final bool compact;
 
   PlayerControls({
     this.palette,
+    this.compact = false,
     Key? key,
   }) : super(key: key);
 
@@ -78,8 +80,8 @@ class PlayerControls extends HookConsumerWidget {
       backgroundColor: accentColor?.color ?? theme.colorScheme.primary,
       foregroundColor:
           accentColor?.titleTextColor ?? theme.colorScheme.onPrimary,
-      padding: const EdgeInsets.all(12),
-      iconSize: 24,
+      padding: EdgeInsets.all(compact ? 10 : 12),
+      iconSize: compact ? 18 : 24,
     );
 
     return GestureDetector(
@@ -97,82 +99,83 @@ class PlayerControls extends HookConsumerWidget {
           constraints: const BoxConstraints(maxWidth: 600),
           child: Column(
             children: [
-              HookBuilder(
-                builder: (context) {
-                  final progressObj = useProgress(ref);
+              if (!compact)
+                HookBuilder(
+                  builder: (context) {
+                    final progressObj = useProgress(ref);
 
-                  final progressStatic = progressObj.item1;
-                  final position = progressObj.item2;
-                  final duration = progressObj.item3;
+                    final progressStatic = progressObj.item1;
+                    final position = progressObj.item2;
+                    final duration = progressObj.item3;
 
-                  final totalMinutes = PrimitiveUtils.zeroPadNumStr(
-                    duration.inMinutes.remainder(60),
-                  );
-                  final totalSeconds = PrimitiveUtils.zeroPadNumStr(
-                    duration.inSeconds.remainder(60),
-                  );
-                  final currentMinutes = PrimitiveUtils.zeroPadNumStr(
-                    position.inMinutes.remainder(60),
-                  );
-                  final currentSeconds = PrimitiveUtils.zeroPadNumStr(
-                    position.inSeconds.remainder(60),
-                  );
+                    final totalMinutes = PrimitiveUtils.zeroPadNumStr(
+                      duration.inMinutes.remainder(60),
+                    );
+                    final totalSeconds = PrimitiveUtils.zeroPadNumStr(
+                      duration.inSeconds.remainder(60),
+                    );
+                    final currentMinutes = PrimitiveUtils.zeroPadNumStr(
+                      position.inMinutes.remainder(60),
+                    );
+                    final currentSeconds = PrimitiveUtils.zeroPadNumStr(
+                      position.inSeconds.remainder(60),
+                    );
 
-                  final progress = useState<num>(
-                    useMemoized(() => progressStatic, []),
-                  );
+                    final progress = useState<num>(
+                      useMemoized(() => progressStatic, []),
+                    );
 
-                  useEffect(() {
-                    progress.value = progressStatic;
-                    return null;
-                  }, [progressStatic]);
+                    useEffect(() {
+                      progress.value = progressStatic;
+                      return null;
+                    }, [progressStatic]);
 
-                  return Column(
-                    children: [
-                      Tooltip(
-                        message: "Slide to seek forward or backward",
-                        child: Slider(
-                          // cannot divide by zero
-                          // there's an edge case for value being bigger
-                          // than total duration. Keeping it resolved
-                          value: progress.value.toDouble(),
-                          onChanged: playlist?.isLoading == true
-                              ? null
-                              : (v) {
-                                  progress.value = v;
-                                },
-                          onChangeEnd: (value) async {
-                            await playlistNotifier.seek(
-                              Duration(
-                                seconds: (value * duration.inSeconds).toInt(),
-                              ),
-                            );
-                          },
-                          activeColor: sliderColor,
-                          inactiveColor: sliderColor.withOpacity(0.15),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                        ),
-                        child: DefaultTextStyle(
-                          style: theme.textTheme.bodySmall!.copyWith(
-                            color: palette?.dominantColor?.bodyTextColor,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("$currentMinutes:$currentSeconds"),
-                              Text("$totalMinutes:$totalSeconds"),
-                            ],
+                    return Column(
+                      children: [
+                        Tooltip(
+                          message: "Slide to seek forward or backward",
+                          child: Slider(
+                            // cannot divide by zero
+                            // there's an edge case for value being bigger
+                            // than total duration. Keeping it resolved
+                            value: progress.value.toDouble(),
+                            onChanged: playlist?.isLoading == true
+                                ? null
+                                : (v) {
+                                    progress.value = v;
+                                  },
+                            onChangeEnd: (value) async {
+                              await playlistNotifier.seek(
+                                Duration(
+                                  seconds: (value * duration.inSeconds).toInt(),
+                                ),
+                              );
+                            },
+                            activeColor: sliderColor,
+                            inactiveColor: sliderColor.withOpacity(0.15),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                          ),
+                          child: DefaultTextStyle(
+                            style: theme.textTheme.bodySmall!.copyWith(
+                              color: palette?.dominantColor?.bodyTextColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("$currentMinutes:$currentSeconds"),
+                                Text("$totalMinutes:$totalSeconds"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

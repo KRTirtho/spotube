@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_overlay.dart';
 import 'package:spotube/components/player/player_track_details.dart';
@@ -123,7 +125,17 @@ class BottomPlayer extends HookConsumerWidget {
                           );
                         }),
                       ),
-                      PlayerActions()
+                      PlayerActions(
+                        extraActions: [
+                          IconButton(
+                            tooltip: 'Mini Player',
+                            icon: const Icon(SpotubeIcons.miniPlayer),
+                            onPressed: () {
+                              GoRouter.of(context).push('/lyrics/mini');
+                            },
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 )

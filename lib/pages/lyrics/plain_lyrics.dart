@@ -15,9 +15,11 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class PlainLyrics extends HookConsumerWidget {
   final PaletteColor palette;
   final bool? isModal;
+  final int defaultTextZoom;
   const PlainLyrics({
     required this.palette,
     this.isModal,
+    this.defaultTextZoom = 100,
     Key? key,
   }) : super(key: key);
 
@@ -31,7 +33,7 @@ class PlainLyrics extends HookConsumerWidget {
     final breakpoint = useBreakpoints();
     final textTheme = Theme.of(context).textTheme;
 
-    final textZoomLevel = useState<int>(100);
+    final textZoomLevel = useState<int>(defaultTextZoom);
 
     return Stack(
       children: [

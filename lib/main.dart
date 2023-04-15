@@ -26,8 +26,9 @@ import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:path_provider/path_provider.dart';
 
-import 'hooks/use_init_sys_tray.dart';
+import 'package:spotube/hooks/use_init_sys_tray.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final parser = ArgParser();
@@ -78,7 +79,10 @@ Future<void> main(List<String> rawArgs) async {
 
   await SystemTheme.accentColor.load();
   MetadataGod.initialize();
-  await QueryClient.initialize(cachePrefix: "oss.krtirtho.spotube");
+  await QueryClient.initialize(
+    cachePrefix: "oss.krtirtho.spotube",
+    cacheDir: (await getApplicationSupportDirectory()).path,
+  );
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
