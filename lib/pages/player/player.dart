@@ -76,142 +76,147 @@ class PlayerView extends HookConsumerWidget {
           leading: const BackButton(),
         ),
         extendBodyBehindAppBar: true,
-        body: AnimateGradient(
-          animateAlignments: true,
-          primaryBegin: Alignment.topLeft,
-          primaryEnd: Alignment.bottomLeft,
-          secondaryBegin: Alignment.bottomRight,
-          secondaryEnd: Alignment.topRight,
-          duration: const Duration(seconds: 15),
-          primaryColors: [
-            palette.dominantColor?.color ?? theme.colorScheme.primary,
-            palette.mutedColor?.color ?? theme.colorScheme.secondary,
-          ],
-          secondaryColors: [
-            (palette.darkVibrantColor ?? palette.lightVibrantColor)?.color ??
-                theme.colorScheme.primaryContainer,
-            (palette.darkMutedColor ?? palette.lightMutedColor)?.color ??
-                theme.colorScheme.secondaryContainer,
-          ],
-          child: SingleChildScrollView(
-            child: Container(
-              alignment: Alignment.center,
-              width: double.infinity,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 580),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            constraints: const BoxConstraints(
-                                maxHeight: 300, maxWidth: 300),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 0),
+        body: SizedBox(
+          height: double.infinity,
+          child: AnimateGradient(
+            animateAlignments: true,
+            primaryBegin: Alignment.topLeft,
+            primaryEnd: Alignment.bottomLeft,
+            secondaryBegin: Alignment.bottomRight,
+            secondaryEnd: Alignment.topRight,
+            duration: const Duration(seconds: 15),
+            primaryColors: [
+              palette.dominantColor?.color ?? theme.colorScheme.primary,
+              palette.mutedColor?.color ?? theme.colorScheme.secondary,
+            ],
+            secondaryColors: [
+              (palette.darkVibrantColor ?? palette.lightVibrantColor)?.color ??
+                  theme.colorScheme.primaryContainer,
+              (palette.darkMutedColor ?? palette.lightMutedColor)?.color ??
+                  theme.colorScheme.secondaryContainer,
+            ],
+            child: SingleChildScrollView(
+              child: Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 580),
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              constraints: const BoxConstraints(
+                                  maxHeight: 300, maxWidth: 300),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: UniversalImage(
+                                  path: albumArt,
+                                  placeholder: Assets.albumPlaceholder.path,
+                                  fit: BoxFit.cover,
                                 ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  currentTrack?.name ?? "Not playing",
+                                  style: TextStyle(
+                                    color: titleTextColor,
+                                    fontSize: 22,
+                                  ),
+                                  maxFontSize: 22,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.start,
+                                ),
+                                if (isLocalTrack)
+                                  Text(
+                                    TypeConversionUtils.artists_X_String<
+                                        Artist>(
+                                      currentTrack?.artists ?? [],
+                                    ),
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: bodyTextColor,
+                                    ),
+                                  )
+                                else
+                                  TypeConversionUtils
+                                      .artists_X_ClickableArtists(
+                                    currentTrack?.artists ?? [],
+                                    textStyle:
+                                        theme.textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: bodyTextColor,
+                                    ),
+                                    onRouteChange: (route) {
+                                      GoRouter.of(context).pop();
+                                      GoRouter.of(context).push(route);
+                                    },
+                                  ),
                               ],
                             ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: UniversalImage(
-                                path: albumArt,
-                                placeholder: Assets.albumPlaceholder.path,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
                           ),
-                        ),
-                        const SizedBox(height: 60),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AutoSizeText(
-                                currentTrack?.name ?? "Not playing",
-                                style: TextStyle(
-                                  color: titleTextColor,
-                                  fontSize: 22,
-                                ),
-                                maxFontSize: 22,
-                                maxLines: 1,
-                                textAlign: TextAlign.start,
-                              ),
-                              if (isLocalTrack)
-                                Text(
-                                  TypeConversionUtils.artists_X_String<Artist>(
-                                    currentTrack?.artists ?? [],
-                                  ),
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: bodyTextColor,
-                                  ),
-                                )
-                              else
-                                TypeConversionUtils.artists_X_ClickableArtists(
-                                  currentTrack?.artists ?? [],
-                                  textStyle:
-                                      theme.textTheme.bodyMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: bodyTextColor,
-                                  ),
-                                  onRouteChange: (route) {
-                                    GoRouter.of(context).pop();
-                                    GoRouter.of(context).push(route);
+                          const SizedBox(height: 10),
+                          PlayerControls(palette: palette),
+                          const SizedBox(height: 25),
+                          PlayerActions(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            floatingQueue: false,
+                            extraActions: [
+                              if (auth != null)
+                                IconButton(
+                                  tooltip: "Open Lyrics",
+                                  icon: const Icon(SpotubeIcons.music),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isDismissible: true,
+                                      enableDrag: true,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.black38,
+                                      barrierColor: Colors.black12,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
+                                      ),
+                                      constraints: BoxConstraints(
+                                        maxHeight:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                      ),
+                                      builder: (context) =>
+                                          const LyricsPage(isModal: true),
+                                    );
                                   },
-                                ),
+                                )
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        PlayerControls(palette: palette),
-                        const SizedBox(height: 25),
-                        PlayerActions(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          floatingQueue: false,
-                          extraActions: [
-                            if (auth != null)
-                              IconButton(
-                                tooltip: "Open Lyrics",
-                                icon: const Icon(SpotubeIcons.music),
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isDismissible: true,
-                                    enableDrag: true,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.black38,
-                                    barrierColor: Colors.black12,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
-                                      ),
-                                    ),
-                                    constraints: BoxConstraints(
-                                      maxHeight:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                    ),
-                                    builder: (context) =>
-                                        const LyricsPage(isModal: true),
-                                  );
-                                },
-                              )
-                          ],
-                        ),
-                        const SizedBox(height: 25)
-                      ],
+                          const SizedBox(height: 25)
+                        ],
+                      ),
                     ),
                   ),
                 ),
