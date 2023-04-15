@@ -15,6 +15,7 @@ import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/utils/platform.dart';
 
 class MiniLyricsPage extends HookConsumerWidget {
   const MiniLyricsPage({Key? key}) : super(key: key);
@@ -32,6 +33,7 @@ class MiniLyricsPage extends HookConsumerWidget {
         prevSize.value = await DesktopTools.window.getSize();
         await DesktopTools.window.setMinimumSize(const Size(300, 300));
         await DesktopTools.window.setAlwaysOnTop(true);
+        if (!kIsLinux) await DesktopTools.window.setHasShadow(false);
         await DesktopTools.window.setSize(const Size(400, 500));
       });
       return null;
@@ -106,6 +108,9 @@ class MiniLyricsPage extends HookConsumerWidget {
                       await DesktopTools.window.setAlwaysOnTop(false);
                       await DesktopTools.window.setSize(prevSize.value!);
                       await DesktopTools.window.setAlignment(Alignment.center);
+                      if (!kIsLinux) {
+                        await DesktopTools.window.setHasShadow(true);
+                      }
                     } finally {
                       if (context.mounted) GoRouter.of(context).go('/');
                     }
