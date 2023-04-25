@@ -72,4 +72,6 @@ abstract class SpotubeIcons {
   static const maximize = FeatherIcons.maximize2;
   static const pinOn = Icons.push_pin_rounded;
   static const pinOff = Icons.push_pin_outlined;
+  static const hoverOn = Icons.back_hand_rounded;
+  static const hoverOff = Icons.back_hand_outlined;
 }
