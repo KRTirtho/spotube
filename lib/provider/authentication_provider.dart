@@ -79,7 +79,7 @@ class AuthenticationNotifier
 
   bool get isLoggedIn => state != null;
 
-  AuthenticationNotifier() : super(null, "authentication");
+  AuthenticationNotifier() : super(null, "authentication", encrypted: true);
 
   Timer? _refreshTimer;
 
