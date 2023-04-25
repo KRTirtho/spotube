@@ -1,13 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
-const secureStorage = FlutterSecureStorage();
+const secureStorage = FlutterSecureStorage(
+  aOptions: AndroidOptions(
+    encryptedSharedPreferences: true,
+  ),
+);
+
+const kKeyBoxName = "spotube_box_name";
+String getBoxKey(String boxName) => "spotube_box_$boxName";
 
 abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   final String cacheKey;
@@ -23,48 +29,38 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
     _load().then((_) => onInit());
   }
 
-  Future<void> _load() async {
-    final LazyBox box;
+  static late LazyBox _box;
+  static late LazyBox _encryptedBox;
 
-    if (encrypted) {
-      String? boxName =
-          await secureStorage.read(key: "oss.krtirtho.spotube.box_name");
+  static Future<void> initializeBoxes() async {
+    String? boxName = await secureStorage.read(key: kKeyBoxName);
 
-      if (boxName == null) {
-        await secureStorage.write(
-          key: "oss.krtirtho.spotube.box_name",
-          value: ".spotube-${PrimitiveUtils.uuid.v4()}",
-        );
-        boxName =
-            await secureStorage.read(key: "oss.krtirtho.spotube.box_name");
-      } else {
-        boxName = ".spotube-$boxName";
-      }
-
-      final rawKey =
-          await secureStorage.read(key: "oss.krtirtho.spotube.$boxName");
-
-      Uint8List? encryptionKey =
-          rawKey == null ? null : base64Url.decode(rawKey);
-
-      if (encryptionKey == null) {
-        await secureStorage.write(
-          key: "oss.krtirtho.spotube.$boxName",
-          value: base64UrlEncode(Hive.generateSecureKey()),
-        );
-        encryptionKey = base64Url.decode(
-          (await secureStorage.read(key: "oss.krtirtho.spotube.$boxName"))!,
-        );
-      }
-
-      box = await Hive.openLazyBox(
-        boxName!,
-        encryptionCipher: HiveAesCipher(encryptionKey),
-      );
-    } else {
-      box = await Hive.openLazyBox("spotube_cache");
+    if (boxName == null) {
+      boxName = "spotube-${PrimitiveUtils.uuid.v4()}";
+      await secureStorage.write(key: kKeyBoxName, value: boxName);
     }
 
+    String? encryptionKey = await secureStorage.read(key: getBoxKey(boxName));
+
+    if (encryptionKey == null) {
+      encryptionKey = base64Url.encode(Hive.generateSecureKey());
+      await secureStorage.write(
+        key: getBoxKey(boxName),
+        value: encryptionKey,
+      );
+    }
+
+    _encryptedBox = await Hive.openLazyBox(
+      boxName,
+      encryptionCipher: HiveAesCipher(base64Url.decode(encryptionKey)),
+    );
+
+    _box = await Hive.openLazyBox("spotube_cache");
+  }
+
+  LazyBox get box => encrypted ? _encryptedBox : _box;
+
+  Future<void> _load() async {
     final json = await box.get(cacheKey);
 
     if (json != null) {
@@ -95,7 +91,6 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   }
 
   void save() async {
-    final box = await Hive.openLazyBox("spotube_cache");
     box.put(cacheKey, toJson());
   }
 

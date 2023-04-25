@@ -27,9 +27,11 @@ import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/light_theme.dart';
+import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main(List<String> rawArgs) async {
   final parser = ArgParser();
@@ -70,7 +72,11 @@ void main(List<String> rawArgs) async {
 
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
-  await QueryClient.initialize(cachePrefix: "oss.krtirtho.spotube");
+  await QueryClient.initialize(
+    cachePrefix: "oss.krtirtho.spotube",
+    cacheDir: (await getApplicationSupportDirectory()).path,
+  );
+  await PersistedStateNotifier.initializeBoxes();
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
