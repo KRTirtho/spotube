@@ -120,9 +120,9 @@ Do the following:
 
 - Download the latest Flutter SDK (>=2.15.1) & enable desktop support
 - Install Development dependencies in linux
-  - `libgstreamer1.0-dev` & `libgstreamer-plugins-base1.0-dev` (for Debian/Ubuntu)
-  - `gstreamer`, `gst-libav`, `gst-plugins-base` & `gst-plugins-good` (for Arch/Manjaro)
-  - `gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras` (for Fedora)
+  - `libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp1 libsecret-1-dev libjsoncpp-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev` (for Debian/Ubuntu)
+  - `libappindicator-gtk3 libsecret jsoncpp gstreamer gst-libav gst-plugins-base gst-plugins-good` (for Arch/Manjaro)
+  - `libappindicator libsecret libsecret-devel jsoncpp gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras` (for Fedora)
 - Clone the Repo & Run `flutter pub get` in the Terminal
 - Create a `secrets.json` in root of the project. The structure should be similar to the following example:
 

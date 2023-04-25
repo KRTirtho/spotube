@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
   catcher
   desktop_multi_window
+  flutter_secure_storage_linux
   native_context_menu
   screen_retriever
   system_theme

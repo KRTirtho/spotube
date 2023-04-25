@@ -12,6 +12,8 @@ requires:
   - gstreamer1-plugins-base-devel
   - gstreamer1-plugins-good
   - libappindicator
+  - jsoncpp
+  - libsecret
 
 display_name: Spotube
 

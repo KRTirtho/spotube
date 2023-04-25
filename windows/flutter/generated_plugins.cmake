@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   catcher
   desktop_multi_window
+  flutter_secure_storage_windows
   native_context_menu
   permission_handler_windows
   screen_retriever

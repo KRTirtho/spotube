@@ -37,6 +37,7 @@ dependencies:
   flutter_hooks: ^0.18.2+1
   flutter_inappwebview: ^5.7.2+3
   flutter_riverpod: ^2.1.1
+  flutter_secure_storage: ^8.0.0
   flutter_svg: ^1.1.6
   fuzzywuzzy: ^0.2.0
   go_router: ^6.0.2

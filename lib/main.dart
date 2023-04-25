@@ -25,9 +25,9 @@ import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';
+import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'package:spotube/hooks/use_init_sys_tray.dart';
 
 Future<void> main(List<String> rawArgs) async {
@@ -83,6 +83,7 @@ Future<void> main(List<String> rawArgs) async {
     cachePrefix: "oss.krtirtho.spotube",
     cacheDir: (await getApplicationSupportDirectory()).path,
   );
+  await PersistedStateNotifier.initializeBoxes();
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
