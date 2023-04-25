@@ -12,6 +12,8 @@ installed_size: 24400
 dependencies:
   - libgstreamer1.0-dev
   - libgstreamer-plugins-base1.0-dev
+  - libsecret-1-0
+  - libjsoncpp1
 
 essential: false
 icon: assets/spotube-logo.png

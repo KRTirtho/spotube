@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   catcher
+  flutter_secure_storage_windows
   permission_handler_windows
   screen_retriever
   url_launcher_windows
