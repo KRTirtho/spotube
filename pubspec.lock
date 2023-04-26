@@ -506,6 +506,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  envied:
+    dependency: "direct main"
+    description:
+      name: envied
+      sha256: d5d978fbd578b5c00123003609c39185e0b1ddf9d2ac460d710dd0eb2fc223d7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
+  envied_generator:
+    dependency: "direct dev"
+    description:
+      name: envied_generator
+      sha256: "6c5a98c27c5eae925807692eb252ccac2b8e81f09bace1f07207c47dfb6a4eb0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   fake_async:
     dependency: transitive
     description:
@@ -624,14 +640,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.2"
-  flutter_dotenv:
-    dependency: "direct main"
-    description:
-      name: flutter_dotenv
-      sha256: d9283d92059a22e9834bc0a31336658ffba77089fb6f3cc36751f1fc7c6661a3
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.2"
   flutter_driver:
     dependency: transitive
     description: flutter

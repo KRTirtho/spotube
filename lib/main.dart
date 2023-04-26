@@ -13,7 +13,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/collections/routes.dart';
@@ -87,7 +86,6 @@ Future<void> main(List<String> rawArgs) async {
   Hive.registerAdapter(CacheTrackAdapter());
   Hive.registerAdapter(CacheTrackEngagementAdapter());
   Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
-  await Env.configure();
 
   Catcher(
     enableLogger: arguments["verbose"],

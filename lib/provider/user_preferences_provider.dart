@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/models/generated_secrets.dart';
+
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 import 'package:path/path.dart' as path;
 
 enum LayoutMode {
@@ -30,7 +29,6 @@ class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
   String recommendationMarket;
   bool saveTrackLyrics;
-  String geniusAccessToken;
   bool checkUpdate;
   AudioQuality audioQuality;
 
@@ -48,7 +46,6 @@ class UserPreferences extends PersistedChangeNotifier {
   bool showSystemTrayIcon;
 
   UserPreferences({
-    required this.geniusAccessToken,
     required this.recommendationMarket,
     required this.themeMode,
     required this.layoutMode,
@@ -91,12 +88,6 @@ class UserPreferences extends PersistedChangeNotifier {
 
   void setRecommendationMarket(String country) {
     recommendationMarket = country;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setGeniusAccessToken(String token) {
-    geniusAccessToken = token;
     notifyListeners();
     updatePersistence();
   }
@@ -172,8 +163,6 @@ class UserPreferences extends PersistedChangeNotifier {
     saveTrackLyrics = map["saveTrackLyrics"] ?? false;
     recommendationMarket = map["recommendationMarket"] ?? recommendationMarket;
     checkUpdate = map["checkUpdate"] ?? checkUpdate;
-    geniusAccessToken = map["geniusAccessToken"] ??
-        PrimitiveUtils.getRandomElement(lyricsSecrets);
 
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
     accentColorScheme = map["accentColorScheme"] != null
@@ -205,7 +194,6 @@ class UserPreferences extends PersistedChangeNotifier {
     return {
       "saveTrackLyrics": saveTrackLyrics,
       "recommendationMarket": recommendationMarket,
-      "geniusAccessToken": geniusAccessToken,
       "themeMode": themeMode.index,
       "accentColorScheme": accentColorScheme.toString(),
       "checkUpdate": checkUpdate,
@@ -223,7 +211,6 @@ class UserPreferences extends PersistedChangeNotifier {
 final userPreferencesProvider = ChangeNotifierProvider(
   (_) => UserPreferences(
     accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
-    geniusAccessToken: "",
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,
     layoutMode: kIsMobile ? LayoutMode.compact : LayoutMode.adaptive,

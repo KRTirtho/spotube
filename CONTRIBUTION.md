@@ -120,38 +120,28 @@ Do the following:
 
 - Download the latest Flutter SDK (>=2.15.1) & enable desktop support
 - Install Development dependencies in linux
-  - `libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp1 libsecret-1-dev libjsoncpp-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev` (for Debian/Ubuntu)
-  - `libappindicator-gtk3 libsecret jsoncpp gstreamer gst-libav gst-plugins-base gst-plugins-good` (for Arch/Manjaro)
-  - `libappindicator libsecret libsecret-devel jsoncpp gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras` (for Fedora)
-- Clone the Repo & Run `flutter pub get` in the Terminal
-- Create a `secrets.json` in root of the project. The structure should be similar to the following example:
-
-```jsoc name="secrets.json"
-{
-  "LYRICS_SECRET": [
-    "Bo3LQEMcL2xUAJ6yCfQowV6f8K78s9J9FLa67AsyWmvhkP9LWikkgcEyFrzvs7jsR",
-    "HiLHxLj8uv2VhBZfq9BQ9HVrWQk5Jc8aneMZX8RV4KjTmC387K692xrbNK35c8Qe4"
-  ],
-  "SPOTIFY_SECRET": [
-    {
-      "clientId": "9ed19daf-c7a2-4c28-91ac-2c5283ad86cf",
-      "clientSecret": "236d5822-820e-457e-b18c-10e258c9386b"
-    },
-    {
-      "clientId": "b4769027-e048-4485-8f0b-b8a336f2cd97",
-      "clientSecret": "41df6ea4-eba2-4d42-b7be-6f727555fccc"
-    }
-  ]
-}
-```
-
-> You can add more clientId/clientSecret/genius-access-token if you want. The credentials used in the example are dummy (fake). You've to use your own secrets
-
+  - Debian/Ubuntu
+    ```bash
+    $ apt-get install libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp1 libsecret-1-dev libjsoncpp-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+    ```
+    - Use `libjsoncpp25` instead of `libjsoncpp1` (for Ubuntu >= 22.04)
+  - Arch/Manjaro
+    ```bash
+    yay -S libappindicator-gtk3 libsecret jsoncpp gstreamer gst-libav gst-plugins-base gst-plugins-good
+    ```
+  - Fedora
+    ```bash
+    dnf install libappindicator libsecret libsecret-devel jsoncpp gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras
+    ```
+- Clone the Repo
+- Create a `.env` in root of the project following the `.env.example` template
+- Now run the following to bootstrap the project
+  ```bash
+  flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs
+  ```
 - Finally run these following commands in the root of the project to start the Spotube Locally
-
-```bash
-$ dart bin/create-secrets.dart --local
-$ flutter run -d <window|macos|linux|(<android-device-id>)>
-```
+  ```bash
+  flutter run -d <window|macos|linux|(<android-device-id>)>
+  ```
 
 Do debugging/testing/build etc then submit to us with PR against the development branch (master) & we'll review your code
