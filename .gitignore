@@ -66,7 +66,7 @@ installer.exe
 
 # secrets
 *.env
-lib/models/generated_secrets.dart
+lib/collections/env.g.dart
 help.txt
 secrets.json
 

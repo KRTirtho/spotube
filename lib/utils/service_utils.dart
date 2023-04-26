@@ -9,7 +9,7 @@ import 'package:spotube/models/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/models/generated_secrets.dart';
+
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:html/parser.dart' as parser;
@@ -23,6 +23,7 @@ abstract class ServiceUtils {
         .trim();
   }
 
+  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static String getTitle(
     String title, {
     List<String> artists = const [],
@@ -77,6 +78,7 @@ abstract class ServiceUtils {
     return lyrics;
   }
 
+  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static Future<List?> searchSong(
     String title,
     List<String> artist, {
@@ -85,7 +87,7 @@ abstract class ServiceUtils {
     bool authHeader = false,
   }) async {
     if (apiKey == "" || apiKey == null) {
-      apiKey = PrimitiveUtils.getRandomElement(lyricsSecrets);
+      apiKey = PrimitiveUtils.getRandomElement(/* lyricsSecrets */ []);
     }
     const searchUrl = 'https://api.genius.com/search?q=';
     String song =
@@ -111,6 +113,7 @@ abstract class ServiceUtils {
     return results;
   }
 
+  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static Future<String?> getLyrics(
     String title,
     List<String> artists, {
@@ -158,8 +161,10 @@ abstract class ServiceUtils {
     return lyrics;
   }
 
+  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static const baseUri = "https://www.rentanadviser.com/subtitles";
 
+  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
     final artistNames =
         track.artists?.map((artist) => artist.name!).toList() ?? [];

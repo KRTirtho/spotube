@@ -1,17 +1,24 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:envied/envied.dart';
 
+part 'env.g.dart';
+
+@Envied(obfuscate: true, requireEnvFile: true, path: ".env")
 abstract class Env {
-  static final String pocketbaseUrl =
-      dotenv.get('POCKETBASE_URL', fallback: 'http://127.0.0.1:8090');
-  static final String username = dotenv.get('USERNAME', fallback: 'root');
-  static final String password = dotenv.get('PASSWORD', fallback: '12345678');
+  @EnviedField(varName: 'POCKETBASE_URL', defaultValue: 'http://127.0.0.1:8090')
+  static final pocketbaseUrl = _Env.pocketbaseUrl;
 
-  static configure() async {
-    if (kReleaseMode) {
-      await dotenv.load(fileName: ".env");
-    } else {
-      dotenv.testLoad();
-    }
-  }
+  @EnviedField(varName: 'USERNAME', defaultValue: 'root')
+  static final username = _Env.username;
+
+  @EnviedField(varName: 'PASSWORD', defaultValue: '12345678')
+  static final password = _Env.password;
+
+  @EnviedField(varName: 'SPOTIFY_SECRETS')
+  static final spotifySecrets = _Env.spotifySecrets.split(',').map((e) {
+    final secrets = e.trim().split(":").map((e) => e.trim());
+    return {
+      "clientId": secrets.first,
+      "clientSecret": secrets.last,
+    };
+  }).toList();
 }
