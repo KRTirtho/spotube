@@ -61,7 +61,7 @@ jobs:
         run: |
           flutter config --enable-windows-desktop
           flutter pub get
-          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build Windows Executable
         run: |
@@ -136,7 +136,7 @@ jobs:
         run: |
           flutter config --enable-linux-desktop
           flutter pub get
-          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build Linux Packages
         run: |
@@ -200,10 +200,10 @@ jobs:
         if: ${{ inputs.channel == 'nightly' }}
         run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
 
-      - name: Generate Secrets and Build apk
+      - name: Generate Secrets
         run: |
           flutter pub get
-          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Sign Apk
         run: |
@@ -253,7 +253,7 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
-          dart bin/create-secrets.dart '${{ secrets.LYRICS_SECRET }}' '${{ secrets.SPOTIFY_SECRET }}'
+          flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build Macos App
         run: |

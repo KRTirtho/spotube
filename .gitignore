@@ -68,7 +68,6 @@ installer.exe
 *.env
 lib/collections/env.g.dart
 help.txt
-secrets.json
 
 dist
 appimage-build
