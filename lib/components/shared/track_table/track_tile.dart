@@ -41,6 +41,8 @@ class TrackTile extends HookConsumerWidget {
   final bool isLocal;
   final void Function(bool?)? onCheckChange;
 
+  final List<Widget>? actions;
+
   TrackTile(
     this.playlist, {
     required this.track,
@@ -54,6 +56,7 @@ class TrackTile extends HookConsumerWidget {
     this.showCheck = false,
     this.isLocal = false,
     this.onCheckChange,
+    this.actions,
     Key? key,
   }) : super(key: key);
 
@@ -396,6 +399,7 @@ class TrackTile extends HookConsumerWidget {
                   )
                 ],
               ),
+            ...?actions,
           ],
         ),
       ),

@@ -282,6 +282,27 @@ class UserLocalTracks extends HookConsumerWidget {
                           currentTrack: track,
                         );
                       },
+                      actions: [
+                        PopupMenuButton(
+                          icon: const Icon(SpotubeIcons.moreHorizontal),
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                value: "delete",
+                                onTap: () async {
+                                  await File(track.path).delete();
+                                  ref.refresh(localTracksProvider);
+                                },
+                                padding: EdgeInsets.zero,
+                                child: const ListTile(
+                                  leading: Icon(SpotubeIcons.trash),
+                                  title: Text("Delete"),
+                                ),
+                              ),
+                            ];
+                          },
+                        ),
+                      ],
                     );
                   },
                 ),

@@ -50,7 +50,6 @@ class Downloader with ChangeNotifier {
     notifyListeners();
 
     // Using android Audio Focus to keep the app run in background
-    // _playback.mobileAudioService?.session?.setActive(true);
     grabberQueue.add(() async {
       final track = await SpotubeTrack.fetchFromTrack(
         baseTrack,
@@ -139,9 +138,6 @@ class Downloader with ChangeNotifier {
         } finally {
           currentlyRunning--;
           inQueue.removeWhere((t) => t.id == track.id);
-          // if (currentlyRunning == 0 && !PlaylistProvider.isPlaying) {
-          // _playback.mobileAudioService?.session?.setActive(false);
-          // }
           notifyListeners();
         }
       });

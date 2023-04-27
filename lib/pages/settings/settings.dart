@@ -13,6 +13,7 @@ import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -23,6 +24,8 @@ class SettingsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
     final auth = ref.watch(AuthenticationNotifier.provider);
+    final isDownloading =
+        ref.watch(downloaderProvider.select((s) => s.currentlyRunning > 0));
     final theme = Theme.of(context);
 
     final pickColorScheme = useCallback(() {
@@ -297,15 +300,21 @@ class SettingsPage extends HookConsumerWidget {
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    ListTile(
-                      leading: const Icon(SpotubeIcons.download),
-                      title: const Text("Download Location"),
-                      subtitle: Text(preferences.downloadLocation),
-                      trailing: FilledButton(
-                        onPressed: pickDownloadLocation,
-                        child: const Icon(SpotubeIcons.folder),
+                    Tooltip(
+                      message: isDownloading
+                          ? "Please wait for the current download to finish"
+                          : null,
+                      child: ListTile(
+                        leading: const Icon(SpotubeIcons.download),
+                        title: const Text("Download Location"),
+                        subtitle: Text(preferences.downloadLocation),
+                        trailing: FilledButton(
+                          onPressed:
+                              isDownloading ? null : pickDownloadLocation,
+                          child: const Icon(SpotubeIcons.folder),
+                        ),
+                        onTap: isDownloading ? null : pickDownloadLocation,
                       ),
-                      onTap: pickDownloadLocation,
                     ),
                     SwitchListTile(
                       secondary: const Icon(SpotubeIcons.lyrics),
