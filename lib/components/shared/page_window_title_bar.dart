@@ -8,6 +8,12 @@ import 'package:window_manager/window_manager.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+
+final closeNotification = DesktopTools.createNotification(
+  title: 'Spotube',
+  message: 'Running in background. Minimized to System Tray',
+);
 
 class PageWindowTitleBar extends StatefulHookWidget
     implements PreferredSizeWidget {
@@ -101,11 +107,12 @@ class WindowTitleBarButtons extends HookConsumerWidget {
     final isMaximized = useState<bool?>(null);
     const type = ThemeType.auto;
 
-    void onClose() {
+    Future<void> onClose() async {
       if (closeBehavior == CloseBehavior.close) {
-        windowManager.close();
+        await windowManager.close();
       } else {
-        windowManager.hide();
+        await windowManager.hide();
+        await closeNotification?.show();
       }
     }
 

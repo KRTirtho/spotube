@@ -8,9 +8,8 @@
 
 #include <audioplayers_windows/audioplayers_windows_plugin.h>
 #include <catcher/catcher_plugin.h>
-#include <desktop_multi_window/desktop_multi_window_plugin.h>
 #include <flutter_secure_storage_windows/flutter_secure_storage_windows_plugin.h>
-#include <native_context_menu/native_context_menu_plugin.h>
+#include <local_notifier/local_notifier_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <screen_retriever/screen_retriever_plugin.h>
 #include <system_theme/system_theme_plugin.h>
@@ -24,12 +23,10 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("AudioplayersWindowsPlugin"));
   CatcherPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("CatcherPlugin"));
-  DesktopMultiWindowPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("DesktopMultiWindowPlugin"));
   FlutterSecureStorageWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterSecureStorageWindowsPlugin"));
-  NativeContextMenuPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("NativeContextMenuPlugin"));
+  LocalNotifierPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("LocalNotifierPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
   ScreenRetrieverPluginRegisterWithRegistrar(
