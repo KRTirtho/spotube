@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 const secureStorage = FlutterSecureStorage(
@@ -32,22 +34,38 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   static late LazyBox _box;
   static late LazyBox _encryptedBox;
 
+  static Future<String?> read(String key) async {
+    final localStorage = await SharedPreferences.getInstance();
+    if (kIsMacOS || kIsIOS) {
+      return localStorage.getString(key);
+    } else {
+      return secureStorage.read(key: key);
+    }
+  }
+
+  static Future<void> write(String key, String value) async {
+    final localStorage = await SharedPreferences.getInstance();
+    if (kIsMacOS || kIsIOS) {
+      await localStorage.setString(key, value);
+      return;
+    } else {
+      return secureStorage.write(key: key, value: value);
+    }
+  }
+
   static Future<void> initializeBoxes() async {
-    String? boxName = await secureStorage.read(key: kKeyBoxName);
+    String? boxName = await read(kKeyBoxName);
 
     if (boxName == null) {
       boxName = "spotube-${PrimitiveUtils.uuid.v4()}";
-      await secureStorage.write(key: kKeyBoxName, value: boxName);
+      await write(kKeyBoxName, boxName);
     }
 
-    String? encryptionKey = await secureStorage.read(key: getBoxKey(boxName));
+    String? encryptionKey = await read(getBoxKey(boxName));
 
     if (encryptionKey == null) {
       encryptionKey = base64Url.encode(Hive.generateSecureKey());
-      await secureStorage.write(
-        key: getBoxKey(boxName),
-        value: encryptionKey,
-      );
+      await write(getBoxKey(boxName), encryptionKey);
     }
 
     _encryptedBox = await Hive.openLazyBox(
