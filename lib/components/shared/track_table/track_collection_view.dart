@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -284,6 +285,17 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
+                                  if (album != null)
+                                    Text(
+                                      "${AlbumType.from(album?.albumType).formatted} • Released • ${DateTime.tryParse(
+                                        album?.releaseDate ?? "",
+                                      )?.year}",
+                                      style:
+                                          theme.textTheme.titleMedium!.copyWith(
+                                        color: color?.titleTextColor,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
                                   if (description != null)
                                     Text(
                                       description!,

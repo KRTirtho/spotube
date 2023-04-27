@@ -34,6 +34,7 @@ class ArtistPage extends HookConsumerWidget {
     SpotifyApi spotify = ref.watch(spotifyProvider);
     final parentScrollController = useScrollController();
     final theme = Theme.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final textTheme = theme.textTheme;
     final chipTextVariant = useBreakpointValue(
       sm: textTheme.bodySmall,
@@ -126,7 +127,7 @@ class ArtistPage extends HookConsumerWidget {
                                             BorderRadius.circular(50)),
                                     child: Text(
                                       data.type!.toUpperCase(),
-                                      style: chipTextVariant?.copyWith(
+                                      style: chipTextVariant.copyWith(
                                         color: Colors.white,
                                       ),
                                     ),
@@ -142,7 +143,7 @@ class ArtistPage extends HookConsumerWidget {
                                               BorderRadius.circular(50)),
                                       child: Text(
                                         "Blacklisted",
-                                        style: chipTextVariant?.copyWith(
+                                        style: chipTextVariant.copyWith(
                                           color: Colors.white,
                                         ),
                                       ),
@@ -262,8 +263,7 @@ class ArtistPage extends HookConsumerWidget {
                                             text: data.externalUrls?.spotify),
                                       );
 
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      scaffoldMessenger.showSnackBar(
                                         const SnackBar(
                                           width: 300,
                                           behavior: SnackBarBehavior.floating,
@@ -334,7 +334,7 @@ class ArtistPage extends HookConsumerWidget {
                                   ),
                                   onPressed: () {
                                     playlistNotifier.add(topTracks.toList());
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    scaffoldMessenger.showSnackBar(
                                       SnackBar(
                                         width: 300,
                                         behavior: SnackBarBehavior.floating,

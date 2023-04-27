@@ -33,35 +33,36 @@ class ArtistAlbumList extends HookConsumerWidget {
         ? false
         : (albumsQuery.pages.last.items?.length ?? 0) == 5;
 
-    return SizedBox(
-      height: 300,
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(
-          dragDevices: {
-            PointerDeviceKind.touch,
-            PointerDeviceKind.mouse,
-          },
-        ),
-        child: Scrollbar(
-          interactive: false,
-          controller: scrollController,
-          child: Waypoint(
+    return Column(
+      children: [
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+            },
+          ),
+          child: Scrollbar(
+            interactive: false,
             controller: scrollController,
-            onTouchEdge: albumsQuery.fetchNext,
-            child: ListView.builder(
-              itemCount: albums.length,
+            child: Waypoint(
               controller: scrollController,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                if (index == albums.length - 1 && hasNextPage) {
-                  return const ShimmerPlaybuttonCard(count: 1);
-                }
-                return AlbumCard(albums[index]);
-              },
+              onTouchEdge: albumsQuery.fetchNext,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...albums.map((album) => AlbumCard(album)),
+                    if (hasNextPage) const ShimmerPlaybuttonCard(count: 1),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
