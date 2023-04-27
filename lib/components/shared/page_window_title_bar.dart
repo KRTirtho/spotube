@@ -9,11 +9,17 @@ import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:local_notifier/local_notifier.dart';
 
 final closeNotification = DesktopTools.createNotification(
   title: 'Spotube',
   message: 'Running in background. Minimized to System Tray',
-);
+  actions: [
+    LocalNotificationAction(text: 'Close The App'),
+  ],
+)?..onClickAction = (value) {
+    windowManager.close();
+  };
 
 class PageWindowTitleBar extends StatefulHookWidget
     implements PreferredSizeWidget {
