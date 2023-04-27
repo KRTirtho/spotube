@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:spotube/collections/env.dart';
 
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotube/hooks/use_package_info.dart';
@@ -29,10 +30,9 @@ void useUpdateChecker(WidgetRef ref) {
           (jsonDecode(value.body)["tag_name"] as String).replaceAll("v", "");
       final currentVersion = packageInfo.version == "Unknown"
           ? null
-          : Version.parse(
-              packageInfo.version,
-            );
-      final latestVersion = Version.parse(tagName);
+          : Version.parse(packageInfo.version);
+      final latestVersion =
+          tagName == "nightly" ? null : Version.parse(tagName);
       return [currentVersion, latestVersion];
     },
     [packageInfo.version],
@@ -46,6 +46,7 @@ void useUpdateChecker(WidgetRef ref) {
       );
 
   useEffect(() {
+    if (!Env.enableUpdateChecker) return;
     if (!isCheckUpdateEnabled) return null;
     checkUpdate().then((value) {
       final currentVersion = value.first;

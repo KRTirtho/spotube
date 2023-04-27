@@ -35,6 +35,7 @@ class Assets {
       AssetGenImage('assets/placeholder.png');
   static const AssetGenImage spotubeLogoForeground =
       AssetGenImage('assets/spotube-logo-foreground.jpg');
+  static const String spotubeLogoIco = 'assets/spotube-logo.ico';
   static const AssetGenImage spotubeLogoPng =
       AssetGenImage('assets/spotube-logo.png');
   static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
@@ -53,6 +54,7 @@ class Assets {
         emptyBox,
         placeholder,
         spotubeLogoForeground,
+        spotubeLogoIco,
         spotubeLogoPng,
         spotubeLogoSvg,
         spotubeScreenshot,

@@ -5,6 +5,7 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/env.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
@@ -401,13 +402,14 @@ class SettingsPage extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    SwitchListTile(
-                      secondary: const Icon(SpotubeIcons.update),
-                      title: const Text("Check for Update"),
-                      value: preferences.checkUpdate,
-                      onChanged: (checked) =>
-                          preferences.setCheckUpdate(checked),
-                    ),
+                    if (Env.enableUpdateChecker)
+                      SwitchListTile(
+                        secondary: const Icon(SpotubeIcons.update),
+                        title: const Text("Check for Update"),
+                        value: preferences.checkUpdate,
+                        onChanged: (checked) =>
+                            preferences.setCheckUpdate(checked),
+                      ),
                     ListTile(
                       leading: const Icon(SpotubeIcons.info),
                       title: const Text("About Spotube"),

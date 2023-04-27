@@ -21,4 +21,9 @@ abstract class Env {
       "clientSecret": secrets.last,
     };
   }).toList();
+
+  @EnviedField(varName: 'ENABLE_UPDATE_CHECK', defaultValue: "1")
+  static final _enableUpdateChecker = _Env._enableUpdateChecker;
+
+  static bool get enableUpdateChecker => _enableUpdateChecker == "1";
 }
