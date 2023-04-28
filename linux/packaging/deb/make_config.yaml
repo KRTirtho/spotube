@@ -15,6 +15,7 @@ dependencies:
   - libappindicator3-1
   - gir1.2-appindicator3-0.1
   - libsecret-1-0
+  - libnotify-bin
 
 essential: false
 icon: assets/spotube-logo.png
