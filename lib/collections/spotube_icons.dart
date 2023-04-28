@@ -77,4 +77,5 @@ abstract class SpotubeIcons {
   static const dragHandle = Icons.drag_indicator;
   static const lightning = Icons.flash_on_rounded;
   static const colorSync = FeatherIcons.activity;
+  static const language = FeatherIcons.globe;
 }

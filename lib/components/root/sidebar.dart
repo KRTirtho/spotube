@@ -9,6 +9,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/hooks/use_sidebarx_controller.dart';
@@ -69,6 +70,9 @@ class Sidebar extends HookConsumerWidget {
       Color.lerp(bg, Colors.white, 0.7),
       Color.lerp(bg, Colors.black, 0.45)!,
     );
+
+    final sidebarTileList =
+        useMemoized(() => getSidebarTileList(context.l10n), [context.l10n]);
 
     useEffect(() {
       controller.addListener(() {
@@ -263,7 +267,7 @@ class SidebarFooter extends HookConsumerWidget {
                   const SizedBox(width: 10),
                   Flexible(
                     child: Text(
-                      data.displayName ?? "Guest",
+                      data.displayName ?? context.l10n.guest,
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.fade,

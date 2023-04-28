@@ -48,6 +48,8 @@ class UserPreferences extends PersistedChangeNotifier {
 
   bool showSystemTrayIcon;
 
+  Locale locale;
+
   final Ref ref;
 
   UserPreferences(
@@ -65,6 +67,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.downloadLocation = "",
     this.closeBehavior = CloseBehavior.minimizeToTray,
     this.showSystemTrayIcon = true,
+    this.locale = const Locale("system"),
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
@@ -159,6 +162,12 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setLocale(Locale locale) {
+    this.locale = locale;
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -201,6 +210,11 @@ class UserPreferences extends PersistedChangeNotifier {
         : closeBehavior;
 
     showSystemTrayIcon = map["showSystemTrayIcon"] ?? showSystemTrayIcon;
+
+    locale = Locale(
+      map["locale"]?["lc"] ?? locale.languageCode,
+      map["locale"]?["cc"] ?? locale.countryCode,
+    );
   }
 
   @override
@@ -219,6 +233,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "predownload": predownload,
       "closeBehavior": closeBehavior.index,
       "showSystemTrayIcon": showSystemTrayIcon,
+      "locale": {"lc": locale.languageCode, "cc": locale.countryCode},
     };
   }
 }

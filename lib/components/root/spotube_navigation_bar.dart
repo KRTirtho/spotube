@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/components/root/sidebar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/provider/downloader_provider.dart';
@@ -38,6 +39,9 @@ class SpotubeNavigationBar extends HookConsumerWidget {
       theme.colorScheme.inversePrimary,
       theme.colorScheme.primary.withOpacity(0.2),
     );
+
+    final navbarTileList =
+        useMemoized(() => getNavbarTileList(context.l10n), [context.l10n]);
 
     useEffect(() {
       insideSelectedIndex.value = selectedIndex;

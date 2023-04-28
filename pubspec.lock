@@ -467,7 +467,7 @@ packages:
     source: hosted
     version: "1.1.0"
   dbus:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: dbus
       sha256: "6f07cba3f7b3448d42d015bfd3d53fe12e5b36da2423f23838efc1d5fb31a263"
@@ -701,6 +701,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_mailer:
     dependency: transitive
     description:
@@ -946,7 +951,7 @@ packages:
     source: sdk
     version: "0.0.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: "910f85bce16fb5c6f614e117efa303e85a1731bb0081edf3604a2ae6e9a3cc91"

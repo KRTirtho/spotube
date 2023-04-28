@@ -32,9 +32,15 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
+  flutter_desktop_tools:
+    git:
+      url: https://github.com/KRTirtho/flutter_desktop_tools.git
+      ref: 1f0bec3283626dcbd8ee2f54e238d096d8dea50e
   flutter_feather_icons: ^2.0.0+1
   flutter_hooks: ^0.18.2+1
   flutter_inappwebview: ^5.7.2+3
+  flutter_localizations:
+    sdk: flutter
   flutter_riverpod: ^2.1.1
   flutter_secure_storage: ^8.0.0
   flutter_svg: ^1.1.6
@@ -45,12 +51,16 @@ dependencies:
   hooks_riverpod: ^2.1.1
   html: ^0.15.1
   http: ^0.13.5
+  intl: ^0.17.0
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.0
   json_serializable: ^6.6.0
   logger: ^1.1.0
   metadata_god: ^0.4.1
   mime: ^1.0.2
+  mpris_service:
+    git:
+      url: https://github.com/alexmercerind/mpris_service
   package_info_plus: ^3.0.2
   palette_generator: ^0.3.3
   path: ^1.8.0
@@ -64,6 +74,11 @@ dependencies:
   sidebarx: ^0.15.0
   simple_circular_progress_bar: ^1.0.2
   skeleton_text: ^3.0.0
+  smtc_windows:
+    git:
+      url: https://github.com/KRTirtho/smtc_windows.git
+      ref: 6cc93624b8fab8d7727c8693e91577a7413ccd13
+      path: packages/smtc_windows
   spotify: ^0.11.0
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
@@ -79,18 +94,6 @@ dependencies:
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
   youtube_explode_dart: ^1.12.1
-  flutter_desktop_tools:
-    git:
-      url: https://github.com/KRTirtho/flutter_desktop_tools.git
-      ref: 1f0bec3283626dcbd8ee2f54e238d096d8dea50e
-  smtc_windows:
-    git:
-      url: https://github.com/KRTirtho/smtc_windows.git
-      ref: 6cc93624b8fab8d7727c8693e91577a7413ccd13
-      path: packages/smtc_windows
-  mpris_service:
-    git:
-      url: https://github.com/alexmercerind/mpris_service
 
 dev_dependencies:
   build_runner: ^2.3.2
@@ -111,6 +114,7 @@ dependency_overrides:
   package_info_plus: ^3.0.2
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/

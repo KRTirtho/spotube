@@ -12,6 +12,7 @@ import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/collections/spotify_markets.dart';
+import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -127,6 +128,60 @@ class SettingsPage extends HookConsumerWidget {
                           ),
                         );
                       }),
+                    Text(
+                      " Language & Region",
+                      style: theme.textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    ListTile(
+                      leading: const Icon(SpotubeIcons.language),
+                      title: const Text("Language"),
+                      trailing: DropdownButton<Locale>(
+                        value: preferences.locale,
+                        items: [
+                          const DropdownMenuItem(
+                            value: Locale("system"),
+                            child: Text("System Default"),
+                          ),
+                          for (final locale in L10n.all)
+                            DropdownMenuItem(
+                              value: locale,
+                              child: Text(locale.languageCode),
+                            ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            preferences.setLocale(value);
+                          }
+                        },
+                      ),
+                    ),
+                    AdaptiveListTile(
+                      leading: const Icon(SpotubeIcons.shoppingBag),
+                      title: const Text("Market Place Region"),
+                      subtitle: const Text("Recommendation Country"),
+                      trailing: (context, update) => ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 350),
+                        child: DropdownMenu(
+                          initialSelection: preferences.recommendationMarket,
+                          dropdownMenuEntries: spotifyMarkets
+                              .map(
+                                (country) => DropdownMenuEntry(
+                                  value: country.first,
+                                  label: country.last,
+                                ),
+                              )
+                              .toList(),
+                          onSelected: (value) {
+                            if (value == null) return;
+                            preferences.setRecommendationMarket(
+                              value as String,
+                            );
+                            update?.call(() {});
+                          },
+                        ),
+                      ),
+                    ),
                     Text(
                       " Appearance",
                       style: theme.textTheme.headlineSmall
@@ -272,37 +327,6 @@ class SettingsPage extends HookConsumerWidget {
                         GoRouter.of(context).push("/settings/blacklist");
                       },
                       trailing: const Icon(SpotubeIcons.angleRight),
-                    ),
-                    Text(
-                      " Search",
-                      style: theme.textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    AdaptiveListTile(
-                      leading: const Icon(SpotubeIcons.shoppingBag),
-                      title: const Text("Market Place"),
-                      subtitle: const Text("Recommendation Country"),
-                      trailing: (context, update) => ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 350),
-                        child: DropdownMenu(
-                          initialSelection: preferences.recommendationMarket,
-                          dropdownMenuEntries: spotifyMarkets
-                              .map(
-                                (country) => DropdownMenuEntry(
-                                  value: country.first,
-                                  label: country.last,
-                                ),
-                              )
-                              .toList(),
-                          onSelected: (value) {
-                            if (value == null) return;
-                            preferences.setRecommendationMarket(
-                              value as String,
-                            );
-                            update?.call(() {});
-                          },
-                        ),
-                      ),
                     ),
                     Text(
                       " Downloads",
