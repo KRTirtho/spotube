@@ -303,7 +303,7 @@ class SettingsPage extends HookConsumerWidget {
                     Tooltip(
                       message: isDownloading
                           ? "Please wait for the current download to finish"
-                          : null,
+                          : "",
                       child: ListTile(
                         leading: const Icon(SpotubeIcons.download),
                         title: const Text("Download Location"),
