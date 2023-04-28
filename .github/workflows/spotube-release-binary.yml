@@ -85,7 +85,7 @@ jobs:
           path: dist/
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2.8.0
@@ -167,7 +167,7 @@ jobs:
           path: dist/
 
   android:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2.8.0
@@ -274,7 +274,7 @@ jobs:
             build/Spotube-macos-x86_64.dmg
 
   upload:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs:
       - windows
       - linux
