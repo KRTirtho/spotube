@@ -1,4 +1,3 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,11 +11,8 @@ import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player.dart';
-import 'package:spotube/services/linux_audio_service.dart';
-import 'package:spotube/services/mobile_audio_service.dart';
-import 'package:spotube/services/windows_audio_service.dart';
+import 'package:spotube/services/audio_services/audio_services.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Playlist;
 import 'package:collection/collection.dart';
@@ -139,9 +135,8 @@ class PlaylistQueue {
 
 class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   final Ref ref;
-  MobileAudioService? mobileService;
-  LinuxAudioService? linuxService;
-  WindowsAudioService? windowsService;
+
+  AudioServices? audioServices;
 
   static final provider =
       StateNotifierProvider<PlaylistQueueNotifier, PlaylistQueue?>(
@@ -155,32 +150,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   void configure() async {
-    if (kIsMobile || kIsMacOS) {
-      mobileService = await AudioService.init(
-        builder: () => MobileAudioService(
-          this,
-          ref.read(VolumeProvider.provider.notifier),
-        ),
-        config: const AudioServiceConfig(
-          androidNotificationChannelId: 'com.krtirtho.Spotube',
-          androidNotificationChannelName: 'Spotube',
-          androidNotificationOngoing: true,
-        ),
-      );
-    }
-    if (kIsLinux) {
-      linuxService = LinuxAudioService(ref, this);
-    }
-    if (kIsWindows) {
-      windowsService = WindowsAudioService(ref, this);
-    }
-    addListener((state) {
-      linuxService?.player.updateProperties();
-    });
-
-    audioPlayer.onPlayerStateChanged.listen((event) {
-      linuxService?.player.updateProperties();
-    });
+    audioServices = await AudioServices.create(ref, this);
 
     audioPlayer.onPlayerComplete.listen((event) async {
       if (!isLoaded) return;
@@ -196,7 +166,6 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
     audioPlayer.onPositionChanged.listen((pos) async {
       if (!isLoaded) return;
-      await linuxService?.player.updateProperties();
       final currentDuration = await audioPlayer.getDuration() ?? Duration.zero;
 
       // skip all the activeTrack.skipSegments
@@ -368,23 +337,8 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   Future<void> play() async {
     if (!isLoaded) return;
     await pause();
-    await mobileService?.session?.setActive(true);
-    final mediaItem = MediaItem(
-      id: state!.activeTrack.id!,
-      title: state!.activeTrack.name!,
-      album: state!.activeTrack.album?.name,
-      artist: TypeConversionUtils.artists_X_String(
-          state!.activeTrack.artists ?? <ArtistSimple>[]),
-      artUri: Uri.parse(
-        TypeConversionUtils.image_X_UrlString(
-          state!.activeTrack.album?.images,
-          placeholder: ImagePlaceholder.online,
-        ),
-      ),
-      duration: state!.activeTrack.duration,
-    );
-    mobileService?.addItem(mediaItem);
-    windowsService?.addTrack(state!.activeTrack);
+    audioServices?.activateSession();
+    await audioServices?.addTrack(state!.activeTrack);
     if (state!.activeTrack is LocalTrack) {
       await audioPlayer.play(
         DeviceFileSource((state!.activeTrack as LocalTrack).path),
@@ -409,9 +363,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       );
     }
 
-    mobileService?.addItem(mediaItem.copyWith(
-      duration: (state!.activeTrack as SpotubeTrack).ytTrack.duration,
-    ));
+    audioServices?.addTrack(state!.activeTrack);
 
     final cached =
         await DefaultCacheManager().getFileFromCache(state!.activeTrack.id!);
@@ -463,7 +415,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   Future<void> stop() async {
-    (mobileService)?.session?.setActive(false);
+    audioServices?.deactivateSession();
     state = null;
 
     return audioPlayer.stop();
@@ -576,7 +528,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   @override
   void dispose() {
-    windowsService?.dispose();
+    audioServices?.dispose();
     super.dispose();
   }
 }
