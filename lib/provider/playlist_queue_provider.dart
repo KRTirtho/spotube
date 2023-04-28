@@ -2,11 +2,14 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/linux_audio_service.dart';
@@ -530,6 +533,30 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     final active =
         tracks.indexWhere((element) => element.id == state!.activeTrack.id);
     state = state!.copyWith(tracks: Set.from(tracks), active: active);
+  }
+
+  Future<void> updatePalette() async {
+    final palette = await PaletteGenerator.fromImageProvider(
+      UniversalImage.imageProvider(
+        TypeConversionUtils.image_X_UrlString(
+          state?.activeTrack.album?.images,
+          placeholder: ImagePlaceholder.albumArt,
+        ),
+        height: 50,
+        width: 50,
+      ),
+    );
+    ref.read(paletteProvider.notifier).state = palette;
+  }
+
+  @override
+  set state(state) {
+    if (preferences.albumColorSync &&
+        state != null &&
+        state.active != this.state?.active) {
+      updatePalette();
+    }
+    super.state = state;
   }
 
   @override

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/provider/palette_provider.dart';
+import 'package:spotube/provider/playlist_queue_provider.dart';
 
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:spotube/utils/platform.dart';
@@ -33,6 +35,7 @@ class UserPreferences extends PersistedChangeNotifier {
   AudioQuality audioQuality;
 
   SpotubeColor accentColorScheme;
+  bool albumColorSync;
   bool skipSponsorSegments;
 
   String downloadLocation;
@@ -45,12 +48,16 @@ class UserPreferences extends PersistedChangeNotifier {
 
   bool showSystemTrayIcon;
 
-  UserPreferences({
+  final Ref ref;
+
+  UserPreferences(
+    this.ref, {
     required this.recommendationMarket,
     required this.themeMode,
     required this.layoutMode,
     required this.predownload,
     required this.accentColorScheme,
+    this.albumColorSync = true,
     this.saveTrackLyrics = false,
     this.checkUpdate = true,
     this.audioQuality = AudioQuality.high,
@@ -98,7 +105,13 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setBackgroundColorScheme(MaterialColor color) {
+  void setAlbumColorSync(bool sync) {
+    albumColorSync = sync;
+    if (!sync) {
+      ref.read(paletteProvider.notifier).state = null;
+    } else {
+      ref.read(PlaylistQueueNotifier.notifier).updatePalette();
+    }
     notifyListeners();
     updatePersistence();
   }
@@ -168,6 +181,7 @@ class UserPreferences extends PersistedChangeNotifier {
     accentColorScheme = map["accentColorScheme"] != null
         ? SpotubeColor.fromString(map["accentColorScheme"])
         : accentColorScheme;
+    albumColorSync = map["albumColorSync"] ?? albumColorSync;
     audioQuality = map["audioQuality"] != null
         ? AudioQuality.values[map["audioQuality"]]
         : audioQuality;
@@ -196,6 +210,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "recommendationMarket": recommendationMarket,
       "themeMode": themeMode.index,
       "accentColorScheme": accentColorScheme.toString(),
+      "albumColorSync": albumColorSync,
       "checkUpdate": checkUpdate,
       "audioQuality": audioQuality.index,
       "skipSponsorSegments": skipSponsorSegments,
@@ -209,7 +224,8 @@ class UserPreferences extends PersistedChangeNotifier {
 }
 
 final userPreferencesProvider = ChangeNotifierProvider(
-  (_) => UserPreferences(
+  (ref) => UserPreferences(
+    ref,
     accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,

@@ -19,6 +19,7 @@ import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/downloader_provider.dart';
+import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
@@ -188,6 +189,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+    final paletteColor =
+        ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
 
     useInitSysTray(ref);
 
@@ -209,8 +212,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         return DragToResizeArea(child: child!);
       },
       themeMode: themeMode,
-      theme: theme(accentMaterialColor, Brightness.light),
-      darkTheme: theme(accentMaterialColor, Brightness.dark),
+      theme: theme(paletteColor ?? accentMaterialColor, Brightness.light),
+      darkTheme: theme(paletteColor ?? accentMaterialColor, Brightness.dark),
       shortcuts: {
         ...WidgetsApp.defaultShortcuts.map((key, value) {
           return MapEntry(

@@ -203,6 +203,15 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                       onTap: pickColorScheme(),
                     ),
+                    SwitchListTile(
+                      secondary: const Icon(SpotubeIcons.colorSync),
+                      title: const Text("Sync Album Color"),
+                      subtitle: const Text(
+                        "Uses the dominant color of the album art as the accent color",
+                      ),
+                      value: preferences.albumColorSync,
+                      onChanged: preferences.setAlbumColorSync,
+                    ),
                     Text(
                       " Playback",
                       style: theme.textTheme.headlineSmall
