@@ -377,7 +377,9 @@ class TrackTile extends HookConsumerWidget {
                                   color: Colors.pink,
                                 )
                               : const Icon(SpotubeIcons.heart),
-                          title: const Text("Save as favorite"),
+                          title: Text(
+                            "${toggler.item1 ? "Remove from" : "Save as "} favorite",
+                          ),
                         ),
                       ),
                     if (auth != null)

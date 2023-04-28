@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
-import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
@@ -13,7 +12,7 @@ import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:tuple/tuple.dart';
 
-class HeartButton extends ConsumerWidget {
+class HeartButton extends HookConsumerWidget {
   final bool isLiked;
   final void Function()? onPressed;
   final IconData? icon;
@@ -36,9 +35,24 @@ class HeartButton extends ConsumerWidget {
 
     return IconButton(
       tooltip: tooltip,
-      icon: Icon(
-        icon ?? (!isLiked ? SpotubeIcons.heart : SpotubeIcons.heartFilled),
-        color: isLiked ? Colors.pink : color,
+      icon: AnimatedSwitcher(
+        switchInCurve: Curves.fastOutSlowIn,
+        switchOutCurve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return ScaleTransition(
+            scale: animation,
+            child: child,
+          );
+        },
+        child: Icon(
+          icon ??
+              (isLiked
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_outline_rounded),
+          key: ValueKey(isLiked),
+          color: color ?? (isLiked ? color ?? Colors.red : null),
+        ),
       ),
       onPressed: onPressed,
     );
@@ -53,29 +67,36 @@ Tuple3<bool, Mutation<bool, dynamic, bool>, Query<User, dynamic>>
       useQueries.playlist.tracksOfQuery(ref, "user-liked-tracks");
 
   final isLiked =
-      savedTracks.data?.map((track) => track.id).contains(track.id) ?? false;
+      savedTracks.data?.any((element) => element.id == track.id) ?? false;
 
   final mounted = useIsMounted();
 
   final toggleTrackLike = useMutations.track.toggleFavorite(
     ref,
     track.id!,
-    onMutate: (variables) {
-      return variables;
+    onMutate: (isLiked) {
+      savedTracks.setData(
+        [
+          if (isLiked == true)
+            ...?savedTracks.data?.where((element) => element.id != track.id)
+          else
+            ...?savedTracks.data?..add(track)
+        ],
+      );
+      return isLiked;
+    },
+    onData: (data, recoveryData) async {
+      await savedTracks.refresh();
     },
     onError: (payload, isLiked) {
       if (!mounted()) return;
 
-      savedTracks.setData(
-        isLiked == true
-            ? [...(savedTracks.data ?? []), track]
-            : savedTracks.data
-                    ?.where(
-                      (element) => element.id != track.id,
-                    )
-                    .toList() ??
-                [],
-      );
+      savedTracks.setData([
+        if (isLiked != true)
+          ...?savedTracks.data?.where((element) => element.id != track.id)
+        else
+          ...?savedTracks.data?..add(track),
+      ]);
     },
   );
 
