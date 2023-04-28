@@ -36,5 +36,10 @@ ThemeData theme(Color seed, Brightness brightness) {
         borderRadius: BorderRadius.circular(15),
       ),
     ),
+    popupMenuTheme: PopupMenuThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      color: scheme.surface,
+      elevation: 4,
+    ),
   );
 }

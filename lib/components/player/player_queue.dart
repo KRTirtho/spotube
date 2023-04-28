@@ -110,10 +110,14 @@ class PlayerQueue extends HookConsumerWidget {
             ),
             const SizedBox(height: 10),
             Flexible(
-              child: ListView.builder(
-                  controller: controller,
+              child: ReorderableListView.builder(
+                  onReorder: (oldIndex, newIndex) {
+                    playlistNotifier.reorder(oldIndex, newIndex);
+                  },
+                  scrollController: controller,
                   itemCount: tracks.length,
                   shrinkWrap: true,
+                  buildDefaultDragHandles: false,
                   itemBuilder: (context, i) {
                     final track = tracks.toList().asMap().entries.elementAt(i);
                     String duration =
@@ -135,6 +139,12 @@ class PlayerQueue extends HookConsumerWidget {
                             }
                             await playlistNotifier.playTrack(currentTrack);
                           },
+                          leadingActions: [
+                            ReorderableDragStartListener(
+                              index: i,
+                              child: const Icon(SpotubeIcons.dragHandle),
+                            ),
+                          ],
                         ),
                       ),
                     );

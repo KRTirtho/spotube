@@ -74,4 +74,5 @@ abstract class SpotubeIcons {
   static const pinOff = Icons.push_pin_outlined;
   static const hoverOn = Icons.back_hand_rounded;
   static const hoverOff = Icons.back_hand_outlined;
+  static const dragHandle = Icons.drag_indicator;
 }

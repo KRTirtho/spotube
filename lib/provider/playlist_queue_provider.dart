@@ -198,6 +198,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
       // skip all the activeTrack.skipSegments
       if (state?.isLoading != true &&
+          state?.activeTrack is SpotubeTrack &&
           (state?.activeTrack as SpotubeTrack?)?.skipSegments.isNotEmpty ==
               true &&
           preferences.skipSponsorSegments) {
@@ -506,6 +507,17 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     }
     final trackIds = state!.tracks.map((track) => track.id!);
     return trackIds.contains(track.id!);
+  }
+
+  void reorder(int oldIndex, int newIndex) {
+    if (!isLoaded) return;
+
+    final tracks = state!.tracks.toList();
+    final track = tracks.removeAt(oldIndex);
+    tracks.insert(newIndex, track);
+    final active =
+        tracks.indexWhere((element) => element.id == state!.activeTrack.id);
+    state = state!.copyWith(tracks: Set.from(tracks), active: active);
   }
 
   @override
