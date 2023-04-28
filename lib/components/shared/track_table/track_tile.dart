@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/adaptive/adaptive_popup_menu_button.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -62,6 +61,7 @@ class TrackTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final breakpoint = useBreakpoints();
     final isBlackListed = ref.watch(
       BlackListNotifier.provider.select(
@@ -177,7 +177,6 @@ class TrackTile extends HookConsumerWidget {
     );
 
     final toggler = useTrackToggleLike(track.value, ref);
-    final theme = Theme.of(context);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
@@ -301,14 +300,17 @@ class TrackTile extends HookConsumerWidget {
               Text(duration),
             ],
             const SizedBox(width: 10),
-            if (!isLocal)
-              AdaptiveActions(
-                actions: [
+            PopupMenuButton(
+              icon: const Icon(SpotubeIcons.moreHorizontal),
+              elevation: 4,
+              position: PopupMenuPosition.under,
+              tooltip: "More options",
+              itemBuilder: (context) {
+                return [
                   if (!playlistQueueNotifier.isTrackOnQueue(track.value))
-                    Action(
-                      icon: const Icon(SpotubeIcons.queueAdd),
-                      text: const Text("Add to queue"),
-                      onPressed: () {
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      onTap: () {
                         playlistQueueNotifier.add([track.value]);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -316,12 +318,15 @@ class TrackTile extends HookConsumerWidget {
                           ),
                         );
                       },
+                      child: const ListTile(
+                        leading: Icon(SpotubeIcons.queueAdd),
+                        title: Text("Add to queue"),
+                      ),
                     )
                   else
-                    Action(
-                      icon: const Icon(SpotubeIcons.queueRemove),
-                      text: const Text("Remove from queue"),
-                      onPressed: () {
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      onTap: () {
                         playlistQueueNotifier.remove([track.value]);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -330,60 +335,67 @@ class TrackTile extends HookConsumerWidget {
                           ),
                         );
                       },
+                      child: const ListTile(
+                        leading: Icon(SpotubeIcons.queueRemove),
+                        title: Text("Remove from queue"),
+                      ),
                     ),
                   if (toggler.item3.hasData)
-                    Action(
-                      icon: toggler.item1
-                          ? const Icon(
-                              SpotubeIcons.heartFilled,
-                              color: Colors.pink,
-                            )
-                          : const Icon(SpotubeIcons.heart),
-                      text: const Text("Save as favorite"),
-                      onPressed: () {
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      onTap: () {
                         toggler.item2.mutate(toggler.item1);
                       },
+                      child: ListTile(
+                        leading: toggler.item1
+                            ? const Icon(
+                                SpotubeIcons.heartFilled,
+                                color: Colors.pink,
+                              )
+                            : const Icon(SpotubeIcons.heart),
+                        title: const Text("Save as favorite"),
+                      ),
                     ),
                   if (auth != null)
-                    Action(
-                      icon: const Icon(SpotubeIcons.playlistAdd),
-                      text: const Text("Add To playlist"),
-                      onPressed: actionAddToPlaylist,
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      onTap: actionAddToPlaylist,
+                      child: const ListTile(
+                        leading: Icon(SpotubeIcons.playlistAdd),
+                        title: Text("Add To playlist"),
+                      ),
                     ),
                   if (userPlaylist && auth != null)
-                    Action(
-                      icon: (removeTrack.isMutating || !removeTrack.hasData) &&
-                              removingTrack.value == track.value.uri
-                          ? const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : const Icon(SpotubeIcons.removeFilled),
-                      text: const Text("Remove from playlist"),
-                      onPressed: () {
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      onTap: () {
                         removingTrack.value = track.value.uri;
                         removeTrack.mutate(track.value.uri!);
                       },
-                    ),
-                  Action(
-                    icon: const Icon(SpotubeIcons.share),
-                    text: const Text("Share"),
-                    onPressed: () {
-                      actionShare(track.value);
-                    },
-                  ),
-                  Action(
-                    icon: Icon(
-                      SpotubeIcons.playlistRemove,
-                      color: isBlackListed ? Colors.white : Colors.red[400],
-                    ),
-                    backgroundColor: isBlackListed ? Colors.red[400] : null,
-                    text: Text(
-                      "${isBlackListed ? "Remove from" : "Add to"} blacklist",
-                      style: TextStyle(
-                        color: isBlackListed ? Colors.white : Colors.red[400],
+                      child: ListTile(
+                        leading:
+                            (removeTrack.isMutating || !removeTrack.hasData) &&
+                                    removingTrack.value == track.value.uri
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : const Icon(SpotubeIcons.removeFilled),
+                        title: const Text("Remove from playlist"),
                       ),
                     ),
-                    onPressed: () {
+                  PopupMenuItem(
+                    padding: EdgeInsets.zero,
+                    onTap: () {
+                      actionShare(track.value);
+                    },
+                    child: const ListTile(
+                      leading: Icon(SpotubeIcons.share),
+                      title: Text("Share"),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    padding: EdgeInsets.zero,
+                    onTap: () {
                       if (isBlackListed) {
                         ref.read(BlackListNotifier.provider.notifier).remove(
                               BlacklistedElement.track(
@@ -396,9 +408,24 @@ class TrackTile extends HookConsumerWidget {
                             );
                       }
                     },
+                    child: ListTile(
+                      leading: Icon(
+                        SpotubeIcons.playlistRemove,
+                        color: isBlackListed ? Colors.white : Colors.red[400],
+                      ),
+                      iconColor: isBlackListed ? Colors.red[400] : null,
+                      textColor: isBlackListed ? Colors.red[400] : null,
+                      title: Text(
+                        "${isBlackListed ? "Remove from" : "Add to"} blacklist",
+                        style: TextStyle(
+                          color: isBlackListed ? Colors.white : Colors.red[400],
+                        ),
+                      ),
+                    ),
                   )
-                ],
-              ),
+                ];
+              },
+            ),
             ...?actions,
           ],
         ),
