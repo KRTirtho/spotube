@@ -535,18 +535,20 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     state = state!.copyWith(tracks: Set.from(tracks), active: active);
   }
 
-  Future<void> updatePalette() async {
-    final palette = await PaletteGenerator.fromImageProvider(
-      UniversalImage.imageProvider(
-        TypeConversionUtils.image_X_UrlString(
-          state?.activeTrack.album?.images,
-          placeholder: ImagePlaceholder.albumArt,
+  Future<void> updatePalette() {
+    return Future.microtask(() async {
+      final palette = await PaletteGenerator.fromImageProvider(
+        UniversalImage.imageProvider(
+          TypeConversionUtils.image_X_UrlString(
+            state?.activeTrack.album?.images,
+            placeholder: ImagePlaceholder.albumArt,
+          ),
+          height: 50,
+          width: 50,
         ),
-        height: 50,
-        width: 50,
-      ),
-    );
-    ref.read(paletteProvider.notifier).state = palette;
+      );
+      ref.read(paletteProvider.notifier).state = palette;
+    });
   }
 
   @override
@@ -555,6 +557,8 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
         state != null &&
         state.active != this.state?.active) {
       updatePalette();
+    } else if (state == null && ref.read(paletteProvider) != null) {
+      ref.read(paletteProvider.notifier).state = null;
     }
     super.state = state;
   }

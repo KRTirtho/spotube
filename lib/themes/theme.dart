@@ -41,5 +41,11 @@ ThemeData theme(Color seed, Brightness brightness) {
       color: scheme.surface,
       elevation: 4,
     ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      backgroundColor: scheme.onSurface,
+      contentTextStyle: TextStyle(color: scheme.surface),
+    ),
   );
 }
