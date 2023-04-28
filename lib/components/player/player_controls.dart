@@ -206,10 +206,13 @@ class PlayerControls extends HookConsumerWidget {
                   IconButton(
                     tooltip: playing ? "Pause playback" : "Resume playback",
                     icon: playlist?.isLoading == true
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              color: accentColor?.titleTextColor ??
+                                  theme.colorScheme.onPrimary,
+                            ),
                           )
                         : Icon(
                             playing ? SpotubeIcons.pause : SpotubeIcons.play,

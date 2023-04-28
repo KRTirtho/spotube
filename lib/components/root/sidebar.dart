@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -95,22 +96,26 @@ class Sidebar extends HookConsumerWidget {
         SafeArea(
           child: SidebarX(
             controller: controller,
-            items: sidebarTileList.map(
-              (e) {
+            items: sidebarTileList.mapIndexed(
+              (index, e) {
                 return SidebarXItem(
-                  // iconWidget: Badge(
-                  //   backgroundColor: theme.colorScheme.primary,
-                  //   isLabelVisible: e.title == "Library" && downloadCount > 0,
-                  //   label: Text(
-                  //     downloadCount.toString(),
-                  //     style: const TextStyle(
-                  //       color: Colors.white,
-                  //       fontSize: 10,
-                  //     ),
-                  //   ),
-                  //   child: Icon(e.icon),
-                  // ),
-                  icon: e.icon,
+                  iconWidget: Badge(
+                    backgroundColor: theme.colorScheme.primary,
+                    isLabelVisible: e.title == "Library" && downloadCount > 0,
+                    label: Text(
+                      downloadCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    ),
+                    child: Icon(
+                      e.icon,
+                      color: selectedIndex == index
+                          ? theme.colorScheme.primary
+                          : null,
+                    ),
+                  ),
                   label: e.title,
                 );
               },
