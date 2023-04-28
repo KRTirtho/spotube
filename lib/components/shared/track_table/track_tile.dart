@@ -310,35 +310,55 @@ class TrackTile extends HookConsumerWidget {
                 tooltip: "More options",
                 itemBuilder: (context) {
                   return [
-                    if (!playlistQueueNotifier.isTrackOnQueue(track.value))
+                    if (!playlistQueueNotifier.isTrackOnQueue(track.value)) ...[
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
                         onTap: () {
                           playlistQueueNotifier.add([track.value]);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content:
-                                  Text("Added ${track.value.name} to queue"),
+                              content: Text(
+                                "Added ${track.value.name} to queue",
+                              ),
                             ),
                           );
                         },
                         child: const ListTile(
                           leading: Icon(SpotubeIcons.queueAdd),
-                          title: Text("Add to queue"),
+                          title: Text("Add to Queue"),
                         ),
-                      )
-                    else
+                      ),
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
                         onTap: () {
-                          playlistQueueNotifier.remove([track.value]);
+                          playlistQueueNotifier.playNext([track.value]);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                  "Removed ${track.value.name} from queue"),
+                              content:
+                                  Text("${track.value.name} will play next"),
                             ),
                           );
                         },
+                        child: const ListTile(
+                          leading: Icon(SpotubeIcons.lightning),
+                          title: Text("Play next"),
+                        ),
+                      ),
+                    ] else
+                      PopupMenuItem(
+                        padding: EdgeInsets.zero,
+                        onTap: playlist?.activeTrack.id == track.value.id
+                            ? null
+                            : () {
+                                playlistQueueNotifier.remove([track.value]);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        "Removed ${track.value.name} from queue"),
+                                  ),
+                                );
+                              },
+                        enabled: playlist?.activeTrack.id != track.value.id,
                         child: const ListTile(
                           leading: Icon(SpotubeIcons.queueRemove),
                           title: Text("Remove from queue"),

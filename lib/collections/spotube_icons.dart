@@ -75,4 +75,5 @@ abstract class SpotubeIcons {
   static const hoverOn = Icons.back_hand_rounded;
   static const hoverOff = Icons.back_hand_outlined;
   static const dragHandle = Icons.drag_indicator;
+  static const lightning = Icons.flash_on_rounded;
 }

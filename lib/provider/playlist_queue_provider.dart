@@ -266,6 +266,18 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     }
   }
 
+  void playNext(List<Track> tracks) {
+    if (!isLoaded) {
+      loadAndPlay(tracks);
+    } else {
+      final stateTracks = state!.tracks.toList();
+
+      stateTracks.insertAll(state!.active + 1, tracks);
+
+      state = state?.copyWith(tracks: Set.from(stateTracks));
+    }
+  }
+
   void remove(List<Track> tracks) {
     if (!isLoaded) return;
     final trackIds = tracks.map((e) => e.id!).toSet();

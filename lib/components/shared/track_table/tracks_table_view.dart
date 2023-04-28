@@ -41,6 +41,7 @@ class TracksTableView extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final downloader = ref.watch(downloaderProvider);
     TextStyle tableHeadStyle =
         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
@@ -162,6 +163,32 @@ class TracksTableView extends HookConsumerWidget {
                             ],
                           ),
                         ),
+                      PopupMenuItem(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "add-to-queue",
+                        child: Row(
+                          children: [
+                            const Icon(SpotubeIcons.queueAdd),
+                            const SizedBox(width: 5),
+                            Text(
+                              "Add (${selectedTracks.length}) to Queue",
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "play-next",
+                        child: Row(
+                          children: [
+                            const Icon(SpotubeIcons.lightning),
+                            const SizedBox(width: 5),
+                            Text(
+                              "Play (${selectedTracks.length}) Next",
+                            ),
+                          ],
+                        ),
+                      ),
                     ];
                   },
                   onSelected: (action) async {
@@ -192,6 +219,20 @@ class TracksTableView extends HookConsumerWidget {
                               );
                             },
                           );
+                          break;
+                        }
+                      case "play-next":
+                        {
+                          playlistNotifier.playNext(selectedTracks.toList());
+                          selected.value = [];
+                          showCheck.value = false;
+                          break;
+                        }
+                      case "add-to-queue":
+                        {
+                          playlistNotifier.add(selectedTracks.toList());
+                          selected.value = [];
+                          showCheck.value = false;
                           break;
                         }
                       default:
