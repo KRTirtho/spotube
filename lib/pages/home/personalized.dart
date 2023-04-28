@@ -8,6 +8,7 @@ import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -115,13 +116,13 @@ class PersonalizedPage extends HookConsumerWidget {
         PersonalizedItemCard(
           playlists:
               featuredPlaylistsQuery.pages.whereType<Page<PlaylistSimple>>(),
-          title: 'Featured',
+          title: context.l10n.featured,
           hasNextPage: featuredPlaylistsQuery.hasNextPage,
           onFetchMore: featuredPlaylistsQuery.fetchNext,
         ),
         PersonalizedItemCard(
           albums: newReleases.pages.whereType<Page<AlbumSimple>>(),
-          title: 'New Releases',
+          title: context.l10n.new_releases,
           hasNextPage: newReleases.hasNextPage,
           onFetchMore: newReleases.fetchNext,
         ),

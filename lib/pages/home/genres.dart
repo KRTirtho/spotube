@@ -8,6 +8,7 @@ import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -54,7 +55,7 @@ class GenrePage extends HookConsumerWidget {
       onChanged: (value) {
         searchText.value = value;
       },
-      placeholder: "Filter categories or genres...",
+      placeholder: context.l10n.genre_categories_filter,
     );
 
     final list = RefreshIndicator(

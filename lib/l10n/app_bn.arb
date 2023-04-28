@@ -4,5 +4,10 @@
   "search": "অনুসন্ধান করুন",
   "library": "লাইব্রেরী",
   "lyrics": "গানের কথা",
-  "settings": "সেটিংস"
+  "settings": "সেটিংস",
+  "genre_categories_filter": "গানের ধরণ বা শ্রেণি খুঁজুন",
+  "genre": "গানের ধরণ",
+  "personalized": "আপনার জন্য",
+  "featured": "বৈশিষ্ট্যযুক্ত",
+  "new_releases": "সাম্প্রতিক মুক্তি প্রাপ্ত"
 }

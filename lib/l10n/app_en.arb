@@ -4,5 +4,10 @@
   "search": "Search",
   "library": "Library",
   "lyrics": "Lyrics",
-  "settings": "Settings"
+  "settings": "Settings",
+  "genre_categories_filter": "Filter categories or genres...",
+  "genre": "Genre",
+  "personalized": "Personalized",
+  "featured": "Featured",
+  "new_releases": "New Releases"
 }
