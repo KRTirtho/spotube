@@ -12,6 +12,7 @@ import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_overlay.dart';
 import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/components/player/player_controls.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
@@ -130,7 +131,7 @@ class BottomPlayer extends HookConsumerWidget {
                       PlayerActions(
                         extraActions: [
                           IconButton(
-                            tooltip: 'Mini Player',
+                            tooltip: context.l10n.mini_player,
                             icon: const Icon(SpotubeIcons.miniPlayer),
                             onPressed: () async {
                               await DesktopTools.window.setMinimumSize(

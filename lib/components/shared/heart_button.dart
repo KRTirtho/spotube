@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
@@ -120,7 +121,9 @@ class TrackHeartButton extends HookConsumerWidget {
     }
 
     return HeartButton(
-      tooltip: toggler.item1 ? "Remove from Favorite" : "Add to Favorite",
+      tooltip: toggler.item1
+          ? context.l10n.remove_from_favorites
+          : context.l10n.save_as_favorite,
       isLiked: toggler.item1,
       onPressed: savedTracks.hasData
           ? () {
@@ -174,8 +177,8 @@ class PlaylistHeartButton extends HookConsumerWidget {
     return HeartButton(
       isLiked: isLikedQuery.data ?? false,
       tooltip: isLikedQuery.data ?? false
-          ? "Remove from Favorite"
-          : "Add to Favorite",
+          ? context.l10n.remove_from_favorites
+          : context.l10n.save_as_favorite,
       color: color?.titleTextColor,
       onPressed: isLikedQuery.hasData
           ? () {
@@ -216,7 +219,9 @@ class AlbumHeartButton extends HookConsumerWidget {
 
     return HeartButton(
       isLiked: isLiked,
-      tooltip: isLiked ? "Remove from Favorite" : "Add to Favorite",
+      tooltip: isLiked
+          ? context.l10n.remove_from_favorites
+          : context.l10n.save_as_favorite,
       onPressed: albumIsSaved.hasData
           ? () {
               toggleAlbumLike.mutate(isLiked);

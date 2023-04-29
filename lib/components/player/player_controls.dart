@@ -6,6 +6,7 @@ import 'package:palette_generator/palette_generator.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
@@ -133,7 +134,7 @@ class PlayerControls extends HookConsumerWidget {
                     return Column(
                       children: [
                         Tooltip(
-                          message: "Slide to seek forward or backward",
+                          message: context.l10n.slide_to_seek,
                           child: Slider(
                             // cannot divide by zero
                             // there's an edge case for value being bigger
@@ -181,8 +182,8 @@ class PlayerControls extends HookConsumerWidget {
                 children: [
                   IconButton(
                     tooltip: playlist?.isShuffled == true
-                        ? "Unshuffle playlist"
-                        : "Shuffle playlist",
+                        ? context.l10n.unshuffle_playlist
+                        : context.l10n.shuffle_playlist,
                     icon: const Icon(SpotubeIcons.shuffle),
                     style: playlist?.isShuffled == true
                         ? activeButtonStyle
@@ -198,13 +199,15 @@ class PlayerControls extends HookConsumerWidget {
                           },
                   ),
                   IconButton(
-                    tooltip: "Previous track",
+                    tooltip: context.l10n.previous_track,
                     icon: const Icon(SpotubeIcons.skipBack),
                     style: buttonStyle,
                     onPressed: playlistNotifier.previous,
                   ),
                   IconButton(
-                    tooltip: playing ? "Pause playback" : "Resume playback",
+                    tooltip: playing
+                        ? context.l10n.pause_playback
+                        : context.l10n.resume_playback,
                     icon: playlist?.isLoading == true
                         ? SizedBox(
                             height: 20,
@@ -224,15 +227,15 @@ class PlayerControls extends HookConsumerWidget {
                     ),
                   ),
                   IconButton(
-                    tooltip: "Next track",
+                    tooltip: context.l10n.next_track,
                     icon: const Icon(SpotubeIcons.skipForward),
                     style: buttonStyle,
                     onPressed: playlistNotifier.next,
                   ),
                   IconButton(
                     tooltip: playlist?.isLooping != true
-                        ? "Loop Track"
-                        : "Repeat playlist",
+                        ? context.l10n.loop_track
+                        : context.l10n.repeat_playlist,
                     icon: Icon(
                       playlist?.isLooping == true
                           ? SpotubeIcons.repeatOne

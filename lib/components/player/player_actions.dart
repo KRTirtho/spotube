@@ -8,6 +8,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/shared/heart_button.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -55,7 +56,7 @@ class PlayerActions extends HookConsumerWidget {
       children: [
         IconButton(
           icon: const Icon(SpotubeIcons.queue),
-          tooltip: 'Queue',
+          tooltip: context.l10n.queue,
           onPressed: playlist != null
               ? () {
                   showModalBottomSheet(
@@ -81,7 +82,7 @@ class PlayerActions extends HookConsumerWidget {
         if (!isLocalTrack)
           IconButton(
             icon: const Icon(SpotubeIcons.alternativeRoute),
-            tooltip: "Alternative Track Sources",
+            tooltip: context.l10n.alternative_track_sources,
             onPressed: playlist?.activeTrack != null
                 ? () {
                     showModalBottomSheet(
@@ -115,7 +116,7 @@ class PlayerActions extends HookConsumerWidget {
             )
           else
             IconButton(
-              tooltip: 'Download track',
+              tooltip: context.l10n.download_track,
               icon: Icon(
                 isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
               ),

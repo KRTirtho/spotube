@@ -13,6 +13,7 @@ import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/logger.dart';
@@ -80,7 +81,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         ),
       if (heartBtn != null && auth != null) heartBtn!,
       IconButton(
-        tooltip: "Shuffle",
+        tooltip: context.l10n.shuffle,
         icon: Icon(
           SpotubeIcons.shuffle,
           color: color?.titleTextColor,
@@ -166,7 +167,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         onChanged: (value) => searchText.value = value,
         style: TextStyle(color: color?.titleTextColor),
         decoration: InputDecoration(
-          hintText: "Search tracks...",
+          hintText: context.l10n.search_tracks,
           hintStyle: TextStyle(color: color?.titleTextColor),
           border: theme.inputDecorationTheme.border?.copyWith(
             borderSide: BorderSide(
@@ -211,7 +212,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                     if (kIsMobile)
                       CompactSearch(
                         onChanged: (value) => searchText.value = value,
-                        placeholder: "Search tracks...",
+                        placeholder: context.l10n.search_tracks,
                         iconColor: color?.titleTextColor,
                       ),
                     if (collapsed.value) ...buttons,
@@ -287,7 +288,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                                   ),
                                   if (album != null)
                                     Text(
-                                      "${AlbumType.from(album?.albumType).formatted} • Released • ${DateTime.tryParse(
+                                      "${AlbumType.from(album?.albumType).formatted} • ${context.l10n.released} • ${DateTime.tryParse(
                                         album?.releaseDate ?? "",
                                       )?.year}",
                                       style:
@@ -325,7 +326,10 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                       return const ShimmerTrackTile();
                     } else if (tracksSnapshot.hasError) {
                       return SliverToBoxAdapter(
-                          child: Text("Error ${tracksSnapshot.error}"));
+                        child: Text(
+                          context.l10n.error(tracksSnapshot.error ?? ""),
+                        ),
+                      );
                     }
 
                     return TracksTableView(

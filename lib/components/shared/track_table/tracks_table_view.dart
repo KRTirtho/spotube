@@ -10,6 +10,7 @@ import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
@@ -96,7 +97,7 @@ class TracksTableView extends HookConsumerWidget {
                   child: Row(
                     children: [
                       Text(
-                        "Title",
+                        context.l10n.title,
                         style: tableHeadStyle,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -110,7 +111,7 @@ class TracksTableView extends HookConsumerWidget {
                     child: Row(
                       children: [
                         Text(
-                          "Album",
+                          context.l10n.album,
                           overflow: TextOverflow.ellipsis,
                           style: tableHeadStyle,
                         ),
@@ -120,7 +121,7 @@ class TracksTableView extends HookConsumerWidget {
                 ],
                 if (!breakpoint.isSm) ...[
                   const SizedBox(width: 10),
-                  Text("Time", style: tableHeadStyle),
+                  Text(context.l10n.time, style: tableHeadStyle),
                   const SizedBox(width: 10),
                 ],
                 SortTracksDropdown(
@@ -133,7 +134,7 @@ class TracksTableView extends HookConsumerWidget {
                   },
                 ),
                 PopupMenuButton(
-                  tooltip: "More Actions",
+                  tooltip: context.l10n.more_actions,
                   itemBuilder: (context) {
                     return [
                       PopupMenuItem(
@@ -144,7 +145,8 @@ class TracksTableView extends HookConsumerWidget {
                             const Icon(SpotubeIcons.download),
                             const SizedBox(width: 5),
                             Text(
-                              "Download ${selectedTracks.isNotEmpty ? "(${selectedTracks.length})" : ""}",
+                              context.l10n
+                                  .download_count(selectedTracks.length),
                             ),
                           ],
                         ),
@@ -158,7 +160,9 @@ class TracksTableView extends HookConsumerWidget {
                               const Icon(SpotubeIcons.playlistAdd),
                               const SizedBox(width: 5),
                               Text(
-                                "Add (${selectedTracks.length}) to Playlist",
+                                context.l10n.add_count_to_playlist(
+                                  selectedTracks.length,
+                                ),
                               ),
                             ],
                           ),
@@ -171,7 +175,8 @@ class TracksTableView extends HookConsumerWidget {
                             const Icon(SpotubeIcons.queueAdd),
                             const SizedBox(width: 5),
                             Text(
-                              "Add (${selectedTracks.length}) to Queue",
+                              context.l10n
+                                  .add_count_to_queue(selectedTracks.length),
                             ),
                           ],
                         ),
@@ -184,7 +189,8 @@ class TracksTableView extends HookConsumerWidget {
                             const Icon(SpotubeIcons.lightning),
                             const SizedBox(width: 5),
                             Text(
-                              "Play (${selectedTracks.length}) Next",
+                              context.l10n
+                                  .play_count_next(selectedTracks.length),
                             ),
                           ],
                         ),

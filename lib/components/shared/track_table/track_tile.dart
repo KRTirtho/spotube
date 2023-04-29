@@ -10,6 +10,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -90,7 +91,7 @@ class TrackTile extends HookConsumerWidget {
             width: 300,
             behavior: SnackBarBehavior.floating,
             content: Text(
-              "Copied $data to clipboard",
+              context.l10n.copied_to_clipboard(data),
               textAlign: TextAlign.center,
             ),
           ),
@@ -114,7 +115,8 @@ class TrackTile extends HookConsumerWidget {
                     final playlistsCheck = useState(<String, bool>{});
                     return AlertDialog(
                       title: Text(
-                        "Add `${track.value.name}` to following Playlists",
+                        context.l10n
+                            .add_to_following_playlists(track.value.name!),
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -122,11 +124,11 @@ class TrackTile extends HookConsumerWidget {
                       ),
                       actions: [
                         OutlinedButton(
-                          child: const Text("Cancel"),
+                          child: Text(context.l10n.cancel),
                           onPressed: () => Navigator.pop(context),
                         ),
                         FilledButton(
-                          child: const Text("Add"),
+                          child: Text(context.l10n.add),
                           onPressed: () async {
                             final selectedPlaylists = playlistsCheck
                                 .value.entries
@@ -263,7 +265,7 @@ class TrackTile extends HookConsumerWidget {
                       if (isBlackListed) ...[
                         const SizedBox(width: 5),
                         Text(
-                          "Blacklisted",
+                          context.l10n.blacklisted,
                           style: TextStyle(
                             color: Colors.red[400],
                             fontSize: 12,
@@ -307,7 +309,7 @@ class TrackTile extends HookConsumerWidget {
               PopupMenuButton(
                 icon: const Icon(SpotubeIcons.moreHorizontal),
                 position: PopupMenuPosition.under,
-                tooltip: "More options",
+                tooltip: context.l10n.more_actions,
                 itemBuilder: (context) {
                   return [
                     if (!playlistQueueNotifier.isTrackOnQueue(track.value)) ...[
@@ -318,14 +320,15 @@ class TrackTile extends HookConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                "Added ${track.value.name} to queue",
+                                context.l10n
+                                    .added_track_to_queue(track.value.name!),
                               ),
                             ),
                           );
                         },
-                        child: const ListTile(
-                          leading: Icon(SpotubeIcons.queueAdd),
-                          title: Text("Add to Queue"),
+                        child: ListTile(
+                          leading: const Icon(SpotubeIcons.queueAdd),
+                          title: Text(context.l10n.add_to_queue),
                         ),
                       ),
                       PopupMenuItem(
@@ -334,14 +337,16 @@ class TrackTile extends HookConsumerWidget {
                           playlistQueueNotifier.playNext([track.value]);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content:
-                                  Text("${track.value.name} will play next"),
+                              content: Text(
+                                context.l10n
+                                    .track_will_play_next(track.value.name!),
+                              ),
                             ),
                           );
                         },
-                        child: const ListTile(
-                          leading: Icon(SpotubeIcons.lightning),
-                          title: Text("Play next"),
+                        child: ListTile(
+                          leading: const Icon(SpotubeIcons.lightning),
+                          title: Text(context.l10n.play_next),
                         ),
                       ),
                     ] else
@@ -354,14 +359,17 @@ class TrackTile extends HookConsumerWidget {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                        "Removed ${track.value.name} from queue"),
+                                      context.l10n.removed_track_from_queue(
+                                        track.value.name!,
+                                      ),
+                                    ),
                                   ),
                                 );
                               },
                         enabled: playlist?.activeTrack.id != track.value.id,
-                        child: const ListTile(
-                          leading: Icon(SpotubeIcons.queueRemove),
-                          title: Text("Remove from queue"),
+                        child: ListTile(
+                          leading: const Icon(SpotubeIcons.queueRemove),
+                          title: Text(context.l10n.remove_from_queue),
                         ),
                       ),
                     if (toggler.item3.hasData)
@@ -378,7 +386,9 @@ class TrackTile extends HookConsumerWidget {
                                 )
                               : const Icon(SpotubeIcons.heart),
                           title: Text(
-                            "${toggler.item1 ? "Remove from" : "Save as "} favorite",
+                            toggler.item1
+                                ? context.l10n.remove_from_favorites
+                                : context.l10n.save_as_favorite,
                           ),
                         ),
                       ),
@@ -386,9 +396,9 @@ class TrackTile extends HookConsumerWidget {
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
                         onTap: actionAddToPlaylist,
-                        child: const ListTile(
-                          leading: Icon(SpotubeIcons.playlistAdd),
-                          title: Text("Add To playlist"),
+                        child: ListTile(
+                          leading: const Icon(SpotubeIcons.playlistAdd),
+                          title: Text(context.l10n.add_to_playlist),
                         ),
                       ),
                     if (userPlaylist && auth != null)
@@ -406,7 +416,7 @@ class TrackTile extends HookConsumerWidget {
                                   child: CircularProgressIndicator(),
                                 )
                               : const Icon(SpotubeIcons.removeFilled),
-                          title: const Text("Remove from playlist"),
+                          title: Text(context.l10n.remove_from_playlist),
                         ),
                       ),
                     PopupMenuItem(
@@ -429,7 +439,9 @@ class TrackTile extends HookConsumerWidget {
                         iconColor: !isBlackListed ? Colors.red[400] : null,
                         textColor: !isBlackListed ? Colors.red[400] : null,
                         title: Text(
-                          "${isBlackListed ? "Remove from" : "Add to"} blacklist",
+                          isBlackListed
+                              ? context.l10n.remove_from_blacklist
+                              : context.l10n.add_to_blacklist,
                         ),
                       ),
                     ),
@@ -438,9 +450,9 @@ class TrackTile extends HookConsumerWidget {
                       onTap: () {
                         actionShare(track.value);
                       },
-                      child: const ListTile(
-                        leading: Icon(SpotubeIcons.share),
-                        title: Text("Share"),
+                      child: ListTile(
+                        leading: const Icon(SpotubeIcons.share),
+                        title: Text(context.l10n.share),
                       ),
                     )
                   ];
