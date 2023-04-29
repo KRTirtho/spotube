@@ -9,6 +9,7 @@ import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/themed_button_tab_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
@@ -43,10 +44,10 @@ class LyricsPage extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    const tabbar = ThemedButtonsTabBar(
+    final tabbar = ThemedButtonsTabBar(
       tabs: [
-        "Synced",
-        "Plain",
+        context.l10n.synced,
+        context.l10n.plain,
       ],
     );
 
@@ -120,7 +121,7 @@ class LyricsPage extends HookConsumerWidget {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: !kIsMacOS
-              ? const PageWindowTitleBar(
+              ? PageWindowTitleBar(
                   backgroundColor: Colors.transparent,
                   title: tabbar,
                 )

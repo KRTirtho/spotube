@@ -8,12 +8,13 @@ import 'package:spotube/components/library/user_artists.dart';
 import 'package:spotube/components/library/user_downloads.dart';
 import 'package:spotube/components/library/user_playlists.dart';
 import 'package:spotube/components/shared/themed_button_tab_bar.dart';
+import 'package:spotube/extensions/context.dart';
 
 class LibraryPage extends HookConsumerWidget {
   const LibraryPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 5,
       child: SafeArea(
         bottom: false,
@@ -22,16 +23,16 @@ class LibraryPage extends HookConsumerWidget {
             centerTitle: true,
             leading: ThemedButtonsTabBar(
               tabs: [
-                'Playlists',
-                'Tracks',
-                'Downloads',
-                'Artists',
-                'Albums',
+                context.l10n.playlists,
+                context.l10n.tracks,
+                context.l10n.downloads,
+                context.l10n.artists,
+                context.l10n.albums,
               ],
             ),
             leadingWidth: double.infinity,
           ),
-          body: TabBarView(
+          body: const TabBarView(
             children: [
               UserPlaylists(),
               UserLocalTracks(),

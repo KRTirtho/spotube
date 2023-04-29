@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/extensions/context.dart';
 
 class SortTracksDropdown extends StatelessWidget {
   final SortBy? value;
@@ -20,37 +21,37 @@ class SortTracksDropdown extends StatelessWidget {
           PopupMenuItem(
             value: SortBy.none,
             enabled: value != SortBy.none,
-            child: const Text("None"),
+            child: Text(context.l10n.none),
           ),
           PopupMenuItem(
             value: SortBy.ascending,
             enabled: value != SortBy.ascending,
-            child: const Text("Sort by A-Z"),
+            child: Text(context.l10n.sort_a_z),
           ),
           PopupMenuItem(
             value: SortBy.descending,
             enabled: value != SortBy.descending,
-            child: const Text("Sort by Z-A"),
+            child: Text(context.l10n.sort_z_a),
           ),
           PopupMenuItem(
             value: SortBy.dateAdded,
             enabled: value != SortBy.dateAdded,
-            child: const Text("Sort by Date"),
+            child: Text(context.l10n.sort_date),
           ),
           PopupMenuItem(
             value: SortBy.artist,
             enabled: value != SortBy.artist,
-            child: const Text("Sort by Artist"),
+            child: Text(context.l10n.sort_artist),
           ),
           PopupMenuItem(
             value: SortBy.album,
             enabled: value != SortBy.album,
-            child: const Text("Sort by Album"),
+            child: Text(context.l10n.sort_album),
           ),
         ];
       },
       onSelected: onChanged,
-      tooltip: "Sort tracks",
+      tooltip: context.l10n.sort_tracks,
       icon: const Icon(SpotubeIcons.sort),
     );
   }

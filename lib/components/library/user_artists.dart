@@ -9,6 +9,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:tuple/tuple.dart';
@@ -62,9 +63,9 @@ class UserArtists extends HookConsumerWidget {
             color: theme.scaffoldBackgroundColor,
             child: TextField(
               onChanged: (value) => searchText.value = value,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(SpotubeIcons.filter),
-                hintText: 'Filter artists...',
+              decoration: InputDecoration(
+                prefixIcon: const Icon(SpotubeIcons.filter),
+                hintText: context.l10n.filter_artist,
               ),
             ),
           ),
@@ -76,10 +77,10 @@ class UserArtists extends HookConsumerWidget {
               padding: const EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                  SizedBox(width: 10),
-                  Text("Loading..."),
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.loading),
                 ],
               ),
             )

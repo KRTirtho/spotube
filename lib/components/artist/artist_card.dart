@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -89,9 +90,9 @@ class ArtistCard extends HookConsumerWidget {
                           decoration: BoxDecoration(
                               color: Colors.blue,
                               borderRadius: BorderRadius.circular(50)),
-                          child: const Text(
-                            "Artist",
-                            style: TextStyle(
+                          child: Text(
+                            context.l10n.artist,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,

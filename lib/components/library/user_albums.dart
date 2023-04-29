@@ -8,6 +8,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -71,9 +72,9 @@ class UserAlbums extends HookConsumerWidget {
               children: [
                 TextField(
                   onChanged: (value) => searchText.value = value,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(SpotubeIcons.filter),
-                    hintText: 'Filter albums...',
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(SpotubeIcons.filter),
+                    hintText: context.l10n.filter_albums,
                   ),
                 ),
                 const SizedBox(height: 20),

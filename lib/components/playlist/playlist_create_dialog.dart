@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
 class PlaylistCreateDialog extends HookConsumerWidget {
@@ -18,7 +19,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
         foregroundColor: Theme.of(context).colorScheme.primary,
       ),
       icon: const Icon(SpotubeIcons.addFilled),
-      label: const Text("Create Playlist"),
+      label: Text(context.l10n.create_playlist),
       onPressed: () {
         showDialog(
           context: context,
@@ -50,17 +51,17 @@ class PlaylistCreateDialog extends HookConsumerWidget {
               }
 
               return AlertDialog(
-                title: const Text("Create a Playlist"),
+                title: Text(context.l10n.create_a_playlist),
                 actions: [
                   OutlinedButton(
-                    child: const Text("Cancel"),
+                    child: Text(context.l10n.cancel),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
                   FilledButton(
                     onPressed: onCreate,
-                    child: const Text("Create"),
+                    child: Text(context.l10n.create),
                   ),
                 ],
                 content: Container(
@@ -71,29 +72,29 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                     children: [
                       TextField(
                         controller: playlistName,
-                        decoration: const InputDecoration(
-                          hintText: "Name of the playlist",
-                          labelText: "Playlist Name",
+                        decoration: InputDecoration(
+                          hintText: context.l10n.name_of_playlist,
+                          labelText: context.l10n.name_of_playlist,
                         ),
                       ),
                       const SizedBox(height: 10),
                       TextField(
                         controller: description,
-                        decoration: const InputDecoration(
-                          hintText: "Description...",
+                        decoration: InputDecoration(
+                          hintText: context.l10n.description,
                         ),
                         keyboardType: TextInputType.multiline,
                         maxLines: 5,
                       ),
                       const SizedBox(height: 10),
                       CheckboxListTile(
-                        title: const Text("Public"),
+                        title: Text(context.l10n.public),
                         value: public.value,
                         onChanged: (val) => public.value = val ?? false,
                       ),
                       const SizedBox(height: 10),
                       CheckboxListTile(
-                        title: const Text("Collaborative"),
+                        title: Text(context.l10n.collaborative),
                         value: collaborative.value,
                         onChanged: (val) => collaborative.value = val ?? false,
                       ),

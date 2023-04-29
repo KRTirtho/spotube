@@ -12,6 +12,7 @@ import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/artist/artist_album_list.dart';
 import 'package:spotube/components/artist/artist_card.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
@@ -142,7 +143,7 @@ class ArtistPage extends HookConsumerWidget {
                                           borderRadius:
                                               BorderRadius.circular(50)),
                                       child: Text(
-                                        "Blacklisted",
+                                        context.l10n.blacklisted,
                                         style: chipTextVariant.copyWith(
                                           color: Colors.white,
                                         ),
@@ -158,7 +159,11 @@ class ArtistPage extends HookConsumerWidget {
                                     : textTheme.headlineMedium,
                               ),
                               Text(
-                                "${PrimitiveUtils.toReadableNumber(data.followers!.total!.toDouble())} followers",
+                                context.l10n.followers(
+                                  PrimitiveUtils.toReadableNumber(
+                                    data.followers!.total!.toDouble(),
+                                  ),
+                                ),
                                 style: textTheme.bodyMedium?.copyWith(
                                   fontWeight:
                                       breakpoint.isSm ? null : FontWeight.bold,
@@ -211,19 +216,20 @@ class ArtistPage extends HookConsumerWidget {
                                         if (isFollowingQuery.data!) {
                                           return OutlinedButton(
                                             onPressed: followUnfollow,
-                                            child: const Text("Following"),
+                                            child: Text(context.l10n.following),
                                           );
                                         }
 
                                         return FilledButton(
                                           onPressed: followUnfollow,
-                                          child: const Text("Follow"),
+                                          child: Text(context.l10n.follow),
                                         );
                                       },
                                     ),
                                   const SizedBox(width: 5),
                                   IconButton(
-                                    tooltip: "Add to blacklisted artists",
+                                    tooltip:
+                                        context.l10n.add_artist_to_blacklist,
                                     icon: Icon(
                                       SpotubeIcons.userRemove,
                                       color: !isBlackListed
@@ -263,12 +269,14 @@ class ArtistPage extends HookConsumerWidget {
                                             text: data.externalUrls?.spotify),
                                       );
 
+                                      if (!context.mounted) return;
+
                                       scaffoldMessenger.showSnackBar(
-                                        const SnackBar(
+                                        SnackBar(
                                           width: 300,
                                           behavior: SnackBarBehavior.floating,
                                           content: Text(
-                                            "Artist URL copied to clipboard",
+                                            context.l10n.artist_url_copied,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
@@ -324,7 +332,7 @@ class ArtistPage extends HookConsumerWidget {
                           Row(
                             children: [
                               Text(
-                                "Top Tracks",
+                                context.l10n.top_tracks,
                                 style: theme.textTheme.headlineSmall,
                               ),
                               if (!isPlaylistPlaying)
@@ -339,7 +347,9 @@ class ArtistPage extends HookConsumerWidget {
                                         width: 300,
                                         behavior: SnackBarBehavior.floating,
                                         content: Text(
-                                          "Added ${topTracks.length} tracks to queue",
+                                          context.l10n.added_to_queue(
+                                            topTracks.length,
+                                          ),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -383,14 +393,14 @@ class ArtistPage extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 50),
                     Text(
-                      "Albums",
+                      context.l10n.albums,
                       style: theme.textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 10),
                     ArtistAlbumList(artistId),
                     const SizedBox(height: 20),
                     Text(
-                      "Fans also likes",
+                      context.l10n.fans_also_like,
                       style: theme.textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 10),

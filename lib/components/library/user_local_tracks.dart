@@ -19,6 +19,7 @@ import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_async_effect.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
@@ -175,9 +176,9 @@ class UserLocalTracks extends HookConsumerWidget {
       [],
     );
 
-    var searchbar = CompactSearch(
+    final searchbar = CompactSearch(
       onChanged: (value) => searchText.value = value,
-      placeholder: "Search local tracks...",
+      placeholder: context.l10n.search_local_tracks,
     );
 
     return Column(
@@ -202,7 +203,7 @@ class UserLocalTracks extends HookConsumerWidget {
                     : null,
                 child: Row(
                   children: [
-                    const Text("Play"),
+                    Text(context.l10n.play),
                     Icon(
                       isPlaylistPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
                     )
@@ -294,9 +295,9 @@ class UserLocalTracks extends HookConsumerWidget {
                                   ref.refresh(localTracksProvider);
                                 },
                                 padding: EdgeInsets.zero,
-                                child: const ListTile(
-                                  leading: Icon(SpotubeIcons.trash),
-                                  title: Text("Delete"),
+                                child: ListTile(
+                                  leading: const Icon(SpotubeIcons.trash),
+                                  title: Text(context.l10n.delete),
                                 ),
                               ),
                             ];

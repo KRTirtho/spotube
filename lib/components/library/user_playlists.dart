@@ -10,6 +10,7 @@ import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -33,8 +34,8 @@ class UserPlaylists extends HookConsumerWidget {
 
     final likedTracksPlaylist = useMemoized(
         () => PlaylistSimple()
-          ..name = "Liked Tracks"
-          ..description = "All your liked tracks"
+          ..name = context.l10n.liked_tracks
+          ..description = context.l10n.liked_tracks_description
           ..type = "playlist"
           ..collaborative = false
           ..public = false
@@ -46,7 +47,7 @@ class UserPlaylists extends HookConsumerWidget {
               ..url =
                   "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"
           ],
-        []);
+        [context.l10n]);
 
     final playlists = useMemoized(
       () {
@@ -87,9 +88,9 @@ class UserPlaylists extends HookConsumerWidget {
                 padding: const EdgeInsets.all(10),
                 child: TextField(
                   onChanged: (value) => searchText.value = value,
-                  decoration: const InputDecoration(
-                    hintText: "Filter your playlists...",
-                    prefixIcon: Icon(SpotubeIcons.filter),
+                  decoration: InputDecoration(
+                    hintText: context.l10n.filter_playlists,
+                    prefixIcon: const Icon(SpotubeIcons.filter),
                   ),
                 ),
               ),

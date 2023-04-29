@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -24,7 +25,8 @@ class UserDownloads extends HookConsumerWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  "Currently downloading (${downloader.currentlyRunning})",
+                  context.l10n
+                      .currently_downloading(downloader.currentlyRunning),
                   maxLines: 1,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
@@ -38,7 +40,7 @@ class UserDownloads extends HookConsumerWidget {
                 onPressed: downloader.currentlyRunning > 0
                     ? downloader.cancelAll
                     : null,
-                child: const Text("Cancel All"),
+                child: Text(context.l10n.cancel_all),
               ),
             ],
           ),
