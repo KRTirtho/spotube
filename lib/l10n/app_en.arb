@@ -9,5 +9,12 @@
   "genre": "Genre",
   "personalized": "Personalized",
   "featured": "Featured",
-  "new_releases": "New Releases"
+  "new_releases": "New Releases",
+  "songs": "Songs",
+  "playing_track": "Playing {track}",
+  "queue_clear_alert": "This will clear the current queue. {track_length} tracks will be removed\nDo you want to continue?",
+  "load_more": "Load more",
+  "playlists": "Playlists",
+  "artists": "Artists",
+  "albums": "Albums"
 }

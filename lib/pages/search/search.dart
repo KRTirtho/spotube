@@ -16,6 +16,7 @@ import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
@@ -77,9 +78,9 @@ class SearchPage extends HookConsumerWidget {
                     ),
                     color: theme.scaffoldBackgroundColor,
                     child: TextField(
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(SpotubeIcons.search),
-                        hintText: "Search...",
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(SpotubeIcons.search),
+                        hintText: "${context.l10n.search}...",
                       ),
                       onSubmitted: (value) async {
                         ref.read(searchTermStateProvider.notifier).state =
@@ -134,15 +135,17 @@ class SearchPage extends HookConsumerWidget {
                                 children: [
                                   if (tracks.isNotEmpty)
                                     Text(
-                                      "Songs",
+                                      context.l10n.songs,
                                       style: theme.textTheme.titleLarge!,
                                     ),
                                   if (searchTrack.isLoadingPage)
                                     const CircularProgressIndicator()
                                   else if (searchTrack.hasPageError)
-                                    Text(searchTrack.errors.lastOrNull
-                                            ?.toString() ??
-                                        "")
+                                    Text(
+                                      searchTrack.errors.lastOrNull
+                                              ?.toString() ??
+                                          "",
+                                    )
                                   else
                                     ...tracks.asMap().entries.map((track) {
                                       String duration =
@@ -165,12 +168,16 @@ class SearchPage extends HookConsumerWidget {
                                                         20
                                                     ? await showPromptDialog(
                                                         context: context,
-                                                        title:
-                                                            "Playing ${currentTrack.name}",
-                                                        message:
-                                                            "This will clear the current queue. "
-                                                            "${playlist?.tracks.length ?? 0} tracks will be removed\n"
-                                                            "Do you want to continue?",
+                                                        title: context.l10n
+                                                            .playing_track(
+                                                          currentTrack.name!,
+                                                        ),
+                                                        message: context.l10n
+                                                            .queue_clear_alert(
+                                                          playlist?.tracks
+                                                                  .length ??
+                                                              0,
+                                                        ),
                                                       )
                                                     : true;
 
@@ -191,12 +198,12 @@ class SearchPage extends HookConsumerWidget {
                                             : () => searchTrack.fetchNext(),
                                         child: searchTrack.isRefreshingPage
                                             ? const CircularProgressIndicator()
-                                            : const Text("Load more"),
+                                            : Text(context.l10n.load_more),
                                       ),
                                     ),
                                   if (playlists.isNotEmpty)
                                     Text(
-                                      "Playlists",
+                                      context.l10n.playlists,
                                       style: theme.textTheme.titleLarge!,
                                     ),
                                   const SizedBox(height: 10),
@@ -254,7 +261,7 @@ class SearchPage extends HookConsumerWidget {
                                   const SizedBox(height: 20),
                                   if (artists.isNotEmpty)
                                     Text(
-                                      "Artists",
+                                      context.l10n.artists,
                                       style: theme.textTheme.titleLarge!,
                                     ),
                                   const SizedBox(height: 10),
@@ -311,7 +318,7 @@ class SearchPage extends HookConsumerWidget {
                                   const SizedBox(height: 20),
                                   if (albums.isNotEmpty)
                                     Text(
-                                      "Albums",
+                                      context.l10n.albums,
                                       style: theme.textTheme.titleMedium!,
                                     ),
                                   const SizedBox(height: 10),
