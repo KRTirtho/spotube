@@ -143,7 +143,7 @@ class SettingsPage extends HookConsumerWidget {
                         value: preferences.locale,
                         items: [
                           DropdownMenuItem(
-                            value: const Locale("system"),
+                            value: const Locale("system", "system"),
                             child: Text(context.l10n.system_default),
                           ),
                           for (final locale in L10n.all)

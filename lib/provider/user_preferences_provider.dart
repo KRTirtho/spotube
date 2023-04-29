@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,7 +68,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.downloadLocation = "",
     this.closeBehavior = CloseBehavior.minimizeToTray,
     this.showSystemTrayIcon = true,
-    this.locale = const Locale("system"),
+    this.locale = const Locale("system", "system"),
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
@@ -211,10 +212,9 @@ class UserPreferences extends PersistedChangeNotifier {
 
     showSystemTrayIcon = map["showSystemTrayIcon"] ?? showSystemTrayIcon;
 
-    locale = Locale(
-      map["locale"]?["lc"] ?? locale.languageCode,
-      map["locale"]?["cc"] ?? locale.countryCode,
-    );
+    final localeMap = jsonDecode(map["locale"]);
+    locale =
+        localeMap != null ? Locale(localeMap?["lc"], localeMap?["cc"]) : locale;
   }
 
   @override
@@ -233,7 +233,8 @@ class UserPreferences extends PersistedChangeNotifier {
       "predownload": predownload,
       "closeBehavior": closeBehavior.index,
       "showSystemTrayIcon": showSystemTrayIcon,
-      "locale": {"lc": locale.languageCode, "cc": locale.countryCode},
+      "locale":
+          jsonEncode({"lc": locale.languageCode, "cc": locale.countryCode}),
     };
   }
 }
