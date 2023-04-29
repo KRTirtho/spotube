@@ -7,6 +7,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -28,7 +29,7 @@ class LoginTutorial extends ConsumerWidget {
     return Scaffold(
       appBar: PageWindowTitleBar(
         leading: TextButton(
-          child: const Text("Exit"),
+          child: Text(context.l10n.exit),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -38,13 +39,13 @@ class LoginTutorial extends ConsumerWidget {
         key: key,
         globalBackgroundColor: theme.scaffoldBackgroundColor,
         overrideBack: OutlinedButton(
-          child: const Center(child: Text("Previous")),
+          child: Center(child: Text(context.l10n.previous)),
           onPressed: () {
             (key.currentState as IntroductionScreenState).previous();
           },
         ),
         overrideNext: FilledButton(
-          child: const Center(child: Text("Next")),
+          child: Center(child: Text(context.l10n.next)),
           onPressed: () {
             (key.currentState as IntroductionScreenState).next();
           },
@@ -56,64 +57,56 @@ class LoginTutorial extends ConsumerWidget {
                   ServiceUtils.navigate(context, "/");
                 }
               : null,
-          child: const Center(child: Text("Done")),
+          child: Center(child: Text(context.l10n.done)),
         ),
         pages: [
           PageViewModel(
             decoration: pageDecoration,
-            title: "Step 1",
+            title: context.l10n.step_1,
             image: Assets.tutorial.step1.image(),
             bodyWidget: Wrap(
-              children: const [
-                Text(
-                  "First, Go to ",
-                ),
-                Hyperlink(
+              children: [
+                Text(context.l10n.first_go_to),
+                const SizedBox(width: 5),
+                const Hyperlink(
                   "accounts.spotify.com ",
                   "https://accounts.spotify.com",
                 ),
-                Text(
-                  "and Login/Sign up if you're not logged in",
-                ),
+                Text(context.l10n.login_if_not_logged_in),
               ],
             ),
           ),
           PageViewModel(
             decoration: pageDecoration,
-            title: "Step 2",
+            title: context.l10n.step_2,
             image: Assets.tutorial.step2.image(),
-            bodyWidget: const Text(
-              "1. Once you're logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection",
-              textAlign: TextAlign.left,
-            ),
+            bodyWidget:
+                Text(context.l10n.step_2_steps, textAlign: TextAlign.left),
           ),
           PageViewModel(
             decoration: pageDecoration,
-            title: "Step 3",
+            title: context.l10n.step_3,
             image: Assets.tutorial.step3.image(),
-            bodyWidget: const Text(
-              "Copy the values of \"sp_dc\" and \"sp_key\" Cookies",
-              textAlign: TextAlign.left,
-            ),
+            bodyWidget:
+                Text(context.l10n.step_3_steps, textAlign: TextAlign.left),
           ),
           if (authenticationNotifier.isLoggedIn)
             PageViewModel(
               decoration: pageDecoration.copyWith(
                 bodyAlignment: Alignment.center,
               ),
-              title: "Success🥳",
+              title: context.l10n.success_emoji,
               image: Assets.success.image(),
-              body:
-                  "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
+              body: context.l10n.success_message,
             )
           else
             PageViewModel(
               decoration: pageDecoration,
-              title: "Step 5",
+              title: context.l10n.step_4,
               bodyWidget: Column(
                 children: [
                   Text(
-                    "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
+                    context.l10n.step_4_steps,
                     style: theme.textTheme.labelMedium,
                   ),
                   const SizedBox(height: 10),

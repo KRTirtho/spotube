@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_package_info.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,9 +25,9 @@ class AboutSpotube extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(
-        leading: BackButton(),
-        title: Text("About Spotube"),
+      appBar: PageWindowTitleBar(
+        leading: const BackButton(),
+        title: Text(context.l10n.about_spotube),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -42,16 +43,16 @@ class AboutSpotube extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Spotube, a light-weight, cross-platform, free-for-all spotify client",
+                      context.l10n.spotube_description,
                       style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          "Founder:   Kingkor Roy Tirtho",
-                          style: TextStyle(
+                        Text(
+                          "${context.l10n.founder}:   ${context.l10n.kingkor_roy_tirtho}",
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -68,11 +69,11 @@ class AboutSpotube extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      "Version:              v${packageInfo.version}",
+                      "${context.l10n.version}:              v${packageInfo.version}",
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      "Build Number:  ${packageInfo.buildNumber.replaceAll(".", " ")}",
+                      "${context.l10n.build_number}:  ${packageInfo.buildNumber.replaceAll(".", " ")}",
                     ),
                     const SizedBox(height: 5),
                     InkWell(
@@ -82,8 +83,8 @@ class AboutSpotube extends HookConsumerWidget {
                           mode: LaunchMode.externalApplication,
                         );
                       },
-                      child: const Text(
-                        "Repository:        https://github.com/KRTirtho/spotube",
+                      child: Text(
+                        "${context.l10n.repository}:        https://github.com/KRTirtho/spotube",
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -94,8 +95,8 @@ class AboutSpotube extends HookConsumerWidget {
                           mode: LaunchMode.externalApplication,
                         );
                       },
-                      child: const Text(
-                        "License:              BSD-4-Clause",
+                      child: Text(
+                        "${context.l10n.license}:              BSD-4-Clause",
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -106,8 +107,8 @@ class AboutSpotube extends HookConsumerWidget {
                           mode: LaunchMode.externalApplication,
                         );
                       },
-                      child: const Text(
-                        "Bugs+Issues:     https://github.com/KRTirtho/spotube/issues",
+                      child: Text(
+                        "${context.l10n.bug_issues}:     https://github.com/KRTirtho/spotube/issues",
                       ),
                     ),
                   ],
@@ -186,12 +187,12 @@ class AboutSpotube extends HookConsumerWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                "Made with ❤️ in Bangladesh🇧🇩",
+                context.l10n.made_with,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall,
               ),
               Text(
-                "© 2021-${DateTime.now().year} Kingkor Roy Tirtho",
+                context.l10n.copyright(DateTime.now().year),
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall,
               ),

@@ -12,6 +12,7 @@ import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/collections/spotify_markets.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
@@ -39,7 +40,7 @@ class SettingsPage extends HookConsumerWidget {
 
     final pickDownloadLocation = useCallback(() async {
       final dirStr = await FilePicker.platform.getDirectoryPath(
-        dialogTitle: "Download Location",
+        dialogTitle: context.l10n.download_location,
       );
       if (dirStr == null) return;
       preferences.setDownloadLocation(dirStr);
@@ -48,8 +49,8 @@ class SettingsPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        appBar: const PageWindowTitleBar(
-          title: Text("Settings"),
+        appBar: PageWindowTitleBar(
+          title: Text(context.l10n.settings),
           centerTitle: true,
         ),
         body: Row(
@@ -61,7 +62,7 @@ class SettingsPage extends HookConsumerWidget {
                 child: ListView(
                   children: [
                     Text(
-                      " Account",
+                      " ${context.l10n.account}",
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -74,7 +75,7 @@ class SettingsPage extends HookConsumerWidget {
                         title: Align(
                           alignment: Alignment.centerLeft,
                           child: AutoSizeText(
-                            "Login with your Spotify account",
+                            context.l10n.login_with_spotify,
                             maxLines: 1,
                             style: TextStyle(
                               color: theme.colorScheme.primary,
@@ -92,20 +93,22 @@ class SettingsPage extends HookConsumerWidget {
                               ),
                             ),
                           ),
-                          child: Text("Connect with Spotify".toUpperCase()),
+                          child: Text(
+                            context.l10n.connect_with_spotify.toUpperCase(),
+                          ),
                         ),
                       )
                     else
                       Builder(builder: (context) {
                         return ListTile(
                           leading: const Icon(SpotubeIcons.logout),
-                          title: const SizedBox(
+                          title: SizedBox(
                             height: 50,
                             width: 180,
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: AutoSizeText(
-                                "Log out of this account",
+                                context.l10n.logout_of_this_account,
                                 maxLines: 1,
                               ),
                             ),
@@ -124,24 +127,24 @@ class SettingsPage extends HookConsumerWidget {
                                   .logout();
                               GoRouter.of(context).pop();
                             },
-                            child: const Text("Logout"),
+                            child: Text(context.l10n.logout),
                           ),
                         );
                       }),
                     Text(
-                      " Language & Region",
+                      " ${context.l10n.language_region}",
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     ListTile(
                       leading: const Icon(SpotubeIcons.language),
-                      title: const Text("Language"),
+                      title: Text(context.l10n.language),
                       trailing: DropdownButton<Locale>(
                         value: preferences.locale,
                         items: [
-                          const DropdownMenuItem(
-                            value: Locale("system"),
-                            child: Text("System Default"),
+                          DropdownMenuItem(
+                            value: const Locale("system"),
+                            child: Text(context.l10n.system_default),
                           ),
                           for (final locale in L10n.all)
                             DropdownMenuItem(
@@ -158,8 +161,8 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(SpotubeIcons.shoppingBag),
-                      title: const Text("Market Place Region"),
-                      subtitle: const Text("Recommendation Country"),
+                      title: Text(context.l10n.market_place_region),
+                      subtitle: Text(context.l10n.recommendation_country),
                       trailing: (context, update) => ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 350),
                         child: DropdownMenu(
@@ -183,29 +186,27 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                     ),
                     Text(
-                      " Appearance",
+                      " ${context.l10n.appearance}",
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(SpotubeIcons.dashboard),
-                      title: const Text("Layout Mode"),
-                      subtitle: const Text(
-                        "Override responsive layout mode settings",
-                      ),
+                      title: Text(context.l10n.layout_mode),
+                      subtitle: Text(context.l10n.override_layout_settings),
                       trailing: (context, update) => DropdownButton<LayoutMode>(
-                        items: const [
+                        items: [
                           DropdownMenuItem(
                             value: LayoutMode.adaptive,
-                            child: Text("Adaptive"),
+                            child: Text(context.l10n.adaptive),
                           ),
                           DropdownMenuItem(
                             value: LayoutMode.compact,
-                            child: Text("Compact"),
+                            child: Text(context.l10n.compact),
                           ),
                           DropdownMenuItem(
                             value: LayoutMode.extended,
-                            child: Text("Extended"),
+                            child: Text(context.l10n.extended),
                           ),
                         ],
                         value: preferences.layoutMode,
@@ -219,21 +220,21 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     AdaptiveListTile(
                       leading: const Icon(SpotubeIcons.darkMode),
-                      title: const Text("Theme"),
+                      title: Text(context.l10n.theme),
                       trailing: (context, update) => DropdownButton<ThemeMode>(
                         value: preferences.themeMode,
-                        items: const [
+                        items: [
                           DropdownMenuItem(
                             value: ThemeMode.dark,
-                            child: Text("Dark"),
+                            child: Text(context.l10n.dark),
                           ),
                           DropdownMenuItem(
                             value: ThemeMode.light,
-                            child: Text("Light"),
+                            child: Text(context.l10n.light),
                           ),
                           DropdownMenuItem(
                             value: ThemeMode.system,
-                            child: Text("System"),
+                            child: Text(context.l10n.system),
                           ),
                         ],
                         onChanged: (value) {
@@ -246,7 +247,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     ListTile(
                       leading: const Icon(SpotubeIcons.palette),
-                      title: const Text("Accent Color"),
+                      title: Text(context.l10n.accent_color),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5,
@@ -260,32 +261,30 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     SwitchListTile(
                       secondary: const Icon(SpotubeIcons.colorSync),
-                      title: const Text("Sync Album Color"),
-                      subtitle: const Text(
-                        "Uses the dominant color of the album art as the accent color",
-                      ),
+                      title: Text(context.l10n.sync_album_color),
+                      subtitle: Text(context.l10n.sync_album_color_description),
                       value: preferences.albumColorSync,
                       onChanged: preferences.setAlbumColorSync,
                     ),
                     Text(
-                      " Playback",
+                      " ${context.l10n.playback}",
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     AdaptiveListTile(
                       leading: const Icon(SpotubeIcons.audioQuality),
-                      title: const Text("Audio Quality"),
+                      title: Text(context.l10n.audio_quality),
                       trailing: (context, update) =>
                           DropdownButton<AudioQuality>(
                         value: preferences.audioQuality,
-                        items: const [
+                        items: [
                           DropdownMenuItem(
                             value: AudioQuality.high,
-                            child: Text("High"),
+                            child: Text(context.l10n.high),
                           ),
                           DropdownMenuItem(
                             value: AudioQuality.low,
-                            child: Text("Low"),
+                            child: Text(context.l10n.low),
                           ),
                         ],
                         onChanged: (value) {
@@ -298,10 +297,9 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     SwitchListTile(
                       secondary: const Icon(SpotubeIcons.download),
-                      title: const Text("Pre download and play"),
-                      subtitle: const Text(
-                        "Instead of streaming audio, download bytes and play instead (Recommended for higher bandwidth users)",
-                      ),
+                      title: Text(context.l10n.pre_download_play),
+                      subtitle:
+                          Text(context.l10n.pre_download_play_description),
                       value: preferences.predownload,
                       onChanged: (state) {
                         preferences.setPredownload(state);
@@ -309,9 +307,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     SwitchListTile(
                       secondary: const Icon(SpotubeIcons.fastForward),
-                      title: const Text(
-                        "Skip non-music segments (SponsorBlock)",
-                      ),
+                      title: Text(context.l10n.skip_non_music),
                       value: preferences.skipSponsorSegments,
                       onChanged: (state) {
                         preferences.setSkipSponsorSegments(state);
@@ -319,27 +315,25 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     ListTile(
                       leading: const Icon(SpotubeIcons.playlistRemove),
-                      title: const Text("Blacklist"),
-                      subtitle: const Text(
-                        "Blacklisted tracks and artists",
-                      ),
+                      title: Text(context.l10n.blacklist),
+                      subtitle: Text(context.l10n.blacklist_description),
                       onTap: () {
                         GoRouter.of(context).push("/settings/blacklist");
                       },
                       trailing: const Icon(SpotubeIcons.angleRight),
                     ),
                     Text(
-                      " Downloads",
+                      " ${context.l10n.downloads}",
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Tooltip(
                       message: isDownloading
-                          ? "Please wait for the current download to finish"
+                          ? context.l10n.wait_for_download_to_finish
                           : "",
                       child: ListTile(
                         leading: const Icon(SpotubeIcons.download),
-                        title: const Text("Download Location"),
+                        title: Text(context.l10n.download_location),
                         subtitle: Text(preferences.downloadLocation),
                         trailing: FilledButton(
                           onPressed:
@@ -351,7 +345,7 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     SwitchListTile(
                       secondary: const Icon(SpotubeIcons.lyrics),
-                      title: const Text("Download lyrics along with the Track"),
+                      title: Text(context.l10n.download_lyrics),
                       value: preferences.saveTrackLyrics,
                       onChanged: (state) {
                         preferences.setSaveTrackLyrics(state);
@@ -359,24 +353,24 @@ class SettingsPage extends HookConsumerWidget {
                     ),
                     if (DesktopTools.platform.isDesktop) ...[
                       Text(
-                        " Desktop",
+                        " ${context.l10n.desktop}",
                         style: theme.textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       AdaptiveListTile(
                         leading: const Icon(SpotubeIcons.close),
-                        title: const Text("Close Behavior"),
+                        title: Text(context.l10n.close_behavior),
                         trailing: (context, update) =>
                             DropdownButton<CloseBehavior>(
                           value: preferences.closeBehavior,
-                          items: const [
+                          items: [
                             DropdownMenuItem(
                               value: CloseBehavior.close,
-                              child: Text("Close"),
+                              child: Text(context.l10n.close),
                             ),
                             DropdownMenuItem(
                               value: CloseBehavior.minimizeToTray,
-                              child: Text("Minimize to Tray"),
+                              child: Text(context.l10n.minimize_to_tray),
                             ),
                           ],
                           onChanged: (value) {
@@ -389,13 +383,13 @@ class SettingsPage extends HookConsumerWidget {
                       ),
                       SwitchListTile(
                         secondary: const Icon(SpotubeIcons.tray),
-                        title: const Text("Show System Tray Icon"),
+                        title: Text(context.l10n.show_tray_icon),
                         value: preferences.showSystemTrayIcon,
                         onChanged: preferences.setShowSystemTrayIcon,
                       ),
                     ],
                     Text(
-                      " About",
+                      " ${context.l10n.about}",
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -404,15 +398,15 @@ class SettingsPage extends HookConsumerWidget {
                         SpotubeIcons.heart,
                         color: Colors.pink,
                       ),
-                      title: const SizedBox(
+                      title: SizedBox(
                         height: 50,
                         width: 200,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: AutoSizeText(
-                            "We know you Love Spotube",
+                            context.l10n.u_love_spotube,
                             maxLines: 1,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.pink,
                               fontWeight: FontWeight.bold,
                             ),
@@ -436,10 +430,10 @@ class SettingsPage extends HookConsumerWidget {
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(SpotubeIcons.heart),
-                            SizedBox(width: 5),
-                            Text("Please Sponsor/Donate"),
+                          children: [
+                            const Icon(SpotubeIcons.heart),
+                            const SizedBox(width: 5),
+                            Text(context.l10n.please_sponsor),
                           ],
                         ),
                       ),
@@ -447,14 +441,14 @@ class SettingsPage extends HookConsumerWidget {
                     if (Env.enableUpdateChecker)
                       SwitchListTile(
                         secondary: const Icon(SpotubeIcons.update),
-                        title: const Text("Check for Update"),
+                        title: Text(context.l10n.check_for_updates),
                         value: preferences.checkUpdate,
                         onChanged: (checked) =>
                             preferences.setCheckUpdate(checked),
                       ),
                     ListTile(
                       leading: const Icon(SpotubeIcons.info),
-                      title: const Text("About Spotube"),
+                      title: Text(context.l10n.about_spotube),
                       trailing: const Icon(SpotubeIcons.angleRight),
                       onTap: () {
                         GoRouter.of(context).push("/settings/about");

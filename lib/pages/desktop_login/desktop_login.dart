@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 
 class DesktopLoginPage extends HookConsumerWidget {
@@ -37,11 +38,11 @@ class DesktopLoginPage extends HookConsumerWidget {
                         (breakpoint <= Breakpoints.md ? .5 : .3),
                   ),
                   Text(
-                    "Add your spotify credentials to get started",
+                    context.l10n.add_spotify_credentials,
                     style: theme.textTheme.titleMedium,
                   ),
                   Text(
-                    "Don't worry, any of your credentials won't be collected or shared with anyone",
+                    context.l10n.credentials_will_not_be_shared_disclaimer,
                     style: theme.textTheme.labelMedium,
                   ),
                   const SizedBox(height: 10),
@@ -53,10 +54,10 @@ class DesktopLoginPage extends HookConsumerWidget {
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      const Text("Don't know how to do this?"),
+                      Text(context.l10n.know_how_to_login),
                       TextButton(
-                        child: const Text(
-                          "Follow along the Step by Step guide",
+                        child: Text(
+                          context.l10n.follow_step_by_step_guide,
                         ),
                         onPressed: () => GoRouter.of(context).push(
                           "/login-tutorial",

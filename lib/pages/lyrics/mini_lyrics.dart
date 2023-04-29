@@ -10,6 +10,7 @@ import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_force_update.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
@@ -82,16 +83,19 @@ class MiniLyricsPage extends HookConsumerWidget {
                       child: Sidebar.brandLogo(),
                     ),
                     const Spacer(),
-                    const SizedBox(
+                    SizedBox(
                       height: 30,
                       child: TabBar(
-                        tabs: [Tab(text: 'Synced'), Tab(text: 'Plain')],
+                        tabs: [
+                          Tab(text: context.l10n.synced),
+                          Tab(text: context.l10n.plain),
+                        ],
                         isScrollable: true,
                       ),
                     ),
                     const Spacer(),
                     IconButton(
-                      tooltip: 'Show/Hide UI on hover',
+                      tooltip: context.l10n.show_hide_ui_on_hover,
                       icon: hoverMode.value
                           ? const Icon(SpotubeIcons.hoverOn)
                           : const Icon(SpotubeIcons.hoverOff),
@@ -112,7 +116,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                       future: DesktopTools.window.isAlwaysOnTop(),
                       builder: (context, snapshot) {
                         return IconButton(
-                          tooltip: 'Always on top',
+                          tooltip: context.l10n.always_on_top,
                           icon: Icon(
                             snapshot.data == true
                                 ? SpotubeIcons.pinOn
@@ -173,7 +177,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                   children: [
                     IconButton(
                       icon: const Icon(SpotubeIcons.queue),
-                      tooltip: 'Queue',
+                      tooltip: context.l10n.queue,
                       onPressed: playlistQueue != null
                           ? () {
                               showModalBottomSheet(
@@ -199,7 +203,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                     ),
                     Flexible(child: PlayerControls(compact: true)),
                     IconButton(
-                      tooltip: 'Exit Mini Player',
+                      tooltip: context.l10n.exit_mini_player,
                       icon: const Icon(SpotubeIcons.maximize),
                       onPressed: () async {
                         try {

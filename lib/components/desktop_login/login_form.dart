@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/authentication_provider.dart';
 
@@ -27,18 +28,18 @@ class TokenLoginForm extends HookConsumerWidget {
         children: [
           TextField(
             controller: directCodeController,
-            decoration: const InputDecoration(
-              hintText: "Spotify \"sp_dc\" Cookie",
-              labelText: "sp_dc Cookie",
+            decoration: InputDecoration(
+              hintText: context.l10n.spotify_cookie("\"sp_dc\""),
+              labelText: context.l10n.cookie_name_cookie("sp_dc"),
             ),
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 10),
           TextField(
             controller: keyCodeController,
-            decoration: const InputDecoration(
-              hintText: "Spotify \"sp_key\" Cookie",
-              labelText: "sp_key Cookie",
+            decoration: InputDecoration(
+              hintText: context.l10n.spotify_cookie("\"sp_key\""),
+              labelText: context.l10n.cookie_name_cookie("sp_key"),
             ),
             keyboardType: TextInputType.visiblePassword,
           ),
@@ -48,8 +49,8 @@ class TokenLoginForm extends HookConsumerWidget {
               if (keyCodeController.text.isEmpty ||
                   directCodeController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Please fill in all fields"),
+                  SnackBar(
+                    content: Text(context.l10n.fill_in_all_fields),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -65,7 +66,7 @@ class TokenLoginForm extends HookConsumerWidget {
                 onDone?.call();
               }
             },
-            child: const Text("Submit"),
+            child: Text(context.l10n.submit),
           )
         ],
       ),

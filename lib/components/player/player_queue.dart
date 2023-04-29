@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -79,7 +80,7 @@ class PlayerQueue extends HookConsumerWidget {
               children: [
                 const SizedBox(width: 10),
                 Text(
-                  "${tracks.length} tracks in Queue",
+                  context.l10n.tracks_in_queue(tracks.length),
                   style: TextStyle(
                     color: headlineColor,
                     fontWeight: FontWeight.bold,
@@ -94,10 +95,10 @@ class PlayerQueue extends HookConsumerWidget {
                     foregroundColor: theme.textTheme.headlineSmall?.color,
                   ),
                   child: Row(
-                    children: const [
-                      Icon(SpotubeIcons.playlistRemove),
-                      SizedBox(width: 5),
-                      Text("Clear All"),
+                    children: [
+                      const Icon(SpotubeIcons.playlistRemove),
+                      const SizedBox(width: 5),
+                      Text(context.l10n.clear_all),
                     ],
                   ),
                   onPressed: () {

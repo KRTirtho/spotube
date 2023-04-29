@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -58,7 +59,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
           appBar: AppBar(
             centerTitle: true,
             title: Text(
-              'Alternative Tracks Sources',
+              context.l10n.alternative_track_sources,
               style: theme.textTheme.headlineSmall,
             ),
             automaticallyImplyLeading: false,
