@@ -4,10 +4,16 @@
   <dict>
     <key>com.apple.security.app-sandbox</key>
     <true />
-    <key>com.apple.security.network.client</key>
-    <true />
     <key>com.apple.security.network.server</key>
     <true />
+    <!-- Just Audio Config -->
+    <key>com.apple.security.network.client</key>
+    <true />
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true />
+    </dict>
     <!-- Requires Certification -->
     <!-- <key>keychain-access-groups</key>
     <array /> -->

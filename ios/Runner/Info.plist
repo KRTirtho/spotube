@@ -50,7 +50,7 @@
       <key>NSAllowsArbitraryLoadsForMedia</key>
       <true />
     </dict>
-  	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-</dict>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true />
+  </dict>
 </plist>

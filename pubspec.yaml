@@ -55,6 +55,7 @@ dependencies:
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.0
   json_serializable: ^6.6.0
+  just_audio: ^0.9.32
   logger: ^1.1.0
   metadata_god: ^0.4.1
   mime: ^1.0.2
