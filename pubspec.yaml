@@ -13,7 +13,7 @@ dependencies:
   async: ^2.9.0
   audio_service: ^0.18.9
   audio_session: ^0.1.13
-  audioplayers: ^3.0.1
+  audioplayers: ^4.0.1
   auto_size_text: ^3.0.0
   badges: ^2.0.3
   buttons_tabbar: ^1.3.6

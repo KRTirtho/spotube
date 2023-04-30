@@ -136,7 +136,7 @@ class PlaylistQueue {
 class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   final Ref ref;
 
-  AudioServices? audioServices;
+  late AudioServices audioServices;
 
   static final provider =
       StateNotifierProvider<PlaylistQueueNotifier, PlaylistQueue?>(
@@ -150,7 +150,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   void configure() async {
-    audioServices = await AudioServices.create(ref, this);
+    audioServices = AudioServices(ref, this);
 
     audioPlayer.onPlayerComplete.listen((event) async {
       if (!isLoaded) return;
@@ -337,8 +337,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   Future<void> play() async {
     if (!isLoaded) return;
     await pause();
-    audioServices?.activateSession();
-    await audioServices?.addTrack(state!.activeTrack);
+    await audioServices.addTrack(state!.activeTrack);
     if (state!.activeTrack is LocalTrack) {
       await audioPlayer.play(
         DeviceFileSource((state!.activeTrack as LocalTrack).path),
@@ -363,7 +362,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       );
     }
 
-    audioServices?.addTrack(state!.activeTrack);
+    audioServices.addTrack(state!.activeTrack);
 
     final cached =
         await DefaultCacheManager().getFileFromCache(state!.activeTrack.id!);
@@ -415,7 +414,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   Future<void> stop() async {
-    audioServices?.deactivateSession();
+    audioServices.deactivateSession();
     state = null;
 
     return audioPlayer.stop();
@@ -528,7 +527,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   @override
   void dispose() {
-    audioServices?.dispose();
+    audioServices.dispose();
     super.dispose();
   }
 }

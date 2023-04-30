@@ -14,25 +14,24 @@ class AudioServices {
   final WindowsAudioService? smtc;
   final LinuxAudioService? mpris;
 
-  AudioServices(this.mobile, this.smtc, this.mpris);
+  AudioServices._(this.mobile, this.smtc, this.mpris);
 
-  static Future<AudioServices> create(
-      Ref ref, PlaylistQueueNotifier playlistQueueNotifier) async {
+  factory AudioServices(Ref ref, PlaylistQueueNotifier playlistQueueNotifier) {
     final mobile =
-        !DesktopTools.platform.isMobile && !!DesktopTools.platform.isMacOS
-            ? null
-            : MobileAudioService(
+        DesktopTools.platform.isMobile || DesktopTools.platform.isMacOS
+            ? MobileAudioService(
                 playlistQueueNotifier,
                 ref.read(VolumeProvider.provider.notifier),
-              );
-    final smtc = !DesktopTools.platform.isWindows
-        ? null
-        : WindowsAudioService(ref, playlistQueueNotifier);
-    final mpris = !DesktopTools.platform.isLinux
-        ? null
-        : LinuxAudioService(ref, playlistQueueNotifier);
+              )
+            : null;
+    final smtc = DesktopTools.platform.isWindows
+        ? WindowsAudioService(ref, playlistQueueNotifier)
+        : null;
+    final mpris = DesktopTools.platform.isLinux
+        ? LinuxAudioService(ref, playlistQueueNotifier)
+        : null;
 
-    return AudioServices(mobile, smtc, mpris);
+    return AudioServices._(mobile, smtc, mpris);
   }
 
   Future<void> addTrack(Track track) async {

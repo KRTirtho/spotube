@@ -70,7 +70,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                 return MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: Badge(
-                    isLabelVisible: e.title == "Library" && downloadCount > 0,
+                    isLabelVisible: e.id == "library" && downloadCount > 0,
                     label: Text(downloadCount.toString()),
                     child: Icon(
                       e.icon,
@@ -84,7 +84,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
           index: insideSelectedIndex.value,
           onTap: (i) {
             insideSelectedIndex.value = i;
-            if (navbarTileList[i].title == "Settings") {
+            if (navbarTileList[i].id == "settings") {
               Sidebar.goToSettings(context);
               return;
             }
