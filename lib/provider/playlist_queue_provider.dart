@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -138,6 +140,8 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   late AudioServices audioServices;
 
+  final StreamController<bool> _bufferingController;
+
   static final provider =
       StateNotifierProvider<PlaylistQueueNotifier, PlaylistQueue?>(
     (ref) => PlaylistQueueNotifier._(ref),
@@ -145,7 +149,9 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   static final notifier = provider.notifier;
 
-  PlaylistQueueNotifier._(this.ref) : super(null, "playlist") {
+  PlaylistQueueNotifier._(this.ref)
+      : _bufferingController = StreamController.broadcast(),
+        super(null, "playlist") {
     configure();
   }
 
@@ -166,6 +172,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
     audioPlayer.onPositionChanged.listen((pos) async {
       if (!isLoaded) return;
+      _bufferingController.add(false);
       final currentDuration = await audioPlayer.getDuration() ?? Duration.zero;
 
       // skip all the activeTrack.skipSegments
@@ -178,7 +185,8 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
             in (state!.activeTrack as SpotubeTrack).skipSegments) {
           if ((pos.inSeconds >= segment["start"]! &&
               pos.inSeconds < segment["end"]!)) {
-            await audioPlayer.seek(Duration(seconds: segment["end"]!));
+            await audioPlayer.pause();
+            await seek(Duration(seconds: segment["end"]!));
           }
         }
       }
@@ -199,6 +207,10 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
         isPreSearching = false;
       }
     });
+
+    audioPlayer.onSeekComplete.listen((event) {
+      _bufferingController.add(false);
+    });
   }
 
   // properties
@@ -209,6 +221,18 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       ref.read(BlackListNotifier.provider.notifier);
 
   bool get isLoaded => state != null;
+
+  Stream<bool> get buffering =>
+      _bufferingController.stream.asyncMap((bufferEvent) async {
+        final duration = await audioPlayer.getDuration();
+        final position = await audioPlayer.getCurrentPosition();
+        final isBuffering = state?.activeTrack is! SpotubeTrack &&
+            audioPlayer.state == PlayerState.playing &&
+            (bufferEvent || (duration == null && position == null));
+        return isBuffering;
+      });
+
+  Future<bool> get isBuffering => buffering.first;
 
   // redirectors
   static bool get isPlaying => audioPlayer.state == PlayerState.playing;
@@ -336,6 +360,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   Future<void> play() async {
     if (!isLoaded) return;
+    _bufferingController.add(true);
     await pause();
     await audioServices.addTrack(state!.activeTrack);
     if (state!.activeTrack is LocalTrack) {
@@ -362,7 +387,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
       );
     }
 
-    audioServices.addTrack(state!.activeTrack);
+    await audioServices.addTrack(state!.activeTrack);
 
     final cached =
         await DefaultCacheManager().getFileFromCache(state!.activeTrack.id!);
@@ -450,6 +475,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   Future<void> seek(Duration position) async {
     if (!isLoaded) return;
+    _bufferingController.add(true);
     await audioPlayer.seek(position);
     await resume();
   }

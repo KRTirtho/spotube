@@ -45,6 +45,7 @@ class PlayerControls extends HookConsumerWidget {
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final playing = useStream(PlaylistQueueNotifier.playing).data ??
         PlaylistQueueNotifier.isPlaying;
+    final buffering = useStream(playlistNotifier.buffering).data ?? true;
     final theme = Theme.of(context);
 
     final isDominantColorDark = ThemeData.estimateBrightnessForColor(
@@ -140,7 +141,7 @@ class PlayerControls extends HookConsumerWidget {
                             // there's an edge case for value being bigger
                             // than total duration. Keeping it resolved
                             value: progress.value.toDouble(),
-                            onChanged: playlist?.isLoading == true
+                            onChanged: playlist?.isLoading == true || buffering
                                 ? null
                                 : (v) {
                                     progress.value = v;
@@ -188,7 +189,7 @@ class PlayerControls extends HookConsumerWidget {
                     style: playlist?.isShuffled == true
                         ? activeButtonStyle
                         : buttonStyle,
-                    onPressed: playlist == null
+                    onPressed: playlist == null || playlist.isLoading
                         ? null
                         : () {
                             if (playlist.isShuffled == true) {
@@ -221,10 +222,12 @@ class PlayerControls extends HookConsumerWidget {
                             playing ? SpotubeIcons.pause : SpotubeIcons.play,
                           ),
                     style: resumePauseStyle,
-                    onPressed: Actions.handler<PlayPauseIntent>(
-                      context,
-                      PlayPauseIntent(ref),
-                    ),
+                    onPressed: playlist?.isLoading == true
+                        ? null
+                        : Actions.handler<PlayPauseIntent>(
+                            context,
+                            PlayPauseIntent(ref),
+                          ),
                   ),
                   IconButton(
                     tooltip: context.l10n.next_track,
