@@ -13,6 +13,7 @@ ThemeData theme(Color seed, Brightness brightness) {
       horizontalTitleGap: 0,
       iconColor: scheme.onSurface,
     ),
+    appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),

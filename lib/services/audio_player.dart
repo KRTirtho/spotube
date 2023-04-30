@@ -95,7 +95,7 @@ class SpotubeAudioPlayer {
 
   Stream<bool> get bufferingStream {
     if (apSupportedPlatform) {
-      return const Stream.empty();
+      return Stream.value(false);
     } else {
       throw UnimplementedError();
     }
@@ -215,7 +215,6 @@ class SpotubeAudioPlayer {
 
   Future<void> pause() async {
     await _audioPlayer?.pause();
-    throw UnimplementedError();
   }
 
   Future<void> resume() async {
