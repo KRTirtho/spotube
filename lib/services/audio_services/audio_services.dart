@@ -14,14 +14,24 @@ class AudioServices {
   final WindowsAudioService? smtc;
   final LinuxAudioService? mpris;
 
-  AudioServices._(this.mobile, this.smtc, this.mpris);
+  AudioServices(this.mobile, this.smtc, this.mpris);
 
-  factory AudioServices(Ref ref, PlaylistQueueNotifier playlistQueueNotifier) {
+  static Future<AudioServices> create(
+    Ref ref,
+    PlaylistQueueNotifier playlistQueueNotifier,
+  ) async {
     final mobile =
         DesktopTools.platform.isMobile || DesktopTools.platform.isMacOS
-            ? MobileAudioService(
-                playlistQueueNotifier,
-                ref.read(VolumeProvider.provider.notifier),
+            ? await AudioService.init(
+                builder: () => MobileAudioService(
+                  playlistQueueNotifier,
+                  ref.read(VolumeProvider.provider.notifier),
+                ),
+                config: const AudioServiceConfig(
+                  androidNotificationChannelId: 'com.krtirtho.Spotube',
+                  androidNotificationChannelName: 'Spotube',
+                  androidNotificationOngoing: true,
+                ),
               )
             : null;
     final smtc = DesktopTools.platform.isWindows
@@ -31,7 +41,7 @@ class AudioServices {
         ? LinuxAudioService(ref, playlistQueueNotifier)
         : null;
 
-    return AudioServices._(mobile, smtc, mpris);
+    return AudioServices(mobile, smtc, mpris);
   }
 
   Future<void> addTrack(Track track) async {

@@ -150,7 +150,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   void configure() async {
-    audioServices = AudioServices(ref, this);
+    audioServices = await AudioServices.create(ref, this);
 
     audioPlayer.onPlayerComplete.listen((event) async {
       if (!isLoaded) return;
