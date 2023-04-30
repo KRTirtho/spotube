@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 import 'package:tuple/tuple.dart';
 
-Tuple3<double, Duration, Duration> useProgress(WidgetRef ref) {
+Tuple4<double, Duration, Duration, double> useProgress(WidgetRef ref) {
   ref.watch(PlaylistQueueNotifier.provider);
 
+  final bufferProgress =
+      useStream(audioPlayer.bufferedPositionStream).data?.inSeconds ?? 0;
   final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
 
-  final duration =
-      useStream(PlaylistQueueNotifier.duration).data ?? Duration.zero;
-  final positionSnapshot = useStream(PlaylistQueueNotifier.position);
+  final duration = useStream(audioPlayer.durationStream).data ?? Duration.zero;
+  final positionSnapshot = useStream(audioPlayer.positionStream);
 
   final position = positionSnapshot.data ?? Duration.zero;
 
@@ -31,9 +33,12 @@ Tuple3<double, Duration, Duration> useProgress(WidgetRef ref) {
     return null;
   }, [positionSnapshot.hasData, duration]);
 
-  return Tuple3(
+  return Tuple4(
     sliderMax == 0 || sliderValue > sliderMax ? 0 : sliderValue / sliderMax,
     position,
     duration,
+    sliderMax == 0 || bufferProgress > sliderMax
+        ? 0
+        : bufferProgress / sliderMax,
   );
 }

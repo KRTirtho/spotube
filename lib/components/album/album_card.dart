@@ -7,6 +7,7 @@ import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -41,8 +42,7 @@ class AlbumCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playing = useStream(PlaylistQueueNotifier.playing).data ??
-        PlaylistQueueNotifier.isPlaying;
+    final playing = useStream(audioPlayer.playingStream).data ?? false;
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final queryClient = useQueryClient();
     final query = queryClient

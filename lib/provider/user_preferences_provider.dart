@@ -212,7 +212,7 @@ class UserPreferences extends PersistedChangeNotifier {
 
     showSystemTrayIcon = map["showSystemTrayIcon"] ?? showSystemTrayIcon;
 
-    final localeMap = jsonDecode(map["locale"]);
+    final localeMap = map["locale"] != null ? jsonDecode(map["locale"]) : null;
     locale =
         localeMap != null ? Locale(localeMap?["lc"], localeMap?["cc"]) : locale;
   }

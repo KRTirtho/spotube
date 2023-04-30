@@ -71,6 +71,7 @@ Future<void> main(List<String> rawArgs) async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
+
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(
       hideTitleBar: true,

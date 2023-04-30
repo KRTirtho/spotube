@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/audio_player.dart';
 
@@ -29,11 +28,14 @@ class MobileAudioService extends BaseAudioHandler {
         }
       });
     });
-    audioPlayer.onPlayerStateChanged.listen((state) async {
+    audioPlayer.playerStateStream.listen((state) async {
       playbackState.add(await _transformEvent());
     });
 
-    audioPlayer.onPositionChanged.listen((pos) async {
+    audioPlayer.positionStream.listen((pos) async {
+      playbackState.add(await _transformEvent());
+    });
+    audioPlayer.bufferedPositionStream.listen((pos) async {
       playbackState.add(await _transformEvent());
     });
   }
@@ -93,18 +95,15 @@ class MobileAudioService extends BaseAudioHandler {
   @override
   Future<void> onTaskRemoved() async {
     await playlistNotifier.stop();
-    await audioPlayer.release();
     return super.onTaskRemoved();
   }
 
   Future<PlaybackState> _transformEvent() async {
-    final position = (await audioPlayer.getCurrentPosition()) ?? Duration.zero;
+    final position = (await audioPlayer.position) ?? Duration.zero;
     return PlaybackState(
       controls: [
         MediaControl.skipToPrevious,
-        audioPlayer.state == PlayerState.playing
-            ? MediaControl.pause
-            : MediaControl.play,
+        audioPlayer.isPlaying ? MediaControl.pause : MediaControl.play,
         MediaControl.skipToNext,
         MediaControl.stop,
       ],
@@ -112,9 +111,9 @@ class MobileAudioService extends BaseAudioHandler {
         MediaAction.seek,
       },
       androidCompactActionIndices: const [0, 1, 2],
-      playing: audioPlayer.state == PlayerState.playing,
+      playing: audioPlayer.isPlaying,
       updatePosition: position,
-      bufferedPosition: position,
+      bufferedPosition: await audioPlayer.bufferedPosition ?? Duration.zero,
       shuffleMode: playlist?.isShuffled == true
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,

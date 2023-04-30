@@ -10,6 +10,7 @@ import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class PlayerOverlay extends HookConsumerWidget {
@@ -27,8 +28,7 @@ class PlayerOverlay extends HookConsumerWidget {
     );
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playing = useStream(PlaylistQueueNotifier.playing).data ??
-        PlaylistQueueNotifier.isPlaying;
+    final playing = useStream(audioPlayer.playingStream).data ?? false;
 
     final theme = Theme.of(context);
     final textColor = theme.colorScheme.primary;

@@ -10,6 +10,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/services/audio_player.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
@@ -43,9 +44,8 @@ class PlayerControls extends HookConsumerWidget {
         []);
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playing = useStream(PlaylistQueueNotifier.playing).data ??
-        PlaylistQueueNotifier.isPlaying;
-    final buffering = useStream(playlistNotifier.buffering).data ?? true;
+    final playing = useStream(audioPlayer.playingStream).data ?? false;
+    final buffering = useStream(audioPlayer.bufferingStream).data ?? true;
     final theme = Theme.of(context);
 
     final isDominantColorDark = ThemeData.estimateBrightnessForColor(
@@ -141,6 +141,7 @@ class PlayerControls extends HookConsumerWidget {
                             // there's an edge case for value being bigger
                             // than total duration. Keeping it resolved
                             value: progress.value.toDouble(),
+                            secondaryTrackValue: progressObj.item4,
                             onChanged: playlist?.isLoading == true || buffering
                                 ? null
                                 : (v) {
@@ -154,6 +155,7 @@ class PlayerControls extends HookConsumerWidget {
                               );
                             },
                             activeColor: sliderColor,
+                            secondaryActiveColor: sliderColor.withOpacity(0.2),
                             inactiveColor: sliderColor.withOpacity(0.15),
                           ),
                         ),

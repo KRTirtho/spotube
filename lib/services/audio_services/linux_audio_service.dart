@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mpris_service/mpris_service.dart';
 import 'package:spotify/spotify.dart';
@@ -39,7 +38,7 @@ class LinuxAudioService {
         pause: playlistNotifier.pause,
         play: playlistNotifier.resume,
         playPause: () async {
-          if (PlaylistQueueNotifier.isPlaying) {
+          if (audioPlayer.isPlaying) {
             await playlistNotifier.pause();
           } else {
             await playlistNotifier.resume();
@@ -61,8 +60,9 @@ class LinuxAudioService {
       ));
 
       final playerStateStream =
-          audioPlayer.onPlayerStateChanged.listen((state) async {
+          audioPlayer.playerStateStream.listen((state) async {
         switch (state) {
+          case PlayerState.buffering:
           case PlayerState.playing:
             mpris.playbackStatus = MPRISPlaybackStatus.playing;
             break;
@@ -78,12 +78,12 @@ class LinuxAudioService {
         }
       });
 
-      final positionStream = audioPlayer.onPositionChanged.listen((pos) async {
+      final positionStream = audioPlayer.positionStream.listen((pos) async {
         mpris.position = pos;
       });
 
       final durationStream =
-          audioPlayer.onDurationChanged.listen((duration) async {
+          audioPlayer.durationStream.listen((duration) async {
         mpris.metadata = mpris.metadata.copyWith(length: duration);
       });
 

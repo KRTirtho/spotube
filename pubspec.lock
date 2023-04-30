@@ -998,30 +998,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.6.1"
-  just_audio:
-    dependency: "direct main"
-    description:
-      name: just_audio
-      sha256: "7e6d31508dacd01a066e3889caf6282e5f1eb60707c230203b21a83af5c55586"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.32"
-  just_audio_platform_interface:
-    dependency: transitive
-    description:
-      name: just_audio_platform_interface
-      sha256: eff112d5138bea3ba544b6338b1e0537a32b5e1425e4d0dc38f732771cda7c84
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.0"
-  just_audio_web:
-    dependency: transitive
-    description:
-      name: just_audio_web
-      sha256: "89d8db6f19f3821bb6bf908c4bfb846079afb2ab575b783d781a6bf119e3abaf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.7"
   lints:
     dependency: transitive
     description:
@@ -1657,10 +1633,10 @@ packages:
     dependency: transitive
     description:
       name: synchronized
-      sha256: "33b31b6beb98100bf9add464a36a8dd03eb10c7a8cf15aeec535e9b054aaf04b"
+      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.1.0"
   system_theme:
     dependency: "direct main"
     description:

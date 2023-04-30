@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotify/spotify.dart';
@@ -41,7 +40,7 @@ class WindowsAudioService {
     });
 
     final playerStateStream =
-        audioPlayer.onPlayerStateChanged.listen((state) async {
+        audioPlayer.playerStateStream.listen((state) async {
       switch (state) {
         case PlayerState.playing:
           await smtc.setPlaybackStatus(PlaybackStatus.Playing);
@@ -62,12 +61,11 @@ class WindowsAudioService {
       }
     });
 
-    final positionStream = audioPlayer.onPositionChanged.listen((pos) async {
+    final positionStream = audioPlayer.positionStream.listen((pos) async {
       await smtc.setPosition(pos);
     });
 
-    final durationStream =
-        audioPlayer.onDurationChanged.listen((duration) async {
+    final durationStream = audioPlayer.durationStream.listen((duration) async {
       await smtc.setEndTime(duration);
     });
 
