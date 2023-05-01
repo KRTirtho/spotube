@@ -199,9 +199,10 @@ class SpotubeState extends ConsumerState<Spotube> {
 
     useInitSysTray(ref);
 
-    /// For enabling hot reload for audio player
     useEffect(() {
       return () {
+        /// For enabling hot reload for audio player
+        if (!kDebugMode) return;
         audioPlayer.dispose();
         youtube.close();
       };

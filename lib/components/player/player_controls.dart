@@ -44,7 +44,9 @@ class PlayerControls extends HookConsumerWidget {
         []);
     final playlist = ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playing = useStream(audioPlayer.playingStream).data ?? false;
+
+    final playing =
+        useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final buffering = useStream(audioPlayer.bufferingStream).data ?? true;
     final theme = Theme.of(context);
 

@@ -52,7 +52,7 @@ class SpotubeAudioPlayer {
   // stream getters
   Stream<Duration> get durationStream {
     if (apSupportedPlatform) {
-      return _audioPlayer!.onDurationChanged;
+      return _audioPlayer!.onDurationChanged.asBroadcastStream();
     } else {
       throw UnimplementedError();
     }
@@ -60,7 +60,7 @@ class SpotubeAudioPlayer {
 
   Stream<Duration> get positionStream {
     if (apSupportedPlatform) {
-      return _audioPlayer!.onPositionChanged;
+      return _audioPlayer!.onPositionChanged.asBroadcastStream();
     } else {
       throw UnimplementedError();
     }
@@ -69,7 +69,7 @@ class SpotubeAudioPlayer {
   Stream<Duration> get bufferedPositionStream {
     if (apSupportedPlatform) {
       // audioplayers doesn't have the capability to get buffered position
-      return const Stream.empty();
+      return const Stream<Duration>.empty().asBroadcastStream();
     } else {
       throw UnimplementedError();
     }
@@ -77,7 +77,7 @@ class SpotubeAudioPlayer {
 
   Stream<void> get completedStream {
     if (apSupportedPlatform) {
-      return _audioPlayer!.onPlayerComplete;
+      return _audioPlayer!.onPlayerComplete.asBroadcastStream();
     } else {
       throw UnimplementedError();
     }
@@ -87,7 +87,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.onPlayerStateChanged.map((state) {
         return state == ap.PlayerState.playing;
-      });
+      }).asBroadcastStream();
     } else {
       throw UnimplementedError();
     }
@@ -95,7 +95,7 @@ class SpotubeAudioPlayer {
 
   Stream<bool> get bufferingStream {
     if (apSupportedPlatform) {
-      return Stream.value(false);
+      return Stream.value(false).asBroadcastStream();
     } else {
       throw UnimplementedError();
     }
@@ -103,7 +103,8 @@ class SpotubeAudioPlayer {
 
   Stream<PlayerState> get playerStateStream =>
       _audioPlayer!.onPlayerStateChanged
-          .map((state) => PlayerState.fromApPlayerState(state));
+          .map((state) => PlayerState.fromApPlayerState(state))
+          .asBroadcastStream();
 
   // regular info getter
 

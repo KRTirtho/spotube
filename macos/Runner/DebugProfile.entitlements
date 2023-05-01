@@ -11,11 +11,11 @@
     <key>com.apple.security.network.client</key>
     <true />
     <!-- Just Audio Config -->
-    <key>NSAppTransportSecurity</key>
+    <!-- <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
       <true />
-    </dict>
+    </dict> -->
     <!-- Requires Certification -->
     <!-- <key>keychain-access-groups</key>
     <array /> -->

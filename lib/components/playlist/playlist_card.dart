@@ -21,7 +21,8 @@ class PlaylistCard extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final playlistQueue = ref.watch(PlaylistQueueNotifier.provider);
     final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playing = useStream(audioPlayer.playingStream).data ?? false;
+    final playing =
+        useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final queryBowl = QueryClient.of(context);
     final query = queryBowl.getQuery<List<Track>, dynamic>(
       "playlist-tracks/${playlist.id}",

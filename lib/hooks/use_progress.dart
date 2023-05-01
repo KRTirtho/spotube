@@ -12,10 +12,17 @@ Tuple4<double, Duration, Duration, double> useProgress(WidgetRef ref) {
       useStream(audioPlayer.bufferedPositionStream).data?.inSeconds ?? 0;
   final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
 
-  final duration = useStream(audioPlayer.durationStream).data ?? Duration.zero;
+  // Duration future is needed for getting the duration of the song
+  // as stream can be null when no event occurs (Mostly needed for android)
+  final durationFuture = useFuture(audioPlayer.duration);
+  final duration = useStream(audioPlayer.durationStream).data ??
+      durationFuture.data ??
+      Duration.zero;
+  final positionFuture = useFuture(audioPlayer.position);
   final positionSnapshot = useStream(audioPlayer.positionStream);
 
-  final position = positionSnapshot.data ?? Duration.zero;
+  final position =
+      positionSnapshot.data ?? positionFuture.data ?? Duration.zero;
 
   final sliderMax = duration.inSeconds;
   final sliderValue = position.inSeconds;
