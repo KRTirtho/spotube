@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart' as ap;
+import 'package:assets_audio_player/assets_audio_player.dart' as aap;
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 final audioPlayer = SpotubeAudioPlayer();
 
@@ -24,6 +26,17 @@ enum PlayerState {
     }
   }
 
+  static PlayerState fromAapPlayerState(aap.PlayerState state) {
+    switch (state) {
+      case aap.PlayerState.play:
+        return PlayerState.playing;
+      case aap.PlayerState.pause:
+        return PlayerState.paused;
+      case aap.PlayerState.stop:
+        return PlayerState.stopped;
+    }
+  }
+
   ap.PlayerState get asAudioPlayerPlayerState {
     switch (this) {
       case PlayerState.playing:
@@ -42,19 +55,26 @@ enum PlayerState {
 
 class SpotubeAudioPlayer {
   final ap.AudioPlayer? _audioPlayer;
+  final aap.AssetsAudioPlayer? _assetsAudioPlayer;
 
   SpotubeAudioPlayer()
-      : _audioPlayer = apSupportedPlatform ? ap.AudioPlayer() : null;
+      : _audioPlayer = apSupportedPlatform ? ap.AudioPlayer() : null,
+        _assetsAudioPlayer =
+            !apSupportedPlatform ? aap.AssetsAudioPlayer.newPlayer() : null;
 
   /// Whether the current platform supports the audioplayers plugin
-  static const bool apSupportedPlatform = true;
+  static final bool apSupportedPlatform =
+      DesktopTools.platform.isWindows || DesktopTools.platform.isLinux;
 
   // stream getters
   Stream<Duration> get durationStream {
     if (apSupportedPlatform) {
       return _audioPlayer!.onDurationChanged.asBroadcastStream();
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.onReadyToPlay
+          .where((event) => event != null)
+          .map((event) => event!.duration)
+          .asBroadcastStream();
     }
   }
 
@@ -62,7 +82,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.onPositionChanged.asBroadcastStream();
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.currentPosition.asBroadcastStream();
     }
   }
 
@@ -71,7 +91,7 @@ class SpotubeAudioPlayer {
       // audioplayers doesn't have the capability to get buffered position
       return const Stream<Duration>.empty().asBroadcastStream();
     } else {
-      throw UnimplementedError();
+      return const Stream<Duration>.empty().asBroadcastStream();
     }
   }
 
@@ -79,7 +99,20 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.onPlayerComplete.asBroadcastStream();
     } else {
-      throw UnimplementedError();
+      int lastValue = 0;
+      return positionStream.where(
+        (pos) {
+          final posS = pos.inSeconds;
+          final duration = _assetsAudioPlayer
+                  ?.current.valueOrNull?.audio.duration.inSeconds ??
+              0;
+          final isComplete =
+              posS > 0 && duration > 0 && posS == duration && posS != lastValue;
+
+          if (isComplete) lastValue = posS;
+          return isComplete;
+        },
+      ).asBroadcastStream();
     }
   }
 
@@ -89,7 +122,7 @@ class SpotubeAudioPlayer {
         return state == ap.PlayerState.playing;
       }).asBroadcastStream();
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.isPlaying.asBroadcastStream();
     }
   }
 
@@ -97,14 +130,21 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return Stream.value(false).asBroadcastStream();
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.isBuffering.asBroadcastStream();
     }
   }
 
-  Stream<PlayerState> get playerStateStream =>
-      _audioPlayer!.onPlayerStateChanged
+  Stream<PlayerState> get playerStateStream {
+    if (apSupportedPlatform) {
+      return _audioPlayer!.onPlayerStateChanged
           .map((state) => PlayerState.fromApPlayerState(state))
           .asBroadcastStream();
+    } else {
+      return _assetsAudioPlayer!.playerState
+          .map(PlayerState.fromAapPlayerState)
+          .asBroadcastStream();
+    }
+  }
 
   // regular info getter
 
@@ -112,7 +152,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return await _audioPlayer!.getDuration();
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.current.valueOrNull?.audio.duration;
     }
   }
 
@@ -120,7 +160,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return await _audioPlayer!.getCurrentPosition();
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.currentPosition.valueOrNull;
     }
   }
 
@@ -129,7 +169,7 @@ class SpotubeAudioPlayer {
       // audioplayers doesn't have the capability to get buffered position
       return null;
     } else {
-      throw UnimplementedError();
+      return null;
     }
   }
 
@@ -137,7 +177,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.source != null;
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.current.valueOrNull != null;
     }
   }
 
@@ -146,7 +186,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.playing;
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.isPlaying.valueOrNull ?? false;
     }
   }
 
@@ -154,7 +194,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.paused;
     } else {
-      throw UnimplementedError();
+      return !isPlaying && hasSource;
     }
   }
 
@@ -162,15 +202,15 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.stopped;
     } else {
-      throw UnimplementedError();
+      return !isPlaying && !hasSource;
     }
   }
 
-  bool get isCompleted {
+  Future<bool> get isCompleted async {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.completed;
     } else {
-      throw UnimplementedError();
+      return !isPlaying && hasSource && await position == await duration;
     }
   }
 
@@ -179,7 +219,7 @@ class SpotubeAudioPlayer {
       // audioplayers doesn't have the capability to get buffering state
       return false;
     } else {
-      throw UnimplementedError();
+      return _assetsAudioPlayer!.isBuffering.valueOrNull ?? false;
     }
   }
 
@@ -191,7 +231,11 @@ class SpotubeAudioPlayer {
         return ap.DeviceFileSource(url);
       }
     } else {
-      throw UnimplementedError();
+      if (url.startsWith("https")) {
+        return aap.Audio.network(url);
+      } else {
+        return aap.Audio.file(url);
+      }
     }
   }
 
@@ -201,7 +245,7 @@ class SpotubeAudioPlayer {
       // audioplayers doesn't have the capability to preload
       return;
     } else {
-      throw UnimplementedError();
+      return;
     }
   }
 
@@ -210,35 +254,54 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform && urlType is ap.Source) {
       await _audioPlayer?.play(urlType);
     } else {
-      throw UnimplementedError();
+      await _assetsAudioPlayer?.stop();
+      await _assetsAudioPlayer?.open(
+        urlType as aap.Playable,
+        autoStart: true,
+        audioFocusStrategy: const aap.AudioFocusStrategy.request(
+          resumeAfterInterruption: true,
+        ),
+        loopMode: aap.LoopMode.none,
+        playInBackground: aap.PlayInBackground.enabled,
+        headPhoneStrategy: aap.HeadPhoneStrategy.pauseOnUnplugPlayOnPlug,
+        showNotification: false,
+        respectSilentMode: true,
+      );
     }
   }
 
   Future<void> pause() async {
     await _audioPlayer?.pause();
+    await _assetsAudioPlayer?.pause();
   }
 
   Future<void> resume() async {
     await _audioPlayer?.resume();
+    await _assetsAudioPlayer?.play();
   }
 
   Future<void> stop() async {
     await _audioPlayer?.stop();
+    await _assetsAudioPlayer?.stop();
   }
 
   Future<void> seek(Duration position) async {
     await _audioPlayer?.seek(position);
+    await _assetsAudioPlayer?.seek(position);
   }
 
   Future<void> setVolume(double volume) async {
     await _audioPlayer?.setVolume(volume);
+    await _assetsAudioPlayer?.setVolume(volume);
   }
 
   Future<void> setSpeed(double speed) async {
     await _audioPlayer?.setPlaybackRate(speed);
+    await _assetsAudioPlayer?.setPlaySpeed(speed);
   }
 
   Future<void> dispose() async {
     await _audioPlayer?.dispose();
+    await _assetsAudioPlayer?.dispose();
   }
 }

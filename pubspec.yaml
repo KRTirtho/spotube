@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   args: ^2.3.2
+  assets_audio_player: ^3.0.6
   async: ^2.9.0
   audio_service: ^0.18.9
   audio_session: ^0.1.13
