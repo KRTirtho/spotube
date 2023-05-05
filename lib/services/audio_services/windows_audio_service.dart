@@ -42,17 +42,17 @@ class WindowsAudioService {
     final playerStateStream =
         audioPlayer.playerStateStream.listen((state) async {
       switch (state) {
-        case PlayerState.playing:
+        case AudioPlaybackState.playing:
           await smtc.setPlaybackStatus(PlaybackStatus.Playing);
           break;
-        case PlayerState.paused:
+        case AudioPlaybackState.paused:
           await smtc.setPlaybackStatus(PlaybackStatus.Paused);
           break;
-        case PlayerState.stopped:
+        case AudioPlaybackState.stopped:
           await smtc.setPlaybackStatus(PlaybackStatus.Stopped);
           await smtc.disableSmtc();
           break;
-        case PlayerState.completed:
+        case AudioPlaybackState.completed:
           await smtc.setPlaybackStatus(PlaybackStatus.Changing);
           await smtc.disableSmtc();
           break;

@@ -62,15 +62,15 @@ class LinuxAudioService {
       final playerStateStream =
           audioPlayer.playerStateStream.listen((state) async {
         switch (state) {
-          case PlayerState.buffering:
-          case PlayerState.playing:
+          case AudioPlaybackState.buffering:
+          case AudioPlaybackState.playing:
             mpris.playbackStatus = MPRISPlaybackStatus.playing;
             break;
-          case PlayerState.paused:
+          case AudioPlaybackState.paused:
             mpris.playbackStatus = MPRISPlaybackStatus.paused;
             break;
-          case PlayerState.stopped:
-          case PlayerState.completed:
+          case AudioPlaybackState.stopped:
+          case AudioPlaybackState.completed:
             mpris.playbackStatus = MPRISPlaybackStatus.stopped;
             break;
           default:

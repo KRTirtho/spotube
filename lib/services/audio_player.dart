@@ -1,53 +1,71 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart' as ap;
-import 'package:assets_audio_player/assets_audio_player.dart' as aap;
+import 'package:just_audio/just_audio.dart' as ja;
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 final audioPlayer = SpotubeAudioPlayer();
 
-enum PlayerState {
+enum AudioPlaybackState {
   playing,
   paused,
   completed,
   buffering,
   stopped;
 
-  static PlayerState fromApPlayerState(ap.PlayerState state) {
+  static AudioPlaybackState fromApPlayerState(ap.PlayerState state) {
     switch (state) {
       case ap.PlayerState.playing:
-        return PlayerState.playing;
+        return AudioPlaybackState.playing;
       case ap.PlayerState.paused:
-        return PlayerState.paused;
+        return AudioPlaybackState.paused;
       case ap.PlayerState.stopped:
-        return PlayerState.stopped;
+        return AudioPlaybackState.stopped;
       case ap.PlayerState.completed:
-        return PlayerState.completed;
+        return AudioPlaybackState.completed;
     }
   }
 
-  static PlayerState fromAapPlayerState(aap.PlayerState state) {
-    switch (state) {
-      case aap.PlayerState.play:
-        return PlayerState.playing;
-      case aap.PlayerState.pause:
-        return PlayerState.paused;
-      case aap.PlayerState.stop:
-        return PlayerState.stopped;
+  static AudioPlaybackState fromJaPlayerState(ja.PlayerState state) {
+    if (state.playing) {
+      return AudioPlaybackState.playing;
+    }
+
+    switch (state.processingState) {
+      case ja.ProcessingState.idle:
+        return AudioPlaybackState.stopped;
+      case ja.ProcessingState.ready:
+        return AudioPlaybackState.paused;
+      case ja.ProcessingState.completed:
+        return AudioPlaybackState.completed;
+      case ja.ProcessingState.loading:
+      case ja.ProcessingState.buffering:
+        return AudioPlaybackState.buffering;
     }
   }
+
+  // static PlayerState fromAapPlayerState(aap.PlayerState state) {
+  //   switch (state) {
+  //     case aap.PlayerState.play:
+  //       return PlayerState.playing;
+  //     case aap.PlayerState.pause:
+  //       return PlayerState.paused;
+  //     case aap.PlayerState.stop:
+  //       return PlayerState.stopped;
+  //   }
+  // }
 
   ap.PlayerState get asAudioPlayerPlayerState {
     switch (this) {
-      case PlayerState.playing:
+      case AudioPlaybackState.playing:
         return ap.PlayerState.playing;
-      case PlayerState.paused:
+      case AudioPlaybackState.paused:
         return ap.PlayerState.paused;
-      case PlayerState.stopped:
+      case AudioPlaybackState.stopped:
         return ap.PlayerState.stopped;
-      case PlayerState.completed:
+      case AudioPlaybackState.completed:
         return ap.PlayerState.completed;
-      case PlayerState.buffering:
+      case AudioPlaybackState.buffering:
         return ap.PlayerState.paused;
     }
   }
@@ -55,12 +73,11 @@ enum PlayerState {
 
 class SpotubeAudioPlayer {
   final ap.AudioPlayer? _audioPlayer;
-  final aap.AssetsAudioPlayer? _assetsAudioPlayer;
+  final ja.AudioPlayer? _justAudio;
 
   SpotubeAudioPlayer()
       : _audioPlayer = apSupportedPlatform ? ap.AudioPlayer() : null,
-        _assetsAudioPlayer =
-            !apSupportedPlatform ? aap.AssetsAudioPlayer.newPlayer() : null;
+        _justAudio = !apSupportedPlatform ? ja.AudioPlayer() : null;
 
   /// Whether the current platform supports the audioplayers plugin
   static final bool apSupportedPlatform =
@@ -71,9 +88,9 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.onDurationChanged.asBroadcastStream();
     } else {
-      return _assetsAudioPlayer!.onReadyToPlay
+      return _justAudio!.durationStream
           .where((event) => event != null)
-          .map((event) => event!.duration)
+          .map((event) => event!)
           .asBroadcastStream();
     }
   }
@@ -82,7 +99,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.onPositionChanged.asBroadcastStream();
     } else {
-      return _assetsAudioPlayer!.currentPosition.asBroadcastStream();
+      return _justAudio!.positionStream.asBroadcastStream();
     }
   }
 
@@ -91,7 +108,7 @@ class SpotubeAudioPlayer {
       // audioplayers doesn't have the capability to get buffered position
       return const Stream<Duration>.empty().asBroadcastStream();
     } else {
-      return const Stream<Duration>.empty().asBroadcastStream();
+      return _justAudio!.bufferedPositionStream.asBroadcastStream();
     }
   }
 
@@ -99,20 +116,10 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.onPlayerComplete.asBroadcastStream();
     } else {
-      int lastValue = 0;
-      return positionStream.where(
-        (pos) {
-          final posS = pos.inSeconds;
-          final duration = _assetsAudioPlayer
-                  ?.current.valueOrNull?.audio.duration.inSeconds ??
-              0;
-          final isComplete =
-              posS > 0 && duration > 0 && posS == duration && posS != lastValue;
-
-          if (isComplete) lastValue = posS;
-          return isComplete;
-        },
-      ).asBroadcastStream();
+      return _justAudio!.playerStateStream
+          .where(
+              (event) => event.processingState == ja.ProcessingState.completed)
+          .asBroadcastStream();
     }
   }
 
@@ -122,7 +129,7 @@ class SpotubeAudioPlayer {
         return state == ap.PlayerState.playing;
       }).asBroadcastStream();
     } else {
-      return _assetsAudioPlayer!.isPlaying.asBroadcastStream();
+      return _justAudio!.playingStream;
     }
   }
 
@@ -130,18 +137,24 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return Stream.value(false).asBroadcastStream();
     } else {
-      return _assetsAudioPlayer!.isBuffering.asBroadcastStream();
+      return _justAudio!.playerStateStream
+          .map(
+            (event) =>
+                event.processingState == ja.ProcessingState.buffering ||
+                event.processingState == ja.ProcessingState.loading,
+          )
+          .asBroadcastStream();
     }
   }
 
-  Stream<PlayerState> get playerStateStream {
+  Stream<AudioPlaybackState> get playerStateStream {
     if (apSupportedPlatform) {
       return _audioPlayer!.onPlayerStateChanged
-          .map((state) => PlayerState.fromApPlayerState(state))
+          .map((state) => AudioPlaybackState.fromApPlayerState(state))
           .asBroadcastStream();
     } else {
-      return _assetsAudioPlayer!.playerState
-          .map(PlayerState.fromAapPlayerState)
+      return _justAudio!.playerStateStream
+          .map(AudioPlaybackState.fromJaPlayerState)
           .asBroadcastStream();
     }
   }
@@ -152,7 +165,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return await _audioPlayer!.getDuration();
     } else {
-      return _assetsAudioPlayer!.current.valueOrNull?.audio.duration;
+      return _justAudio!.duration;
     }
   }
 
@@ -160,7 +173,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return await _audioPlayer!.getCurrentPosition();
     } else {
-      return _assetsAudioPlayer!.currentPosition.valueOrNull;
+      return _justAudio!.position;
     }
   }
 
@@ -177,7 +190,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.source != null;
     } else {
-      return _assetsAudioPlayer!.current.valueOrNull != null;
+      return _justAudio!.audioSource != null;
     }
   }
 
@@ -186,7 +199,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.playing;
     } else {
-      return _assetsAudioPlayer!.isPlaying.valueOrNull ?? false;
+      return _justAudio!.playing;
     }
   }
 
@@ -194,7 +207,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.paused;
     } else {
-      return !isPlaying && hasSource;
+      return !isPlaying;
     }
   }
 
@@ -202,7 +215,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.stopped;
     } else {
-      return !isPlaying && !hasSource;
+      return _justAudio!.processingState == ja.ProcessingState.idle;
     }
   }
 
@@ -210,7 +223,7 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform) {
       return _audioPlayer!.state == ap.PlayerState.completed;
     } else {
-      return !isPlaying && hasSource && await position == await duration;
+      return _justAudio!.processingState == ja.ProcessingState.completed;
     }
   }
 
@@ -219,7 +232,8 @@ class SpotubeAudioPlayer {
       // audioplayers doesn't have the capability to get buffering state
       return false;
     } else {
-      return _assetsAudioPlayer!.isBuffering.valueOrNull ?? false;
+      return _justAudio!.processingState == ja.ProcessingState.buffering ||
+          _justAudio!.processingState == ja.ProcessingState.loading;
     }
   }
 
@@ -232,9 +246,9 @@ class SpotubeAudioPlayer {
       }
     } else {
       if (url.startsWith("https")) {
-        return aap.Audio.network(url);
+        return ja.AudioSource.uri(Uri.parse(url));
       } else {
-        return aap.Audio.file(url);
+        return ja.AudioSource.file(url);
       }
     }
   }
@@ -254,54 +268,55 @@ class SpotubeAudioPlayer {
     if (apSupportedPlatform && urlType is ap.Source) {
       await _audioPlayer?.play(urlType);
     } else {
-      await _assetsAudioPlayer?.stop();
-      await _assetsAudioPlayer?.open(
-        urlType as aap.Playable,
-        autoStart: true,
-        audioFocusStrategy: const aap.AudioFocusStrategy.request(
-          resumeAfterInterruption: true,
-        ),
-        loopMode: aap.LoopMode.none,
-        playInBackground: aap.PlayInBackground.enabled,
-        headPhoneStrategy: aap.HeadPhoneStrategy.pauseOnUnplugPlayOnPlug,
-        showNotification: false,
-        respectSilentMode: true,
-      );
+      if (_justAudio?.audioSource is ja.ProgressiveAudioSource &&
+          (_justAudio?.audioSource as ja.ProgressiveAudioSource)
+                  .uri
+                  .toString() ==
+              url) {
+        await _justAudio?.play();
+      } else {
+        await _justAudio?.stop();
+        await _justAudio?.setAudioSource(
+          urlType as ja.AudioSource,
+          preload: true,
+        );
+        await _justAudio?.play();
+      }
     }
   }
 
   Future<void> pause() async {
     await _audioPlayer?.pause();
-    await _assetsAudioPlayer?.pause();
+    await _justAudio?.pause();
   }
 
   Future<void> resume() async {
     await _audioPlayer?.resume();
-    await _assetsAudioPlayer?.play();
+    await _justAudio?.play();
   }
 
   Future<void> stop() async {
     await _audioPlayer?.stop();
-    await _assetsAudioPlayer?.stop();
+    await _justAudio?.stop();
   }
 
   Future<void> seek(Duration position) async {
     await _audioPlayer?.seek(position);
-    await _assetsAudioPlayer?.seek(position);
+    await _justAudio?.seek(position);
   }
 
   Future<void> setVolume(double volume) async {
     await _audioPlayer?.setVolume(volume);
-    await _assetsAudioPlayer?.setVolume(volume);
+    await _justAudio?.setVolume(volume);
   }
 
   Future<void> setSpeed(double speed) async {
     await _audioPlayer?.setPlaybackRate(speed);
-    await _assetsAudioPlayer?.setPlaySpeed(speed);
+    await _justAudio?.setSpeed(speed);
   }
 
   Future<void> dispose() async {
     await _audioPlayer?.dispose();
-    await _assetsAudioPlayer?.dispose();
+    await _justAudio?.dispose();
   }
 }

@@ -5,14 +5,13 @@
 import FlutterMacOS
 import Foundation
 
-import assets_audio_player
-import assets_audio_player_web
 import audio_service
 import audio_session
 import audioplayers_darwin
 import catcher
 import device_info_plus
 import flutter_secure_storage_macos
+import just_audio
 import local_notifier
 import package_info_plus
 import path_provider_foundation
@@ -26,14 +25,13 @@ import window_manager
 import window_size
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  AssetsAudioPlayerPlugin.register(with: registry.registrar(forPlugin: "AssetsAudioPlayerPlugin"))
-  AssetsAudioPlayerWebPlugin.register(with: registry.registrar(forPlugin: "AssetsAudioPlayerWebPlugin"))
   AudioServicePlugin.register(with: registry.registrar(forPlugin: "AudioServicePlugin"))
   AudioSessionPlugin.register(with: registry.registrar(forPlugin: "AudioSessionPlugin"))
   AudioplayersDarwinPlugin.register(with: registry.registrar(forPlugin: "AudioplayersDarwinPlugin"))
   CatcherPlugin.register(with: registry.registrar(forPlugin: "CatcherPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
+  JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   LocalNotifierPlugin.register(with: registry.registrar(forPlugin: "LocalNotifierPlugin"))
   FLTPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlusPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
