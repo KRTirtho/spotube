@@ -246,6 +246,6 @@ final userPreferencesProvider = ChangeNotifierProvider(
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,
     layoutMode: kIsMobile ? LayoutMode.compact : LayoutMode.adaptive,
-    predownload: kIsMobile,
+    predownload: false,
   ),
 );

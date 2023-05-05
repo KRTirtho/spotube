@@ -100,10 +100,11 @@ packages:
   assets_audio_player:
     dependency: "direct main"
     description:
-      name: assets_audio_player
-      sha256: dcea8cd9c11cd9c34586f2446bfcdf099362159c56f97517ba941ac151974ea9
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "4cbd4bc4b7be8a329effbb52c5b3f5d3ab042b35"
+      resolved-ref: "4cbd4bc4b7be8a329effbb52c5b3f5d3ab042b35"
+      url: "https://github.com/mt633/Flutter-AssetsAudioPlayer"
+    source: git
     version: "3.0.6"
   assets_audio_player_web:
     dependency: transitive

@@ -10,7 +10,12 @@ environment:
 
 dependencies:
   args: ^2.3.2
-  assets_audio_player: ^3.0.6
+  # Patch for the uncontrollable shadow instance of ExoPlayer running in bg
+  # https://github.com/florent37/Flutter-AssetsAudioPlayer/issues/765
+  assets_audio_player: 
+    git:
+      url: https://github.com/mt633/Flutter-AssetsAudioPlayer
+      ref: 4cbd4bc4b7be8a329effbb52c5b3f5d3ab042b35
   async: ^2.9.0
   audio_service: ^0.18.9
   audio_session: ^0.1.13
