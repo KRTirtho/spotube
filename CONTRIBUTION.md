@@ -131,7 +131,7 @@ Do the following:
     ```
   - Fedora
     ```bash
-    dnf install libappindicator libappindicator-devel libsecret libsecret-devel jsoncpp jsoncpp-devel gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras libnotify libnotify-devel
+    dnf install libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras libnotify libnotify-devel
     ```
 - Clone the Repo
 - Create a `.env` in root of the project following the `.env.example` template
