@@ -32,6 +32,7 @@ import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/hooks/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final parser = ArgParser();
@@ -70,7 +71,9 @@ Future<void> main(List<String> rawArgs) async {
     exit(0);
   }
 
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(
@@ -171,8 +174,6 @@ class Spotube extends StatefulHookConsumerWidget {
   @override
   SpotubeState createState() => SpotubeState();
 
-  /// ↓↓ ADDED
-  /// InheritedWidget style accessor to our State object.
   static SpotubeState of(BuildContext context) =>
       context.findAncestorStateOfType<SpotubeState>()!;
 }
@@ -200,6 +201,7 @@ class SpotubeState extends ConsumerState<Spotube> {
     useInitSysTray(ref);
 
     useEffect(() {
+      FlutterNativeSplash.remove();
       return () {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;

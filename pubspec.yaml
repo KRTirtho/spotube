@@ -41,6 +41,7 @@ dependencies:
   flutter_inappwebview: ^5.7.2+3
   flutter_localizations:
     sdk: flutter
+  flutter_native_splash: ^2.2.19
   flutter_riverpod: ^2.1.1
   flutter_secure_storage: ^8.0.0
   flutter_svg: ^1.1.6
@@ -101,7 +102,7 @@ dev_dependencies:
   envied_generator: ^0.3.0
   flutter_distributor: ^0.0.2
   flutter_gen_runner: ^5.1.0+1
-  flutter_launcher_icons: ^0.11.0
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
@@ -137,3 +138,14 @@ flutter_icons:
 
 flutter_gen:
   output: lib/collections
+
+flutter_native_splash:
+  background_image: assets/bengali-patterns-bg.jpg
+  image: assets/spotube-logo.png
+  branding: assets/branding.png
+  android_12:
+    image: assets/spotube-logo_android12.png
+    branding: assets/branding.png
+    color: "#000000"
+    icon_background_color: "#000000"
+  web: false
