@@ -94,10 +94,15 @@ class UserPlaylists extends HookConsumerWidget {
                   ),
                 ),
               ),
-              if (playlistsQuery.isLoading || !playlistsQuery.hasData)
-                const Center(child: ShimmerPlaybuttonCard(count: 7))
-              else
-                Wrap(
+              AnimatedCrossFade(
+                duration: const Duration(milliseconds: 300),
+                crossFadeState:
+                    playlistsQuery.isLoading || !playlistsQuery.hasData
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                firstChild:
+                    const Center(child: ShimmerPlaybuttonCard(count: 7)),
+                secondChild: Wrap(
                   runSpacing: 10,
                   alignment: WrapAlignment.center,
                   children: [
@@ -111,6 +116,7 @@ class UserPlaylists extends HookConsumerWidget {
                     ...playlists.map((playlist) => PlaylistCard(playlist))
                   ],
                 ),
+              ),
             ],
           ),
         ),

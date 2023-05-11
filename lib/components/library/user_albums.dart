@@ -50,13 +50,6 @@ class UserAlbums extends HookConsumerWidget {
     if (auth == null) {
       return const AnonymousFallback();
     }
-    if (albumsQuery.isLoading || !albumsQuery.hasData) {
-      return Container(
-        alignment: Alignment.topLeft,
-        padding: const EdgeInsets.all(16.0),
-        child: const ShimmerPlaybuttonCard(count: 7),
-      );
-    }
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -78,15 +71,28 @@ class UserAlbums extends HookConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Wrap(
-                  spacing: spacing, // gap between adjacent chips
-                  runSpacing: 20, // gap between lines
-                  alignment: WrapAlignment.center,
-                  children: albums
-                      .map((album) => AlbumCard(
-                            TypeConversionUtils.simpleAlbum_X_Album(album),
-                          ))
-                      .toList(),
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 300),
+                  firstChild: Container(
+                    alignment: Alignment.topLeft,
+                    padding: const EdgeInsets.all(16.0),
+                    child: const ShimmerPlaybuttonCard(count: 7),
+                  ),
+                  secondChild: Wrap(
+                    spacing: spacing, // gap between adjacent chips
+                    runSpacing: 20, // gap between lines
+                    alignment: WrapAlignment.center,
+                    children: albums
+                        .map((album) => AlbumCard(
+                              TypeConversionUtils.simpleAlbum_X_Album(album),
+                            ))
+                        .toList(),
+                  ),
+                  crossFadeState: albumsQuery.isLoading ||
+                          !albumsQuery.hasData ||
+                          searchText.value.isNotEmpty
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
                 ),
               ],
             ),

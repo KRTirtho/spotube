@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/extensions/theme.dart';
+import 'package:spotube/hooks/use_breakpoint_value.dart';
 
-class ShimmerCategories extends StatelessWidget {
+class ShimmerCategories extends HookWidget {
   const ShimmerCategories({Key? key}) : super(key: key);
 
   @override
@@ -15,8 +17,16 @@ class ShimmerCategories extends StatelessWidget {
     final shimmerBackgroundColor =
         shimmerTheme.shimmerBackgroundColor ?? Colors.grey;
 
+    final shimmerCount = useBreakpointValue(
+      sm: 2,
+      md: 3,
+      lg: 3,
+      xl: 6,
+      xxl: 8,
+    );
+
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -31,9 +41,9 @@ class ShimmerCategories extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Align(
-            alignment: Alignment.topCenter,
-            child: ShimmerPlaybuttonCard(count: 7),
+          Align(
+            alignment: Alignment.topLeft,
+            child: ShimmerPlaybuttonCard(count: shimmerCount),
           ),
         ],
       ),

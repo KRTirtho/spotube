@@ -74,10 +74,16 @@ class GenrePage extends HookConsumerWidget {
           itemCount: categories.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            if (searchText.value.isEmpty && index == categories.length - 1) {
-              return const ShimmerCategories();
-            }
-            return CategoryCard(categories[index]);
+            return AnimatedCrossFade(
+              crossFadeState: searchText.value.isEmpty &&
+                      index == categories.length - 1 &&
+                      categoriesQuery.hasNextPage
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              duration: const Duration(milliseconds: 300),
+              firstChild: const ShimmerCategories(),
+              secondChild: CategoryCard(categories[index]),
+            );
           },
         ),
       ),

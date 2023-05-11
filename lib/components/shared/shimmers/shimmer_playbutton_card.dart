@@ -99,8 +99,9 @@ class ShimmerPlaybuttonCard extends HookWidget {
       .4,
     );
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      spacing: 20,
+      runSpacing: 20,
       children: [
         for (var i = 0; i < count; i++) ...[
           CustomPaint(
@@ -110,7 +111,6 @@ class ShimmerPlaybuttonCard extends HookWidget {
               foreground: fgColor!,
             ),
           ),
-          const SizedBox(width: 10),
         ]
       ],
     );
