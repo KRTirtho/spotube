@@ -4,10 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
-import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -22,17 +20,12 @@ class UserArtists extends HookConsumerWidget {
     final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final artistQuery = useQueries.artist.followedByMe(ref);
-
-    final hasNextPage = artistQuery.pages.isEmpty
-        ? false
-        : (artistQuery.pages.last.items?.length ?? 0) == 15;
+    final artistQuery = useQueries.artist.followedByMeAll(ref);
 
     final searchText = useState('');
 
     final filteredArtists = useMemoized(() {
-      final artists = artistQuery.pages
-          .expand<Artist>((page) => page.items ?? const Iterable.empty());
+      final artists = artistQuery.data ?? [];
 
       if (searchText.value.isEmpty) {
         return artists.toList();
@@ -46,7 +39,7 @@ class UserArtists extends HookConsumerWidget {
           .where((e) => e.item1 > 50)
           .map((e) => e.item2)
           .toList();
-    }, [artistQuery.pages, searchText.value]);
+    }, [artistQuery.data, searchText.value]);
 
     final controller = useScrollController();
 
@@ -72,7 +65,7 @@ class UserArtists extends HookConsumerWidget {
         ),
       ),
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: artistQuery.pages.isEmpty
+      body: artistQuery.data?.isEmpty == true
           ? Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
@@ -86,7 +79,7 @@ class UserArtists extends HookConsumerWidget {
             )
           : RefreshIndicator(
               onRefresh: () async {
-                await artistQuery.refreshAll();
+                await artistQuery.refresh();
               },
               child: SingleChildScrollView(
                 controller: controller,
@@ -97,18 +90,9 @@ class UserArtists extends HookConsumerWidget {
                       child: Wrap(
                         spacing: 15,
                         runSpacing: 5,
-                        children: filteredArtists.mapIndexed((index, artist) {
-                          if (index == artistQuery.pages.length - 1 &&
-                              hasNextPage) {
-                            return Waypoint(
-                              controller: controller,
-                              isGrid: true,
-                              onTouchEdge: artistQuery.fetchNext,
-                              child: ArtistCard(artist),
-                            );
-                          }
-                          return ArtistCard(artist);
-                        }).toList(),
+                        children: filteredArtists
+                            .mapIndexed((index, artist) => ArtistCard(artist))
+                            .toList(),
                       ),
                     ),
                   ),

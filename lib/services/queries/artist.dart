@@ -38,6 +38,32 @@ class ArtistQueries {
     );
   }
 
+  Query<List<Artist>, dynamic> followedByMeAll(WidgetRef ref) {
+    return useSpotifyQuery(
+      "user-following-artists-all",
+      (spotify) async {
+        CursorPage<Artist>? page =
+            await spotify.me.following(FollowingType.artist).getPage(50);
+
+        final following = <Artist>[];
+
+        if (page.isLast == true) {
+          return page.items?.toList() ?? [];
+        }
+
+        while (page?.isLast != true) {
+          following.addAll(page?.items ?? []);
+          page = await spotify.me
+              .following(FollowingType.artist)
+              .getPage(50, page?.after ?? '');
+        }
+
+        return following;
+      },
+      ref: ref,
+    );
+  }
+
   Query<bool, dynamic> doIFollow(
     WidgetRef ref,
     String artist,

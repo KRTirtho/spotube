@@ -14,8 +14,8 @@ import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PersonalizedItemCard extends HookWidget {
-  final Iterable<Page<PlaylistSimple>>? playlists;
-  final Iterable<Page<AlbumSimple>>? albums;
+  final Iterable<PlaylistSimple>? playlists;
+  final Iterable<AlbumSimple>? albums;
   final String title;
   final bool hasNextPage;
   final void Function() onFetchMore;
@@ -35,18 +35,6 @@ class PersonalizedItemCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
-
-    final playlistItems = playlists
-        ?.expand(
-          (page) => page.items ?? const Iterable<PlaylistSimple>.empty(),
-        )
-        .toList();
-
-    final albumItems = albums
-        ?.expand(
-          (page) => page.items ?? const Iterable<AlbumSimple>.empty(),
-        )
-        .toList();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -82,9 +70,8 @@ class PersonalizedItemCard extends HookWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ...?playlistItems
-                          ?.map((playlist) => PlaylistCard(playlist)),
-                      ...?albumItems?.map(
+                      ...?playlists?.map((playlist) => PlaylistCard(playlist)),
+                      ...?albums?.map(
                         (album) => AlbumCard(
                           TypeConversionUtils.simpleAlbum_X_Album(album),
                         ),
@@ -108,20 +95,43 @@ class PersonalizedPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final featuredPlaylistsQuery = useQueries.playlist.featured(ref);
+    final playlists = useMemoized(
+      () => featuredPlaylistsQuery.pages
+          .whereType<Page<PlaylistSimple>>()
+          .expand((page) => page.items ?? const <PlaylistSimple>[]),
+      [featuredPlaylistsQuery.pages],
+    );
 
     final newReleases = useQueries.album.newReleases(ref);
+    final userArtists = useQueries.artist
+            .followedByMeAll(ref)
+            .data
+            ?.map((s) => s.id!)
+            .toList() ??
+        const [];
+
+    final albums = useMemoized(
+      () => newReleases.pages
+          .whereType<Page<AlbumSimple>>()
+          .expand((page) => page.items ?? const <AlbumSimple>[])
+          .where((album) {
+        return album.artists
+                ?.any((artist) => userArtists.contains(artist.id!)) ==
+            true;
+      }),
+      [newReleases.pages],
+    );
 
     return ListView(
       children: [
         PersonalizedItemCard(
-          playlists:
-              featuredPlaylistsQuery.pages.whereType<Page<PlaylistSimple>>(),
+          playlists: playlists,
           title: context.l10n.featured,
           hasNextPage: featuredPlaylistsQuery.hasNextPage,
           onFetchMore: featuredPlaylistsQuery.fetchNext,
         ),
         PersonalizedItemCard(
-          albums: newReleases.pages.whereType<Page<AlbumSimple>>(),
+          albums: albums,
           title: context.l10n.new_releases,
           hasNextPage: newReleases.hasNextPage,
           onFetchMore: newReleases.fetchNext,
