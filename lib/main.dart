@@ -11,6 +11,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,6 +75,10 @@ Future<void> main(List<String> rawArgs) async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  if (DesktopTools.platform.isWindows || DesktopTools.platform.isLinux) {
+    MediaKit.ensureInitialized();
+  }
 
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(

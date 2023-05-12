@@ -3,10 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  audioplayers_windows
   catcher
   flutter_secure_storage_windows
   local_notifier
+  media_kit_libs_windows_audio
   permission_handler_windows
   screen_retriever
   system_theme
@@ -17,6 +17,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
+  media_kit_native_event_loop
   metadata_god
   smtc_windows
 )

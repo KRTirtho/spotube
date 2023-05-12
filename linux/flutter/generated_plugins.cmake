@@ -3,10 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  audioplayers_linux
   catcher
   flutter_secure_storage_linux
   local_notifier
+  media_kit_libs_linux
   screen_retriever
   system_theme
   system_tray
@@ -16,6 +16,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
+  media_kit_native_event_loop
   metadata_god
 )
 

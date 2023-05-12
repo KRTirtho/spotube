@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart' as ap;
+import 'package:media_kit/media_kit.dart' as mk;
 import 'package:just_audio/just_audio.dart' as ja;
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
@@ -12,19 +12,6 @@ enum AudioPlaybackState {
   completed,
   buffering,
   stopped;
-
-  static AudioPlaybackState fromApPlayerState(ap.PlayerState state) {
-    switch (state) {
-      case ap.PlayerState.playing:
-        return AudioPlaybackState.playing;
-      case ap.PlayerState.paused:
-        return AudioPlaybackState.paused;
-      case ap.PlayerState.stopped:
-        return AudioPlaybackState.stopped;
-      case ap.PlayerState.completed:
-        return AudioPlaybackState.completed;
-    }
-  }
 
   static AudioPlaybackState fromJaPlayerState(ja.PlayerState state) {
     if (state.playing) {
@@ -43,50 +30,24 @@ enum AudioPlaybackState {
         return AudioPlaybackState.buffering;
     }
   }
-
-  // static PlayerState fromAapPlayerState(aap.PlayerState state) {
-  //   switch (state) {
-  //     case aap.PlayerState.play:
-  //       return PlayerState.playing;
-  //     case aap.PlayerState.pause:
-  //       return PlayerState.paused;
-  //     case aap.PlayerState.stop:
-  //       return PlayerState.stopped;
-  //   }
-  // }
-
-  ap.PlayerState get asAudioPlayerPlayerState {
-    switch (this) {
-      case AudioPlaybackState.playing:
-        return ap.PlayerState.playing;
-      case AudioPlaybackState.paused:
-        return ap.PlayerState.paused;
-      case AudioPlaybackState.stopped:
-        return ap.PlayerState.stopped;
-      case AudioPlaybackState.completed:
-        return ap.PlayerState.completed;
-      case AudioPlaybackState.buffering:
-        return ap.PlayerState.paused;
-    }
-  }
 }
 
 class SpotubeAudioPlayer {
-  final ap.AudioPlayer? _audioPlayer;
+  final MkPlayerWithState? _mkPlayer;
   final ja.AudioPlayer? _justAudio;
 
   SpotubeAudioPlayer()
-      : _audioPlayer = apSupportedPlatform ? ap.AudioPlayer() : null,
-        _justAudio = !apSupportedPlatform ? ja.AudioPlayer() : null;
+      : _mkPlayer = mkSupportedPlatform ? MkPlayerWithState() : null,
+        _justAudio = !mkSupportedPlatform ? ja.AudioPlayer() : null;
 
   /// Whether the current platform supports the audioplayers plugin
-  static final bool apSupportedPlatform =
+  static final bool mkSupportedPlatform =
       DesktopTools.platform.isWindows || DesktopTools.platform.isLinux;
 
   // stream getters
   Stream<Duration> get durationStream {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.onDurationChanged.asBroadcastStream();
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.streams.duration.asBroadcastStream();
     } else {
       return _justAudio!.durationStream
           .where((event) => event != null)
@@ -96,25 +57,25 @@ class SpotubeAudioPlayer {
   }
 
   Stream<Duration> get positionStream {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.onPositionChanged.asBroadcastStream();
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.streams.position.asBroadcastStream();
     } else {
       return _justAudio!.positionStream.asBroadcastStream();
     }
   }
 
   Stream<Duration> get bufferedPositionStream {
-    if (apSupportedPlatform) {
+    if (mkSupportedPlatform) {
       // audioplayers doesn't have the capability to get buffered position
-      return const Stream<Duration>.empty().asBroadcastStream();
+      return _mkPlayer!.streams.buffer.asBroadcastStream();
     } else {
       return _justAudio!.bufferedPositionStream.asBroadcastStream();
     }
   }
 
   Stream<void> get completedStream {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.onPlayerComplete.asBroadcastStream();
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.streams.completed.asBroadcastStream();
     } else {
       return _justAudio!.playerStateStream
           .where(
@@ -124,17 +85,15 @@ class SpotubeAudioPlayer {
   }
 
   Stream<bool> get playingStream {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.onPlayerStateChanged.map((state) {
-        return state == ap.PlayerState.playing;
-      }).asBroadcastStream();
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.streams.playing.asBroadcastStream();
     } else {
-      return _justAudio!.playingStream;
+      return _justAudio!.playingStream.asBroadcastStream();
     }
   }
 
   Stream<bool> get bufferingStream {
-    if (apSupportedPlatform) {
+    if (mkSupportedPlatform) {
       return Stream.value(false).asBroadcastStream();
     } else {
       return _justAudio!.playerStateStream
@@ -148,10 +107,8 @@ class SpotubeAudioPlayer {
   }
 
   Stream<AudioPlaybackState> get playerStateStream {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.onPlayerStateChanged
-          .map((state) => AudioPlaybackState.fromApPlayerState(state))
-          .asBroadcastStream();
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.playerStateStream.asBroadcastStream();
     } else {
       return _justAudio!.playerStateStream
           .map(AudioPlaybackState.fromJaPlayerState)
@@ -162,23 +119,23 @@ class SpotubeAudioPlayer {
   // regular info getter
 
   Future<Duration?> get duration async {
-    if (apSupportedPlatform) {
-      return await _audioPlayer!.getDuration();
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.state.duration;
     } else {
       return _justAudio!.duration;
     }
   }
 
   Future<Duration?> get position async {
-    if (apSupportedPlatform) {
-      return await _audioPlayer!.getCurrentPosition();
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.state.position;
     } else {
       return _justAudio!.position;
     }
   }
 
   Future<Duration?> get bufferedPosition async {
-    if (apSupportedPlatform) {
+    if (mkSupportedPlatform) {
       // audioplayers doesn't have the capability to get buffered position
       return null;
     } else {
@@ -187,8 +144,8 @@ class SpotubeAudioPlayer {
   }
 
   bool get hasSource {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.source != null;
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.state.playlist.medias.isNotEmpty;
     } else {
       return _justAudio!.audioSource != null;
     }
@@ -196,39 +153,39 @@ class SpotubeAudioPlayer {
 
   // states
   bool get isPlaying {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.state == ap.PlayerState.playing;
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.state.playing;
     } else {
       return _justAudio!.playing;
     }
   }
 
   bool get isPaused {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.state == ap.PlayerState.paused;
+    if (mkSupportedPlatform) {
+      return !_mkPlayer!.state.playing;
     } else {
       return !isPlaying;
     }
   }
 
   bool get isStopped {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.state == ap.PlayerState.stopped;
+    if (mkSupportedPlatform) {
+      return !hasSource;
     } else {
       return _justAudio!.processingState == ja.ProcessingState.idle;
     }
   }
 
   Future<bool> get isCompleted async {
-    if (apSupportedPlatform) {
-      return _audioPlayer!.state == ap.PlayerState.completed;
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.state.completed;
     } else {
       return _justAudio!.processingState == ja.ProcessingState.completed;
     }
   }
 
   bool get isBuffering {
-    if (apSupportedPlatform) {
+    if (mkSupportedPlatform) {
       // audioplayers doesn't have the capability to get buffering state
       return false;
     } else {
@@ -238,12 +195,8 @@ class SpotubeAudioPlayer {
   }
 
   Object _resolveUrlType(String url) {
-    if (apSupportedPlatform) {
-      if (url.startsWith("https")) {
-        return ap.UrlSource(url);
-      } else {
-        return ap.DeviceFileSource(url);
-      }
+    if (mkSupportedPlatform) {
+      return mk.Media(url);
     } else {
       if (url.startsWith("https")) {
         return ja.AudioSource.uri(Uri.parse(url));
@@ -254,19 +207,20 @@ class SpotubeAudioPlayer {
   }
 
   Future<void> preload(String url) async {
-    final urlType = _resolveUrlType(url);
-    if (apSupportedPlatform && urlType is ap.Source) {
-      // audioplayers doesn't have the capability to preload
-      return;
-    } else {
-      return;
-    }
+    throw UnimplementedError();
+    // final urlType = _resolveUrlType(url);
+    // if (mkSupportedPlatform && urlType is ap.Source) {
+    //   // audioplayers doesn't have the capability to preload
+    //   return;
+    // } else {
+    //   return;
+    // }
   }
 
   Future<void> play(String url) async {
     final urlType = _resolveUrlType(url);
-    if (apSupportedPlatform && urlType is ap.Source) {
-      await _audioPlayer?.play(urlType);
+    if (mkSupportedPlatform && urlType is mk.Media) {
+      await _mkPlayer?.open(urlType, play: true);
     } else {
       if (_justAudio?.audioSource is ja.ProgressiveAudioSource &&
           (_justAudio?.audioSource as ja.ProgressiveAudioSource)
@@ -286,37 +240,78 @@ class SpotubeAudioPlayer {
   }
 
   Future<void> pause() async {
-    await _audioPlayer?.pause();
+    await _mkPlayer?.pause();
     await _justAudio?.pause();
   }
 
   Future<void> resume() async {
-    await _audioPlayer?.resume();
+    await _mkPlayer?.play();
     await _justAudio?.play();
   }
 
   Future<void> stop() async {
-    await _audioPlayer?.stop();
+    await _mkPlayer?.pause();
     await _justAudio?.stop();
   }
 
   Future<void> seek(Duration position) async {
-    await _audioPlayer?.seek(position);
+    await _mkPlayer?.seek(position);
     await _justAudio?.seek(position);
   }
 
   Future<void> setVolume(double volume) async {
-    await _audioPlayer?.setVolume(volume);
+    await _mkPlayer?.setVolume(volume);
     await _justAudio?.setVolume(volume);
   }
 
   Future<void> setSpeed(double speed) async {
-    await _audioPlayer?.setPlaybackRate(speed);
+    await _mkPlayer?.setRate(speed);
     await _justAudio?.setSpeed(speed);
   }
 
   Future<void> dispose() async {
-    await _audioPlayer?.dispose();
+    await _mkPlayer?.dispose();
     await _justAudio?.dispose();
+  }
+}
+
+/// MediaKit [mk.Player] by default doesn't have a state stream.
+class MkPlayerWithState extends mk.Player {
+  final StreamController<AudioPlaybackState> _playerStateStream;
+
+  late final List<StreamSubscription> _subscriptions;
+
+  MkPlayerWithState({super.configuration})
+      : _playerStateStream = StreamController.broadcast() {
+    _subscriptions = [
+      streams.buffering.listen((event) {
+        _playerStateStream.add(AudioPlaybackState.buffering);
+      }),
+      streams.playing.listen((playing) {
+        if (playing) {
+          _playerStateStream.add(AudioPlaybackState.playing);
+        } else {
+          _playerStateStream.add(AudioPlaybackState.paused);
+        }
+      }),
+      streams.completed.listen((event) {
+        _playerStateStream.add(AudioPlaybackState.completed);
+      }),
+      streams.playlist.listen((event) {
+        if (event.medias.isEmpty) {
+          _playerStateStream.add(AudioPlaybackState.stopped);
+        }
+      }),
+    ];
+  }
+
+  Stream<AudioPlaybackState> get playerStateStream => _playerStateStream.stream;
+
+  @override
+  FutureOr<void> dispose({int code = 0}) {
+    for (var element in _subscriptions) {
+      element.cancel();
+    }
+    return super.dispose(code: code);
   }
 }
