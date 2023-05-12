@@ -12,6 +12,7 @@ import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -20,16 +21,18 @@ import 'package:collection/collection.dart';
 
 class PlaylistQueue {
   final Set<Track> tracks;
-  final Set<Track> tempTracks;
-  final bool loop;
   final int active;
 
   Track get activeTrack => tracks.elementAt(active);
 
+  final bool shuffled;
+  final PlaybackLoopMode loopMode;
+
   static Future<PlaylistQueue> fromJson(
-      Map<String, dynamic> json, UserPreferences preferences) async {
+    Map<String, dynamic> json,
+    UserPreferences preferences,
+  ) async {
     final List? tracks = json['tracks'];
-    final List? tempTracks = json['tempTracks'];
     return PlaylistQueue(
       Set.from(
         await Future.wait(
@@ -54,28 +57,8 @@ class PlaylistQueue {
         ),
       ),
       active: json['active'],
-      tempTracks: Set.from(
-        await Future.wait(
-          tempTracks?.mapIndexed(
-                (i, e) async {
-                  final jsonTrack =
-                      Map.castFrom<dynamic, dynamic, String, dynamic>(e);
-
-                  if (e["path"] != null) {
-                    return LocalTrack.fromJson(jsonTrack);
-                  } else if (i == json["active"] && !json.containsKey("path")) {
-                    return await SpotubeTrack.fetchFromTrack(
-                      Track.fromJson(jsonTrack),
-                      preferences,
-                    );
-                  } else {
-                    return Track.fromJson(jsonTrack);
-                  }
-                },
-              ) ??
-              [],
-        ),
-      ),
+      shuffled: json['shuffled'],
+      loopMode: PlaybackLoopMode.fromString(json['loopMode'] ?? ''),
     );
   }
 
@@ -93,43 +76,32 @@ class PlaylistQueue {
         },
       ).toList(),
       'active': active,
-      'tempTracks': tempTracks.map(
-        (e) {
-          if (e is SpotubeTrack) {
-            return e.toJson();
-          } else if (e is LocalTrack) {
-            return e.toJson();
-          } else {
-            return e.toJson();
-          }
-        },
-      ).toList(),
+      'shuffled': shuffled,
+      'loopMode': loopMode.name,
     };
   }
 
   bool get isLoading =>
       activeTrack is LocalTrack ? false : activeTrack is! SpotubeTrack;
-  bool get isShuffled => tempTracks.isNotEmpty;
-  bool get isLooping => loop;
 
   PlaylistQueue(
     this.tracks, {
-    required this.tempTracks,
     this.active = 0,
-    this.loop = false,
+    this.shuffled = false,
+    this.loopMode = PlaybackLoopMode.none,
   }) : assert(active < tracks.length && active >= 0, "Invalid active index");
 
   PlaylistQueue copyWith({
     Set<Track>? tracks,
-    Set<Track>? tempTracks,
     int? active,
-    bool? loop,
+    bool? shuffled,
+    PlaybackLoopMode? loopMode,
   }) {
     return PlaylistQueue(
       tracks ?? this.tracks,
       active: active ?? this.active,
-      tempTracks: tempTracks ?? this.tempTracks,
-      loop: loop ?? this.loop,
+      shuffled: shuffled ?? this.shuffled,
+      loopMode: loopMode ?? this.loopMode,
     );
   }
 }
@@ -153,13 +125,67 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   void configure() async {
     audioServices = await AudioServices.create(ref, this);
 
-    audioPlayer.completedStream.listen((event) async {
+    audioPlayer.currentIndexChangedStream.listen((index) async {
       if (!isLoaded) return;
-      if (state!.isLooping) {
-        await audioPlayer.seek(Duration.zero);
-        await audioPlayer.resume();
-      } else {
-        await next();
+      state = state!.copyWith(active: index);
+      await audioServices.addTrack(state!.activeTrack);
+    });
+
+    audioPlayer.almostCompleteStream.listen((_) async {
+      if (!isLoaded) return;
+      final nextTrack = state!.tracks.elementAtOrNull(state!.active + 1);
+      final sources = audioPlayer.sources;
+
+      // we don't have a next track or the next track is already loaded
+      // only when the next track isn't loaded we load next 3 tracks
+      if (nextTrack == null ||
+          nextTrack is SpotubeTrack && sources.contains(nextTrack.ytUri)) {
+        return;
+      }
+
+      final List<SpotubeTrack> fetchedTracks = [];
+
+      // load next 3 tracks
+      final tracks = await Future.wait(state!.tracks
+          .toList()
+          .skip(state!.active + 1)
+          .take(3)
+          .mapIndexed((i, track) async {
+        if (track is LocalTrack) return Future.value(track.path);
+        if (track is SpotubeTrack) return Future.value(track.ytUri);
+        if (i == 0) {
+          final fetchedTrack =
+              await SpotubeTrack.fetchFromTrack(track, preferences);
+          fetchedTracks.add(fetchedTrack);
+          return fetchedTrack.ytUri;
+        }
+        // Adding delay to not spoof the YouTube API for IP Block
+        final fetchedTrack = await Future.delayed(
+          const Duration(milliseconds: 100),
+          () => SpotubeTrack.fetchFromTrack(track, preferences),
+        );
+
+        fetchedTracks.add(fetchedTrack);
+        return fetchedTrack.ytUri;
+      }));
+
+      // replacing the tracks with the fetched tracks
+      // in proxy playlist
+      state = state!.copyWith(
+        tracks: state!.tracks.map((track) {
+          final fetchedTrack =
+              fetchedTracks.firstWhereOrNull((e) => e.id == track.id);
+
+          if (fetchedTrack != null) {
+            return fetchedTrack;
+          }
+          return track;
+        }).toSet(),
+      );
+
+      for (final track in tracks) {
+        if (sources.contains(track)) continue;
+        await audioPlayer.addTrack(track);
       }
     });
 
@@ -241,6 +267,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     }
   }
 
+  // TODO: Removal of track support
   void remove(List<Track> tracks) {
     if (!isLoaded) return;
     final trackIds = tracks.map((e) => e.id!).toSet();
@@ -260,50 +287,12 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
               : state!.active
           : null,
     );
-    if (state!.isLoading) {
-      play();
-    }
+    // if (state!.isLoading) {
+    //   play();
+    // }
   }
 
-  void shuffle() {
-    if (!isLoaded || state!.isShuffled) return;
-    state = state?.copyWith(
-      tempTracks: state!.tracks,
-      tracks: {
-        state!.activeTrack,
-        ...state!.tracks.toList()
-          ..removeAt(state!.active)
-          ..shuffle()
-      },
-      active: 0,
-    );
-  }
-
-  void unshuffle() {
-    if (!isLoaded || !state!.isShuffled) return;
-    state = state?.copyWith(
-      tracks: state!.tempTracks,
-      active: state!.tempTracks
-          .toList()
-          .indexWhere((element) => element.id == state!.activeTrack.id),
-      tempTracks: {},
-    );
-  }
-
-  void loop() {
-    if (!isLoaded || state!.isLooping) return;
-    state = state?.copyWith(
-      loop: true,
-    );
-  }
-
-  void unloop() {
-    if (!isLoaded || !state!.isLooping) return;
-    state = state?.copyWith(
-      loop: false,
-    );
-  }
-
+  // TODO: Swap sibling support
   Future<void> swapSibling(Video video) async {
     if (!isLoaded || state!.isLoading) return;
     await pause();
@@ -314,7 +303,7 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     tracks[state!.active] = track;
 
     state = state!.copyWith(tracks: Set.from(tracks));
-    await play();
+    // await play();
   }
 
   Future<void> populateSibling() async {
@@ -325,66 +314,92 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     state = state!.copyWith(tracks: Set.from(tracks));
   }
 
-  Future<void> play() async {
-    if (!isLoaded) return;
-    await pause();
-    await audioServices.addTrack(state!.activeTrack);
-    if (state!.activeTrack is LocalTrack) {
-      await audioPlayer.play((state!.activeTrack as LocalTrack).path);
-      return;
-    }
-    if (state!.activeTrack is! SpotubeTrack) {
-      final tracks = state!.tracks.toList();
-      tracks[state!.active] = await SpotubeTrack.fetchFromTrack(
-        state!.activeTrack,
-        preferences,
-      );
-      final tempTracks = state!.tempTracks
-          .map((e) =>
-              e.id == tracks[state!.active].id ? tracks[state!.active] : e)
-          .toList();
+  // Future<void> play() async {
+  //   if (!isLoaded) return;
+  //   await pause();
+  //   await audioServices.addTrack(state!.activeTrack);
+  //   if (state!.activeTrack is LocalTrack) {
+  //     await audioPlayer.play((state!.activeTrack as LocalTrack).path);
+  //     return;
+  //   }
+  //   if (state!.activeTrack is! SpotubeTrack) {
+  //     final tracks = state!.tracks.toList();
+  //     tracks[state!.active] = await SpotubeTrack.fetchFromTrack(
+  //       state!.activeTrack,
+  //       preferences,
+  //     );
 
-      state = state!.copyWith(
-        tracks: Set.from(tracks),
-        tempTracks: Set.from(tempTracks),
-      );
-    }
+  //     state = state!.copyWith(tracks: Set.from(tracks));
+  //   }
 
-    await audioServices.addTrack(state!.activeTrack);
+  //   await audioServices.addTrack(state!.activeTrack);
 
-    final cached =
-        await DefaultCacheManager().getFileFromCache(state!.activeTrack.id!);
-    if (preferences.predownload && cached != null) {
-      await audioPlayer.play(cached.file.path);
-    } else {
-      await audioPlayer.play((state!.activeTrack as SpotubeTrack).ytUri);
-    }
-  }
+  //   final cached =
+  //       await DefaultCacheManager().getFileFromCache(state!.activeTrack.id!);
+  //   if (preferences.predownload && cached != null) {
+  //     await audioPlayer.play(cached.file.path);
+  //   } else {
+  //     await audioPlayer.play((state!.activeTrack as SpotubeTrack).ytUri);
+  //   }
+  // }
 
+  // TODO: Implement Playtrack
   Future<void> playTrack(Track track) async {
     if (!isLoaded) return;
     final active =
         state!.tracks.toList().indexWhere((element) => element.id == track.id);
     if (active == -1) return;
     state = state!.copyWith(active: active);
-    return play();
   }
 
-  void load(Iterable<Track> tracks, {int active = 0}) {
+  Future<void> load(Iterable<Track> tracks, {int active = 0}) async {
     final activeTrack = tracks.elementAt(active);
     final filtered = Set.from(blacklist.filter(tracks));
     state = PlaylistQueue(
       Set.from(blacklist.filter(tracks)),
-      tempTracks: {},
       active: filtered
           .toList()
           .indexWhere((element) => element.id == activeTrack.id),
     );
+
+    // load 3 items first to avoid huge initial loading time
+    final firstTracks = await Future.wait(
+      filtered
+          .skip(active == 0 ? 0 : active - 1)
+          .take(3)
+          .mapIndexed((i, track) {
+        if (track is LocalTrack) return Future.value(track.path);
+        if (i == 0) {
+          return SpotubeTrack.fetchFromTrack(track, preferences).then(
+            (s) => s.ytUri,
+          );
+        }
+        // Adding delay to not spoof the YouTube API for IP Block
+        return Future.delayed(
+          const Duration(milliseconds: 100),
+          () => SpotubeTrack.fetchFromTrack(track, preferences).then(
+            (s) => s.ytUri,
+          ),
+        );
+      }),
+    );
+
+    final localTracks = tracks
+        .where(
+          (element) =>
+              element is LocalTrack && !firstTracks.contains(element.path),
+        )
+        .map((e) => (e as LocalTrack).path);
+
+    await audioPlayer.openPlaylist(
+      [...firstTracks, ...localTracks],
+      autoPlay: false,
+    );
   }
 
   Future<void> loadAndPlay(Iterable<Track> tracks, {int active = 0}) async {
-    load(tracks, active: active);
-    await play();
+    await load(tracks, active: active);
+    await resume();
   }
 
   Future<void> pause() {
@@ -403,31 +418,11 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
   }
 
   Future<void> next() async {
-    if (!isLoaded) return;
-    if (state!.active == state!.tracks.length - 1) {
-      state = state!.copyWith(
-        active: 0,
-      );
-    } else {
-      state = state!.copyWith(
-        active: state!.active + 1,
-      );
-    }
-    return play();
+    return audioPlayer.skipToNext();
   }
 
   Future<void> previous() async {
-    if (!isLoaded) return;
-    if (state!.active == 0) {
-      state = state!.copyWith(
-        active: state!.tracks.length - 1,
-      );
-    } else {
-      state = state!.copyWith(
-        active: state!.active - 1,
-      );
-    }
-    return play();
+    return audioPlayer.skipToPrevious();
   }
 
   Future<void> seek(Duration position) async {
@@ -436,12 +431,23 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
     await resume();
   }
 
+  Future<void> setShuffle(bool shuffle) async {
+    if (!isLoaded) return;
+    audioPlayer.setShuffle(shuffle);
+    state = state!.copyWith(shuffled: await audioPlayer.isShuffled());
+  }
+
+  Future<void> setLoopMode(PlaybackLoopMode loopMode) async {
+    if (!isLoaded) return;
+    audioPlayer.setLoopMode(loopMode);
+    state = state!.copyWith(loopMode: loopMode);
+  }
+
   // utility
   bool isPlayingPlaylist(Iterable<TrackSimple> playlist) {
     if (!isLoaded || playlist.isEmpty) return false;
 
-    final trackIds = (state!.isShuffled ? state!.tempTracks : state!.tracks)
-        .map((track) => track.id!);
+    final trackIds = state!.tracks.map((track) => track.id!);
     return blacklist
         .filter(playlist)
         .every((track) => trackIds.contains(track.id!));
@@ -449,10 +455,6 @@ class PlaylistQueueNotifier extends PersistedStateNotifier<PlaylistQueue?> {
 
   bool isTrackOnQueue(TrackSimple track) {
     if (!isLoaded) return false;
-    if (state!.isShuffled) {
-      final trackIds = state!.tempTracks.map((track) => track.id!);
-      return trackIds.contains(track.id!);
-    }
     final trackIds = state!.tracks.map((track) => track.id!);
     return trackIds.contains(track.id!);
   }

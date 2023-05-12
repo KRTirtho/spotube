@@ -7,6 +7,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -29,11 +30,9 @@ class LinuxAudioService {
       mpris.playbackStatus = MPRISPlaybackStatus.stopped;
       mpris.setEventHandler(MPRISEventHandler(
         loopStatus: (value) async {
-          if (value == MPRISLoopStatus.none) {
-            playlistNotifier.unloop();
-          } else if (value == MPRISLoopStatus.track) {
-            playlistNotifier.loop();
-          }
+          playlistNotifier.setLoopMode(
+            PlaybackLoopMode.fromMPRISLoopStatus(value),
+          );
         },
         next: playlistNotifier.next,
         pause: playlistNotifier.pause,
@@ -46,13 +45,7 @@ class LinuxAudioService {
           }
         },
         seek: playlistNotifier.seek,
-        shuffle: (value) async {
-          if (value) {
-            playlistNotifier.shuffle();
-          } else {
-            playlistNotifier.unshuffle();
-          }
-        },
+        shuffle: playlistNotifier.setShuffle,
         stop: playlistNotifier.stop,
         volume: (value) async {
           await ref.read(VolumeProvider.provider.notifier).setVolume(value);

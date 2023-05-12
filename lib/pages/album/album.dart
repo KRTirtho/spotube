@@ -28,11 +28,10 @@ class AlbumPage extends HookConsumerWidget {
     currentTrack ??= sortedTracks.first;
     final isPlaylistPlaying = playback.isPlayingPlaylist(tracks);
     if (!isPlaylistPlaying) {
-      playback.load(
+      await playback.loadAndPlay(
         sortedTracks,
         active: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
       );
-      await playback.play();
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
         currentTrack.id != playlist?.activeTrack.id) {

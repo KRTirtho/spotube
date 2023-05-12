@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/loop_mode.dart';
 
 class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
@@ -58,21 +59,15 @@ class MobileAudioService extends BaseAudioHandler {
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
     await super.setShuffleMode(shuffleMode);
 
-    if (shuffleMode == AudioServiceShuffleMode.all) {
-      playlistNotifier.shuffle();
-    } else {
-      playlistNotifier.unshuffle();
-    }
+    playlistNotifier.setShuffle(shuffleMode == AudioServiceShuffleMode.all);
   }
 
   @override
   Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
     super.setRepeatMode(repeatMode);
-    if (repeatMode == AudioServiceRepeatMode.all) {
-      playlistNotifier.loop();
-    } else {
-      playlistNotifier.unloop();
-    }
+    playlistNotifier.setLoopMode(
+      PlaybackLoopMode.fromAudioServiceRepeatMode(repeatMode),
+    );
   }
 
   @override
@@ -114,12 +109,11 @@ class MobileAudioService extends BaseAudioHandler {
       playing: audioPlayer.isPlaying,
       updatePosition: position,
       bufferedPosition: await audioPlayer.bufferedPosition ?? Duration.zero,
-      shuffleMode: playlist?.isShuffled == true
+      shuffleMode: playlist?.shuffled == true
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,
-      repeatMode: playlist?.isLooping == true
-          ? AudioServiceRepeatMode.one
-          : AudioServiceRepeatMode.all,
+      repeatMode: playlist?.loopMode.toAudioServiceRepeatMode() ??
+          AudioServiceRepeatMode.none,
       processingState: playlist?.isLoading == true
           ? AudioProcessingState.loading
           : AudioProcessingState.ready,

@@ -11,6 +11,7 @@ import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
@@ -186,20 +187,20 @@ class PlayerControls extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
-                    tooltip: playlist?.isShuffled == true
+                    tooltip: playlist?.shuffled == true
                         ? context.l10n.unshuffle_playlist
                         : context.l10n.shuffle_playlist,
                     icon: const Icon(SpotubeIcons.shuffle),
-                    style: playlist?.isShuffled == true
+                    style: playlist?.shuffled == true
                         ? activeButtonStyle
                         : buttonStyle,
                     onPressed: playlist == null || playlist.isLoading
                         ? null
                         : () {
-                            if (playlist.isShuffled == true) {
-                              playlistNotifier.unshuffle();
+                            if (playlist.shuffled == true) {
+                              playlistNotifier.setShuffle(false);
                             } else {
-                              playlistNotifier.shuffle();
+                              playlistNotifier.setShuffle(true);
                             }
                           },
                   ),
@@ -240,24 +241,26 @@ class PlayerControls extends HookConsumerWidget {
                     onPressed: playlistNotifier.next,
                   ),
                   IconButton(
-                    tooltip: playlist?.isLooping != true
+                    tooltip: playlist?.loopMode == PlaybackLoopMode.one
                         ? context.l10n.loop_track
                         : context.l10n.repeat_playlist,
                     icon: Icon(
-                      playlist?.isLooping == true
+                      playlist?.loopMode == PlaybackLoopMode.one
                           ? SpotubeIcons.repeatOne
                           : SpotubeIcons.repeat,
                     ),
-                    style: playlist?.isLooping == true
+                    style: playlist?.loopMode == PlaybackLoopMode.one
                         ? activeButtonStyle
                         : buttonStyle,
                     onPressed: playlist == null || playlist.isLoading
                         ? null
                         : () {
-                            if (playlist.isLooping == true) {
-                              playlistNotifier.unloop();
+                            if (playlist.loopMode == PlaybackLoopMode.one) {
+                              playlistNotifier
+                                  .setLoopMode(PlaybackLoopMode.all);
                             } else {
-                              playlistNotifier.loop();
+                              playlistNotifier
+                                  .setLoopMode(PlaybackLoopMode.one);
                             }
                           },
                   ),

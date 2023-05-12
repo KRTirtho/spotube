@@ -1,5 +1,7 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:mpris_service/mpris_service.dart';
 
 /// An unified loop mode for both [LoopMode] and [PlaylistMode]
 enum PlaybackLoopMode {
@@ -48,6 +50,65 @@ enum PlaybackLoopMode {
         return PlaylistMode.single;
       case PlaybackLoopMode.none:
         return PlaylistMode.none;
+    }
+  }
+
+  static PlaybackLoopMode fromMPRISLoopStatus(MPRISLoopStatus status) {
+    switch (status) {
+      case MPRISLoopStatus.none:
+        return PlaybackLoopMode.none;
+      case MPRISLoopStatus.track:
+        return PlaybackLoopMode.one;
+      case MPRISLoopStatus.playlist:
+        return PlaybackLoopMode.all;
+    }
+  }
+
+  MPRISLoopStatus toMPRISLoopStatus() {
+    switch (this) {
+      case PlaybackLoopMode.all:
+        return MPRISLoopStatus.playlist;
+      case PlaybackLoopMode.one:
+        return MPRISLoopStatus.track;
+      case PlaybackLoopMode.none:
+        return MPRISLoopStatus.none;
+    }
+  }
+
+  static PlaybackLoopMode fromAudioServiceRepeatMode(
+      AudioServiceRepeatMode mode) {
+    switch (mode) {
+      case AudioServiceRepeatMode.all:
+      case AudioServiceRepeatMode.group:
+        return PlaybackLoopMode.all;
+      case AudioServiceRepeatMode.one:
+        return PlaybackLoopMode.one;
+      case AudioServiceRepeatMode.none:
+        return PlaybackLoopMode.none;
+    }
+  }
+
+  AudioServiceRepeatMode toAudioServiceRepeatMode() {
+    switch (this) {
+      case PlaybackLoopMode.all:
+        return AudioServiceRepeatMode.all;
+      case PlaybackLoopMode.one:
+        return AudioServiceRepeatMode.one;
+      case PlaybackLoopMode.none:
+        return AudioServiceRepeatMode.none;
+    }
+  }
+
+  static PlaybackLoopMode fromString(String? value) {
+    switch (value) {
+      case 'all':
+        return PlaybackLoopMode.all;
+      case 'one':
+        return PlaybackLoopMode.one;
+      case 'none':
+        return PlaybackLoopMode.none;
+      default:
+        return PlaybackLoopMode.none;
     }
   }
 }

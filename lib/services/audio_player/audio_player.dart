@@ -107,6 +107,22 @@ class SpotubeAudioPlayer {
     }
   }
 
+  Stream<int> get currentIndexChangedStream {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.streams.playlist
+          .map((event) => event.index)
+          .asBroadcastStream();
+    } else {
+      return _justAudio!.positionDiscontinuityStream
+          .where(
+            (event) =>
+                event.reason == ja.PositionDiscontinuityReason.autoAdvance,
+          )
+          .map((event) => currentIndex)
+          .asBroadcastStream();
+    }
+  }
+
   // regular info getter
 
   Future<Duration?> get duration async {
@@ -301,20 +317,22 @@ class SpotubeAudioPlayer {
   }
 
   List<SpotubeTrack> resolveTracksForSource(List<SpotubeTrack> tracks) {
-    if (mkSupportedPlatform) {
-      final urls = _mkPlayer!.state.playlist.medias.map((e) => e.uri).toList();
-      return tracks.where((e) => urls.contains(e.ytUri)).toList();
-    } else {
-      final urls = (_justAudio!.audioSource as ja.ConcatenatingAudioSource)
-          .children
-          .map((e) => (e as ja.UriAudioSource).uri.toString())
-          .toList();
-      return tracks.where((e) => urls.contains(e.ytUri)).toList();
-    }
+    return tracks.where((e) => sources.contains(e.ytUri)).toList();
   }
 
   bool tracksExistsInPlaylist(List<SpotubeTrack> tracks) {
     return resolveTracksForSource(tracks).length == tracks.length;
+  }
+
+  List<String> get sources {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.state.playlist.medias.map((e) => e.uri).toList();
+    } else {
+      return (_justAudio!.audioSource as ja.ConcatenatingAudioSource)
+          .children
+          .map((e) => (e as ja.UriAudioSource).uri.toString())
+          .toList();
+    }
   }
 
   int get currentIndex {

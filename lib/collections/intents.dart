@@ -31,7 +31,8 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
       if (audioPlayer.hasSource && !await audioPlayer.isCompleted) {
         await playlistNotifier.resume();
       } else {
-        await playlistNotifier.play();
+        // TODO: Implement play on start
+        // await playlistNotifier.play();
       }
     } else {
       await playlistNotifier.pause();
