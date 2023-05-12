@@ -10,7 +10,7 @@ import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/services/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class PlayerOverlay extends HookConsumerWidget {

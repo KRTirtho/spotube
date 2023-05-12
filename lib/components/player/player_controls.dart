@@ -10,7 +10,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/services/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {

@@ -6,7 +6,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';

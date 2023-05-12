@@ -4,7 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/services/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/playback_state.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class WindowsAudioService {

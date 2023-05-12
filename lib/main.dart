@@ -24,7 +24,7 @@ import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/services/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';

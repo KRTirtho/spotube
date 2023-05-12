@@ -6,7 +6,8 @@ import 'package:mpris_service/mpris_service.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/services/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/playback_state.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class LinuxAudioService {
