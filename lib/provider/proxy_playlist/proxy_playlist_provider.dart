@@ -20,6 +20,9 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 /// * [x] Prefetch next track as [SpotubeTrack] on 80% of current track
 /// * [ ] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
 /// * [ ] Caching and loading of cache of tracks
+/// * [ ] Shuffling and loop => playlist, track, none
+/// * [ ] Alternative Track Source
+/// * [x] Blacklisting of tracks and artist
 ///
 /// Don'ts:
 /// * It'll not have any proxy method for [SpotubeAudioPlayer]
@@ -48,7 +51,8 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
       notificationService = await AudioServices.create(ref, this);
 
       audioPlayer.currentIndexChangedStream.listen((index) async {
-        if (index == -1) return;
+        if (index == -1 || index == state.active) return;
+
         final track = state.tracks.elementAtOrNull(index);
         if (track == null) return;
         notificationService.addTrack(track);
@@ -60,14 +64,26 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
       });
 
       bool isPreSearching = false;
-      audioPlayer.percentCompletedStream(80).listen((_) async {
+      audioPlayer.percentCompletedStream(60).listen((percent) async {
         if (isPreSearching) return;
         try {
           isPreSearching = true;
 
+          final softReplace =
+              SpotubeAudioPlayer.mkSupportedPlatform && percent <= 98;
+
           // TODO: Make repeat mode sensitive changes later
-          final track =
-              await ensureNthSourcePlayable(audioPlayer.currentIndex + 1);
+          final track = await ensureNthSourcePlayable(
+            audioPlayer.currentIndex + 1,
+
+            /// [MediaKit] doesn't fully support replacing source, so we need
+            /// to check if the platform is supported or not and replace the
+            /// actual playlist with a playlist that contains the next track
+            /// at 98% >= progress
+            softReplace: softReplace,
+            exclusive: SpotubeAudioPlayer.mkSupportedPlatform,
+          );
+
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
           }
@@ -109,8 +125,7 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
             preferences.skipSponsorSegments) {
           for (final segment in activeTrack.skipSegments) {
             if (pos.inSeconds < segment["start"]! ||
-                pos.inSeconds > segment["end"]!) continue;
-            await audioPlayer.pause();
+                pos.inSeconds >= segment["end"]!) continue;
             await audioPlayer.seek(Duration(seconds: segment["end"]!));
           }
         }
@@ -118,7 +133,11 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     }();
   }
 
-  Future<SpotubeTrack?> ensureNthSourcePlayable(int n) async {
+  Future<SpotubeTrack?> ensureNthSourcePlayable(
+    int n, {
+    bool softReplace = false,
+    bool exclusive = false,
+  }) async {
     final sources = audioPlayer.sources;
     if (n < 0 || n > sources.length - 1) return null;
     final nthSource = sources.elementAtOrNull(n);
@@ -127,19 +146,23 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     final nthTrack = state.tracks.firstWhereOrNull(
       (element) => element.id == getIdFromUnPlayable(nthSource),
     );
-    if (nthTrack == null ||
-        nthTrack is SpotubeTrack ||
-        nthTrack is LocalTrack) {
+    if (nthTrack == null || nthTrack is LocalTrack) {
       return null;
     }
 
-    final nthFetchedTrack =
-        await SpotubeTrack.fetchFromTrack(nthTrack, preferences);
+    final nthFetchedTrack = nthTrack is SpotubeTrack
+        ? nthTrack
+        : await SpotubeTrack.fetchFromTrack(nthTrack, preferences);
 
-    await audioPlayer.replaceSource(
-      nthSource,
-      nthFetchedTrack.ytUri,
-    );
+    if (nthSource == nthFetchedTrack.ytUri) return null;
+
+    if (!softReplace) {
+      await audioPlayer.replaceSource(
+        nthSource,
+        nthFetchedTrack.ytUri,
+        exclusive: exclusive,
+      );
+    }
 
     return nthFetchedTrack;
   }

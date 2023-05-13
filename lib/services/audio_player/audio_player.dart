@@ -64,15 +64,16 @@ class SpotubeAudioPlayer {
   }
 
   /// Stream that emits when the player is almost (%) complete
-  Stream<void> percentCompletedStream(double percent) {
+  Stream<int> percentCompletedStream(double percent) {
     return positionStream
-        .asyncMap((event) async => [event, await duration])
-        .where((event) {
-      final position = event[0] as Duration;
-      final duration = event[1] as Duration;
-
-      return position.inSeconds > duration.inSeconds * percent / 100;
-    }).asBroadcastStream();
+        .asyncMap(
+          (position) async => (await duration)?.inSeconds == 0
+              ? 0
+              : (position.inSeconds / (await duration)!.inSeconds * 100)
+                  .toInt(),
+        )
+        .where((event) => event >= percent)
+        .asBroadcastStream();
   }
 
   Stream<bool> get playingStream {
@@ -143,12 +144,8 @@ class SpotubeAudioPlayer {
           .map((event) => event.index)
           .asBroadcastStream();
     } else {
-      return _justAudio!.positionDiscontinuityStream
-          .where(
-            (event) =>
-                event.reason == ja.PositionDiscontinuityReason.autoAdvance,
-          )
-          .map((event) => currentIndex)
+      return _justAudio!.sequenceStateStream
+          .map((event) => event?.currentIndex ?? -1)
           .asBroadcastStream();
     }
   }
@@ -237,6 +234,7 @@ class SpotubeAudioPlayer {
     }
   }
 
+  /// Returns the current volume of the player, between 0 and 1
   double get volume {
     if (mkSupportedPlatform) {
       return _mkPlayer!.state.volume / 100;
@@ -320,8 +318,10 @@ class SpotubeAudioPlayer {
     await _justAudio?.seek(position);
   }
 
+  /// Volume is between 0 and 1
   Future<void> setVolume(double volume) async {
-    await _mkPlayer?.setVolume(volume);
+    assert(volume >= 0 && volume <= 1);
+    await _mkPlayer?.setVolume(volume * 100);
     await _justAudio?.setVolume(volume);
   }
 
@@ -391,7 +391,7 @@ class SpotubeAudioPlayer {
     if (mkSupportedPlatform) {
       return _mkPlayer!.state.playlist.index;
     } else {
-      return _justAudio!.sequenceState!.currentIndex;
+      return _justAudio!.sequenceState?.currentIndex ?? -1;
     }
   }
 
@@ -447,13 +447,18 @@ class SpotubeAudioPlayer {
     }
   }
 
-  Future<void> replaceSource(String oldSource, String newSource) async {
-    final willBeReplacedIndex = sources.indexOf(oldSource);
-    if (willBeReplacedIndex == -1) return;
+  Future<void> replaceSource(
+    String oldSource,
+    String newSource, {
+    bool exclusive = false,
+  }) async {
+    final oldSourceIndex = sources.indexOf(oldSource);
+    if (oldSourceIndex == -1) return;
 
     if (mkSupportedPlatform) {
       final sourcesCp = sources.toList();
-      sourcesCp[willBeReplacedIndex] = newSource;
+      sourcesCp[oldSourceIndex] = newSource;
+
       await _mkPlayer!.open(
         mk.Playlist(
           sourcesCp.map(mk.Media.new).toList(),
@@ -461,20 +466,21 @@ class SpotubeAudioPlayer {
         ),
         play: false,
       );
+      if (exclusive) await jumpTo(oldSourceIndex);
     } else {
       await addTrack(newSource);
-      await removeTrack(willBeReplacedIndex);
+      await removeTrack(oldSourceIndex);
 
       int newSourceIndex = sources.indexOf(newSource);
       while (newSourceIndex == -1) {
         await Future.delayed(const Duration(milliseconds: 100));
         newSourceIndex = sources.indexOf(newSource);
       }
-      await moveTrack(newSourceIndex, willBeReplacedIndex);
+      await moveTrack(newSourceIndex, oldSourceIndex);
       newSourceIndex = sources.indexOf(newSource);
-      while (newSourceIndex != willBeReplacedIndex) {
+      while (newSourceIndex != oldSourceIndex) {
         await Future.delayed(const Duration(milliseconds: 100));
-        await moveTrack(newSourceIndex, willBeReplacedIndex);
+        await moveTrack(newSourceIndex, oldSourceIndex);
         newSourceIndex = sources.indexOf(newSource);
       }
     }
