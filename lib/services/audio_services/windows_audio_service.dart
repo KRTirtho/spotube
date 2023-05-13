@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -11,7 +11,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class WindowsAudioService {
   final SMTCWindows smtc;
   final Ref ref;
-  final PlaylistQueueNotifier playlistNotifier;
+  final ProxyPlaylistNotifier playlistNotifier;
 
   final subscriptions = <StreamSubscription>[];
 
@@ -21,10 +21,10 @@ class WindowsAudioService {
     final buttonStream = smtc.buttonPressStream.listen((event) {
       switch (event) {
         case PressedButton.play:
-          playlistNotifier.resume();
+          audioPlayer.resume();
           break;
         case PressedButton.pause:
-          playlistNotifier.pause();
+          audioPlayer.pause();
           break;
         case PressedButton.next:
           playlistNotifier.next();

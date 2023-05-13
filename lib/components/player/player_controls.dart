@@ -9,7 +9,7 @@ import 'package:spotube/collections/intents.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_progress.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -43,8 +43,8 @@ class PlayerControls extends HookConsumerWidget {
               SeekIntent: SeekAction(),
             },
         []);
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
 
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
@@ -145,13 +145,13 @@ class PlayerControls extends HookConsumerWidget {
                             // than total duration. Keeping it resolved
                             value: progress.value.toDouble(),
                             secondaryTrackValue: progressObj.item4,
-                            onChanged: playlist?.isLoading == true || buffering
+                            onChanged: playlist.isFetching == true || buffering
                                 ? null
                                 : (v) {
                                     progress.value = v;
                                   },
                             onChangeEnd: (value) async {
-                              await playlistNotifier.seek(
+                              await audioPlayer.seek(
                                 Duration(
                                   seconds: (value * duration.inSeconds).toInt(),
                                 ),
@@ -186,24 +186,27 @@ class PlayerControls extends HookConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  IconButton(
-                    tooltip: playlist?.shuffled == true
-                        ? context.l10n.unshuffle_playlist
-                        : context.l10n.shuffle_playlist,
-                    icon: const Icon(SpotubeIcons.shuffle),
-                    style: playlist?.shuffled == true
-                        ? activeButtonStyle
-                        : buttonStyle,
-                    onPressed: playlist == null || playlist.isLoading
-                        ? null
-                        : () {
-                            if (playlist.shuffled == true) {
-                              playlistNotifier.setShuffle(false);
-                            } else {
-                              playlistNotifier.setShuffle(true);
-                            }
-                          },
-                  ),
+                  StreamBuilder<bool>(
+                      stream: audioPlayer.shuffledStream,
+                      builder: (context, snapshot) {
+                        final shuffled = snapshot.data ?? false;
+                        return IconButton(
+                          tooltip: shuffled
+                              ? context.l10n.unshuffle_playlist
+                              : context.l10n.shuffle_playlist,
+                          icon: const Icon(SpotubeIcons.shuffle),
+                          style: shuffled ? activeButtonStyle : buttonStyle,
+                          onPressed: playlist.isFetching
+                              ? null
+                              : () {
+                                  if (shuffled) {
+                                    audioPlayer.setShuffle(false);
+                                  } else {
+                                    audioPlayer.setShuffle(true);
+                                  }
+                                },
+                        );
+                      }),
                   IconButton(
                     tooltip: context.l10n.previous_track,
                     icon: const Icon(SpotubeIcons.skipBack),
@@ -214,7 +217,7 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: playing
                         ? context.l10n.pause_playback
                         : context.l10n.resume_playback,
-                    icon: playlist?.isLoading == true
+                    icon: playlist.isFetching == true
                         ? SizedBox(
                             height: 20,
                             width: 20,
@@ -227,7 +230,7 @@ class PlayerControls extends HookConsumerWidget {
                             playing ? SpotubeIcons.pause : SpotubeIcons.play,
                           ),
                     style: resumePauseStyle,
-                    onPressed: playlist?.isLoading == true
+                    onPressed: playlist.isFetching == true
                         ? null
                         : Actions.handler<PlayPauseIntent>(
                             context,
@@ -240,30 +243,35 @@ class PlayerControls extends HookConsumerWidget {
                     style: buttonStyle,
                     onPressed: playlistNotifier.next,
                   ),
-                  IconButton(
-                    tooltip: playlist?.loopMode == PlaybackLoopMode.one
-                        ? context.l10n.loop_track
-                        : context.l10n.repeat_playlist,
-                    icon: Icon(
-                      playlist?.loopMode == PlaybackLoopMode.one
-                          ? SpotubeIcons.repeatOne
-                          : SpotubeIcons.repeat,
-                    ),
-                    style: playlist?.loopMode == PlaybackLoopMode.one
-                        ? activeButtonStyle
-                        : buttonStyle,
-                    onPressed: playlist == null || playlist.isLoading
-                        ? null
-                        : () {
-                            if (playlist.loopMode == PlaybackLoopMode.one) {
-                              playlistNotifier
-                                  .setLoopMode(PlaybackLoopMode.all);
-                            } else {
-                              playlistNotifier
-                                  .setLoopMode(PlaybackLoopMode.one);
-                            }
-                          },
-                  ),
+                  StreamBuilder<PlaybackLoopMode>(
+                      stream: audioPlayer.loopModeStream,
+                      builder: (context, snapshot) {
+                        final loopMode = snapshot.data ?? PlaybackLoopMode.none;
+                        return IconButton(
+                          tooltip: loopMode == PlaybackLoopMode.one
+                              ? context.l10n.loop_track
+                              : context.l10n.repeat_playlist,
+                          icon: Icon(
+                            loopMode == PlaybackLoopMode.one
+                                ? SpotubeIcons.repeatOne
+                                : SpotubeIcons.repeat,
+                          ),
+                          style: loopMode == PlaybackLoopMode.one
+                              ? activeButtonStyle
+                              : buttonStyle,
+                          onPressed: playlist.isFetching
+                              ? null
+                              : () {
+                                  if (loopMode == PlaybackLoopMode.one) {
+                                    audioPlayer
+                                        .setLoopMode(PlaybackLoopMode.all);
+                                  } else {
+                                    audioPlayer
+                                        .setLoopMode(PlaybackLoopMode.one);
+                                  }
+                                },
+                        );
+                      }),
                 ],
               ),
               const SizedBox(height: 5)

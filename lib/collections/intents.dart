@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
@@ -23,19 +24,11 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
     if (PlayerControls.focusNode.canRequestFocus) {
       PlayerControls.focusNode.requestFocus();
     }
-    final playlist = intent.ref.read(PlaylistQueueNotifier.provider);
-    final playlistNotifier = intent.ref.read(PlaylistQueueNotifier.notifier);
-    if (playlist == null) {
-      return null;
-    } else if (!audioPlayer.isPlaying) {
-      if (audioPlayer.hasSource && !await audioPlayer.isCompleted) {
-        await playlistNotifier.resume();
-      } else {
-        // TODO: Implement play on start
-        // await playlistNotifier.play();
-      }
+
+    if (!audioPlayer.isPlaying) {
+      await audioPlayer.resume();
     } else {
-      await playlistNotifier.pause();
+      await audioPlayer.pause();
     }
     return null;
   }
@@ -98,9 +91,8 @@ class SeekIntent extends Intent {
 class SeekAction extends Action<SeekIntent> {
   @override
   invoke(intent) async {
-    final playlist = intent.ref.read(PlaylistQueueNotifier.provider);
-    final playlistNotifier = intent.ref.read(PlaylistQueueNotifier.notifier);
-    if (playlist == null || playlist.isLoading) {
+    final playlist = intent.ref.read(ProxyPlaylistNotifier.provider);
+    if (playlist.isFetching) {
       DirectionalFocusAction().invoke(
         DirectionalFocusIntent(
           intent.forward ? TraversalDirection.right : TraversalDirection.left,
@@ -109,7 +101,7 @@ class SeekAction extends Action<SeekIntent> {
       return null;
     }
     final position = (await audioPlayer.position ?? Duration.zero).inSeconds;
-    await playlistNotifier.seek(
+    await audioPlayer.seek(
       Duration(
         seconds: intent.forward ? position + 5 : position - 5,
       ),

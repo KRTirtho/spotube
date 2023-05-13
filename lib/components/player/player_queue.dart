@@ -10,7 +10,7 @@ import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerQueue extends HookConsumerWidget {
@@ -22,10 +22,10 @@ class PlayerQueue extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final controller = useAutoScrollController();
-    final tracks = playlist?.tracks ?? {};
+    final tracks = playlist.tracks;
 
     if (tracks.isEmpty) {
       return const NotFound(vertical: true);
@@ -41,11 +41,11 @@ class PlayerQueue extends HookConsumerWidget {
     final headlineColor = theme.textTheme.headlineSmall?.color;
 
     useEffect(() {
-      if (playlist == null) return null;
-      final index = playlist.active;
-      if (index < 0) return;
+      if (playlist.active == null) return null;
+
+      if (playlist.active! < 0) return;
       controller.scrollToIndex(
-        index,
+        playlist.active!,
         preferPosition: AutoScrollPosition.middle,
       );
       return null;
@@ -113,7 +113,7 @@ class PlayerQueue extends HookConsumerWidget {
             Flexible(
               child: ReorderableListView.builder(
                   onReorder: (oldIndex, newIndex) {
-                    playlistNotifier.reorder(oldIndex, newIndex);
+                    playlistNotifier.moveTrack(oldIndex, newIndex);
                   },
                   scrollController: controller,
                   itemCount: tracks.length,
@@ -133,12 +133,12 @@ class PlayerQueue extends HookConsumerWidget {
                           playlist,
                           track: track,
                           duration: duration,
-                          isActive: playlist?.activeTrack.id == track.value.id,
+                          isActive: playlist.activeTrack?.id == track.value.id,
                           onTrackPlayButtonPressed: (currentTrack) async {
-                            if (playlist?.activeTrack.id == track.value.id) {
+                            if (playlist.activeTrack?.id == track.value.id) {
                               return;
                             }
-                            await playlistNotifier.playTrack(currentTrack);
+                            await playlistNotifier.jumpToTrack(currentTrack);
                           },
                           leadingActions: [
                             ReorderableDragStartListener(

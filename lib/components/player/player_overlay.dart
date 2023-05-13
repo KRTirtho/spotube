@@ -9,7 +9,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/hooks/use_progress.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -24,10 +24,10 @@ class PlayerOverlay extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final canShow = ref.watch(
-      PlaylistQueueNotifier.provider.select((s) => s != null),
+      ProxyPlaylistNotifier.provider.select((s) => s != null),
     );
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
 
@@ -116,7 +116,7 @@ class PlayerOverlay extends HookConsumerWidget {
                               Consumer(
                                 builder: (context, ref, _) {
                                   return IconButton(
-                                    icon: playlist?.isLoading == true
+                                    icon: playlist.isFetching
                                         ? const SizedBox(
                                             height: 20,
                                             width: 20,

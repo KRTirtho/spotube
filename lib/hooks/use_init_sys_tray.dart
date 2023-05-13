@@ -3,7 +3,8 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/intents.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 
 void useInitSysTray(WidgetRef ref) {
@@ -12,15 +13,15 @@ void useInitSysTray(WidgetRef ref) {
 
   final initializeMenu = useCallback(() async {
     systemTray.value?.destroy();
-    final playlistQueue = ref.read(PlaylistQueueNotifier.notifier);
+    final playlist = ref.read(ProxyPlaylistNotifier.provider);
+    final playlistQueue = ref.read(ProxyPlaylistNotifier.notifier);
     final preferences = ref.read(userPreferencesProvider);
     if (!preferences.showSystemTrayIcon) {
       await systemTray.value?.destroy();
       systemTray.value = null;
       return;
     }
-    final enabled =
-        playlistQueue.isLoaded && playlistQueue.state?.isLoading != true;
+    final enabled = !playlist.isFetching;
     systemTray.value = await DesktopTools.createSystemTrayMenu(
       title: "Spotube",
       iconPath: "assets/spotube-logo.png",
@@ -51,7 +52,7 @@ void useInitSysTray(WidgetRef ref) {
         MenuItemLabel(
           label: "Next",
           name: "next",
-          enabled: enabled && (playlistQueue.state?.tracks.length ?? 0) > 1,
+          enabled: enabled && (playlist.tracks.length) > 1,
           onClicked: (p0) async {
             await playlistQueue.next();
           },
@@ -59,7 +60,7 @@ void useInitSysTray(WidgetRef ref) {
         MenuItemLabel(
           label: "Previous",
           name: "previous",
-          enabled: enabled && (playlistQueue.state?.tracks.length ?? 0) > 1,
+          enabled: enabled && (playlist.tracks.length) > 1,
           onClicked: (p0) async {
             await playlistQueue.previous();
           },
@@ -101,8 +102,8 @@ void useInitSysTray(WidgetRef ref) {
 
   useReassemble(initializeMenu);
 
-  ref.listen<PlaylistQueue?>(
-    PlaylistQueueNotifier.provider,
+  ref.listen<ProxyPlaylist?>(
+    ProxyPlaylistNotifier.provider,
     (previous, next) {
       initializeMenu();
     },

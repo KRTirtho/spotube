@@ -19,7 +19,7 @@ import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
@@ -57,8 +57,8 @@ class ArtistPage extends HookConsumerWidget {
 
     final breakpoint = useBreakpoints();
 
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
 
     final auth = ref.watch(AuthenticationNotifier.provider);
 
@@ -298,8 +298,7 @@ class ArtistPage extends HookConsumerWidget {
                           artistId,
                         );
 
-                        final isPlaylistPlaying =
-                            playlistNotifier.isPlayingPlaylist(
+                        final isPlaylistPlaying = playlist.containsTracks(
                           topTracksQuery.data ?? <Track>[],
                         );
 
@@ -318,13 +317,16 @@ class ArtistPage extends HookConsumerWidget {
                             {Track? currentTrack}) async {
                           currentTrack ??= tracks.first;
                           if (!isPlaylistPlaying) {
-                            playlistNotifier.loadAndPlay(tracks,
-                                active: tracks.indexWhere(
-                                    (s) => s.id == currentTrack?.id));
+                            playlistNotifier.load(
+                              tracks,
+                              initialIndex: tracks
+                                  .indexWhere((s) => s.id == currentTrack?.id),
+                              autoPlay: true,
+                            );
                           } else if (isPlaylistPlaying &&
                               currentTrack.id != null &&
-                              currentTrack.id != playlist?.activeTrack.id) {
-                            await playlistNotifier.playTrack(currentTrack);
+                              currentTrack.id != playlist.activeTrack?.id) {
+                            await playlistNotifier.jumpToTrack(currentTrack);
                           }
                         }
 
@@ -341,7 +343,8 @@ class ArtistPage extends HookConsumerWidget {
                                     SpotubeIcons.queueAdd,
                                   ),
                                   onPressed: () {
-                                    playlistNotifier.add(topTracks.toList());
+                                    playlistNotifier
+                                        .addTracks(topTracks.toList());
                                     scaffoldMessenger.showSnackBar(
                                       SnackBar(
                                         width: 300,
@@ -380,7 +383,7 @@ class ArtistPage extends HookConsumerWidget {
                               duration: duration,
                               track: track,
                               isActive:
-                                  playlist?.activeTrack.id == track.value.id,
+                                  playlist.activeTrack?.id == track.value.id,
                               onTrackPlayButtonPressed: (currentTrack) =>
                                   playPlaylist(
                                 topTracks.toList(),

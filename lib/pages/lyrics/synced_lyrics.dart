@@ -10,7 +10,7 @@ import 'package:spotube/hooks/use_auto_scroll_controller.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -31,7 +31,7 @@ class SyncedLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
 
     final breakpoint = useBreakpoints();
     final controller = useAutoScrollController();
@@ -77,7 +77,7 @@ class SyncedLyrics extends HookConsumerWidget {
             if (isModal != true)
               Center(
                 child: Text(
-                  playlist?.activeTrack.name ?? "Not Playing",
+                  playlist.activeTrack?.name ?? "Not Playing",
                   style: headlineTextStyle,
                 ),
               ),
@@ -85,7 +85,7 @@ class SyncedLyrics extends HookConsumerWidget {
               Center(
                 child: Text(
                   TypeConversionUtils.artists_X_String<Artist>(
-                      playlist?.activeTrack.artists ?? []),
+                      playlist.activeTrack?.artists ?? []),
                   style: breakpoint >= Breakpoints.md
                       ? textTheme.headlineSmall
                       : textTheme.titleLarge,

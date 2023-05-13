@@ -2,29 +2,29 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
 
 class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
-  final PlaylistQueueNotifier playlistNotifier;
-  final VolumeProvider volumeNotifier;
+  final ProxyPlaylistNotifier playlistNotifier;
 
-  PlaylistQueue? get playlist => playlistNotifier.state;
+  ProxyPlaylist get playlist => playlistNotifier.state;
 
-  MobileAudioService(this.playlistNotifier, this.volumeNotifier) {
+  MobileAudioService(this.playlistNotifier) {
     AudioSession.instance.then((s) {
       session = s;
       session?.configure(const AudioSessionConfiguration.music());
       s.interruptionEventStream.listen((event) async {
         switch (event.type) {
           case AudioInterruptionType.duck:
-            await volumeNotifier.setVolume(event.begin ? 0.5 : 1.0);
+            await audioPlayer.setVolume(event.begin ? 0.5 : 1.0);
             break;
           case AudioInterruptionType.pause:
           case AudioInterruptionType.unknown:
-            await playlistNotifier.pause();
+            await audioPlayer.pause();
             break;
         }
       });
@@ -47,25 +47,25 @@ class MobileAudioService extends BaseAudioHandler {
   }
 
   @override
-  Future<void> play() => playlistNotifier.resume();
+  Future<void> play() => audioPlayer.resume();
 
   @override
-  Future<void> pause() => playlistNotifier.pause();
+  Future<void> pause() => audioPlayer.pause();
 
   @override
-  Future<void> seek(Duration position) => playlistNotifier.seek(position);
+  Future<void> seek(Duration position) => audioPlayer.seek(position);
 
   @override
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
     await super.setShuffleMode(shuffleMode);
 
-    playlistNotifier.setShuffle(shuffleMode == AudioServiceShuffleMode.all);
+    audioPlayer.setShuffle(shuffleMode == AudioServiceShuffleMode.all);
   }
 
   @override
   Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
     super.setRepeatMode(repeatMode);
-    playlistNotifier.setLoopMode(
+    audioPlayer.setLoopMode(
       PlaybackLoopMode.fromAudioServiceRepeatMode(repeatMode),
     );
   }
@@ -109,12 +109,11 @@ class MobileAudioService extends BaseAudioHandler {
       playing: audioPlayer.isPlaying,
       updatePosition: position,
       bufferedPosition: await audioPlayer.bufferedPosition ?? Duration.zero,
-      shuffleMode: playlist?.shuffled == true
+      shuffleMode: await audioPlayer.isShuffled == true
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,
-      repeatMode: playlist?.loopMode.toAudioServiceRepeatMode() ??
-          AudioServiceRepeatMode.none,
-      processingState: playlist?.isLoading == true
+      repeatMode: (await audioPlayer.loopMode).toAudioServiceRepeatMode(),
+      processingState: playlist.isFetching == true
           ? AudioProcessingState.loading
           : AudioProcessingState.ready,
     );

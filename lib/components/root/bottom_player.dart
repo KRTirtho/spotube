@@ -17,8 +17,9 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -28,21 +29,21 @@ class BottomPlayer extends HookConsumerWidget {
   final logger = getLogger(BottomPlayer);
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
     final breakpoint = useBreakpoints();
 
     String albumArt = useMemoized(
-      () => playlist?.activeTrack.album?.images?.isNotEmpty == true
+      () => playlist.activeTrack?.album?.images?.isNotEmpty == true
           ? TypeConversionUtils.image_X_UrlString(
-              playlist?.activeTrack.album?.images,
-              index: (playlist?.activeTrack.album?.images?.length ?? 1) - 1,
+              playlist.activeTrack?.album?.images,
+              index: (playlist.activeTrack?.album?.images?.length ?? 1) - 1,
               placeholder: ImagePlaceholder.albumArt,
             )
           : Assets.albumPlaceholder.path,
-      [playlist?.activeTrack.album?.images],
+      [playlist.activeTrack?.album?.images],
     );
 
     final theme = Theme.of(context);
@@ -90,9 +91,8 @@ class BottomPlayer extends HookConsumerWidget {
                         constraints: const BoxConstraints(maxWidth: 200),
                         child: HookBuilder(builder: (context) {
                           final volumeState =
-                              ref.watch(VolumeProvider.provider);
-                          final volumeNotifier =
-                              ref.watch(VolumeProvider.provider.notifier);
+                              useStream(audioPlayer.volumeStream).data ??
+                                  audioPlayer.volume;
                           final volume = useState(volumeState);
 
                           useEffect(() {
@@ -107,12 +107,10 @@ class BottomPlayer extends HookConsumerWidget {
                               if (event is PointerScrollEvent) {
                                 if (event.scrollDelta.dy > 0) {
                                   final value = volume.value - .2;
-                                  volumeNotifier
-                                      .setVolume(value < 0 ? 0 : value);
+                                  audioPlayer.setVolume(value < 0 ? 0 : value);
                                 } else {
                                   final value = volume.value + .2;
-                                  volumeNotifier
-                                      .setVolume(value > 1 ? 1 : value);
+                                  audioPlayer.setVolume(value > 1 ? 1 : value);
                                 }
                               }
                             },
@@ -123,7 +121,7 @@ class BottomPlayer extends HookConsumerWidget {
                               onChanged: (v) {
                                 volume.value = v;
                               },
-                              onChangeEnd: volumeNotifier.setVolume,
+                              onChangeEnd: audioPlayer.setVolume,
                             ),
                           );
                         }),

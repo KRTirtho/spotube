@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -41,16 +41,15 @@ class AlbumCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final queryClient = useQueryClient();
     final query = queryClient
         .getQuery<List<TrackSimple>, dynamic>("album-tracks/${album.id}");
     bool isPlaylistPlaying = useMemoized(
-      () =>
-          playlistNotifier.isPlayingPlaylist(query?.data ?? album.tracks ?? []),
+      () => playlist.containsTracks(query?.data ?? album.tracks ?? []),
       [playlistNotifier, query?.data, album.tracks],
     );
     final int marginH =
@@ -66,7 +65,7 @@ class AlbumCard extends HookConsumerWidget {
         ),
         margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
         isPlaying: isPlaylistPlaying,
-        isLoading: isPlaylistPlaying && playlist?.isLoading == true,
+        isLoading: isPlaylistPlaying && playlist.isFetching == true,
         title: album.name!,
         description:
             "${AlbumType.from(album.albumType!).formatted} • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
@@ -77,16 +76,19 @@ class AlbumCard extends HookConsumerWidget {
           updating.value = true;
           try {
             if (isPlaylistPlaying && playing) {
-              return playlistNotifier.pause();
+              return audioPlayer.pause();
             } else if (isPlaylistPlaying && !playing) {
-              return playlistNotifier.resume();
+              return audioPlayer.resume();
             }
 
-            await playlistNotifier.loadAndPlay(album.tracks
-                    ?.map((e) =>
-                        TypeConversionUtils.simpleTrack_X_Track(e, album))
-                    .toList() ??
-                []);
+            await playlistNotifier.load(
+              album.tracks
+                      ?.map((e) =>
+                          TypeConversionUtils.simpleTrack_X_Track(e, album))
+                      .toList() ??
+                  [],
+              autoPlay: true,
+            );
           } finally {
             updating.value = false;
           }
@@ -115,16 +117,15 @@ class AlbumCard extends HookConsumerWidget {
             );
 
             if (fetchedTracks == null || fetchedTracks.isEmpty) return;
-            playlistNotifier.add(
-              fetchedTracks,
-            );
+            playlistNotifier.addTracks(fetchedTracks);
             if (context.mounted) {
               final snackbar = SnackBar(
                 content: Text("Added ${album.tracks?.length} tracks to queue"),
                 action: SnackBarAction(
                   label: "Undo",
                   onPressed: () {
-                    playlistNotifier.remove(fetchedTracks);
+                    playlistNotifier
+                        .removeTracks(fetchedTracks.map((e) => e.id!));
                   },
                 ),
               );

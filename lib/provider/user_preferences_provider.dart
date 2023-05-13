@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/palette_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:spotube/utils/platform.dart';
@@ -114,7 +114,7 @@ class UserPreferences extends PersistedChangeNotifier {
     if (!sync) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
-      ref.read(PlaylistQueueNotifier.notifier).updatePalette();
+      ref.read(ProxyPlaylistNotifier.notifier).updatePalette();
     }
     notifyListeners();
     updatePersistence();

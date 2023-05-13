@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -19,8 +19,8 @@ class PlaylistCard extends HookConsumerWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
-    final playlistQueue = ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlistQueue = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final queryBowl = QueryClient.of(context);
@@ -29,8 +29,7 @@ class PlaylistCard extends HookConsumerWidget {
     );
     final tracks = useState<List<TrackSimple>?>(null);
     bool isPlaylistPlaying = useMemoized(
-      () =>
-          playlistNotifier.isPlayingPlaylist(tracks.value ?? query?.data ?? []),
+      () => playlistQueue.containsTracks(tracks.value ?? query?.data ?? []),
       [playlistNotifier, tracks.value, query?.data],
     );
 
@@ -46,8 +45,8 @@ class PlaylistCard extends HookConsumerWidget {
         placeholder: ImagePlaceholder.collection,
       ),
       isPlaying: isPlaylistPlaying,
-      isLoading: (isPlaylistPlaying && playlistQueue?.isLoading == true) ||
-          updating.value,
+      isLoading:
+          (isPlaylistPlaying && playlistQueue.isFetching) || updating.value,
       onTap: () {
         ServiceUtils.navigate(
           context,
@@ -59,9 +58,9 @@ class PlaylistCard extends HookConsumerWidget {
         try {
           updating.value = true;
           if (isPlaylistPlaying && playing) {
-            return playlistNotifier.pause();
+            return audioPlayer.pause();
           } else if (isPlaylistPlaying && !playing) {
-            return playlistNotifier.resume();
+            return audioPlayer.resume();
           }
 
           List<Track> fetchedTracks = await queryBowl.fetchQuery(
@@ -72,7 +71,7 @@ class PlaylistCard extends HookConsumerWidget {
 
           if (fetchedTracks.isEmpty) return;
 
-          await playlistNotifier.loadAndPlay(fetchedTracks);
+          await playlistNotifier.load(fetchedTracks, autoPlay: true);
           tracks.value = fetchedTracks;
         } finally {
           updating.value = false;
@@ -90,7 +89,7 @@ class PlaylistCard extends HookConsumerWidget {
 
           if (fetchedTracks.isEmpty) return;
 
-          playlistNotifier.add(fetchedTracks);
+          playlistNotifier.addTracks(fetchedTracks);
           tracks.value = fetchedTracks;
           if (context.mounted) {
             final snackbar = SnackBar(
@@ -98,7 +97,8 @@ class PlaylistCard extends HookConsumerWidget {
               action: SnackBarAction(
                 label: "Undo",
                 onPressed: () {
-                  playlistNotifier.remove(fetchedTracks);
+                  playlistNotifier
+                      .removeTracks(fetchedTracks.map((e) => e.id!));
                 },
               ),
             );

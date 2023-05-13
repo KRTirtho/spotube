@@ -15,14 +15,15 @@ import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
-  final PlaylistQueue? playlist;
+  final ProxyPlaylist playlist;
   final MapEntry<int, Track> track;
   final String duration;
   final void Function(Track currentTrack)? onTrackPlayButtonPressed;
@@ -75,7 +76,7 @@ class TrackTile extends HookConsumerWidget {
     );
     final auth = ref.watch(AuthenticationNotifier.provider);
     final spotify = ref.watch(spotifyProvider);
-    final playlistQueueNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playback = ref.watch(ProxyPlaylistNotifier.notifier);
 
     final removingTrack = useState<String?>(null);
     final removeTrack = useMutations.playlist.removeTrackOf(
@@ -238,7 +239,7 @@ class TrackTile extends HookConsumerWidget {
                         )
                     : null,
                 child: Icon(
-                  playlist?.activeTrack.id == track.value.id
+                  playlist.activeTrack?.id == track.value.id
                       ? SpotubeIcons.pause
                       : SpotubeIcons.play,
                 ),
@@ -312,11 +313,11 @@ class TrackTile extends HookConsumerWidget {
                 tooltip: context.l10n.more_actions,
                 itemBuilder: (context) {
                   return [
-                    if (!playlistQueueNotifier.isTrackOnQueue(track.value)) ...[
+                    if (!playlist.containsTrack(track.value)) ...[
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
                         onTap: () {
-                          playlistQueueNotifier.add([track.value]);
+                          playback.addTrack(track.value);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -334,7 +335,7 @@ class TrackTile extends HookConsumerWidget {
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
                         onTap: () {
-                          playlistQueueNotifier.playNext([track.value]);
+                          playback.addTracksAtFirst([track.value]);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -352,10 +353,10 @@ class TrackTile extends HookConsumerWidget {
                     ] else
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
-                        onTap: playlist?.activeTrack.id == track.value.id
+                        onTap: playlist.activeTrack?.id == track.value.id
                             ? null
                             : () {
-                                playlistQueueNotifier.remove([track.value]);
+                                playback.removeTrack(track.value.id!);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -366,7 +367,7 @@ class TrackTile extends HookConsumerWidget {
                                   ),
                                 );
                               },
-                        enabled: playlist?.activeTrack.id != track.value.id,
+                        enabled: playlist.activeTrack?.id != track.value.id,
                         child: ListTile(
                           leading: const Icon(SpotubeIcons.queueRemove),
                           title: Text(context.l10n.remove_from_queue),

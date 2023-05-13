@@ -7,7 +7,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -25,7 +25,7 @@ class PlainLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final lyricsQuery = useQueries.lyrics.spotifySynced(
       ref,
       playlist?.activeTrack,
@@ -43,7 +43,7 @@ class PlainLyrics extends HookConsumerWidget {
             if (isModal != true) ...[
               Center(
                 child: Text(
-                  playlist?.activeTrack.name ?? "",
+                  playlist.activeTrack?.name ?? "",
                   style: breakpoint >= Breakpoints.md
                       ? textTheme.displaySmall
                       : textTheme.headlineMedium?.copyWith(
@@ -55,7 +55,7 @@ class PlainLyrics extends HookConsumerWidget {
               Center(
                 child: Text(
                   TypeConversionUtils.artists_X_String<Artist>(
-                      playlist?.activeTrack.artists ?? []),
+                      playlist.activeTrack?.artists ?? []),
                   style: (breakpoint >= Breakpoints.md
                           ? textTheme.headlineSmall
                           : textTheme.titleLarge)
@@ -74,7 +74,7 @@ class PlainLyrics extends HookConsumerWidget {
                           return const ShimmerLyrics();
                         } else if (lyricsQuery.hasError) {
                           return Text(
-                            "Sorry, no Lyrics were found for `${playlist?.activeTrack.name}` :'(\n${lyricsQuery.error.toString()}",
+                            "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${lyricsQuery.error.toString()}",
                             style: textTheme.bodyLarge?.copyWith(
                               color: palette.bodyTextColor,
                             ),

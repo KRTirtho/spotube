@@ -5,7 +5,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
@@ -18,11 +18,11 @@ class PlayerTrackDetails extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final breakpoint = useBreakpoints();
-    final playback = ref.watch(PlaylistQueueNotifier.provider);
+    final playback = ref.watch(ProxyPlaylistNotifier.provider);
 
     return Row(
       children: [
-        if (playback != null)
+        if (playback.activeTrack != null)
           Container(
             padding: const EdgeInsets.all(6),
             constraints: const BoxConstraints(
@@ -44,7 +44,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               children: [
                 const SizedBox(height: 4),
                 Text(
-                  playback?.activeTrack.name ?? "",
+                  playback.activeTrack?.name ?? "",
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: color,
@@ -52,7 +52,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
                 ),
                 Text(
                   TypeConversionUtils.artists_X_String<Artist>(
-                    playback?.activeTrack.artists ?? [],
+                    playback.activeTrack?.artists ?? [],
                   ),
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall!.copyWith(color: color),
@@ -66,12 +66,12 @@ class PlayerTrackDetails extends HookConsumerWidget {
             child: Column(
               children: [
                 Text(
-                  playback?.activeTrack.name ?? "",
+                  playback.activeTrack?.name ?? "",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, color: color),
                 ),
                 TypeConversionUtils.artists_X_ClickableArtists(
-                  playback?.activeTrack.artists ?? [],
+                  playback.activeTrack?.artists ?? [],
                 )
               ],
             ),

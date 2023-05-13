@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -21,11 +21,11 @@ class SiblingTracksSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
 
-    final siblings = playlist?.isLoading == false
-        ? (playlist!.activeTrack as SpotubeTrack).siblings
+    final siblings = playlist.isFetching == false
+        ? (playlist.activeTrack as SpotubeTrack).siblings
         : <Video>[];
 
     final borderRadius = floating
@@ -36,12 +36,12 @@ class SiblingTracksSheet extends HookConsumerWidget {
           );
 
     useEffect(() {
-      if (playlist?.activeTrack is SpotubeTrack &&
-          (playlist?.activeTrack as SpotubeTrack).siblings.isEmpty) {
+      if (playlist.activeTrack is SpotubeTrack &&
+          (playlist.activeTrack as SpotubeTrack).siblings.isEmpty) {
         playlistNotifier.populateSibling();
       }
       return null;
-    }, [playlist?.activeTrack]);
+    }, [playlist.activeTrack]);
 
     return BackdropFilter(
       filter: ImageFilter.blur(
@@ -91,18 +91,18 @@ class SiblingTracksSheet extends HookConsumerWidget {
                     ),
                   ),
                   subtitle: Text(video.author),
-                  enabled: playlist?.isLoading != true,
-                  selected: playlist?.isLoading != true &&
+                  enabled: playlist.isFetching != true,
+                  selected: playlist.isFetching != true &&
                       video.id.value ==
-                          (playlist?.activeTrack as SpotubeTrack)
+                          (playlist.activeTrack as SpotubeTrack)
                               .ytTrack
                               .id
                               .value,
                   selectedTileColor: theme.popupMenuTheme.color,
                   onTap: () async {
-                    if (playlist?.isLoading == false &&
+                    if (playlist.isFetching == false &&
                         video.id.value !=
-                            (playlist?.activeTrack as SpotubeTrack)
+                            (playlist.activeTrack as SpotubeTrack)
                                 .ytTrack
                                 .id
                                 .value) {

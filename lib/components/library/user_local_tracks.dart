@@ -22,7 +22,7 @@ import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_async_effect.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -132,33 +132,35 @@ class UserLocalTracks extends HookConsumerWidget {
   const UserLocalTracks({Key? key}) : super(key: key);
 
   void playLocalTracks(
-    PlaylistQueueNotifier playback,
+    WidgetRef ref,
     List<LocalTrack> tracks, {
     LocalTrack? currentTrack,
   }) async {
+    final playlist = ref.read(ProxyPlaylistNotifier.provider);
+    final playback = ref.read(ProxyPlaylistNotifier.notifier);
     currentTrack ??= tracks.first;
-    final isPlaylistPlaying = playback.isPlayingPlaylist(tracks);
+    final isPlaylistPlaying = playlist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
-      await playback.loadAndPlay(
+      await playback.load(
         tracks,
-        active: tracks.indexWhere((s) => s.id == currentTrack?.id),
+        initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
+        autoPlay: true,
       );
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
-        currentTrack.id != playback.state?.activeTrack.id) {
-      await playback.playTrack(currentTrack);
+        currentTrack.id != playlist.activeTrack?.id) {
+      await playback.jumpToTrack(currentTrack);
     }
   }
 
   @override
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final trackSnapshot = ref.watch(localTracksProvider);
-    final isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(
-      trackSnapshot.value ?? [],
-    );
+    final isPlaylistPlaying =
+        playlist.containsTracks(trackSnapshot.value ?? []);
     final isMounted = useIsMounted();
 
     final searchText = useState<String>("");
@@ -194,9 +196,12 @@ class UserLocalTracks extends HookConsumerWidget {
                         if (trackSnapshot.value?.isNotEmpty == true) {
                           if (!isPlaylistPlaying) {
                             playLocalTracks(
-                                playlistNotifier, trackSnapshot.value!);
+                              ref,
+                              trackSnapshot.value!,
+                            );
                           } else {
-                            playlistNotifier.stop();
+                            // TODO: Remove stop capability
+                            // playlistNotifier.stop();
                           }
                         }
                       }
@@ -272,13 +277,13 @@ class UserLocalTracks extends HookConsumerWidget {
                       duration:
                           "${track.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.duration?.inSeconds.remainder(60) ?? 0)}",
                       track: MapEntry(index, track),
-                      isActive: playlist?.activeTrack.id == track.id,
+                      isActive: playlist.activeTrack?.id == track.id,
                       isChecked: false,
                       showCheck: false,
                       isLocal: true,
                       onTrackPlayButtonPressed: (currentTrack) {
                         return playLocalTracks(
-                          playlistNotifier,
+                          ref,
                           sortedTracks,
                           currentTrack: track,
                         );

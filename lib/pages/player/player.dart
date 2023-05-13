@@ -18,7 +18,7 @@ import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
@@ -30,10 +30,10 @@ class PlayerView extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final currentTrack = ref.watch(PlaylistQueueNotifier.provider.select(
+    final currentTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
       (value) => value?.activeTrack,
     ));
-    final isLocalTrack = ref.watch(PlaylistQueueNotifier.provider.select(
+    final isLocalTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
       (value) => value?.activeTrack is LocalTrack,
     ));
     final breakpoint = useBreakpoints();

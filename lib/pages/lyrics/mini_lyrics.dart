@@ -15,7 +15,7 @@ import 'package:spotube/hooks/use_force_update.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
 class MiniLyricsPage extends HookConsumerWidget {
@@ -28,7 +28,7 @@ class MiniLyricsPage extends HookConsumerWidget {
     final prevSize = useRef<Size?>(null);
     final wasMaximized = useRef<bool>(false);
 
-    final playlistQueue = ref.watch(PlaylistQueueNotifier.provider);
+    final playlistQueue = ref.watch(ProxyPlaylistNotifier.provider);
 
     final areaActive = useState(false);
     final hoverMode = useState(true);
@@ -146,9 +146,9 @@ class MiniLyricsPage extends HookConsumerWidget {
           ),
           body: Column(
             children: [
-              if (playlistQueue != null)
+              if (playlistQueue.activeTrack != null)
                 Text(
-                  playlistQueue.activeTrack.name!,
+                  playlistQueue.activeTrack!.name!,
                   style: theme.textTheme.titleMedium,
                 ),
               Expanded(
@@ -178,7 +178,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                     IconButton(
                       icon: const Icon(SpotubeIcons.queue),
                       tooltip: context.l10n.queue,
-                      onPressed: playlistQueue != null
+                      onPressed: playlistQueue.activeTrack != null
                           ? () {
                               showModalBottomSheet(
                                 context: context,

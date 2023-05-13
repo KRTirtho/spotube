@@ -3,7 +3,7 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_services/linux_audio_service.dart';
 import 'package:spotube/services/audio_services/mobile_audio_service.dart';
 import 'package:spotube/services/audio_services/windows_audio_service.dart';
@@ -18,15 +18,12 @@ class AudioServices {
 
   static Future<AudioServices> create(
     Ref ref,
-    PlaylistQueueNotifier playlistQueueNotifier,
+    ProxyPlaylistNotifier playback,
   ) async {
     final mobile =
         DesktopTools.platform.isMobile || DesktopTools.platform.isMacOS
             ? await AudioService.init(
-                builder: () => MobileAudioService(
-                  playlistQueueNotifier,
-                  ref.read(VolumeProvider.provider.notifier),
-                ),
+                builder: () => MobileAudioService(playback),
                 config: const AudioServiceConfig(
                   androidNotificationChannelId: 'com.krtirtho.Spotube',
                   androidNotificationChannelName: 'Spotube',
@@ -35,11 +32,10 @@ class AudioServices {
               )
             : null;
     final smtc = DesktopTools.platform.isWindows
-        ? WindowsAudioService(ref, playlistQueueNotifier)
+        ? WindowsAudioService(ref, playback)
         : null;
-    final mpris = DesktopTools.platform.isLinux
-        ? LinuxAudioService(ref, playlistQueueNotifier)
-        : null;
+    final mpris =
+        DesktopTools.platform.isLinux ? LinuxAudioService(ref, playback) : null;
 
     return AudioServices(mobile, smtc, mpris);
   }

@@ -16,7 +16,7 @@ import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -26,14 +26,14 @@ class LyricsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     String albumArt = useMemoized(
       () => TypeConversionUtils.image_X_UrlString(
-        playlist?.activeTrack.album?.images,
-        index: (playlist?.activeTrack.album?.images?.length ?? 1) - 1,
+        playlist.activeTrack?.album?.images,
+        index: (playlist.activeTrack?.album?.images?.length ?? 1) - 1,
         placeholder: ImagePlaceholder.albumArt,
       ),
-      [playlist?.activeTrack.album?.images],
+      [playlist.activeTrack?.album?.images],
     );
     final palette = usePaletteColor(albumArt, ref);
     final breakpoint = useBreakpoints();

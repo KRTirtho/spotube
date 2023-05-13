@@ -19,7 +19,7 @@ import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/platform.dart';
@@ -96,9 +96,9 @@ class SearchPage extends HookConsumerWidget {
                   HookBuilder(
                     builder: (context) {
                       final playlist =
-                          ref.watch(PlaylistQueueNotifier.provider);
+                          ref.watch(ProxyPlaylistNotifier.provider);
                       final playlistNotifier =
-                          ref.watch(PlaylistQueueNotifier.notifier);
+                          ref.watch(ProxyPlaylistNotifier.notifier);
                       List<AlbumSimple> albums = [];
                       List<Artist> artists = [];
                       List<Track> tracks = [];
@@ -154,18 +154,17 @@ class SearchPage extends HookConsumerWidget {
                                         playlist,
                                         track: track,
                                         duration: duration,
-                                        isActive: playlist?.activeTrack.id ==
+                                        isActive: playlist.activeTrack?.id ==
                                             track.value.id,
                                         onTrackPlayButtonPressed:
                                             (currentTrack) async {
                                           final isTrackPlaying =
-                                              playlist?.activeTrack.id ==
+                                              playlist.activeTrack?.id ==
                                                   currentTrack.id;
                                           if (!isTrackPlaying &&
                                               context.mounted) {
                                             final shouldPlay =
-                                                (playlist?.tracks.length ?? 0) >
-                                                        20
+                                                (playlist.tracks.length) > 20
                                                     ? await showPromptDialog(
                                                         context: context,
                                                         title: context.l10n
@@ -174,16 +173,17 @@ class SearchPage extends HookConsumerWidget {
                                                         ),
                                                         message: context.l10n
                                                             .queue_clear_alert(
-                                                          playlist?.tracks
-                                                                  .length ??
-                                                              0,
+                                                          playlist
+                                                              .tracks.length,
                                                         ),
                                                       )
                                                     : true;
 
                                             if (shouldPlay) {
-                                              await playlistNotifier
-                                                  .loadAndPlay([currentTrack]);
+                                              await playlistNotifier.load(
+                                                [currentTrack],
+                                                autoPlay: true,
+                                              );
                                             }
                                           }
                                         },

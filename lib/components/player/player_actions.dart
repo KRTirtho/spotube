@@ -13,7 +13,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerActions extends HookConsumerWidget {
@@ -30,26 +30,26 @@ class PlayerActions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final isLocalTrack = playlist?.activeTrack is LocalTrack;
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final isLocalTrack = playlist.activeTrack is LocalTrack;
     final downloader = ref.watch(downloaderProvider);
     final isInQueue = downloader.inQueue
-        .any((element) => element.id == playlist?.activeTrack.id);
+        .any((element) => element.id == playlist.activeTrack?.id);
     final localTracks = [] /* ref.watch(localTracksProvider).value */;
     final auth = ref.watch(AuthenticationNotifier.provider);
 
     final isDownloaded = useMemoized(() {
       return localTracks.any(
             (element) =>
-                element.name == playlist?.activeTrack.name &&
-                element.album?.name == playlist?.activeTrack.album?.name &&
+                element.name == playlist.activeTrack?.name &&
+                element.album?.name == playlist.activeTrack?.album?.name &&
                 TypeConversionUtils.artists_X_String<Artist>(
                         element.artists ?? []) ==
                     TypeConversionUtils.artists_X_String<Artist>(
-                        playlist?.activeTrack.artists ?? []),
+                        playlist.activeTrack?.artists ?? []),
           ) ==
           true;
-    }, [localTracks, playlist?.activeTrack]);
+    }, [localTracks, playlist.activeTrack]);
 
     return Row(
       mainAxisAlignment: mainAxisAlignment,
@@ -57,7 +57,7 @@ class PlayerActions extends HookConsumerWidget {
         IconButton(
           icon: const Icon(SpotubeIcons.queue),
           tooltip: context.l10n.queue,
-          onPressed: playlist != null
+          onPressed: playlist.activeTrack != null
               ? () {
                   showModalBottomSheet(
                     context: context,
@@ -83,7 +83,7 @@ class PlayerActions extends HookConsumerWidget {
           IconButton(
             icon: const Icon(SpotubeIcons.alternativeRoute),
             tooltip: context.l10n.alternative_track_sources,
-            onPressed: playlist?.activeTrack != null
+            onPressed: playlist.activeTrack != null
                 ? () {
                     showModalBottomSheet(
                       context: context,
@@ -120,12 +120,12 @@ class PlayerActions extends HookConsumerWidget {
               icon: Icon(
                 isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
               ),
-              onPressed: playlist?.activeTrack != null
-                  ? () => downloader.addToQueue(playlist!.activeTrack)
+              onPressed: playlist.activeTrack != null
+                  ? () => downloader.addToQueue(playlist.activeTrack!)
                   : null,
             ),
-        if (playlist?.activeTrack != null && !isLocalTrack && auth != null)
-          TrackHeartButton(track: playlist!.activeTrack),
+        if (playlist.activeTrack != null && !isLocalTrack && auth != null)
+          TrackHeartButton(track: playlist.activeTrack!),
         ...(extraActions ?? [])
       ],
     );

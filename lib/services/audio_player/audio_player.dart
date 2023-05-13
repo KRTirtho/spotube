@@ -63,15 +63,15 @@ class SpotubeAudioPlayer {
     }
   }
 
-  /// Stream that emits when the player is almost (80%) complete
-  Stream<void> get almostCompleteStream {
+  /// Stream that emits when the player is almost (%) complete
+  Stream<void> percentCompletedStream(double percent) {
     return positionStream
         .asyncMap((event) async => [event, await duration])
         .where((event) {
       final position = event[0] as Duration;
       final duration = event[1] as Duration;
 
-      return position.inSeconds > (duration.inSeconds * .8).toInt();
+      return position.inSeconds > duration.inSeconds * percent / 100;
     }).asBroadcastStream();
   }
 
@@ -80,6 +80,36 @@ class SpotubeAudioPlayer {
       return _mkPlayer!.streams.playing.asBroadcastStream();
     } else {
       return _justAudio!.playingStream.asBroadcastStream();
+    }
+  }
+
+  Stream<bool> get shuffledStream {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.shuffleStream.asBroadcastStream();
+    } else {
+      return _justAudio!.shuffleModeEnabledStream.asBroadcastStream();
+    }
+  }
+
+  Stream<PlaybackLoopMode> get loopModeStream {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.loopModeStream
+          .map(PlaybackLoopMode.fromPlaylistMode)
+          .asBroadcastStream();
+    } else {
+      return _justAudio!.loopModeStream
+          .map(PlaybackLoopMode.fromLoopMode)
+          .asBroadcastStream();
+    }
+  }
+
+  Stream<double> get volumeStream {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.streams.volume
+          .map((event) => event / 100)
+          .asBroadcastStream();
+    } else {
+      return _justAudio!.volumeStream.asBroadcastStream();
     }
   }
 
@@ -191,6 +221,30 @@ class SpotubeAudioPlayer {
     }
   }
 
+  Future<bool> get isShuffled async {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.shuffled;
+    } else {
+      return _justAudio!.shuffleModeEnabled;
+    }
+  }
+
+  Future<PlaybackLoopMode> get loopMode async {
+    if (mkSupportedPlatform) {
+      return PlaybackLoopMode.fromPlaylistMode(_mkPlayer!.loopMode);
+    } else {
+      return PlaybackLoopMode.fromLoopMode(_justAudio!.loopMode);
+    }
+  }
+
+  double get volume {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.state.volume / 100;
+    } else {
+      return _justAudio!.volume;
+    }
+  }
+
   bool get isBuffering {
     if (mkSupportedPlatform) {
       // audioplayers doesn't have the capability to get buffering state
@@ -257,9 +311,7 @@ class SpotubeAudioPlayer {
   }
 
   Future<void> stop() async {
-    _mkLooped = PlaybackLoopMode.none;
-    _mkShuffled = false;
-    await _mkPlayer?.pause();
+    await _mkPlayer?.stop();
     await _justAudio?.stop();
   }
 
@@ -295,7 +347,7 @@ class SpotubeAudioPlayer {
     if (mkSupportedPlatform) {
       await _mkPlayer!.open(
         mk.Playlist(
-          tracks.map((e) => mk.Media(e)).toList(),
+          tracks.map(mk.Media.new).toList(),
           index: initialIndex,
         ),
         play: autoPlay,
@@ -359,7 +411,7 @@ class SpotubeAudioPlayer {
     }
   }
 
-  Future<void> skipToIndex(int index) async {
+  Future<void> jumpTo(int index) async {
     if (mkSupportedPlatform) {
       await _mkPlayer!.jump(index);
     } else {
@@ -395,6 +447,39 @@ class SpotubeAudioPlayer {
     }
   }
 
+  Future<void> replaceSource(String oldSource, String newSource) async {
+    final willBeReplacedIndex = sources.indexOf(oldSource);
+    if (willBeReplacedIndex == -1) return;
+
+    if (mkSupportedPlatform) {
+      final sourcesCp = sources.toList();
+      sourcesCp[willBeReplacedIndex] = newSource;
+      await _mkPlayer!.open(
+        mk.Playlist(
+          sourcesCp.map(mk.Media.new).toList(),
+          index: currentIndex,
+        ),
+        play: false,
+      );
+    } else {
+      await addTrack(newSource);
+      await removeTrack(willBeReplacedIndex);
+
+      int newSourceIndex = sources.indexOf(newSource);
+      while (newSourceIndex == -1) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        newSourceIndex = sources.indexOf(newSource);
+      }
+      await moveTrack(newSourceIndex, willBeReplacedIndex);
+      newSourceIndex = sources.indexOf(newSource);
+      while (newSourceIndex != willBeReplacedIndex) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        await moveTrack(newSourceIndex, willBeReplacedIndex);
+        newSourceIndex = sources.indexOf(newSource);
+      }
+    }
+  }
+
   Future<void> clearPlaylist() async {
     if (mkSupportedPlatform) {
       await Future.wait(
@@ -407,41 +492,19 @@ class SpotubeAudioPlayer {
     }
   }
 
-  bool _mkShuffled = false;
-
   Future<void> setShuffle(bool shuffle) async {
     if (mkSupportedPlatform) {
       await _mkPlayer!.setShuffle(shuffle);
-      _mkShuffled = shuffle;
     } else {
       await _justAudio!.setShuffleModeEnabled(shuffle);
     }
   }
 
-  Future<bool> isShuffled() async {
-    if (mkSupportedPlatform) {
-      return _mkShuffled;
-    } else {
-      return _justAudio!.shuffleModeEnabled;
-    }
-  }
-
-  PlaybackLoopMode _mkLooped = PlaybackLoopMode.none;
-
   Future<void> setLoopMode(PlaybackLoopMode loop) async {
     if (mkSupportedPlatform) {
       await _mkPlayer!.setPlaylistMode(loop.toPlaylistMode());
-      _mkLooped = loop;
     } else {
       await _justAudio!.setLoopMode(loop.toLoopMode());
-    }
-  }
-
-  Future<PlaybackLoopMode> getLoopMode() async {
-    if (mkSupportedPlatform) {
-      return _mkLooped;
-    } else {
-      return PlaybackLoopMode.fromLoopMode(_justAudio!.loopMode);
     }
   }
 }

@@ -55,6 +55,10 @@ class BlackListNotifier
     state = state.difference({element});
   }
 
+  bool contains(TrackSimple track) {
+    return filter([track]).isNotEmpty;
+  }
+
   Iterable<TrackSimple> filter(Iterable<TrackSimple> tracks) {
     return tracks.where(
       (track) {

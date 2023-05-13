@@ -14,7 +14,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -41,8 +41,8 @@ class TracksTableView extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playback = ref.watch(ProxyPlaylistNotifier.notifier);
     final downloader = ref.watch(downloaderProvider);
     TextStyle tableHeadStyle =
         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
@@ -229,14 +229,14 @@ class TracksTableView extends HookConsumerWidget {
                         }
                       case "play-next":
                         {
-                          playlistNotifier.playNext(selectedTracks.toList());
+                          playback.addTracksAtFirst(selectedTracks);
                           selected.value = [];
                           showCheck.value = false;
                           break;
                         }
                       case "add-to-queue":
                         {
-                          playlistNotifier.add(selectedTracks.toList());
+                          playback.addTracks(selectedTracks);
                           selected.value = [];
                           showCheck.value = false;
                           break;
@@ -310,7 +310,7 @@ class TracksTableView extends HookConsumerWidget {
                       track: track,
                       duration: duration,
                       userPlaylist: userPlaylist,
-                      isActive: playlist?.activeTrack.id == track.value.id,
+                      isActive: playlist.activeTrack?.id == track.value.id,
                       onTrackPlayButtonPressed: onTrackPlayButtonPressed,
                       isChecked: selected.value.contains(track.value.id),
                       showCheck: showCheck.value,
