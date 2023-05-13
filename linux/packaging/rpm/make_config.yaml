@@ -7,10 +7,7 @@ packagerEmail: krtirtho@gmail.com
 license: BSD-4-Clause
 url: https://github.com/KRTirtho/spotube
 requires:
-  - gstreamer1-devel
-  - gstreamer1-plugins-base-tools
-  - gstreamer1-plugins-base-devel
-  - gstreamer1-plugins-good
+  - mpv
   - libappindicator
   - jsoncpp
   - libsecret

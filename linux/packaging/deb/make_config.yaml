@@ -10,8 +10,7 @@ section: x11
 installed_size: 24400
 
 dependencies:
-  - libgstreamer1.0-dev
-  - libgstreamer-plugins-base1.0-dev
+  - mpv
   - libappindicator3-1
   - gir1.2-appindicator3-0.1
   - libsecret-1-0
