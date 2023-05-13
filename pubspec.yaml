@@ -6,7 +6,7 @@ publish_to: "none"
 version: 2.7.1+18
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   args: ^2.3.2
@@ -51,7 +51,7 @@ dependencies:
   hooks_riverpod: ^2.1.1
   html: ^0.15.1
   http: ^0.13.5
-  intl: ^0.17.0
+  intl: ^0.18.0
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.0
   json_serializable: ^6.6.0

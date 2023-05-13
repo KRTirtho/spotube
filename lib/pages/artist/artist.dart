@@ -264,10 +264,13 @@ class ArtistPage extends HookConsumerWidget {
                                   IconButton(
                                     icon: const Icon(SpotubeIcons.share),
                                     onPressed: () async {
-                                      await Clipboard.setData(
-                                        ClipboardData(
-                                            text: data.externalUrls?.spotify),
-                                      );
+                                      if (data.externalUrls?.spotify != null) {
+                                        await Clipboard.setData(
+                                          ClipboardData(
+                                            text: data.externalUrls!.spotify!,
+                                          ),
+                                        );
+                                      }
 
                                       if (!context.mounted) return;
 
