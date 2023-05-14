@@ -98,7 +98,10 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding.git
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
-  youtube_explode_dart: ^1.12.1
+  piped_client:
+    git:
+      url: https://github.com/KRTirtho/piped_client
+      ref: 044d80639d54d3fd4a712d87537d1d03d90e43d2
 
 dev_dependencies:
   build_runner: ^2.3.2

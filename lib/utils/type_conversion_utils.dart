@@ -3,15 +3,15 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart' hide Image;
-import 'package:metadata_god/metadata_god.dart' hide Image;
+import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
+import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 enum ImagePlaceholder {
   albumArt,
@@ -127,22 +127,28 @@ abstract class TypeConversionUtils {
     String? art,
   }) {
     final track = SpotubeTrack(
-      Video(
-        VideoId("dQw4w9WgXcQ"),
-        basenameWithoutExtension(file.path),
-        metadata?.artist ?? "",
-        ChannelId(
-          "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-        ),
-        DateTime.now(),
-        "",
-        DateTime.now(),
-        "",
-        Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
-        ThumbnailSet(metadata?.title ?? ""),
-        [],
-        const Engagement(0, 0, 0),
-        false,
+      PipedStreamResponse(
+        id: "dQw4w9WgXcQ",
+        title: basenameWithoutExtension(file.path),
+        dash: null,
+        description: "",
+        dislikes: -1,
+        duration: Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
+        hls: null,
+        lbryId: "",
+        likes: -1,
+        livestream: false,
+        proxyUrl: "",
+        thumbnailUrl: art ?? "",
+        uploadedDate: DateTime.now().toUtc().toString(),
+        uploader: metadata?.albumArtist ?? "",
+        uploaderUrl: "",
+        uploaderVerified: false,
+        views: -1,
+        audioStreams: [],
+        videoStreams: [],
+        relatedStreams: [],
+        subtitles: [],
       ),
       file.path,
       [],

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/local_track.dart';
@@ -262,7 +263,7 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
 
   Future<void> addTracksAtFirst(Iterable<Track> track) async {}
   Future<void> populateSibling() async {}
-  Future<void> swapSibling(Video video) async {}
+  Future<void> swapSibling(PipedSearchItem video) async {}
 
   Future<void> next() async {
     final track = await ensureNthSourcePlayable(audioPlayer.currentIndex + 1);

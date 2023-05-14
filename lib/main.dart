@@ -72,6 +72,7 @@ Future<void> main(List<String> rawArgs) async {
     exit(0);
   }
 
+  await PipedSpotube.initialize();
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -134,7 +135,6 @@ Future<void> main(List<String> rawArgs) async {
                     return Downloader(
                       ref,
                       queueInstance,
-                      yt: youtube,
                       downloadPath: ref.watch(
                         userPreferencesProvider.select(
                           (s) => s.downloadLocation,
@@ -211,7 +211,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;
         audioPlayer.dispose();
-        youtube.close();
+        // youtube.close();
       };
     }, []);
 

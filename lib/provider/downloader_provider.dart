@@ -9,13 +9,10 @@ import 'package:queue/queue.dart';
 import 'package:path/path.dart' as path;
 import 'package:spotify/spotify.dart' hide Image, Queue;
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
-
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/services/youtube.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart' hide Comment;
 
 Queue queueInstance = Queue(delay: const Duration(seconds: 5));
 Queue grabberQueue = Queue(delay: const Duration(seconds: 5));
@@ -23,14 +20,13 @@ Queue grabberQueue = Queue(delay: const Duration(seconds: 5));
 class Downloader with ChangeNotifier {
   Ref ref;
   Queue _queue;
-  YoutubeExplode yt;
+
   String downloadPath;
   FutureOr<bool> Function(SpotubeTrack track)? onFileExists;
   Downloader(
     this.ref,
     this._queue, {
     required this.downloadPath,
-    required this.yt,
     this.onFileExists,
   });
 
@@ -71,27 +67,23 @@ class Downloader with ChangeNotifier {
             return;
           }
           file.createSync(recursive: true);
-          StreamManifest manifest =
-              await yt.videos.streamsClient.getManifest(track.ytTrack.url);
           logger.v(
             "[addToQueue] Getting download information for ${file.path}",
           );
-          final audioStream = yt.videos.streamsClient
-              .get(
-                manifest.audioOnly
-                    .where(
-                      (audio) => audio.codec.mimeType == "audio/mp4",
-                    )
-                    .withHighestBitrate(),
-              )
-              .asBroadcastStream();
-
+          final audioStream = await get(
+            Uri.parse(
+              SpotubeTrack.getStreamInfo(
+                track.ytTrack,
+                ref.read(userPreferencesProvider).audioQuality,
+              ).url,
+            ),
+          );
           logger.v(
             "[addToQueue] ${file.path} download started",
           );
 
           IOSink outputFileStream = file.openWrite();
-          await audioStream.pipe(outputFileStream);
+          outputFileStream.write(audioStream.bodyBytes);
           await outputFileStream.flush();
           logger.v(
             "[addToQueue] Download of ${file.path} is done successfully",
@@ -161,7 +153,6 @@ final downloaderProvider = ChangeNotifierProvider(
     return Downloader(
       ref,
       queueInstance,
-      yt: youtube,
       downloadPath: ref.watch(
         userPreferencesProvider.select(
           (s) => s.downloadLocation,
