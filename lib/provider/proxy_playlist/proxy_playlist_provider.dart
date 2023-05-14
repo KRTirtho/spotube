@@ -14,12 +14,16 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 /// Things to implement:
 /// * [x] Sponsor-Block skip
 /// * [x] Prefetch next track as [SpotubeTrack] on 80% of current track
 /// * [ ] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
+/// * [ ] Modification of the Queue
+///       * [ ] Add track at the end
+///       * [ ] Add track at the beginning
+///       * [ ] Remove track
+///       * [ ] Reorder track
 /// * [ ] Caching and loading of cache of tracks
 /// * [ ] Shuffling and loop => playlist, track, none
 /// * [ ] Alternative Track Source

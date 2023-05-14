@@ -9,14 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
-import 'package:spotube/entities/cache_track.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/l10n/l10n.dart';
@@ -97,9 +95,6 @@ Future<void> main(List<String> rawArgs) async {
     cacheDir: (await getApplicationSupportDirectory()).path,
   );
   await PersistedStateNotifier.initializeBoxes();
-  Hive.registerAdapter(CacheTrackAdapter());
-  Hive.registerAdapter(CacheTrackEngagementAdapter());
-  Hive.registerAdapter(CacheTrackSkipSegmentAdapter());
 
   Catcher(
     enableLogger: arguments["verbose"],
