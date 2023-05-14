@@ -764,14 +764,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.3"
-  freezed_annotation:
-    dependency: transitive
-    description:
-      name: freezed_annotation
-      sha256: aeac15850ef1b38ee368d4c53ba9a847e900bb2c53a4db3f6881cbb3cb684338
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -1282,9 +1274,11 @@ packages:
   piped_client:
     dependency: "direct main"
     description:
-      path: "../piped_client"
-      relative: true
-    source: path
+      path: "."
+      ref: "2036a78d3414a0fc7fe3b081f1029dd086352fcd"
+      resolved-ref: "2036a78d3414a0fc7fe3b081f1029dd086352fcd"
+      url: "https://github.com/KRTirtho/piped_client"
+    source: git
     version: "0.1.0"
   platform:
     dependency: transitive
@@ -1949,14 +1943,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
-  youtube_explode_dart:
-    dependency: "direct main"
-    description:
-      name: youtube_explode_dart
-      sha256: "3e2eb05dedc072a6275e8a061c675d9a53b7c6123265f0aa4ee1e6d50644dbd2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.12.3"
 sdks:
   dart: ">=3.0.0 <4.0.0"
   flutter: ">=3.3.0"
