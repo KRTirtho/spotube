@@ -74,20 +74,9 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
         try {
           isPreSearching = true;
 
-          final softReplace =
-              SpotubeAudioPlayer.mkSupportedPlatform && percent <= 98;
-
           // TODO: Make repeat mode sensitive changes later
-          final track = await ensureNthSourcePlayable(
-            audioPlayer.currentIndex + 1,
-
-            /// [MediaKit] doesn't fully support replacing source, so we need
-            /// to check if the platform is supported or not and replace the
-            /// actual playlist with a playlist that contains the next track
-            /// at 98% >= progress
-            softReplace: softReplace,
-            exclusive: SpotubeAudioPlayer.mkSupportedPlatform,
-          );
+          final track =
+              await ensureNthSourcePlayable(audioPlayer.currentIndex + 1);
 
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
@@ -190,17 +179,17 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
 
   // TODO: Safely Remove playing tracks
 
-  void removeTrack(String trackId) {
+  Future<void> removeTrack(String trackId) async {
     final track =
         state.tracks.firstWhereOrNull((element) => element.id == trackId);
     if (track == null) return;
     state = state.copyWith(tracks: {...state.tracks..remove(track)});
     final index = audioPlayer.sources.indexOf(makeAppropriateSource(track));
     if (index == -1) return;
-    audioPlayer.removeTrack(index);
+    await audioPlayer.removeTrack(index);
   }
 
-  void removeTracks(Iterable<String> tracksIds) {
+  Future<void> removeTracks(Iterable<String> tracksIds) async {
     final tracks =
         state.tracks.where((element) => tracksIds.contains(element.id));
 
@@ -211,7 +200,7 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     for (final track in tracks) {
       final index = audioPlayer.sources.indexOf(makeAppropriateSource(track));
       if (index == -1) continue;
-      audioPlayer.removeTrack(index);
+      await audioPlayer.removeTrack(index);
     }
   }
 

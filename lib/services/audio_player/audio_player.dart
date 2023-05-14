@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart' as mk;
 import 'package:just_audio/just_audio.dart' as ja;
@@ -17,7 +18,11 @@ class SpotubeAudioPlayer {
 
   SpotubeAudioPlayer()
       : _mkPlayer = mkSupportedPlatform ? MkPlayerWithState() : null,
-        _justAudio = !mkSupportedPlatform ? ja.AudioPlayer() : null;
+        _justAudio = !mkSupportedPlatform ? ja.AudioPlayer() : null {
+    _mkPlayer?.streams.error.listen((event) {
+      Catcher.reportCheckedError(event, StackTrace.current);
+    });
+  }
 
   /// Whether the current platform supports the audioplayers plugin
   static final bool mkSupportedPlatform =
@@ -140,9 +145,7 @@ class SpotubeAudioPlayer {
 
   Stream<int> get currentIndexChangedStream {
     if (mkSupportedPlatform) {
-      return _mkPlayer!.streams.playlist
-          .map((event) => event.index)
-          .asBroadcastStream();
+      return _mkPlayer!.indexChangeStream;
     } else {
       return _justAudio!.sequenceStateStream
           .map((event) => event?.currentIndex ?? -1)
@@ -179,7 +182,7 @@ class SpotubeAudioPlayer {
 
   bool get hasSource {
     if (mkSupportedPlatform) {
-      return _mkPlayer!.state.playlist.medias.isNotEmpty;
+      return _mkPlayer!.playlist.medias.isNotEmpty;
     } else {
       return _justAudio!.audioSource != null;
     }
@@ -378,7 +381,7 @@ class SpotubeAudioPlayer {
 
   List<String> get sources {
     if (mkSupportedPlatform) {
-      return _mkPlayer!.state.playlist.medias.map((e) => e.uri).toList();
+      return _mkPlayer!.playlist.medias.map((e) => e.uri).toList();
     } else {
       return (_justAudio!.audioSource as ja.ConcatenatingAudioSource)
           .children
@@ -389,7 +392,7 @@ class SpotubeAudioPlayer {
 
   int get currentIndex {
     if (mkSupportedPlatform) {
-      return _mkPlayer!.state.playlist.index;
+      return _mkPlayer!.playlist.index;
     } else {
       return _justAudio!.sequenceState?.currentIndex ?? -1;
     }
@@ -455,44 +458,40 @@ class SpotubeAudioPlayer {
     final oldSourceIndex = sources.indexOf(oldSource);
     if (oldSourceIndex == -1) return;
 
-    if (mkSupportedPlatform) {
-      final sourcesCp = sources.toList();
-      sourcesCp[oldSourceIndex] = newSource;
+    // if (mkSupportedPlatform) {
+    //   final sourcesCp = sources.toList();
+    //   sourcesCp[oldSourceIndex] = newSource;
 
-      await _mkPlayer!.open(
-        mk.Playlist(
-          sourcesCp.map(mk.Media.new).toList(),
-          index: currentIndex,
-        ),
-        play: false,
-      );
-      if (exclusive) await jumpTo(oldSourceIndex);
-    } else {
-      await addTrack(newSource);
-      await removeTrack(oldSourceIndex);
+    //   await _mkPlayer!.open(
+    //     mk.Playlist(
+    //       sourcesCp.map(mk.Media.new).toList(),
+    //       index: currentIndex,
+    //     ),
+    //     play: false,
+    //   );
+    //   if (exclusive) await jumpTo(oldSourceIndex);
+    // } else {
+    await addTrack(newSource);
+    await removeTrack(oldSourceIndex);
 
-      int newSourceIndex = sources.indexOf(newSource);
-      while (newSourceIndex == -1) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        newSourceIndex = sources.indexOf(newSource);
-      }
+    int newSourceIndex = sources.indexOf(newSource);
+    while (newSourceIndex == -1) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      newSourceIndex = sources.indexOf(newSource);
+    }
+    await moveTrack(newSourceIndex, oldSourceIndex);
+    newSourceIndex = sources.indexOf(newSource);
+    while (newSourceIndex != oldSourceIndex) {
+      await Future.delayed(const Duration(milliseconds: 100));
       await moveTrack(newSourceIndex, oldSourceIndex);
       newSourceIndex = sources.indexOf(newSource);
-      while (newSourceIndex != oldSourceIndex) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        await moveTrack(newSourceIndex, oldSourceIndex);
-        newSourceIndex = sources.indexOf(newSource);
-      }
     }
+    // }
   }
 
   Future<void> clearPlaylist() async {
     if (mkSupportedPlatform) {
-      await Future.wait(
-        _mkPlayer!.state.playlist.medias.mapIndexed(
-          (i, e) async => await _mkPlayer!.remove(i),
-        ),
-      );
+      _mkPlayer!.stop();
     } else {
       await (_justAudio!.audioSource as ja.ConcatenatingAudioSource).clear();
     }
