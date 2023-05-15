@@ -67,10 +67,10 @@ class MkPlayerWithState extends Player {
   Stream<PlaylistMode> get loopModeStream => _loopModeStream.stream;
   Stream<Playlist> get playlistStream => _playlistStream.stream;
   Stream<int> get indexChangeStream {
-    int index = playlist.index;
-    return playlistStream.map((event) => event.index).where((event) {
-      if (event != index) {
-        index = event;
+    int oldIndex = playlist.index;
+    return playlistStream.map((event) => event.index).where((newIndex) {
+      if (newIndex != oldIndex) {
+        oldIndex = newIndex;
         return true;
       }
       return false;
@@ -116,16 +116,13 @@ class MkPlayerWithState extends Player {
 
   Future<void> stop() async {
     await pause();
+    await seek(Duration.zero);
 
     _loopMode = PlaylistMode.none;
     _shuffled = false;
     _playlist = null;
     _tempMedias = null;
     _playerStateStream.add(AudioPlaybackState.stopped);
-
-    for (int i = 0; i < state.playlist.medias.length; i++) {
-      await remove(i);
-    }
   }
 
   @override
@@ -141,6 +138,7 @@ class MkPlayerWithState extends Player {
     Playable playable, {
     bool play = true,
   }) async {
+    await stop();
     if (playable is Playlist) {
       playlist = playable;
       super.open(playable.medias[playable.index], play: play);
@@ -154,14 +152,15 @@ class MkPlayerWithState extends Player {
       return null;
     }
 
-    if (loopMode == PlaylistMode.loop &&
-        _playlist!.index == _playlist!.medias.length - 1) {
-      playlist = _playlist!.copyWith(index: 0);
-    } else {
-      playlist = _playlist!.copyWith(index: _playlist!.index + 1);
-    }
+    final isLast = _playlist!.index == _playlist!.medias.length - 1;
 
-    return super.open(_playlist!.medias[_playlist!.index], play: true);
+    if (loopMode == PlaylistMode.loop && isLast) {
+      playlist = _playlist!.copyWith(index: 0);
+      return super.open(_playlist!.medias[_playlist!.index], play: true);
+    } else if (!isLast) {
+      playlist = _playlist!.copyWith(index: _playlist!.index + 1);
+      return super.open(_playlist!.medias[_playlist!.index], play: true);
+    }
   }
 
   @override
@@ -170,11 +169,11 @@ class MkPlayerWithState extends Player {
 
     if (loopMode == PlaylistMode.loop && _playlist!.index == 0) {
       playlist = _playlist!.copyWith(index: _playlist!.medias.length - 1);
-    } else {
+      return super.open(_playlist!.medias[_playlist!.index], play: true);
+    } else if (_playlist!.index != 0) {
       playlist = _playlist!.copyWith(index: _playlist!.index - 1);
+      return super.open(_playlist!.medias[_playlist!.index], play: true);
     }
-
-    return super.open(_playlist!.medias[_playlist!.index], play: true);
   }
 
   @override
@@ -184,7 +183,7 @@ class MkPlayerWithState extends Player {
     }
 
     playlist = _playlist!.copyWith(index: index);
-    return super.open(_playlist!.medias[_playlist!.index], play: true);
+    return super.open(_playlist!.medias[index], play: true);
   }
 
   @override
@@ -210,6 +209,27 @@ class MkPlayerWithState extends Player {
     );
   }
 
+  /// This replaces the old source with a new one
+  ///
+  /// This doesn't work when [playlist] is null
+  /// Or, when the current media is the one to be replaced
+  void replace(String oldUrl, String newUrl) {
+    if (_playlist == null ||
+        _playlist!.medias[_playlist!.index].uri == oldUrl) {
+      return;
+    }
+
+    for (var i = 0; i < _playlist!.medias.length - 1; i++) {
+      final media = _playlist!.medias[i];
+      if (media.uri == oldUrl) {
+        final newMedias = _playlist!.medias.toList();
+        newMedias[i] = Media(newUrl, extras: media.extras);
+        playlist = _playlist!.copyWith(medias: newMedias);
+        break;
+      }
+    }
+  }
+
   @override
   FutureOr<void> add(Media media) {
     if (_playlist == null) return null;
@@ -223,45 +243,28 @@ class MkPlayerWithState extends Player {
     }
   }
 
+  /// Doesn't work when active media is the one to be removed
   @override
   FutureOr<void> remove(int index) async {
-    if (_playlist == null || index >= _playlist!.medias.length) return null;
-
-    final item = _playlist!.medias.elementAtOrNull(index);
-    if (shuffled && _tempMedias != null && item != null) {
-      _tempMedias!.remove(item);
+    if (_playlist == null ||
+        index < 0 ||
+        index > _playlist!.medias.length - 1 ||
+        _playlist!.index == index) {
+      return null;
     }
 
-    if (_playlist!.index == index) {
-      final hasNext = _playlist!.index + 1 < _playlist!.medias.length;
-      final hasPrevious = _playlist!.index - 1 >= 0;
+    final targetItem = _playlist!.medias.elementAtOrNull(index);
+    if (targetItem == null) return null;
 
-      if (hasNext) {
-        playlist = _playlist!.copyWith(
-          index: _playlist!.index + 1,
-          medias: _playlist!.medias..removeAt(index),
-        );
-        super.open(_playlist!.medias[_playlist!.index], play: true);
-      } else if (hasPrevious) {
-        playlist = _playlist!.copyWith(
-          index: _playlist!.index - 1,
-          medias: _playlist!.medias..removeAt(index),
-        );
-        super.open(_playlist!.medias[_playlist!.index], play: true);
-      } else {
-        playlist = _playlist!.copyWith(
-          medias: _playlist!.medias..removeAt(index),
-          index: -1,
-        );
-        await stop();
-      }
-    } else {
-      final active = _playlist!.medias[_playlist!.index];
-      final newMedias = _playlist!.medias..removeAt(index);
-      playlist = _playlist!.copyWith(
-        medias: newMedias,
-        index: newMedias.indexOf(active),
-      );
+    if (shuffled && _tempMedias != null) {
+      _tempMedias!.remove(targetItem);
     }
+
+    final newMedias = _playlist!.medias.toList()..removeAt(index);
+
+    playlist = _playlist!.copyWith(
+      medias: newMedias,
+      index: newMedias.indexOf(_playlist!.medias[_playlist!.index]),
+    );
   }
 }

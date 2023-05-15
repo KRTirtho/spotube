@@ -57,6 +57,8 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
     return source.startsWith('https://youtube.com/unplayable.m4a?id=');
   }
 
+  bool isPlayable(String source) => !isUnPlayable(source);
+
   /// Returns [Track.id] from [isUnPlayable] source that is not playable
   String getIdFromUnPlayable(String source) {
     return source.replaceFirst('https://youtube.com/unplayable.m4a?id=', '');

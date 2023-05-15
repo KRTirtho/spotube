@@ -101,7 +101,7 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
       audioPlayer.percentCompletedStream(99).listen((_) async {
         final nextSource =
             audioPlayer.sources.elementAtOrNull(audioPlayer.currentIndex + 1);
-        if (nextSource == null || !isUnPlayable(nextSource)) return;
+        if (nextSource == null || isPlayable(nextSource)) return;
         await audioPlayer.pause();
       });
 
@@ -118,20 +118,17 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
         if (activeTrack.skipSegments.isNotEmpty == true &&
             preferences.skipSponsorSegments) {
           for (final segment in activeTrack.skipSegments) {
-            if (pos.inSeconds < segment["start"]! ||
-                pos.inSeconds >= segment["end"]!) continue;
-            await audioPlayer.seek(Duration(seconds: segment["end"]!));
+            if (pos.inSeconds < segment.start || pos.inSeconds >= segment.end) {
+              continue;
+            }
+            await audioPlayer.seek(Duration(seconds: segment.end));
           }
         }
       });
     }();
   }
 
-  Future<SpotubeTrack?> ensureNthSourcePlayable(
-    int n, {
-    bool softReplace = false,
-    bool exclusive = false,
-  }) async {
+  Future<SpotubeTrack?> ensureNthSourcePlayable(int n) async {
     final sources = audioPlayer.sources;
     if (n < 0 || n > sources.length - 1) return null;
     final nthSource = sources.elementAtOrNull(n);
@@ -150,13 +147,10 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
 
     if (nthSource == nthFetchedTrack.ytUri) return null;
 
-    if (!softReplace) {
-      await audioPlayer.replaceSource(
-        nthSource,
-        nthFetchedTrack.ytUri,
-        exclusive: exclusive,
-      );
-    }
+    await audioPlayer.replaceSource(
+      nthSource,
+      nthFetchedTrack.ytUri,
+    );
 
     return nthFetchedTrack;
   }
@@ -214,7 +208,9 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
         await SpotubeTrack.fetchFromTrack(tracks[initialIndex], preferences);
 
     state = state.copyWith(
-        tracks: mergeTracks([addableTrack], tracks), active: initialIndex);
+      tracks: mergeTracks([addableTrack], tracks),
+      active: initialIndex,
+    );
 
     await audioPlayer.openPlaylist(
       state.tracks.map(makeAppropriateSource).toList(),

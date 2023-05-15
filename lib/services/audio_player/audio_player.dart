@@ -458,35 +458,25 @@ class SpotubeAudioPlayer {
     final oldSourceIndex = sources.indexOf(oldSource);
     if (oldSourceIndex == -1) return;
 
-    // if (mkSupportedPlatform) {
-    //   final sourcesCp = sources.toList();
-    //   sourcesCp[oldSourceIndex] = newSource;
+    if (mkSupportedPlatform) {
+      _mkPlayer!.replace(oldSource, newSource);
+    } else {
+      await addTrack(newSource);
+      await removeTrack(oldSourceIndex);
 
-    //   await _mkPlayer!.open(
-    //     mk.Playlist(
-    //       sourcesCp.map(mk.Media.new).toList(),
-    //       index: currentIndex,
-    //     ),
-    //     play: false,
-    //   );
-    //   if (exclusive) await jumpTo(oldSourceIndex);
-    // } else {
-    await addTrack(newSource);
-    await removeTrack(oldSourceIndex);
-
-    int newSourceIndex = sources.indexOf(newSource);
-    while (newSourceIndex == -1) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      newSourceIndex = sources.indexOf(newSource);
-    }
-    await moveTrack(newSourceIndex, oldSourceIndex);
-    newSourceIndex = sources.indexOf(newSource);
-    while (newSourceIndex != oldSourceIndex) {
-      await Future.delayed(const Duration(milliseconds: 100));
+      int newSourceIndex = sources.indexOf(newSource);
+      while (newSourceIndex == -1) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        newSourceIndex = sources.indexOf(newSource);
+      }
       await moveTrack(newSourceIndex, oldSourceIndex);
       newSourceIndex = sources.indexOf(newSource);
+      while (newSourceIndex != oldSourceIndex) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        await moveTrack(newSourceIndex, oldSourceIndex);
+        newSourceIndex = sources.indexOf(newSource);
+      }
     }
-    // }
   }
 
   Future<void> clearPlaylist() async {

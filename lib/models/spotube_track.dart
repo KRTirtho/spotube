@@ -28,10 +28,12 @@ enum SpotubeTrackMatchAlgorithm {
   authenticPopular,
 }
 
+typedef SkipSegment = ({int start, int end});
+
 class SpotubeTrack extends Track {
   final PipedStreamResponse ytTrack;
   final String ytUri;
-  final List<Map<String, int>> skipSegments;
+  final List<SkipSegment> skipSegments;
   final List<PipedSearchItemStream> siblings;
 
   SpotubeTrack(
@@ -82,7 +84,7 @@ class SpotubeTrack extends Track {
     }
   }
 
-  static Future<List<Map<String, int>>> getSkipSegments(
+  static Future<List<SkipSegment>> getSkipSegments(
     String id,
     UserPreferences preferences,
   ) async {
@@ -107,23 +109,23 @@ class SpotubeTrack extends Track {
       ));
 
       if (res.body == "Not Found") {
-        return List.castFrom<dynamic, Map<String, int>>([]);
+        return List.castFrom<dynamic, SkipSegment>([]);
       }
 
       final data = jsonDecode(res.body) as List;
       final segments = data.map((obj) {
-        return Map.castFrom<String, dynamic, String, int>({
-          "start": obj["segment"].first.toInt(),
-          "end": obj["segment"].last.toInt(),
-        });
+        return (
+          start: obj["segment"].first.toInt(),
+          end: obj["segment"].last.toInt(),
+        );
       }).toList();
       getLogger(SpotubeTrack).v(
         "[SponsorBlock] successfully fetched skip segments for $id",
       );
-      return List.castFrom<dynamic, Map<String, int>>(segments);
+      return List.castFrom<dynamic, SkipSegment>(segments);
     } catch (e, stack) {
       Catcher.reportCheckedError(e, stack);
-      return List.castFrom<dynamic, Map<String, int>>([]);
+      return List.castFrom<dynamic, SkipSegment>([]);
     }
   }
 
@@ -155,7 +157,7 @@ class SpotubeTrack extends Track {
     PipedStreamResponse ytVideo;
     PipedAudioStream ytStream;
     List<PipedSearchItemStream> siblings = [];
-    List<Map<String, int>> skipSegments = [];
+    List<SkipSegment> skipSegments = [];
     if (cachedTrack != null) {
       final responses = await Future.wait(
         [
@@ -167,7 +169,7 @@ class SpotubeTrack extends Track {
         ],
       );
       ytVideo = responses.first as PipedStreamResponse;
-      skipSegments = responses.last as List<Map<String, int>>;
+      skipSegments = responses.last as List<SkipSegment>;
       ytStream = getStreamInfo(ytVideo, preferences.audioQuality);
     } else {
       final videos = await PipedSpotube.client
@@ -187,7 +189,7 @@ class SpotubeTrack extends Track {
         ],
       );
       ytVideo = responses.first as PipedStreamResponse;
-      skipSegments = responses.last as List<Map<String, int>>;
+      skipSegments = responses.last as List<SkipSegment>;
       ytStream = getStreamInfo(ytVideo, preferences.audioQuality);
     }
 
@@ -239,7 +241,7 @@ class SpotubeTrack extends Track {
   ) async {
     if (siblings.none((element) => element.id == video.id)) return null;
 
-    final [PipedStreamResponse ytVideo, List<Map<String, int>> skipSegments] =
+    final [PipedStreamResponse ytVideo, List<SkipSegment> skipSegments] =
         await Future.wait<dynamic>(
       [
         PipedSpotube.client.streams(video.id),
@@ -329,8 +331,7 @@ class SpotubeTrack extends Track {
       track: Track.fromJson(map),
       ytTrack: PipedStreamResponse.fromJson(map["ytTrack"]),
       ytUri: map["ytUri"],
-      skipSegments:
-          List.castFrom<dynamic, Map<String, int>>(map["skipSegments"]),
+      skipSegments: List.castFrom<dynamic, SkipSegment>(map["skipSegments"]),
       siblings: List.castFrom<dynamic, Map<String, dynamic>>(map["siblings"])
           .map((sibling) => PipedSearchItemStream.fromJson(sibling))
           .toList(),
