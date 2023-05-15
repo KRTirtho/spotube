@@ -1,32 +1,19 @@
-<p align="center"><img width="700" src="assets/spotube_banner.png" alt="Spotube Logo"></p>
+<div align="center">
 
-<p align="center">
-  <a href="https://spotube.netlify.app/">spotube.netlify.app</a>
-</p>
+<img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
-<p align="center">
-  <a href="https://github.com/KRTirtho/spotube/actions/workflows/spotube-release-binary.yml">
-    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?color=1585be&style=flat-square">
-  </a>
-  <a href="https://github.com/KRTirtho/Spotube/releases">
-    <img alt="GitHub release" src="https://img.shields.io/github/v/release/KRTirtho/spotube?color=1585be&style=flat-square"/>
-  </a>
-  <a href="LICENSE">
-    <img alt="License" src="https://img.shields.io/aur/license/spotube-bin?color=1585be&style=flat-square"/>
-  </a>
-  <a href="https://github.com/KRTirtho">
-    <img alt="Maintainer" src="https://img.shields.io/badge/Maintainer-KRTirtho-1585be?style=flat-square"/>
-  </a>
-  <a href="https://opencollective.com/spotube">
-    <img alt="Open Collective backers and sponsors" src="https://img.shields.io/opencollective/all/spotube?color=1585be&style=flat-square"/>
-  </a>
-  <a href="https://discord.gg/uJ94vxB6vg">
-    <img alt="Discord" src="https://img.shields.io/discord/1012234096237350943?color=1585be&label=Discord%20Server&logoColor=1585be&style=flat-square">
-  </a>
-</p>
+<a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" src="https://img.shields.io/discord/1012234096237350943?color=1585be&label=Discord%20Server&logoColor=1585be&logo=discord"></a>
+<a href="https://github.com/KRTirtho/spotube/actions/workflows/spotube-release-binary.yml"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>
+<a href="LICENSE"><img alt="License" src="https://img.shields.io/static/v1?label=License&message=BSD-4-Clause&color=purple"></a>
 
+<a href="https://patreon.com/krtirtho"><img src="https://teaprincesschronicles.files.wordpress.com/2020/03/support-me-on-patreon.png" alt="Support me on Patreon" height="40"/></a>
+<a href="https://www.buymeacoffee.com/krtirtho"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="40"></a>
 
-Spotube is a [Flutter](https://flutter.dev) based lightweight Spotify client. It utilizes the power of Spotify & Youtube's public APIs to create a reliable, robust & resource-light user experience.
+<a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="50"></a>
+
+</div>
+
+<!-- TODO - USE TABLE
 
 #### <p align="center">Desktop</p>
 
@@ -36,13 +23,9 @@ Spotube is a [Flutter](https://flutter.dev) based lightweight Spotify client. It
 
 ![Application Mobile Screenshot](assets/mobile-screenshots/mobile-combined.jpg)
 
-<p align="center">
-  <a href="https://discord.gg/uJ94vxB6vg">
-    <img src="https://discord.com/api/guilds/1012234096237350943/widget.png?style=banner2">
-  </a>
-</p>
+-->
 
-# Features
+## Features
 
 Following are the features that currently Spotube offers:
 
@@ -58,13 +41,7 @@ Following are the features that currently Spotube offers:
 - Time synced lyrics
 - Downloadable tracks
 
-# Support development
-
-<a href="https://patreon.com/krtirtho"><img src="https://user-images.githubusercontent.com/61944859/180249027-678b01b8-c336-451e-b147-6d84a5b9d0e7.png" width="250"/></a>
-[!["Donate to out Collective"](https://opencollective.com/spotube/donate/button.png?color=blue)](https://opencollective.com/spotube)
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/krtirtho)
-
-# Installation
+## Installation
 
 I'm always releasing newer versions of binaries of the software every 2-3 months with minor changes & every 6-8 months with major changes. Grab them!
 
@@ -83,42 +60,45 @@ I'm always releasing newer versions of binaries of the software every 2-3 months
 | Windows (<a href="https://github.com/microsoft/winget-cli">WinGet</a>)                           | `winget install --id KRTirtho.Spotube`                                                                                                                                                                                                                                                                                          |
 | MacOS                                           | [<img width='220' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink]                                                                                                                                                                                             |
 
-> **Note!:** If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki
+> If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki
 
-## Nightly Builds
-Get the latest nightly builds of Spotube [here](https://github.com/KRTirtho/spotube/releases/tag/nightly).
+### Nightly Builds
 
-# TODO:
-- [ ] Windows OS Media Control & Media Keys Support
+Grab the latest nightly builds of Spotube [from the GitHub Releases](https://github.com/KRTirtho/spotube/releases/tag/nightly).
+
+## Roadmap
+
+- [X] Windows OS Media Control & Media Keys Support
+- [X] Language Translations/Localization
 - [ ] Spotify Listen Along
-- [x] Skip non-music sections from Audio Track
-- [ ] Language Translations/Localization
 
-# Building from source
+## Building from source
 
-You can find the details [here](CONTRIBUTION.md#your-first-code-contribution).
+You can [read the instructions](CONTRIBUTION.md#your-first-code-contribution).
 
-# Things that do not work
+<!--            I want it differently
+
+## Things that do not work
 
 - Shows & Podcasts are not supported, as a premium subscription would be needed for that functionality.
 
-# License
+-->
 
-[BSD-4-Clause](/LICENSE)
+## The team
 
-But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
+- [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
+- [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
+- [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
+- [RaptaG](https://github.com/raptag) - The GitHub Moderator and Community Manager
+- [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
-# Financial contributors
-## Backers
-![Backers](https://opencollective.com/spotube/backer.svg?button=false)
-![Donors](https://opencollective.com/spotube/tiers/donor.svg?button=false)
+## License
 
-## Sponsors
-<p align="center">
-  <img src="https://opencollective.com/spotube/tiers/sponsor.svg" alt="Sponsor Spotube" width="69%"> <!-- nice. -->
-</p>
+Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
-# Library/Plugin/Framework Credits
+If you are concerned, feel free to [read the reason of choosing this license.](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
+
+## Library/Plugin/Framework Credits
 
 1. [Flutter](https://flutter.dev/) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
 1. [Spotify API](https://developer.spotify.com/documentation/web-api/) - The Spotify Web API is a RESTful API that provides access to Spotify data
@@ -201,19 +181,8 @@ But why? You can learn about it [here](https://dev.to/krtirtho/choosing-open-sou
 1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.
 1. [window_size](https://github.com/google/flutter-desktop-embedding.git) - Allows resizing and repositioning the window containing Flutter.
 
-# The team
 
-- [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
-- [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
-- [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
-- [RaptaG](https://github.com/raptag) - The GitHub Moderator and Community Manager
-- [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
-
-# Social platforms
-
-Follow me on [Twitter](https://twitter.com/@krtirtho), or join our amazing [Discord](https://discord.gg/uJ94vxB6vg) server to always get newer updates about the application.
-
-<b><p align="center">&copy; 2023 Spotube</p></b>
+<div align="center"><h4>© Copyright Spotube 2023</h4></div>
 
 <!-- Variables/Text References -->
 [win32-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe
