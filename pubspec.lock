@@ -454,18 +454,18 @@ packages:
     dependency: "direct main"
     description:
       name: envied
-      sha256: d5d978fbd578b5c00123003609c39185e0b1ddf9d2ac460d710dd0eb2fc223d7
+      sha256: "60d3f5606c7b35bc6ef493e650d916b34351d8af2e58b7ac45881ba59dfcf039"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.0+3"
   envied_generator:
     dependency: "direct dev"
     description:
       name: envied_generator
-      sha256: "6c5a98c27c5eae925807692eb252ccac2b8e81f09bace1f07207c47dfb6a4eb0"
+      sha256: dfdbe5dc52863e54c036a4c4042afbdf1bd528cb4c1e638ecba26228ba72e9e5
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.0+3"
   fake_async:
     dependency: transitive
     description:
@@ -935,13 +935,13 @@ packages:
     source: hosted
     version: "4.8.1"
   json_serializable:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: json_serializable
-      sha256: dadc08bd61f72559f938dd08ec20dbfec6c709bba83515085ea943d2078d187a
+      sha256: "43793352f90efa5d8b251893a63d767b2f7c833120e3cc02adad55eefec04dc7"
       url: "https://pub.dev"
     source: hosted
-    version: "6.6.1"
+    version: "6.6.2"
   just_audio:
     dependency: "direct main"
     description:

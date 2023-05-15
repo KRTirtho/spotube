@@ -65,7 +65,7 @@ jobs:
         run: |
           flutter config --enable-windows-desktop
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Windows Executable
         run: |
@@ -141,7 +141,7 @@ jobs:
         run: |
           flutter config --enable-linux-desktop
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Linux Packages
         run: |
@@ -209,7 +209,7 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Sign Apk
         run: |
@@ -260,7 +260,7 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Macos App
         run: |

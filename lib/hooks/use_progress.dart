@@ -26,19 +26,6 @@ Tuple4<double, Duration, Duration, double> useProgress(WidgetRef ref) {
   final sliderMax = duration.inSeconds;
   final sliderValue = position.inSeconds;
 
-  // this is a hack to fix duration not being updated
-  useEffect(() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (positionSnapshot.hasData && duration == Duration.zero) {
-        await Future.delayed(const Duration(milliseconds: 200));
-        await audioPlayer.pause();
-        await Future.delayed(const Duration(milliseconds: 400));
-        await audioPlayer.resume();
-      }
-    });
-    return null;
-  }, [positionSnapshot.hasData, duration]);
-
   return Tuple4(
     sliderMax == 0 || sliderValue > sliderMax ? 0 : sliderValue / sliderMax,
     position,
