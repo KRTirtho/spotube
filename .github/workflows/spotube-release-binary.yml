@@ -20,14 +20,18 @@ on:
         type: boolean
         default: true
 
+env:
+  FLUTTER_VERSION: '3.10.0'
+
 jobs:
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2.8.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}
@@ -88,9 +92,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2.8.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Get current date
         id: date
@@ -170,9 +175,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2.8.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Install Dependencies
         run: |
@@ -225,9 +231,10 @@ jobs:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2.8.0
+      - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}

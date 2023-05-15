@@ -70,7 +70,6 @@ Future<void> main(List<String> rawArgs) async {
     exit(0);
   }
 
-  await PipedSpotube.initialize();
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -186,6 +185,10 @@ class SpotubeState extends ConsumerState<Spotube> {
   void initState() {
     super.initState();
     SharedPreferences.getInstance().then(((value) => localStorage = value));
+
+    /// Doing the initialization here to avoid loading time
+    /// when in offline mode
+    PipedSpotube.initialize();
   }
 
   @override
