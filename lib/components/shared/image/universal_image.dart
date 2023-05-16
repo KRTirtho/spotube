@@ -59,6 +59,16 @@ class UniversalImage extends HookWidget {
         height: height,
         width: width,
         placeholder: AssetImage(placeholder ?? Assets.placeholder.path),
+        imageErrorBuilder: (context, error, stackTrace) {
+          return Image.asset(
+            placeholder ?? Assets.placeholder.path,
+            width: width,
+            height: height,
+            cacheHeight: height?.toInt(),
+            cacheWidth: width?.toInt(),
+            scale: scale,
+          );
+        },
         fit: fit,
       );
     } else if (Uri.tryParse(path) != null && !path.startsWith("assets")) {

@@ -1,10 +1,13 @@
+import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/services/supabase.dart';
 
 mixin NextFetcher on StateNotifier<ProxyPlaylist> {
   Future<List<SpotubeTrack>> fetchTracks(
@@ -76,6 +79,21 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
       return track.path;
     } else {
       return "https://youtube.com/unplayable.m4a?id=${track.id}";
+    }
+  }
+
+  /// This method must be called after any playback operation as
+  /// it can increase the latency
+  Future<void> storeTrack(Track track, SpotubeTrack spotubeTrack) async {
+    if (track is! SpotubeTrack) {
+      await supabase
+          .insertTrack(
+            MatchedTrack(
+              youtubeId: spotubeTrack.ytTrack.id,
+              spotifyId: spotubeTrack.id!,
+            ),
+          )
+          .catchError(Catcher.reportCheckedError);
     }
   }
 }

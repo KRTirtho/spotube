@@ -75,6 +75,8 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
           isPreSearching = true;
 
           // TODO: Make repeat mode sensitive changes later
+          final oldTrack =
+              state.tracks.elementAtOrNull(audioPlayer.currentIndex);
           final track =
               await ensureNthSourcePlayable(audioPlayer.currentIndex + 1);
 
@@ -91,6 +93,13 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
           /// resume it to skip to next track
           if (audioPlayer.isPaused) {
             await audioPlayer.resume();
+          }
+
+          if (oldTrack != null && track != null) {
+            await storeTrack(
+              oldTrack,
+              track,
+            );
           }
         } finally {
           isPreSearching = false;
@@ -120,9 +129,10 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
       return null;
     }
 
-    final nthFetchedTrack = nthTrack is SpotubeTrack
-        ? nthTrack
-        : await SpotubeTrack.fetchFromTrack(nthTrack, preferences);
+    final nthFetchedTrack = switch (nthTrack.runtimeType) {
+      SpotubeTrack => nthTrack as SpotubeTrack,
+      _ => await SpotubeTrack.fetchFromTrack(nthTrack, preferences),
+    };
 
     if (nthSource == nthFetchedTrack.ytUri) return null;
 
@@ -196,14 +206,27 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
       initialIndex: initialIndex,
       autoPlay: autoPlay,
     );
+
+    await storeTrack(
+      tracks[initialIndex],
+      addableTrack,
+    );
   }
 
   Future<void> jumpTo(int index) async {
+    final oldTrack = state.tracks.elementAtOrNull(audioPlayer.currentIndex);
     final track = await ensureNthSourcePlayable(index);
     if (track != null) {
       state = state.copyWith(tracks: mergeTracks([track], state.tracks));
     }
     await audioPlayer.jumpTo(index);
+
+    if (oldTrack != null && track != null) {
+      await storeTrack(
+        oldTrack,
+        track,
+      );
+    }
   }
 
   Future<void> jumpToTrack(Track track) async {
@@ -234,19 +257,34 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   Future<void> swapSibling(PipedSearchItem video) async {}
 
   Future<void> next() async {
+    final oldTrack = state.tracks.elementAtOrNull(audioPlayer.currentIndex + 1);
     final track = await ensureNthSourcePlayable(audioPlayer.currentIndex + 1);
     if (track != null) {
       state = state.copyWith(tracks: mergeTracks([track], state.tracks));
     }
     await audioPlayer.skipToNext();
+
+    if (oldTrack != null && track != null) {
+      await storeTrack(
+        oldTrack,
+        track,
+      );
+    }
   }
 
   Future<void> previous() async {
+    final oldTrack = state.tracks.elementAtOrNull(audioPlayer.currentIndex - 1);
     final track = await ensureNthSourcePlayable(audioPlayer.currentIndex - 1);
     if (track != null) {
       state = state.copyWith(tracks: mergeTracks([track], state.tracks));
     }
     await audioPlayer.skipToPrevious();
+    if (oldTrack != null && track != null) {
+      await storeTrack(
+        oldTrack,
+        track,
+      );
+    }
   }
 
   Future<void> stop() async {

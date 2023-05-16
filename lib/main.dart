@@ -15,6 +15,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
@@ -28,6 +29,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/hooks/use_init_sys_tray.dart';
@@ -70,6 +72,11 @@ Future<void> main(List<String> rawArgs) async {
     print("Spotube v${package.version}");
     exit(0);
   }
+
+  await Supabase.initialize(
+    url: Env.supabaseUrl,
+    anonKey: Env.supabaseAnonKey,
+  );
 
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 

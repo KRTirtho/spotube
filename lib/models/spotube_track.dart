@@ -8,6 +8,7 @@ import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/services/supabase.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
