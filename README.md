@@ -37,7 +37,7 @@
 - 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts can **never be supported** because the audio tracks are _only_ available on Spotify and accessing them would require Spotify Premium.
 - 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
 
-## Installation guide
+## 📜 ⬇️ Installation guide
 
 New releases usually appear after 3-4 months. This handy table lists all methods you can install Spotube:
 
@@ -63,17 +63,17 @@ New releases usually appear after 3-4 months. This handy table lists all methods
 
 > If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki.
 
-### Nightly Builds
+### 🔄 Nightly Builds
 
 Grab the latest nightly builds of Spotube [from the GitHub Releases](https://github.com/KRTirtho/spotube/releases/tag/nightly).
 
-## Building from source 
+## 🕳️ Building from source 
 
 <a href="https://github.com/KRTirtho/spotube/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>
 
 You can compile Spotube's source code by [following these instructions](CONTRIBUTION.md#your-first-code-contribution).
 
-## The Spotube team
+## 👥 The Spotube team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
@@ -81,7 +81,7 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 - [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
-## License
+## 💼 License
 
 Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
@@ -89,7 +89,7 @@ If you are concerned, feel free to [read the reason of choosing this license.](h
 
 <details>
   <summary>
-    <h2><code>[Click to show]</code> Library/Plugin/Framework Credits</h2>
+    <h2><code>[Click to show]</code> 🙏 Library/Plugin/Framework Credits</h2>
   </summary>
 
 1. [Flutter](https://flutter.dev) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
