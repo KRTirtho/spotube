@@ -19,7 +19,7 @@
 
 ## 🌃 Features
 
-- 🚫 No Spotify nor YouTube ads, utilizing public and free Spotify and YT Music APIs¹
+- 🚫 No ads, thanks to the utilization of public & free Spotify and YT Music APIs¹
 - ⬇️ Downloadable tracks
 - 🖥️ 📱 Cross-platform support
 - 🪶 Small size & less data usage
@@ -28,30 +28,40 @@
 - ✋ No telemetry, diagnostics or user data collection
 - 🚀 Native performance
 - 📖 Open source/libre software
-- 🎵 Playback control is done locally instead of on the server
+- 🔉 Playback control is done locally, not on the server
 
 **¹** It is still **recommended** to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify (or purchasing a Spotify Premium subscription too).
 
-## Installation
+### ❌ Unsupported features
 
-I'm always releasing newer versions of binaries of the software every 2-3 months with minor changes & every 6-8 months with major changes. Grab them!
+- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts can **never be supported** because the audio tracks are _only_ available on Spotify and accessing them would require Spotify Premium.
+- 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
 
-| Platform                                        | Package/Installation Method                                                                                                                                                                                                                                                                                                     |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Android                                         | [<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/114044633/223920025-83687de0-e463-4c5d-8122-e06e4bb7d40c.png'/>][android-dlink]<br/>[<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink]       |
+## Installation guide
+
+New releases usually appear after 3-4 months. This handy table lists all methods you can install Spotube:
+
+<!--    USE HTML!
+
+| Platform | Package/Installation Method |
+| --- | --- |
+
+| Android                                         | [<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/114044633/223920025-83687de0-e463-4c5d-8122-e06e4bb7d40c.png'/>][android-dlink]<br/>[<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink]             |
 | Debian/Ubuntu                                   | [<img width='220' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                                                      |
 | Fedora/OpenSuse                                 | [<img width='220' alt='Linux Fedora/OpenSuse Download' src='https://user-images.githubusercontent.com/61944859/223638350-5926b9da-04d6-4edd-931d-ad533e4ff058.png'/>][rpm-dlink] <br/> For Fedora: `sudo dnf install ./Spotube-linux-x86_64.rpm`<br/> For OpenSuse: `sudo zypper in ./Spotube-linux-x86_64.rpm` |
-| Flatpak                                         | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='220' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>                                                                                        |
-| Arch/Manjaro                                    | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin`                                                                                                                                                                                                                                                             |
-| AppImage                                        | [<img width='220' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note**: AppImages require [appimage-launcher](https://github.com/TheAssassin/AppImageLauncher) to be installed                                  |
+| Flatpak                                         | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='220' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a> |
+| Arch/Manjaro                                    | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin` |
+| AppImage                                        | [<img width='220' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note:** AppImages require [AppimageLauncher](https://github.com/TheAssassin/AppImageLauncher) to be installed                                  |
 | Linux (tarball)                                 | [<img width='220' alt='Tarball Download' src='https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png'/>][linux-dlink]                                                                                                                                                            |
-| Windows                                         | [<img width='220' alt='Windows Download' src='https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg'/>][win32-dlink]                                                                                                                                                                                  |
-| Windows (<a href="https://chocolatey.org">Chocolatey</a>)                            | `choco install spotube`                                                                                                                                                                                                                                                                                                         |
-| Windows (<a href="https://scoop.sh/">Scoop</a>) | `scoop bucket add extras`  <br/> `scoop install spotube`                                                                                                                                                                                                                                                                        |
-| Windows (<a href="https://github.com/microsoft/winget-cli">WinGet</a>)                           | `winget install --id KRTirtho.Spotube`                                                                                                                                                                                                                                                                                          |
-| MacOS                                           | [<img width='220' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink]                                                                                                                                                                                             |
+| Windows - Manual                                | [<img width="220" alt="Windows Download" src="https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg">][win32-dlink] |
+| Windows - [Chocolatey](https://chocolatey.org)  | `choco install spotube` |
+| Windows - [Scoop](https://scoop.sh)             | `scoop bucket add extras`  <br/> `scoop install spotube` |
+| Windows - [WinGet](https://github.com/microsoft/winget-cli) | `winget install --id KRTirtho.Spotube` |
+| MacOS                                           | [<img width='220' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink] |
 
-> If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki
+-->
+
+> If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki.
 
 ### Nightly Builds
 
@@ -61,22 +71,14 @@ Grab the latest nightly builds of Spotube [from the GitHub Releases](https://git
 
 <a href="https://github.com/KRTirtho/spotube/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>
 
-You can [read the instructions](CONTRIBUTION.md#your-first-code-contribution).
-
-<!--            I want it differently
-
-## Things that do not work
-
-- Shows & Podcasts are not supported, as a premium subscription would be needed for that functionality.
-
--->
+You can compile Spotube's source code by [following these instructions](CONTRIBUTION.md#your-first-code-contribution).
 
 ## The Spotube team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
-- [RaptaG](https://github.com/raptag) - The GitHub Moderator and Community Manager
+- [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
 ## License
@@ -85,18 +87,20 @@ Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
 If you are concerned, feel free to [read the reason of choosing this license.](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
 
-## Library/Plugin/Framework Credits
+<details>
+  <summary>
+    <h2><code>[Click to show]</code> Library/Plugin/Framework Credits</h2>
+  </summary>
 
-1. [Flutter](https://flutter.dev/) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
-1. [Spotify API](https://developer.spotify.com/documentation/web-api/) - The Spotify Web API is a RESTful API that provides access to Spotify data
-1. [Linux](https://www.linux.org/) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
-1. [AUR](https://aur.archlinux.org/) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users
-1. [Flatpak](https://flatpak.org/) - Flatpak is a utility for software deployment and package management for Linux
-1. [rentanadviser](https://www.rentanadviser.com/) - Generous Synced lyrics API provider service
-1. [SponsorBlock](https://sponsor.ajay.app/) - SponsorBlock is an open-source crowdsourced browser extension and open API for skipping sponsor segments in YouTube videos.
+1. [Flutter](https://flutter.dev) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
+1. [Spotify API](https://developer.spotify.com/documentation/web-api) - The Spotify Web API is a RESTful API that provides access to Spotify data
+1. [Linux](https://www.linux.org) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
+1. [AUR](https://aur.archlinux.org) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users
+1. [Flatpak](https://flatpak.org) - Flatpak is a utility for software deployment and package management for Linux
+1. [rentanadviser](https://www.rentanadviser.com) - Generous Synced lyrics API provider service
+1. [SponsorBlock](https://sponsor.ajay.app) - SponsorBlock is an open-source crowdsourced browser extension and open API for skipping sponsor segments in YouTube videos.
 1. [Inno Setup](https://jrsoftware.org/isinfo.php) - Inno Setup is a free installer for Windows programs by Jordan Russell and Martijn Laan
-1. [F-Droid](https://f-droid.org/) - F-Droid is an installable catalogue of FOSS (Free and Open Source Software) applications for the Android platform. The client makes it easy to browse, install, and keep track of updates on your device
-
+1. [F-Droid](https://f-droid.org) - F-Droid is an installable catalogue of FOSS (Free and Open Source Software) applications for the Android platform. The client makes it easy to browse, install, and keep track of updates on your device
 1. [adwaita](https://github.com/gtk-flutter/adwaita) - Adwaita style - The default theme for GTK+ for your Flutter app.
 1. [args](https://pub.dev/packages/args) - Library for defining parsers for parsing raw command-line arguments into a set of options and values using GNU and POSIX style options.
 1. [async](https://pub.dev/packages/async) - Utility functions and classes related to the 'dart:async' library.
@@ -137,7 +141,7 @@ If you are concerned, feel free to [read the reason of choosing this license.](h
 1. [marquee](https://pub.dev/packages/marquee) - A Flutter widget that scrolls text infinitely. Provides many customizations including custom scroll directions, durations, curves as well as pauses after every round.
 1. [metadata_god](https://github.com/KRTirtho/metadata_god) - Plugin for retrieving and writing audio tags/metadata from audio files
 1. [mime](https://pub.dev/packages/mime) - Utilities for handling media (MIME) types, including determining a type from a file extension and file contents.
-1. [package_info_plus](https://plus.fluttercommunity.dev/) - Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.
+1. [package_info_plus](https://plus.fluttercommunity.dev) - Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.
 1. [palette_generator](https://pub.dev/packages/palette_generator) - Flutter package for generating palette colors from a source image.
 1. [path](https://pub.dev/packages/path) - A string-based path manipulation library. All of the path operations you know and love, with solid support for Windows, POSIX (Linux and Mac OS X), and the web.
 1. [path_provider](https://pub.dev/packages/path_provider) - Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.
@@ -151,7 +155,7 @@ If you are concerned, feel free to [read the reason of choosing this license.](h
 1. [tuple](https://pub.dev/packages/tuple) - A library providing a tuple data structure.
 1. [url_launcher](https://pub.dev/packages/url_launcher) - Flutter plugin for launching a URL. Supports web, phone, SMS, and email schemes.
 1. [uuid](https://github.com/Daegalus/dart-uuid) - RFC4122 (v1, v4, v5) UUID Generator and Parser for all Dart platforms (Web, VM, Flutter)
-1. [version](https://github.com/dartninja/version) - Provides a simple class for parsing and comparing semantic versions as defined by http://semver.org/
+1. [version](https://github.com/dartninja/version) - Provides a simple class for parsing and comparing semantic versions as defined by http://semver.org
 1. [visibility_detector](https://pub.dev/packages/visibility_detector) - A widget that detects the visibility of its child and notifies a callback.
 1. [window_manager](https://github.com/leanflutter/window_manager) - This plugin allows Flutter desktop apps to resizing and repositioning the window.
 1. [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - A port in dart of the youtube explode library. Supports several API functions without the need of Youtube API Key.
@@ -164,10 +168,10 @@ If you are concerned, feel free to [read the reason of choosing this license.](h
 1. [pub_api_client](https://github.com/leoafarias/pub_api_client) - An API Client for Pub to interact with public package information.
 1. [pubspec_parse](https://pub.dev/packages/pubspec_parse) - Simple package for parsing pubspec.yaml files with a type-safe API and rich error reporting.
 1. [catcher](https://github.com/jhomlala/catcher) - Plugin for error catching which provides multiple handlers for dealing with errors when they are not caught by the developer.
-1. [platform_ui](https://github.com/KRTirtho/platform_ui) - Platform specific Widgets and UI toolkit
 1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.
 1. [window_size](https://github.com/google/flutter-desktop-embedding.git) - Allows resizing and repositioning the window containing Flutter.
 
+</details>
 
 <div align="center"><h4>© Copyright Spotube 2023</h4></div>
 
@@ -179,6 +183,5 @@ If you are concerned, feel free to [read the reason of choosing this license.](h
 [appimage-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage
 [mac-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg
 [android-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk
-[fdroid-dlink]: https://f-droid.org/packages/oss.krtirtho.spotube/
-
+[fdroid-dlink]: https://f-droid.org/packages/oss.krtirtho.spotube
 [wiki-installation-instructions]: https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions
