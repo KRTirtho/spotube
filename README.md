@@ -13,7 +13,7 @@
 
   ---
 
-  <img src="assets/spotube-screenshot.jpg" alt="Spotube Desktop" width="500"> <img src="assets/mobile-screenshots/player-view.jpg" alt="Spotube Mobile" height="400">
+  <img src="assets/spotube-screenshot.jpg" alt="Spotube Desktop" width="500"> <img src="assets/mobile-screenshots/player-view.jpg" alt="Spotube Mobile" height="350">
 
 </div>
 
