@@ -39,29 +39,114 @@
 
 ## 📜 ⬇️ Installation guide
 
-New releases usually appear after 3-4 months. This handy table lists all methods you can install Spotube:
+New releases usually appear after 3-4 months. This handy table lists all methods you can use to install Spotube:
 
-<!--    USE HTML!
+<table>
+  <tr>
+    <th>Platform</th>
+    <th>Package/Installation Method</th>
+  </tr>
+  <tr>
+    <td>Windows</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe">
+        <img width="220" alt="Windows Download" src="https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg">
+      </a>
+  </tr>
+  <tr>
+    <td>MacOS</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg">
+        <img width="220" alt="MacOS Download" src="https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Android</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk">
+        <img width="220" alt="APK download" src="https://user-images.githubusercontent.com/114044633/223920025-83687de0-e463-4c5d-8122-e06e4bb7d40c.png">
+      </a>
+      <br/>
+      <a href="https://f-droid.org/packages/oss.krtirtho.spotube">
+        <img width="220" alt="Download from F-Droid" src="https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Flatpak</td>
+    <td>
+      <p><code>flatpak install com.github.KRTirtho.Spotube</code></p>
+      <a href="https://flathub.org/apps/details/com.github.KRTirtho.Spotube">
+        <img width="220" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>AppImage</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage">
+        <img width="220" alt="Download AppImage" src="https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png">
+      </a>
+      <p><b>Note:</b> <a href="https://github.com/TheAssassin/AppImageLauncher">AppimageLauncher</a> is required!</p>
+    </td>
+  </tr>
+  <tr>
+    <td>Debian/Ubuntu</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.deb">
+        <img width="220" alt="Debian/Ubuntu Download" src="https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png">
+      </a>
+      <p>Then run: <code>sudo apt install Spotube-linux-x86_64.deb</code></p>
+    </td>
+  </tr>
+  <tr>
+    <td>Arch/Manjaro</td>
+    <td>
+      <p>With pamac: <code>sudo pamac install spotube-bin</code></p>
+      <p>With yay: <code>yay -Sy spotube-bin</code></p>
+    </td>
+  </tr>
+  <tr>
+    <td>Fedora/OpenSuse</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.rpm">
+        <img width="220" alt="Fedora/OpenSuse Download" src="https://user-images.githubusercontent.com/61944859/223638350-5926b9da-04d6-4edd-931d-ad533e4ff058.png">
+      </a>
+      <p>For Fedora: <code>sudo dnf install ./Spotube-linux-x86_64.rpm</code></p>
+      <p>For OpenSuse: <code>sudo zypper in ./Spotube-linux-x86_64.rpm</code></p>
+    </td>
+  </tr>
+  <tr>
+    <td>Linux (tarball)</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest">
+        <img width="220" alt="Tarball Download" src="https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Windows - <a href="https://chocolatey.org">Chocolatey</a></td>
+    <td>
+      <p><code>choco install spotube</code></p>
+    </td>
+  </tr>
+  <tr>
+    <td>Windows - <a href="https://scoop.sh">Scoop</a></td>
+    <td>
+      <p><code>scoop bucket add extras</code></p>
+      <p><code>scoop install spotube</code></p>
+    </td>
+  </tr>
+  <tr>
+    <td>Windows - <a href="https://github.com/microsoft/winget-cli">WinGet</a></td>
+    <td>
+      <p><code>winget install --id KRTirtho.Spotube</code></p>
+    </td>
+  </tr>
+</table>
 
-| Platform | Package/Installation Method |
-| --- | --- |
-
-| Android                                         | [<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/114044633/223920025-83687de0-e463-4c5d-8122-e06e4bb7d40c.png'/>][android-dlink]<br/>[<img width='220' alt='Android Download' src='https://user-images.githubusercontent.com/61944859/174589876-bace24c0-b3fd-4c4a-bdb4-6fa82b5853ec.png'/>][fdroid-dlink]             |
-| Debian/Ubuntu                                   | [<img width='220' alt='Linux Debian/Ubuntu Download' src='https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png'/>][deb-dlink] <br/> Then run: `sudo apt install Spotube-linux-x86_64.deb`                                                                                      |
-| Fedora/OpenSuse                                 | [<img width='220' alt='Linux Fedora/OpenSuse Download' src='https://user-images.githubusercontent.com/61944859/223638350-5926b9da-04d6-4edd-931d-ad533e4ff058.png'/>][rpm-dlink] <br/> For Fedora: `sudo dnf install ./Spotube-linux-x86_64.rpm`<br/> For OpenSuse: `sudo zypper in ./Spotube-linux-x86_64.rpm` |
-| Flatpak                                         | `flatpak install com.github.KRTirtho.Spotube` <br/> <a href='https://flathub.org/apps/details/com.github.KRTirtho.Spotube'><img width='220' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a> |
-| Arch/Manjaro                                    | pamac: `pamac install spotube-bin` <br/> yay: `yay -Sy spotube-bin` |
-| AppImage                                        | [<img width='220' alt='AppImage Download' src='https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png'/>][appimage-dlink]<br/> **Note:** AppImages require [AppimageLauncher](https://github.com/TheAssassin/AppImageLauncher) to be installed                                  |
-| Linux (tarball)                                 | [<img width='220' alt='Tarball Download' src='https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png'/>][linux-dlink]                                                                                                                                                            |
-| Windows - Manual                                | [<img width="220" alt="Windows Download" src="https://get.todoist.help/hc/article_attachments/4403191721234/WindowsButton.svg">][win32-dlink] |
-| Windows - [Chocolatey](https://chocolatey.org)  | `choco install spotube` |
-| Windows - [Scoop](https://scoop.sh)             | `scoop bucket add extras`  <br/> `scoop install spotube` |
-| Windows - [WinGet](https://github.com/microsoft/winget-cli) | `winget install --id KRTirtho.Spotube` |
-| MacOS                                           | [<img width='220' alt='MacOS Download' src='https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png'/>][mac-dlink] |
-
--->
-
-> If you don't understand this download table. You can read [installation instructions][wiki-installation-instructions] from the wiki.
+> If you don't understand this download table. You can read [installation instructions](https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions) from the wiki.
 
 ### 🔄 Nightly Builds
 
@@ -174,14 +259,3 @@ If you are concerned, feel free to [read the reason of choosing this license.](h
 </details>
 
 <div align="center"><h4>© Copyright Spotube 2023</h4></div>
-
-<!-- Variables/Text References -->
-[win32-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-windows-x86_64-setup.exe
-[deb-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.deb
-[rpm-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.rpm
-[linux-dlink]: https://github.com/KRTirtho/spotube/releases/latest
-[appimage-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage
-[mac-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg
-[android-dlink]: https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk
-[fdroid-dlink]: https://f-droid.org/packages/oss.krtirtho.spotube
-[wiki-installation-instructions]: https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions
