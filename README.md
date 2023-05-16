@@ -147,7 +147,7 @@ This handy table lists all methods you can use to install Spotube:
   </tr>
 </table>
 
-> If you don't understand this download table. You can read [installation instructions](https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions) from the wiki.
+> You can also [find more detailed installation instructions](https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions) in the wiki.
 
 ### 🔄 Nightly Builds
 
@@ -162,7 +162,7 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 ## 👥 The Spotube team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
-- [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
+- [Owen Connor](https://github.com/owencz1998) - The Cool Discord Moderator
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
