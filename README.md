@@ -19,7 +19,7 @@
 
 ## 🌃 Features
 
-- 🚫 No ads, thanks to the utilization of public & free Spotify and YT Music APIs¹
+- 🚫 No ads, thanks to the use of public & free Spotify and YT Music APIs¹
 - ⬇️ Downloadable tracks
 - 🖥️ 📱 Cross-platform support
 - 🪶 Small size & less data usage
