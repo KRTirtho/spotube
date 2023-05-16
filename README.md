@@ -147,8 +147,6 @@ This handy table lists all methods you can use to install Spotube:
   </tr>
 </table>
 
-> You can also [find more detailed installation instructions](https://github.com/KRTirtho/spotube/wiki/Installation-Instrcutions) in the wiki.
-
 ### 🔄 Nightly Builds
 
 Grab the latest nightly builds of Spotube [from the GitHub Releases](https://github.com/KRTirtho/spotube/releases/tag/nightly).
