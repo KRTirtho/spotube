@@ -39,7 +39,8 @@
 
 ## 📜 ⬇️ Installation guide
 
-New releases usually appear after 3-4 months. This handy table lists all methods you can use to install Spotube:
+New releases usually appear after 3-4 months.<br />
+This handy table lists all methods you can use to install Spotube:
 
 <table>
   <tr>
@@ -170,7 +171,7 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 
 Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
-If you are concerned, feel free to [read the reason of choosing this license.](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
+If you are concerned, feel free to [read the reason of choosing this license](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
 
 <details>
   <summary>
