@@ -82,6 +82,17 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
     }
   }
 
+  List<Track> mapSourcesToTracks(List<String> sources) {
+    final tracks = state.tracks;
+
+    return sources.map((source) {
+      final track = tracks.firstWhereOrNull(
+        (track) => makeAppropriateSource(track) == source,
+      );
+      return track!;
+    }).toList();
+  }
+
   /// This method must be called after any playback operation as
   /// it can increase the latency
   Future<void> storeTrack(Track track, SpotubeTrack spotubeTrack) async {

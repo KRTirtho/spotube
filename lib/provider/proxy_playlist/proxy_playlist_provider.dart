@@ -58,14 +58,32 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
       audioPlayer.currentIndexChangedStream.listen((index) async {
         if (index == -1 || index == state.active) return;
 
-        final track = state.tracks.elementAtOrNull(index);
-        if (track == null) return;
-        notificationService.addTrack(track);
-        state = state.copyWith(active: index);
+        final newIndexedTrack =
+            mapSourcesToTracks([audioPlayer.sources[index]]).firstOrNull;
+
+        if (newIndexedTrack == null) return;
+        notificationService.addTrack(newIndexedTrack);
+        state = state.copyWith(
+          active: state.tracks
+              .toList()
+              .indexWhere((element) => element.id == newIndexedTrack.id),
+        );
 
         if (preferences.albumColorSync) {
           updatePalette();
         }
+      });
+
+      audioPlayer.shuffledStream.listen((event) {
+        final newlyOrderedTracks = mapSourcesToTracks(audioPlayer.sources);
+        final newIndex = newlyOrderedTracks.indexWhere(
+          (element) => element.id == state.activeTrack?.id,
+        );
+
+        state = state.copyWith(
+          tracks: newlyOrderedTracks.toSet(),
+          active: newIndex,
+        );
       });
 
       bool isPreSearching = false;

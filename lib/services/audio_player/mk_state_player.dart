@@ -85,8 +85,6 @@ class MkPlayerWithState extends Player {
   @override
   Future<void> setShuffle(bool shuffle) async {
     _shuffled = shuffle;
-    await super.setShuffle(shuffle);
-    _shuffleStream.add(shuffle);
     if (shuffle) {
       _tempMedias = _playlist!.medias;
       final active = _playlist!.medias[_playlist!.index];
@@ -105,6 +103,8 @@ class MkPlayerWithState extends Player {
       );
       _tempMedias = null;
     }
+    await super.setShuffle(shuffle);
+    _shuffleStream.add(shuffle);
   }
 
   @override
