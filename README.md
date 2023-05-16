@@ -1,46 +1,36 @@
 <div align="center">
+  <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
-<img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
+  An open source, cross-platform Spotify client that doesn't require Premium nor uses Electron!<br />
 
-An open source, crossplatform Spotify client that doesn't require Premium nor uses Electron!<br />
+  <a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
+  <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
 
-<a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
-<a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
+  <a href="https://patreon.com/krtirtho"><img alt="Support me on Patron" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_vector.svg"></a>
+  <a href="https://www.buymeacoffee.com/krtirtho"><img alt="Buy me a Coffee" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/buymeacoffee-singular_vector.svg"></a>
 
-<a href="https://patreon.com/krtirtho"><img alt="Support me on Patron" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_vector.svg"></a>
-<a href="https://www.buymeacoffee.com/krtirtho"><img alt="Buy me a Coffee" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/buymeacoffee-singular_vector.svg"></a>
+  <a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="45"></a>
 
-<a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="45"></a>
+  ---
+
+  <img src="assets/spotube-screenshot.jpg" alt="Spotube Desktop" width="700"> <img src="assets/mobile-screenshots/player-view.jpg" alt="Spotube Mobile" height="525">
 
 </div>
 
-<!-- TODO - USE TABLE
+## 🌃 Features
 
-#### <p align="center">Desktop</p>
+- 🚫 No Spotify nor YouTube ads, utilizing public and free Spotify and YT Music APIs¹
+- ⬇️ Downloadable tracks
+- 🖥️ 📱 Cross-platform support
+- 🪶 Small size & less data usage
+- 🕵️ Anonymous/guest login
+- 🕒 Time synced lyrics
+- ✋ No telemetry, diagnostics or user data collection
+- 🚀 Native performance
+- 📖 Open source/libre software
+- 🎵 Playback control is done locally instead of on the server
 
-![Application Desktop Screenshot](assets/spotube-screenshot.jpg)
-
-#### <p align="center">Mobile</p>
-
-![Application Mobile Screenshot](assets/mobile-screenshots/mobile-combined.jpg)
-
--->
-
-## Features
-
-Following are the features that currently Spotube offers:
-
-- Open source/libre software
-- Anonymous/guest login
-- Cross platform support
-- No telemetry, diagnostics or user data collection
-- Lightweight & resource-friendly
-- Native performance (Thanks to Flutter+Skia)
-- Playback control is done locally instead of on the server
-- Small size & less data usage
-- No Spotify or YouTube ads since it uses all public & free APIs (It is still recommended to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify. Purchasing Spotify Premium is usually the best way to support their valuable creations.)
-- Time synced lyrics
-- Downloadable tracks
+**¹** It is still **recommended** to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify (or purchasing a Spotify Premium subscription too).
 
 ## Installation
 
