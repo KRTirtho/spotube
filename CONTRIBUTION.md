@@ -118,7 +118,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/KRTirt
 
 Do the following:
 
-- Download the latest Flutter SDK (>=2.15.1) & enable desktop support
+- Download the latest Flutter SDK (>=3.10.0) & enable desktop support
 - Install Development dependencies in linux
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
@@ -137,7 +137,7 @@ Do the following:
 - Create a `.env` in root of the project following the `.env.example` template
 - Now run the following to bootstrap the project
   ```bash
-  flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs
+  flutter pub get && dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
   ```
 - Finally run these following commands in the root of the project to start the Spotube Locally
   ```bash

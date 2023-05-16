@@ -71,7 +71,6 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.8
   permission_handler: ^10.2.0
-  pocketbase: ^0.7.1+1
   popover: ^0.2.6+3
   queue: ^3.1.0+1
   scroll_to_index: ^3.0.1

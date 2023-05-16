@@ -296,14 +296,6 @@ class SettingsPage extends HookConsumerWidget {
                             preferences.setPredownload(state);
                           },
                         ),
-                        SwitchListTile(
-                          secondary: const Icon(SpotubeIcons.fastForward),
-                          title: Text(context.l10n.skip_non_music),
-                          value: preferences.skipSponsorSegments,
-                          onChanged: (state) {
-                            preferences.setSkipSponsorSegments(state);
-                          },
-                        ),
                         ListTile(
                           leading: const Icon(SpotubeIcons.playlistRemove),
                           title: Text(context.l10n.blacklist),

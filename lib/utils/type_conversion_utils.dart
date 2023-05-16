@@ -152,7 +152,6 @@ abstract class TypeConversionUtils {
       ),
       file.path,
       [],
-      [],
     );
     track.album = Album()
       ..name = metadata?.album ?? "Spotube"

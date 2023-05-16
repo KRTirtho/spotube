@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
@@ -19,11 +20,11 @@ import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/pocketbase.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -93,6 +94,13 @@ Future<void> main(List<String> rawArgs) async {
     cachePrefix: "oss.krtirtho.spotube",
     cacheDir: (await getApplicationSupportDirectory()).path,
   );
+  Hive.registerAdapter(MatchedTrackAdapter());
+
+  await Hive.openLazyBox<MatchedTrack>(
+    MatchedTrack.boxName,
+    path: (await getApplicationSupportDirectory()).path,
+  );
+
   await PersistedStateNotifier.initializeBoxes();
 
   Catcher(
@@ -164,7 +172,6 @@ Future<void> main(List<String> rawArgs) async {
       );
     },
   );
-  await initializePocketBase();
 }
 
 class Spotube extends StatefulHookConsumerWidget {

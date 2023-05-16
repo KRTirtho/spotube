@@ -104,27 +104,6 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
         if (nextSource == null || isPlayable(nextSource)) return;
         await audioPlayer.pause();
       });
-
-      audioPlayer.positionStream.listen((pos) async {
-        if (audioPlayer.currentIndex == -1) return;
-        final activeSource =
-            audioPlayer.sources.elementAtOrNull(audioPlayer.currentIndex);
-        if (activeSource == null) return;
-        final activeTrack = state.tracks.firstWhereOrNull(
-          (element) => element is SpotubeTrack && element.ytUri == activeSource,
-        ) as SpotubeTrack?;
-        if (activeTrack == null) return;
-        // skip all the activeTrack.skipSegments
-        if (activeTrack.skipSegments.isNotEmpty == true &&
-            preferences.skipSponsorSegments) {
-          for (final segment in activeTrack.skipSegments) {
-            if (pos.inSeconds < segment.start || pos.inSeconds >= segment.end) {
-              continue;
-            }
-            await audioPlayer.seek(Duration(seconds: segment.end));
-          }
-        }
-      });
     }();
   }
 

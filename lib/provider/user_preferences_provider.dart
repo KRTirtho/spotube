@@ -37,7 +37,6 @@ class UserPreferences extends PersistedChangeNotifier {
 
   SpotubeColor accentColorScheme;
   bool albumColorSync;
-  bool skipSponsorSegments;
 
   String downloadLocation;
 
@@ -64,7 +63,6 @@ class UserPreferences extends PersistedChangeNotifier {
     this.saveTrackLyrics = false,
     this.checkUpdate = true,
     this.audioQuality = AudioQuality.high,
-    this.skipSponsorSegments = true,
     this.downloadLocation = "",
     this.closeBehavior = CloseBehavior.minimizeToTray,
     this.showSystemTrayIcon = true,
@@ -132,12 +130,6 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setSkipSponsorSegments(bool should) {
-    skipSponsorSegments = should;
-    notifyListeners();
-    updatePersistence();
-  }
-
   void setDownloadLocation(String downloadDir) {
     if (downloadDir.isEmpty) return;
     downloadLocation = downloadDir;
@@ -195,7 +187,6 @@ class UserPreferences extends PersistedChangeNotifier {
     audioQuality = map["audioQuality"] != null
         ? AudioQuality.values[map["audioQuality"]]
         : audioQuality;
-    skipSponsorSegments = map["skipSponsorSegments"] ?? skipSponsorSegments;
     downloadLocation =
         map["downloadLocation"] ?? await _getDefaultDownloadDirectory();
 
@@ -227,7 +218,6 @@ class UserPreferences extends PersistedChangeNotifier {
       "albumColorSync": albumColorSync,
       "checkUpdate": checkUpdate,
       "audioQuality": audioQuality.index,
-      "skipSponsorSegments": skipSponsorSegments,
       "downloadLocation": downloadLocation,
       "layoutMode": layoutMode.name,
       "predownload": predownload,

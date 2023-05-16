@@ -1296,14 +1296,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  pocketbase:
-    dependency: "direct main"
-    description:
-      name: pocketbase
-      sha256: "125e32fe39393cc54436ce518ccfd5649419f15879a1278599f2f58564e5231c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.1+1"
   pool:
     dependency: transitive
     description:
@@ -1945,4 +1937,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=3.0.0 <4.0.0"
-  flutter: ">=3.3.0"
+  flutter: ">=3.10.0"
