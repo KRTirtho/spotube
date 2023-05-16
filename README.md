@@ -2,14 +2,15 @@
 
 <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
-<a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" src="https://img.shields.io/discord/1012234096237350943?color=1585be&label=Discord%20Server&logoColor=1585be&logo=discord"></a>
-<a href="https://github.com/KRTirtho/spotube/actions/workflows/spotube-release-binary.yml"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>
-<a href="LICENSE"><img alt="License" src="https://img.shields.io/static/v1?label=License&message=BSD-4-Clause&color=purple"></a>
+An open source, crossplatform Spotify client that doesn't require Premium nor uses Electron!<br />
 
-<a href="https://patreon.com/krtirtho"><img src="https://teaprincesschronicles.files.wordpress.com/2020/03/support-me-on-patreon.png" alt="Support me on Patreon" height="40"/></a>
-<a href="https://www.buymeacoffee.com/krtirtho"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="40"></a>
+<a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
+<a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
 
-<a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="50"></a>
+<a href="https://patreon.com/krtirtho"><img alt="Support me on Patron" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_vector.svg"></a>
+<a href="https://www.buymeacoffee.com/krtirtho"><img alt="Buy me a Coffee" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/buymeacoffee-singular_vector.svg"></a>
+
+<a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="45"></a>
 
 </div>
 
@@ -66,13 +67,9 @@ I'm always releasing newer versions of binaries of the software every 2-3 months
 
 Grab the latest nightly builds of Spotube [from the GitHub Releases](https://github.com/KRTirtho/spotube/releases/tag/nightly).
 
-## Roadmap
+## Building from source 
 
-- [X] Windows OS Media Control & Media Keys Support
-- [X] Language Translations/Localization
-- [ ] Spotify Listen Along
-
-## Building from source
+<a href="https://github.com/KRTirtho/spotube/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>
 
 You can [read the instructions](CONTRIBUTION.md#your-first-code-contribution).
 
@@ -84,7 +81,7 @@ You can [read the instructions](CONTRIBUTION.md#your-first-code-contribution).
 
 -->
 
-## The team
+## The Spotube team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Conor](https://github.com/owencz1998) - The Cool Discord Moderator
