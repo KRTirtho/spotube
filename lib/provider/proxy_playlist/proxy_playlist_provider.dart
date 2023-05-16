@@ -80,6 +80,8 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
           (element) => element.id == state.activeTrack?.id,
         );
 
+        if (newIndex == -1) return;
+
         state = state.copyWith(
           tracks: newlyOrderedTracks.toSet(),
           active: newIndex,

@@ -19,7 +19,7 @@ class ProxyPlaylist {
   }
 
   Track? get activeTrack =>
-      active == null ? null : tracks.elementAtOrNull(active!);
+      active == null || active == -1 ? null : tracks.elementAtOrNull(active!);
 
   bool get isFetching =>
       activeTrack != null &&

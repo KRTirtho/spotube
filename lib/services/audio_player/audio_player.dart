@@ -74,7 +74,9 @@ class SpotubeAudioPlayer {
         .asyncMap(
           (position) async => (await duration)?.inSeconds == 0
               ? 0
-              : (position.inSeconds / (await duration)!.inSeconds * 100)
+              : (position.inSeconds /
+                      ((await duration)?.inSeconds ?? 100) *
+                      100)
                   .toInt(),
         )
         .where((event) => event >= percent)
@@ -383,10 +385,10 @@ class SpotubeAudioPlayer {
     if (mkSupportedPlatform) {
       return _mkPlayer!.playlist.medias.map((e) => e.uri).toList();
     } else {
-      return (_justAudio!.audioSource as ja.ConcatenatingAudioSource)
-          .children
-          .map((e) => (e as ja.UriAudioSource).uri.toString())
-          .toList();
+      return _justAudio!.sequenceState?.effectiveSequence
+              .map((e) => (e as ja.UriAudioSource).uri.toString())
+              .toList() ??
+          <String>[];
     }
   }
 
