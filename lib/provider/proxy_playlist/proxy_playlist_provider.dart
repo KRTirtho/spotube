@@ -25,7 +25,8 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 ///       * [ ] Remove track
 ///       * [ ] Reorder track
 /// * [ ] Caching and loading of cache of tracks
-/// * [ ] Shuffling and loop => playlist, track, none
+/// * [ ] Shuffling
+/// * [x] loop => playlist, track, none
 /// * [ ] Alternative Track Source
 /// * [x] Blacklisting of tracks and artist
 ///
