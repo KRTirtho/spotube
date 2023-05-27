@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:just_audio/just_audio.dart';
+// import 'package:just_audio/just_audio.dart';
 import 'package:mpris_service/mpris_service.dart';
 
 /// An unified loop mode for both [LoopMode] and [PlaylistMode]
@@ -9,27 +9,27 @@ enum PlaybackLoopMode {
   one,
   none;
 
-  static PlaybackLoopMode fromLoopMode(LoopMode loopMode) {
-    switch (loopMode) {
-      case LoopMode.all:
-        return PlaybackLoopMode.all;
-      case LoopMode.one:
-        return PlaybackLoopMode.one;
-      case LoopMode.off:
-        return PlaybackLoopMode.none;
-    }
-  }
+  // static PlaybackLoopMode fromLoopMode(LoopMode loopMode) {
+  //   switch (loopMode) {
+  //     case LoopMode.all:
+  //       return PlaybackLoopMode.all;
+  //     case LoopMode.one:
+  //       return PlaybackLoopMode.one;
+  //     case LoopMode.off:
+  //       return PlaybackLoopMode.none;
+  //   }
+  // }
 
-  LoopMode toLoopMode() {
-    switch (this) {
-      case PlaybackLoopMode.all:
-        return LoopMode.all;
-      case PlaybackLoopMode.one:
-        return LoopMode.one;
-      case PlaybackLoopMode.none:
-        return LoopMode.off;
-    }
-  }
+  // LoopMode toLoopMode() {
+  //   switch (this) {
+  //     case PlaybackLoopMode.all:
+  //       return LoopMode.all;
+  //     case PlaybackLoopMode.one:
+  //       return LoopMode.one;
+  //     case PlaybackLoopMode.none:
+  //       return LoopMode.off;
+  //   }
+  // }
 
   static PlaybackLoopMode fromPlaylistMode(PlaylistMode mode) {
     switch (mode) {

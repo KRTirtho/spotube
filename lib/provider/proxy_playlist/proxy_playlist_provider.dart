@@ -20,12 +20,12 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 /// * [x] Prefetch next track as [SpotubeTrack] on 80% of current track
 /// * [ ] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
 /// * [ ] Modification of the Queue
-///       * [ ] Add track at the end
+///       * [x] Add track at the end
 ///       * [ ] Add track at the beginning
-///       * [ ] Remove track
+///       * [x] Remove track
 ///       * [ ] Reorder track
 /// * [ ] Caching and loading of cache of tracks
-/// * [ ] Shuffling
+/// * [x] Shuffling
 /// * [x] loop => playlist, track, none
 /// * [ ] Alternative Track Source
 /// * [x] Blacklisting of tracks and artist
@@ -65,30 +65,19 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
           return;
         }
 
-        print('=============== Active Track Changed ===============');
-
-        print('Current tracks: ${state.tracks.map((e) => e.name).toList()}');
-        print('newIndexedTrack: ${newActiveTrack.name}');
-
         notificationService.addTrack(newActiveTrack);
         state = state.copyWith(
           active: state.tracks
               .toList()
               .indexWhere((element) => element.id == newActiveTrack.id),
         );
-        print('New active: ${state.active}');
 
-        print('=============== ----- ===============');
         if (preferences.albumColorSync) {
           updatePalette();
         }
       });
 
       audioPlayer.shuffledStream.listen((event) {
-        print('=============== Shuffled ===============');
-
-        print('oldTracks: ${state.tracks.map((e) => e.name).toList()}');
-
         final newlyOrderedTracks = mapSourcesToTracks(audioPlayer.sources);
 
         print(
@@ -97,10 +86,6 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
         final newActiveIndex = newlyOrderedTracks.indexWhere(
           (element) => element.id == state.activeTrack?.id,
         );
-
-        print('newActiveIndex $newActiveIndex');
-
-        print('=============== ----- ===============');
 
         if (newActiveIndex == -1) return;
 
@@ -157,14 +142,10 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   }
 
   Future<SpotubeTrack?> ensureSourcePlayable(String source) async {
-    print("======== Ensure Source Playable =========");
-    print("source: $source");
-
     if (isPlayable(source)) return null;
 
     final track = mapSourcesToTracks([source]).firstOrNull;
 
-    print("nthTrack: ${track?.name}");
     if (track == null || track is LocalTrack) {
       return null;
     }
@@ -173,8 +154,6 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
       SpotubeTrack => track as SpotubeTrack,
       _ => await SpotubeTrack.fetchFromTrack(track, preferences),
     };
-
-    print("======== ----- =========");
 
     await audioPlayer.replaceSource(
       source,
@@ -256,9 +235,14 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   Future<void> jumpTo(int index) async {
     final oldTrack =
         mapSourcesToTracks([audioPlayer.currentSource!]).firstOrNull;
+    state = state.copyWith(active: index);
+    await audioPlayer.pause();
     final track = await ensureSourcePlayable(audioPlayer.sources[index]);
     if (track != null) {
-      state = state.copyWith(tracks: mergeTracks([track], state.tracks));
+      state = state.copyWith(
+        tracks: mergeTracks([track], state.tracks),
+        active: index,
+      );
     }
     await audioPlayer.jumpTo(index);
 
@@ -300,9 +284,20 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   Future<void> next() async {
     if (audioPlayer.nextSource == null) return;
     final oldTrack = mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
+    state = state.copyWith(
+      active: state.tracks
+          .toList()
+          .indexWhere((element) => element.id == oldTrack?.id),
+    );
+    await audioPlayer.pause();
     final track = await ensureSourcePlayable(audioPlayer.nextSource!);
     if (track != null) {
-      state = state.copyWith(tracks: mergeTracks([track], state.tracks));
+      state = state.copyWith(
+        tracks: mergeTracks([track], state.tracks),
+        active: state.tracks
+            .toList()
+            .indexWhere((element) => element.id == track.id),
+      );
     }
     await audioPlayer.skipToNext();
 
@@ -318,9 +313,20 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     if (audioPlayer.previousSource == null) return;
     final oldTrack =
         mapSourcesToTracks([audioPlayer.previousSource!]).firstOrNull;
+    state = state.copyWith(
+      active: state.tracks
+          .toList()
+          .indexWhere((element) => element.id == oldTrack?.id),
+    );
+    await audioPlayer.pause();
     final track = await ensureSourcePlayable(audioPlayer.previousSource!);
     if (track != null) {
-      state = state.copyWith(tracks: mergeTracks([track], state.tracks));
+      state = state.copyWith(
+        tracks: mergeTracks([track], state.tracks),
+        active: state.tracks
+            .toList()
+            .indexWhere((element) => element.id == track.id),
+      );
     }
     await audioPlayer.skipToPrevious();
     if (oldTrack != null && track != null) {

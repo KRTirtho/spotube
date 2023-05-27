@@ -31,10 +31,10 @@ class PlayerView extends HookConsumerWidget {
     final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
     final currentTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
-      (value) => value?.activeTrack,
+      (value) => value.activeTrack,
     ));
     final isLocalTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
-      (value) => value?.activeTrack is LocalTrack,
+      (value) => value.activeTrack is LocalTrack,
     ));
     final breakpoint = useBreakpoints();
 

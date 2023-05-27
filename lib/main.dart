@@ -82,9 +82,7 @@ Future<void> main(List<String> rawArgs) async {
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  if (DesktopTools.platform.isWindows || DesktopTools.platform.isLinux) {
-    MediaKit.ensureInitialized();
-  }
+  MediaKit.ensureInitialized();
 
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(

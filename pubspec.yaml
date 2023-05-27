@@ -55,12 +55,14 @@ dependencies:
   intl: ^0.18.0
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.1
-  just_audio: ^0.9.32
   logger: ^1.1.0
   media_kit: ^0.0.7+1
-  media_kit_libs_windows_audio: ^1.0.3
-  media_kit_libs_linux: ^1.0.2
   media_kit_native_event_loop: ^1.0.3
+  media_kit_libs_android_audio: ^1.0.4
+  media_kit_libs_ios_audio: ^1.0.4 
+  media_kit_libs_linux: ^1.0.2
+  media_kit_libs_macos_audio: ^1.0.5
+  media_kit_libs_windows_audio: ^1.0.3
   metadata_god: ^0.4.1
   mime: ^1.0.2
   mpris_service:

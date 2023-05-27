@@ -11,8 +11,8 @@ import audio_session
 import catcher
 import device_info_plus
 import flutter_secure_storage_macos
-import just_audio
 import local_notifier
+import media_kit_libs_macos_audio
 import package_info_plus
 import path_provider_foundation
 import screen_retriever
@@ -32,8 +32,8 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   CatcherPlugin.register(with: registry.registrar(forPlugin: "CatcherPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
-  JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   LocalNotifierPlugin.register(with: registry.registrar(forPlugin: "LocalNotifierPlugin"))
+  MediaKitLibsMacosAudioPlugin.register(with: registry.registrar(forPlugin: "MediaKitLibsMacosAudioPlugin"))
   FLTPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlusPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
   ScreenRetrieverPlugin.register(with: registry.registrar(forPlugin: "ScreenRetrieverPlugin"))

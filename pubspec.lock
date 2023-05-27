@@ -966,30 +966,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.6.2"
-  just_audio:
-    dependency: "direct main"
-    description:
-      name: just_audio
-      sha256: "7e6d31508dacd01a066e3889caf6282e5f1eb60707c230203b21a83af5c55586"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.32"
-  just_audio_platform_interface:
-    dependency: transitive
-    description:
-      name: just_audio_platform_interface
-      sha256: eff112d5138bea3ba544b6338b1e0537a32b5e1425e4d0dc38f732771cda7c84
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.0"
-  just_audio_web:
-    dependency: transitive
-    description:
-      name: just_audio_web
-      sha256: "89d8db6f19f3821bb6bf908c4bfb846079afb2ab575b783d781a6bf119e3abaf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.7"
   jwt_decode:
     dependency: transitive
     description:
@@ -1062,6 +1038,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.7+1"
+  media_kit_libs_android_audio:
+    dependency: "direct main"
+    description:
+      name: media_kit_libs_android_audio
+      sha256: e16292bbb1d737ce026fa68154b2fcf5c6f88d6fa752bdb4c0d079c98a82b523
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
+  media_kit_libs_ios_audio:
+    dependency: "direct main"
+    description:
+      name: media_kit_libs_ios_audio
+      sha256: bb18ed87e8a155fc1d2ee4bf59462ca04d02a0eeb38d0b454facee6d32441ce7
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   media_kit_libs_linux:
     dependency: "direct main"
     description:
@@ -1070,6 +1062,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  media_kit_libs_macos_audio:
+    dependency: "direct main"
+    description:
+      name: media_kit_libs_macos_audio
+      sha256: b9f4a2995396fd5cc243901e618c0586d4f1781eecf2302999b77d6faee8b250
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   media_kit_libs_windows_audio:
     dependency: "direct main"
     description:
