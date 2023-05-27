@@ -11,9 +11,9 @@ class ProxyPlaylist {
   ProxyPlaylist(this.tracks, [this.active]);
   factory ProxyPlaylist.fromJson(Map<String, dynamic> json) {
     return ProxyPlaylist(
-      (json['tracks'] as List<Map<String, dynamic>>)
-          .map(_makeAppropriateTrack)
-          .toSet(),
+      List.castFrom<dynamic, Map<String, dynamic>>(
+        json['tracks'] ?? <Map<String, dynamic>>[],
+      ).map(_makeAppropriateTrack).toSet(),
       json['active'] as int,
     );
   }

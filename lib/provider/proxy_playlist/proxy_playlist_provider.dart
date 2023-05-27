@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -13,6 +16,7 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
+import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 /// Things to implement:
@@ -24,7 +28,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 ///       * [x] Add track at the beginning
 ///       * [x] Remove track
 ///       * [ ] Reorder track
-/// * [ ] Caching and loading of cache of tracks
+/// * [x] Caching and loading of cache of tracks
 /// * [x] Shuffling
 /// * [x] loop => playlist, track, none
 /// * [ ] Alternative Track Source
@@ -35,7 +39,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 /// * It'll not store any sort of player state e.g playing, paused, shuffled etc
 ///   * For that, use [SpotubeAudioPlayer]
 
-class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
+class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     with NextFetcher {
   final Ref ref;
   late final AudioServices notificationService;
@@ -52,7 +56,7 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   static AlwaysAliveRefreshable<ProxyPlaylistNotifier> get notifier =>
       provider.notifier;
 
-  ProxyPlaylistNotifier(this.ref) : super(ProxyPlaylist({})) {
+  ProxyPlaylistNotifier(this.ref) : super(ProxyPlaylist({}), "playlist") {
     () async {
       notificationService = await AudioServices.create(ref, this);
 
@@ -79,9 +83,6 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
 
       audioPlayer.shuffledStream.listen((event) {
         final newlyOrderedTracks = mapSourcesToTracks(audioPlayer.sources);
-
-        print(
-            'newlyOrderedTracks: ${newlyOrderedTracks.map((e) => e.name).toList()}');
 
         final newActiveIndex = newlyOrderedTracks.indexWhere(
           (element) => element.id == state.activeTrack?.id,
@@ -207,13 +208,13 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   }
 
   Future<void> load(
-    List<Track> tracks, {
+    Iterable<Track> tracks, {
     int initialIndex = 0,
     bool autoPlay = false,
   }) async {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
-    final addableTrack =
-        await SpotubeTrack.fetchFromTrack(tracks[initialIndex], preferences);
+    final addableTrack = await SpotubeTrack.fetchFromTrack(
+        tracks.elementAt(initialIndex), preferences);
 
     state = state.copyWith(
       tracks: mergeTracks([addableTrack], tracks),
@@ -227,7 +228,7 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     );
 
     await storeTrack(
-      tracks[initialIndex],
+      tracks.elementAt(initialIndex),
       addableTrack,
     );
   }
@@ -384,5 +385,25 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     if (state.tracks.isEmpty && ref.read(paletteProvider) != null) {
       ref.read(paletteProvider.notifier).state = null;
     }
+  }
+
+  @override
+  onInit() {
+    return load(
+      state.tracks,
+      initialIndex: state.active ?? 0,
+      autoPlay: false,
+    );
+  }
+
+  @override
+  FutureOr<ProxyPlaylist> fromJson(Map<String, dynamic> json) {
+    return ProxyPlaylist.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final json = state.toJson();
+    return json;
   }
 }

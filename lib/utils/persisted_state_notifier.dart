@@ -109,7 +109,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   }
 
   void save() async {
-    box.put(cacheKey, toJson());
+    await box.put(cacheKey, toJson());
   }
 
   FutureOr<T> fromJson(Map<String, dynamic> json);
