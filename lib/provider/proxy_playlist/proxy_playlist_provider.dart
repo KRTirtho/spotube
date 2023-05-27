@@ -56,50 +56,70 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     () async {
       notificationService = await AudioServices.create(ref, this);
 
-      audioPlayer.currentIndexChangedStream.listen((index) async {
-        if (index == -1 || index == state.active) return;
+      audioPlayer.activeSourceChangedStream.listen((newActiveSource) {
+        final newActiveTrack =
+            mapSourcesToTracks([newActiveSource]).firstOrNull;
 
-        final newIndexedTrack =
-            mapSourcesToTracks([audioPlayer.sources[index]]).firstOrNull;
+        if (newActiveTrack == null ||
+            newActiveTrack.id == state.activeTrack?.id) {
+          return;
+        }
 
-        if (newIndexedTrack == null) return;
-        notificationService.addTrack(newIndexedTrack);
+        print('=============== Active Track Changed ===============');
+
+        print('Current tracks: ${state.tracks.map((e) => e.name).toList()}');
+        print('newIndexedTrack: ${newActiveTrack.name}');
+
+        notificationService.addTrack(newActiveTrack);
         state = state.copyWith(
           active: state.tracks
               .toList()
-              .indexWhere((element) => element.id == newIndexedTrack.id),
+              .indexWhere((element) => element.id == newActiveTrack.id),
         );
+        print('New active: ${state.active}');
 
+        print('=============== ----- ===============');
         if (preferences.albumColorSync) {
           updatePalette();
         }
       });
 
       audioPlayer.shuffledStream.listen((event) {
+        print('=============== Shuffled ===============');
+
+        print('oldTracks: ${state.tracks.map((e) => e.name).toList()}');
+
         final newlyOrderedTracks = mapSourcesToTracks(audioPlayer.sources);
-        final newIndex = newlyOrderedTracks.indexWhere(
+
+        print(
+            'newlyOrderedTracks: ${newlyOrderedTracks.map((e) => e.name).toList()}');
+
+        final newActiveIndex = newlyOrderedTracks.indexWhere(
           (element) => element.id == state.activeTrack?.id,
         );
 
-        if (newIndex == -1) return;
+        print('newActiveIndex $newActiveIndex');
+
+        print('=============== ----- ===============');
+
+        if (newActiveIndex == -1) return;
 
         state = state.copyWith(
           tracks: newlyOrderedTracks.toSet(),
-          active: newIndex,
+          active: newActiveIndex,
         );
       });
 
       bool isPreSearching = false;
       audioPlayer.percentCompletedStream(60).listen((percent) async {
-        if (isPreSearching) return;
+        if (isPreSearching || audioPlayer.currentSource == null) return;
         try {
           isPreSearching = true;
 
           // TODO: Make repeat mode sensitive changes later
           final oldTrack =
-              state.tracks.elementAtOrNull(audioPlayer.currentIndex);
-          final track =
-              await ensureNthSourcePlayable(audioPlayer.currentIndex + 1);
+              mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
+          final track = await ensureSourcePlayable(audioPlayer.nextSource!);
 
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
@@ -129,36 +149,35 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
 
       // player stops at 99% if nextSource is still not playable
       audioPlayer.percentCompletedStream(99).listen((_) async {
-        final nextSource =
-            audioPlayer.sources.elementAtOrNull(audioPlayer.currentIndex + 1);
-        if (nextSource == null || isPlayable(nextSource)) return;
+        if (audioPlayer.nextSource == null ||
+            isPlayable(audioPlayer.nextSource!)) return;
         await audioPlayer.pause();
       });
     }();
   }
 
-  Future<SpotubeTrack?> ensureNthSourcePlayable(int n) async {
-    final sources = audioPlayer.sources;
-    if (n < 0 || n > sources.length - 1) return null;
-    final nthSource = sources.elementAtOrNull(n);
-    if (nthSource == null || !isUnPlayable(nthSource)) return null;
+  Future<SpotubeTrack?> ensureSourcePlayable(String source) async {
+    print("======== Ensure Source Playable =========");
+    print("source: $source");
 
-    final nthTrack = state.tracks.firstWhereOrNull(
-      (element) => element.id == getIdFromUnPlayable(nthSource),
-    );
-    if (nthTrack == null || nthTrack is LocalTrack) {
+    if (isPlayable(source)) return null;
+
+    final track = mapSourcesToTracks([source]).firstOrNull;
+
+    print("nthTrack: ${track?.name}");
+    if (track == null || track is LocalTrack) {
       return null;
     }
 
-    final nthFetchedTrack = switch (nthTrack.runtimeType) {
-      SpotubeTrack => nthTrack as SpotubeTrack,
-      _ => await SpotubeTrack.fetchFromTrack(nthTrack, preferences),
+    final nthFetchedTrack = switch (track.runtimeType) {
+      SpotubeTrack => track as SpotubeTrack,
+      _ => await SpotubeTrack.fetchFromTrack(track, preferences),
     };
 
-    if (nthSource == nthFetchedTrack.ytUri) return null;
+    print("======== ----- =========");
 
     await audioPlayer.replaceSource(
-      nthSource,
+      source,
       nthFetchedTrack.ytUri,
     );
 
@@ -235,8 +254,9 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   }
 
   Future<void> jumpTo(int index) async {
-    final oldTrack = state.tracks.elementAtOrNull(audioPlayer.currentIndex);
-    final track = await ensureNthSourcePlayable(index);
+    final oldTrack =
+        mapSourcesToTracks([audioPlayer.currentSource!]).firstOrNull;
+    final track = await ensureSourcePlayable(audioPlayer.sources[index]);
     if (track != null) {
       state = state.copyWith(tracks: mergeTracks([track], state.tracks));
     }
@@ -278,8 +298,9 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   Future<void> swapSibling(PipedSearchItem video) async {}
 
   Future<void> next() async {
-    final oldTrack = state.tracks.elementAtOrNull(audioPlayer.currentIndex + 1);
-    final track = await ensureNthSourcePlayable(audioPlayer.currentIndex + 1);
+    if (audioPlayer.nextSource == null) return;
+    final oldTrack = mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
+    final track = await ensureSourcePlayable(audioPlayer.nextSource!);
     if (track != null) {
       state = state.copyWith(tracks: mergeTracks([track], state.tracks));
     }
@@ -294,8 +315,10 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
   }
 
   Future<void> previous() async {
-    final oldTrack = state.tracks.elementAtOrNull(audioPlayer.currentIndex - 1);
-    final track = await ensureNthSourcePlayable(audioPlayer.currentIndex - 1);
+    if (audioPlayer.previousSource == null) return;
+    final oldTrack =
+        mapSourcesToTracks([audioPlayer.previousSource!]).firstOrNull;
+    final track = await ensureSourcePlayable(audioPlayer.previousSource!);
     if (track != null) {
       state = state.copyWith(tracks: mergeTracks([track], state.tracks));
     }
@@ -317,9 +340,7 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     return Future.microtask(() async {
       final activeTrack = state.tracks.firstWhereOrNull(
         (track) =>
-            track is SpotubeTrack &&
-            track.ytUri ==
-                audioPlayer.sources.elementAtOrNull(audioPlayer.currentIndex),
+            track is SpotubeTrack && track.ytUri == audioPlayer.currentSource,
       );
 
       if (activeTrack == null) return;

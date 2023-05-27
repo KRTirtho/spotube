@@ -64,7 +64,10 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
 
   /// Returns [Track.id] from [isUnPlayable] source that is not playable
   String getIdFromUnPlayable(String source) {
-    return source.replaceFirst('https://youtube.com/unplayable.m4a?id=', '');
+    return source
+        .split('&')
+        .first
+        .replaceFirst('https://youtube.com/unplayable.m4a?id=', '');
   }
 
   /// Returns appropriate Media source for [Track]
@@ -78,19 +81,25 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
     } else if (track is LocalTrack) {
       return track.path;
     } else {
-      return "https://youtube.com/unplayable.m4a?id=${track.id}";
+      return "https://youtube.com/unplayable.m4a?id=${track.id}&title=${track.name?.replaceAll(
+        RegExp(r'\s+', caseSensitive: false),
+        '-',
+      )}";
     }
   }
 
   List<Track> mapSourcesToTracks(List<String> sources) {
     final tracks = state.tracks;
 
-    return sources.map((source) {
-      final track = tracks.firstWhereOrNull(
-        (track) => makeAppropriateSource(track) == source,
-      );
-      return track!;
-    }).toList();
+    return sources
+        .map((source) {
+          final track = tracks.firstWhereOrNull(
+            (track) => makeAppropriateSource(track) == source,
+          );
+          return track;
+        })
+        .whereNotNull()
+        .toList();
   }
 
   /// This method must be called after any playback operation as

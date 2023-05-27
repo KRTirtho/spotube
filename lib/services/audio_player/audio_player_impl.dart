@@ -62,6 +62,8 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   Future<void> stop() async {
     await _mkPlayer?.stop();
     await _justAudio?.stop();
+    await _justAudio?.setShuffleModeEnabled(false);
+    await _justAudio?.setLoopMode(ja.LoopMode.off);
   }
 
   Future<void> seek(Duration position) async {
@@ -138,11 +140,45 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     }
   }
 
-  int get currentIndex {
+  String? get currentSource {
     if (mkSupportedPlatform) {
-      return _mkPlayer!.playlist.index;
+      return _mkPlayer!.playlist.medias
+          .elementAtOrNull(_mkPlayer!.playlist.index)
+          ?.uri;
     } else {
-      return _justAudio!.sequenceState?.currentIndex ?? -1;
+      return (_justAudio?.sequenceState?.effectiveSequence
+                  .elementAtOrNull(_justAudio!.sequenceState!.currentIndex)
+              as ja.UriAudioSource?)
+          ?.uri
+          .toString();
+    }
+  }
+
+  String? get nextSource {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.playlist.medias
+          .elementAtOrNull(_mkPlayer!.playlist.index + 1)
+          ?.uri;
+    } else {
+      return (_justAudio?.sequenceState?.effectiveSequence
+                  .elementAtOrNull(_justAudio!.sequenceState!.currentIndex + 1)
+              as ja.UriAudioSource?)
+          ?.uri
+          .toString();
+    }
+  }
+
+  String? get previousSource {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.playlist.medias
+          .elementAtOrNull(_mkPlayer!.playlist.index - 1)
+          ?.uri;
+    } else {
+      return (_justAudio?.sequenceState?.effectiveSequence
+                  .elementAtOrNull(_justAudio!.sequenceState!.currentIndex - 1)
+              as ja.UriAudioSource?)
+          ?.uri
+          .toString();
     }
   }
 
@@ -209,21 +245,27 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     if (mkSupportedPlatform) {
       _mkPlayer!.replace(oldSource, newSource);
     } else {
-      await addTrack(newSource);
-      await removeTrack(oldSourceIndex);
+      final playlist = _justAudio!.audioSource as ja.ConcatenatingAudioSource;
 
-      int newSourceIndex = sources.indexOf(newSource);
-      while (newSourceIndex == -1) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        newSourceIndex = sources.indexOf(newSource);
+      print('oldSource: $oldSource');
+      print('newSource: $newSource');
+      final oldSourceIndexInPlaylist =
+          _justAudio?.sequenceState?.effectiveSequence.indexWhere(
+        (e) => (e as ja.UriAudioSource).uri.toString() == oldSource,
+      );
+
+      print('oldSourceIndexInPlaylist: $oldSourceIndexInPlaylist');
+
+      // ignores non existing source
+      if (oldSourceIndexInPlaylist == null || oldSourceIndexInPlaylist == -1) {
+        return;
       }
-      await moveTrack(newSourceIndex, oldSourceIndex);
-      newSourceIndex = sources.indexOf(newSource);
-      while (newSourceIndex != oldSourceIndex) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        await moveTrack(newSourceIndex, oldSourceIndex);
-        newSourceIndex = sources.indexOf(newSource);
-      }
+
+      await playlist.removeAt(oldSourceIndexInPlaylist);
+      await playlist.insert(
+        oldSourceIndexInPlaylist,
+        ja.AudioSource.uri(Uri.parse(newSource)),
+      );
     }
   }
 

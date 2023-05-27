@@ -127,4 +127,22 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
           .asBroadcastStream();
     }
   }
+
+  Stream<String> get activeSourceChangedStream {
+    if (mkSupportedPlatform) {
+      return _mkPlayer!.indexChangeStream
+          .map((event) {
+            return _mkPlayer!.playlist.medias.elementAtOrNull(event)?.uri;
+          })
+          .where((event) => event != null)
+          .cast<String>();
+    } else {
+      return _justAudio!.sequenceStateStream
+          .map((event) {
+            return (event?.currentSource as ja.UriAudioSource?)?.uri.toString();
+          })
+          .where((event) => event != null)
+          .cast<String>();
+    }
+  }
 }
