@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/current_playlist.dart';
@@ -56,21 +57,22 @@ class BlackListNotifier
   }
 
   bool contains(TrackSimple track) {
-    return filter([track]).isNotEmpty;
+    final containsTrack =
+        state.contains(BlacklistedElement.track(track.id!, track.name!));
+
+    final containsTrackArtists = track.artists?.any(
+          (artist) => state.contains(
+            BlacklistedElement.artist(artist.id!, artist.name!),
+          ),
+        ) ??
+        false;
+
+    return containsTrack || containsTrackArtists;
   }
 
+  /// Filters the non blacklisted tracks from the given [tracks]
   Iterable<TrackSimple> filter(Iterable<TrackSimple> tracks) {
-    return tracks.where(
-      (track) {
-        return !state
-                .contains(BlacklistedElement.track(track.id!, track.name!)) &&
-            !(track.artists ?? []).any(
-              (artist) => state.contains(
-                BlacklistedElement.artist(artist.id!, artist.name!),
-              ),
-            );
-      },
-    ).toList();
+    return tracks.whereNot(contains).toList();
   }
 
   CurrentPlaylist filterPlaylist(CurrentPlaylist playlist) {

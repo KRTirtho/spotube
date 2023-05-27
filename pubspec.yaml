@@ -88,7 +88,6 @@ dependencies:
   spotify: ^0.11.0
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
-  tuple: ^2.0.1
   url_launcher: ^6.1.7
   uuid: ^3.0.7
   version: ^3.0.2

@@ -216,6 +216,16 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // }
   }
 
+  Future<void> addTrackAt(String url, int index) async {
+    final urlType = _resolveUrlType(url);
+    // if (mkSupportedPlatform && urlType is mk.Media) {
+    await _mkPlayer.insert(index, urlType as mk.Media);
+    // } else {
+    //   await (_justAudio!.audioSource as ja.ConcatenatingAudioSource)
+    //       .insert(index, urlType as ja.AudioSource);
+    // }
+  }
+
   Future<void> removeTrack(int index) async {
     // if (mkSupportedPlatform) {
     await _mkPlayer.remove(index);

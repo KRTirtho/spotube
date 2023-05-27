@@ -11,7 +11,6 @@ import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:tuple/tuple.dart';
 
 class HeartButton extends HookConsumerWidget {
   final bool isLiked;
@@ -60,8 +59,11 @@ class HeartButton extends HookConsumerWidget {
   }
 }
 
-Tuple3<bool, Mutation<bool, dynamic, bool>, Query<User, dynamic>>
-    useTrackToggleLike(Track track, WidgetRef ref) {
+({
+  bool isLiked,
+  Mutation<bool, dynamic, bool> toggleTrackLike,
+  Query<User?, dynamic> me,
+}) useTrackToggleLike(Track track, WidgetRef ref) {
   final me = useQueries.user.me(ref);
 
   final savedTracks =
@@ -101,7 +103,7 @@ Tuple3<bool, Mutation<bool, dynamic, bool>, Query<User, dynamic>>
     },
   );
 
-  return Tuple3(isLiked, toggleTrackLike, me);
+  return (isLiked: isLiked, toggleTrackLike: toggleTrackLike, me: me);
 }
 
 class TrackHeartButton extends HookConsumerWidget {
@@ -116,18 +118,18 @@ class TrackHeartButton extends HookConsumerWidget {
     final savedTracks =
         useQueries.playlist.tracksOfQuery(ref, "user-liked-tracks");
     final toggler = useTrackToggleLike(track, ref);
-    if (toggler.item3.isLoading || !toggler.item3.hasData) {
+    if (toggler.me.isLoading || !toggler.me.hasData) {
       return const CircularProgressIndicator();
     }
 
     return HeartButton(
-      tooltip: toggler.item1
+      tooltip: toggler.isLiked
           ? context.l10n.remove_from_favorites
           : context.l10n.save_as_favorite,
-      isLiked: toggler.item1,
+      isLiked: toggler.isLiked,
       onPressed: savedTracks.hasData
           ? () {
-              toggler.item2.mutate(toggler.item1);
+              toggler.toggleTrackLike.mutate(toggler.isLiked);
             }
           : null,
     );

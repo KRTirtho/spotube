@@ -21,7 +21,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 /// * [ ] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
 /// * [ ] Modification of the Queue
 ///       * [x] Add track at the end
-///       * [ ] Add track at the beginning
+///       * [x] Add track at the beginning
 ///       * [x] Remove track
 ///       * [ ] Reorder track
 /// * [ ] Caching and loading of cache of tracks
@@ -277,7 +277,20 @@ class ProxyPlaylistNotifier extends StateNotifier<ProxyPlaylist>
     await audioPlayer.moveTrack(oldIndex, newIndex);
   }
 
-  Future<void> addTracksAtFirst(Iterable<Track> track) async {}
+  Future<void> addTracksAtFirst(Iterable<Track> tracks) async {
+    tracks = blacklist.filter(tracks).toList() as List<Track>;
+    final destIndex = state.active != null ? state.active! + 1 : 0;
+    final newTracks = state.tracks.toList()..insertAll(destIndex, tracks);
+    state = state.copyWith(tracks: newTracks.toSet());
+
+    tracks.forEachIndexed((index, track) async {
+      audioPlayer.addTrackAt(
+        makeAppropriateSource(track),
+        destIndex + index,
+      );
+    });
+  }
+
   Future<void> populateSibling() async {}
   Future<void> swapSibling(PipedSearchItem video) async {}
 

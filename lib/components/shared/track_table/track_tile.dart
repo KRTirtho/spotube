@@ -316,16 +316,18 @@ class TrackTile extends HookConsumerWidget {
                     if (!playlist.containsTrack(track.value)) ...[
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
-                        onTap: () {
-                          playback.addTrack(track.value);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                context.l10n
-                                    .added_track_to_queue(track.value.name!),
+                        onTap: () async {
+                          await playback.addTrack(track.value);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  context.l10n
+                                      .added_track_to_queue(track.value.name!),
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
                         },
                         child: ListTile(
                           leading: const Icon(SpotubeIcons.queueAdd),
@@ -373,21 +375,21 @@ class TrackTile extends HookConsumerWidget {
                           title: Text(context.l10n.remove_from_queue),
                         ),
                       ),
-                    if (toggler.item3.hasData)
+                    if (toggler.me.hasData)
                       PopupMenuItem(
                         padding: EdgeInsets.zero,
                         onTap: () {
-                          toggler.item2.mutate(toggler.item1);
+                          toggler.toggleTrackLike.mutate(toggler.isLiked);
                         },
                         child: ListTile(
-                          leading: toggler.item1
+                          leading: toggler.isLiked
                               ? const Icon(
                                   SpotubeIcons.heartFilled,
                                   color: Colors.pink,
                                 )
                               : const Icon(SpotubeIcons.heart),
                           title: Text(
-                            toggler.item1
+                            toggler.isLiked
                                 ? context.l10n.remove_from_favorites
                                 : context.l10n.save_as_favorite,
                           ),

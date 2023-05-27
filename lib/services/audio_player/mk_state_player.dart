@@ -243,6 +243,25 @@ class MkPlayerWithState extends Player {
     }
   }
 
+  FutureOr<void> insert(int index, Media media) {
+    if (_playlist == null ||
+        index < 0 ||
+        index > _playlist!.medias.length - 1) {
+      return null;
+    }
+
+    final newMedias = _playlist!.medias.toList()..insert(index, media);
+
+    playlist = _playlist!.copyWith(
+      medias: newMedias,
+      index: newMedias.indexOf(_playlist!.medias[_playlist!.index]),
+    );
+
+    if (shuffled && _tempMedias != null) {
+      _tempMedias!.insert(index, media);
+    }
+  }
+
   /// Doesn't work when active media is the one to be removed
   @override
   FutureOr<void> remove(int index) async {
