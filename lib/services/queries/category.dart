@@ -1,20 +1,27 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
+import 'package:spotube/provider/user_preferences_provider.dart';
 
 class CategoryQueries {
   const CategoryQueries();
 
   InfiniteQuery<Page<Category>, dynamic, int> list(
-      WidgetRef ref, String recommendationMarket) {
+    WidgetRef ref,
+    String recommendationMarket,
+  ) {
+    ref.watch(userPreferencesProvider.select((s) => s.locale));
+    final locale = useContext().l10n.localeName;
     return useSpotifyInfiniteQuery<Page<Category>, dynamic, int>(
       "category-playlists",
       (pageParam, spotify) async {
         final categories = await spotify.categories
             .list(
               country: recommendationMarket,
-              locale: 'en_US',
+              locale: locale,
             )
             .getPage(8, pageParam);
 
@@ -35,12 +42,16 @@ class CategoryQueries {
     WidgetRef ref,
     String category,
   ) {
+    ref.watch(userPreferencesProvider.select((s) => s.locale));
+    final market = ref
+        .watch(userPreferencesProvider.select((s) => s.recommendationMarket));
+    final locale = useContext().l10n.localeName;
     return useSpotifyInfiniteQuery<Page<PlaylistSimple?>, dynamic, int>(
       "category-playlists/$category",
       (pageParam, spotify) async {
         final playlists = await Pages<PlaylistSimple?>(
           spotify,
-          "v1/browse/categories/$category/playlists?country=US&locale=en_US",
+          "v1/browse/categories/$category/playlists?country=$market&locale=$locale",
           (json) => json == null ? null : PlaylistSimple.fromJson(json),
           'playlists',
           (json) => PlaylistsFeatured.fromJson(json),

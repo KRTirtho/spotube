@@ -1,6 +1,8 @@
 import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -17,9 +19,16 @@ class ViewsQueries {
     final market = ref
         .watch(userPreferencesProvider.select((s) => s.recommendationMarket));
 
+    final locale = useContext().l10n.localeName;
+
     return useQuery<Map<String, dynamic>?, dynamic>("views/$view", () {
       if (auth == null) return null;
-      return customSpotify.getView(view, market: market, country: market);
+      return customSpotify.getView(
+        view,
+        market: market,
+        country: market,
+        locale: locale,
+      );
     });
   }
 }
