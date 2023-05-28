@@ -1306,9 +1306,11 @@ packages:
   piped_client:
     dependency: "direct main"
     description:
-      path: "../piped_client"
-      relative: true
-    source: path
+      path: "."
+      ref: eaade37d0938d31dbfa35bb5152caca4e284bda6
+      resolved-ref: eaade37d0938d31dbfa35bb5152caca4e284bda6
+      url: "https://github.com/KRTirtho/piped_client"
+    source: git
     version: "0.1.0"
   platform:
     dependency: transitive

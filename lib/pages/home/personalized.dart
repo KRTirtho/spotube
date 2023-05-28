@@ -102,6 +102,8 @@ class PersonalizedPage extends HookConsumerWidget {
       [featuredPlaylistsQuery.pages],
     );
 
+    final madeForUser = useQueries.views.get(ref, "made-for-x-hub");
+
     final newReleases = useQueries.album.newReleases(ref);
     final userArtists = useQueries.artist
             .followedByMeAll(ref)
@@ -136,6 +138,21 @@ class PersonalizedPage extends HookConsumerWidget {
           hasNextPage: newReleases.hasNextPage,
           onFetchMore: newReleases.fetchNext,
         ),
+        ...?madeForUser.data?["content"]?["items"]?.map((item) {
+          final playlists = item["content"]?["items"]
+                  ?.where((itemL2) => itemL2["type"] == "playlist")
+                  .map((itemL2) => PlaylistSimple.fromJson(itemL2))
+                  .toList()
+                  .cast<PlaylistSimple>() ??
+              <PlaylistSimple>[];
+          if (playlists.isEmpty) return const SizedBox.shrink();
+          return PersonalizedItemCard(
+            playlists: playlists,
+            title: item["name"] ?? "",
+            hasNextPage: false,
+            onFetchMore: () {},
+          );
+        })
       ],
     );
   }

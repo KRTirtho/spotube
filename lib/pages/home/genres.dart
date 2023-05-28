@@ -12,7 +12,6 @@ import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:tuple/tuple.dart';
 
 class GenrePage extends HookConsumerWidget {
   const GenrePage({Key? key}) : super(key: key);
@@ -39,13 +38,13 @@ class GenrePage extends HookConsumerWidget {
           return categories;
         }
         return categories
-            .map((e) => Tuple2(
+            .map((e) => (
                   weightedRatio(e.name!, searchText.value),
                   e,
                 ))
-            .sorted((a, b) => b.item1.compareTo(a.item1))
-            .where((e) => e.item1 > 50)
-            .map((e) => e.item2)
+            .sorted((a, b) => b.$1.compareTo(a.$1))
+            .where((e) => e.$1 > 50)
+            .map((e) => e.$2)
             .toList();
       },
       [categoriesQuery.pages, searchText.value],

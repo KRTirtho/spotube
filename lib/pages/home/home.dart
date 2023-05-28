@@ -18,13 +18,16 @@ class HomePage extends HookConsumerWidget {
           centerTitle: true,
           leadingWidth: double.infinity,
           leading: ThemedButtonsTabBar(
-            tabs: [context.l10n.genre, context.l10n.personalized],
+            tabs: [
+              context.l10n.personalized,
+              context.l10n.genre,
+            ],
           ),
         ),
         body: const TabBarView(
           children: [
-            GenrePage(),
             PersonalizedPage(),
+            GenrePage(),
           ],
         ),
       ),
