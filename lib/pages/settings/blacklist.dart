@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:tuple/tuple.dart';
 
 class BlackListPage extends HookConsumerWidget {
   const BlackListPage({Key? key}) : super(key: key);
@@ -23,13 +22,15 @@ class BlackListPage extends HookConsumerWidget {
           return blacklist;
         }
         return blacklist
-            .map((e) => Tuple2(
-                  weightedRatio("${e.name} ${e.type.name}", searchText.value),
-                  e,
-                ))
-            .sorted((a, b) => b.item1.compareTo(a.item1))
-            .where((e) => e.item1 > 50)
-            .map((e) => e.item2)
+            .map(
+              (e) => (
+                weightedRatio("${e.name} ${e.type.name}", searchText.value),
+                e,
+              ),
+            )
+            .sorted((a, b) => b.$1.compareTo(a.$1))
+            .where((e) => e.$1 > 50)
+            .map((e) => e.$2)
             .toList();
       },
       [blacklist, searchText.value],

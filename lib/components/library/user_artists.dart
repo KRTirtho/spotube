@@ -10,7 +10,6 @@ import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:tuple/tuple.dart';
 
 class UserArtists extends HookConsumerWidget {
   const UserArtists({Key? key}) : super(key: key);
@@ -31,13 +30,13 @@ class UserArtists extends HookConsumerWidget {
         return artists.toList();
       }
       return artists
-          .map((e) => Tuple2(
+          .map((e) => (
                 weightedRatio(e.name!, searchText.value),
                 e,
               ))
-          .sorted((a, b) => b.item1.compareTo(a.item1))
-          .where((e) => e.item1 > 50)
-          .map((e) => e.item2)
+          .sorted((a, b) => b.$1.compareTo(a.$1))
+          .where((e) => e.$1 > 50)
+          .map((e) => e.$2)
           .toList();
     }, [artistQuery.data, searchText.value]);
 

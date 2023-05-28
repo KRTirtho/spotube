@@ -29,7 +29,6 @@ import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
-import 'package:tuple/tuple.dart';
 
 const supportedAudioTypes = [
   "audio/webm",
@@ -245,7 +244,7 @@ class UserLocalTracks extends HookConsumerWidget {
                 return sortedTracks;
               }
               return sortedTracks
-                  .map((e) => Tuple2(
+                  .map((e) => (
                         weightedRatio(
                           "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
                           searchText.value,
@@ -254,10 +253,10 @@ class UserLocalTracks extends HookConsumerWidget {
                       ))
                   .toList()
                   .sorted(
-                    (a, b) => b.item1.compareTo(a.item1),
+                    (a, b) => b.$1.compareTo(a.$1),
                   )
-                  .where((e) => e.item1 > 50)
-                  .map((e) => e.item2)
+                  .where((e) => e.$1 > 50)
+                  .map((e) => e.$2)
                   .toList()
                   .toList();
             }, [searchText.value, sortedTracks]);

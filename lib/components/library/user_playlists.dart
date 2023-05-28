@@ -15,7 +15,6 @@ import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:tuple/tuple.dart';
 
 class UserPlaylists extends HookConsumerWidget {
   const UserPlaylists({Key? key}) : super(key: key);
@@ -61,13 +60,10 @@ class UserPlaylists extends HookConsumerWidget {
           likedTracksPlaylist,
           ...?playlistsQuery.data,
         ]
-            .map((e) => Tuple2(
-                  weightedRatio(e.name!, searchText.value),
-                  e,
-                ))
-            .sorted((a, b) => b.item1.compareTo(a.item1))
-            .where((e) => e.item1 > 50)
-            .map((e) => e.item2)
+            .map((e) => (weightedRatio(e.name!, searchText.value), e))
+            .sorted((a, b) => b.$1.compareTo(a.$1))
+            .where((e) => e.$1 > 50)
+            .map((e) => e.$2)
             .toList();
       },
       [playlistsQuery.data, searchText.value],

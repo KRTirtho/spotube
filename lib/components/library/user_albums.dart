@@ -14,7 +14,6 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:tuple/tuple.dart';
 
 class UserAlbums extends HookConsumerWidget {
   const UserAlbums({Key? key}) : super(key: key);
@@ -36,13 +35,13 @@ class UserAlbums extends HookConsumerWidget {
         return albumsQuery.data?.toList() ?? [];
       }
       return albumsQuery.data
-              ?.map((e) => Tuple2(
+              ?.map((e) => (
                     weightedRatio(e.name!, searchText.value),
                     e,
                   ))
-              .sorted((a, b) => b.item1.compareTo(a.item1))
-              .where((e) => e.item1 > 50)
-              .map((e) => e.item2)
+              .sorted((a, b) => b.$1.compareTo(a.$1))
+              .where((e) => e.$1 > 50)
+              .map((e) => e.$2)
               .toList() ??
           [];
     }, [albumsQuery.data, searchText.value]);

@@ -107,11 +107,12 @@ class PlayerControls extends HookConsumerWidget {
               if (!compact)
                 HookBuilder(
                   builder: (context) {
-                    final progressObj = useProgress(ref);
-
-                    final progressStatic = progressObj.item1;
-                    final position = progressObj.item2;
-                    final duration = progressObj.item3;
+                    final (
+                      :bufferProgress,
+                      :duration,
+                      :position,
+                      :progressStatic
+                    ) = useProgress(ref);
 
                     final totalMinutes = PrimitiveUtils.zeroPadNumStr(
                       duration.inMinutes.remainder(60),
@@ -144,7 +145,7 @@ class PlayerControls extends HookConsumerWidget {
                             // there's an edge case for value being bigger
                             // than total duration. Keeping it resolved
                             value: progress.value.toDouble(),
-                            secondaryTrackValue: progressObj.item4,
+                            secondaryTrackValue: bufferProgress,
                             onChanged: playlist.isFetching == true || buffering
                                 ? null
                                 : (v) {

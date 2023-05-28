@@ -24,7 +24,7 @@ class PlayerOverlay extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final canShow = ref.watch(
-      ProxyPlaylistNotifier.provider.select((s) => s != null),
+      ProxyPlaylistNotifier.provider.select((s) => s.active != null),
     );
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
@@ -73,7 +73,10 @@ class PlayerOverlay extends HookConsumerWidget {
                         // animated
                         return TweenAnimationBuilder<double>(
                           duration: const Duration(milliseconds: 250),
-                          tween: Tween<double>(begin: 0, end: progress.item1),
+                          tween: Tween<double>(
+                            begin: 0,
+                            end: progress.progressStatic,
+                          ),
                           builder: (context, value, child) {
                             return LinearProgressIndicator(
                               value: value,

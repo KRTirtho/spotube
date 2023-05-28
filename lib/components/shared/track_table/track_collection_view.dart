@@ -22,7 +22,6 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:tuple/tuple.dart';
 
 class TrackCollectionView<T> extends HookConsumerWidget {
   final logger = getLogger(TrackCollectionView);
@@ -122,19 +121,10 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         return tracksSnapshot.data;
       }
       return tracksSnapshot.data
-          ?.map((e) => Tuple2(
-                weightedRatio(
-                  "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
-                  searchText.value,
-                ),
-                e,
-              ))
-          .toList()
-          .sorted(
-            (a, b) => b.item1.compareTo(a.item1),
-          )
-          .where((e) => e.item1 > 50)
-          .map((e) => e.item2)
+          ?.map((e) => (weightedRatio(e.name!, searchText.value), e))
+          .sorted((a, b) => b.$1.compareTo(a.$1))
+          .where((e) => e.$1 > 50)
+          .map((e) => e.$2)
           .toList();
     }, [tracksSnapshot.data, searchText.value]);
 

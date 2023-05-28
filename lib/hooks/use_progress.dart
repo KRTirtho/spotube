@@ -2,9 +2,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:tuple/tuple.dart';
 
-Tuple4<double, Duration, Duration, double> useProgress(WidgetRef ref) {
+({
+  double progressStatic,
+  Duration position,
+  Duration duration,
+  double bufferProgress
+}) useProgress(WidgetRef ref) {
   ref.watch(ProxyPlaylistNotifier.provider);
 
   final bufferProgress =
@@ -25,11 +29,12 @@ Tuple4<double, Duration, Duration, double> useProgress(WidgetRef ref) {
   final sliderMax = duration.inSeconds;
   final sliderValue = position.inSeconds;
 
-  return Tuple4(
-    sliderMax == 0 || sliderValue > sliderMax ? 0 : sliderValue / sliderMax,
-    position,
-    duration,
-    sliderMax == 0 || bufferProgress > sliderMax
+  return (
+    progressStatic:
+        sliderMax == 0 || sliderValue > sliderMax ? 0 : sliderValue / sliderMax,
+    position: position,
+    duration: duration,
+    bufferProgress: sliderMax == 0 || bufferProgress > sliderMax
         ? 0
         : bufferProgress / sliderMax,
   );
