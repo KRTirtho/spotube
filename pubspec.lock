@@ -1078,14 +1078,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
-  media_kit_native_event_loop:
-    dependency: "direct main"
-    description:
-      name: media_kit_native_event_loop
-      sha256: ed87140ad4b64156b2b470c8105f48d8cad7923c952ca05d23e02d28978d2cb3
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   meta:
     dependency: transitive
     description:

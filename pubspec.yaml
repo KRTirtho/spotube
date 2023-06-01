@@ -57,7 +57,6 @@ dependencies:
   json_annotation: ^4.8.1
   logger: ^1.1.0
   media_kit: ^0.0.7+1
-  media_kit_native_event_loop: ^1.0.3
   media_kit_libs_android_audio: ^1.0.4
   media_kit_libs_ios_audio: ^1.0.4 
   media_kit_libs_linux: ^1.0.2
