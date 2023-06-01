@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:catcher/catcher.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +134,9 @@ Future<void> main(List<String> rawArgs) async {
     ]),
     runAppFunction: () {
       runApp(
-        Builder(
+        DevicePreview(
+          availableLocales: L10n.all,
+          enabled: !kReleaseMode,
           builder: (context) {
             return ProviderScope(
               overrides: [
@@ -240,7 +243,10 @@ class SpotubeState extends ConsumerState<Spotube> {
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       builder: (context, child) {
-        return DragToResizeArea(child: child!);
+        return DevicePreview.appBuilder(
+          context,
+          DragToResizeArea(child: child!),
+        );
       },
       themeMode: themeMode,
       theme: theme(paletteColor ?? accentMaterialColor, Brightness.light),

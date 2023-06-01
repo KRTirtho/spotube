@@ -102,6 +102,7 @@ dependencies:
       url: https://github.com/KRTirtho/piped_client
       ref: eaade37d0938d31dbfa35bb5152caca4e284bda6
   supabase_flutter: ^1.9.1
+  device_preview: ^1.1.0
 
 dev_dependencies:
   build_runner: ^2.3.2
