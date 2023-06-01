@@ -14,6 +14,11 @@ on:
           - stable
           - nightly
         default: nightly
+      debug:
+        description: Debug on failed when channel is nightly
+        required: true
+        type: boolean
+        default: false
       dry_run:
         description: Dry run
         required: true
@@ -81,6 +86,12 @@ jobs:
           sed -i "s/%{{WIN_SHA256}}%/$HASH/" choco-struct/tools/VERIFICATION.txt
           make choco
           mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
@@ -166,6 +177,12 @@ jobs:
           mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
           mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
 
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Release-Binaries
@@ -221,6 +238,12 @@ jobs:
           flutter build apk
           mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
 
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Release-Binaries
@@ -273,6 +296,12 @@ jobs:
           npm install -g appdmg
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-x86_64.dmg
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - uses: actions/upload-artifact@v3
         with:
