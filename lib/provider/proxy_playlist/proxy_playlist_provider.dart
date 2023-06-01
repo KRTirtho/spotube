@@ -359,10 +359,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   Future<void> updatePalette() {
     return Future.microtask(() async {
-      final activeTrack = state.tracks.firstWhereOrNull(
-        (track) =>
-            track is SpotubeTrack && track.ytUri == audioPlayer.currentSource,
-      );
+      final activeTrack = state.tracks.elementAtOrNull(state.active ?? 0);
 
       if (activeTrack == null) return;
 
@@ -385,6 +382,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     super.state = state;
     if (state.tracks.isEmpty && ref.read(paletteProvider) != null) {
       ref.read(paletteProvider.notifier).state = null;
+    } else {
+      updatePalette();
     }
   }
 
