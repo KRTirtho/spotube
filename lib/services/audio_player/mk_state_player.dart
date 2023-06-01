@@ -40,9 +40,13 @@ class MkPlayerWithState extends Player {
           _playerStateStream.add(AudioPlaybackState.paused);
         }
       }),
-      streams.completed.listen((event) async {
+      streams.position.listen((position) async {
+        final isComplete = state.duration != Duration.zero &&
+            position != Duration.zero &&
+            state.duration.inSeconds == position.inSeconds;
+
+        if (!isComplete || _playlist == null) return;
         _playerStateStream.add(AudioPlaybackState.completed);
-        if (!event || _playlist == null) return;
 
         if (loopMode == PlaylistMode.single) {
           await super.open(_playlist!.medias[_playlist!.index], play: true);

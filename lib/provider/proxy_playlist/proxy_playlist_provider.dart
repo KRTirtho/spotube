@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -214,7 +213,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   }) async {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
     final addableTrack = await SpotubeTrack.fetchFromTrack(
-        tracks.elementAt(initialIndex), preferences);
+      tracks.elementAt(initialIndex),
+      preferences,
+    );
 
     state = state.copyWith(
       tracks: mergeTracks([addableTrack], tracks),
@@ -389,6 +390,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   @override
   onInit() {
+    if (state.tracks.isEmpty) return null;
+
     return load(
       state.tracks,
       initialIndex: state.active ?? 0,
