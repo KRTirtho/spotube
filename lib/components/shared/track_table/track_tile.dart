@@ -156,7 +156,27 @@ class TrackTile extends HookConsumerWidget {
                                 itemBuilder: (context, index) {
                                   final playlist =
                                       snapshot.data!.elementAt(index);
-                                  return Checkbox(
+                                  return CheckboxListTile(
+                                    title: Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          child: UniversalImage(
+                                            path: TypeConversionUtils
+                                                .image_X_UrlString(
+                                              playlist.images,
+                                              placeholder:
+                                                  ImagePlaceholder.collection,
+                                            ),
+                                            height: 40,
+                                            width: 40,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(playlist.name!),
+                                      ],
+                                    ),
                                     value: playlistsCheck.value[playlist.id] ??
                                         false,
                                     onChanged: (val) {
