@@ -88,7 +88,7 @@ jobs:
           mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
 
       - name: Debug With SSH When fails
-        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
@@ -178,7 +178,7 @@ jobs:
           mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
 
       - name: Debug With SSH When fails
-        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
@@ -239,7 +239,7 @@ jobs:
           mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
 
       - name: Debug With SSH When fails
-        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
@@ -298,7 +298,7 @@ jobs:
           appdmg appdmg.json build/Spotube-macos-x86_64.dmg
 
       - name: Debug With SSH When fails
-        if: ${{ failure() && inputs.debug == 'true' && inputs.channel == 'nightly' }}
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
