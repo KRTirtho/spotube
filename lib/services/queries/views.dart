@@ -21,7 +21,7 @@ class ViewsQueries {
 
     final locale = useContext().l10n.localeName;
 
-    return useQuery<Map<String, dynamic>?, dynamic>("views/$view", () {
+    final query = useQuery<Map<String, dynamic>?, dynamic>("views/$view", () {
       if (auth == null) return null;
       return customSpotify.getView(
         view,
@@ -30,5 +30,18 @@ class ViewsQueries {
         locale: locale,
       );
     });
+
+    useEffect(() {
+      return ref.listenManual(
+        customSpotifyEndpointProvider,
+        (previous, next) {
+          if (previous != next) {
+            query.refresh();
+          }
+        },
+      ).close;
+    }, [query]);
+
+    return query;
   }
 }
