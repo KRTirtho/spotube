@@ -52,6 +52,7 @@ class MkPlayerWithState extends Player {
           await super.open(_playlist!.medias[_playlist!.index], play: true);
         } else {
           await next();
+          await play();
         }
       }),
       streams.playlist.listen((event) {

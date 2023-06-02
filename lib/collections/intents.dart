@@ -6,7 +6,6 @@ import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
