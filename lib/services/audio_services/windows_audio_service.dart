@@ -84,7 +84,7 @@ class WindowsAudioService {
     }
     await smtc.updateMetadata(MusicMetadata(
       title: track.name!,
-      albumArtist: track.artists?.first.name ?? "Unknown",
+      albumArtist: track.artists?.firstOrNull?.name ?? "Unknown",
       artist: TypeConversionUtils.artists_X_String<Artist>(track.artists ?? []),
       album: track.album?.name ?? "Unknown",
       thumbnail: TypeConversionUtils.image_X_UrlString(

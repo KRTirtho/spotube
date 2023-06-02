@@ -222,6 +222,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       active: initialIndex,
     );
 
+    await notificationService.addTrack(addableTrack);
+
     await audioPlayer.openPlaylist(
       state.tracks.map(makeAppropriateSource).toList(),
       initialIndex: initialIndex,
@@ -247,6 +249,10 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       );
     }
     await audioPlayer.jumpTo(index);
+
+    if (oldTrack != null || track != null) {
+      await notificationService.addTrack(track ?? oldTrack!);
+    }
 
     if (oldTrack != null && track != null) {
       await storeTrack(
@@ -316,6 +322,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
     await audioPlayer.skipToNext();
 
+    if (oldTrack != null || track != null) {
+      await notificationService.addTrack(track ?? oldTrack!);
+    }
     if (oldTrack != null && track != null) {
       await storeTrack(
         oldTrack,
@@ -344,6 +353,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       );
     }
     await audioPlayer.skipToPrevious();
+    if (oldTrack != null || track != null) {
+      await notificationService.addTrack(track ?? oldTrack!);
+    }
     if (oldTrack != null && track != null) {
       await storeTrack(
         oldTrack,

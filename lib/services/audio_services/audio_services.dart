@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/linux_audio_service.dart';
 import 'package:spotube/services/audio_services/mobile_audio_service.dart';
 import 'package:spotube/services/audio_services/windows_audio_service.dart';
@@ -37,19 +38,35 @@ class AudioServices {
     final mpris =
         DesktopTools.platform.isLinux ? LinuxAudioService(ref, playback) : null;
 
+    if (mpris != null) {
+      playback.addListener((state) {
+        mpris.player.updateProperties();
+      });
+      audioPlayer.playerStateStream.listen((state) {
+        mpris.player.updateProperties();
+      });
+      audioPlayer.positionStream.listen((state) async {
+        await mpris.player.emitPropertiesChanged(
+          "org.mpris.MediaPlayer2.Player",
+          changedProperties: {
+            "Position": (await mpris.player.getPosition()).returnValues.first,
+          },
+        );
+      });
+    }
+
     return AudioServices(mobile, smtc, mpris);
   }
 
   Future<void> addTrack(Track track) async {
     await smtc?.addTrack(track);
-    await mpris?.addTrack(track);
     mobile?.addItem(MediaItem(
       id: track.id!,
       album: track.album?.name ?? "",
       title: track.name!,
       artist: TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[]),
       duration: track is SpotubeTrack
-          ? track.ytTrack.duration!
+          ? track.ytTrack.duration
           : Duration(milliseconds: track.durationMs ?? 0),
       artUri: Uri.parse(TypeConversionUtils.image_X_UrlString(
         track.album?.images ?? <Image>[],
