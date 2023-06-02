@@ -283,6 +283,7 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
+          flutter pub remove media_kit_native_event_loop
           dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Macos App

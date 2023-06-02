@@ -1,7 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:media_kit/media_kit.dart';
-// import 'package:just_audio/just_audio.dart';
-import 'package:mpris_service/mpris_service.dart';
 
 /// An unified loop mode for both [LoopMode] and [PlaylistMode]
 enum PlaybackLoopMode {
@@ -50,28 +48,6 @@ enum PlaybackLoopMode {
         return PlaylistMode.single;
       case PlaybackLoopMode.none:
         return PlaylistMode.none;
-    }
-  }
-
-  static PlaybackLoopMode fromMPRISLoopStatus(MPRISLoopStatus status) {
-    switch (status) {
-      case MPRISLoopStatus.none:
-        return PlaybackLoopMode.none;
-      case MPRISLoopStatus.track:
-        return PlaybackLoopMode.one;
-      case MPRISLoopStatus.playlist:
-        return PlaybackLoopMode.all;
-    }
-  }
-
-  MPRISLoopStatus toMPRISLoopStatus() {
-    switch (this) {
-      case PlaybackLoopMode.all:
-        return MPRISLoopStatus.playlist;
-      case PlaybackLoopMode.one:
-        return MPRISLoopStatus.track;
-      case PlaybackLoopMode.none:
-        return MPRISLoopStatus.none;
     }
   }
 

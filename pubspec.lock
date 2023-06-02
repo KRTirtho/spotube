@@ -161,14 +161,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
-  base_x:
-    dependency: transitive
-    description:
-      name: base_x
-      sha256: "3f1043679659f1759c651f900da6f24f0a8062c28daa6f9625e8d580002e187b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -419,7 +411,7 @@ packages:
     source: hosted
     version: "1.1.0"
   dbus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: dbus
       sha256: "6f07cba3f7b3448d42d015bfd3d53fe12e5b36da2423f23838efc1d5fb31a263"
@@ -1102,6 +1094,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  media_kit_native_event_loop:
+    dependency: "direct main"
+    description:
+      name: media_kit_native_event_loop
+      sha256: "521125e534603c3f603b93283db3938f557f33ecc383fbd62edd4beb3bf73747"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   meta:
     dependency: transitive
     description:
@@ -1126,15 +1126,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  mpris_service:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "3a4a72140087d3df130271c9213e61fa413d5740"
-      url: "https://github.com/alexmercerind/mpris_service"
-    source: git
-    version: "1.0.0"
   mutex:
     dependency: transitive
     description:
