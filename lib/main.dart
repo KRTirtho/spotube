@@ -130,7 +130,6 @@ Future<void> main(List<String> rawArgs) async {
             enableDeviceParameters: false,
             enableApplicationParameters: false,
           ),
-        ToastHandler(),
         FileHandler(
           await getLogsPath(),
           printLogs: false,
