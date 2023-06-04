@@ -304,8 +304,38 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     });
   }
 
-  Future<void> populateSibling() async {}
-  Future<void> swapSibling(PipedSearchItem video) async {}
+  Future<void> populateSibling() async {
+    if (state.activeTrack is SpotubeTrack) {
+      final activeTrackWithSiblingsForSure =
+          await (state.activeTrack as SpotubeTrack).populatedCopy();
+
+      state = state.copyWith(
+        tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
+        active: state.tracks.toList().indexWhere(
+            (element) => element.id == activeTrackWithSiblingsForSure.id),
+      );
+    }
+  }
+
+  Future<void> swapSibling(PipedSearchItem video) async {
+    if (state.activeTrack is SpotubeTrack && video is PipedSearchItemStream) {
+      populateSibling();
+      final newTrack = await (state.activeTrack as SpotubeTrack)
+          .swappedCopy(video, preferences);
+      if (newTrack == null) return;
+      state = state.copyWith(
+        tracks: mergeTracks([newTrack], state.tracks),
+        active: state.tracks
+            .toList()
+            .indexWhere((element) => element.id == newTrack.id),
+      );
+      await audioPlayer.pause();
+      await audioPlayer.replaceSource(
+        audioPlayer.currentSource!,
+        makeAppropriateSource(newTrack),
+      );
+    }
+  }
 
   Future<void> next() async {
     if (audioPlayer.nextSource == null) return;
