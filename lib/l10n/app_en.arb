@@ -181,5 +181,6 @@
   "success_emoji": "Success🥳",
   "success_message": "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
   "step_4": "Step 4",
-  "step_4_steps": "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields"
+  "step_4_steps": "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
+  "something_went_wrong": "Something went wrong"
 }

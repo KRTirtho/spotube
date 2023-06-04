@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
@@ -280,7 +281,9 @@ class SidebarFooter extends HookConsumerWidget {
             ),
           IconButton(
             icon: const Icon(SpotubeIcons.settings),
-            onPressed: () => Sidebar.goToSettings(context),
+            onPressed: () {
+              Sidebar.goToSettings(context);
+            },
           ),
         ],
       ),

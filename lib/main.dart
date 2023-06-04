@@ -29,6 +29,7 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';
+import 'package:spotube/utils/custom_toast_handler.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
@@ -119,7 +120,7 @@ Future<void> main(List<String> rawArgs) async {
           enableApplicationParameters: false,
         ),
         FileHandler(await getLogsPath(), printLogs: false),
-        SnackbarHandler(const Duration(seconds: 3)),
+        CustomToastHandler(),
       ],
     ),
     releaseConfig: CatcherOptions(
@@ -134,7 +135,7 @@ Future<void> main(List<String> rawArgs) async {
           await getLogsPath(),
           printLogs: false,
         ),
-        SnackbarHandler(const Duration(seconds: 3)),
+        CustomToastHandler(),
       ],
     ),
     runAppFunction: () {
