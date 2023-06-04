@@ -1,182 +1,169 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+# Varibles
+fname="$(basename $0)"
+installDir='/usr/share/spotube'
+desktopFile='/usr/share/applications/spotube.desktop'
+appdata='/usr/share/appdata/spotube.appdata.xml'
+icon='/usr/share/icons/spotube/spotube-logo.png'
+symlink='/usr/bin/spotube'
+temp='/tmp/spotube-installer'
+latestVer="$(curl --silent "https://api.github.com/repos/KRTirtho/spotube/releases/latest" \ | grep -Po '"tag_name": "\K.*?(?=")')"
 
-INSTLLATION_DIR=/usr/share/spotube
-DESKTOP_FILE_PATH=/usr/share/applications/spotube.desktop
-APP_DATA_PATH=/usr/share/appdata/spotube.appdata.xml
-ICON_PATH=/usr/share/icons/spotube/spotube-logo.png
-BIN_SYMLINK_PATH=/usr/bin/spotube
+# Root check - From CAAIS (https://codeberg.org/RaptaG/CAAIS), under GPL-3.0
+function rootCheck() {
+     if [ "${EUID}" -ne 0 ]; then
+          echo "Error: Root permissions are required for ${fname} to work."
+          echo "Please run './${fname}' for more information."
+          exit 1
+     fi
+}
 
-TEMP_DIR=/tmp/spotube-installer
-
-# get latest version from github api
-VERSION=$(curl --silent "https://api.github.com/repos/KRTirtho/spotube/releases/latest" \
-          | grep -Po '"tag_name": "\K.*?(?=")')
-
-function spotube_help(){
-  # available flags are -v or --version to specify what version to download
-  echo "Usage: ./install.sh [flags]"
-  echo "Flags:"
-  echo "  -v, --version <version>    Specify what version to download. Default: $VERSION"
-  echo "  -h, --help                 Show this help message"
-  echo "  -r, --remove               Remove spotube from your system"
+# Flags
+function help(){
+  echo "Usage: sudo ./${fname} [flags]"
+  echo 'Flags:'
+  echo '  -i, --install <version>    Specify what version to download, defaults to the latest.'
+  echo '  -h, --help                 This help menu'
+  echo '  -r, --remove               Removes Spotube from your system'
   exit 0
 }
 
-# a function to check if a given command exists or not and returns bool
+# Checks whether a given command exists or not and returns bool
 function command_exists() {
     command -v "$@" >/dev/null 2>&1
 }
 
 function install_deps(){
-    local DEBIAN_DEPS="curl tar mpv libappindicator3-1 gir1.2-appindicator3-0.1 libsecret-1-0 libnotify-bin libjsoncpp25"
-    local RPM_DEPS="curl tar mpv libappindicator jsoncpp libsecret libnotify"
-    local ARCH_DEPS="curl tar mpv libappindicator-gtk3 libsecret jsoncpp libnotify"
+    local debianDeps='curl tar mpv libappindicator3-1 gir1.2-appindicator3-0.1 libsecret-1-0 libnotify-bin libjsoncpp25'
+    local rpmDeps='curl tar mpv libappindicator jsoncpp libsecret libnotify'
+    local archDeps='curl tar mpv libappindicator-gtk3 libsecret jsoncpp libnotify'
 
     if command_exists apt; then
-        sudo apt install -y $DEBIAN_DEPS
+        sudo apt install -y ${debianDeps}
     elif command_exists dnf; then
-        sudo dnf install -y $RPM_DEPS
+        sudo dnf install -y ${debianDeps}
     elif command_exists yum; then
-        sudo yum install -y $RPM_DEPS
+        sudo yum install -y ${rpmDeps}
     elif command_exists zypper; then
-        sudo zypper install -y $RPM_DEPS
+        sudo zypper install -y ${rpmDeps}
     elif command_exists pacman; then
-        sudo pacman -Sy $ARCH_DEPS
+        sudo pacman -Sy ${archDeps}
     else
+    # TODO - install them
         echo "Your package manager is not supported by this script. Please install the dependencies manually."
         echo "The dependencies are: curl, tar, mpv, appindicator, libsecret, jsoncpp, libnotify"
-fi
+    fi
 }
 
 function download_extract_spotube(){
-  local TAR_PATH=/tmp/spotube-$VERSION.tar.xz
-  local DOWNLOAD_URL=https://github.com/KRTirtho/spotube/releases/download/v$VERSION/spotube-linux-$VERSION-x86_64.tar.xz
+  local tarPath="/tmp/spotube-${ver}.tar.xz"
+  local donwloadURL="https://github.com/KRTirtho/spotube/releases/download/v${ver}/spotube-linux-${ver}-x86_64.tar.xz"
 
-  # check if version is nightly
-
-  if [ "$VERSION" = "nightly" ]; then
-      DOWNLOAD_URL=https://github.com/KRTirtho/spotube/releases/download/nightly/spotube-linux-nightly-x86_64.tar.xz
+  if [ "${ver}" = "nightly" ]; then
+      downloadURL"=https://github.com/KRTirtho/spotube/releases/download/nightly/spotube-linux-nightly-x86_64.tar.xz"
   fi
 
-  
-  rm -rf $TEMP_DIR
-  mkdir -p $TEMP_DIR
-  
+  rm -rf ${temp}
+  mkdir -p ${temp}
 
   # check if already exists downloaded file
-  if [ -f $TAR_PATH ]; then
-    echo "Found spotube-$VERSION.tar.xz in /tmp. Skipping download..."
+  if [ -f ${tarPath} ]; then
+    echo "Installation file detected. Skipping download..."
   else
-    echo "Downloading spotube-$VERSION.tar.xz..."
-    curl -L $DOWNLOAD_URL -o $TAR_PATH
+    echo "Downloading spotube-${ver}.tar.xz..."
+    curl -L ${downloadURL} -o ${tarPath}
   fi
 
-  # Extract the tarball
-  tar -xf $TAR_PATH -C $TEMP_DIR
+  tar -xf ${tarPath} -C ${temp}
 
-  # check if $TEMP_DIR empty or not
-
+  # Is $temp empty or not
   if [ ! "$(ls -A $TEMP_DIR)" ]; then
-    echo "Failed to extract the tarball. Redownloading..."
-    rm -f $TAR_PATH
-    curl -L $DOWNLOAD_URL -o $TAR_PATH
-    tar -xf $TAR_PATH -C $TEMP_DIR
+    echo 'Failed to extract the tarball. Redownloading...'
+    rm -f ${tarPath}
+    curl -L ${downloadURL} -o ${tarPath}
+    tar -xf ${tarPath} -C ${temp}
   fi
   
-  # checking one last time
+  # Once again
   if [ ! "$(ls -A $TEMP_DIR)" ]; then
-    echo "Failed to extract the tarball. Aborting installation..."
+    echo 'Failed to extract the tarball. Installation aborted.'
     exit 1
   fi
 }
 
 function install_spotube(){
-    # check if exists and uninstall if user allows
+    if [ -d ${installDir} ]; then
+        echo -n "Spotube is already installed. Do you want to reinstall it? [y/N]"
+        read reinstall
 
-    if [ -d $INSTLLATION_DIR ]; then
-        echo "Spotube is already installed. Do you want to uninstall it and then install? [y/N]"
-        read -r uninstall
-        if [ "$uninstall" = "y" ] || [ "$uninstall" = "Y" ]; then
+        case "${reinstall}" in
+        [yY]*)
             uninstall_spotube
-        else
-            echo "Aborting installation..."
+            ;;
+        *)
+            echo 'Aborting installation...'
             exit 1
-        fi
+            ;;
+        esac
     fi
-  
-    # Move the files to /usr/share/spotube
 
-    sudo mkdir -p $INSTLLATION_DIR
-
-    sudo mv $TEMP_DIR/data $INSTLLATION_DIR
-    sudo mv $TEMP_DIR/lib $INSTLLATION_DIR
-    sudo mv $TEMP_DIR/spotube $INSTLLATION_DIR
-
-    # Move the desktop file to /usr/share/applications
-
-    sudo mv $TEMP_DIR/spotube.desktop $DESKTOP_FILE_PATH
-
-    # Move the appdata file to /usr/share/appdata
-
-    sudo mv $TEMP_DIR/com.github.KRTirtho.Spotube.appdata.xml $APP_DATA_PATH
-
-    # Move the logo to /usr/share/icons/spotube
-
-    sudo mkdir -p /usr/share/icons/spotube
-
-    sudo mv $TEMP_DIR/spotube-logo.png $ICON_PATH
-
-    # Create a symlink to /usr/bin
-
-    sudo ln -s /usr/share/spotube/spotube $BIN_SYMLINK_PATH
+    mkdir -p ${installDir}
+    mv ${temp}/data ${installDir}
+    mv ${temp}/lib ${installDir}
+    mv ${temp}/spotube ${installDir}
+    mv ${temp}/spotube.desktop ${desktopDir}
+    mv ${temp}/com.github.KRTirtho.Spotube.appdata.xml ${appdata}
+    mkdir -p /usr/share/icons/spotube
+    mv ${temp}/spotube-logo.png ${icon}
+    ln -s /usr/share/spotube/spotube ${symlink}
 
     # Clean up
-
-    rm -rf $TEMP_DIR
-
-    echo "Spotube $VERSION has been installed successfully!"
+    rm -rf ${temp}
+    echo "Spotube ${ver} has been installed successfully!"
 }
 
 function uninstall_spotube(){
-    # confirm
+    echo -n "Are you sure you want to uninstall Spotube? [y/N]"
+    read confirm
 
-    echo "Are you sure you want to uninstall Spotube?"
-    echo
-    echo "This will remove following files and directories:"
-    echo "  $INSTLLATION_DIR"
-    echo "  $DESKTOP_FILE_PATH"
-    echo "  $APP_DATA_PATH"
-    echo "  $ICON_PATH"
-    echo "  $BIN_SYMLINK_PATH"
-    echo
-    echo "[y/N]"
-
-    read -r CONFIRMATION
-
-    if [[ "$CONFIRMATION" != "y" ]]; then
-        echo "Aborting uninstallation..."
-        exit 0
-    fi
-
-    # remove the files
-
-
-    sudo rm -rf $INSTLLATION_DIR $DESKTOP_FILE_PATH $APP_DATA_PATH $ICON_PATH $BIN_SYMLINK_PATH
+    case "${confirm}" in
+    [yY]*)
+            echo 'Unstalling Spotube..'
+            rm -rf ${installDir} ${desktopDir} ${appdata} ${icon} ${symlink}
+            ;;
+    *)
+            echo 'Aborting...'
+            exit 0
+            ;;
+    esac
 }
 
-# parse arguments -v, --version, -r, --remove, -h, --help
-
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        -v|--version) VERSION="$2"; shift ;;
-        -r|--remove) uninstall_spotube; exit 0 ;;
-        -h|--help) spotube_help; exit 0 ;;
-        *) echo "Unknown parameter passed: $1"; spotube_help; exit 1 ;;
-    esac
-    shift
-done
-
-install_deps
-download_extract_spotube
-install_spotube
+case "$1" in
+-i | --install)
+    if [ "$2" != "" ]; then
+        ver="$2"
+    else
+        ver="${latestVer}"
+    fi
+    
+    rootCheck
+    install_deps
+    download_extract_spotube
+    install_spotube
+    ;;
+-r | --remove)
+    rootCheck
+    uninstall_spotube
+    exit 0
+    ;;
+-h | --help | "")
+    help
+    exit 0
+    ;;
+*)
+    echo "Invalid flag "$1"."
+    echo "Please run ./${fname} for more information."
+    exit 1
+    ;;
+esac
