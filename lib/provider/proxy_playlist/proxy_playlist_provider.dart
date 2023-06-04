@@ -44,6 +44,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   late final AudioServices notificationService;
 
   UserPreferences get preferences => ref.read(userPreferencesProvider);
+  ProxyPlaylist get playlist => state;
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
 
@@ -96,7 +97,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       });
 
       bool isPreSearching = false;
-      audioPlayer.percentCompletedStream(60).listen((percent) async {
+
+      listenTo60Percent(percent) async {
         if (isPreSearching || audioPlayer.currentSource == null) return;
         try {
           isPreSearching = true;
@@ -130,7 +132,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         } finally {
           isPreSearching = false;
         }
-      });
+      }
+
+      audioPlayer.percentCompletedStream(60).listen(listenTo60Percent);
 
       // player stops at 99% if nextSource is still not playable
       audioPlayer.percentCompletedStream(99).listen((_) async {

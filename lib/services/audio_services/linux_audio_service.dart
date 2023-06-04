@@ -239,7 +239,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
     }());
   }
 
-  ProxyPlaylist get playlist => playlistNotifier.state;
+  ProxyPlaylist get playlist => playlistNotifier.playlist;
 
   void dispose() {
     dbus.unregisterObject(this);

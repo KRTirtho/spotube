@@ -46,9 +46,7 @@ class ProxyPlaylist {
   }
 
   static Map<String, dynamic> _makeAppropriateTrackJson(Track track) {
-    if (track is SpotubeTrack) {
-      return track.toJson();
-    } else if (track is LocalTrack) {
+    if (track is LocalTrack) {
       return track.toJson();
     } else {
       return track.toJson();

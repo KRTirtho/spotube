@@ -237,6 +237,7 @@ class SpotubeTrack extends Track {
 
   Map<String, dynamic> toJson() {
     return {
+      // super values
       "album": album?.toJson(),
       "artists": artists?.map((artist) => artist.toJson()).toList(),
       "availableMarkets": availableMarkets,
@@ -253,6 +254,7 @@ class SpotubeTrack extends Track {
       "trackNumber": trackNumber,
       "type": type,
       "uri": uri,
+      // this values
       "ytTrack": ytTrack.toJson(),
       "ytUri": ytUri,
       "siblings": siblings.map((sibling) => sibling.toJson()).toList(),
