@@ -216,35 +216,29 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     int initialIndex = 0,
     bool autoPlay = false,
   }) async {
-    try {
-      tracks = blacklist.filter(tracks).toList() as List<Track>;
-      final addableTrack = await SpotubeTrack.fetchFromTrack(
-        tracks.elementAt(initialIndex),
-        preferences,
-      );
+    tracks = blacklist.filter(tracks).toList() as List<Track>;
+    final addableTrack = await SpotubeTrack.fetchFromTrack(
+      tracks.elementAt(initialIndex),
+      preferences,
+    );
 
-      print('addableTrack: $addableTrack');
+    state = state.copyWith(
+      tracks: mergeTracks([addableTrack], tracks),
+      active: initialIndex,
+    );
 
-      state = state.copyWith(
-        tracks: mergeTracks([addableTrack], tracks),
-        active: initialIndex,
-      );
+    await notificationService.addTrack(addableTrack);
 
-      await notificationService.addTrack(addableTrack);
+    await audioPlayer.openPlaylist(
+      state.tracks.map(makeAppropriateSource).toList(),
+      initialIndex: initialIndex,
+      autoPlay: autoPlay,
+    );
 
-      await audioPlayer.openPlaylist(
-        state.tracks.map(makeAppropriateSource).toList(),
-        initialIndex: initialIndex,
-        autoPlay: autoPlay,
-      );
-
-      await storeTrack(
-        tracks.elementAt(initialIndex),
-        addableTrack,
-      );
-    } catch (e) {
-      print('Error: $e');
-    }
+    await storeTrack(
+      tracks.elementAt(initialIndex),
+      addableTrack,
+    );
   }
 
   Future<void> jumpTo(int index) async {
