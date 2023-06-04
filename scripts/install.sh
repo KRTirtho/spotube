@@ -8,7 +8,10 @@ ICON_PATH=/usr/share/icons/spotube/spotube-logo.png
 BIN_SYMLINK_PATH=/usr/bin/spotube
 
 TEMP_DIR=/tmp/spotube-installer
-VERSION="2.7.1"
+
+# get latest version from github api
+VERSION=$(curl --silent "https://api.github.com/repos/KRTirtho/spotube/releases/latest" \
+          | grep -Po '"tag_name": "\K.*?(?=")')
 
 function spotube_help(){
   # available flags are -v or --version to specify what version to download
