@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:piped_client/piped_client.dart';
 
 PipedClient _defaultClient = PipedClient();
 
 class PipedSpotube {
+  static final Completer<bool> _initialized = Completer();
+  static Future<bool> get initialized => _initialized.future;
+
   /// Checks for a working instance of piped.video
   ///
   /// To distribute the load, in each startup it randomizes public instances
@@ -15,6 +20,7 @@ class PipedSpotube {
       try {
         await client.streams("dQw4w9WgXcQ");
         _defaultClient = client;
+        _initialized.complete(true);
         break;
       } catch (e) {
         continue;

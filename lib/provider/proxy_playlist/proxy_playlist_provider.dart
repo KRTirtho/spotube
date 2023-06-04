@@ -15,6 +15,7 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
+import 'package:spotube/services/youtube.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -215,29 +216,35 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     int initialIndex = 0,
     bool autoPlay = false,
   }) async {
-    tracks = blacklist.filter(tracks).toList() as List<Track>;
-    final addableTrack = await SpotubeTrack.fetchFromTrack(
-      tracks.elementAt(initialIndex),
-      preferences,
-    );
+    try {
+      tracks = blacklist.filter(tracks).toList() as List<Track>;
+      final addableTrack = await SpotubeTrack.fetchFromTrack(
+        tracks.elementAt(initialIndex),
+        preferences,
+      );
 
-    state = state.copyWith(
-      tracks: mergeTracks([addableTrack], tracks),
-      active: initialIndex,
-    );
+      print('addableTrack: $addableTrack');
 
-    await notificationService.addTrack(addableTrack);
+      state = state.copyWith(
+        tracks: mergeTracks([addableTrack], tracks),
+        active: initialIndex,
+      );
 
-    await audioPlayer.openPlaylist(
-      state.tracks.map(makeAppropriateSource).toList(),
-      initialIndex: initialIndex,
-      autoPlay: autoPlay,
-    );
+      await notificationService.addTrack(addableTrack);
 
-    await storeTrack(
-      tracks.elementAt(initialIndex),
-      addableTrack,
-    );
+      await audioPlayer.openPlaylist(
+        state.tracks.map(makeAppropriateSource).toList(),
+        initialIndex: initialIndex,
+        autoPlay: autoPlay,
+      );
+
+      await storeTrack(
+        tracks.elementAt(initialIndex),
+        addableTrack,
+      );
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   Future<void> jumpTo(int index) async {
@@ -404,14 +411,16 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   }
 
   @override
-  onInit() {
+  onInit() async {
     if (state.tracks.isEmpty) return null;
 
-    return load(
-      state.tracks,
-      initialIndex: state.active ?? 0,
-      autoPlay: false,
-    );
+    if (await PipedSpotube.initialized) {
+      await load(
+        state.tracks,
+        initialIndex: state.active ?? 0,
+        autoPlay: false,
+      );
+    }
   }
 
   @override
