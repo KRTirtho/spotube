@@ -119,19 +119,25 @@ Future<void> main(List<String> rawArgs) async {
           enableApplicationParameters: false,
         ),
         FileHandler(await getLogsPath(), printLogs: false),
+        SnackbarHandler(const Duration(seconds: 3)),
       ],
     ),
-    releaseConfig: CatcherOptions(SilentReportMode(), [
-      if (arguments["verbose"] ?? false)
-        ConsoleHandler(
-          enableDeviceParameters: false,
-          enableApplicationParameters: false,
+    releaseConfig: CatcherOptions(
+      SilentReportMode(),
+      [
+        if (arguments["verbose"] ?? false)
+          ConsoleHandler(
+            enableDeviceParameters: false,
+            enableApplicationParameters: false,
+          ),
+        ToastHandler(),
+        FileHandler(
+          await getLogsPath(),
+          printLogs: false,
         ),
-      FileHandler(
-        await getLogsPath(),
-        printLogs: false,
-      ),
-    ]),
+        SnackbarHandler(const Duration(seconds: 3)),
+      ],
+    ),
     runAppFunction: () {
       runApp(
         DevicePreview(

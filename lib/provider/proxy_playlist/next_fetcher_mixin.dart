@@ -1,5 +1,5 @@
-import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
@@ -105,15 +105,18 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
   /// This method must be called after any playback operation as
   /// it can increase the latency
   Future<void> storeTrack(Track track, SpotubeTrack spotubeTrack) async {
-    if (track is! SpotubeTrack) {
-      await supabase
-          .insertTrack(
-            MatchedTrack(
-              youtubeId: spotubeTrack.ytTrack.id,
-              spotifyId: spotubeTrack.id!,
-            ),
-          )
-          .catchError(Catcher.reportCheckedError);
+    try {
+      if (track is! SpotubeTrack) {
+        await supabase.insertTrack(
+          MatchedTrack(
+            youtubeId: spotubeTrack.ytTrack.id,
+            spotifyId: spotubeTrack.id!,
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      debugPrint(e.toString());
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 }

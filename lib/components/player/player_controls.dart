@@ -197,7 +197,7 @@ class PlayerControls extends HookConsumerWidget {
                               : context.l10n.shuffle_playlist,
                           icon: const Icon(SpotubeIcons.shuffle),
                           style: shuffled ? activeButtonStyle : buttonStyle,
-                          onPressed: playlist.isFetching
+                          onPressed: playlist.isFetching == true || buffering
                               ? null
                               : () {
                                   if (shuffled) {
@@ -212,7 +212,9 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: context.l10n.previous_track,
                     icon: const Icon(SpotubeIcons.skipBack),
                     style: buttonStyle,
-                    onPressed: playlistNotifier.previous,
+                    onPressed: playlist.isFetching == true || buffering
+                        ? null
+                        : playlistNotifier.previous,
                   ),
                   IconButton(
                     tooltip: playing
@@ -242,7 +244,9 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: context.l10n.next_track,
                     icon: const Icon(SpotubeIcons.skipForward),
                     style: buttonStyle,
-                    onPressed: playlistNotifier.next,
+                    onPressed: playlist.isFetching == true || buffering
+                        ? null
+                        : playlistNotifier.next,
                   ),
                   StreamBuilder<PlaybackLoopMode>(
                       stream: audioPlayer.loopModeStream,
@@ -251,24 +255,34 @@ class PlayerControls extends HookConsumerWidget {
                         return IconButton(
                           tooltip: loopMode == PlaybackLoopMode.one
                               ? context.l10n.loop_track
-                              : context.l10n.repeat_playlist,
+                              : loopMode == PlaybackLoopMode.all
+                                  ? context.l10n.repeat_playlist
+                                  : null,
                           icon: Icon(
                             loopMode == PlaybackLoopMode.one
                                 ? SpotubeIcons.repeatOne
                                 : SpotubeIcons.repeat,
                           ),
-                          style: loopMode == PlaybackLoopMode.one
+                          style: loopMode == PlaybackLoopMode.one ||
+                                  loopMode == PlaybackLoopMode.all
                               ? activeButtonStyle
                               : buttonStyle,
-                          onPressed: playlist.isFetching
+                          onPressed: playlist.isFetching == true || buffering
                               ? null
-                              : () {
-                                  if (loopMode == PlaybackLoopMode.one) {
-                                    audioPlayer
-                                        .setLoopMode(PlaybackLoopMode.all);
-                                  } else {
-                                    audioPlayer
-                                        .setLoopMode(PlaybackLoopMode.one);
+                              : () async {
+                                  switch (await audioPlayer.loopMode) {
+                                    case PlaybackLoopMode.all:
+                                      audioPlayer
+                                          .setLoopMode(PlaybackLoopMode.one);
+                                      break;
+                                    case PlaybackLoopMode.one:
+                                      audioPlayer
+                                          .setLoopMode(PlaybackLoopMode.none);
+                                      break;
+                                    case PlaybackLoopMode.none:
+                                      audioPlayer
+                                          .setLoopMode(PlaybackLoopMode.all);
+                                      break;
                                   }
                                 },
                         );

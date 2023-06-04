@@ -218,7 +218,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   }) async {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
     final addableTrack = await SpotubeTrack.fetchFromTrack(
-      tracks.elementAt(initialIndex),
+      tracks.elementAtOrNull(initialIndex) ?? tracks.first,
       preferences,
     );
 

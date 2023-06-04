@@ -120,6 +120,9 @@ class SpotubeTrack extends Track {
       ytVideo = await PipedSpotube.client.streams(matchedCachedTrack.youtubeId);
     } else {
       siblings = await fetchSiblings(track);
+      if (siblings.isEmpty) {
+        throw Exception("Failed to find any results for ${track.name}");
+      }
       ytVideo = await PipedSpotube.client.streams(siblings.first.id);
 
       await MatchedTrack.box.put(
