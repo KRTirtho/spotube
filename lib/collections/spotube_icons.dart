@@ -79,4 +79,5 @@ abstract class SpotubeIcons {
   static const colorSync = FeatherIcons.activity;
   static const language = FeatherIcons.globe;
   static const error = FeatherIcons.alertTriangle;
+  static const piped = FeatherIcons.cloud;
 }

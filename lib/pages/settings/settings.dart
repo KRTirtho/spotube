@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/language_codes.dart';
 
@@ -21,6 +23,7 @@ import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/piped_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsPage extends HookConsumerWidget {
@@ -286,6 +289,41 @@ class SettingsPage extends HookConsumerWidget {
                             }
                           },
                         ),
+                        Consumer(builder: (context, ref, child) {
+                          final instanceList =
+                              ref.watch(pipedInstancesFutureProvider);
+
+                          return instanceList.when(
+                            data: (data) {
+                              return AdaptiveSelectTile<String>(
+                                secondary: const Icon(SpotubeIcons.piped),
+                                title: Text(context.l10n.piped_instance),
+                                subtitle: Text(context.l10n.piped_description),
+                                value: preferences.pipedInstance,
+                                showValueWhenUnfolded: false,
+                                options: data
+                                    .sortedBy((e) => e.name)
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e.apiUrl,
+                                        child: Text(e.name),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    preferences.setPipedInstance(value);
+                                  }
+                                },
+                              );
+                            },
+                            loading: () => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            error: (error, stackTrace) =>
+                                Text(error.toString()),
+                          );
+                        }),
                         SwitchListTile(
                           secondary: const Icon(SpotubeIcons.download),
                           title: Text(context.l10n.pre_download_play),

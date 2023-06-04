@@ -27,7 +27,6 @@ import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/youtube.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/custom_toast_handler.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -206,10 +205,6 @@ class SpotubeState extends ConsumerState<Spotube> {
   void initState() {
     super.initState();
     SharedPreferences.getInstance().then(((value) => localStorage = value));
-
-    /// Doing the initialization here to avoid loading time
-    /// when in offline mode
-    PipedSpotube.initialize();
   }
 
   @override

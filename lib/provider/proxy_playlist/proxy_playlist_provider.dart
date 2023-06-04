@@ -15,7 +15,7 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
-import 'package:spotube/services/youtube.dart';
+import 'package:spotube/provider/piped_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -45,6 +45,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   late final AudioServices notificationService;
 
   UserPreferences get preferences => ref.read(userPreferencesProvider);
+  PipedClient get pipedClient => ref.read(pipedClientProvider);
   ProxyPlaylist get playlist => state;
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
@@ -157,7 +158,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     final nthFetchedTrack = switch (track.runtimeType) {
       SpotubeTrack => track as SpotubeTrack,
-      _ => await SpotubeTrack.fetchFromTrack(track, preferences),
+      _ => await SpotubeTrack.fetchFromTrack(track, preferences, pipedClient),
     };
 
     await audioPlayer.replaceSource(
@@ -220,6 +221,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     final addableTrack = await SpotubeTrack.fetchFromTrack(
       tracks.elementAtOrNull(initialIndex) ?? tracks.first,
       preferences,
+      pipedClient,
     );
 
     state = state.copyWith(
@@ -307,7 +309,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   Future<void> populateSibling() async {
     if (state.activeTrack is SpotubeTrack) {
       final activeTrackWithSiblingsForSure =
-          await (state.activeTrack as SpotubeTrack).populatedCopy();
+          await (state.activeTrack as SpotubeTrack).populatedCopy(pipedClient);
 
       state = state.copyWith(
         tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
@@ -321,7 +323,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     if (state.activeTrack is SpotubeTrack && video is PipedSearchItemStream) {
       populateSibling();
       final newTrack = await (state.activeTrack as SpotubeTrack)
-          .swappedCopy(video, preferences);
+          .swappedCopy(video, preferences, pipedClient);
       if (newTrack == null) return;
       state = state.copyWith(
         tracks: mergeTracks([newTrack], state.tracks),
@@ -438,13 +440,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   onInit() async {
     if (state.tracks.isEmpty) return null;
 
-    if (await PipedSpotube.initialized) {
-      await load(
-        state.tracks,
-        initialIndex: state.active ?? 0,
-        autoPlay: false,
-      );
-    }
+    await load(
+      state.tracks,
+      initialIndex: state.active ?? 0,
+      autoPlay: false,
+    );
   }
 
   @override

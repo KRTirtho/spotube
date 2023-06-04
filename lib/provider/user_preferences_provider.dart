@@ -50,6 +50,8 @@ class UserPreferences extends PersistedChangeNotifier {
 
   Locale locale;
 
+  String pipedInstance;
+
   final Ref ref;
 
   UserPreferences(
@@ -67,6 +69,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.closeBehavior = CloseBehavior.minimizeToTray,
     this.showSystemTrayIcon = true,
     this.locale = const Locale("system", "system"),
+    this.pipedInstance = "https://pipedapi.kavin.rocks",
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
@@ -161,6 +164,12 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setPipedInstance(String instance) {
+    pipedInstance = instance;
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -206,6 +215,8 @@ class UserPreferences extends PersistedChangeNotifier {
     final localeMap = map["locale"] != null ? jsonDecode(map["locale"]) : null;
     locale =
         localeMap != null ? Locale(localeMap?["lc"], localeMap?["cc"]) : locale;
+
+    pipedInstance = map["pipedInstance"] ?? pipedInstance;
   }
 
   @override
@@ -225,6 +236,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "showSystemTrayIcon": showSystemTrayIcon,
       "locale":
           jsonEncode({"lc": locale.languageCode, "cc": locale.countryCode}),
+      "pipedInstance": pipedInstance,
     };
   }
 }

@@ -11,6 +11,7 @@ import 'package:spotify/spotify.dart' hide Image, Queue;
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/provider/piped_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -50,6 +51,7 @@ class Downloader with ChangeNotifier {
       final track = await SpotubeTrack.fetchFromTrack(
         baseTrack,
         ref.read(userPreferencesProvider),
+        ref.read(pipedClientProvider),
       );
 
       _queue.add(() async {

@@ -182,5 +182,7 @@
   "success_message": "Vous êtes maintenant connecté avec succès à votre compte Spotify. Bon travail, mon ami!",
   "step_4": "Étape 4",
   "step_4_steps": "Collez les valeurs copiées de \"sp_dc\" et \"sp_key\" dans les champs respectifs",
-  "something_went_wrong": "Quelque chose s'est mal passé"
+  "something_went_wrong": "Quelque chose s'est mal passé",
+  "piped_instance": "Instance pipée",
+  "piped_description": "L'instance de serveur Piped à utiliser pour la correspondance des pistes\nCertaines d'entre elles peuvent ne pas fonctionner correctement. Alors utilisez à vos risques et périls"
 }

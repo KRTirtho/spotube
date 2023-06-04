@@ -182,5 +182,7 @@
   "success_message": "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
   "step_4": "Step 4",
   "step_4_steps": "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
-  "something_went_wrong": "Something went wrong"
+  "something_went_wrong": "Something went wrong",
+  "piped_instance": "Piped Server Instance",
+  "piped_description": "The Piped server instance to use for track matching\nSome of them might not work well. So use at your own risk"
 }

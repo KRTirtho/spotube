@@ -14,6 +14,13 @@ class AdaptiveSelectTile<T> extends HookWidget {
 
   final Breakpoints breakAfterOr;
 
+  /// Show the smaller value when the breakpoint is reached
+  ///
+  /// If false, the control will be hidden when the breakpoint is reached
+  ///
+  /// Defaults to `true`
+  final bool showValueWhenUnfolded;
+
   const AdaptiveSelectTile({
     required this.title,
     required this.value,
@@ -23,6 +30,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
     this.subtitle,
     this.secondary,
     this.breakAfterOr = Breakpoints.md,
+    this.showValueWhenUnfolded = true,
     super.key,
   });
 
@@ -49,22 +57,24 @@ class AdaptiveSelectTile<T> extends HookWidget {
 
     final control = breakpoint >= breakAfterOr
         ? rawControl
-        : Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: theme.colorScheme.primary,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: DefaultTextStyle(
-              style: TextStyle(
-                color: theme.colorScheme.primary,
-              ),
-              child: controlPlaceholder,
-            ),
-          );
+        : showValueWhenUnfolded
+            ? Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: theme.colorScheme.primary,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: DefaultTextStyle(
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
+                  ),
+                  child: controlPlaceholder,
+                ),
+              )
+            : const SizedBox.shrink();
 
     return ListTile(
       title: title,

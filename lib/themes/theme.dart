@@ -10,7 +10,7 @@ ThemeData theme(Color seed, Brightness brightness) {
     useMaterial3: true,
     colorScheme: scheme,
     listTileTheme: ListTileThemeData(
-      horizontalTitleGap: 0,
+      horizontalTitleGap: 5,
       iconColor: scheme.onSurface,
     ),
     appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),

@@ -8,7 +8,6 @@ import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/services/youtube.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:collection/collection.dart';
@@ -67,7 +66,10 @@ class SpotubeTrack extends Track {
     }
   }
 
-  static Future<List<PipedSearchItemStream>> fetchSiblings(Track track) async {
+  static Future<List<PipedSearchItemStream>> fetchSiblings(
+    Track track,
+    PipedClient client,
+  ) async {
     final artists = (track.artists ?? [])
         .map((ar) => ar.name)
         .toList()
@@ -80,7 +82,7 @@ class SpotubeTrack extends Track {
       onlyCleanArtist: true,
     ).trim();
 
-    final List<PipedSearchItemStream> siblings = await PipedSpotube.client
+    final List<PipedSearchItemStream> siblings = await client
         .search(
       "$title - ${artists.join(", ")}",
       PipedFilter.musicSongs,
@@ -112,18 +114,19 @@ class SpotubeTrack extends Track {
   static Future<SpotubeTrack> fetchFromTrack(
     Track track,
     UserPreferences preferences,
+    PipedClient client,
   ) async {
     final matchedCachedTrack = await MatchedTrack.box.get(track.id!);
     var siblings = <PipedSearchItemStream>[];
     PipedStreamResponse ytVideo;
     if (matchedCachedTrack != null) {
-      ytVideo = await PipedSpotube.client.streams(matchedCachedTrack.youtubeId);
+      ytVideo = await client.streams(matchedCachedTrack.youtubeId);
     } else {
-      siblings = await fetchSiblings(track);
+      siblings = await fetchSiblings(track, client);
       if (siblings.isEmpty) {
         throw Exception("Failed to find any results for ${track.name}");
       }
-      ytVideo = await PipedSpotube.client.streams(siblings.first.id);
+      ytVideo = await client.streams(siblings.first.id);
 
       await MatchedTrack.box.put(
         track.id!,
@@ -167,10 +170,11 @@ class SpotubeTrack extends Track {
   Future<SpotubeTrack?> swappedCopy(
     PipedSearchItemStream video,
     UserPreferences preferences,
+    PipedClient client,
   ) async {
     if (siblings.none((element) => element.id == video.id)) return null;
 
-    final ytVideo = await PipedSpotube.client.streams(video.id);
+    final ytVideo = await client.streams(video.id);
 
     final ytStream = getStreamInfo(ytVideo, preferences.audioQuality);
 
@@ -225,10 +229,10 @@ class SpotubeTrack extends Track {
     );
   }
 
-  Future<SpotubeTrack> populatedCopy() async {
+  Future<SpotubeTrack> populatedCopy(PipedClient client) async {
     if (this.siblings.isNotEmpty) return this;
 
-    final siblings = await fetchSiblings(this);
+    final siblings = await fetchSiblings(this, client);
 
     return SpotubeTrack.fromTrack(
       track: this,

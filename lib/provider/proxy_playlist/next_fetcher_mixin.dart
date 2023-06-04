@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/matched_track.dart';
@@ -11,7 +12,8 @@ import 'package:spotube/services/supabase.dart';
 
 mixin NextFetcher on StateNotifier<ProxyPlaylist> {
   Future<List<SpotubeTrack>> fetchTracks(
-    UserPreferences preferences, {
+    UserPreferences preferences,
+    PipedClient pipedClient, {
     int count = 3,
     int offset = 0,
   }) async {
@@ -25,7 +27,11 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
     /// fetch [bareTracks] one by one with 100ms delay
     final fetchedTracks = await Future.wait(
       bareTracks.mapIndexed((i, track) async {
-        final future = SpotubeTrack.fetchFromTrack(track, preferences);
+        final future = SpotubeTrack.fetchFromTrack(
+          track,
+          preferences,
+          pipedClient,
+        );
         if (i == 0) {
           return await future;
         }
