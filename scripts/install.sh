@@ -35,9 +35,9 @@ function command_exists() {
 }
 
 function install_deps(){
-    local debianDeps='tar mpv libappindicator3-1 gir1.2-appindicator3-0.1 libsecret-1-0 libnotify-bin libjsoncpp25'
-    local rpmDeps='tar mpv libappindicator jsoncpp libsecret libnotify'
-    local archDeps='tar mpv libappindicator-gtk3 libsecret jsoncpp libnotify'
+    local debianDeps='mpv libappindicator3-1 gir1.2-appindicator3-0.1 libsecret-1-0 libnotify-bin libjsoncpp25'
+    local rpmDeps='mpv libappindicator jsoncpp libsecret libnotify'
+    local archDeps='mpv libappindicator-gtk3 libsecret jsoncpp libnotify'
 
     if command_exists apt; then
         apt install -y ${debianDeps}
@@ -49,15 +49,12 @@ function install_deps(){
         zypper install -y ${rpmDeps}
     elif command_exists pacman; then
         pacman -Sy ${archDeps}
-    else
-    # TODO - install them
-     
-     # TAR
-     # wget -q https://ftp.gnu.org/gnu/tar/tar-latest.tar.gz
-
-
-       # echo "Your package manager is not supported by this script. Please install the dependencies manually."
-       # echo "The dependencies are: curl, tar, mpv, appindicator, libsecret, jsoncpp, libnotify"
+    else   
+    # Deps
+        # JsonCpp
+        wget https://github.com/open-source-parsers/jsoncpp/tarball/master -O jsoncpp.tar.gz
+        tar -xf jsoncpp.tar.gz && cd open-source-parsers-jsoncpp-*
+        
     fi
 }
 
