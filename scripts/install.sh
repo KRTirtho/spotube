@@ -8,7 +8,7 @@ appdata='/usr/share/appdata/spotube.appdata.xml'
 icon='/usr/share/icons/spotube/spotube-logo.png'
 symlink='/usr/bin/spotube'
 temp='/tmp/spotube-installer'
-latestVer="$(curl --silent "https://api.github.com/repos/KRTirtho/spotube/releases/latest" \ | grep -Po '"tag_name": "\K.*?(?=")')"
+latestVer="$(wget -qO- "https://api.github.com/repos/KRTirtho/spotube/releases/latest" \ | grep -Po '"tag_name": "\K.*?(?=")')"
 
 # Root check - From CAAIS (https://codeberg.org/RaptaG/CAAIS), under GPL-3.0
 function rootCheck() {
@@ -23,7 +23,7 @@ function rootCheck() {
 function help(){
   echo "Usage: sudo ./${fname} [flags]"
   echo 'Flags:'
-  echo '  -i, --install <version>    Specify what version to download, defaults to the latest.'
+  echo '  -i, --install <version>    Install any Spotube version (if not specified, the latest is installed).'
   echo '  -h, --help                 This help menu'
   echo '  -r, --remove               Removes Spotube from your system'
   exit 0
@@ -35,24 +35,29 @@ function command_exists() {
 }
 
 function install_deps(){
-    local debianDeps='curl tar mpv libappindicator3-1 gir1.2-appindicator3-0.1 libsecret-1-0 libnotify-bin libjsoncpp25'
-    local rpmDeps='curl tar mpv libappindicator jsoncpp libsecret libnotify'
-    local archDeps='curl tar mpv libappindicator-gtk3 libsecret jsoncpp libnotify'
+    local debianDeps='tar mpv libappindicator3-1 gir1.2-appindicator3-0.1 libsecret-1-0 libnotify-bin libjsoncpp25'
+    local rpmDeps='tar mpv libappindicator jsoncpp libsecret libnotify'
+    local archDeps='tar mpv libappindicator-gtk3 libsecret jsoncpp libnotify'
 
     if command_exists apt; then
-        sudo apt install -y ${debianDeps}
+        apt install -y ${debianDeps}
     elif command_exists dnf; then
-        sudo dnf install -y ${debianDeps}
+        dnf install -y ${debianDeps}
     elif command_exists yum; then
-        sudo yum install -y ${rpmDeps}
+        yum install -y ${rpmDeps}
     elif command_exists zypper; then
-        sudo zypper install -y ${rpmDeps}
+        zypper install -y ${rpmDeps}
     elif command_exists pacman; then
-        sudo pacman -Sy ${archDeps}
+        pacman -Sy ${archDeps}
     else
     # TODO - install them
-        echo "Your package manager is not supported by this script. Please install the dependencies manually."
-        echo "The dependencies are: curl, tar, mpv, appindicator, libsecret, jsoncpp, libnotify"
+     
+     # TAR
+     # wget -q https://ftp.gnu.org/gnu/tar/tar-latest.tar.gz
+
+
+       # echo "Your package manager is not supported by this script. Please install the dependencies manually."
+       # echo "The dependencies are: curl, tar, mpv, appindicator, libsecret, jsoncpp, libnotify"
     fi
 }
 
@@ -67,26 +72,26 @@ function download_extract_spotube(){
   rm -rf ${temp}
   mkdir -p ${temp}
 
-  # check if already exists downloaded file
+  # Check if already exists downloaded file
   if [ -f ${tarPath} ]; then
     echo "Installation file detected. Skipping download..."
   else
     echo "Downloading spotube-${ver}.tar.xz..."
-    curl -L ${downloadURL} -o ${tarPath}
+    wget -q ${downloadURL} -P ${tarPath}
   fi
 
   tar -xf ${tarPath} -C ${temp}
 
   # Is $temp empty or not
-  if [ ! "$(ls -A $TEMP_DIR)" ]; then
+  if [ ! "$(ls -A ${temp})" ]; then
     echo 'Failed to extract the tarball. Redownloading...'
     rm -f ${tarPath}
-    curl -L ${downloadURL} -o ${tarPath}
+    wget -q ${downloadURL} -P ${tarPath}
     tar -xf ${tarPath} -C ${temp}
   fi
   
   # Once again
-  if [ ! "$(ls -A $TEMP_DIR)" ]; then
+  if [ ! "$(ls -A ${temp})" ]; then
     echo 'Failed to extract the tarball. Installation aborted.'
     exit 1
   fi
@@ -94,7 +99,7 @@ function download_extract_spotube(){
 
 function install_spotube(){
     if [ -d ${installDir} ]; then
-        echo -n "Spotube is already installed. Do you want to reinstall it? [y/N]"
+        echo -n "Spotube is already installed. Do you want to reinstall it? [y/N] "
         read reinstall
 
         case "${reinstall}" in
@@ -108,6 +113,7 @@ function install_spotube(){
         esac
     fi
 
+    # Install Spotube from temp dir
     mkdir -p ${installDir}
     mv ${temp}/data ${installDir}
     mv ${temp}/lib ${installDir}
@@ -118,13 +124,12 @@ function install_spotube(){
     mv ${temp}/spotube-logo.png ${icon}
     ln -s /usr/share/spotube/spotube ${symlink}
 
-    # Clean up
-    rm -rf ${temp}
+    rm -rf ${temp}  # Remove temp dir
     echo "Spotube ${ver} has been installed successfully!"
 }
 
 function uninstall_spotube(){
-    echo -n "Are you sure you want to uninstall Spotube? [y/N]"
+    echo -n "Are you sure you want to uninstall Spotube? [y/N] "
     read confirm
 
     case "${confirm}" in
