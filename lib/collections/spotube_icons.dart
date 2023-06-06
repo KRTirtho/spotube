@@ -80,4 +80,6 @@ abstract class SpotubeIcons {
   static const language = FeatherIcons.globe;
   static const error = FeatherIcons.alertTriangle;
   static const piped = FeatherIcons.cloud;
+  static const magic = Icons.auto_fix_high_outlined;
+  static const selectionCheck = Icons.checklist_rounded;
 }

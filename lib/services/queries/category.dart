@@ -1,9 +1,11 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
+import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 
 class CategoryQueries {
@@ -68,5 +70,26 @@ class CategoryQueries {
       },
       ref: ref,
     );
+  }
+
+  Query<List<String>, dynamic> genreSeeds(WidgetRef ref) {
+    final customSpotify = ref.watch(customSpotifyEndpointProvider);
+    final query = useQuery<List<String>, dynamic>(
+      "genre-seeds",
+      customSpotify.listGenreSeeds,
+    );
+
+    useEffect(() {
+      return ref.listenManual(
+        customSpotifyEndpointProvider,
+        (previous, next) {
+          if (previous != next) {
+            query.refresh();
+          }
+        },
+      ).close;
+    }, [query]);
+
+    return query;
   }
 }

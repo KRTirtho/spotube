@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
@@ -11,8 +12,6 @@ import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart'
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
@@ -22,11 +21,7 @@ class UserPlaylists extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final searchText = useState('');
-    final breakpoint = useBreakpoints();
-    final spacing = useBreakpointValue<double>(
-      sm: 0,
-      others: 20,
-    );
+
     final auth = ref.watch(AuthenticationNotifier.provider);
 
     final playlistsQuery = useQueries.playlist.ofMine(ref);
@@ -103,10 +98,18 @@ class UserPlaylists extends HookConsumerWidget {
                   alignment: WrapAlignment.center,
                   children: [
                     Row(
-                      children: const [
-                        SizedBox(width: 10),
-                        PlaylistCreateDialog(),
-                        SizedBox(width: 10),
+                      children: [
+                        const SizedBox(width: 10),
+                        const PlaylistCreateDialog(),
+                        const SizedBox(width: 10),
+                        ElevatedButton.icon(
+                          icon: const Icon(SpotubeIcons.magic),
+                          label: Text(context.l10n.generate_playlist),
+                          onPressed: () {
+                            GoRouter.of(context).push("/library/generate");
+                          },
+                        ),
+                        const SizedBox(width: 10),
                       ],
                     ),
                     ...playlists.map((playlist) => PlaylistCard(playlist))

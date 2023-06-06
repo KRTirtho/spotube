@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
@@ -20,6 +21,8 @@ import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
+
+import '../pages/library/playlist_generate/playlist_generate_result.dart';
 
 final rootNavigatorKey = Catcher.navigatorKey;
 final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
@@ -41,11 +44,27 @@ final router = GoRouter(
               const SpotubePage(child: SearchPage()),
         ),
         GoRoute(
-          path: "/library",
-          name: "Library",
-          pageBuilder: (context, state) =>
-              const SpotubePage(child: LibraryPage()),
-        ),
+            path: "/library",
+            name: "Library",
+            pageBuilder: (context, state) =>
+                const SpotubePage(child: LibraryPage()),
+            routes: [
+              GoRoute(
+                  path: "generate",
+                  pageBuilder: (context, state) =>
+                      const SpotubePage(child: PlaylistGeneratorPage()),
+                  routes: [
+                    GoRoute(
+                      path: "result",
+                      pageBuilder: (context, state) => SpotubePage(
+                        child: PlaylistGenerateResultPage(
+                          state:
+                              state.extra as PlaylistGenerateResultRouteState,
+                        ),
+                      ),
+                    ),
+                  ]),
+            ]),
         GoRoute(
           path: "/lyrics",
           name: "Lyrics",

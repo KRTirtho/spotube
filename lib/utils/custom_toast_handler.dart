@@ -30,7 +30,7 @@ class CustomToastHandler extends ReportHandler {
         ),
       ),
       dismissable: true,
-      toastDuration: const Duration(seconds: 10),
+      toastDuration: const Duration(seconds: 5),
       borderRadius: 10,
     ).show(context);
     return true;

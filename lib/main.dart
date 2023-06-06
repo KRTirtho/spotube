@@ -119,7 +119,6 @@ Future<void> main(List<String> rawArgs) async {
           enableApplicationParameters: false,
         ),
         FileHandler(await getLogsPath(), printLogs: false),
-        CustomToastHandler(),
       ],
     ),
     releaseConfig: CatcherOptions(
