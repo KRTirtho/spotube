@@ -181,8 +181,8 @@ class SettingsPage extends HookConsumerWidget {
                           options: spotifyMarkets
                               .map(
                                 (country) => DropdownMenuItem(
-                                  value: country.first,
-                                  child: Text(country.last),
+                                  value: country.$1,
+                                  child: Text(country.$2),
                                 ),
                               )
                               .toList(),
