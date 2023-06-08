@@ -12,9 +12,7 @@ import 'package:spotube/services/queries/queries.dart';
 
 typedef PlaylistGenerateResultRouteState = ({
   ({List<String> tracks, List<String> artists, List<String> genres})? seeds,
-  RecommendationParameters? min,
-  RecommendationParameters? max,
-  RecommendationParameters? target,
+  RecommendationParameters? parameters,
   int limit,
   String? market,
 });
@@ -30,15 +28,13 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
-    final (:seeds, :min, :max, :target, :limit, :market) = state;
+    final (:seeds, :parameters, :limit, :market) = state;
 
     final queryClient = useQueryClient();
     final generatedPlaylist = useQueries.playlist.generate(
       ref,
       seeds: seeds,
-      min: min,
-      max: max,
-      target: target,
+      parameters: parameters,
       limit: limit,
       market: market,
     );

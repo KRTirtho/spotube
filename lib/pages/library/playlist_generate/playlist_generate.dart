@@ -7,6 +7,8 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/playlist_generate/multi_select_field.dart';
+import 'package:spotube/components/library/playlist_generate/recommendation_attribute_dials.dart';
+import 'package:spotube/components/library/playlist_generate/recommendation_attribute_fields.dart';
 import 'package:spotube/components/library/playlist_generate/seeds_multi_autocomplete.dart';
 import 'package:spotube/components/library/playlist_generate/simple_track_tile.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -18,6 +20,8 @@ import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+
+const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 
 class PlaylistGeneratorPage extends HookConsumerWidget {
   const PlaylistGeneratorPage({Key? key}) : super(key: key);
@@ -45,13 +49,34 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     final leftSeedCount =
         5 - genres.value.length - artists.value.length - tracks.value.length;
 
+    // Dial (int 0-1) attributes
+    final acousticness = useState<RecommendationAttribute>(zeroValues);
+    final danceability = useState<RecommendationAttribute>(zeroValues);
+    final energy = useState<RecommendationAttribute>(zeroValues);
+    final instrumentalness = useState<RecommendationAttribute>(zeroValues);
+    final key = useState<RecommendationAttribute>(zeroValues);
+    final liveness = useState<RecommendationAttribute>(zeroValues);
+    final loudness = useState<RecommendationAttribute>(zeroValues);
+    final popularity = useState<RecommendationAttribute>(zeroValues);
+    final speechiness = useState<RecommendationAttribute>(zeroValues);
+    final valence = useState<RecommendationAttribute>(zeroValues);
+
+    // Field editable attributes
+    final tempo = useState<RecommendationAttribute>(zeroValues);
+    final durationMs = useState<RecommendationAttribute>(zeroValues);
+    final mode = useState<RecommendationAttribute>(zeroValues);
+    final timeSignature = useState<RecommendationAttribute>(zeroValues);
+
     final artistAutoComplete = SeedsMultiAutocomplete<Artist>(
       seeds: artists,
       enabled: enabled,
       inputDecoration: InputDecoration(
-        labelText: "Artists",
+        labelText: context.l10n.artists,
         labelStyle: textTheme.titleMedium,
-        helperText: "Select up to $leftSeedCount artists",
+        helperText: context.l10n.select_up_to_count_type(
+          leftSeedCount,
+          context.l10n.artists,
+        ),
       ),
       fetchSeeds: (textEditingValue) => spotify.search
           .get(
@@ -125,9 +150,12 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       enabled: enabled,
       selectedItemDisplayType: SelectedItemDisplayType.list,
       inputDecoration: InputDecoration(
-        labelText: "Tracks",
+        labelText: context.l10n.tracks,
         labelStyle: textTheme.titleMedium,
-        helperText: "Select up to $leftSeedCount tracks",
+        helperText: context.l10n.select_up_to_count_type(
+          leftSeedCount,
+          context.l10n.tracks,
+        ),
       ),
       fetchSeeds: (textEditingValue) => spotify.search
           .get(
@@ -181,9 +209,12 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       onSelected: (value) {
         genres.value = value;
       },
-      dialogTitle: const Text("Select genres"),
-      label: const Text("Add genres"),
-      helperText: "Select up to $leftSeedCount genres",
+      dialogTitle: Text(context.l10n.select_genres),
+      label: Text(context.l10n.add_genres),
+      helperText: context.l10n.select_up_to_count_type(
+        leftSeedCount,
+        context.l10n.genre,
+      ),
       enabled: enabled,
     );
     final countrySelector = ValueListenableBuilder(
@@ -191,7 +222,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       builder: (context, value, _) {
         return DropdownButtonFormField<String>(
           decoration: InputDecoration(
-            labelText: "Country",
+            labelText: context.l10n.country,
             labelStyle: textTheme.titleMedium,
           ),
           isExpanded: true,
@@ -229,7 +260,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Number of tracks to generate",
+                        context.l10n.number_of_tracks_generate,
                         style: textTheme.titleMedium,
                       ),
                       Row(
@@ -305,10 +336,124 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                 const SizedBox(height: 16),
                 tracksAutocomplete,
               ],
+              const SizedBox(height: 16),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.acousticness),
+                values: acousticness.value,
+                onChanged: (value) {
+                  acousticness.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.danceability),
+                values: danceability.value,
+                onChanged: (value) {
+                  danceability.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.energy),
+                values: energy.value,
+                onChanged: (value) {
+                  energy.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.instrumentalness),
+                values: instrumentalness.value,
+                onChanged: (value) {
+                  instrumentalness.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.liveness),
+                values: liveness.value,
+                onChanged: (value) {
+                  liveness.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.loudness),
+                values: loudness.value,
+                onChanged: (value) {
+                  loudness.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.speechiness),
+                values: speechiness.value,
+                onChanged: (value) {
+                  speechiness.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.valence),
+                values: valence.value,
+                onChanged: (value) {
+                  valence.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.popularity),
+                values: popularity.value,
+                base: 100,
+                onChanged: (value) {
+                  popularity.value = value;
+                },
+              ),
+              RecommendationAttributeDials(
+                title: Text(context.l10n.key),
+                values: key.value,
+                base: 11,
+                onChanged: (value) {
+                  key.value = value;
+                },
+              ),
+              RecommendationAttributeFields(
+                title: Text(context.l10n.duration),
+                values: (
+                  max: durationMs.value.max / 1000,
+                  target: durationMs.value.target / 1000,
+                  min: durationMs.value.min / 1000,
+                ),
+                onChanged: (value) {
+                  durationMs.value = (
+                    max: value.max * 1000,
+                    target: value.target * 1000,
+                    min: value.min * 1000,
+                  );
+                },
+                presets: {
+                  context.l10n.short: (min: 50, target: 90, max: 120),
+                  context.l10n.medium: (min: 120, target: 180, max: 200),
+                  context.l10n.long: (min: 480, target: 560, max: 640)
+                },
+              ),
+              RecommendationAttributeFields(
+                title: Text(context.l10n.tempo),
+                values: tempo.value,
+                onChanged: (value) {
+                  tempo.value = value;
+                },
+              ),
+              RecommendationAttributeFields(
+                title: Text(context.l10n.mode),
+                values: mode.value,
+                onChanged: (value) {
+                  mode.value = value;
+                },
+              ),
+              RecommendationAttributeFields(
+                title: Text(context.l10n.time_signature),
+                values: timeSignature.value,
+                onChanged: (value) {
+                  timeSignature.value = value;
+                },
+              ),
               const SizedBox(height: 20),
               FilledButton.icon(
                 icon: const Icon(SpotubeIcons.magic),
-                label: Text("Generate"),
+                label: Text(context.l10n.generate_playlist),
                 onPressed: () {
                   final PlaylistGenerateResultRouteState routeState = (
                     seeds: (
@@ -318,9 +463,22 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                     ),
                     market: market.value,
                     limit: limit.value,
-                    max: null,
-                    min: null,
-                    target: null,
+                    parameters: (
+                      acousticness: acousticness.value,
+                      danceability: danceability.value,
+                      energy: energy.value,
+                      instrumentalness: instrumentalness.value,
+                      liveness: liveness.value,
+                      loudness: loudness.value,
+                      speechiness: speechiness.value,
+                      valence: valence.value,
+                      popularity: popularity.value,
+                      key: key.value,
+                      duration_ms: durationMs.value,
+                      tempo: tempo.value,
+                      mode: mode.value,
+                      time_signature: timeSignature.value,
+                    )
                   );
                   GoRouter.of(context).push(
                     "/library/generate/result",

@@ -220,6 +220,7 @@ class _MultiSelectDialog<T> extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
+              autofocus: true,
               controller: searchController,
               decoration: InputDecoration(
                 hintText: context.l10n.search,
