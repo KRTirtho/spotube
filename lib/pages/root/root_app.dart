@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,7 +11,6 @@ import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/authentication_provider.dart';
 
 const rootPaths = {
   0: "/",
@@ -29,19 +30,38 @@ class RootApp extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final index = useState(0);
     final isMounted = useIsMounted();
-    final auth = ref.watch(AuthenticationNotifier.provider);
-
+    final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider.notifier);
+
     useEffect(() {
       downloader.onFileExists = (track) async {
         if (!isMounted()) return false;
-        return await showDialog<bool>(
-              context: context,
-              builder: (context) => ReplaceDownloadedDialog(
-                track: track,
-              ),
-            ) ??
-            false;
+
+        if (!showingDialogCompleter.value.isCompleted) {
+          await showingDialogCompleter.value.future;
+        }
+
+        final replaceAll = ref.read(replaceDownloadedFileState);
+
+        if (replaceAll != null) return replaceAll;
+
+        showingDialogCompleter.value = Completer();
+
+        if (context.mounted) {
+          final result = await showDialog<bool>(
+                context: context,
+                builder: (context) => ReplaceDownloadedDialog(
+                  track: track,
+                ),
+              ) ??
+              false;
+
+          showingDialogCompleter.value.complete();
+          return result;
+        }
+
+        // it'll never reach here as root_app is always mounted
+        return false;
       };
       return null;
     }, [downloader]);

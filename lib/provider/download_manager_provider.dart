@@ -49,6 +49,12 @@ class DownloadManagerProvider extends StateNotifier<List<SpotubeTrack>> {
         if (update.status == TaskStatus.complete) {
           final track =
               state.firstWhere((element) => element.id == update.task.taskId);
+
+          // resetting the replace downloaded file state on queue completion
+          if (state.last == track) {
+            ref.read(replaceDownloadedFileState.notifier).state = null;
+          }
+
           state = state
               .where((element) => element.id != update.task.taskId)
               .toList();
@@ -141,6 +147,9 @@ class DownloadManagerProvider extends StateNotifier<List<SpotubeTrack>> {
     final file = File(_getPathForTrack(track));
     if (file.existsSync() &&
         (replaceFileGlobal ?? await onFileExists?.call(track)) != true) {
+      if (state.isEmpty) {
+        ref.read(replaceDownloadedFileState.notifier).state = null;
+      }
       return null;
     }
 
@@ -159,6 +168,11 @@ class DownloadManagerProvider extends StateNotifier<List<SpotubeTrack>> {
       }
       return enqueue(e);
     }));
+
+    if (tasks.isEmpty) {
+      ref.read(replaceDownloadedFileState.notifier).state = null;
+    }
+
     return tasks.whereType<Task>().toList();
   }
 
