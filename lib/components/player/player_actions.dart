@@ -11,8 +11,8 @@ import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -32,9 +32,10 @@ class PlayerActions extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final isLocalTrack = playlist.activeTrack is LocalTrack;
-    final downloader = ref.watch(downloaderProvider);
-    final isInQueue = downloader.inQueue
-        .any((element) => element.id == playlist.activeTrack?.id);
+    ref.watch(downloadManagerProvider);
+    final downloader = ref.watch(downloadManagerProvider.notifier);
+    final isInQueue = downloader.activeItem != null &&
+        downloader.activeItem!.id == playlist.activeTrack?.id;
     final localTracks = [] /* ref.watch(localTracksProvider).value */;
     final auth = ref.watch(AuthenticationNotifier.provider);
 
@@ -121,7 +122,7 @@ class PlayerActions extends HookConsumerWidget {
                 isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
               ),
               onPressed: playlist.activeTrack != null
-                  ? () => downloader.addToQueue(playlist.activeTrack!)
+                  ? () => downloader.enqueue(playlist.activeTrack!)
                   : null,
             ),
         if (playlist.activeTrack != null && !isLocalTrack && auth != null)

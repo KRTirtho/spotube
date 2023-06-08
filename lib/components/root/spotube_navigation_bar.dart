@@ -10,7 +10,7 @@ import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
-import 'package:spotube/provider/downloader_provider.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 
 class SpotubeNavigationBar extends HookConsumerWidget {
@@ -27,7 +27,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final downloadCount = ref.watch(
-      downloaderProvider.select((s) => s.currentlyRunning),
+      downloadManagerProvider.select((s) => s.length),
     );
     final breakpoint = useBreakpoints();
     final layoutMode =

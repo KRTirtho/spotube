@@ -8,8 +8,8 @@ import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/downloader_provider.dart';
 
 const rootPaths = {
   0: "/",
@@ -31,7 +31,7 @@ class RootApp extends HookConsumerWidget {
     final isMounted = useIsMounted();
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final downloader = ref.watch(downloaderProvider);
+    final downloader = ref.watch(downloadManagerProvider.notifier);
     useEffect(() {
       downloader.onFileExists = (track) async {
         if (!isMounted()) return false;

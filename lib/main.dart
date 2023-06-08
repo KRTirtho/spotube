@@ -17,13 +17,11 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/env.dart';
-import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -143,37 +141,6 @@ Future<void> main(List<String> rawArgs) async {
           enabled: !kReleaseMode,
           builder: (context) {
             return ProviderScope(
-              overrides: [
-                downloaderProvider.overrideWith(
-                  (ref) {
-                    return Downloader(
-                      ref,
-                      queueInstance,
-                      downloadPath: ref.watch(
-                        userPreferencesProvider.select(
-                          (s) => s.downloadLocation,
-                        ),
-                      ),
-                      onFileExists: (track) {
-                        final logger = getLogger(Downloader);
-                        try {
-                          logger.v(
-                            "[onFileExists] download confirmation for ${track.name}",
-                          );
-                          return showDialog<bool>(
-                            context: context,
-                            builder: (_) =>
-                                ReplaceDownloadedDialog(track: track),
-                          ).then((s) => s ?? false);
-                        } catch (e, stack) {
-                          Catcher.reportCheckedError(e, stack);
-                          return false;
-                        }
-                      },
-                    );
-                  },
-                )
-              ],
               child: QueryClientProvider(
                 staleDuration: const Duration(minutes: 30),
                 child: const Spotube(),

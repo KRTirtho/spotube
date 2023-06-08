@@ -12,8 +12,8 @@ import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -43,7 +43,8 @@ class TracksTableView extends HookConsumerWidget {
   Widget build(context, ref) {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-    final downloader = ref.watch(downloaderProvider);
+    ref.watch(downloadManagerProvider);
+    final downloader = ref.watch(downloadManagerProvider.notifier);
     TextStyle tableHeadStyle =
         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
@@ -208,11 +209,11 @@ class TracksTableView extends HookConsumerWidget {
                             },
                           );
                           if (confirmed != true) return;
-                          for (final selectedTrack in selectedTracks) {
-                            downloader.addToQueue(selectedTrack);
+                          await downloader.enqueueAll(selectedTracks.toList());
+                          if (context.mounted) {
+                            selected.value = [];
+                            showCheck.value = false;
                           }
-                          selected.value = [];
-                          showCheck.value = false;
                           break;
                         }
                       case "add-to-playlist":

@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:motion_toast/motion_toast.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
@@ -14,8 +13,8 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/hooks/use_sidebarx_controller.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/downloader_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -53,7 +52,7 @@ class Sidebar extends HookConsumerWidget {
     final breakpoints = useBreakpoints();
 
     final downloadCount = ref.watch(
-      downloaderProvider.select((s) => s.currentlyRunning),
+      downloadManagerProvider.select((s) => s.length),
     );
 
     final layoutMode =

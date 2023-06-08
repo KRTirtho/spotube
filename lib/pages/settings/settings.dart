@@ -6,7 +6,6 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/language_codes.dart';
 
@@ -20,8 +19,8 @@ import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/l10n/l10n.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/downloader_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/piped_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -34,7 +33,7 @@ class SettingsPage extends HookConsumerWidget {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
     final auth = ref.watch(AuthenticationNotifier.provider);
     final isDownloading =
-        ref.watch(downloaderProvider.select((s) => s.currentlyRunning > 0));
+        ref.watch(downloadManagerProvider.select((s) => s.isNotEmpty));
     final theme = Theme.of(context);
 
     final pickColorScheme = useCallback(() {
