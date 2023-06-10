@@ -71,90 +71,103 @@ class BottomPlayer extends HookConsumerWidget {
             type: MaterialType.transparency,
             textStyle: theme.textTheme.bodyMedium!,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(child: PlayerTrackDetails(albumArt: albumArt)),
                 // controls
                 Flexible(
                   flex: 3,
-                  child: PlayerControls(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: PlayerControls(),
+                  ),
                 ),
                 // add to saved tracks
-                Expanded(
-                  flex: 1,
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    runAlignment: WrapAlignment.center,
-                    children: [
-                      Container(
-                        height: 20,
-                        constraints: const BoxConstraints(maxWidth: 200),
-                        child: HookBuilder(builder: (context) {
-                          final volumeState =
-                              useStream(audioPlayer.volumeStream).data ??
-                                  audioPlayer.volume;
-                          final volume = useState(volumeState);
-
-                          useEffect(() {
-                            if (volume.value != volumeState) {
-                              volume.value = volumeState;
+                Column(
+                  children: [
+                    PlayerActions(
+                      extraActions: [
+                        IconButton(
+                          tooltip: context.l10n.mini_player,
+                          icon: const Icon(SpotubeIcons.miniPlayer),
+                          onPressed: () async {
+                            await DesktopTools.window.setMinimumSize(
+                              const Size(300, 300),
+                            );
+                            await DesktopTools.window.setAlwaysOnTop(true);
+                            if (!kIsLinux) {
+                              await DesktopTools.window.setHasShadow(false);
                             }
-                            return null;
-                          }, [volumeState]);
-
-                          return Listener(
-                            onPointerSignal: (event) async {
-                              if (event is PointerScrollEvent) {
-                                if (event.scrollDelta.dy > 0) {
-                                  final value = volume.value - .2;
-                                  audioPlayer.setVolume(value < 0 ? 0 : value);
-                                } else {
-                                  final value = volume.value + .2;
-                                  audioPlayer.setVolume(value > 1 ? 1 : value);
-                                }
-                              }
-                            },
-                            child: Slider(
-                              min: 0,
-                              max: 1,
-                              value: volume.value,
-                              onChanged: (v) {
-                                volume.value = v;
+                            await DesktopTools.window
+                                .setAlignment(Alignment.topRight);
+                            await DesktopTools.window
+                                .setSize(const Size(400, 500));
+                            await Future.delayed(
+                              const Duration(milliseconds: 100),
+                              () async {
+                                GoRouter.of(context).go('/mini-player');
                               },
-                              onChangeEnd: audioPlayer.setVolume,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: 40,
+                      constraints: const BoxConstraints(maxWidth: 250),
+                      child: HookBuilder(builder: (context) {
+                        final volume =
+                            useStream(audioPlayer.volumeStream).data ??
+                                audioPlayer.volume;
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                volume == 0
+                                    ? SpotubeIcons.volumeMute
+                                    : volume <= 0.2
+                                        ? SpotubeIcons.volumeLow
+                                        : volume <= 0.6
+                                            ? SpotubeIcons.volumeMedium
+                                            : SpotubeIcons.volumeHigh,
+                                size: 16,
+                              ),
+                              onPressed: () {
+                                if (volume == 0) {
+                                  audioPlayer.setVolume(1);
+                                } else {
+                                  audioPlayer.setVolume(0);
+                                }
+                              },
                             ),
-                          );
-                        }),
-                      ),
-                      PlayerActions(
-                        extraActions: [
-                          IconButton(
-                            tooltip: context.l10n.mini_player,
-                            icon: const Icon(SpotubeIcons.miniPlayer),
-                            onPressed: () async {
-                              await DesktopTools.window.setMinimumSize(
-                                const Size(300, 300),
-                              );
-                              await DesktopTools.window.setAlwaysOnTop(true);
-                              if (!kIsLinux) {
-                                await DesktopTools.window.setHasShadow(false);
-                              }
-                              await DesktopTools.window
-                                  .setAlignment(Alignment.topRight);
-                              await DesktopTools.window
-                                  .setSize(const Size(400, 500));
-                              await Future.delayed(
-                                const Duration(milliseconds: 100),
-                                () async {
-                                  GoRouter.of(context).go('/mini-player');
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+                            Listener(
+                              onPointerSignal: (event) async {
+                                if (event is PointerScrollEvent) {
+                                  if (event.scrollDelta.dy > 0) {
+                                    final value = volume - .2;
+                                    audioPlayer
+                                        .setVolume(value < 0 ? 0 : value);
+                                  } else {
+                                    final value = volume + .2;
+                                    audioPlayer
+                                        .setVolume(value > 1 ? 1 : value);
+                                  }
+                                }
+                              },
+                              child: Slider(
+                                min: 0,
+                                max: 1,
+                                value: volume,
+                                onChanged: audioPlayer.setVolume,
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    )
+                  ],
                 )
               ],
             ),

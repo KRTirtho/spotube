@@ -82,4 +82,8 @@ abstract class SpotubeIcons {
   static const piped = FeatherIcons.cloud;
   static const magic = Icons.auto_fix_high_outlined;
   static const selectionCheck = Icons.checklist_rounded;
+  static const volumeHigh = FeatherIcons.volume2;
+  static const volumeMedium = FeatherIcons.volume1;
+  static const volumeLow = FeatherIcons.volume;
+  static const volumeMute = FeatherIcons.volumeX;
 }

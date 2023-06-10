@@ -26,8 +26,8 @@ class PlayerTrackDetails extends HookConsumerWidget {
           Container(
             padding: const EdgeInsets.all(6),
             constraints: const BoxConstraints(
-              maxWidth: 70,
-              maxHeight: 70,
+              maxWidth: 80,
+              maxHeight: 80,
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),

@@ -48,5 +48,6 @@ ThemeData theme(Color seed, Brightness brightness) {
       backgroundColor: scheme.onSurface,
       contentTextStyle: TextStyle(color: scheme.surface),
     ),
+    sliderTheme: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
   );
 }
