@@ -65,7 +65,8 @@ class UserDownloads extends HookConsumerWidget {
                         .where((element) => element.taskId == track.id),
                   );
                   final taskItSelf = useFuture(
-                    FileDownloader().database.recordForId(track.id!),
+                    Future.value(null),
+                    // FileDownloader().database.recordForId(track.id!),
                   );
 
                   final hasFailed = failedTaskStream.hasData ||

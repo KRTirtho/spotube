@@ -153,14 +153,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  background_downloader:
-    dependency: "direct main"
-    description:
-      name: background_downloader
-      sha256: "58318c7141ac30c559004a58ab2fdbdb5433e37227a926196b88525085af3d8e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.3.1"
   badges:
     dependency: "direct main"
     description:
