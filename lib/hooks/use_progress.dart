@@ -20,19 +20,28 @@ import 'package:spotube/services/audio_player/audio_player.dart';
   final duration = useStream(audioPlayer.durationStream).data ??
       durationFuture.data ??
       Duration.zero;
-  final positionFuture = useFuture(audioPlayer.position);
-  final positionSnapshot = useStream(audioPlayer.positionStream);
 
-  final position =
-      positionSnapshot.data ?? positionFuture.data ?? Duration.zero;
+  final positionFuture = useFuture(audioPlayer.position);
+  final position = useState<Duration>(positionFuture.data ?? Duration.zero);
 
   final sliderMax = duration.inSeconds;
-  final sliderValue = position.inSeconds;
+  final sliderValue = position.value.inSeconds;
+
+  useEffect(() {
+    // audioPlayer.positionStream is fired every 200ms and only 1s delay is
+    // enough. Thus only update the position if the difference is more than 1s
+    var lastPosition = position.value;
+    return audioPlayer.positionStream.listen((event) {
+      if (event.inMilliseconds - lastPosition.inMilliseconds < 1000) return;
+      lastPosition = event;
+      position.value = event;
+    }).cancel;
+  }, []);
 
   return (
     progressStatic:
         sliderMax == 0 || sliderValue > sliderMax ? 0 : sliderValue / sliderMax,
-    position: position,
+    position: position.value,
     duration: duration,
     bufferProgress: sliderMax == 0 || bufferProgress > sliderMax
         ? 0
