@@ -195,6 +195,15 @@ class SpotubeState extends ConsumerState<Spotube> {
       };
     }, []);
 
+    final lightTheme = useMemoized(
+      () => theme(paletteColor ?? accentMaterialColor, Brightness.light),
+      [paletteColor, accentMaterialColor],
+    );
+    final darkTheme = useMemoized(
+      () => theme(paletteColor ?? accentMaterialColor, Brightness.dark),
+      [paletteColor, accentMaterialColor],
+    );
+
     return MaterialApp.router(
       supportedLocales: L10n.all,
       locale: locale.languageCode == "system" ? null : locale,
@@ -216,8 +225,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         );
       },
       themeMode: themeMode,
-      theme: theme(paletteColor ?? accentMaterialColor, Brightness.light),
-      darkTheme: theme(paletteColor ?? accentMaterialColor, Brightness.dark),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       shortcuts: {
         ...WidgetsApp.defaultShortcuts.map((key, value) {
           return MapEntry(
