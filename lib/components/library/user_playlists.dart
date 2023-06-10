@@ -77,12 +77,10 @@ class UserPlaylists extends HookConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(10),
-                child: TextField(
+                child: SearchBar(
                   onChanged: (value) => searchText.value = value,
-                  decoration: InputDecoration(
-                    hintText: context.l10n.filter_playlists,
-                    prefixIcon: const Icon(SpotubeIcons.filter),
-                  ),
+                  hintText: context.l10n.filter_playlists,
+                  leading: const Icon(SpotubeIcons.filter),
                 ),
               ),
               AnimatedCrossFade(

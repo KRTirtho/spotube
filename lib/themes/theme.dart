@@ -49,5 +49,21 @@ ThemeData theme(Color seed, Brightness brightness) {
       contentTextStyle: TextStyle(color: scheme.surface),
     ),
     sliderTheme: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
+    searchBarTheme: SearchBarThemeData(
+      constraints: const BoxConstraints(maxWidth: double.infinity),
+      backgroundColor: MaterialStatePropertyAll(
+        Color.lerp(
+          scheme.surfaceVariant,
+          scheme.surface,
+          brightness == Brightness.light ? .9 : .7,
+        ),
+      ),
+      elevation: const MaterialStatePropertyAll(0),
+      shape: MaterialStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    ),
   );
 }

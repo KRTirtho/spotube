@@ -62,12 +62,10 @@ class UserAlbums extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
+                SearchBar(
                   onChanged: (value) => searchText.value = value,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(SpotubeIcons.filter),
-                    hintText: context.l10n.filter_albums,
-                  ),
+                  leading: const Icon(SpotubeIcons.filter),
+                  hintText: context.l10n.filter_albums,
                 ),
                 const SizedBox(height: 20),
                 AnimatedCrossFade(

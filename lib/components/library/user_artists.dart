@@ -53,12 +53,10 @@ class UserArtists extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ColoredBox(
             color: theme.scaffoldBackgroundColor,
-            child: TextField(
+            child: SearchBar(
               onChanged: (value) => searchText.value = value,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(SpotubeIcons.filter),
-                hintText: context.l10n.filter_artist,
-              ),
+              leading: const Icon(SpotubeIcons.filter),
+              hintText: context.l10n.filter_artist,
             ),
           ),
         ),
