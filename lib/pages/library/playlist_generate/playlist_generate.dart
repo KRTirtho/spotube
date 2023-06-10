@@ -454,37 +454,41 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
               FilledButton.icon(
                 icon: const Icon(SpotubeIcons.magic),
                 label: Text(context.l10n.generate_playlist),
-                onPressed: () {
-                  final PlaylistGenerateResultRouteState routeState = (
-                    seeds: (
-                      artists: artists.value.map((a) => a.id!).toList(),
-                      tracks: tracks.value.map((t) => t.id!).toList(),
-                      genres: genres.value
-                    ),
-                    market: market.value,
-                    limit: limit.value,
-                    parameters: (
-                      acousticness: acousticness.value,
-                      danceability: danceability.value,
-                      energy: energy.value,
-                      instrumentalness: instrumentalness.value,
-                      liveness: liveness.value,
-                      loudness: loudness.value,
-                      speechiness: speechiness.value,
-                      valence: valence.value,
-                      popularity: popularity.value,
-                      key: key.value,
-                      duration_ms: durationMs.value,
-                      tempo: tempo.value,
-                      mode: mode.value,
-                      time_signature: timeSignature.value,
-                    )
-                  );
-                  GoRouter.of(context).push(
-                    "/library/generate/result",
-                    extra: routeState,
-                  );
-                },
+                onPressed: artists.value.isEmpty &&
+                        tracks.value.isEmpty &&
+                        genres.value.isEmpty
+                    ? null
+                    : () {
+                        final PlaylistGenerateResultRouteState routeState = (
+                          seeds: (
+                            artists: artists.value.map((a) => a.id!).toList(),
+                            tracks: tracks.value.map((t) => t.id!).toList(),
+                            genres: genres.value
+                          ),
+                          market: market.value,
+                          limit: limit.value,
+                          parameters: (
+                            acousticness: acousticness.value,
+                            danceability: danceability.value,
+                            energy: energy.value,
+                            instrumentalness: instrumentalness.value,
+                            liveness: liveness.value,
+                            loudness: loudness.value,
+                            speechiness: speechiness.value,
+                            valence: valence.value,
+                            popularity: popularity.value,
+                            key: key.value,
+                            duration_ms: durationMs.value,
+                            tempo: tempo.value,
+                            mode: mode.value,
+                            time_signature: timeSignature.value,
+                          )
+                        );
+                        GoRouter.of(context).push(
+                          "/library/generate/result",
+                          extra: routeState,
+                        );
+                      },
               ),
             ],
           );

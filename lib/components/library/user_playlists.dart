@@ -98,7 +98,7 @@ class UserPlaylists extends HookConsumerWidget {
                     Row(
                       children: [
                         const SizedBox(width: 10),
-                        const PlaylistCreateDialog(),
+                        const PlaylistCreateDialogButton(),
                         const SizedBox(width: 10),
                         ElevatedButton.icon(
                           icon: const Icon(SpotubeIcons.magic),

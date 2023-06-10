@@ -1,9 +1,12 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/playlist_generate/simple_track_tile.dart';
+import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -27,6 +30,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final router = GoRouter.of(context);
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final (:seeds, :parameters, :limit, :market) = state;
 
@@ -62,13 +66,13 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
       child: Scaffold(
         appBar: const PageWindowTitleBar(leading: BackButton()),
         body: generatedPlaylist.isLoading
-            ? const Center(
+            ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    Text("Generating your custom playlist..."),
+                    const CircularProgressIndicator(),
+                    Text(context.l10n.generating_playlist),
                   ],
                 ),
               )
@@ -128,8 +132,23 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                         FilledButton.tonalIcon(
                           icon: const Icon(SpotubeIcons.addFilled),
                           label: Text(context.l10n.create_a_playlist),
-                          onPressed:
-                              selectedTracks.value.isEmpty ? null : () {},
+                          onPressed: selectedTracks.value.isEmpty
+                              ? null
+                              : () async {
+                                  final playlist = await showDialog<Playlist>(
+                                    context: context,
+                                    builder: (context) => PlaylistCreateDialog(
+                                      trackIds: selectedTracks.value,
+                                    ),
+                                  );
+
+                                  if (playlist != null) {
+                                    router.go(
+                                      '/playlist/${playlist.id}',
+                                      extra: playlist,
+                                    );
+                                  }
+                                },
                         ),
                         FilledButton.tonalIcon(
                           icon: const Icon(SpotubeIcons.playlistAdd),
@@ -141,24 +160,33 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     if (generatedPlaylist.data != null)
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            if (isAllTrackSelected) {
-                              selectedTracks.value = [];
-                            } else {
-                              selectedTracks.value = generatedPlaylist.data
-                                      ?.map((e) => e.id!)
-                                      .toList() ??
-                                  [];
-                            }
-                          },
-                          icon: const Icon(SpotubeIcons.selectionCheck),
-                          label: Text(
-                            isAllTrackSelected ? "Deselect all" : "Select all",
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            context.l10n.selected_count_tracks(
+                              selectedTracks.value.length,
+                            ),
                           ),
-                        ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              if (isAllTrackSelected) {
+                                selectedTracks.value = [];
+                              } else {
+                                selectedTracks.value = generatedPlaylist.data
+                                        ?.map((e) => e.id!)
+                                        .toList() ??
+                                    [];
+                              }
+                            },
+                            icon: const Icon(SpotubeIcons.selectionCheck),
+                            label: Text(
+                              isAllTrackSelected
+                                  ? context.l10n.deselect_all
+                                  : context.l10n.select_all,
+                            ),
+                          ),
+                        ],
                       ),
                     const SizedBox(height: 8),
                     Card(

@@ -217,5 +217,9 @@
   "min": "Min",
   "max": "Max",
   "target": "Target",
-  "moderate": "Moderate"
+  "moderate": "Moderate",
+  "deselect_all": "Deselect All",
+  "select_all": "Select All",
+  "generating_playlist": "Generating your custom playlist...",
+  "selected_count_tracks": "Selected {count} tracks"
 }
