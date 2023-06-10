@@ -1,4 +1,6 @@
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:spotube/extensions/constrains.dart';
 
 T useBreakpointValue<T>({
   T? sm,
@@ -14,28 +16,29 @@ T useBreakpointValue<T>({
     (isSomeNull && others != null) || (!isSomeNull && others == null),
     'You must provide a value for all breakpoints or a default value for others',
   );
-  final breakpoint = useBreakpoints();
+  final context = useContext();
+  final mediaQuery = MediaQuery.of(context);
 
   if (isSomeNull) {
-    if (breakpoint.isSm) {
+    if (mediaQuery.isSm) {
       return sm ?? others!;
-    } else if (breakpoint.isMd) {
+    } else if (mediaQuery.isMd) {
       return md ?? others!;
-    } else if (breakpoint.isXl) {
+    } else if (mediaQuery.isXl) {
       return xl ?? others!;
-    } else if (breakpoint.isXxl) {
+    } else if (mediaQuery.is2Xl) {
       return xxl ?? others!;
     } else {
       return lg ?? others!;
     }
   } else {
-    if (breakpoint.isSm) {
+    if (mediaQuery.isSm) {
       return sm;
-    } else if (breakpoint.isMd) {
+    } else if (mediaQuery.isMd) {
       return md;
-    } else if (breakpoint.isXl) {
+    } else if (mediaQuery.isXl) {
       return xl;
-    } else if (breakpoint.isXxl) {
+    } else if (mediaQuery.is2Xl) {
       return xxl;
     } else {
       return lg;

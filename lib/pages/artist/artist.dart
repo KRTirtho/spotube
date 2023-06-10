@@ -12,9 +12,9 @@ import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/artist/artist_album_list.dart';
 import 'package:spotube/components/artist/artist_card.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -54,8 +54,6 @@ class ArtistPage extends HookConsumerWidget {
       xl: mediaQuery.size.width * 0.18,
       xxl: mediaQuery.size.width * 0.18,
     );
-
-    final breakpoint = useBreakpoints();
 
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
@@ -154,7 +152,7 @@ class ArtistPage extends HookConsumerWidget {
                               ),
                               Text(
                                 data.name!,
-                                style: breakpoint.isSm
+                                style: mediaQuery.isSm
                                     ? textTheme.headlineSmall
                                     : textTheme.headlineMedium,
                               ),
@@ -166,7 +164,7 @@ class ArtistPage extends HookConsumerWidget {
                                 ),
                                 style: textTheme.bodyMedium?.copyWith(
                                   fontWeight:
-                                      breakpoint.isSm ? null : FontWeight.bold,
+                                      mediaQuery.isSm ? null : FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(height: 20),

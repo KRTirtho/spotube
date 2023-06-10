@@ -6,7 +6,8 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
+
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 import 'package:spotube/services/queries/queries.dart';
@@ -26,11 +27,9 @@ class PlainLyrics extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final lyricsQuery = useQueries.lyrics.spotifySynced(
-      ref,
-      playlist?.activeTrack,
-    );
-    final breakpoint = useBreakpoints();
+    final lyricsQuery =
+        useQueries.lyrics.spotifySynced(ref, playlist.activeTrack);
+    final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     final textZoomLevel = useState<int>(defaultTextZoom);
@@ -44,7 +43,7 @@ class PlainLyrics extends HookConsumerWidget {
               Center(
                 child: Text(
                   playlist.activeTrack?.name ?? "",
-                  style: breakpoint >= Breakpoints.md
+                  style: mediaQuery.mdAndUp
                       ? textTheme.displaySmall
                       : textTheme.headlineMedium?.copyWith(
                           fontSize: 25,
@@ -56,7 +55,7 @@ class PlainLyrics extends HookConsumerWidget {
                 child: Text(
                   TypeConversionUtils.artists_X_String<Artist>(
                       playlist.activeTrack?.artists ?? []),
-                  style: (breakpoint >= Breakpoints.md
+                  style: (mediaQuery.mdAndUp
                           ? textTheme.headlineSmall
                           : textTheme.titleLarge)
                       ?.copyWith(color: palette.bodyTextColor),

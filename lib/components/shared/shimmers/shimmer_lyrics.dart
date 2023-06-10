@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:skeleton_text/skeleton_text.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/theme.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 
 const widths = [20, 56, 89, 60, 25, 69];
 
@@ -21,7 +21,7 @@ class ShimmerLyrics extends HookWidget {
     final shimmerBackgroundColor =
         shimmerTheme.shimmerBackgroundColor ?? Colors.grey;
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     return ListView.builder(
       itemCount: 20,
@@ -29,10 +29,10 @@ class ShimmerLyrics extends HookWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final widthsCp = [...widths];
-        if (breakpoint.isMd) {
+        if (mediaQuery.isMd) {
           widthsCp.removeLast();
         }
-        if (breakpoint.isSm) {
+        if (mediaQuery.isSm) {
           widthsCp.removeLast();
           widthsCp.removeLast();
         }

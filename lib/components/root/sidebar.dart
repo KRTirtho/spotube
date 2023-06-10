@@ -9,8 +9,8 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/hooks/use_sidebarx_controller.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
@@ -49,7 +49,7 @@ class Sidebar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final breakpoints = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final downloadCount = ref.watch(
       downloadManagerProvider.select((s) => s.length),
@@ -60,7 +60,7 @@ class Sidebar extends HookConsumerWidget {
 
     final controller = useSidebarXController(
       selectedIndex: selectedIndex,
-      extended: breakpoints > Breakpoints.md,
+      extended: mediaQuery.lgAndUp,
     );
 
     final theme = Theme.of(context);
@@ -82,16 +82,16 @@ class Sidebar extends HookConsumerWidget {
     }, [controller]);
 
     useEffect(() {
-      if (breakpoints > Breakpoints.md && !controller.extended) {
+      if (mediaQuery.lgAndUp && !controller.extended) {
         controller.setExtended(true);
-      } else if (breakpoints <= Breakpoints.md && controller.extended) {
+      } else if ((mediaQuery.isSm || mediaQuery.isMd) && controller.extended) {
         controller.setExtended(false);
       }
       return null;
-    }, [breakpoints, controller]);
+    }, [mediaQuery, controller]);
 
     if (layoutMode == LayoutMode.compact ||
-        (breakpoints.isSm && layoutMode == LayoutMode.adaptive)) {
+        (mediaQuery.isSm && layoutMode == LayoutMode.adaptive)) {
       return Scaffold(body: child);
     }
 
@@ -183,10 +183,10 @@ class SidebarHeader extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final theme = Theme.of(context);
 
-    if (breakpoint <= Breakpoints.md) {
+    if (mediaQuery.isSm || mediaQuery.isMd) {
       return Container(
         height: 40,
         width: 40,
@@ -224,7 +224,7 @@ class SidebarFooter extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final me = useQueries.user.me(ref);
     final data = me.data;
 
@@ -236,7 +236,7 @@ class SidebarFooter extends HookConsumerWidget {
 
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    if (breakpoint <= Breakpoints.md) {
+    if (mediaQuery.isSm || mediaQuery.isMd) {
       return IconButton(
         icon: const Icon(SpotubeIcons.settings),
         onPressed: () => Sidebar.goToSettings(context),

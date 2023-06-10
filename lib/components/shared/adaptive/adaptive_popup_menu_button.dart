@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:popover/popover.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 
 class Action extends StatelessWidget {
   final Widget text;
@@ -49,18 +49,18 @@ class Action extends StatelessWidget {
 
 class AdaptiveActions extends HookWidget {
   final List<Action> actions;
-  final Breakpoints breakOn;
+  final bool? breakOn;
   const AdaptiveActions({
     required this.actions,
-    this.breakOn = Breakpoints.lg,
+    this.breakOn,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
-    if (breakpoint.isLessThan(breakOn)) {
+    if (breakOn ?? mediaQuery.lgAndUp) {
       return IconButton(
         icon: const Icon(SpotubeIcons.moreHorizontal),
         onPressed: () {

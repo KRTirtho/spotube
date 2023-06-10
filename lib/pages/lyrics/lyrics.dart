@@ -9,8 +9,8 @@ import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/themed_button_tab_bar.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
@@ -36,7 +36,7 @@ class LyricsPage extends HookConsumerWidget {
       [playlist.activeTrack?.album?.images],
     );
     final palette = usePaletteColor(albumArt, ref);
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     useCustomStatusBarColor(
       palette.color,
@@ -117,7 +117,7 @@ class LyricsPage extends HookConsumerWidget {
     return DefaultTabController(
       length: 2,
       child: SafeArea(
-        bottom: breakpoint > Breakpoints.md,
+        bottom: mediaQuery.mdAndUp,
         child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: !kIsMacOS

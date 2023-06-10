@@ -6,7 +6,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -53,7 +53,7 @@ class AlbumPage extends HookConsumerWidget {
             ),
         [album.images]);
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final isAlbumPlaying = useMemoized(
       () => playlist.containsTracks(tracksSnapshot.data ?? []),
@@ -67,7 +67,7 @@ class AlbumPage extends HookConsumerWidget {
       tracksSnapshot: tracksSnapshot,
       album: album,
       routePath: "/album/${album.id}",
-      bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
+      bottomSpace: mediaQuery.isSm || mediaQuery.isMd,
       onPlay: ([track]) {
         if (tracksSnapshot.hasData) {
           if (!isAlbumPlaying) {

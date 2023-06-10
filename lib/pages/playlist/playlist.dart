@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
@@ -48,7 +48,7 @@ class PlaylistView extends HookConsumerWidget {
     final proxyPlaylist = ref.watch(ProxyPlaylistNotifier.provider);
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final meSnapshot = useQueries.user.me(ref);
     final tracksSnapshot = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
@@ -99,7 +99,7 @@ class PlaylistView extends HookConsumerWidget {
           playlistNotifier.addTracks(tracksSnapshot.data!);
         }
       },
-      bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
+      bottomSpace: mediaQuery.isSm || mediaQuery.isMd,
       showShare: playlist.id != "user-liked-tracks",
       routePath: "/playlist/${playlist.id}",
       onShare: () {

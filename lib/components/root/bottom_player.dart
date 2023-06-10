@@ -12,8 +12,8 @@ import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_overlay.dart';
 import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/components/player/player_controls.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class BottomPlayer extends HookConsumerWidget {
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     String albumArt = useMemoized(
       () => playlist.activeTrack?.album?.images?.isNotEmpty == true
@@ -57,7 +57,7 @@ class BottomPlayer extends HookConsumerWidget {
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]
     if (layoutMode == LayoutMode.compact ||
-        (breakpoint.isLessThanOrEqualTo(Breakpoints.md) &&
+        ((mediaQuery.isSm || mediaQuery.isMd) &&
             layoutMode == LayoutMode.adaptive)) {
       return PlayerOverlay(albumArt: albumArt);
     }

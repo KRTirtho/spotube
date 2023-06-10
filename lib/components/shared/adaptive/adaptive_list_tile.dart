@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 
 class AdaptiveListTile extends HookWidget {
   final Widget Function(BuildContext, StateSetter?)? trailing;
@@ -9,7 +8,7 @@ class AdaptiveListTile extends HookWidget {
   final Widget? subtitle;
   final Widget? leading;
   final void Function()? onTap;
-  final Breakpoints breakOn;
+  final bool? breakOn;
 
   const AdaptiveListTile({
     super.key,
@@ -18,20 +17,20 @@ class AdaptiveListTile extends HookWidget {
     this.title,
     this.subtitle,
     this.leading,
-    this.breakOn = Breakpoints.md,
+    this.breakOn ,
   });
 
   @override
   Widget build(BuildContext context) {
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     return ListTile(
       title: title,
       subtitle: subtitle,
       trailing:
-          breakpoint.isLessThan(breakOn) ? null : trailing?.call(context, null),
+          breakOn ?? mediaQuery.isSm ? null : trailing?.call(context, null),
       leading: leading,
-      onTap: breakpoint.isLessThan(breakOn)
+      onTap: breakOn ??  mediaQuery.isSm
           ? () {
               onTap?.call();
               showDialog(

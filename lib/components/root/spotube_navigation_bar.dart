@@ -7,8 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/components/root/sidebar.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -29,7 +29,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final downloadCount = ref.watch(
       downloadManagerProvider.select((s) => s.length),
     );
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
@@ -49,8 +49,9 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     }, [selectedIndex]);
 
     if (layoutMode == LayoutMode.extended ||
-        (breakpoint.isMoreThan(Breakpoints.sm) &&
-            layoutMode == LayoutMode.adaptive)) return const SizedBox();
+        (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive)) {
+      return const SizedBox();
+    }
 
     return ClipRect(
       child: BackdropFilter(

@@ -12,7 +12,7 @@ import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
@@ -36,16 +36,16 @@ class PlayerView extends HookConsumerWidget {
     final isLocalTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
       (value) => value.activeTrack is LocalTrack,
     ));
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     useEffect(() {
-      if (breakpoint.isMoreThan(Breakpoints.md)) {
+      if (mediaQuery.lgAndUp) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           GoRouter.of(context).pop();
         });
       }
       return null;
-    }, [breakpoint]);
+    }, [mediaQuery.lgAndUp]);
 
     String albumArt = useMemoized(
       () => TypeConversionUtils.image_X_UrlString(

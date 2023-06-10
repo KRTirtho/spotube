@@ -10,8 +10,9 @@ import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -48,7 +49,7 @@ class TracksTableView extends HookConsumerWidget {
     TextStyle tableHeadStyle =
         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final selected = useState<List<String>>([]);
     final showCheck = useState<bool>(false);
@@ -106,7 +107,7 @@ class TracksTableView extends HookConsumerWidget {
                   ),
                 ),
                 // used alignment of this table-head
-                if (breakpoint.isMoreThan(Breakpoints.md)) ...[
+                if (mediaQuery.lgAndUp) ...[
                   const SizedBox(width: 100),
                   Expanded(
                     child: Row(
@@ -120,7 +121,7 @@ class TracksTableView extends HookConsumerWidget {
                     ),
                   )
                 ],
-                if (!breakpoint.isSm) ...[
+                if (!mediaQuery.isSm) ...[
                   const SizedBox(width: 10),
                   Text(context.l10n.time, style: tableHeadStyle),
                   const SizedBox(width: 10),

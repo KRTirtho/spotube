@@ -4,7 +4,7 @@ import 'package:spotify/spotify.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -17,7 +17,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final playback = ref.watch(ProxyPlaylistNotifier.provider);
 
     return Row(
@@ -37,7 +37,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               ),
             ),
           ),
-        if (breakpoint.isLessThanOrEqualTo(Breakpoints.md))
+        if (mediaQuery.isSm || mediaQuery.isMd)
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               ],
             ),
           ),
-        if (breakpoint.isMoreThan(Breakpoints.md))
+        if (mediaQuery.lgAndUp)
           Flexible(
             flex: 1,
             child: Column(

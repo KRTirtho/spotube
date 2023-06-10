@@ -5,15 +5,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 
 class DesktopLoginPage extends HookConsumerWidget {
   const DesktopLoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final theme = Theme.of(context);
     final color = theme.colorScheme.surfaceVariant.withOpacity(.3);
 
@@ -35,7 +35,7 @@ class DesktopLoginPage extends HookConsumerWidget {
                 children: [
                   Assets.spotubeLogoPng.image(
                     width: MediaQuery.of(context).size.width *
-                        (breakpoint <= Breakpoints.md ? .5 : .3),
+                        (mediaQuery.isSm || mediaQuery.isMd ? .5 : .3),
                   ),
                   Text(
                     context.l10n.add_spotify_credentials,

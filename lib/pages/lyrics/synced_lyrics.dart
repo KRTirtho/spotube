@@ -6,8 +6,8 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/hooks/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -33,13 +33,13 @@ class SyncedLyrics extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final controller = useAutoScrollController();
 
     final delay = ref.watch(_delay);
 
     final timedLyricsQuery =
-        useQueries.lyrics.spotifySynced(ref, playlist?.activeTrack);
+        useQueries.lyrics.spotifySynced(ref, playlist.activeTrack);
 
     final lyricValue = timedLyricsQuery.data;
 
@@ -63,9 +63,9 @@ class SyncedLyrics extends HookConsumerWidget {
         ref.read(_delay.notifier).state = 0;
       });
       return null;
-    }, [playlist?.activeTrack]);
+    }, [playlist.activeTrack]);
 
-    final headlineTextStyle = (breakpoint >= Breakpoints.md
+    final headlineTextStyle = (mediaQuery.mdAndUp
             ? textTheme.displaySmall
             : textTheme.headlineMedium?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
@@ -86,7 +86,7 @@ class SyncedLyrics extends HookConsumerWidget {
                 child: Text(
                   TypeConversionUtils.artists_X_String<Artist>(
                       playlist.activeTrack?.artists ?? []),
-                  style: breakpoint >= Breakpoints.md
+                  style: mediaQuery.mdAndUp
                       ? textTheme.headlineSmall
                       : textTheme.titleLarge,
                 ),
@@ -139,7 +139,7 @@ class SyncedLyrics extends HookConsumerWidget {
                   },
                 ),
               ),
-            if (playlist?.activeTrack != null &&
+            if (playlist.activeTrack != null &&
                 (lyricValue == null || lyricValue.lyrics.isEmpty == true))
               const Expanded(child: ShimmerLyrics()),
           ],

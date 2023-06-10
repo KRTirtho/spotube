@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 
 class AdaptiveSelectTile<T> extends HookWidget {
   final Widget title;
@@ -12,14 +12,14 @@ class AdaptiveSelectTile<T> extends HookWidget {
 
   final List<DropdownMenuItem<T>> options;
 
-  final Breakpoints breakAfterOr;
-
   /// Show the smaller value when the breakpoint is reached
   ///
   /// If false, the control will be hidden when the breakpoint is reached
   ///
   /// Defaults to `true`
   final bool showValueWhenUnfolded;
+
+  final bool? breakLayout;
 
   const AdaptiveSelectTile({
     required this.title,
@@ -29,7 +29,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
     this.controlAffinity = ListTileControlAffinity.trailing,
     this.subtitle,
     this.secondary,
-    this.breakAfterOr = Breakpoints.md,
+    this.breakLayout,
     this.showValueWhenUnfolded = true,
     super.key,
   });
@@ -37,7 +37,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final rawControl = DropdownButton<T>(
       items: options,
       value: value,
@@ -55,7 +55,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
             .child,
         [value, options]);
 
-    final control = breakpoint >= breakAfterOr
+    final control = breakLayout ?? mediaQuery.mdAndUp
         ? rawControl
         : showValueWhenUnfolded
             ? Container(
@@ -85,7 +85,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
       trailing: controlAffinity == ListTileControlAffinity.leading
           ? secondary
           : control,
-      onTap: breakpoint >= breakAfterOr
+      onTap: breakLayout ?? mediaQuery.mdAndUp
           ? null
           : () {
               showDialog(

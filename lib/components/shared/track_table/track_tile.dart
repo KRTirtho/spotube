@@ -10,8 +10,8 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -66,7 +66,7 @@ class TrackTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
     final isBlackListed = ref.watch(
       BlackListNotifier.provider.select(
         (blacklist) => blacklist.contains(
@@ -233,7 +233,7 @@ class TrackTile extends HookConsumerWidget {
               ),
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: breakpoint.isMoreThan(Breakpoints.md) ? 8.0 : 0,
+                horizontal: mediaQuery.lgAndUp ? 8.0 : 0,
                 vertical: 8.0,
               ),
               child: ClipRRect(
@@ -278,7 +278,7 @@ class TrackTile extends HookConsumerWidget {
                           track.value.name ?? "",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: breakpoint.isSm ? 14 : 17,
+                            fontSize: mediaQuery.isSm ? 14 : 17,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -304,13 +304,13 @@ class TrackTile extends HookConsumerWidget {
                       : TypeConversionUtils.artists_X_ClickableArtists(
                           track.value.artists ?? [],
                           textStyle: TextStyle(
-                              fontSize: breakpoint.isLessThan(Breakpoints.lg)
+                              fontSize: mediaQuery.isSm || mediaQuery.isMd
                                   ? 12
                                   : 14)),
                 ],
               ),
             ),
-            if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
+            if (mediaQuery.lgAndUp && showAlbum)
               Expanded(
                 child: isLocal
                     ? Text(track.value.album?.name ?? "")
@@ -321,7 +321,7 @@ class TrackTile extends HookConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
               ),
-            if (!breakpoint.isSm) ...[
+            if (!mediaQuery.isSm) ...[
               const SizedBox(width: 10),
               Text(duration),
             ],

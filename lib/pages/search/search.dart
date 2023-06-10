@@ -16,8 +16,8 @@ import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -41,7 +41,7 @@ class SearchPage extends HookConsumerWidget {
     final albumController = useScrollController();
     final playlistController = useScrollController();
     final artistController = useScrollController();
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final searchTerm = ref.watch(searchTermStateProvider);
 
@@ -216,10 +216,9 @@ class SearchPage extends HookConsumerWidget {
                                       },
                                     ),
                                     child: Scrollbar(
-                                      scrollbarOrientation:
-                                          breakpoint > Breakpoints.md
-                                              ? ScrollbarOrientation.bottom
-                                              : ScrollbarOrientation.top,
+                                      scrollbarOrientation: mediaQuery.lgAndUp
+                                          ? ScrollbarOrientation.bottom
+                                          : ScrollbarOrientation.top,
                                       controller: playlistController,
                                       child: Waypoint(
                                         onTouchEdge: () {

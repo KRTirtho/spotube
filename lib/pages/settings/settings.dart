@@ -16,8 +16,8 @@ import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/collections/spotify_markets.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -35,6 +35,7 @@ class SettingsPage extends HookConsumerWidget {
     final isDownloading =
         ref.watch(downloadManagerProvider.select((s) => s.isNotEmpty));
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
 
     final pickColorScheme = useCallback(() {
       return () => showDialog(
@@ -169,7 +170,7 @@ class SettingsPage extends HookConsumerWidget {
                           ],
                         ),
                         AdaptiveSelectTile<String>(
-                          breakAfterOr: Breakpoints.lg,
+                          breakLayout: mediaQuery.lgAndUp,
                           secondary: const Icon(SpotubeIcons.shoppingBag),
                           title: Text(context.l10n.market_place_region),
                           subtitle: Text(context.l10n.recommendation_country),
