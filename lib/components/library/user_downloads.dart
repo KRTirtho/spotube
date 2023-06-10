@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:background_downloader/background_downloader.dart';
+// import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -69,8 +69,10 @@ class UserDownloads extends HookConsumerWidget {
                     // FileDownloader().database.recordForId(track.id!),
                   );
 
-                  final hasFailed = failedTaskStream.hasData ||
-                      taskItSelf.data?.status == TaskStatus.failed;
+                  final hasFailed = failedTaskStream
+                          .hasData /*  ||
+                      taskItSelf.data?.status == TaskStatus.failed */
+                      ;
 
                   return ListTile(
                     title: Text(track.name ?? ''),
