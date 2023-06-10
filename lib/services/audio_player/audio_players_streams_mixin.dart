@@ -4,40 +4,40 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
   // stream getters
   Stream<Duration> get durationStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.duration.asBroadcastStream();
+    return _mkPlayer.streams.duration;
     // } else {
     //   return _justAudio!.durationStream
     //       .where((event) => event != null)
     //       .map((event) => event!)
-    //       .asBroadcastStream();
+    //       ;
     // }
   }
 
   Stream<Duration> get positionStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.position.asBroadcastStream();
+    return _mkPlayer.streams.position;
     // } else {
-    //   return _justAudio!.positionStream.asBroadcastStream();
+    //   return _justAudio!.positionStream;
     // }
   }
 
   Stream<Duration> get bufferedPositionStream {
     // if (mkSupportedPlatform) {
     // audioplayers doesn't have the capability to get buffered position
-    return _mkPlayer.streams.buffer.asBroadcastStream();
+    return _mkPlayer.streams.buffer;
     // } else {
-    //   return _justAudio!.bufferedPositionStream.asBroadcastStream();
+    //   return _justAudio!.bufferedPositionStream;
     // }
   }
 
   Stream<void> get completedStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.completed.asBroadcastStream();
+    return _mkPlayer.streams.completed;
     // } else {
     //   return _justAudio!.playerStateStream
     //       .where(
     //           (event) => event.processingState == ja.ProcessingState.completed)
-    //       .asBroadcastStream();
+    //       ;
     // }
   }
 
@@ -52,51 +52,46 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
                       100)
                   .toInt(),
         )
-        .where((event) => event >= percent)
-        .asBroadcastStream();
+        .where((event) => event >= percent);
   }
 
   Stream<bool> get playingStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.playing.asBroadcastStream();
+    return _mkPlayer.streams.playing;
     // } else {
-    //   return _justAudio!.playingStream.asBroadcastStream();
+    //   return _justAudio!.playingStream;
     // }
   }
 
   Stream<bool> get shuffledStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.shuffleStream.asBroadcastStream();
+    return _mkPlayer.shuffleStream;
     // } else {
-    //   return _justAudio!.shuffleModeEnabledStream.asBroadcastStream();
+    //   return _justAudio!.shuffleModeEnabledStream;
     // }
   }
 
   Stream<PlaybackLoopMode> get loopModeStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.loopModeStream
-        .map(PlaybackLoopMode.fromPlaylistMode)
-        .asBroadcastStream();
+    return _mkPlayer.loopModeStream.map(PlaybackLoopMode.fromPlaylistMode);
     // } else {
     //   return _justAudio!.loopModeStream
     //       .map(PlaybackLoopMode.fromLoopMode)
-    //       .asBroadcastStream();
+    //       ;
     // }
   }
 
   Stream<double> get volumeStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.volume
-        .map((event) => event / 100)
-        .asBroadcastStream();
+    return _mkPlayer.streams.volume.map((event) => event / 100);
     // } else {
-    //   return _justAudio!.volumeStream.asBroadcastStream();
+    //   return _justAudio!.volumeStream;
     // }
   }
 
   Stream<bool> get bufferingStream {
     // if (mkSupportedPlatform) {
-    return Stream.value(false).asBroadcastStream();
+    return Stream.value(false);
     // } else {
     //   return _justAudio!.playerStateStream
     //       .map(
@@ -104,17 +99,17 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     //             event.processingState == ja.ProcessingState.buffering ||
     //             event.processingState == ja.ProcessingState.loading,
     //       )
-    //       .asBroadcastStream();
+    //       ;
     // }
   }
 
   Stream<AudioPlaybackState> get playerStateStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.playerStateStream.asBroadcastStream();
+    return _mkPlayer.playerStateStream;
     // } else {
     //   return _justAudio!.playerStateStream
     //       .map(AudioPlaybackState.fromJaPlayerState)
-    //       .asBroadcastStream();
+    //       ;
     // }
   }
 
@@ -124,7 +119,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     // } else {
     //   return _justAudio!.sequenceStateStream
     //       .map((event) => event?.currentIndex ?? -1)
-    //       .asBroadcastStream();
+    //       ;
     // }
   }
 
