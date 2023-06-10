@@ -9,7 +9,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
   Duration duration,
   double bufferProgress
 }) useProgress(WidgetRef ref) {
-  ref.watch(ProxyPlaylistNotifier.provider);
+  final playlist = ref.watch(ProxyPlaylistNotifier.provider);
 
   final bufferProgress =
       useStream(audioPlayer.bufferedPositionStream).data?.inSeconds ?? 0;
@@ -30,9 +30,11 @@ import 'package:spotube/services/audio_player/audio_player.dart';
   useEffect(() {
     // audioPlayer.positionStream is fired every 200ms and only 1s delay is
     // enough. Thus only update the position if the difference is more than 1s
+    // Reduces CPU usage
     var lastPosition = position.value;
     return audioPlayer.positionStream.listen((event) {
-      if (event.inMilliseconds - lastPosition.inMilliseconds < 1000) return;
+      if (event.inMilliseconds > 1000 &&
+          event.inMilliseconds - lastPosition.inMilliseconds < 1000) return;
       lastPosition = event;
       position.value = event;
     }).cancel;
