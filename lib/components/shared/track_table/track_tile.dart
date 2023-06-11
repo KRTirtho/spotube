@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -16,7 +17,6 @@ import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 
@@ -67,6 +67,7 @@ class TrackTile extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final isBlackListed = ref.watch(
       BlackListNotifier.provider.select(
         (blacklist) => blacklist.contains(
@@ -75,7 +76,6 @@ class TrackTile extends HookConsumerWidget {
       ),
     );
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final spotify = ref.watch(spotifyProvider);
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
 
     final removingTrack = useState<String?>(null);
@@ -87,7 +87,7 @@ class TrackTile extends HookConsumerWidget {
     void actionShare(Track track) {
       final data = "https://open.spotify.com/track/${track.id}";
       Clipboard.setData(ClipboardData(text: data)).then((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             width: 300,
             behavior: SnackBarBehavior.floating,
@@ -102,97 +102,11 @@ class TrackTile extends HookConsumerWidget {
 
     Future<void> actionAddToPlaylist() async {
       showDialog(
-          context: context,
-          builder: (context) {
-            return FutureBuilder<Iterable<PlaylistSimple>>(
-                future: spotify.playlists.me.all().then((playlists) async {
-                  final me = await spotify.me.get();
-                  return playlists.where((playlist) =>
-                      playlist.owner?.id != null &&
-                      playlist.owner!.id == me.id);
-                }),
-                builder: (context, snapshot) {
-                  return HookBuilder(builder: (context) {
-                    final playlistsCheck = useState(<String, bool>{});
-                    return AlertDialog(
-                      title: Text(
-                        context.l10n
-                            .add_to_following_playlists(track.value.name!),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      actions: [
-                        OutlinedButton(
-                          child: Text(context.l10n.cancel),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        FilledButton(
-                          child: Text(context.l10n.add),
-                          onPressed: () async {
-                            final selectedPlaylists = playlistsCheck
-                                .value.entries
-                                .where((entry) => entry.value)
-                                .map((entry) => entry.key);
-
-                            await Future.wait(
-                              selectedPlaylists.map(
-                                (playlistId) => spotify.playlists
-                                    .addTrack(track.value.uri!, playlistId),
-                              ),
-                            ).then((_) => Navigator.pop(context));
-                          },
-                        )
-                      ],
-                      content: SizedBox(
-                        height: 300,
-                        width: 300,
-                        child: !snapshot.hasData
-                            ? const Center(child: CircularProgressIndicator())
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  final playlist =
-                                      snapshot.data!.elementAt(index);
-                                  return CheckboxListTile(
-                                    title: Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          child: UniversalImage(
-                                            path: TypeConversionUtils
-                                                .image_X_UrlString(
-                                              playlist.images,
-                                              placeholder:
-                                                  ImagePlaceholder.collection,
-                                            ),
-                                            height: 40,
-                                            width: 40,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(playlist.name!),
-                                      ],
-                                    ),
-                                    value: playlistsCheck.value[playlist.id] ??
-                                        false,
-                                    onChanged: (val) {
-                                      playlistsCheck.value = {
-                                        ...playlistsCheck.value,
-                                        playlist.id!: val == true
-                                      };
-                                    },
-                                  );
-                                },
-                              ),
-                      ),
-                    );
-                  });
-                });
-          });
+        context: context,
+        builder: (context) => PlaylistAddTrackDialog(
+          tracks: [track.value],
+        ),
+      );
     }
 
     final String thumbnailUrl = TypeConversionUtils.image_X_UrlString(
@@ -339,7 +253,7 @@ class TrackTile extends HookConsumerWidget {
                         onTap: () async {
                           await playback.addTrack(track.value);
                           if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            scaffoldMessenger.showSnackBar(
                               SnackBar(
                                 content: Text(
                                   context.l10n
@@ -358,7 +272,7 @@ class TrackTile extends HookConsumerWidget {
                         padding: EdgeInsets.zero,
                         onTap: () {
                           playback.addTracksAtFirst([track.value]);
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          scaffoldMessenger.showSnackBar(
                             SnackBar(
                               content: Text(
                                 context.l10n
@@ -379,7 +293,7 @@ class TrackTile extends HookConsumerWidget {
                             ? null
                             : () {
                                 playback.removeTrack(track.value.id!);
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                scaffoldMessenger.showSnackBar(
                                   SnackBar(
                                     content: Text(
                                       context.l10n.removed_track_from_queue(

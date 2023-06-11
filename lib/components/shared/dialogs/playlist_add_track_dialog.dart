@@ -1,3 +1,4 @@
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -26,6 +27,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
           playlist.owner?.id != null && playlist.owner!.id == me.data?.id,
     );
     final playlistsCheck = useState(<String, bool>{});
+    final queryClient = useQueryClient();
 
     Future<void> onAdd() async {
       final selectedPlaylists = playlistsCheck.value.entries
@@ -43,6 +45,12 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
               playlistId),
         ),
       ).then((_) => Navigator.pop(context, true));
+
+      await queryClient.refreshQueries(
+        selectedPlaylists
+            .map((playlistId) => "playlist-tracks/$playlistId")
+            .toList(),
+      );
     }
 
     return AlertDialog(
