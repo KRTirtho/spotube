@@ -19,6 +19,7 @@ import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -116,9 +117,9 @@ class BottomPlayer extends HookConsumerWidget {
                       height: 40,
                       constraints: const BoxConstraints(maxWidth: 250),
                       child: HookBuilder(builder: (context) {
-                        final volume =
-                            useStream(audioPlayer.volumeStream).data ??
-                                audioPlayer.volume;
+                        final volume = ref.watch(volumeProvider);
+                        final volumeNotifier =
+                            ref.watch(volumeProvider.notifier);
 
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -136,9 +137,9 @@ class BottomPlayer extends HookConsumerWidget {
                               ),
                               onPressed: () {
                                 if (volume == 0) {
-                                  audioPlayer.setVolume(1);
+                                  volumeNotifier.setVolume(1);
                                 } else {
-                                  audioPlayer.setVolume(0);
+                                  volumeNotifier.setVolume(0);
                                 }
                               },
                             ),
@@ -147,11 +148,11 @@ class BottomPlayer extends HookConsumerWidget {
                                 if (event is PointerScrollEvent) {
                                   if (event.scrollDelta.dy > 0) {
                                     final value = volume - .2;
-                                    audioPlayer
+                                    volumeNotifier
                                         .setVolume(value < 0 ? 0 : value);
                                   } else {
                                     final value = volume + .2;
-                                    audioPlayer
+                                    volumeNotifier
                                         .setVolume(value > 1 ? 1 : value);
                                   }
                                 }
@@ -160,7 +161,7 @@ class BottomPlayer extends HookConsumerWidget {
                                 min: 0,
                                 max: 1,
                                 value: volume,
-                                onChanged: audioPlayer.setVolume,
+                                onChanged: volumeNotifier.setVolume,
                               ),
                             ),
                           ],
