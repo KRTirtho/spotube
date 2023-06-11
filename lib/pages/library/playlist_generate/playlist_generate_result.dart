@@ -7,6 +7,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/playlist_generate/simple_track_tile.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
+import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -31,6 +32,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final router = GoRouter.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final (:seeds, :parameters, :limit, :market) = state;
 
@@ -118,12 +120,13 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                     ),
                                   );
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    scaffoldMessenger.showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                            context.l10n.add_count_to_queue(
-                                          selectedTracks.value.length,
-                                        )),
+                                          context.l10n.add_count_to_queue(
+                                            selectedTracks.value.length,
+                                          ),
+                                        ),
                                       ),
                                     );
                                   }
@@ -153,8 +156,36 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                         FilledButton.tonalIcon(
                           icon: const Icon(SpotubeIcons.playlistAdd),
                           label: Text(context.l10n.add_to_playlist),
-                          onPressed:
-                              selectedTracks.value.isEmpty ? null : () {},
+                          onPressed: selectedTracks.value.isEmpty
+                              ? null
+                              : () async {
+                                  final hasAdded = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) =>
+                                        PlaylistAddTrackDialog(
+                                      tracks: selectedTracks.value
+                                          .map(
+                                            (e) => generatedPlaylist.data!
+                                                .firstWhere(
+                                              (element) => element.id == e,
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  );
+
+                                  if (context.mounted && hasAdded == true) {
+                                    scaffoldMessenger.showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          context.l10n.add_count_to_playlist(
+                                            selectedTracks.value.length,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                         )
                       ],
                     ),

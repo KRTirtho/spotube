@@ -220,6 +220,15 @@
   "moderate": "Moderate",
   "deselect_all": "Deselect All",
   "select_all": "Select All",
+  "are_you_sure": "Are you sure?",
   "generating_playlist": "Generating your custom playlist...",
-  "selected_count_tracks": "Selected {count} tracks"
+  "selected_count_tracks": "Selected {count} tracks",
+  "download_warning": "If you download all Tracks at bulk you're clearly pirating Music & causing damage to the creative society of Music. I hope you are aware of this. Always, try respecting & supporting Artist's hard work",
+  "download_ip_ban_warning": "BTW, your IP can get blocked on YouTube due excessive download requests than usual. IP block means you can't use YouTube (even if you're logged in) for at least 2-3 months from that IP device. And Spotube doesn't hold any responsibility if this ever happens",
+  "by_clicking_accept_terms": "By clicking 'accept' you agree to following terms:",
+  "download_agreement_1": "I know I'm pirating Music. I'm bad",
+  "download_agreement_2": "I'll support the Artist wherever I can and I'm only doing this because I don't have money to buy their art",
+  "download_agreement_3": "I'm completely aware that my IP can get blocked on YouTube & I don't hold Spotube or his owners/contributors responsible for any accidents caused by my current action",
+  "decline": "Decline",
+  "accept": "Accept"
 }

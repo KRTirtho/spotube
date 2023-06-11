@@ -3,8 +3,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
   final List<Track> tracks;
@@ -39,21 +42,21 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
                   .toList(),
               playlistId),
         ),
-      ).then((_) => Navigator.pop(context));
+      ).then((_) => Navigator.pop(context, true));
     }
 
     return AlertDialog(
-      title: const Text("Add to Playlist"),
+      title: Text(context.l10n.add_to_playlist),
       actions: [
         OutlinedButton(
-          child: const Text("Cancel"),
+          child: Text(context.l10n.cancel),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, false);
           },
         ),
         FilledButton(
           onPressed: onAdd,
-          child: const Text("Add"),
+          child: Text(context.l10n.add),
         ),
       ],
       content: SizedBox(
@@ -67,7 +70,19 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
                 itemBuilder: (context, index) {
                   final playlist = filteredPlaylists.elementAt(index);
                   return CheckboxListTile(
-                    title: Text(playlist.name!),
+                    secondary: CircleAvatar(
+                      backgroundImage: UniversalImage.imageProvider(
+                        TypeConversionUtils.image_X_UrlString(
+                          playlist.images,
+                          placeholder: ImagePlaceholder.collection,
+                        ),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(playlist.name!),
+                    ),
                     value: playlistsCheck.value[playlist.id] ?? false,
                     onChanged: (val) {
                       playlistsCheck.value = {
