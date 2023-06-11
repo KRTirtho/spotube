@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,7 +17,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 final trackCollectionSortState =
@@ -251,84 +251,53 @@ class TracksTableView extends HookConsumerWidget {
                 const SizedBox(width: 10),
               ],
             ),
-            ...sortedTracks.asMap().entries.map((track) {
-              String duration =
-                  "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-              return Consumer(builder: (context, ref, _) {
-                final isBlackListed = ref.watch(
-                  BlackListNotifier.provider.select(
-                    (blacklist) => blacklist.contains(
-                      BlacklistedElement.track(
-                          track.value.id!, track.value.name!),
-                    ),
-                  ),
-                );
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onLongPress: isBlackListed
-                        ? null
-                        : () {
-                            showCheck.value = true;
-                            selected.value = [
-                              ...selected.value,
-                              track.value.id!
-                            ];
-                          },
-                    onTap: isBlackListed
-                        ? null
-                        : () {
-                            if (showCheck.value) {
-                              final alreadyChecked =
-                                  selected.value.contains(track.value.id);
-                              if (alreadyChecked) {
-                                selected.value = selected.value
-                                    .where((id) => id != track.value.id)
-                                    .toList();
-                              } else {
-                                selected.value = [
-                                  ...selected.value,
-                                  track.value.id!
-                                ];
-                              }
-                            } else {
-                              final isBlackListed = ref.read(
-                                BlackListNotifier.provider.select(
-                                  (blacklist) => blacklist.contains(
-                                    BlacklistedElement.track(
-                                        track.value.id!, track.value.name!),
-                                  ),
-                                ),
-                              );
-                              if (!isBlackListed) {
-                                onTrackPlayButtonPressed?.call(track.value);
-                              }
-                            }
-                          },
-                    child: TrackTile(
-                      playlist,
-                      playlistId: playlistId,
-                      track: track,
-                      duration: duration,
-                      userPlaylist: userPlaylist,
-                      isActive: playlist.activeTrack?.id == track.value.id,
-                      onTrackPlayButtonPressed: onTrackPlayButtonPressed,
-                      isChecked: selected.value.contains(track.value.id),
-                      showCheck: showCheck.value,
-                      onCheckChange: (checked) {
-                        if (checked == true) {
-                          selected.value = [...selected.value, track.value.id!];
+            ...sortedTracks.mapIndexed((i, track) {
+              return TrackTile(
+                index: i,
+                track: track,
+                selected: selected.value.contains(track.id),
+                userPlaylist: userPlaylist,
+                playlistId: playlistId,
+                onTap: () {
+                  if (showCheck.value) {
+                    final alreadyChecked = selected.value.contains(track.id);
+                    if (alreadyChecked) {
+                      selected.value =
+                          selected.value.where((id) => id != track.id).toList();
+                    } else {
+                      selected.value = [...selected.value, track.id!];
+                    }
+                  } else {
+                    final isBlackListed = ref.read(
+                      BlackListNotifier.provider.select(
+                        (blacklist) => blacklist.contains(
+                          BlacklistedElement.track(track.id!, track.name!),
+                        ),
+                      ),
+                    );
+                    if (!isBlackListed) {
+                      onTrackPlayButtonPressed?.call(track);
+                    }
+                  }
+                },
+                onLongPress: () {
+                  if (showCheck.value) return;
+                  showCheck.value = true;
+                  selected.value = [...selected.value, track.id!];
+                },
+                onChanged: !showCheck.value
+                    ? null
+                    : (value) {
+                        if (value == null) return;
+                        if (value) {
+                          selected.value = [...selected.value, track.id!];
                         } else {
                           selected.value = selected.value
-                              .where((id) => id != track.value.id)
+                              .where((id) => id != track.id)
                               .toList();
                         }
                       },
-                    ),
-                  ),
-                );
-              });
+              );
             }).toList(),
           ];
 

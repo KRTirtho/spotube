@@ -25,7 +25,6 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
@@ -156,7 +155,6 @@ class UserLocalTracks extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying =
         playlist.containsTracks(trackSnapshot.value ?? []);
@@ -272,42 +270,16 @@ class UserLocalTracks extends HookConsumerWidget {
                   itemBuilder: (context, index) {
                     final track = filteredTracks[index];
                     return TrackTile(
-                      playlist,
-                      duration:
-                          "${track.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.duration?.inSeconds.remainder(60) ?? 0)}",
-                      track: MapEntry(index, track),
-                      isActive: playlist.activeTrack?.id == track.id,
-                      isChecked: false,
-                      showCheck: false,
-                      isLocal: true,
-                      onTrackPlayButtonPressed: (currentTrack) {
-                        return playLocalTracks(
+                      index: index,
+                      track: track,
+                      userPlaylist: false,
+                      onTap: () {
+                        playLocalTracks(
                           ref,
                           sortedTracks,
                           currentTrack: track,
                         );
                       },
-                      actions: [
-                        PopupMenuButton(
-                          icon: const Icon(SpotubeIcons.moreHorizontal),
-                          itemBuilder: (context) {
-                            return [
-                              PopupMenuItem(
-                                value: "delete",
-                                onTap: () async {
-                                  await File(track.path).delete();
-                                  ref.refresh(localTracksProvider);
-                                },
-                                padding: EdgeInsets.zero,
-                                child: ListTile(
-                                  leading: const Icon(SpotubeIcons.trash),
-                                  title: Text(context.l10n.delete),
-                                ),
-                              ),
-                            ];
-                          },
-                        ),
-                      ],
                     );
                   },
                 ),

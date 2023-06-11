@@ -23,7 +23,6 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:collection/collection.dart';
 
@@ -147,20 +146,14 @@ class SearchPage extends HookConsumerWidget {
                                           "",
                                     )
                                   else
-                                    ...tracks.asMap().entries.map((track) {
-                                      String duration =
-                                          "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                                    ...tracks.mapIndexed((i, track) {
                                       return TrackTile(
-                                        playlist,
+                                        index: i,
                                         track: track,
-                                        duration: duration,
-                                        isActive: playlist.activeTrack?.id ==
-                                            track.value.id,
-                                        onTrackPlayButtonPressed:
-                                            (currentTrack) async {
+                                        onTap: () async {
                                           final isTrackPlaying =
                                               playlist.activeTrack?.id ==
-                                                  currentTrack.id;
+                                                  track.id;
                                           if (!isTrackPlaying &&
                                               context.mounted) {
                                             final shouldPlay =
@@ -169,7 +162,7 @@ class SearchPage extends HookConsumerWidget {
                                                         context: context,
                                                         title: context.l10n
                                                             .playing_track(
-                                                          currentTrack.name!,
+                                                          track.name!,
                                                         ),
                                                         message: context.l10n
                                                             .queue_clear_alert(
@@ -181,7 +174,7 @@ class SearchPage extends HookConsumerWidget {
 
                                             if (shouldPlay) {
                                               await playlistNotifier.load(
-                                                [currentTrack],
+                                                [track],
                                                 autoPlay: true,
                                               );
                                             }

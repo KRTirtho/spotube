@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,7 +90,6 @@ class ArtistPage extends HookConsumerWidget {
 
             return SingleChildScrollView(
               controller: parentScrollController,
-              padding: const EdgeInsets.all(20),
               child: SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,12 +99,15 @@ class ArtistPage extends HookConsumerWidget {
                       runAlignment: WrapAlignment.center,
                       children: [
                         const SizedBox(width: 50),
-                        CircleAvatar(
-                          radius: avatarWidth,
-                          backgroundImage: UniversalImage.imageProvider(
-                            TypeConversionUtils.image_X_UrlString(
-                              data.images,
-                              placeholder: ImagePlaceholder.artist,
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: CircleAvatar(
+                            radius: avatarWidth,
+                            backgroundImage: UniversalImage.imageProvider(
+                              TypeConversionUtils.image_X_UrlString(
+                                data.images,
+                                placeholder: ImagePlaceholder.artist,
+                              ),
                             ),
                           ),
                         ),
@@ -331,81 +334,87 @@ class ArtistPage extends HookConsumerWidget {
                           }
                         }
 
-                        return Column(children: [
-                          Row(
-                            children: [
-                              Text(
-                                context.l10n.top_tracks,
-                                style: theme.textTheme.headlineSmall,
-                              ),
-                              if (!isPlaylistPlaying)
-                                IconButton(
-                                  icon: const Icon(
-                                    SpotubeIcons.queueAdd,
+                        return Column(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    context.l10n.top_tracks,
+                                    style: theme.textTheme.headlineSmall,
                                   ),
-                                  onPressed: () {
-                                    playlistNotifier
-                                        .addTracks(topTracks.toList());
-                                    scaffoldMessenger.showSnackBar(
-                                      SnackBar(
-                                        width: 300,
-                                        behavior: SnackBarBehavior.floating,
-                                        content: Text(
-                                          context.l10n.added_to_queue(
-                                            topTracks.length,
+                                ),
+                                if (!isPlaylistPlaying)
+                                  IconButton(
+                                    icon: const Icon(
+                                      SpotubeIcons.queueAdd,
+                                    ),
+                                    onPressed: () {
+                                      playlistNotifier
+                                          .addTracks(topTracks.toList());
+                                      scaffoldMessenger.showSnackBar(
+                                        SnackBar(
+                                          width: 300,
+                                          behavior: SnackBarBehavior.floating,
+                                          content: Text(
+                                            context.l10n.added_to_queue(
+                                              topTracks.length,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              const SizedBox(width: 5),
-                              IconButton(
-                                icon: Icon(
-                                  isPlaylistPlaying
-                                      ? SpotubeIcons.stop
-                                      : SpotubeIcons.play,
-                                  color: Colors.white,
-                                ),
-                                style: IconButton.styleFrom(
-                                  backgroundColor: theme.colorScheme.primary,
-                                ),
-                                onPressed: () =>
-                                    playPlaylist(topTracks.toList()),
-                              )
-                            ],
-                          ),
-                          ...topTracks.toList().asMap().entries.map((track) {
-                            String duration =
-                                "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
-                            return TrackTile(
-                              playlist,
-                              duration: duration,
-                              track: track,
-                              isActive:
-                                  playlist.activeTrack?.id == track.value.id,
-                              onTrackPlayButtonPressed: (currentTrack) =>
+                                      );
+                                    },
+                                  ),
+                                const SizedBox(width: 5),
+                                IconButton(
+                                  icon: Icon(
+                                    isPlaylistPlaying
+                                        ? SpotubeIcons.stop
+                                        : SpotubeIcons.play,
+                                    color: Colors.white,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: theme.colorScheme.primary,
+                                  ),
+                                  onPressed: () =>
+                                      playPlaylist(topTracks.toList()),
+                                )
+                              ],
+                            ),
+                            ...topTracks.mapIndexed((i, track) {
+                              return TrackTile(
+                                index: i,
+                                track: track,
+                                onTap: () {
                                   playPlaylist(
-                                topTracks.toList(),
-                                currentTrack: track.value,
-                              ),
-                            );
-                          }),
-                        ]);
+                                    topTracks.toList(),
+                                    currentTrack: track,
+                                  );
+                                },
+                              );
+                            }),
+                          ],
+                        );
                       },
                     ),
                     const SizedBox(height: 50),
-                    Text(
-                      context.l10n.albums,
-                      style: theme.textTheme.headlineSmall,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        context.l10n.albums,
+                        style: theme.textTheme.headlineSmall,
+                      ),
                     ),
-                    const SizedBox(height: 10),
                     ArtistAlbumList(artistId),
                     const SizedBox(height: 20),
-                    Text(
-                      context.l10n.fans_also_like,
-                      style: theme.textTheme.headlineSmall,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        context.l10n.fans_also_like,
+                        style: theme.textTheme.headlineSmall,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     HookBuilder(

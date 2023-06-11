@@ -1,404 +1,220 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart' hide Action;
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import 'package:spotify/spotify.dart' hide Image;
-import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
-import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/links/link_text.dart';
+import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/link_text.dart';
+import 'package:spotube/components/shared/track_table/track_options.dart';
 import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/services/mutations/mutations.dart';
-
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
-  final ProxyPlaylist playlist;
-  final MapEntry<int, Track> track;
-  final String duration;
-  final void Function(Track currentTrack)? onTrackPlayButtonPressed;
-  final logger = getLogger(TrackTile);
+  /// [index] will not be shown if null
+  final int? index;
+  final Track track;
+  final bool selected;
+  final ValueChanged<bool?>? onChanged;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final bool userPlaylist;
-  // null playlistId indicates its not inside a playlist
   final String? playlistId;
 
-  final bool showAlbum;
-
-  final bool isActive;
-
-  final bool isChecked;
-  final bool showCheck;
-
-  final bool isLocal;
-  final void Function(bool?)? onCheckChange;
-
-  final List<Widget>? actions;
   final List<Widget>? leadingActions;
 
-  TrackTile(
-    this.playlist, {
-    required this.track,
-    required this.duration,
-    required this.isActive,
-    this.playlistId,
-    this.userPlaylist = false,
-    this.onTrackPlayButtonPressed,
-    this.showAlbum = true,
-    this.isChecked = false,
-    this.showCheck = false,
-    this.isLocal = false,
-    this.onCheckChange,
-    this.actions,
-    this.leadingActions,
+  const TrackTile({
     Key? key,
+    this.index,
+    required this.track,
+    this.selected = false,
+    this.onTap,
+    this.onLongPress,
+    this.onChanged,
+    this.userPlaylist = false,
+    this.playlistId,
+    this.leadingActions,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final isBlackListed = ref.watch(
-      BlackListNotifier.provider.select(
-        (blacklist) => blacklist.contains(
-          BlacklistedElement.track(track.value.id!, track.value.name!),
+
+    final blacklist = ref.watch(BlackListNotifier.provider);
+
+    final isBlackListed = useMemoized(
+      () => blacklist.contains(
+        BlacklistedElement.track(
+          track.id!,
+          track.name!,
         ),
       ),
-    );
-    final auth = ref.watch(AuthenticationNotifier.provider);
-    final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-
-    final removingTrack = useState<String?>(null);
-    final removeTrack = useMutations.playlist.removeTrackOf(
-      ref,
-      playlistId ?? "",
+      [blacklist, track],
     );
 
-    void actionShare(Track track) {
-      final data = "https://open.spotify.com/track/${track.id}";
-      Clipboard.setData(ClipboardData(text: data)).then((_) {
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            width: 300,
-            behavior: SnackBarBehavior.floating,
-            content: Text(
-              context.l10n.copied_to_clipboard(data),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
-      });
-    }
+    final isPlaying = track.id == playlist.activeTrack?.id;
 
-    Future<void> actionAddToPlaylist() async {
-      showDialog(
-        context: context,
-        builder: (context) => PlaylistAddTrackDialog(
-          tracks: [track.value],
-        ),
-      );
-    }
-
-    final String thumbnailUrl = TypeConversionUtils.image_X_UrlString(
-      track.value.album?.images,
-      placeholder: ImagePlaceholder.albumArt,
-      index: track.value.album?.images?.length == 1 ? 0 : 2,
-    );
-
-    final toggler = useTrackToggleLike(track.value, ref);
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      decoration: BoxDecoration(
-        color: isActive
-            ? theme.colorScheme.surfaceVariant.withOpacity(0.5)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Material(
-        type: MaterialType.transparency,
-        child: Row(
-          children: [
-            ...?leadingActions,
-            if (showCheck && !isBlackListed)
-              Checkbox(
-                value: isChecked,
-                onChanged: (s) => onCheckChange?.call(s),
-              )
-            else
-              SizedBox(
-                height: 20,
-                width: 35,
-                child: Center(
-                  child: AutoSizeText(
-                    (track.key + 1).toString(),
+    return LayoutBuilder(builder: (context, constrains) {
+      return HoverBuilder(
+        permanentState: isPlaying || constrains.isSm ? true : null,
+        builder: (context, isHovering) {
+          return ListTile(
+            selected: isPlaying,
+            onTap: onTap,
+            onLongPress: onLongPress,
+            enabled: !isBlackListed,
+            contentPadding: EdgeInsets.zero,
+            tileColor: isBlackListed ? theme.colorScheme.errorContainer : null,
+            horizontalTitleGap: 12,
+            leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...?leadingActions,
+                if (index != null && onChanged == null && constrains.mdAndUp)
+                  SizedBox(
+                    width: 34,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Text(
+                        '$index',
+                        maxLines: 1,
+                        style: theme.textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                else if (constrains.isSm)
+                  const SizedBox(width: 16),
+                if (onChanged != null)
+                  Checkbox.adaptive(
+                    value: selected,
+                    onChanged: onChanged,
                   ),
-                ),
-              ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: mediaQuery.lgAndUp ? 8.0 : 0,
-                vertical: 8.0,
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
-                child: UniversalImage(
-                  path: thumbnailUrl,
-                  height: 40,
-                  width: 40,
-                  placeholder: Assets.albumPlaceholder.path,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.inversePrimary,
-                  shape: const CircleBorder(),
-                ),
-                onPressed: !isBlackListed
-                    ? () => onTrackPlayButtonPressed?.call(
-                          track.value,
-                        )
-                    : null,
-                child: Icon(
-                  playlist.activeTrack?.id == track.value.id
-                      ? SpotubeIcons.pause
-                      : SpotubeIcons.play,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          track.value.name ?? "",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: mediaQuery.isSm ? 14 : 17,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (isBlackListed) ...[
-                        const SizedBox(width: 5),
-                        Text(
-                          context.l10n.blacklisted,
-                          style: TextStyle(
-                            color: Colors.red[400],
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ]
-                    ],
-                  ),
-                  isLocal
-                      ? Text(
-                          TypeConversionUtils.artists_X_String<Artist>(
-                              track.value.artists ?? []),
-                        )
-                      : TypeConversionUtils.artists_X_ClickableArtists(
-                          track.value.artists ?? [],
-                          textStyle: TextStyle(
-                              fontSize: mediaQuery.isSm || mediaQuery.isMd
-                                  ? 12
-                                  : 14)),
-                ],
-              ),
-            ),
-            if (mediaQuery.lgAndUp && showAlbum)
-              Expanded(
-                child: isLocal
-                    ? Text(track.value.album?.name ?? "")
-                    : LinkText(
-                        track.value.album!.name!,
-                        "/album/${track.value.album?.id}",
-                        extra: track.value.album,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-              ),
-            if (!mediaQuery.isSm) ...[
-              const SizedBox(width: 10),
-              Text(duration),
-            ],
-            const SizedBox(width: 10),
-            if (!isLocal)
-              PopupMenuButton(
-                icon: const Icon(SpotubeIcons.moreHorizontal),
-                position: PopupMenuPosition.under,
-                tooltip: context.l10n.more_actions,
-                itemBuilder: (context) {
-                  return [
-                    if (!playlist.containsTrack(track.value)) ...[
-                      PopupMenuItem(
-                        padding: EdgeInsets.zero,
-                        onTap: () async {
-                          await playback.addTrack(track.value);
-                          if (context.mounted) {
-                            scaffoldMessenger.showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  context.l10n
-                                      .added_track_to_queue(track.value.name!),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.queueAdd),
-                          title: Text(context.l10n.add_to_queue),
-                        ),
-                      ),
-                      PopupMenuItem(
-                        padding: EdgeInsets.zero,
-                        onTap: () {
-                          playback.addTracksAtFirst([track.value]);
-                          scaffoldMessenger.showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                context.l10n
-                                    .track_will_play_next(track.value.name!),
-                              ),
-                            ),
-                          );
-                        },
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.lightning),
-                          title: Text(context.l10n.play_next),
-                        ),
-                      ),
-                    ] else
-                      PopupMenuItem(
-                        padding: EdgeInsets.zero,
-                        onTap: playlist.activeTrack?.id == track.value.id
-                            ? null
-                            : () {
-                                playback.removeTrack(track.value.id!);
-                                scaffoldMessenger.showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      context.l10n.removed_track_from_queue(
-                                        track.value.name!,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                        enabled: playlist.activeTrack?.id != track.value.id,
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.queueRemove),
-                          title: Text(context.l10n.remove_from_queue),
-                        ),
-                      ),
-                    if (toggler.me.hasData)
-                      PopupMenuItem(
-                        padding: EdgeInsets.zero,
-                        onTap: () {
-                          toggler.toggleTrackLike.mutate(toggler.isLiked);
-                        },
-                        child: ListTile(
-                          leading: toggler.isLiked
-                              ? const Icon(
-                                  SpotubeIcons.heartFilled,
-                                  color: Colors.pink,
-                                )
-                              : const Icon(SpotubeIcons.heart),
-                          title: Text(
-                            toggler.isLiked
-                                ? context.l10n.remove_from_favorites
-                                : context.l10n.save_as_favorite,
-                          ),
-                        ),
-                      ),
-                    if (auth != null)
-                      PopupMenuItem(
-                        padding: EdgeInsets.zero,
-                        onTap: actionAddToPlaylist,
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.playlistAdd),
-                          title: Text(context.l10n.add_to_playlist),
-                        ),
-                      ),
-                    if (userPlaylist && auth != null)
-                      PopupMenuItem(
-                        padding: EdgeInsets.zero,
-                        onTap: () {
-                          removingTrack.value = track.value.uri;
-                          removeTrack.mutate(track.value.uri!);
-                        },
-                        child: ListTile(
-                          leading: (removeTrack.isMutating ||
-                                      !removeTrack.hasData) &&
-                                  removingTrack.value == track.value.uri
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : const Icon(SpotubeIcons.removeFilled),
-                          title: Text(context.l10n.remove_from_playlist),
-                        ),
-                      ),
-                    PopupMenuItem(
-                      padding: EdgeInsets.zero,
-                      onTap: () {
-                        if (isBlackListed) {
-                          ref.read(BlackListNotifier.provider.notifier).remove(
-                                BlacklistedElement.track(
-                                    track.value.id!, track.value.name!),
-                              );
-                        } else {
-                          ref.read(BlackListNotifier.provider.notifier).add(
-                                BlacklistedElement.track(
-                                    track.value.id!, track.value.name!),
-                              );
-                        }
-                      },
-                      child: ListTile(
-                        leading: const Icon(SpotubeIcons.playlistRemove),
-                        iconColor: !isBlackListed ? Colors.red[400] : null,
-                        textColor: !isBlackListed ? Colors.red[400] : null,
-                        title: Text(
-                          isBlackListed
-                              ? context.l10n.remove_from_blacklist
-                              : context.l10n.add_to_blacklist,
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: UniversalImage(
+                        path: TypeConversionUtils.image_X_UrlString(
+                          track.album?.images,
+                          placeholder: ImagePlaceholder.albumArt,
                         ),
                       ),
                     ),
-                    PopupMenuItem(
-                      padding: EdgeInsets.zero,
-                      onTap: () {
-                        actionShare(track.value);
-                      },
-                      child: ListTile(
-                        leading: const Icon(SpotubeIcons.share),
-                        title: Text(context.l10n.share),
+                    Positioned.fill(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: isHovering
+                              ? Colors.black.withOpacity(0.4)
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Center(
+                        child: IconTheme(
+                          data: theme.iconTheme.copyWith(size: 26),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: !isHovering
+                                ? const SizedBox.shrink()
+                                : isPlaying && playlist.isFetching
+                                    ? const SizedBox(
+                                        width: 26,
+                                        height: 26,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 1.5,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : isPlaying
+                                        ? Icon(
+                                            SpotubeIcons.pause,
+                                            color: theme.colorScheme.primary,
+                                          )
+                                        : const Icon(SpotubeIcons.play),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            title: Row(
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: Text(
+                    track.name!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (constrains.mdAndUp) ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 4,
+                    child: switch (track.runtimeType) {
+                      LocalTrack => Text(
+                          track.album!.name!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      _ => Align(
+                          alignment: Alignment.centerLeft,
+                          child: LinkText(
+                            track.album!.name!,
+                            "/album/${track.album?.id}",
+                            extra: track.album,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                    },
+                  ),
+                ],
+              ],
+            ),
+            subtitle: Align(
+              alignment: Alignment.centerLeft,
+              child: track is LocalTrack
+                  ? Text(
+                      TypeConversionUtils.artists_X_String<Artist>(
+                        track.artists ?? [],
                       ),
                     )
-                  ];
-                },
-              ),
-            ...?actions,
-          ],
-        ),
-      ),
-    );
+                  : TypeConversionUtils.artists_X_ClickableArtists(
+                      track.artists ?? [],
+                    ),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: 8),
+                Text(
+                  Duration(milliseconds: track.durationMs ?? 0)
+                      .toHumanReadableString(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                TrackOptions(
+                  track: track,
+                  playlistId: playlistId,
+                  userPlaylist: userPlaylist,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    });
   }
 }

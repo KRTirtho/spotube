@@ -11,7 +11,6 @@ import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
@@ -120,9 +119,7 @@ class PlayerQueue extends HookConsumerWidget {
                   shrinkWrap: true,
                   buildDefaultDragHandles: false,
                   itemBuilder: (context, i) {
-                    final track = tracks.toList().asMap().entries.elementAt(i);
-                    String duration =
-                        "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                    final track = tracks.elementAt(i);
                     return AutoScrollTag(
                       key: ValueKey(i),
                       controller: controller,
@@ -130,15 +127,13 @@ class PlayerQueue extends HookConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TrackTile(
-                          playlist,
+                          index: i,
                           track: track,
-                          duration: duration,
-                          isActive: playlist.activeTrack?.id == track.value.id,
-                          onTrackPlayButtonPressed: (currentTrack) async {
-                            if (playlist.activeTrack?.id == track.value.id) {
+                          onTap: () async {
+                            if (playlist.activeTrack?.id == track.id) {
                               return;
                             }
-                            await playlistNotifier.jumpToTrack(currentTrack);
+                            await playlistNotifier.jumpToTrack(track);
                           },
                           leadingActions: [
                             ReorderableDragStartListener(
