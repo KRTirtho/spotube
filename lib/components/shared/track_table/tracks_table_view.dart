@@ -49,8 +49,6 @@ class TracksTableView extends HookConsumerWidget {
     TextStyle tableHeadStyle =
         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
-    final mediaQuery = MediaQuery.of(context);
-
     final selected = useState<List<String>>([]);
     final showCheck = useState<bool>(false);
     final sortBy = ref.watch(trackCollectionSortState(playlistId ?? ''));
@@ -73,184 +71,191 @@ class TracksTableView extends HookConsumerWidget {
         ? [const NotFound(vertical: true)]
         : [
             if (heading != null) heading!,
-            Row(
-              children: [
-                Checkbox.adaptive(
-                  value: selected.value.length == sortedTracks.length,
-                  onChanged: (checked) {
-                    if (!showCheck.value) showCheck.value = true;
-                    if (checked == true) {
-                      selected.value = sortedTracks.map((s) => s.id!).toList();
-                    } else {
-                      selected.value = [];
-                      showCheck.value = false;
-                    }
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "#",
-                    textAlign: TextAlign.center,
-                    style: tableHeadStyle,
+            LayoutBuilder(builder: (context, constrains) {
+              return Row(
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: showCheck.value
+                        ? Checkbox.adaptive(
+                            value: selected.value.length == sortedTracks.length,
+                            onChanged: (checked) {
+                              if (!showCheck.value) showCheck.value = true;
+                              if (checked == true) {
+                                selected.value =
+                                    sortedTracks.map((s) => s.id!).toList();
+                              } else {
+                                selected.value = [];
+                                showCheck.value = false;
+                              }
+                            },
+                          )
+                        : constrains.mdAndUp
+                            ? const SizedBox(width: 32)
+                            : const SizedBox(width: 16),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text(
-                        context.l10n.title,
-                        style: tableHeadStyle,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                // used alignment of this table-head
-                if (mediaQuery.lgAndUp) ...[
-                  const SizedBox(width: 100),
                   Expanded(
+                    flex: 5,
                     child: Row(
                       children: [
                         Text(
-                          context.l10n.album,
-                          overflow: TextOverflow.ellipsis,
+                          context.l10n.title,
                           style: tableHeadStyle,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                  )
-                ],
-                if (!mediaQuery.isSm) ...[
-                  const SizedBox(width: 10),
-                  Text(context.l10n.time, style: tableHeadStyle),
-                  const SizedBox(width: 10),
-                ],
-                SortTracksDropdown(
-                  value: sortBy,
-                  onChanged: (value) {
-                    ref
-                        .read(
-                            trackCollectionSortState(playlistId ?? '').notifier)
-                        .state = value;
-                  },
-                ),
-                PopupMenuButton(
-                  tooltip: context.l10n.more_actions,
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "download",
-                        child: Row(
-                          children: [
-                            const Icon(SpotubeIcons.download),
-                            const SizedBox(width: 5),
-                            Text(
-                              context.l10n
-                                  .download_count(selectedTracks.length),
-                            ),
-                          ],
-                        ),
+                  ),
+                  // used alignment of this table-head
+                  if (constrains.mdAndUp)
+                    Expanded(
+                      flex: 3,
+                      child: Row(
+                        children: [
+                          Text(
+                            context.l10n.album,
+                            overflow: TextOverflow.ellipsis,
+                            style: tableHeadStyle,
+                          ),
+                        ],
                       ),
-                      if (!userPlaylist)
+                    ),
+                  SortTracksDropdown(
+                    value: sortBy,
+                    onChanged: (value) {
+                      ref
+                          .read(trackCollectionSortState(playlistId ?? '')
+                              .notifier)
+                          .state = value;
+                    },
+                  ),
+                  PopupMenuButton(
+                    tooltip: context.l10n.more_actions,
+                    itemBuilder: (context) {
+                      return [
                         PopupMenuItem(
                           enabled: selectedTracks.isNotEmpty,
-                          value: "add-to-playlist",
+                          value: "download",
                           child: Row(
                             children: [
-                              const Icon(SpotubeIcons.playlistAdd),
+                              const Icon(SpotubeIcons.download),
                               const SizedBox(width: 5),
                               Text(
-                                context.l10n.add_count_to_playlist(
-                                  selectedTracks.length,
-                                ),
+                                context.l10n
+                                    .download_count(selectedTracks.length),
                               ),
                             ],
                           ),
                         ),
-                      PopupMenuItem(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "add-to-queue",
-                        child: Row(
-                          children: [
-                            const Icon(SpotubeIcons.queueAdd),
-                            const SizedBox(width: 5),
-                            Text(
-                              context.l10n
-                                  .add_count_to_queue(selectedTracks.length),
+                        if (!userPlaylist)
+                          PopupMenuItem(
+                            enabled: selectedTracks.isNotEmpty,
+                            value: "add-to-playlist",
+                            child: Row(
+                              children: [
+                                const Icon(SpotubeIcons.playlistAdd),
+                                const SizedBox(width: 5),
+                                Text(
+                                  context.l10n.add_count_to_playlist(
+                                    selectedTracks.length,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
+                        PopupMenuItem(
+                          enabled: selectedTracks.isNotEmpty,
+                          value: "add-to-queue",
+                          child: Row(
+                            children: [
+                              const Icon(SpotubeIcons.queueAdd),
+                              const SizedBox(width: 5),
+                              Text(
+                                context.l10n
+                                    .add_count_to_queue(selectedTracks.length),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      PopupMenuItem(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "play-next",
-                        child: Row(
-                          children: [
-                            const Icon(SpotubeIcons.lightning),
-                            const SizedBox(width: 5),
-                            Text(
-                              context.l10n
-                                  .play_count_next(selectedTracks.length),
-                            ),
-                          ],
+                        PopupMenuItem(
+                          enabled: selectedTracks.isNotEmpty,
+                          value: "play-next",
+                          child: Row(
+                            children: [
+                              const Icon(SpotubeIcons.lightning),
+                              const SizedBox(width: 5),
+                              Text(
+                                context.l10n
+                                    .play_count_next(selectedTracks.length),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ];
-                  },
-                  onSelected: (action) async {
-                    switch (action) {
-                      case "download":
-                        {
-                          final confirmed = await showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const ConfirmDownloadDialog();
-                            },
-                          );
-                          if (confirmed != true) return;
-                          await downloader.enqueueAll(selectedTracks.toList());
-                          if (context.mounted) {
+                      ];
+                    },
+                    onSelected: (action) async {
+                      switch (action) {
+                        case "download":
+                          {
+                            final confirmed = await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const ConfirmDownloadDialog();
+                              },
+                            );
+                            if (confirmed != true) return;
+                            await downloader
+                                .enqueueAll(selectedTracks.toList());
+                            if (context.mounted) {
+                              selected.value = [];
+                              showCheck.value = false;
+                            }
+                            break;
+                          }
+                        case "add-to-playlist":
+                          {
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return PlaylistAddTrackDialog(
+                                  tracks: selectedTracks.toList(),
+                                );
+                              },
+                            );
+                            break;
+                          }
+                        case "play-next":
+                          {
+                            playback.addTracksAtFirst(selectedTracks);
                             selected.value = [];
                             showCheck.value = false;
+                            break;
                           }
-                          break;
-                        }
-                      case "add-to-playlist":
-                        {
-                          await showDialog(
-                            context: context,
-                            builder: (context) {
-                              return PlaylistAddTrackDialog(
-                                tracks: selectedTracks.toList(),
-                              );
-                            },
-                          );
-                          break;
-                        }
-                      case "play-next":
-                        {
-                          playback.addTracksAtFirst(selectedTracks);
-                          selected.value = [];
-                          showCheck.value = false;
-                          break;
-                        }
-                      case "add-to-queue":
-                        {
-                          playback.addTracks(selectedTracks);
-                          selected.value = [];
-                          showCheck.value = false;
-                          break;
-                        }
-                      default:
-                    }
-                  },
-                  icon: const Icon(SpotubeIcons.moreVertical),
-                ),
-                const SizedBox(width: 10),
-              ],
-            ),
+                        case "add-to-queue":
+                          {
+                            playback.addTracks(selectedTracks);
+                            selected.value = [];
+                            showCheck.value = false;
+                            break;
+                          }
+                        default:
+                      }
+                    },
+                    icon: const Icon(SpotubeIcons.moreVertical),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              );
+            }),
             ...sortedTracks.mapIndexed((i, track) {
               return TrackTile(
                 index: i,

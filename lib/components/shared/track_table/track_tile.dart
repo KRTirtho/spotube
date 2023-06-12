@@ -121,7 +121,8 @@ class TrackTile extends HookConsumerWidget {
                     Positioned.fill(
                       child: Center(
                         child: IconTheme(
-                          data: theme.iconTheme.copyWith(size: 26),
+                          data: theme.iconTheme
+                              .copyWith(size: 26, color: Colors.white),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300),
                             child: !isHovering
