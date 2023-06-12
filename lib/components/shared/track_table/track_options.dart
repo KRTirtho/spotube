@@ -7,15 +7,29 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
+
+enum TrackOptionValue {
+  share,
+  addToPlaylist,
+  addToQueue,
+  removeFromPlaylist,
+  removeFromQueue,
+  blacklist,
+  delete,
+  playNext,
+  favorite,
+}
 
 class TrackOptions extends HookConsumerWidget {
   final Track track;
@@ -80,151 +94,62 @@ class TrackOptions extends HookConsumerWidget {
       playlistId ?? "",
     );
 
-    final mediaQuery = MediaQuery.of(context);
-
-    final createItems = useCallback(
-      (BuildContext context) {
-        if (track is LocalTrack) {
-          return [
-            if (mediaQuery.isSm) ...[
-              Text(
-                track.name!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Divider(
-                color: Theme.of(context).colorScheme.primary,
-                thickness: 0.2,
-                indent: 16,
-                endIndent: 16,
-              ),
-            ],
-            ListTile(
-              onTap: () async {
-                await File((track as LocalTrack).path).delete();
-                ref.refresh(localTracksProvider);
-                if (context.mounted) Navigator.pop(context);
-              },
-              leading: const Icon(SpotubeIcons.trash),
-              title: Text(context.l10n.delete),
-            )
-          ];
-        }
-
-        return [
-          if (mediaQuery.isSm) ...[
-            Text(
-              track.name!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            Divider(
-              color: Theme.of(context).colorScheme.primary,
-              thickness: 0.2,
-              indent: 16,
-              endIndent: 16,
-            ),
-          ],
-          if (!playlist.containsTrack(track)) ...[
-            ListTile(
-              onTap: () async {
-                await playback.addTrack(track);
-                if (context.mounted) {
-                  scaffoldMessenger.showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        context.l10n.added_track_to_queue(track.name!),
-                      ),
-                    ),
-                  );
-                  Navigator.pop(context);
-                }
-              },
-              leading: const Icon(SpotubeIcons.queueAdd),
-              title: Text(context.l10n.add_to_queue),
-            ),
-            ListTile(
-              onTap: () {
-                playback.addTracksAtFirst([track]);
+    return ListTileTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: AdaptivePopSheetList<TrackOptionValue>(
+        onSelected: (value) async {
+          switch (value) {
+            case TrackOptionValue.delete:
+              await File((track as LocalTrack).path).delete();
+              ref.refresh(localTracksProvider);
+              break;
+            case TrackOptionValue.addToQueue:
+              await playback.addTrack(track);
+              if (context.mounted) {
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(
-                      context.l10n.track_will_play_next(track.name!),
+                      context.l10n.added_track_to_queue(track.name!),
                     ),
                   ),
                 );
-                Navigator.pop(context);
-              },
-              leading: const Icon(SpotubeIcons.lightning),
-              title: Text(context.l10n.play_next),
-            ),
-          ] else
-            ListTile(
-              onTap: playlist.activeTrack?.id == track.id
-                  ? null
-                  : () {
-                      playback.removeTrack(track.id!);
-                      scaffoldMessenger.showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            context.l10n.removed_track_from_queue(
-                              track.name!,
-                            ),
-                          ),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    },
-              enabled: playlist.activeTrack?.id != track.id,
-              leading: const Icon(SpotubeIcons.queueRemove),
-              title: Text(context.l10n.remove_from_queue),
-            ),
-          if (favorites.me.hasData)
-            ListTile(
-              onTap: () {
-                favorites.toggleTrackLike.mutate(favorites.isLiked);
-                Navigator.pop(context);
-              },
-              leading: favorites.isLiked
-                  ? const Icon(
-                      SpotubeIcons.heartFilled,
-                      color: Colors.pink,
-                    )
-                  : const Icon(SpotubeIcons.heart),
-              title: Text(
-                favorites.isLiked
-                    ? context.l10n.remove_from_favorites
-                    : context.l10n.save_as_favorite,
-              ),
-            ),
-          if (auth != null)
-            ListTile(
-              onTap: () {
-                actionAddToPlaylist(context, track);
-                Navigator.pop(context);
-              },
-              leading: const Icon(SpotubeIcons.playlistAdd),
-              title: Text(context.l10n.add_to_playlist),
-            ),
-          if (userPlaylist && auth != null)
-            ListTile(
-              onTap: () {
-                removingTrack.value = track.uri;
-                removeTrack.mutate(track.uri!);
-                Navigator.pop(context);
-              },
-              leading: (removeTrack.isMutating || !removeTrack.hasData) &&
-                      removingTrack.value == track.uri
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : const Icon(SpotubeIcons.removeFilled),
-              title: Text(context.l10n.remove_from_playlist),
-            ),
-          ListTile(
-            onTap: () {
+              }
+              break;
+            case TrackOptionValue.playNext:
+              playback.addTracksAtFirst([track]);
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    context.l10n.track_will_play_next(track.name!),
+                  ),
+                ),
+              );
+              break;
+            case TrackOptionValue.removeFromQueue:
+              playback.removeTrack(track.id!);
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    context.l10n.removed_track_from_queue(
+                      track.name!,
+                    ),
+                  ),
+                ),
+              );
+              break;
+            case TrackOptionValue.favorite:
+              favorites.toggleTrackLike.mutate(favorites.isLiked);
+              break;
+            case TrackOptionValue.addToPlaylist:
+              actionAddToPlaylist(context, track);
+              break;
+            case TrackOptionValue.removeFromPlaylist:
+              removingTrack.value = track.uri;
+              removeTrack.mutate(track.uri!);
+              break;
+            case TrackOptionValue.blacklist:
               if (isBlackListed) {
                 ref.read(BlackListNotifier.provider.notifier).remove(
                       BlacklistedElement.track(track.id!, track.name!),
@@ -234,69 +159,139 @@ class TrackOptions extends HookConsumerWidget {
                       BlacklistedElement.track(track.id!, track.name!),
                     );
               }
-              Navigator.pop(context);
-            },
-            leading: const Icon(SpotubeIcons.playlistRemove),
-            iconColor: !isBlackListed ? Colors.red[400] : null,
-            textColor: !isBlackListed ? Colors.red[400] : null,
+              break;
+            case TrackOptionValue.share:
+              actionShare(context, track);
+              break;
+          }
+        },
+        icon: const Icon(SpotubeIcons.moreHorizontal),
+        headings: [
+          ListTile(
+            dense: true,
+            leading: AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: UniversalImage(
+                  path: TypeConversionUtils.image_X_UrlString(
+                      track.album!.images,
+                      placeholder: ImagePlaceholder.albumArt),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
             title: Text(
-              isBlackListed
-                  ? context.l10n.remove_from_blacklist
-                  : context.l10n.add_to_blacklist,
+              track.name!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            subtitle: Align(
+              alignment: Alignment.centerLeft,
+              child: TypeConversionUtils.artists_X_ClickableArtists(
+                track.artists!,
+              ),
             ),
           ),
-          ListTile(
-            onTap: () {
-              actionShare(context, track);
-              Navigator.pop(context);
-            },
-            leading: const Icon(SpotubeIcons.share),
-            title: Text(context.l10n.share),
-          )
-        ];
-      },
-      [track, playlist, favorites, auth, isBlackListed, mediaQuery],
-    );
-
-    if (mediaQuery.isSm) {
-      return IconButton(
-        icon: const Icon(SpotubeIcons.moreHorizontal),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: ListTileTheme(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+        ],
+        children: switch (track.runtimeType) {
+          LocalTrack => [
+              PopSheetEntry(
+                value: TrackOptionValue.delete,
+                child: ListTile(
+                  leading: const Icon(SpotubeIcons.trash),
+                  title: Text(context.l10n.delete),
                 ),
-                horizontalTitleGap: 5,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: createItems(context),
+              )
+            ],
+          _ => [
+              if (!playlist.containsTrack(track)) ...[
+                PopSheetEntry(
+                  value: TrackOptionValue.addToQueue,
+                  child: ListTile(
+                    leading: const Icon(SpotubeIcons.queueAdd),
+                    title: Text(context.l10n.add_to_queue),
+                  ),
+                ),
+                PopSheetEntry(
+                  value: TrackOptionValue.playNext,
+                  child: ListTile(
+                    leading: const Icon(SpotubeIcons.lightning),
+                    title: Text(context.l10n.play_next),
+                  ),
+                ),
+              ] else
+                PopSheetEntry(
+                  value: TrackOptionValue.removeFromQueue,
+                  enabled: playlist.activeTrack?.id != track.id,
+                  child: ListTile(
+                    enabled: playlist.activeTrack?.id != track.id,
+                    leading: const Icon(SpotubeIcons.queueRemove),
+                    title: Text(context.l10n.remove_from_queue),
+                  ),
+                ),
+              if (favorites.me.hasData)
+                PopSheetEntry(
+                  value: TrackOptionValue.favorite,
+                  child: ListTile(
+                    leading: favorites.isLiked
+                        ? const Icon(
+                            SpotubeIcons.heartFilled,
+                            color: Colors.pink,
+                          )
+                        : const Icon(SpotubeIcons.heart),
+                    title: Text(
+                      favorites.isLiked
+                          ? context.l10n.remove_from_favorites
+                          : context.l10n.save_as_favorite,
+                    ),
+                  ),
+                ),
+              if (auth != null)
+                PopSheetEntry(
+                  value: TrackOptionValue.addToPlaylist,
+                  child: ListTile(
+                    leading: const Icon(SpotubeIcons.playlistAdd),
+                    title: Text(context.l10n.add_to_playlist),
+                  ),
+                ),
+              if (userPlaylist && auth != null)
+                PopSheetEntry(
+                  value: TrackOptionValue.removeFromPlaylist,
+                  child: ListTile(
+                    leading: (removeTrack.isMutating || !removeTrack.hasData) &&
+                            removingTrack.value == track.uri
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Icon(SpotubeIcons.removeFilled),
+                    title: Text(context.l10n.remove_from_playlist),
+                  ),
+                ),
+              PopSheetEntry(
+                value: TrackOptionValue.blacklist,
+                child: ListTile(
+                  leading: const Icon(SpotubeIcons.playlistRemove),
+                  iconColor: !isBlackListed ? Colors.red[400] : null,
+                  textColor: !isBlackListed ? Colors.red[400] : null,
+                  title: Text(
+                    isBlackListed
+                        ? context.l10n.remove_from_blacklist
+                        : context.l10n.add_to_blacklist,
+                  ),
                 ),
               ),
-            ),
-            useRootNavigator: true,
-          );
+              PopSheetEntry(
+                value: TrackOptionValue.share,
+                child: ListTile(
+                  leading: const Icon(SpotubeIcons.share),
+                  title: Text(context.l10n.share),
+                ),
+              )
+            ]
         },
-      );
-    }
-
-    return PopupMenuButton(
-      icon: const Icon(SpotubeIcons.moreHorizontal),
-      position: PopupMenuPosition.under,
-      tooltip: context.l10n.more_actions,
-      itemBuilder: (context) {
-        return createItems(context)
-            .map(
-              (e) => PopupMenuItem(
-                padding: EdgeInsets.zero,
-                child: e,
-              ),
-            )
-            .toList();
-      },
+      ),
     );
   }
 }

@@ -25,32 +25,50 @@ class SortTracksDropdown extends StatelessWidget {
           PopSheetEntry(
             value: SortBy.none,
             enabled: value != SortBy.none,
-            child: Text(context.l10n.none),
+            child: ListTile(
+              enabled: value != SortBy.none,
+              title: Text(context.l10n.none),
+            ),
           ),
           PopSheetEntry(
             value: SortBy.ascending,
             enabled: value != SortBy.ascending,
-            child: Text(context.l10n.sort_a_z),
+            child: ListTile(
+              enabled: value != SortBy.ascending,
+              title: Text(context.l10n.sort_a_z),
+            ),
           ),
           PopSheetEntry(
             value: SortBy.descending,
             enabled: value != SortBy.descending,
-            child: Text(context.l10n.sort_z_a),
+            child: ListTile(
+              enabled: value != SortBy.descending,
+              title: Text(context.l10n.sort_z_a),
+            ),
           ),
           PopSheetEntry(
             value: SortBy.dateAdded,
             enabled: value != SortBy.dateAdded,
-            child: Text(context.l10n.sort_date),
+            child: ListTile(
+              enabled: value != SortBy.dateAdded,
+              title: Text(context.l10n.sort_date),
+            ),
           ),
           PopSheetEntry(
             value: SortBy.artist,
             enabled: value != SortBy.artist,
-            child: Text(context.l10n.sort_artist),
+            child: ListTile(
+              enabled: value != SortBy.artist,
+              title: Text(context.l10n.sort_artist),
+            ),
           ),
           PopSheetEntry(
             value: SortBy.album,
             enabled: value != SortBy.album,
-            child: Text(context.l10n.sort_album),
+            child: ListTile(
+              enabled: value != SortBy.album,
+              title: Text(context.l10n.sort_album),
+            ),
           ),
         ],
         headings: [

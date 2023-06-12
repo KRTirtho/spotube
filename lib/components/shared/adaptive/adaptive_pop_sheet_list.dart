@@ -42,7 +42,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(999)),
     this.tooltip,
   }) : assert(
-          icon != null || child != null,
+          !(icon != null && child != null),
           'Either icon or child must be provided',
         );
 
@@ -55,21 +55,14 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       return PopupMenuButton(
         icon: icon,
         tooltip: tooltip,
-        child: IgnorePointer(child: child),
+        child: child == null ? null : IgnorePointer(child: child),
         itemBuilder: (context) => children
             .map(
               (item) => PopupMenuItem(
                 padding: EdgeInsets.zero,
-                child: ListTile(
-                  enabled: item.enabled,
-                  onTap: () {
-                    item.onTap?.call();
-                    Navigator.pop(context);
-                    if (item.value != null) {
-                      onSelected?.call(item.value as T);
-                    }
-                  },
-                  title: item.child,
+                child: _AdaptivePopSheetListItem(
+                  item: item,
+                  onSelected: onSelected,
                 ),
               ),
             )
@@ -90,7 +83,17 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (headings != null) ...[
+                    Container(
+                      width: 180,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     ...headings!,
+                    const SizedBox(height: 8),
                     Divider(
                       color: theme.colorScheme.primary,
                       thickness: 0.3,
@@ -99,16 +102,9 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
                     ),
                   ],
                   ...children.map(
-                    (item) => ListTile(
-                      onTap: () {
-                        item.onTap?.call();
-                        Navigator.pop(context);
-                        if (item.value != null) {
-                          onSelected?.call(item.value as T);
-                        }
-                      },
-                      enabled: item.enabled,
-                      title: item.child,
+                    (item) => _AdaptivePopSheetListItem(
+                      item: item,
+                      onSelected: onSelected,
                     ),
                   )
                 ],
@@ -141,6 +137,44 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
         ),
       ),
       onPressed: showSheet,
+    );
+  }
+}
+
+class _AdaptivePopSheetListItem<T> extends StatelessWidget {
+  final PopSheetEntry<T> item;
+  final ValueChanged<T>? onSelected;
+  const _AdaptivePopSheetListItem({
+    super.key,
+    required this.item,
+    this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: !item.enabled
+          ? null
+          : () {
+              item.onTap?.call();
+              Navigator.pop(context);
+              if (item.value != null) {
+                onSelected?.call(item.value as T);
+              }
+            },
+      child: DefaultTextStyle(
+        style: TextStyle(
+          color: item.enabled
+              ? theme.textTheme.bodyMedium!.color
+              : theme.textTheme.bodyMedium!.color!.withOpacity(0.5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: item.child,
+        ),
+      ),
     );
   }
 }

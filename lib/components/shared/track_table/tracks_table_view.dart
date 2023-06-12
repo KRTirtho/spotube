@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/confirm_download_dialog.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
@@ -138,70 +139,63 @@ class TracksTableView extends HookConsumerWidget {
                           .state = value;
                     },
                   ),
-                  PopupMenuButton(
+                  AdaptivePopSheetList(
                     tooltip: context.l10n.more_actions,
-                    itemBuilder: (context) {
-                      return [
-                        PopupMenuItem(
+                    headings: [
+                      Text(
+                        context.l10n.more_actions,
+                        style: tableHeadStyle,
+                      ),
+                    ],
+                    children: [
+                      PopSheetEntry(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "download",
+                        child: ListTile(
+                          leading: const Icon(SpotubeIcons.download),
                           enabled: selectedTracks.isNotEmpty,
-                          value: "download",
-                          child: Row(
-                            children: [
-                              const Icon(SpotubeIcons.download),
-                              const SizedBox(width: 5),
-                              Text(
-                                context.l10n
-                                    .download_count(selectedTracks.length),
-                              ),
-                            ],
+                          title: Text(
+                            context.l10n.download_count(selectedTracks.length),
                           ),
                         ),
-                        if (!userPlaylist)
-                          PopupMenuItem(
+                      ),
+                      if (!userPlaylist)
+                        PopSheetEntry(
+                          enabled: selectedTracks.isNotEmpty,
+                          value: "add-to-playlist",
+                          child: ListTile(
+                            leading: const Icon(SpotubeIcons.playlistAdd),
                             enabled: selectedTracks.isNotEmpty,
-                            value: "add-to-playlist",
-                            child: Row(
-                              children: [
-                                const Icon(SpotubeIcons.playlistAdd),
-                                const SizedBox(width: 5),
-                                Text(
-                                  context.l10n.add_count_to_playlist(
-                                    selectedTracks.length,
-                                  ),
-                                ),
-                              ],
+                            title: Text(
+                              context.l10n
+                                  .add_count_to_playlist(selectedTracks.length),
                             ),
                           ),
-                        PopupMenuItem(
+                        ),
+                      PopSheetEntry(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "add-to-queue",
+                        child: ListTile(
+                          leading: const Icon(SpotubeIcons.queueAdd),
                           enabled: selectedTracks.isNotEmpty,
-                          value: "add-to-queue",
-                          child: Row(
-                            children: [
-                              const Icon(SpotubeIcons.queueAdd),
-                              const SizedBox(width: 5),
-                              Text(
-                                context.l10n
-                                    .add_count_to_queue(selectedTracks.length),
-                              ),
-                            ],
+                          title: Text(
+                            context.l10n
+                                .add_count_to_queue(selectedTracks.length),
                           ),
                         ),
-                        PopupMenuItem(
+                      ),
+                      PopSheetEntry(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "play-next",
+                        child: ListTile(
+                          leading: const Icon(SpotubeIcons.lightning),
                           enabled: selectedTracks.isNotEmpty,
-                          value: "play-next",
-                          child: Row(
-                            children: [
-                              const Icon(SpotubeIcons.lightning),
-                              const SizedBox(width: 5),
-                              Text(
-                                context.l10n
-                                    .play_count_next(selectedTracks.length),
-                              ),
-                            ],
+                          title: Text(
+                            context.l10n.play_count_next(selectedTracks.length),
                           ),
                         ),
-                      ];
-                    },
+                      ),
+                    ],
                     onSelected: (action) async {
                       switch (action) {
                         case "download":
