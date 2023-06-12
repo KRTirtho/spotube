@@ -157,7 +157,7 @@ class BottomPlayer extends HookConsumerWidget {
                                   }
                                 }
                               },
-                              child: Slider(
+                              child: Slider.adaptive(
                                 min: 0,
                                 max: 1,
                                 value: volume,

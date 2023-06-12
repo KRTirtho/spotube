@@ -281,7 +281,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                             ),
                           ),
                           Expanded(
-                            child: Slider(
+                            child: Slider.adaptive(
                               value: value.toDouble(),
                               min: 10,
                               max: 100,

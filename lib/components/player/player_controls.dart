@@ -141,7 +141,7 @@ class PlayerControls extends HookConsumerWidget {
                         children: [
                           Tooltip(
                             message: context.l10n.slide_to_seek,
-                            child: Slider(
+                            child: Slider.adaptive(
                               // cannot divide by zero
                               // there's an edge case for value being bigger
                               // than total duration. Keeping it resolved
