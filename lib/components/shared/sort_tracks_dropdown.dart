@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/extensions/context.dart';
 
 class SortTracksDropdown extends StatelessWidget {
@@ -15,44 +16,62 @@ class SortTracksDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<SortBy>(
-      itemBuilder: (context) {
-        return [
-          PopupMenuItem(
+    return ListTileTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: AdaptivePopSheetList<SortBy>(
+        children: [
+          PopSheetEntry(
             value: SortBy.none,
             enabled: value != SortBy.none,
             child: Text(context.l10n.none),
           ),
-          PopupMenuItem(
+          PopSheetEntry(
             value: SortBy.ascending,
             enabled: value != SortBy.ascending,
             child: Text(context.l10n.sort_a_z),
           ),
-          PopupMenuItem(
+          PopSheetEntry(
             value: SortBy.descending,
             enabled: value != SortBy.descending,
             child: Text(context.l10n.sort_z_a),
           ),
-          PopupMenuItem(
+          PopSheetEntry(
             value: SortBy.dateAdded,
             enabled: value != SortBy.dateAdded,
             child: Text(context.l10n.sort_date),
           ),
-          PopupMenuItem(
+          PopSheetEntry(
             value: SortBy.artist,
             enabled: value != SortBy.artist,
             child: Text(context.l10n.sort_artist),
           ),
-          PopupMenuItem(
+          PopSheetEntry(
             value: SortBy.album,
             enabled: value != SortBy.album,
             child: Text(context.l10n.sort_album),
           ),
-        ];
-      },
-      onSelected: onChanged,
-      tooltip: context.l10n.sort_tracks,
-      icon: const Icon(SpotubeIcons.sort),
+        ],
+        headings: [
+          Text(context.l10n.sort_tracks),
+        ],
+        onSelected: onChanged,
+        tooltip: context.l10n.sort_tracks,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: DefaultTextStyle(
+            style: Theme.of(context).textTheme.titleSmall!,
+            child: Row(
+              children: [
+                const Icon(SpotubeIcons.sort),
+                const SizedBox(width: 8),
+                Text(context.l10n.sort_tracks),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
