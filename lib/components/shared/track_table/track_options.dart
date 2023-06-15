@@ -9,6 +9,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
+import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
@@ -29,6 +30,7 @@ enum TrackOptionValue {
   delete,
   playNext,
   favorite,
+  details,
 }
 
 class TrackOptions extends HookConsumerWidget {
@@ -163,6 +165,12 @@ class TrackOptions extends HookConsumerWidget {
             case TrackOptionValue.share:
               actionShare(context, track);
               break;
+            case TrackOptionValue.details:
+              showDialog(
+                context: context,
+                builder: (context) => TrackDetailsDialog(track: track),
+              );
+              break;
           }
         },
         icon: const Icon(SpotubeIcons.moreHorizontal),
@@ -288,7 +296,14 @@ class TrackOptions extends HookConsumerWidget {
                   leading: const Icon(SpotubeIcons.share),
                   title: Text(context.l10n.share),
                 ),
-              )
+              ),
+              PopSheetEntry(
+                value: TrackOptionValue.details,
+                child: ListTile(
+                  leading: const Icon(SpotubeIcons.info),
+                  title: Text(context.l10n.details),
+                ),
+              ),
             ]
         },
       ),

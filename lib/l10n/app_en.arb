@@ -230,5 +230,12 @@
   "download_agreement_2": "I'll support the Artist wherever I can and I'm only doing this because I don't have money to buy their art",
   "download_agreement_3": "I'm completely aware that my IP can get blocked on YouTube & I don't hold Spotube or his owners/contributors responsible for any accidents caused by my current action",
   "decline": "Decline",
-  "accept": "Accept"
+  "accept": "Accept",
+  "details": "Details",
+  "youtube": "YouTube",
+  "channel": "Channel",
+  "likes": "Likes",
+  "dislikes":  "Dislikes",
+  "views": "Views",
+  "streamUrl": "Stream URL"
 }

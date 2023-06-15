@@ -176,6 +176,7 @@ class TrackTile extends HookConsumerWidget {
                             track.album!.name!,
                             "/album/${track.album?.id}",
                             extra: track.album,
+                            push: true,
                             overflow: TextOverflow.ellipsis,
                           ),
                         )

@@ -251,6 +251,10 @@ abstract class ServiceUtils {
   }
 
   static void navigate(BuildContext context, String location, {Object? extra}) {
+    GoRouter.of(context).go(location, extra: extra);
+  }
+
+  static void push(BuildContext context, String location, {Object? extra}) {
     GoRouter.of(context).push(location, extra: extra);
   }
 

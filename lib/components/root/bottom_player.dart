@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/volume_provider.dart';
-import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
