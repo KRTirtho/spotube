@@ -9,6 +9,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_controls.dart';
+import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -247,6 +248,25 @@ class PlayerView extends HookConsumerWidget {
                                 const SizedBox(width: 10),
                               ],
                             ),
+                          const SizedBox(height: 25),
+                          SliderTheme(
+                            data: theme.sliderTheme.copyWith(
+                              activeTrackColor: titleTextColor,
+                              inactiveTrackColor: bodyTextColor,
+                              thumbColor: titleTextColor,
+                              overlayColor: titleTextColor?.withOpacity(0.2),
+                              trackHeight: 2,
+                              thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 6,
+                              ),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: VolumeSlider(
+                                fullWidth: true,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
