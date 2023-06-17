@@ -48,7 +48,7 @@ class PlaylistCard extends HookConsumerWidget {
       isLoading:
           (isPlaylistPlaying && playlistQueue.isFetching) || updating.value,
       onTap: () {
-        ServiceUtils.navigate(
+        ServiceUtils.push(
           context,
           "/playlist/${playlist.id}",
           extra: playlist,

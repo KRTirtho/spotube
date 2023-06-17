@@ -44,7 +44,7 @@ class PlayerOverlay extends HookConsumerWidget {
         int sensitivity = 8;
         if (details.primaryVelocity != null &&
             details.primaryVelocity! < -sensitivity) {
-          ServiceUtils.navigate(context, "/player");
+          ServiceUtils.push(context, "/player");
         }
       },
       child: ClipRRect(

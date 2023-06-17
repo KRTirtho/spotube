@@ -62,7 +62,7 @@ class ArtistCard extends HookConsumerWidget {
         ),
         child: InkWell(
             onTap: () {
-              ServiceUtils.navigate(context, "/artist/${artist.id}");
+              ServiceUtils.push(context, "/artist/${artist.id}");
             },
             borderRadius: radius,
             child: Padding(

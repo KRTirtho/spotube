@@ -70,7 +70,7 @@ class AlbumCard extends HookConsumerWidget {
         description:
             "${AlbumType.from(album.albumType!).formatted} • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
         onTap: () {
-          ServiceUtils.navigate(context, "/album/${album.id}", extra: album);
+          ServiceUtils.push(context, "/album/${album.id}", extra: album);
         },
         onPlaybuttonPressed: () async {
           updating.value = true;
