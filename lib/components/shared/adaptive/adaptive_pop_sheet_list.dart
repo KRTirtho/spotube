@@ -74,40 +74,38 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       showModalBottomSheet(
         context: context,
         useRootNavigator: useRootNavigator,
+        isScrollControlled: true,
+        showDragHandle: true,
+        constraints: BoxConstraints(
+          maxHeight: mediaQuery.size.height * 0.6,
+        ),
         builder: (context) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0).copyWith(top: 0),
             child: DefaultTextStyle(
               style: theme.textTheme.titleMedium!,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (headings != null) ...[
-                    Container(
-                      width: 180,
-                      height: 6,
-                      decoration: BoxDecoration(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (headings != null) ...[
+                      ...headings!,
+                      const SizedBox(height: 8),
+                      Divider(
                         color: theme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(999),
+                        thickness: 0.3,
+                        endIndent: 16,
+                        indent: 16,
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    ...headings!,
-                    const SizedBox(height: 8),
-                    Divider(
-                      color: theme.colorScheme.primary,
-                      thickness: 0.3,
-                      endIndent: 16,
-                      indent: 16,
-                    ),
+                    ],
+                    ...children.map(
+                      (item) => _AdaptivePopSheetListItem(
+                        item: item,
+                        onSelected: onSelected,
+                      ),
+                    )
                   ],
-                  ...children.map(
-                    (item) => _AdaptivePopSheetListItem(
-                      item: item,
-                      onSelected: onSelected,
-                    ),
-                  )
-                ],
+                ),
               ),
             ),
           );
