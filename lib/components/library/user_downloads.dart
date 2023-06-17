@@ -89,21 +89,18 @@ class UserDownloads extends HookConsumerWidget {
                       ),
                     ),
                     horizontalTitleGap: 10,
-                    trailing: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: downloadManager.activeItem?.id == track.id
-                          ? CircularProgressIndicator(
-                              value: task.data?.progress ?? 0,
-                            )
-                          : hasFailed
-                              ? Icon(SpotubeIcons.error, color: Colors.red[400])
-                              : IconButton(
-                                  icon: const Icon(SpotubeIcons.close),
-                                  onPressed: () {
-                                    downloadManager.cancel(track);
-                                  }),
-                    ),
+                    trailing: downloadManager.activeItem?.id == track.id &&
+                            !hasFailed
+                        ? CircularProgressIndicator(
+                            value: task.data?.progress ?? 0,
+                          )
+                        : hasFailed
+                            ? Icon(SpotubeIcons.error, color: Colors.red[400])
+                            : IconButton(
+                                icon: const Icon(SpotubeIcons.close),
+                                onPressed: () {
+                                  downloadManager.cancel(track);
+                                }),
                     subtitle: TypeConversionUtils.artists_X_ClickableArtists(
                       track.artists ?? <Artist>[],
                       mainAxisAlignment: WrapAlignment.start,
