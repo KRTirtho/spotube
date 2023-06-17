@@ -79,8 +79,8 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: "blacklist",
-              pageBuilder: (context, state) => const SpotubePage(
-                child: BlackListPage(),
+              pageBuilder: (context, state) => SpotubeSlidePage(
+                child: const BlackListPage(),
               ),
             ),
             GoRoute(

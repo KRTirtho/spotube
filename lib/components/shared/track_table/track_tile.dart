@@ -100,10 +100,14 @@ class TrackTile extends HookConsumerWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),
-                      child: UniversalImage(
-                        path: TypeConversionUtils.image_X_UrlString(
-                          track.album?.images,
-                          placeholder: ImagePlaceholder.albumArt,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: UniversalImage(
+                          path: TypeConversionUtils.image_X_UrlString(
+                            track.album?.images,
+                            placeholder: ImagePlaceholder.albumArt,
+                          ),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

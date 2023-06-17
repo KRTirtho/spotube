@@ -237,5 +237,6 @@
   "likes": "Likes",
   "dislikes":  "Dislikes",
   "views": "Views",
-  "streamUrl": "Stream URL"
+  "streamUrl": "Stream URL",
+  "stop": "Stop"
 }

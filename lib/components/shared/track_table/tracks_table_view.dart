@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
@@ -43,7 +45,9 @@ class TracksTableView extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final theme = Theme.of(context);
+
+    ref.watch(ProxyPlaylistNotifier.provider);
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
@@ -54,11 +58,31 @@ class TracksTableView extends HookConsumerWidget {
     final showCheck = useState<bool>(false);
     final sortBy = ref.watch(trackCollectionSortState(playlistId ?? ''));
 
+    final isFiltering = useState<bool>(false);
+
+    final searchController = useTextEditingController();
+    final searchFocus = useFocusNode();
+
+    // this will trigger update on each change in searchController
+    useValueListenable(searchController);
+
+    final filteredTracks = useMemoized(() {
+      if (searchController.text.isEmpty) {
+        return tracks;
+      }
+      return tracks
+          .map((e) => (weightedRatio(e.name!, searchController.text), e))
+          .sorted((a, b) => b.$1.compareTo(a.$1))
+          .where((e) => e.$1 > 50)
+          .map((e) => e.$2)
+          .toList();
+    }, [tracks, searchController.text]);
+
     final sortedTracks = useMemoized(
       () {
-        return ServiceUtils.sortTracks(tracks, sortBy);
+        return ServiceUtils.sortTracks(filteredTracks, sortBy);
       },
-      [tracks, sortBy],
+      [filteredTracks, sortBy],
     );
 
     final selectedTracks = useMemoized(
@@ -68,7 +92,7 @@ class TracksTableView extends HookConsumerWidget {
       [sortedTracks],
     );
 
-    final children = sortedTracks.isEmpty
+    final children = tracks.isEmpty
         ? [const NotFound(vertical: true)]
         : [
             if (heading != null) heading!,
@@ -105,7 +129,7 @@ class TracksTableView extends HookConsumerWidget {
                             : const SizedBox(width: 16),
                   ),
                   Expanded(
-                    flex: 5,
+                    flex: 7,
                     child: Row(
                       children: [
                         Text(
@@ -137,6 +161,28 @@ class TracksTableView extends HookConsumerWidget {
                           .read(trackCollectionSortState(playlistId ?? '')
                               .notifier)
                           .state = value;
+                    },
+                  ),
+                  IconButton(
+                    tooltip: context.l10n.filter_playlists,
+                    icon: const Icon(SpotubeIcons.filter),
+                    style: IconButton.styleFrom(
+                      foregroundColor: isFiltering.value
+                          ? theme.colorScheme.secondary
+                          : null,
+                      backgroundColor: isFiltering.value
+                          ? theme.colorScheme.secondaryContainer
+                          : null,
+                      minimumSize: const Size(22, 22),
+                    ),
+                    onPressed: () {
+                      isFiltering.value = !isFiltering.value;
+                      if (isFiltering.value) {
+                        searchFocus.requestFocus();
+                      } else {
+                        searchController.clear();
+                        searchFocus.unfocus();
+                      }
                     },
                   ),
                   AdaptivePopSheetList(
@@ -250,6 +296,38 @@ class TracksTableView extends HookConsumerWidget {
                 ],
               );
             }),
+            AnimatedOpacity(
+              duration: const Duration(milliseconds: 200),
+              opacity: isFiltering.value ? 1 : 0,
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                child: SizedBox(
+                  height: isFiltering.value ? 50 : 0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: CallbackShortcuts(
+                      bindings: {
+                        LogicalKeySet(LogicalKeyboardKey.escape): () {
+                          isFiltering.value = false;
+                          searchController.clear();
+                          searchFocus.unfocus();
+                        }
+                      },
+                      child: TextField(
+                        autofocus: true,
+                        focusNode: searchFocus,
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          hintText: context.l10n.search_tracks,
+                          isDense: true,
+                          prefixIcon: const Icon(SpotubeIcons.search),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             ...sortedTracks.mapIndexed((i, track) {
               return TrackTile(
                 index: i,
