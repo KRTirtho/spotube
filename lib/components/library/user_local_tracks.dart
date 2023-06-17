@@ -95,7 +95,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
             return {"metadata": metadata, "file": f, "art": imageFile.path};
           } catch (e, stack) {
             if (e is FfiException) {
-              return {};
+              return {"file": f};
             }
             Catcher.reportCheckedError(e, stack);
             return {};
