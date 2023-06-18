@@ -15,7 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/compact_search.dart';
+import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
@@ -160,7 +160,10 @@ class UserLocalTracks extends HookConsumerWidget {
         playlist.containsTracks(trackSnapshot.value ?? []);
     final isMounted = useIsMounted();
 
-    final searchText = useState<String>("");
+    final searchController = useTextEditingController();
+    useValueListenable(searchController);
+    final searchFocus = useFocusNode();
+    final isFiltering = useState(false);
 
     useAsyncEffect(
       () async {
@@ -173,11 +176,6 @@ class UserLocalTracks extends HookConsumerWidget {
       },
       null,
       [],
-    );
-
-    final searchbar = CompactSearch(
-      onChanged: (value) => searchText.value = value,
-      placeholder: context.l10n.search_local_tracks,
     );
 
     return Column(
@@ -213,7 +211,10 @@ class UserLocalTracks extends HookConsumerWidget {
                 ),
               ),
               const Spacer(),
-              searchbar,
+              ExpandableSearchButton(
+                isFiltering: isFiltering,
+                searchFocus: searchFocus,
+              ),
               const SizedBox(width: 10),
               SortTracksDropdown(
                 value: sortBy.value,
@@ -231,6 +232,11 @@ class UserLocalTracks extends HookConsumerWidget {
             ],
           ),
         ),
+        ExpandableSearchField(
+          searchController: searchController,
+          searchFocus: searchFocus,
+          isFiltering: isFiltering,
+        ),
         trackSnapshot.when(
           data: (tracks) {
             final sortedTracks = useMemoized(() {
@@ -238,14 +244,14 @@ class UserLocalTracks extends HookConsumerWidget {
             }, [sortBy.value, tracks]);
 
             final filteredTracks = useMemoized(() {
-              if (searchText.value.isEmpty) {
+              if (searchController.text.isEmpty) {
                 return sortedTracks;
               }
               return sortedTracks
                   .map((e) => (
                         weightedRatio(
                           "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
-                          searchText.value,
+                          searchController.text,
                         ),
                         e,
                       ))
@@ -257,7 +263,7 @@ class UserLocalTracks extends HookConsumerWidget {
                   .map((e) => e.$2)
                   .toList()
                   .toList();
-            }, [searchText.value, sortedTracks]);
+            }, [searchController.text, sortedTracks]);
 
             return Expanded(
               child: RefreshIndicator(

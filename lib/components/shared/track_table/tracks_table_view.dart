@@ -10,6 +10,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/confirm_download_dialog.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
+import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
@@ -168,26 +169,12 @@ class TracksTableView extends HookConsumerWidget {
                           .state = value;
                     },
                   ),
-                  IconButton(
-                    tooltip: context.l10n.filter_playlists,
-                    icon: const Icon(SpotubeIcons.filter),
-                    style: IconButton.styleFrom(
-                      foregroundColor: isFiltering.value
-                          ? theme.colorScheme.secondary
-                          : null,
-                      backgroundColor: isFiltering.value
-                          ? theme.colorScheme.secondaryContainer
-                          : null,
-                      minimumSize: const Size(22, 22),
-                    ),
-                    onPressed: () {
-                      isFiltering.value = !isFiltering.value;
+                  ExpandableSearchButton(
+                    isFiltering: isFiltering,
+                    searchFocus: searchFocus,
+                    onPressed: (value) {
                       if (isFiltering.value) {
                         onFiltering?.call();
-                        searchFocus.requestFocus();
-                      } else {
-                        searchController.clear();
-                        searchFocus.unfocus();
                       }
                     },
                   ),
@@ -302,36 +289,10 @@ class TracksTableView extends HookConsumerWidget {
                 ],
               );
             }),
-            AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
-              opacity: isFiltering.value ? 1 : 0,
-              child: AnimatedSize(
-                duration: const Duration(milliseconds: 200),
-                child: SizedBox(
-                  height: isFiltering.value ? 50 : 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: CallbackShortcuts(
-                      bindings: {
-                        LogicalKeySet(LogicalKeyboardKey.escape): () {
-                          isFiltering.value = false;
-                          searchController.clear();
-                          searchFocus.unfocus();
-                        }
-                      },
-                      child: TextField(
-                        focusNode: searchFocus,
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          hintText: context.l10n.search_tracks,
-                          isDense: true,
-                          prefixIcon: const Icon(SpotubeIcons.search),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            ExpandableSearchField(
+              isFiltering: isFiltering,
+              searchController: searchController,
+              searchFocus: searchFocus,
             ),
             ...sortedTracks.mapIndexed((i, track) {
               return TrackTile(
