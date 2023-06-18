@@ -207,102 +207,81 @@ class TrackOptions extends HookConsumerWidget {
           LocalTrack => [
               PopSheetEntry(
                 value: TrackOptionValue.delete,
-                child: ListTile(
-                  leading: const Icon(SpotubeIcons.trash),
-                  title: Text(context.l10n.delete),
-                ),
+                leading: const Icon(SpotubeIcons.trash),
+                title: Text(context.l10n.delete),
               )
             ],
           _ => [
               if (!playlist.containsTrack(track)) ...[
                 PopSheetEntry(
                   value: TrackOptionValue.addToQueue,
-                  child: ListTile(
-                    leading: const Icon(SpotubeIcons.queueAdd),
-                    title: Text(context.l10n.add_to_queue),
-                  ),
+                  leading: const Icon(SpotubeIcons.queueAdd),
+                  title: Text(context.l10n.add_to_queue),
                 ),
                 PopSheetEntry(
                   value: TrackOptionValue.playNext,
-                  child: ListTile(
-                    leading: const Icon(SpotubeIcons.lightning),
-                    title: Text(context.l10n.play_next),
-                  ),
+                  leading: const Icon(SpotubeIcons.lightning),
+                  title: Text(context.l10n.play_next),
                 ),
               ] else
                 PopSheetEntry(
                   value: TrackOptionValue.removeFromQueue,
                   enabled: playlist.activeTrack?.id != track.id,
-                  child: ListTile(
-                    enabled: playlist.activeTrack?.id != track.id,
-                    leading: const Icon(SpotubeIcons.queueRemove),
-                    title: Text(context.l10n.remove_from_queue),
-                  ),
+                  leading: const Icon(SpotubeIcons.queueRemove),
+                  title: Text(context.l10n.remove_from_queue),
                 ),
               if (favorites.me.hasData)
                 PopSheetEntry(
                   value: TrackOptionValue.favorite,
-                  child: ListTile(
-                    leading: favorites.isLiked
-                        ? const Icon(
-                            SpotubeIcons.heartFilled,
-                            color: Colors.pink,
-                          )
-                        : const Icon(SpotubeIcons.heart),
-                    title: Text(
-                      favorites.isLiked
-                          ? context.l10n.remove_from_favorites
-                          : context.l10n.save_as_favorite,
-                    ),
+                  leading: favorites.isLiked
+                      ? const Icon(
+                          SpotubeIcons.heartFilled,
+                          color: Colors.pink,
+                        )
+                      : const Icon(SpotubeIcons.heart),
+                  title: Text(
+                    favorites.isLiked
+                        ? context.l10n.remove_from_favorites
+                        : context.l10n.save_as_favorite,
                   ),
                 ),
               if (auth != null)
                 PopSheetEntry(
                   value: TrackOptionValue.addToPlaylist,
-                  child: ListTile(
-                    leading: const Icon(SpotubeIcons.playlistAdd),
-                    title: Text(context.l10n.add_to_playlist),
-                  ),
+                  leading: const Icon(SpotubeIcons.playlistAdd),
+                  title: Text(context.l10n.add_to_playlist),
                 ),
               if (userPlaylist && auth != null)
                 PopSheetEntry(
                   value: TrackOptionValue.removeFromPlaylist,
-                  child: ListTile(
-                    leading: (removeTrack.isMutating || !removeTrack.hasData) &&
-                            removingTrack.value == track.uri
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : const Icon(SpotubeIcons.removeFilled),
-                    title: Text(context.l10n.remove_from_playlist),
-                  ),
+                  leading: (removeTrack.isMutating || !removeTrack.hasData) &&
+                          removingTrack.value == track.uri
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : const Icon(SpotubeIcons.removeFilled),
+                  title: Text(context.l10n.remove_from_playlist),
                 ),
               PopSheetEntry(
                 value: TrackOptionValue.blacklist,
-                child: ListTile(
-                  leading: const Icon(SpotubeIcons.playlistRemove),
-                  iconColor: !isBlackListed ? Colors.red[400] : null,
-                  textColor: !isBlackListed ? Colors.red[400] : null,
-                  title: Text(
-                    isBlackListed
-                        ? context.l10n.remove_from_blacklist
-                        : context.l10n.add_to_blacklist,
-                  ),
+                leading: const Icon(SpotubeIcons.playlistRemove),
+                iconColor: !isBlackListed ? Colors.red[400] : null,
+                textColor: !isBlackListed ? Colors.red[400] : null,
+                title: Text(
+                  isBlackListed
+                      ? context.l10n.remove_from_blacklist
+                      : context.l10n.add_to_blacklist,
                 ),
               ),
               PopSheetEntry(
                 value: TrackOptionValue.share,
-                child: ListTile(
-                  leading: const Icon(SpotubeIcons.share),
-                  title: Text(context.l10n.share),
-                ),
+                leading: const Icon(SpotubeIcons.share),
+                title: Text(context.l10n.share),
               ),
               PopSheetEntry(
                 value: TrackOptionValue.details,
-                child: ListTile(
-                  leading: const Icon(SpotubeIcons.info),
-                  title: Text(context.l10n.details),
-                ),
+                leading: const Icon(SpotubeIcons.info),
+                title: Text(context.l10n.details),
               ),
             ]
         },

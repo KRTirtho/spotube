@@ -239,5 +239,9 @@
   "streamUrl": "Stream URL",
   "stop": "Stop",
   "sort_newest": "Sort by newest added",
-  "sort_oldest": "Sort by oldest added"
+  "sort_oldest": "Sort by oldest added",
+  "sleep_timer": "Sleep Timer",
+  "mins": "{minutes} Minutes",
+  "hours": "{hours} Hours",
+  "hour": "{hours} Hour"
 }

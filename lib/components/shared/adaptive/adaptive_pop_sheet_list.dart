@@ -2,17 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 
-class PopSheetEntry<T> {
-  final T? value;
-  final VoidCallback? onTap;
-  final Widget child;
-  final bool enabled;
+_emptyCB() {}
 
+class PopSheetEntry<T> extends ListTile {
+  final T? value;
   const PopSheetEntry({
-    required this.child,
     this.value,
-    this.onTap,
-    this.enabled = true,
+    super.key,
+    super.leading,
+    super.title,
+    super.subtitle,
+    super.trailing,
+    super.isThreeLine = false,
+    super.dense,
+    super.visualDensity,
+    super.shape,
+    super.style,
+    super.selectedColor,
+    super.iconColor,
+    super.textColor,
+    super.titleTextStyle,
+    super.subtitleTextStyle,
+    super.leadingAndTrailingTextStyle,
+    super.contentPadding,
+    super.enabled = true,
+    super.onTap = _emptyCB,
+    super.onLongPress,
+    super.onFocusChange,
+    super.mouseCursor,
+    super.selected = false,
+    super.focusColor,
+    super.hoverColor,
+    super.splashColor,
+    super.focusNode,
+    super.autofocus = false,
+    super.tileColor,
+    super.selectedTileColor,
+    super.enableFeedback,
+    super.horizontalTitleGap,
+    super.minVerticalPadding,
+    super.minLeadingWidth,
+    super.titleAlignment,
   });
 }
 
@@ -30,6 +60,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
   final ValueChanged<T>? onSelected;
 
   final BorderRadius borderRadius;
+  final Offset offset;
 
   const AdaptivePopSheetList({
     super.key,
@@ -41,6 +72,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     this.onSelected,
     this.borderRadius = const BorderRadius.all(Radius.circular(999)),
     this.tooltip,
+    this.offset = Offset.zero,
   }) : assert(
           !(icon != null && child != null),
           'Either icon or child must be provided',
@@ -55,11 +87,13 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       return PopupMenuButton(
         icon: icon,
         tooltip: tooltip,
+        offset: offset,
         child: child == null ? null : IgnorePointer(child: child),
         itemBuilder: (context) => children
             .map(
               (item) => PopupMenuItem(
                 padding: EdgeInsets.zero,
+                enabled: false,
                 child: _AdaptivePopSheetListItem(
                   item: item,
                   onSelected: onSelected,
@@ -151,8 +185,11 @@ class _AdaptivePopSheetListItem<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return InkWell(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: (theme.listTileTheme.shape as RoundedRectangleBorder?)
+              ?.borderRadius as BorderRadius? ??
+          const BorderRadius.all(Radius.circular(10)),
       onTap: !item.enabled
           ? null
           : () {
@@ -162,16 +199,9 @@ class _AdaptivePopSheetListItem<T> extends StatelessWidget {
                 onSelected?.call(item.value as T);
               }
             },
-      child: DefaultTextStyle(
-        style: TextStyle(
-          color: item.enabled
-              ? theme.textTheme.bodyMedium!.color
-              : theme.textTheme.bodyMedium!.color!.withOpacity(0.5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: item.child,
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: IgnorePointer(child: item),
       ),
     );
   }

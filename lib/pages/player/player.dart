@@ -197,6 +197,9 @@ class PlayerView extends HookConsumerWidget {
                                     label: Text(context.l10n.details),
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: bodyTextColor,
+                                      side: BorderSide(
+                                        color: bodyTextColor ?? Colors.white,
+                                      ),
                                     ),
                                     onPressed: currentTrack == null
                                         ? null
@@ -218,6 +221,9 @@ class PlayerView extends HookConsumerWidget {
                                     icon: const Icon(SpotubeIcons.music),
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: bodyTextColor,
+                                      side: BorderSide(
+                                        color: bodyTextColor ?? Colors.white,
+                                      ),
                                     ),
                                     onPressed: () {
                                       showModalBottomSheet(
@@ -257,7 +263,7 @@ class PlayerView extends HookConsumerWidget {
                               overlayColor: titleTextColor?.withOpacity(0.2),
                               trackHeight: 2,
                               thumbShape: const RoundSliderThumbShape(
-                                enabledThumbRadius: 6,
+                                enabledThumbRadius: 8,
                               ),
                             ),
                             child: const Padding(

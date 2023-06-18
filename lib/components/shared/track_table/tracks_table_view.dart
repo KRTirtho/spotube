@@ -185,55 +185,6 @@ class TracksTableView extends HookConsumerWidget {
                         style: tableHeadStyle,
                       ),
                     ],
-                    children: [
-                      PopSheetEntry(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "download",
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.download),
-                          enabled: selectedTracks.isNotEmpty,
-                          title: Text(
-                            context.l10n.download_count(selectedTracks.length),
-                          ),
-                        ),
-                      ),
-                      if (!userPlaylist)
-                        PopSheetEntry(
-                          enabled: selectedTracks.isNotEmpty,
-                          value: "add-to-playlist",
-                          child: ListTile(
-                            leading: const Icon(SpotubeIcons.playlistAdd),
-                            enabled: selectedTracks.isNotEmpty,
-                            title: Text(
-                              context.l10n
-                                  .add_count_to_playlist(selectedTracks.length),
-                            ),
-                          ),
-                        ),
-                      PopSheetEntry(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "add-to-queue",
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.queueAdd),
-                          enabled: selectedTracks.isNotEmpty,
-                          title: Text(
-                            context.l10n
-                                .add_count_to_queue(selectedTracks.length),
-                          ),
-                        ),
-                      ),
-                      PopSheetEntry(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "play-next",
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.lightning),
-                          enabled: selectedTracks.isNotEmpty,
-                          title: Text(
-                            context.l10n.play_count_next(selectedTracks.length),
-                          ),
-                        ),
-                      ),
-                    ],
                     onSelected: (action) async {
                       switch (action) {
                         case "download":
@@ -283,6 +234,43 @@ class TracksTableView extends HookConsumerWidget {
                       }
                     },
                     icon: const Icon(SpotubeIcons.moreVertical),
+                    children: [
+                      PopSheetEntry(
+                        value: "download",
+                        leading: const Icon(SpotubeIcons.download),
+                        enabled: selectedTracks.isNotEmpty,
+                        title: Text(
+                          context.l10n.download_count(selectedTracks.length),
+                        ),
+                      ),
+                      if (!userPlaylist)
+                        PopSheetEntry(
+                          value: "add-to-playlist",
+                          leading: const Icon(SpotubeIcons.playlistAdd),
+                          enabled: selectedTracks.isNotEmpty,
+                          title: Text(
+                            context.l10n
+                                .add_count_to_playlist(selectedTracks.length),
+                          ),
+                        ),
+                      PopSheetEntry(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "add-to-queue",
+                        leading: const Icon(SpotubeIcons.queueAdd),
+                        title: Text(
+                          context.l10n
+                              .add_count_to_queue(selectedTracks.length),
+                        ),
+                      ),
+                      PopSheetEntry(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "play-next",
+                        leading: const Icon(SpotubeIcons.lightning),
+                        title: Text(
+                          context.l10n.play_count_next(selectedTracks.length),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(width: 10),
                 ],
