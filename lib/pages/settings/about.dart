@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_package_info.dart';
@@ -24,6 +25,8 @@ class AboutSpotube extends HookConsumerWidget {
     final license = ref.watch(_licenseProvider);
     final theme = Theme.of(context);
 
+    final colon = Text(":");
+
     return Scaffold(
       appBar: PageWindowTitleBar(
         leading: const BackButton(),
@@ -40,76 +43,74 @@ class AboutSpotube extends HookConsumerWidget {
               ),
               Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       context.l10n.spotube_description,
                       style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
+                    Table(
+                      columnWidths: const {
+                        0: FixedColumnWidth(95),
+                        1: FixedColumnWidth(10),
+                        2: IntrinsicColumnWidth(),
+                      },
                       children: [
-                        Text(
-                          "${context.l10n.founder}:   ${context.l10n.kingkor_roy_tirtho}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        TableRow(
+                          children: [
+                            Text(context.l10n.founder),
+                            colon,
+                            Hyperlink(
+                              context.l10n.kingkor_roy_tirtho,
+                              "https://github.com/KRTirtho",
+                            )
+                          ],
                         ),
-                        const SizedBox(width: 5),
-                        CircleAvatar(
-                          radius: 20,
-                          child: ClipOval(
-                            child: Image.network(
-                              "https://avatars.githubusercontent.com/u/61944859?v=4",
+                        TableRow(
+                          children: [
+                            Text(context.l10n.version),
+                            colon,
+                            Text("v${packageInfo.version}")
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(context.l10n.build_number),
+                            colon,
+                            Text(packageInfo.buildNumber.replaceAll(".", " "))
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(context.l10n.repository),
+                            colon,
+                            const Hyperlink(
+                              "github.com/KRTirtho/spotube",
+                              "https://github.com/KRTirtho/spotube",
                             ),
-                          ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(context.l10n.license),
+                            colon,
+                            const Hyperlink(
+                              "BSD-4-Clause",
+                              "https://raw.githubusercontent.com/KRTirtho/spotube/master/LICENSE",
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(context.l10n.bug_issues),
+                            colon,
+                            const Hyperlink(
+                              "github.com/KRTirtho/spotube/issues",
+                              "https://github.com/KRTirtho/spotube/issues",
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      "${context.l10n.version}:              v${packageInfo.version}",
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      "${context.l10n.build_number}:  ${packageInfo.buildNumber.replaceAll(".", " ")}",
-                    ),
-                    const SizedBox(height: 5),
-                    InkWell(
-                      onTap: () {
-                        launchUrlString(
-                          "https://github.com/KRTirtho/spotube",
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: Text(
-                        "${context.l10n.repository}:        https://github.com/KRTirtho/spotube",
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    InkWell(
-                      onTap: () {
-                        launchUrlString(
-                          "https://raw.githubusercontent.com/KRTirtho/spotube/master/LICENSE",
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: Text(
-                        "${context.l10n.license}:              BSD-4-Clause",
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    InkWell(
-                      onTap: () {
-                        launchUrlString(
-                          "https://github.com/KRTirtho/spotube/issues",
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: Text(
-                        "${context.l10n.bug_issues}:     https://github.com/KRTirtho/spotube/issues",
-                      ),
                     ),
                   ],
                 ),
