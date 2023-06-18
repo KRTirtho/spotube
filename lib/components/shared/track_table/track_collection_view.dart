@@ -65,7 +65,6 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
     final color = usePaletteGenerator(titleImage).dominantColor;
 
@@ -343,23 +342,30 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                     }
 
                     return TracksTableView(
-                      List.from(
-                        (tracksSnapshot.data ?? []).map(
-                          (track) {
-                            if (track is Track) {
-                              return track;
-                            } else {
-                              return TypeConversionUtils.simpleTrack_X_Track(
-                                track,
-                                album!,
-                              );
-                            }
-                          },
-                        ),
-                      ),
+                      (tracksSnapshot.data ?? []).map(
+                        (track) {
+                          if (track is Track) {
+                            return track;
+                          } else {
+                            return TypeConversionUtils.simpleTrack_X_Track(
+                              track,
+                              album!,
+                            );
+                          }
+                        },
+                      ).toList(),
                       onTrackPlayButtonPressed: onPlay,
                       playlistId: id,
                       userPlaylist: isOwned,
+                      onFiltering: () {
+                        // scroll the flexible space
+                        // to allow more space for search results
+                        controller.animateTo(
+                          390,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                        );
+                      },
                     );
                   },
                 )

@@ -33,10 +33,14 @@ class TracksTableView extends HookConsumerWidget {
   final bool isSliver;
 
   final Widget? heading;
+
+  final VoidCallback? onFiltering;
+
   const TracksTableView(
     this.tracks, {
     Key? key,
     this.onTrackPlayButtonPressed,
+    this.onFiltering,
     this.userPlaylist = false,
     this.playlistId,
     this.heading,
@@ -46,6 +50,7 @@ class TracksTableView extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
 
     ref.watch(ProxyPlaylistNotifier.provider);
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
@@ -178,6 +183,7 @@ class TracksTableView extends HookConsumerWidget {
                     onPressed: () {
                       isFiltering.value = !isFiltering.value;
                       if (isFiltering.value) {
+                        onFiltering?.call();
                         searchFocus.requestFocus();
                       } else {
                         searchController.clear();
@@ -314,7 +320,6 @@ class TracksTableView extends HookConsumerWidget {
                         }
                       },
                       child: TextField(
-                        autofocus: true,
                         focusNode: searchFocus,
                         controller: searchController,
                         decoration: InputDecoration(
@@ -375,7 +380,12 @@ class TracksTableView extends HookConsumerWidget {
                         }
                       },
               );
-            }).toList(),
+            }),
+            // extra space for mobile devices where keyboard takes half of the screen
+            if (isFiltering.value)
+              SizedBox(
+                height: mediaQuery.size.height * .75, //75% of the screen
+              ),
           ];
 
     if (isSliver) {
