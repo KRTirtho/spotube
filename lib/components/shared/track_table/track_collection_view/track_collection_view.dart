@@ -166,9 +166,8 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                   pinned: true,
                   expandedHeight: 400,
                   automaticallyImplyLeading: kIsMobile,
-                  leading: kIsMobile
-                      ? BackButton(color: color?.titleTextColor)
-                      : null,
+                  leading:
+                      kIsMobile ? const BackButton(color: Colors.white) : null,
                   iconTheme: IconThemeData(color: color?.titleTextColor),
                   primary: true,
                   backgroundColor: color?.color,
