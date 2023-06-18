@@ -39,7 +39,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               ),
             ),
           ),
-        if (mediaQuery.isSm || mediaQuery.isMd)
+        if (mediaQuery.mdAndDown)
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -21,6 +21,7 @@ class ShimmerArtistProfile extends HookWidget {
         shimmerTheme.shimmerBackgroundColor ?? Colors.grey;
 
     final avatarWidth = useBreakpointValue(
+          xs: MediaQuery.of(context).size.width * 0.80,
           sm: MediaQuery.of(context).size.width * 0.80,
           md: MediaQuery.of(context).size.width * 0.50,
           lg: MediaQuery.of(context).size.width * 0.30,

@@ -188,7 +188,7 @@ class _MultiSelectDialog<T> extends HookWidget {
     return AlertDialog(
       scrollable: true,
       title: dialogTitle ?? const Text('Select'),
-      contentPadding: mediaQuery.isSm ? const EdgeInsets.all(16) : null,
+      contentPadding: mediaQuery.mdAndUp ? null : const EdgeInsets.all(16),
       insetPadding: const EdgeInsets.all(16),
       actions: [
         OutlinedButton(

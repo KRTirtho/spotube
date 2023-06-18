@@ -24,6 +24,7 @@ class UserAlbums extends HookConsumerWidget {
     final albumsQuery = useQueries.album.ofMine(ref);
 
     final spacing = useBreakpointValue<double>(
+      xs: 0,
       sm: 0,
       others: 20,
     );

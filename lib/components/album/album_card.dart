@@ -53,7 +53,7 @@ class AlbumCard extends HookConsumerWidget {
       [playlistNotifier, query?.data, album.tracks],
     );
     final int marginH =
-        useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
+        useBreakpointValue(xs: 10, sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
 
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);

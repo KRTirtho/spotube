@@ -32,7 +32,7 @@ class ShimmerLyrics extends HookWidget {
         if (mediaQuery.isMd) {
           widthsCp.removeLast();
         }
-        if (mediaQuery.isSm) {
+        if (mediaQuery.smAndDown) {
           widthsCp.removeLast();
           widthsCp.removeLast();
         }

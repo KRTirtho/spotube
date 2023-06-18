@@ -1,16 +1,12 @@
-import 'dart:ui';
-
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
@@ -31,8 +27,8 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   final String titleImage;
   final bool isPlaying;
   final void Function([Track? currentTrack]) onPlay;
-  final void Function() onAddToQueue;
   final void Function([Track? currentTrack]) onShuffledPlay;
+  final void Function() onAddToQueue;
   final void Function() onShare;
   final Widget? heartBtn;
   final AlbumSimple? album;
@@ -187,145 +183,17 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                       : null,
                   centerTitle: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: DecoratedBox(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: UniversalImage.imageProvider(titleImage),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.black45,
-                                theme.colorScheme.surface,
-                              ],
-                              begin: const FractionalOffset(0, 0),
-                              end: const FractionalOffset(0, 1),
-                              tileMode: TileMode.clamp,
-                            ),
-                          ),
-                          child: Material(
-                            type: MaterialType.transparency,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Wrap(
-                                spacing: 20,
-                                runSpacing: 20,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                alignment: WrapAlignment.center,
-                                runAlignment: WrapAlignment.center,
-                                children: [
-                                  Container(
-                                    constraints:
-                                        const BoxConstraints(maxHeight: 200),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: UniversalImage(
-                                        path: titleImage,
-                                        placeholder:
-                                            Assets.albumPlaceholder.path,
-                                      ),
-                                    ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        title,
-                                        style: theme.textTheme.titleLarge!
-                                            .copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      if (album != null)
-                                        Text(
-                                          "${AlbumType.from(album?.albumType).formatted} • ${context.l10n.released} • ${DateTime.tryParse(
-                                            album?.releaseDate ?? "",
-                                          )?.year}",
-                                          style: theme.textTheme.titleMedium!
-                                              .copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      if (description != null)
-                                        Text(
-                                          description!,
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.fade,
-                                        ),
-                                      const SizedBox(height: 10),
-                                      IconTheme(
-                                        data: theme.iconTheme.copyWith(
-                                          color: Colors.white,
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: buttons,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          FilledButton.icon(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.white,
-                                              foregroundColor: color?.color,
-                                            ),
-                                            label: Text(context.l10n.shuffle),
-                                            icon: const Icon(
-                                                SpotubeIcons.shuffle),
-                                            onPressed:
-                                                tracksSnapshot.data == null ||
-                                                        isPlaying
-                                                    ? null
-                                                    : onShuffledPlay,
-                                          ),
-                                          const SizedBox(width: 10),
-                                          FilledButton.icon(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: color?.color,
-                                              foregroundColor:
-                                                  color?.bodyTextColor,
-                                            ),
-                                            onPressed:
-                                                tracksSnapshot.data != null
-                                                    ? onPlay
-                                                    : null,
-                                            icon: Icon(
-                                              isPlaying
-                                                  ? SpotubeIcons.stop
-                                                  : SpotubeIcons.play,
-                                            ),
-                                            label: Text(
-                                              isPlaying
-                                                  ? context.l10n.stop
-                                                  : context.l10n.play,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    background: TrackCollectionHeading<T>(
+                      color: color,
+                      title: title,
+                      description: description,
+                      titleImage: titleImage,
+                      isPlaying: isPlaying,
+                      onPlay: onPlay,
+                      onShuffledPlay: onShuffledPlay,
+                      tracksSnapshot: tracksSnapshot,
+                      buttons: buttons,
+                      album: album,
                     ),
                   ),
                 ),
@@ -361,7 +229,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         // scroll the flexible space
                         // to allow more space for search results
                         controller.animateTo(
-                          390,
+                          330,
                           duration: const Duration(milliseconds: 200),
                           curve: Curves.easeInOut,
                         );

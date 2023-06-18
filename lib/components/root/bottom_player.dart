@@ -58,8 +58,7 @@ class BottomPlayer extends HookConsumerWidget {
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]
     if (layoutMode == LayoutMode.compact ||
-        ((mediaQuery.isSm || mediaQuery.isMd) &&
-            layoutMode == LayoutMode.adaptive)) {
+        ((mediaQuery.mdAndDown) && layoutMode == LayoutMode.adaptive)) {
       return PlayerOverlay(albumArt: albumArt);
     }
 

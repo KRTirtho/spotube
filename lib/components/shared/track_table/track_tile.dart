@@ -61,7 +61,7 @@ class TrackTile extends HookConsumerWidget {
 
     return LayoutBuilder(builder: (context, constrains) {
       return HoverBuilder(
-        permanentState: isPlaying || constrains.isSm ? true : null,
+        permanentState: isPlaying || constrains.smAndDown ? true : null,
         builder: (context, isHovering) {
           return ListTile(
             selected: isPlaying,
@@ -89,7 +89,7 @@ class TrackTile extends HookConsumerWidget {
                       ),
                     ),
                   )
-                else if (constrains.isSm)
+                else if (constrains.smAndDown)
                   const SizedBox(width: 16),
                 if (onChanged != null)
                   Checkbox.adaptive(

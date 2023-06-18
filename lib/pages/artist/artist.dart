@@ -39,6 +39,7 @@ class ArtistPage extends HookConsumerWidget {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final textTheme = theme.textTheme;
     final chipTextVariant = useBreakpointValue(
+      xs: textTheme.bodySmall,
       sm: textTheme.bodySmall,
       md: textTheme.bodyMedium,
       lg: textTheme.bodyLarge,
@@ -49,6 +50,7 @@ class ArtistPage extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     final avatarWidth = useBreakpointValue(
+      xs: mediaQuery.size.width * 0.50,
       sm: mediaQuery.size.width * 0.50,
       md: mediaQuery.size.width * 0.40,
       lg: mediaQuery.size.width * 0.18,
@@ -155,7 +157,7 @@ class ArtistPage extends HookConsumerWidget {
                               ),
                               Text(
                                 data.name!,
-                                style: mediaQuery.isSm
+                                style: mediaQuery.smAndDown
                                     ? textTheme.headlineSmall
                                     : textTheme.headlineMedium,
                               ),
@@ -166,8 +168,9 @@ class ArtistPage extends HookConsumerWidget {
                                   ),
                                 ),
                                 style: textTheme.bodyMedium?.copyWith(
-                                  fontWeight:
-                                      mediaQuery.isSm ? null : FontWeight.bold,
+                                  fontWeight: mediaQuery.mdAndUp
+                                      ? FontWeight.bold
+                                      : null,
                                 ),
                               ),
                               const SizedBox(height: 20),

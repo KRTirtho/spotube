@@ -18,6 +18,7 @@ class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
     );
 
     final breakpoint = useBreakpointValue(
+      xs: 85.0,
       sm: 85.0,
       md: 35.0,
       others: 0.0,

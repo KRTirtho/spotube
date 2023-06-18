@@ -35,7 +35,7 @@ class DesktopLoginPage extends HookConsumerWidget {
                 children: [
                   Assets.spotubeLogoPng.image(
                     width: MediaQuery.of(context).size.width *
-                        (mediaQuery.isSm || mediaQuery.isMd ? .5 : .3),
+                        (mediaQuery.mdAndDown ? .5 : .3),
                   ),
                   Text(
                     context.l10n.add_spotify_credentials,

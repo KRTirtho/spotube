@@ -40,6 +40,7 @@ class PlaybuttonCard extends HookWidget {
     final radius = BorderRadius.circular(15);
 
     final double size = useBreakpointValue<double>(
+          xs: 130,
           sm: 130,
           md: 150,
           others: 170,
@@ -47,6 +48,7 @@ class PlaybuttonCard extends HookWidget {
         170;
 
     final end = useBreakpointValue<double>(
+          xs: 15,
           sm: 15,
           others: 20,
         ) ??

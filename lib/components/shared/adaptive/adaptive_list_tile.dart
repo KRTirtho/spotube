@@ -17,7 +17,7 @@ class AdaptiveListTile extends HookWidget {
     this.title,
     this.subtitle,
     this.leading,
-    this.breakOn ,
+    this.breakOn,
   });
 
   @override
@@ -27,10 +27,11 @@ class AdaptiveListTile extends HookWidget {
     return ListTile(
       title: title,
       subtitle: subtitle,
-      trailing:
-          breakOn ?? mediaQuery.isSm ? null : trailing?.call(context, null),
+      trailing: breakOn ?? mediaQuery.smAndDown
+          ? null
+          : trailing?.call(context, null),
       leading: leading,
-      onTap: breakOn ??  mediaQuery.isSm
+      onTap: breakOn ?? mediaQuery.smAndDown
           ? () {
               onTap?.call();
               showDialog(

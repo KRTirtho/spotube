@@ -390,6 +390,7 @@ class TracksTableView extends HookConsumerWidget {
 
     if (isSliver) {
       return SliverSafeArea(
+        top: false,
         sliver: SliverList(delegate: SliverChildListDelegate(children)),
       );
     }

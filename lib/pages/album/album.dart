@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/track_table/track_collection_view.dart';
+import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -67,7 +67,7 @@ class AlbumPage extends HookConsumerWidget {
       tracksSnapshot: tracksSnapshot,
       album: album,
       routePath: "/album/${album.id}",
-      bottomSpace: mediaQuery.isSm || mediaQuery.isMd,
+      bottomSpace: mediaQuery.mdAndDown,
       onPlay: ([track]) {
         if (tracksSnapshot.hasData) {
           if (!isAlbumPlaying) {

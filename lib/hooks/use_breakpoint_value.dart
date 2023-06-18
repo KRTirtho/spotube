@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotube/extensions/constrains.dart';
 
 T useBreakpointValue<T>({
+  T? xs,
   T? sm,
   T? md,
   T? lg,
@@ -10,8 +11,12 @@ T useBreakpointValue<T>({
   T? xxl,
   T? others,
 }) {
-  final isSomeNull =
-      sm == null || md == null || lg == null || xl == null || xxl == null;
+  final isSomeNull = xs == null ||
+      sm == null ||
+      md == null ||
+      lg == null ||
+      xl == null ||
+      xxl == null;
   assert(
     (isSomeNull && others != null) || (!isSomeNull && others == null),
     'You must provide a value for all breakpoints or a default value for others',
@@ -20,7 +25,9 @@ T useBreakpointValue<T>({
   final mediaQuery = MediaQuery.of(context);
 
   if (isSomeNull) {
-    if (mediaQuery.isSm) {
+    if (mediaQuery.isXs) {
+      return xs ?? others!;
+    } else if (mediaQuery.isSm) {
       return sm ?? others!;
     } else if (mediaQuery.isMd) {
       return md ?? others!;
@@ -32,7 +39,9 @@ T useBreakpointValue<T>({
       return lg ?? others!;
     }
   } else {
-    if (mediaQuery.isSm) {
+    if (mediaQuery.isXs) {
+      return xs;
+    } else if (mediaQuery.isSm) {
       return sm;
     } else if (mediaQuery.isMd) {
       return md;

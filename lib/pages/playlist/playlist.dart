@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/track_table/track_collection_view.dart';
+import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/models/logger.dart';
@@ -99,7 +99,7 @@ class PlaylistView extends HookConsumerWidget {
           playlistNotifier.addTracks(tracksSnapshot.data!);
         }
       },
-      bottomSpace: mediaQuery.isSm || mediaQuery.isMd,
+      bottomSpace: mediaQuery.mdAndDown,
       showShare: playlist.id != "user-liked-tracks",
       routePath: "/playlist/${playlist.id}",
       onShare: () {
