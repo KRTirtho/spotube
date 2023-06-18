@@ -16,6 +16,7 @@ class SortTracksDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return ListTileTheme(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -47,11 +48,19 @@ class SortTracksDropdown extends StatelessWidget {
             ),
           ),
           PopSheetEntry(
-            value: SortBy.dateAdded,
-            enabled: value != SortBy.dateAdded,
+            value: SortBy.newest,
+            enabled: value != SortBy.newest,
             child: ListTile(
-              enabled: value != SortBy.dateAdded,
-              title: Text(context.l10n.sort_date),
+              enabled: value != SortBy.newest,
+              title: Text(context.l10n.sort_newest),
+            ),
+          ),
+          PopSheetEntry(
+            value: SortBy.oldest,
+            enabled: value != SortBy.oldest,
+            child: ListTile(
+              enabled: value != SortBy.oldest,
+              title: Text(context.l10n.sort_oldest),
             ),
           ),
           PopSheetEntry(
@@ -79,7 +88,7 @@ class SortTracksDropdown extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.titleSmall!,
+            style: theme.textTheme.titleSmall!,
             child: Row(
               children: [
                 const Icon(SpotubeIcons.sort),

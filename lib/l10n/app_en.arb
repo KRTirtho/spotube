@@ -37,7 +37,6 @@
   "none": "None",
   "sort_a_z": "Sort by A-Z",
   "sort_z_a": "Sort by Z-A",
-  "sort_date": "Sort by date",
   "sort_artist": "Sort by Artist",
   "sort_album": "Sort by Album",
   "sort_tracks": "Sort Tracks",
@@ -235,8 +234,10 @@
   "youtube": "YouTube",
   "channel": "Channel",
   "likes": "Likes",
-  "dislikes":  "Dislikes",
+  "dislikes": "Dislikes",
   "views": "Views",
   "streamUrl": "Stream URL",
-  "stop": "Stop"
+  "stop": "Stop",
+  "sort_newest": "Sort by newest added",
+  "sort_oldest": "Sort by oldest added"
 }

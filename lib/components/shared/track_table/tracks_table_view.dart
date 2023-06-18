@@ -50,7 +50,6 @@ class TracksTableView extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     ref.watch(ProxyPlaylistNotifier.provider);

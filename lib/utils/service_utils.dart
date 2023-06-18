@@ -271,12 +271,14 @@ abstract class ServiceUtils {
                 0;
           case SortBy.ascending:
             return a.name?.compareTo(b.name ?? "") ?? 0;
-          case SortBy.dateAdded:
-            final aDate =
-                double.parse(a.album?.releaseDate?.split("-").first ?? "2069");
-            final bDate =
-                double.parse(b.album?.releaseDate?.split("-").first ?? "2069");
+          case SortBy.oldest:
+            final aDate = DateTime.parse(a.album?.releaseDate ?? "2069-01-01");
+            final bDate = DateTime.parse(b.album?.releaseDate ?? "2069-01-01");
             return aDate.compareTo(bDate);
+          case SortBy.newest:
+            final aDate = DateTime.parse(a.album?.releaseDate ?? "2069-01-01");
+            final bDate = DateTime.parse(b.album?.releaseDate ?? "2069-01-01");
+            return bDate.compareTo(aDate);
           case SortBy.descending:
             return b.name?.compareTo(a.name ?? "") ?? 0;
           default:
