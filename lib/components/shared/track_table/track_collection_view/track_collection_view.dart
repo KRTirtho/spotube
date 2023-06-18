@@ -88,7 +88,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     final collapsed = useState(false);
 
     useCustomStatusBarColor(
-      color?.color ?? theme.scaffoldBackgroundColor,
+      Colors.transparent,
       GoRouter.of(context).location == routePath,
     );
 
