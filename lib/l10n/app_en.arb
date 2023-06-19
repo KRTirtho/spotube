@@ -244,5 +244,7 @@
   "mins": "{minutes} Minutes",
   "hours": "{hours} Hours",
   "hour": "{hours} Hour",
-  "custom_hours": "Custom Hours"
+  "custom_hours": "Custom Hours",
+  "logs": "Logs",
+  "developers": "Developers"
 }

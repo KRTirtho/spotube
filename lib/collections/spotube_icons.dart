@@ -87,4 +87,6 @@ abstract class SpotubeIcons {
   static const volumeLow = FeatherIcons.volume;
   static const volumeMute = FeatherIcons.volumeX;
   static const timer = FeatherIcons.clock;
+  static const logs = FeatherIcons.fileText;
+  static const clipboard = FeatherIcons.clipboard;
 }

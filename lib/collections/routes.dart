@@ -8,6 +8,7 @@ import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
+import 'package:spotube/pages/settings/logs.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/album/album.dart';
@@ -84,9 +85,15 @@ final router = GoRouter(
               ),
             ),
             GoRoute(
+              path: "logs",
+              pageBuilder: (context, state) => SpotubeSlidePage(
+                child: const LogsPage(),
+              ),
+            ),
+            GoRoute(
               path: "about",
-              pageBuilder: (context, state) => const SpotubePage(
-                child: AboutSpotube(),
+              pageBuilder: (context, state) => SpotubeSlidePage(
+                child: const AboutSpotube(),
               ),
             ),
           ],

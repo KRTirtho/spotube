@@ -407,6 +407,19 @@ class SettingsPage extends HookConsumerWidget {
                         ],
                       ),
                     SectionCardWithHeading(
+                      heading: context.l10n.developers,
+                      children: [
+                        ListTile(
+                          leading: const Icon(SpotubeIcons.logs),
+                          title: Text(context.l10n.logs),
+                          trailing: const Icon(SpotubeIcons.angleRight),
+                          onTap: () {
+                            GoRouter.of(context).push("/settings/logs");
+                          },
+                        )
+                      ],
+                    ),
+                    SectionCardWithHeading(
                       heading: context.l10n.about,
                       children: [
                         AdaptiveListTile(
