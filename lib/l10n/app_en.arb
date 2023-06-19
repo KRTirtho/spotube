@@ -243,5 +243,6 @@
   "sleep_timer": "Sleep Timer",
   "mins": "{minutes} Minutes",
   "hours": "{hours} Hours",
-  "hour": "{hours} Hour"
+  "hour": "{hours} Hour",
+  "custom_hours": "Custom Hours"
 }

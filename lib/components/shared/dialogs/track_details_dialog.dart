@@ -119,9 +119,9 @@ class TrackDetailsDialog extends HookWidget {
                   ),
                   if (entry.value is Widget)
                     entry.value as Widget
-                  else
+                  else if (entry.value is String)
                     Text(
-                      entry.value,
+                      entry.value as String,
                       style: theme.textTheme.bodyMedium,
                     ),
                 ],

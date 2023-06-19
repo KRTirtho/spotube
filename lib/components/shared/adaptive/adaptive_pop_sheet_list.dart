@@ -194,8 +194,8 @@ class _AdaptivePopSheetListItem<T> extends StatelessWidget {
           ? null
           : () {
               item.onTap?.call();
-              Navigator.pop(context);
               if (item.value != null) {
+                Navigator.pop(context);
                 onSelected?.call(item.value as T);
               }
             },
