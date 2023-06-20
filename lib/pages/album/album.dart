@@ -32,6 +32,7 @@ class AlbumPage extends HookConsumerWidget {
         sortedTracks,
         initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
       );
+      playback.addCollection(album.id!);
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
         currentTrack.id != playlist.activeTrack?.id) {
@@ -101,6 +102,7 @@ class AlbumPage extends HookConsumerWidget {
                     TypeConversionUtils.simpleTrack_X_Track(track, album))
                 .toList(),
           );
+          playback.addCollection(album.id!);
         }
       },
       onShare: () {

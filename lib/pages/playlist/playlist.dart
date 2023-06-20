@@ -36,6 +36,7 @@ class PlaylistView extends HookConsumerWidget {
         initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
         autoPlay: true,
       );
+      playback.addCollection(playlist.id!);
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
         currentTrack.id != proxyPlaylist.activeTrack?.id) {
@@ -97,6 +98,7 @@ class PlaylistView extends HookConsumerWidget {
       onAddToQueue: () {
         if (tracksSnapshot.hasData && !isPlaylistPlaying) {
           playlistNotifier.addTracks(tracksSnapshot.data!);
+          playlistNotifier.addCollection(playlist.id!);
         }
       },
       bottomSpace: mediaQuery.mdAndDown,

@@ -185,6 +185,19 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
   }
 
+  void addCollection(String collectionId) {
+    state = state.copyWith(collections: {
+      ...state.collections,
+      collectionId,
+    });
+  }
+
+  void removeCollection(String collectionId) {
+    state = state.copyWith(collections: {
+      ...state.collections..remove(collectionId),
+    });
+  }
+
   // TODO: Safely Remove playing tracks
 
   Future<void> removeTrack(String trackId) async {
@@ -224,6 +237,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       state = state.copyWith(
         tracks: tracks.toSet(),
         active: initialIndex,
+        collections: {},
       );
       await notificationService.addTrack(indexTrack);
     } else {
@@ -236,6 +250,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       state = state.copyWith(
         tracks: mergeTracks([addableTrack], tracks),
         active: initialIndex,
+        collections: {},
       );
       await notificationService.addTrack(addableTrack);
       await storeTrack(
