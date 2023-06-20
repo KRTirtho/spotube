@@ -462,12 +462,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   @override
   onInit() async {
     if (state.tracks.isEmpty) return null;
-
+    final oldCollections = state.collections;
     await load(
       state.tracks,
       initialIndex: state.active ?? 0,
       autoPlay: false,
     );
+    state = state.copyWith(collections: oldCollections);
   }
 
   @override
