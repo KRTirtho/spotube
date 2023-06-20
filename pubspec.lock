@@ -474,6 +474,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  duration:
+    dependency: "direct main"
+    description:
+      name: duration
+      sha256: d0b29d0a345429e3986ac56d60e4aef65b37d11e653022b2b9a4b361332b777f
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.12"
   envied:
     dependency: "direct main"
     description:

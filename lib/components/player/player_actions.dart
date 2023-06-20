@@ -171,7 +171,7 @@ class PlayerActions extends HookConsumerWidget {
               title: Text(
                 customHoursEnabled
                     ? context.l10n.custom_hours
-                    : sleepTimer.toHumanReadableString(),
+                    : sleepTimer.format(abbreviated: true),
               ),
               // only enabled when there's no preset timers selected
               enabled: customHoursEnabled,
