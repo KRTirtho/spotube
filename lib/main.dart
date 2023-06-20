@@ -132,7 +132,7 @@ Future<void> main(List<String> rawArgs) async {
       runApp(
         DevicePreview(
           availableLocales: L10n.all,
-          enabled: !kReleaseMode,
+          enabled: !kReleaseMode && DesktopTools.platform.isDesktop,
           builder: (context) {
             return ProviderScope(
               child: QueryClientProvider(

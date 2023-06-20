@@ -71,118 +71,121 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                   ),
-                  child: Flex(
-                    direction:
-                        constrains.mdAndDown ? Axis.vertical : Axis.horizontal,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 200),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: UniversalImage(
-                            path: titleImage,
-                            placeholder: Assets.albumPlaceholder.path,
+                  child: SafeArea(
+                    child: Flex(
+                      direction: constrains.mdAndDown
+                          ? Axis.vertical
+                          : Axis.horizontal,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 200),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: UniversalImage(
+                              path: titleImage,
+                              placeholder: Assets.albumPlaceholder.path,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 10, height: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text(
-                            title,
-                            style: theme.textTheme.titleLarge!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          if (album != null)
+                        const SizedBox(width: 10, height: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
                             Text(
-                              "${AlbumType.from(album?.albumType).formatted} • ${context.l10n.released} • ${DateTime.tryParse(
-                                album?.releaseDate ?? "",
-                              )?.year}",
-                              style: theme.textTheme.titleMedium!.copyWith(
+                              title,
+                              style: theme.textTheme.titleLarge!.copyWith(
                                 color: Colors.white,
-                                fontWeight: FontWeight.normal,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          if (description != null)
+                            if (album != null)
+                              Text(
+                                "${AlbumType.from(album?.albumType).formatted} • ${context.l10n.released} • ${DateTime.tryParse(
+                                  album?.releaseDate ?? "",
+                                )?.year}",
+                                style: theme.textTheme.titleMedium!.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            if (description != null)
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: constrains.mdAndDown ? 400 : 300,
+                                ),
+                                child: Text(
+                                  description!,
+                                  style: const TextStyle(color: Colors.white),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.fade,
+                                ),
+                              ),
+                            const SizedBox(height: 10),
+                            IconTheme(
+                              data: theme.iconTheme.copyWith(
+                                color: Colors.white,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: buttons,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
                             ConstrainedBox(
                               constraints: BoxConstraints(
                                 maxWidth: constrains.mdAndDown ? 400 : 300,
                               ),
-                              child: Text(
-                                description!,
-                                style: const TextStyle(color: Colors.white),
-                                maxLines: 2,
-                                overflow: TextOverflow.fade,
+                              child: Row(
+                                mainAxisSize: constrains.smAndUp
+                                    ? MainAxisSize.min
+                                    : MainAxisSize.min,
+                                children: [
+                                  Expanded(
+                                    child: FilledButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: color?.color,
+                                      ),
+                                      label: Text(context.l10n.shuffle),
+                                      icon: const Icon(SpotubeIcons.shuffle),
+                                      onPressed: tracksSnapshot.data == null ||
+                                              isPlaying
+                                          ? null
+                                          : onShuffledPlay,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: FilledButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: color?.color,
+                                        foregroundColor: color?.bodyTextColor,
+                                      ),
+                                      onPressed: tracksSnapshot.data != null
+                                          ? onPlay
+                                          : null,
+                                      icon: Icon(
+                                        isPlaying
+                                            ? SpotubeIcons.stop
+                                            : SpotubeIcons.play,
+                                      ),
+                                      label: Text(
+                                        isPlaying
+                                            ? context.l10n.stop
+                                            : context.l10n.play,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          const SizedBox(height: 10),
-                          IconTheme(
-                            data: theme.iconTheme.copyWith(
-                              color: Colors.white,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: buttons,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: constrains.mdAndDown ? 400 : 300,
-                            ),
-                            child: Row(
-                              mainAxisSize: constrains.smAndUp
-                                  ? MainAxisSize.min
-                                  : MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  child: FilledButton.icon(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: color?.color,
-                                    ),
-                                    label: Text(context.l10n.shuffle),
-                                    icon: const Icon(SpotubeIcons.shuffle),
-                                    onPressed:
-                                        tracksSnapshot.data == null || isPlaying
-                                            ? null
-                                            : onShuffledPlay,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: FilledButton.icon(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: color?.color,
-                                      foregroundColor: color?.bodyTextColor,
-                                    ),
-                                    onPressed: tracksSnapshot.data != null
-                                        ? onPlay
-                                        : null,
-                                    icon: Icon(
-                                      isPlaying
-                                          ? SpotubeIcons.stop
-                                          : SpotubeIcons.play,
-                                    ),
-                                    label: Text(
-                                      isPlaying
-                                          ? context.l10n.stop
-                                          : context.l10n.play,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

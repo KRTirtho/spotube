@@ -106,139 +106,136 @@ class TrackCollectionView<T> extends HookConsumerWidget {
       return () => controller.removeListener(listener);
     }, [collapsed.value]);
 
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-          appBar: kIsDesktop
-              ? const PageWindowTitleBar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.white,
-                  leadingWidth: 400,
-                  leading: Align(
-                    alignment: Alignment.centerLeft,
-                    child: BackButton(color: Colors.white),
+    return Scaffold(
+        appBar: kIsDesktop
+            ? const PageWindowTitleBar(
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                leadingWidth: 400,
+                leading: Align(
+                  alignment: Alignment.centerLeft,
+                  child: BackButton(color: Colors.white),
+                ),
+              )
+            : null,
+        extendBodyBehindAppBar: kIsDesktop,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await tracksSnapshot.refresh();
+          },
+          child: CustomScrollView(
+            controller: controller,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                actions: [
+                  AnimatedScale(
+                    duration: const Duration(milliseconds: 200),
+                    scale: collapsed.value ? 1 : 0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: buttons,
+                    ),
                   ),
-                )
-              : null,
-          extendBodyBehindAppBar: kIsDesktop,
-          body: RefreshIndicator(
-            onRefresh: () async {
-              await tracksSnapshot.refresh();
-            },
-            child: CustomScrollView(
-              controller: controller,
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverAppBar(
-                  actions: [
-                    AnimatedScale(
-                      duration: const Duration(milliseconds: 200),
-                      scale: collapsed.value ? 1 : 0,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: buttons,
-                      ),
+                  AnimatedScale(
+                    duration: const Duration(milliseconds: 200),
+                    scale: collapsed.value ? 1 : 0,
+                    child: IconButton(
+                      tooltip: context.l10n.shuffle,
+                      icon: const Icon(SpotubeIcons.shuffle),
+                      onPressed: isPlaying ? null : onShuffledPlay,
                     ),
-                    AnimatedScale(
-                      duration: const Duration(milliseconds: 200),
-                      scale: collapsed.value ? 1 : 0,
-                      child: IconButton(
-                        tooltip: context.l10n.shuffle,
-                        icon: const Icon(SpotubeIcons.shuffle),
-                        onPressed: isPlaying ? null : onShuffledPlay,
+                  ),
+                  AnimatedScale(
+                    duration: const Duration(milliseconds: 200),
+                    scale: collapsed.value ? 1 : 0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        backgroundColor: theme.colorScheme.inversePrimary,
                       ),
+                      onPressed: tracksSnapshot.data != null ? onPlay : null,
+                      child: Icon(
+                          isPlaying ? SpotubeIcons.stop : SpotubeIcons.play),
                     ),
-                    AnimatedScale(
-                      duration: const Duration(milliseconds: 200),
-                      scale: collapsed.value ? 1 : 0,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: theme.colorScheme.inversePrimary,
+                  ),
+                ],
+                floating: false,
+                pinned: true,
+                expandedHeight: 400,
+                automaticallyImplyLeading: kIsMobile,
+                leading:
+                    kIsMobile ? const BackButton(color: Colors.white) : null,
+                iconTheme: IconThemeData(color: color?.titleTextColor),
+                primary: true,
+                backgroundColor: color?.color,
+                title: collapsed.value
+                    ? Text(
+                        title,
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          color: color?.titleTextColor,
+                          fontWeight: FontWeight.w600,
                         ),
-                        onPressed: tracksSnapshot.data != null ? onPlay : null,
-                        child: Icon(
-                            isPlaying ? SpotubeIcons.stop : SpotubeIcons.play),
-                      ),
-                    ),
-                  ],
-                  floating: false,
-                  pinned: true,
-                  expandedHeight: 400,
-                  automaticallyImplyLeading: kIsMobile,
-                  leading:
-                      kIsMobile ? const BackButton(color: Colors.white) : null,
-                  iconTheme: IconThemeData(color: color?.titleTextColor),
-                  primary: true,
-                  backgroundColor: color?.color,
-                  title: collapsed.value
-                      ? Text(
-                          title,
-                          style: theme.textTheme.titleMedium!.copyWith(
-                            color: color?.titleTextColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      : null,
-                  centerTitle: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: TrackCollectionHeading<T>(
-                      color: color,
-                      title: title,
-                      description: description,
-                      titleImage: titleImage,
-                      isPlaying: isPlaying,
-                      onPlay: onPlay,
-                      onShuffledPlay: onShuffledPlay,
-                      tracksSnapshot: tracksSnapshot,
-                      buttons: buttons,
-                      album: album,
-                    ),
+                      )
+                    : null,
+                centerTitle: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: TrackCollectionHeading<T>(
+                    color: color,
+                    title: title,
+                    description: description,
+                    titleImage: titleImage,
+                    isPlaying: isPlaying,
+                    onPlay: onPlay,
+                    onShuffledPlay: onShuffledPlay,
+                    tracksSnapshot: tracksSnapshot,
+                    buttons: buttons,
+                    album: album,
                   ),
                 ),
-                HookBuilder(
-                  builder: (context) {
-                    if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
-                      return const ShimmerTrackTile();
-                    } else if (tracksSnapshot.hasError) {
-                      return SliverToBoxAdapter(
-                        child: Text(
-                          context.l10n.error(tracksSnapshot.error ?? ""),
-                        ),
-                      );
-                    }
-
-                    return TracksTableView(
-                      (tracksSnapshot.data ?? []).map(
-                        (track) {
-                          if (track is Track) {
-                            return track;
-                          } else {
-                            return TypeConversionUtils.simpleTrack_X_Track(
-                              track,
-                              album!,
-                            );
-                          }
-                        },
-                      ).toList(),
-                      onTrackPlayButtonPressed: onPlay,
-                      playlistId: id,
-                      userPlaylist: isOwned,
-                      onFiltering: () {
-                        // scroll the flexible space
-                        // to allow more space for search results
-                        controller.animateTo(
-                          330,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                        );
-                      },
+              ),
+              HookBuilder(
+                builder: (context) {
+                  if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
+                    return const ShimmerTrackTile();
+                  } else if (tracksSnapshot.hasError) {
+                    return SliverToBoxAdapter(
+                      child: Text(
+                        context.l10n.error(tracksSnapshot.error ?? ""),
+                      ),
                     );
-                  },
-                )
-              ],
-            ),
-          )),
-    );
+                  }
+
+                  return TracksTableView(
+                    (tracksSnapshot.data ?? []).map(
+                      (track) {
+                        if (track is Track) {
+                          return track;
+                        } else {
+                          return TypeConversionUtils.simpleTrack_X_Track(
+                            track,
+                            album!,
+                          );
+                        }
+                      },
+                    ).toList(),
+                    onTrackPlayButtonPressed: onPlay,
+                    playlistId: id,
+                    userPlaylist: isOwned,
+                    onFiltering: () {
+                      // scroll the flexible space
+                      // to allow more space for search results
+                      controller.animateTo(
+                        330,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  );
+                },
+              )
+            ],
+          ),
+        ));
   }
 }
