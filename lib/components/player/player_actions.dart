@@ -22,10 +22,12 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class PlayerActions extends HookConsumerWidget {
   final MainAxisAlignment mainAxisAlignment;
   final bool floatingQueue;
+  final bool showQueue;
   final List<Widget>? extraActions;
   PlayerActions({
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.floatingQueue = true,
+    this.showQueue = true,
     this.extraActions,
     Key? key,
   }) : super(key: key);
@@ -72,31 +74,32 @@ class PlayerActions extends HookConsumerWidget {
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       children: [
-        IconButton(
-          icon: const Icon(SpotubeIcons.queue),
-          tooltip: context.l10n.queue,
-          onPressed: playlist.activeTrack != null
-              ? () {
-                  showModalBottomSheet(
-                    context: context,
-                    isDismissible: true,
-                    enableDrag: true,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.black12,
-                    barrierColor: Colors.black12,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * .7,
-                    ),
-                    builder: (context) {
-                      return PlayerQueue(floating: floatingQueue);
-                    },
-                  );
-                }
-              : null,
-        ),
+        if (showQueue)
+          IconButton(
+            icon: const Icon(SpotubeIcons.queue),
+            tooltip: context.l10n.queue,
+            onPressed: playlist.activeTrack != null
+                ? () {
+                    showModalBottomSheet(
+                      context: context,
+                      isDismissible: true,
+                      enableDrag: true,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.black12,
+                      barrierColor: Colors.black12,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * .7,
+                      ),
+                      builder: (context) {
+                        return PlayerQueue(floating: floatingQueue);
+                      },
+                    );
+                  }
+                : null,
+          ),
         if (!isLocalTrack)
           IconButton(
             icon: const Icon(SpotubeIcons.alternativeRoute),

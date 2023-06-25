@@ -9,6 +9,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_controls.dart';
+import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
@@ -77,6 +78,24 @@ class PlayerView extends HookConsumerWidget {
           foregroundColor: titleTextColor,
           toolbarOpacity: 1,
           leading: const BackButton(),
+          actions: [
+            IconButton(
+              icon: const Icon(SpotubeIcons.info, size: 18),
+              tooltip: context.l10n.details,
+              style: IconButton.styleFrom(foregroundColor: bodyTextColor),
+              onPressed: currentTrack == null
+                  ? null
+                  : () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return TrackDetailsDialog(
+                              track: currentTrack,
+                            );
+                          });
+                    },
+            )
+          ],
         ),
         extendBodyBehindAppBar: true,
         body: SizedBox(
@@ -183,38 +202,53 @@ class PlayerView extends HookConsumerWidget {
                           const SizedBox(height: 25),
                           PlayerActions(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            floatingQueue: false,
+                            showQueue: false,
                           ),
                           const SizedBox(height: 10),
-                          if (auth != null)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: OutlinedButton.icon(
-                                    icon: const Icon(SpotubeIcons.info),
-                                    label: Text(context.l10n.details),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                    icon: const Icon(SpotubeIcons.queue),
+                                    label: Text(context.l10n.queue),
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: bodyTextColor,
                                       side: BorderSide(
                                         color: bodyTextColor ?? Colors.white,
                                       ),
                                     ),
-                                    onPressed: currentTrack == null
-                                        ? null
-                                        : () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return TrackDetailsDialog(
-                                                    track: currentTrack,
-                                                  );
-                                                });
-                                          },
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
+                                    onPressed: currentTrack != null
+                                        ? () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isDismissible: true,
+                                              enableDrag: true,
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.black12,
+                                              barrierColor: Colors.black12,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              constraints: BoxConstraints(
+                                                maxHeight:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        .7,
+                                              ),
+                                              builder: (context) {
+                                                return PlayerQueue(
+                                                    floating: false);
+                                              },
+                                            );
+                                          }
+                                        : null),
+                              ),
+                              if (auth != null) const SizedBox(width: 10),
+                              if (auth != null)
                                 Expanded(
                                   child: OutlinedButton.icon(
                                     label: Text(context.l10n.lyrics),
@@ -251,9 +285,9 @@ class PlayerView extends HookConsumerWidget {
                                     },
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                              ],
-                            ),
+                              const SizedBox(width: 10),
+                            ],
+                          ),
                           const SizedBox(height: 25),
                           SliderTheme(
                             data: theme.sliderTheme.copyWith(

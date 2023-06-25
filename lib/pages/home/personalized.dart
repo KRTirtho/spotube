@@ -10,6 +10,7 @@ import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart'
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -94,6 +95,7 @@ class PersonalizedPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(AuthenticationNotifier.provider);
     final featuredPlaylistsQuery = useQueries.playlist.featured(ref);
     final playlists = useMemoized(
       () => featuredPlaylistsQuery.pages
@@ -132,12 +134,13 @@ class PersonalizedPage extends HookConsumerWidget {
           hasNextPage: featuredPlaylistsQuery.hasNextPage,
           onFetchMore: featuredPlaylistsQuery.fetchNext,
         ),
-        PersonalizedItemCard(
-          albums: albums,
-          title: context.l10n.new_releases,
-          hasNextPage: newReleases.hasNextPage,
-          onFetchMore: newReleases.fetchNext,
-        ),
+        if (auth != null)
+          PersonalizedItemCard(
+            albums: albums,
+            title: context.l10n.new_releases,
+            hasNextPage: newReleases.hasNextPage,
+            onFetchMore: newReleases.fetchNext,
+          ),
         ...?madeForUser.data?["content"]?["items"]?.map((item) {
           final playlists = item["content"]?["items"]
                   ?.where((itemL2) => itemL2["type"] == "playlist")
