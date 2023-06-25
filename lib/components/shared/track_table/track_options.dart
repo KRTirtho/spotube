@@ -16,6 +16,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -31,6 +32,7 @@ enum TrackOptionValue {
   playNext,
   favorite,
   details,
+  download,
 }
 
 class TrackOptions extends HookConsumerWidget {
@@ -75,7 +77,8 @@ class TrackOptions extends HookConsumerWidget {
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
-
+    ref.watch(downloadManagerProvider);
+    final downloadManager = ref.watch(downloadManagerProvider.notifier);
     final blacklist = ref.watch(BlackListNotifier.provider);
 
     final favorites = useTrackToggleLike(track, ref);
@@ -171,6 +174,9 @@ class TrackOptions extends HookConsumerWidget {
                 builder: (context) => TrackDetailsDialog(track: track),
               );
               break;
+            case TrackOptionValue.download:
+              await downloadManager.enqueue(track);
+              break;
           }
         },
         icon: const Icon(SpotubeIcons.moreHorizontal),
@@ -256,12 +262,18 @@ class TrackOptions extends HookConsumerWidget {
                   value: TrackOptionValue.removeFromPlaylist,
                   leading: (removeTrack.isMutating || !removeTrack.hasData) &&
                           removingTrack.value == track.uri
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
+                      ? const CircularProgressIndicator()
                       : const Icon(SpotubeIcons.removeFilled),
                   title: Text(context.l10n.remove_from_playlist),
                 ),
+              PopSheetEntry(
+                value: TrackOptionValue.download,
+                enabled: downloadManager.activeItem?.id != track.id!,
+                leading: downloadManager.activeItem?.id == track.id!
+                    ? const CircularProgressIndicator()
+                    : const Icon(SpotubeIcons.download),
+                title: Text(context.l10n.download_track),
+              ),
               PopSheetEntry(
                 value: TrackOptionValue.blacklist,
                 leading: const Icon(SpotubeIcons.playlistRemove),

@@ -6,7 +6,7 @@ import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/utils/platform.dart';
 
 class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
-  final List<String> tabs;
+  final List<Widget> tabs;
   const ThemedButtonsTabBar({Key? key, required this.tabs}) : super(key: key);
 
   @override
@@ -48,9 +48,7 @@ class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
         unselectedLabelStyle: theme.textTheme.labelLarge?.copyWith(
           color: theme.colorScheme.primary,
         ),
-        tabs: tabs.map((tab) {
-          return Tab(text: "   $tab   ");
-        }).toList(),
+        tabs: tabs,
       ),
     );
   }

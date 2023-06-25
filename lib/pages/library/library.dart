@@ -9,11 +9,15 @@ import 'package:spotube/components/library/user_downloads.dart';
 import 'package:spotube/components/library/user_playlists.dart';
 import 'package:spotube/components/shared/themed_button_tab_bar.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 
 class LibraryPage extends HookConsumerWidget {
   const LibraryPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
+    final downloadingCount =
+        ref.watch(downloadManagerProvider.select((s) => s.length));
+
     return DefaultTabController(
       length: 5,
       child: SafeArea(
@@ -23,11 +27,17 @@ class LibraryPage extends HookConsumerWidget {
             centerTitle: true,
             leading: ThemedButtonsTabBar(
               tabs: [
-                context.l10n.playlists,
-                context.l10n.tracks,
-                context.l10n.downloads,
-                context.l10n.artists,
-                context.l10n.albums,
+                Tab(text: "  ${context.l10n.playlists}  "),
+                Tab(text: "  ${context.l10n.tracks}  "),
+                Tab(
+                  child: Badge(
+                    isLabelVisible: downloadingCount > 0,
+                    label: Text(downloadingCount.toString()),
+                    child: Text("  ${context.l10n.downloads}  "),
+                  ),
+                ),
+                Tab(text: "  ${context.l10n.artists}  "),
+                Tab(text: "  ${context.l10n.albums}  "),
               ],
             ),
             leadingWidth: double.infinity,

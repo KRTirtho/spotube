@@ -46,8 +46,8 @@ class LyricsPage extends HookConsumerWidget {
 
     final tabbar = ThemedButtonsTabBar(
       tabs: [
-        context.l10n.synced,
-        context.l10n.plain,
+        Tab(text: "  ${context.l10n.synced}  "),
+        Tab(text: "  ${context.l10n.plain}  "),
       ],
     );
 

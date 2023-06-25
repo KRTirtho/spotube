@@ -19,8 +19,8 @@ class HomePage extends HookConsumerWidget {
           leadingWidth: double.infinity,
           leading: ThemedButtonsTabBar(
             tabs: [
-              context.l10n.personalized,
-              context.l10n.genre,
+              Tab(text: "  ${context.l10n.personalized}  "),
+              Tab(text: "  ${context.l10n.genre}  "),
             ],
           ),
         ),
