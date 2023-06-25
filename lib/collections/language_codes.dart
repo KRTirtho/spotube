@@ -298,7 +298,7 @@ abstract class LanguageLocals {
     // ),
     "ja": const ISOLanguageName(
       name: "Japanese",
-      nativeName: "日本語 (にほんご／にっぽんご)",
+      nativeName: "日本語",
     ),
     // "jv": const ISOLanguageName(
     //   name: "Javanese",
