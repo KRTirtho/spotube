@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 
@@ -6,6 +7,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
@@ -37,7 +39,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               ),
             ),
           ),
-        if (mediaQuery.isSm || mediaQuery.isMd)
+        if (mediaQuery.mdAndDown)
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,6 +74,9 @@ class PlayerTrackDetails extends HookConsumerWidget {
                 ),
                 TypeConversionUtils.artists_X_ClickableArtists(
                   playback.activeTrack?.artists ?? [],
+                  onRouteChange: (route) {
+                    ServiceUtils.push(context, route);
+                  },
                 )
               ],
             ),

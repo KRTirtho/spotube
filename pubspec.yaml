@@ -102,7 +102,8 @@ dependencies:
   device_preview: ^1.1.0
   media_kit_native_event_loop: ^1.0.4
   dbus: ^0.7.8
-  motion_toast: ^2.6.8
+  background_downloader: ^7.4.0
+  duration: ^3.0.12
 
 dev_dependencies:
   build_runner: ^2.3.2

@@ -46,14 +46,12 @@ class AlbumCard extends HookConsumerWidget {
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final queryClient = useQueryClient();
-    final query = queryClient
-        .getQuery<List<TrackSimple>, dynamic>("album-tracks/${album.id}");
     bool isPlaylistPlaying = useMemoized(
-      () => playlist.containsTracks(query?.data ?? album.tracks ?? []),
-      [playlistNotifier, query?.data, album.tracks],
+      () => playlist.containsCollection(album.id!),
+      [playlist, album.id],
     );
     final int marginH =
-        useBreakpointValue(sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
+        useBreakpointValue(xs: 10, sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
 
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);
@@ -70,7 +68,7 @@ class AlbumCard extends HookConsumerWidget {
         description:
             "${AlbumType.from(album.albumType!).formatted} • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
         onTap: () {
-          ServiceUtils.navigate(context, "/album/${album.id}", extra: album);
+          ServiceUtils.push(context, "/album/${album.id}", extra: album);
         },
         onPlaybuttonPressed: () async {
           updating.value = true;
@@ -89,6 +87,7 @@ class AlbumCard extends HookConsumerWidget {
                   [],
               autoPlay: true,
             );
+            playlistNotifier.addCollection(album.id!);
           } finally {
             updating.value = false;
           }
@@ -118,6 +117,7 @@ class AlbumCard extends HookConsumerWidget {
 
             if (fetchedTracks == null || fetchedTracks.isEmpty) return;
             playlistNotifier.addTracks(fetchedTracks);
+            playlistNotifier.addCollection(album.id!);
             if (context.mounted) {
               final snackbar = SnackBar(
                 content: Text("Added ${album.tracks?.length} tracks to queue"),

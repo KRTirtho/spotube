@@ -121,7 +121,7 @@ class PlaylistCreateDialogButton extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
     final spotify = ref.watch(spotifyProvider);
 
-    if (mediaQuery.isSm) {
+    if (mediaQuery.smAndDown) {
       return ElevatedButton(
         style: FilledButton.styleFrom(
           foregroundColor: Theme.of(context).colorScheme.primary,

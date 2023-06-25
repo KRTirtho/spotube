@@ -86,6 +86,7 @@ class ShimmerPlaybuttonCard extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final Size size = useBreakpointValue<Size>(
+      xs: const Size(130, 200),
       sm: const Size(130, 200),
       md: const Size(150, 220),
       others: const Size(170, 240),

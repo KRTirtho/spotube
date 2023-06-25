@@ -2,17 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 
-class PopSheetEntry<T> {
-  final T? value;
-  final VoidCallback? onTap;
-  final Widget child;
-  final bool enabled;
+_emptyCB() {}
 
+class PopSheetEntry<T> extends ListTile {
+  final T? value;
   const PopSheetEntry({
-    required this.child,
     this.value,
-    this.onTap,
-    this.enabled = true,
+    super.key,
+    super.leading,
+    super.title,
+    super.subtitle,
+    super.trailing,
+    super.isThreeLine = false,
+    super.dense,
+    super.visualDensity,
+    super.shape,
+    super.style,
+    super.selectedColor,
+    super.iconColor,
+    super.textColor,
+    super.titleTextStyle,
+    super.subtitleTextStyle,
+    super.leadingAndTrailingTextStyle,
+    super.contentPadding,
+    super.enabled = true,
+    super.onTap = _emptyCB,
+    super.onLongPress,
+    super.onFocusChange,
+    super.mouseCursor,
+    super.selected = false,
+    super.focusColor,
+    super.hoverColor,
+    super.splashColor,
+    super.focusNode,
+    super.autofocus = false,
+    super.tileColor,
+    super.selectedTileColor,
+    super.enableFeedback,
+    super.horizontalTitleGap,
+    super.minVerticalPadding,
+    super.minLeadingWidth,
+    super.titleAlignment,
   });
 }
 
@@ -30,6 +60,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
   final ValueChanged<T>? onSelected;
 
   final BorderRadius borderRadius;
+  final Offset offset;
 
   const AdaptivePopSheetList({
     super.key,
@@ -41,6 +72,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     this.onSelected,
     this.borderRadius = const BorderRadius.all(Radius.circular(999)),
     this.tooltip,
+    this.offset = Offset.zero,
   }) : assert(
           !(icon != null && child != null),
           'Either icon or child must be provided',
@@ -55,11 +87,13 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       return PopupMenuButton(
         icon: icon,
         tooltip: tooltip,
+        offset: offset,
         child: child == null ? null : IgnorePointer(child: child),
         itemBuilder: (context) => children
             .map(
               (item) => PopupMenuItem(
                 padding: EdgeInsets.zero,
+                enabled: false,
                 child: _AdaptivePopSheetListItem(
                   item: item,
                   onSelected: onSelected,
@@ -74,40 +108,38 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       showModalBottomSheet(
         context: context,
         useRootNavigator: useRootNavigator,
+        isScrollControlled: true,
+        showDragHandle: true,
+        constraints: BoxConstraints(
+          maxHeight: mediaQuery.size.height * 0.6,
+        ),
         builder: (context) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0).copyWith(top: 0),
             child: DefaultTextStyle(
               style: theme.textTheme.titleMedium!,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (headings != null) ...[
-                    Container(
-                      width: 180,
-                      height: 6,
-                      decoration: BoxDecoration(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (headings != null) ...[
+                      ...headings!,
+                      const SizedBox(height: 8),
+                      Divider(
                         color: theme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(999),
+                        thickness: 0.3,
+                        endIndent: 16,
+                        indent: 16,
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    ...headings!,
-                    const SizedBox(height: 8),
-                    Divider(
-                      color: theme.colorScheme.primary,
-                      thickness: 0.3,
-                      endIndent: 16,
-                      indent: 16,
-                    ),
+                    ],
+                    ...children.map(
+                      (item) => _AdaptivePopSheetListItem(
+                        item: item,
+                        onSelected: onSelected,
+                      ),
+                    )
                   ],
-                  ...children.map(
-                    (item) => _AdaptivePopSheetListItem(
-                      item: item,
-                      onSelected: onSelected,
-                    ),
-                  )
-                ],
+                ),
               ),
             ),
           );
@@ -153,27 +185,23 @@ class _AdaptivePopSheetListItem<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return InkWell(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: (theme.listTileTheme.shape as RoundedRectangleBorder?)
+              ?.borderRadius as BorderRadius? ??
+          const BorderRadius.all(Radius.circular(10)),
       onTap: !item.enabled
           ? null
           : () {
               item.onTap?.call();
-              Navigator.pop(context);
               if (item.value != null) {
+                Navigator.pop(context);
                 onSelected?.call(item.value as T);
               }
             },
-      child: DefaultTextStyle(
-        style: TextStyle(
-          color: item.enabled
-              ? theme.textTheme.bodyMedium!.color
-              : theme.textTheme.bodyMedium!.color!.withOpacity(0.5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: item.child,
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: IgnorePointer(child: item),
       ),
     );
   }

@@ -61,7 +61,7 @@ class TrackTile extends HookConsumerWidget {
 
     return LayoutBuilder(builder: (context, constrains) {
       return HoverBuilder(
-        permanentState: isPlaying || constrains.isSm ? true : null,
+        permanentState: isPlaying || constrains.smAndDown ? true : null,
         builder: (context, isHovering) {
           return ListTile(
             selected: isPlaying,
@@ -89,7 +89,7 @@ class TrackTile extends HookConsumerWidget {
                       ),
                     ),
                   )
-                else if (constrains.isSm)
+                else if (constrains.smAndDown)
                   const SizedBox(width: 16),
                 if (onChanged != null)
                   Checkbox.adaptive(
@@ -100,10 +100,14 @@ class TrackTile extends HookConsumerWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),
-                      child: UniversalImage(
-                        path: TypeConversionUtils.image_X_UrlString(
-                          track.album?.images,
-                          placeholder: ImagePlaceholder.albumArt,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: UniversalImage(
+                          path: TypeConversionUtils.image_X_UrlString(
+                            track.album?.images,
+                            placeholder: ImagePlaceholder.albumArt,
+                          ),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -176,6 +180,7 @@ class TrackTile extends HookConsumerWidget {
                             track.album!.name!,
                             "/album/${track.album?.id}",
                             extra: track.album,
+                            push: true,
                             overflow: TextOverflow.ellipsis,
                           ),
                         )

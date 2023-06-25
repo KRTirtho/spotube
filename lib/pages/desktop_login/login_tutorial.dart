@@ -54,7 +54,7 @@ class LoginTutorial extends ConsumerWidget {
         overrideDone: FilledButton(
           onPressed: authenticationNotifier.isLoggedIn
               ? () {
-                  ServiceUtils.navigate(context, "/");
+                  ServiceUtils.push(context, "/");
                 }
               : null,
           child: Center(child: Text(context.l10n.done)),

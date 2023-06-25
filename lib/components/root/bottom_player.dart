@@ -12,6 +12,7 @@ import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_overlay.dart';
 import 'package:spotube/components/player/player_track_details.dart';
 import 'package:spotube/components/player/player_controls.dart';
+import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
@@ -20,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/volume_provider.dart';
-import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -58,8 +58,7 @@ class BottomPlayer extends HookConsumerWidget {
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]
     if (layoutMode == LayoutMode.compact ||
-        ((mediaQuery.isSm || mediaQuery.isMd) &&
-            layoutMode == LayoutMode.adaptive)) {
+        ((mediaQuery.mdAndDown) && layoutMode == LayoutMode.adaptive)) {
       return PlayerOverlay(albumArt: albumArt);
     }
 
@@ -116,57 +115,7 @@ class BottomPlayer extends HookConsumerWidget {
                     Container(
                       height: 40,
                       constraints: const BoxConstraints(maxWidth: 250),
-                      child: HookBuilder(builder: (context) {
-                        final volume = ref.watch(volumeProvider);
-                        final volumeNotifier =
-                            ref.watch(volumeProvider.notifier);
-
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                volume == 0
-                                    ? SpotubeIcons.volumeMute
-                                    : volume <= 0.2
-                                        ? SpotubeIcons.volumeLow
-                                        : volume <= 0.6
-                                            ? SpotubeIcons.volumeMedium
-                                            : SpotubeIcons.volumeHigh,
-                                size: 16,
-                              ),
-                              onPressed: () {
-                                if (volume == 0) {
-                                  volumeNotifier.setVolume(1);
-                                } else {
-                                  volumeNotifier.setVolume(0);
-                                }
-                              },
-                            ),
-                            Listener(
-                              onPointerSignal: (event) async {
-                                if (event is PointerScrollEvent) {
-                                  if (event.scrollDelta.dy > 0) {
-                                    final value = volume - .2;
-                                    volumeNotifier
-                                        .setVolume(value < 0 ? 0 : value);
-                                  } else {
-                                    final value = volume + .2;
-                                    volumeNotifier
-                                        .setVolume(value > 1 ? 1 : value);
-                                  }
-                                }
-                              },
-                              child: Slider.adaptive(
-                                min: 0,
-                                max: 1,
-                                value: volume,
-                                onChanged: volumeNotifier.setVolume,
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
+                      child: const VolumeSlider(),
                     )
                   ],
                 )

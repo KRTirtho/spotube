@@ -16,6 +16,7 @@ class SortTracksDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return ListTileTheme(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -25,50 +26,37 @@ class SortTracksDropdown extends StatelessWidget {
           PopSheetEntry(
             value: SortBy.none,
             enabled: value != SortBy.none,
-            child: ListTile(
-              enabled: value != SortBy.none,
-              title: Text(context.l10n.none),
-            ),
+            title: Text(context.l10n.none),
           ),
           PopSheetEntry(
             value: SortBy.ascending,
             enabled: value != SortBy.ascending,
-            child: ListTile(
-              enabled: value != SortBy.ascending,
-              title: Text(context.l10n.sort_a_z),
-            ),
+            title: Text(context.l10n.sort_a_z),
           ),
           PopSheetEntry(
             value: SortBy.descending,
             enabled: value != SortBy.descending,
-            child: ListTile(
-              enabled: value != SortBy.descending,
-              title: Text(context.l10n.sort_z_a),
-            ),
+            title: Text(context.l10n.sort_z_a),
           ),
           PopSheetEntry(
-            value: SortBy.dateAdded,
-            enabled: value != SortBy.dateAdded,
-            child: ListTile(
-              enabled: value != SortBy.dateAdded,
-              title: Text(context.l10n.sort_date),
-            ),
+            value: SortBy.newest,
+            enabled: value != SortBy.newest,
+            title: Text(context.l10n.sort_newest),
+          ),
+          PopSheetEntry(
+            value: SortBy.oldest,
+            enabled: value != SortBy.oldest,
+            title: Text(context.l10n.sort_oldest),
           ),
           PopSheetEntry(
             value: SortBy.artist,
             enabled: value != SortBy.artist,
-            child: ListTile(
-              enabled: value != SortBy.artist,
-              title: Text(context.l10n.sort_artist),
-            ),
+            title: Text(context.l10n.sort_artist),
           ),
           PopSheetEntry(
             value: SortBy.album,
             enabled: value != SortBy.album,
-            child: ListTile(
-              enabled: value != SortBy.album,
-              title: Text(context.l10n.sort_album),
-            ),
+            title: Text(context.l10n.sort_album),
           ),
         ],
         headings: [
@@ -79,7 +67,7 @@ class SortTracksDropdown extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.titleSmall!,
+            style: theme.textTheme.titleSmall!,
             child: Row(
               children: [
                 const Icon(SpotubeIcons.sort),

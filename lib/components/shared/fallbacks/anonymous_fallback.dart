@@ -24,7 +24,7 @@ class AnonymousFallback extends ConsumerWidget {
           const SizedBox(height: 10),
           FilledButton(
             child: const Text("Login with Spotify"),
-            onPressed: () => ServiceUtils.navigate(context, "/settings"),
+            onPressed: () => ServiceUtils.push(context, "/settings"),
           )
         ],
       ),

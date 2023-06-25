@@ -6,15 +6,20 @@ import 'package:spotube/models/spotube_track.dart';
 
 class ProxyPlaylist {
   final Set<Track> tracks;
+  final Set<String> collections;
   final int? active;
 
-  ProxyPlaylist(this.tracks, [this.active]);
+  ProxyPlaylist(this.tracks, [this.active, this.collections = const {}]);
+
   factory ProxyPlaylist.fromJson(Map<String, dynamic> json) {
     return ProxyPlaylist(
       List.castFrom<dynamic, Map<String, dynamic>>(
         json['tracks'] ?? <Map<String, dynamic>>[],
       ).map(_makeAppropriateTrack).toSet(),
       json['active'] as int?,
+      json['collections'] == null
+          ? {}
+          : (json['collections'] as List).toSet().cast<String>(),
     );
   }
 
@@ -25,6 +30,10 @@ class ProxyPlaylist {
       activeTrack != null &&
       activeTrack is! SpotubeTrack &&
       activeTrack is! LocalTrack;
+
+  bool containsCollection(String collection) {
+    return collections.contains(collection);
+  }
 
   bool containsTrack(TrackSimple track) {
     return tracks.firstWhereOrNull((element) => element.id == track.id) != null;
@@ -57,16 +66,19 @@ class ProxyPlaylist {
     return {
       'tracks': tracks.map(_makeAppropriateTrackJson).toList(),
       'active': active,
+      'collections': collections.toList(),
     };
   }
 
   ProxyPlaylist copyWith({
     Set<Track>? tracks,
     int? active,
+    Set<String>? collections,
   }) {
     return ProxyPlaylist(
       tracks ?? this.tracks,
       active ?? this.active,
+      collections ?? this.collections,
     );
   }
 }

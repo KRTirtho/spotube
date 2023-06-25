@@ -82,16 +82,17 @@ class Sidebar extends HookConsumerWidget {
     }, [controller]);
 
     useEffect(() {
+      if (!context.mounted) return;
       if (mediaQuery.lgAndUp && !controller.extended) {
         controller.setExtended(true);
-      } else if ((mediaQuery.isSm || mediaQuery.isMd) && controller.extended) {
+      } else if (mediaQuery.mdAndDown && controller.extended) {
         controller.setExtended(false);
       }
       return null;
     }, [mediaQuery, controller]);
 
     if (layoutMode == LayoutMode.compact ||
-        (mediaQuery.isSm && layoutMode == LayoutMode.adaptive)) {
+        (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
       return Scaffold(body: child);
     }
 
@@ -186,7 +187,7 @@ class SidebarHeader extends HookWidget {
     final mediaQuery = MediaQuery.of(context);
     final theme = Theme.of(context);
 
-    if (mediaQuery.isSm || mediaQuery.isMd) {
+    if (mediaQuery.mdAndDown) {
       return Container(
         height: 40,
         width: 40,
@@ -236,7 +237,7 @@ class SidebarFooter extends HookConsumerWidget {
 
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    if (mediaQuery.isSm || mediaQuery.isMd) {
+    if (mediaQuery.mdAndDown) {
       return IconButton(
         icon: const Icon(SpotubeIcons.settings),
         onPressed: () => Sidebar.goToSettings(context),

@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 
 class BlackListPage extends HookConsumerWidget {
@@ -38,7 +39,7 @@ class BlackListPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: PageWindowTitleBar(
-        title: const Text("Blacklist"),
+        title: Text(context.l10n.blacklist),
         centerTitle: true,
         leading: const BackButton(),
       ),
@@ -49,9 +50,9 @@ class BlackListPage extends HookConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               onChanged: (value) => searchText.value = value,
-              decoration: const InputDecoration(
-                hintText: "Search",
-                prefixIcon: Icon(SpotubeIcons.search),
+              decoration: InputDecoration(
+                hintText: context.l10n.search,
+                prefixIcon: const Icon(SpotubeIcons.search),
               ),
             ),
           ),

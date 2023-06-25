@@ -296,10 +296,10 @@ abstract class LanguageLocals {
     //   name: "Inuktitut",
     //   nativeName: "ᐃᓄᒃᑎᑐᑦ",
     // ),
-    // "ja": const ISOLanguageName(
-    //   name: "Japanese",
-    //   nativeName: "日本語 (にほんご／にっぽんご)",
-    // ),
+    "ja": const ISOLanguageName(
+      name: "Japanese",
+      nativeName: "日本語 (にほんご／にっぽんご)",
+    ),
     // "jv": const ISOLanguageName(
     //   name: "Javanese",
     //   nativeName: "basa Jawa",

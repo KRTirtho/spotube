@@ -5,12 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
-
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class HeartButton extends HookConsumerWidget {
   final bool isLiked;
@@ -163,15 +160,6 @@ class PlaylistHeartButton extends HookConsumerWidget {
       ],
     );
 
-    final titleImage = useMemoized(
-        () => TypeConversionUtils.image_X_UrlString(
-              playlist.images,
-              placeholder: ImagePlaceholder.collection,
-            ),
-        [playlist.images]);
-
-    final color = usePaletteGenerator(titleImage).dominantColor;
-
     if (me.isLoading || !me.hasData) {
       return const CircularProgressIndicator();
     }
@@ -181,7 +169,7 @@ class PlaylistHeartButton extends HookConsumerWidget {
       tooltip: isLikedQuery.data ?? false
           ? context.l10n.remove_from_favorites
           : context.l10n.save_as_favorite,
-      color: color?.titleTextColor,
+      color: Colors.white,
       onPressed: isLikedQuery.hasData
           ? () {
               togglePlaylistLike.mutate(isLikedQuery.data!);
@@ -224,6 +212,7 @@ class AlbumHeartButton extends HookConsumerWidget {
       tooltip: isLiked
           ? context.l10n.remove_from_favorites
           : context.l10n.save_as_favorite,
+      color: Colors.white,
       onPressed: albumIsSaved.hasData
           ? () {
               toggleAlbumLike.mutate(isLiked);

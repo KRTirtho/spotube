@@ -111,10 +111,22 @@ class SyncedLyrics extends HookConsumerWidget {
                       index: index,
                       controller: controller,
                       child: lyricSlice.text.isEmpty
-                          ? Container()
+                          ? Container(
+                              padding: index == lyricValue.lyrics.length - 1
+                                  ? EdgeInsets.only(
+                                      bottom:
+                                          MediaQuery.of(context).size.height /
+                                              2,
+                                    )
+                                  : null,
+                            )
                           : Center(
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: index == lyricValue.lyrics.length - 1
+                                    ? const EdgeInsets.all(8.0).copyWith(
+                                        bottom: 100,
+                                      )
+                                    : const EdgeInsets.all(8.0),
                                 child: AnimatedDefaultTextStyle(
                                   duration: const Duration(milliseconds: 250),
                                   style: TextStyle(

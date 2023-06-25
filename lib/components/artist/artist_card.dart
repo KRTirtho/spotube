@@ -35,6 +35,7 @@ class ArtistCard extends HookConsumerWidget {
     final radius = BorderRadius.circular(15);
 
     final double size = useBreakpointValue<double>(
+      xs: 130,
       sm: 130,
       md: 150,
       others: 170,
@@ -62,7 +63,7 @@ class ArtistCard extends HookConsumerWidget {
         ),
         child: InkWell(
             onTap: () {
-              ServiceUtils.navigate(context, "/artist/${artist.id}");
+              ServiceUtils.push(context, "/artist/${artist.id}");
             },
             borderRadius: radius,
             child: Padding(

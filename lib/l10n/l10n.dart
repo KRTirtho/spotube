@@ -2,6 +2,7 @@
 ///
 /// Kingkor Roy Tirtho => English, Bengali
 /// ChatGPT (GPT 3.5) XD => Hindi, French
+/// maboroshin@github => Japanese
 import 'package:flutter/material.dart';
 
 class L10n {
@@ -11,5 +12,6 @@ class L10n {
     const Locale('fr', 'FR'),
     const Locale('hi', 'IN'),
     const Locale ('ge', 'DE'),
+    const Locale('ja', 'JA'),
   ];
 }

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
@@ -8,6 +9,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/confirm_download_dialog.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
+import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
@@ -31,10 +33,14 @@ class TracksTableView extends HookConsumerWidget {
   final bool isSliver;
 
   final Widget? heading;
+
+  final VoidCallback? onFiltering;
+
   const TracksTableView(
     this.tracks, {
     Key? key,
     this.onTrackPlayButtonPressed,
+    this.onFiltering,
     this.userPlaylist = false,
     this.playlistId,
     this.heading,
@@ -43,7 +49,9 @@ class TracksTableView extends HookConsumerWidget {
 
   @override
   Widget build(context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final mediaQuery = MediaQuery.of(context);
+
+    ref.watch(ProxyPlaylistNotifier.provider);
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
@@ -54,11 +62,31 @@ class TracksTableView extends HookConsumerWidget {
     final showCheck = useState<bool>(false);
     final sortBy = ref.watch(trackCollectionSortState(playlistId ?? ''));
 
+    final isFiltering = useState<bool>(false);
+
+    final searchController = useTextEditingController();
+    final searchFocus = useFocusNode();
+
+    // this will trigger update on each change in searchController
+    useValueListenable(searchController);
+
+    final filteredTracks = useMemoized(() {
+      if (searchController.text.isEmpty) {
+        return tracks;
+      }
+      return tracks
+          .map((e) => (weightedRatio(e.name!, searchController.text), e))
+          .sorted((a, b) => b.$1.compareTo(a.$1))
+          .where((e) => e.$1 > 50)
+          .map((e) => e.$2)
+          .toList();
+    }, [tracks, searchController.text]);
+
     final sortedTracks = useMemoized(
       () {
-        return ServiceUtils.sortTracks(tracks, sortBy);
+        return ServiceUtils.sortTracks(filteredTracks, sortBy);
       },
-      [tracks, sortBy],
+      [filteredTracks, sortBy],
     );
 
     final selectedTracks = useMemoized(
@@ -68,7 +96,7 @@ class TracksTableView extends HookConsumerWidget {
       [sortedTracks],
     );
 
-    final children = sortedTracks.isEmpty
+    final children = tracks.isEmpty
         ? [const NotFound(vertical: true)]
         : [
             if (heading != null) heading!,
@@ -105,7 +133,7 @@ class TracksTableView extends HookConsumerWidget {
                             : const SizedBox(width: 16),
                   ),
                   Expanded(
-                    flex: 5,
+                    flex: 7,
                     child: Row(
                       children: [
                         Text(
@@ -139,61 +167,21 @@ class TracksTableView extends HookConsumerWidget {
                           .state = value;
                     },
                   ),
+                  ExpandableSearchButton(
+                    isFiltering: isFiltering,
+                    searchFocus: searchFocus,
+                    onPressed: (value) {
+                      if (isFiltering.value) {
+                        onFiltering?.call();
+                      }
+                    },
+                  ),
                   AdaptivePopSheetList(
                     tooltip: context.l10n.more_actions,
                     headings: [
                       Text(
                         context.l10n.more_actions,
                         style: tableHeadStyle,
-                      ),
-                    ],
-                    children: [
-                      PopSheetEntry(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "download",
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.download),
-                          enabled: selectedTracks.isNotEmpty,
-                          title: Text(
-                            context.l10n.download_count(selectedTracks.length),
-                          ),
-                        ),
-                      ),
-                      if (!userPlaylist)
-                        PopSheetEntry(
-                          enabled: selectedTracks.isNotEmpty,
-                          value: "add-to-playlist",
-                          child: ListTile(
-                            leading: const Icon(SpotubeIcons.playlistAdd),
-                            enabled: selectedTracks.isNotEmpty,
-                            title: Text(
-                              context.l10n
-                                  .add_count_to_playlist(selectedTracks.length),
-                            ),
-                          ),
-                        ),
-                      PopSheetEntry(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "add-to-queue",
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.queueAdd),
-                          enabled: selectedTracks.isNotEmpty,
-                          title: Text(
-                            context.l10n
-                                .add_count_to_queue(selectedTracks.length),
-                          ),
-                        ),
-                      ),
-                      PopSheetEntry(
-                        enabled: selectedTracks.isNotEmpty,
-                        value: "play-next",
-                        child: ListTile(
-                          leading: const Icon(SpotubeIcons.lightning),
-                          enabled: selectedTracks.isNotEmpty,
-                          title: Text(
-                            context.l10n.play_count_next(selectedTracks.length),
-                          ),
-                        ),
                       ),
                     ],
                     onSelected: (action) async {
@@ -230,6 +218,9 @@ class TracksTableView extends HookConsumerWidget {
                         case "play-next":
                           {
                             playback.addTracksAtFirst(selectedTracks);
+                            if (playlistId != null) {
+                              playback.addCollection(playlistId!);
+                            }
                             selected.value = [];
                             showCheck.value = false;
                             break;
@@ -237,6 +228,9 @@ class TracksTableView extends HookConsumerWidget {
                         case "add-to-queue":
                           {
                             playback.addTracks(selectedTracks);
+                            if (playlistId != null) {
+                              playback.addCollection(playlistId!);
+                            }
                             selected.value = [];
                             showCheck.value = false;
                             break;
@@ -245,11 +239,53 @@ class TracksTableView extends HookConsumerWidget {
                       }
                     },
                     icon: const Icon(SpotubeIcons.moreVertical),
+                    children: [
+                      PopSheetEntry(
+                        value: "download",
+                        leading: const Icon(SpotubeIcons.download),
+                        enabled: selectedTracks.isNotEmpty,
+                        title: Text(
+                          context.l10n.download_count(selectedTracks.length),
+                        ),
+                      ),
+                      if (!userPlaylist)
+                        PopSheetEntry(
+                          value: "add-to-playlist",
+                          leading: const Icon(SpotubeIcons.playlistAdd),
+                          enabled: selectedTracks.isNotEmpty,
+                          title: Text(
+                            context.l10n
+                                .add_count_to_playlist(selectedTracks.length),
+                          ),
+                        ),
+                      PopSheetEntry(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "add-to-queue",
+                        leading: const Icon(SpotubeIcons.queueAdd),
+                        title: Text(
+                          context.l10n
+                              .add_count_to_queue(selectedTracks.length),
+                        ),
+                      ),
+                      PopSheetEntry(
+                        enabled: selectedTracks.isNotEmpty,
+                        value: "play-next",
+                        leading: const Icon(SpotubeIcons.lightning),
+                        title: Text(
+                          context.l10n.play_count_next(selectedTracks.length),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(width: 10),
                 ],
               );
             }),
+            ExpandableSearchField(
+              isFiltering: isFiltering,
+              searchController: searchController,
+              searchFocus: searchFocus,
+            ),
             ...sortedTracks.mapIndexed((i, track) {
               return TrackTile(
                 index: i,
@@ -297,11 +333,17 @@ class TracksTableView extends HookConsumerWidget {
                         }
                       },
               );
-            }).toList(),
+            }),
+            // extra space for mobile devices where keyboard takes half of the screen
+            if (isFiltering.value)
+              SizedBox(
+                height: mediaQuery.size.height * .75, //75% of the screen
+              ),
           ];
 
     if (isSliver) {
       return SliverSafeArea(
+        top: false,
         sliver: SliverList(delegate: SliverChildListDelegate(children)),
       );
     }

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:background_downloader/background_downloader.dart';
 // import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -65,14 +66,11 @@ class UserDownloads extends HookConsumerWidget {
                         .where((element) => element.taskId == track.id),
                   );
                   final taskItSelf = useFuture(
-                    Future.value(null),
-                    // FileDownloader().database.recordForId(track.id!),
+                    FileDownloader().database.recordForId(track.id!),
                   );
 
-                  final hasFailed = failedTaskStream
-                          .hasData /*  ||
-                      taskItSelf.data?.status == TaskStatus.failed */
-                      ;
+                  final hasFailed = failedTaskStream.hasData ||
+                      taskItSelf.data?.status == TaskStatus.failed;
 
                   return ListTile(
                     title: Text(track.name ?? ''),
@@ -91,21 +89,18 @@ class UserDownloads extends HookConsumerWidget {
                       ),
                     ),
                     horizontalTitleGap: 10,
-                    trailing: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: downloadManager.activeItem?.id == track.id
-                          ? CircularProgressIndicator(
-                              value: task.data?.progress ?? 0,
-                            )
-                          : hasFailed
-                              ? Icon(SpotubeIcons.error, color: Colors.red[400])
-                              : IconButton(
-                                  icon: const Icon(SpotubeIcons.close),
-                                  onPressed: () {
-                                    downloadManager.cancel(track);
-                                  }),
-                    ),
+                    trailing: downloadManager.activeItem?.id == track.id &&
+                            !hasFailed
+                        ? CircularProgressIndicator(
+                            value: task.data?.progress ?? 0,
+                          )
+                        : hasFailed
+                            ? Icon(SpotubeIcons.error, color: Colors.red[400])
+                            : IconButton(
+                                icon: const Icon(SpotubeIcons.close),
+                                onPressed: () {
+                                  downloadManager.cancel(track);
+                                }),
                     subtitle: TypeConversionUtils.artists_X_ClickableArtists(
                       track.artists ?? <Artist>[],
                       mainAxisAlignment: WrapAlignment.start,

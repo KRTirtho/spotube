@@ -18,6 +18,7 @@ class ShimmerCategories extends HookWidget {
         shimmerTheme.shimmerBackgroundColor ?? Colors.grey;
 
     final shimmerCount = useBreakpointValue(
+      xs: 2,
       sm: 2,
       md: 3,
       lg: 3,

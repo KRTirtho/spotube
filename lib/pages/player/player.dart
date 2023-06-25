@@ -9,10 +9,14 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_controls.dart';
+import 'package:spotube/components/player/player_queue.dart';
+import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/components/shared/animated_gradient.dart';
+import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
@@ -74,6 +78,24 @@ class PlayerView extends HookConsumerWidget {
           foregroundColor: titleTextColor,
           toolbarOpacity: 1,
           leading: const BackButton(),
+          actions: [
+            IconButton(
+              icon: const Icon(SpotubeIcons.info, size: 18),
+              tooltip: context.l10n.details,
+              style: IconButton.styleFrom(foregroundColor: bodyTextColor),
+              onPressed: currentTrack == null
+                  ? null
+                  : () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return TrackDetailsDialog(
+                              track: currentTrack,
+                            );
+                          });
+                    },
+            )
+          ],
         ),
         extendBodyBehindAppBar: true,
         body: SizedBox(
@@ -106,29 +128,27 @@ class PlayerView extends HookConsumerWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              constraints: const BoxConstraints(
-                                  maxHeight: 300, maxWidth: 300),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    spreadRadius: 2,
-                                    blurRadius: 10,
-                                    offset: Offset(0, 0),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: UniversalImage(
-                                  path: albumArt,
-                                  placeholder: Assets.albumPlaceholder.path,
-                                  fit: BoxFit.cover,
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            constraints: const BoxConstraints(
+                                maxHeight: 300, maxWidth: 300),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 0),
                                 ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: UniversalImage(
+                                path: albumArt,
+                                placeholder: Assets.albumPlaceholder.path,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -182,39 +202,111 @@ class PlayerView extends HookConsumerWidget {
                           const SizedBox(height: 25),
                           PlayerActions(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            floatingQueue: false,
-                            extraActions: [
+                            showQueue: false,
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                    icon: const Icon(SpotubeIcons.queue),
+                                    label: Text(context.l10n.queue),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: bodyTextColor,
+                                      side: BorderSide(
+                                        color: bodyTextColor ?? Colors.white,
+                                      ),
+                                    ),
+                                    onPressed: currentTrack != null
+                                        ? () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isDismissible: true,
+                                              enableDrag: true,
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.black12,
+                                              barrierColor: Colors.black12,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              constraints: BoxConstraints(
+                                                maxHeight:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        .7,
+                                              ),
+                                              builder: (context) {
+                                                return PlayerQueue(
+                                                    floating: false);
+                                              },
+                                            );
+                                          }
+                                        : null),
+                              ),
+                              if (auth != null) const SizedBox(width: 10),
                               if (auth != null)
-                                IconButton(
-                                  tooltip: "Open Lyrics",
-                                  icon: const Icon(SpotubeIcons.music),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isDismissible: true,
-                                      enableDrag: true,
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.black38,
-                                      barrierColor: Colors.black12,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    label: Text(context.l10n.lyrics),
+                                    icon: const Icon(SpotubeIcons.music),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: bodyTextColor,
+                                      side: BorderSide(
+                                        color: bodyTextColor ?? Colors.white,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isDismissible: true,
+                                        enableDrag: true,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.black38,
+                                        barrierColor: Colors.black12,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          ),
                                         ),
-                                      ),
-                                      constraints: BoxConstraints(
-                                        maxHeight:
-                                            MediaQuery.of(context).size.height *
-                                                0.8,
-                                      ),
-                                      builder: (context) =>
-                                          const LyricsPage(isModal: true),
-                                    );
-                                  },
-                                )
+                                        constraints: BoxConstraints(
+                                          maxHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                        ),
+                                        builder: (context) =>
+                                            const LyricsPage(isModal: true),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              const SizedBox(width: 10),
                             ],
                           ),
-                          const SizedBox(height: 25)
+                          const SizedBox(height: 25),
+                          SliderTheme(
+                            data: theme.sliderTheme.copyWith(
+                              activeTrackColor: titleTextColor,
+                              inactiveTrackColor: bodyTextColor,
+                              thumbColor: titleTextColor,
+                              overlayColor: titleTextColor?.withOpacity(0.2),
+                              trackHeight: 2,
+                              thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 8,
+                              ),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: VolumeSlider(
+                                fullWidth: true,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

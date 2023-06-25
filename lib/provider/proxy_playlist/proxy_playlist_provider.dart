@@ -22,7 +22,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 /// Things to implement:
 /// * [x] Sponsor-Block skip
 /// * [x] Prefetch next track as [SpotubeTrack] on 80% of current track
-/// * [ ] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
+/// * [x] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
 /// * [ ] Modification of the Queue
 ///       * [x] Add track at the end
 ///       * [x] Add track at the beginning
@@ -185,6 +185,19 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
   }
 
+  void addCollection(String collectionId) {
+    state = state.copyWith(collections: {
+      ...state.collections,
+      collectionId,
+    });
+  }
+
+  void removeCollection(String collectionId) {
+    state = state.copyWith(collections: {
+      ...state.collections..remove(collectionId),
+    });
+  }
+
   // TODO: Safely Remove playing tracks
 
   Future<void> removeTrack(String trackId) async {
@@ -218,28 +231,38 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     bool autoPlay = false,
   }) async {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
-    final addableTrack = await SpotubeTrack.fetchFromTrack(
-      tracks.elementAtOrNull(initialIndex) ?? tracks.first,
-      preferences,
-      pipedClient,
-    );
+    final indexTrack = tracks.elementAtOrNull(initialIndex) ?? tracks.first;
 
-    state = state.copyWith(
-      tracks: mergeTracks([addableTrack], tracks),
-      active: initialIndex,
-    );
+    if (indexTrack is LocalTrack) {
+      state = state.copyWith(
+        tracks: tracks.toSet(),
+        active: initialIndex,
+        collections: {},
+      );
+      await notificationService.addTrack(indexTrack);
+    } else {
+      final addableTrack = await SpotubeTrack.fetchFromTrack(
+        tracks.elementAtOrNull(initialIndex) ?? tracks.first,
+        preferences,
+        pipedClient,
+      );
 
-    await notificationService.addTrack(addableTrack);
+      state = state.copyWith(
+        tracks: mergeTracks([addableTrack], tracks),
+        active: initialIndex,
+        collections: {},
+      );
+      await notificationService.addTrack(addableTrack);
+      await storeTrack(
+        tracks.elementAt(initialIndex),
+        addableTrack,
+      );
+    }
 
     await audioPlayer.openPlaylist(
       state.tracks.map(makeAppropriateSource).toList(),
       initialIndex: initialIndex,
       autoPlay: autoPlay,
-    );
-
-    await storeTrack(
-      tracks.elementAt(initialIndex),
-      addableTrack,
     );
   }
 
@@ -439,12 +462,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   @override
   onInit() async {
     if (state.tracks.isEmpty) return null;
-
+    final oldCollections = state.collections;
     await load(
       state.tracks,
       initialIndex: state.active ?? 0,
       autoPlay: false,
     );
+    state = state.copyWith(collections: oldCollections);
   }
 
   @override

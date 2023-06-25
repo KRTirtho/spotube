@@ -24,13 +24,10 @@ class PlaylistCard extends HookConsumerWidget {
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final queryBowl = QueryClient.of(context);
-    final query = queryBowl.getQuery<List<Track>, dynamic>(
-      "playlist-tracks/${playlist.id}",
-    );
     final tracks = useState<List<TrackSimple>?>(null);
     bool isPlaylistPlaying = useMemoized(
-      () => playlistQueue.containsTracks(tracks.value ?? query?.data ?? []),
-      [playlistNotifier, tracks.value, query?.data],
+      () => playlistQueue.containsCollection(playlist.id!),
+      [playlistQueue, playlist.id],
     );
 
     final updating = useState(false);
@@ -48,7 +45,7 @@ class PlaylistCard extends HookConsumerWidget {
       isLoading:
           (isPlaylistPlaying && playlistQueue.isFetching) || updating.value,
       onTap: () {
-        ServiceUtils.navigate(
+        ServiceUtils.push(
           context,
           "/playlist/${playlist.id}",
           extra: playlist,
@@ -72,6 +69,7 @@ class PlaylistCard extends HookConsumerWidget {
           if (fetchedTracks.isEmpty) return;
 
           await playlistNotifier.load(fetchedTracks, autoPlay: true);
+          playlistNotifier.addCollection(playlist.id!);
           tracks.value = fetchedTracks;
         } finally {
           updating.value = false;
@@ -90,6 +88,7 @@ class PlaylistCard extends HookConsumerWidget {
           if (fetchedTracks.isEmpty) return;
 
           playlistNotifier.addTracks(fetchedTracks);
+          playlistNotifier.addCollection(playlist.id!);
           tracks.value = fetchedTracks;
           if (context.mounted) {
             final snackbar = SnackBar(

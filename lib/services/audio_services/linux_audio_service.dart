@@ -323,7 +323,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
         "xesam:url": DBusString(
           playlist.activeTrack is SpotubeTrack
               ? (playlist.activeTrack as SpotubeTrack).ytUri
-              : playlist.activeTrack!.previewUrl!,
+              : playlist.activeTrack!.previewUrl ?? "",
         ),
         "xesam:genre": const DBusString("Unknown"),
       }),

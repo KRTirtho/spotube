@@ -93,7 +93,7 @@ class RecommendationAttributeFields extends HookWidget {
       return Card(
         child: ExpansionTile(
           title: DefaultTextStyle(
-            style: Theme.of(context).textTheme.titleMedium!,
+            style: Theme.of(context).textTheme.titleSmall!,
             child: title,
           ),
           shape: const Border(),

@@ -26,7 +26,6 @@ import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/themes/theme.dart';
-import 'package:spotube/utils/custom_toast_handler.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
@@ -122,23 +121,18 @@ Future<void> main(List<String> rawArgs) async {
     releaseConfig: CatcherOptions(
       SilentReportMode(),
       [
-        if (arguments["verbose"] ?? false)
-          ConsoleHandler(
-            enableDeviceParameters: false,
-            enableApplicationParameters: false,
-          ),
+        if (arguments["verbose"] ?? false) ConsoleHandler(),
         FileHandler(
           await getLogsPath(),
           printLogs: false,
         ),
-        CustomToastHandler(),
       ],
     ),
     runAppFunction: () {
       runApp(
         DevicePreview(
           availableLocales: L10n.all,
-          enabled: !kReleaseMode,
+          enabled: !kReleaseMode && DesktopTools.platform.isDesktop,
           builder: (context) {
             return ProviderScope(
               child: QueryClientProvider(
