@@ -147,7 +147,7 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                                     child: FilledButton.icon(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.white,
-                                        foregroundColor: color?.color,
+                                        foregroundColor: Colors.black,
                                       ),
                                       label: Text(context.l10n.shuffle),
                                       icon: const Icon(SpotubeIcons.shuffle),
