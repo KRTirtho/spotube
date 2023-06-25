@@ -24,7 +24,7 @@
     android:requestLegacyExternalStorage="true"
   >
     <activity
-      android:name="com.ryanheise.audioservice.AudioServiceActivity"
+      android:name="com.ryanheise.audioservice.AudioServiceActivity" 
       android:exported="true"
       android:launchMode="singleTop"
       android:theme="@style/LaunchTheme"
@@ -49,17 +49,21 @@
 
     </activity>
 
-    <service android:name="com.ryanheise.audioservice.AudioService" android:exported="false">
+    <!-- AudioService Config -->
+    <service android:name="com.ryanheise.audioservice.AudioService"
+      android:foregroundServiceType="mediaPlayback"
+      android:exported="true">
       <intent-filter>
         <action android:name="android.media.browse.MediaBrowserService" />
       </intent-filter>
     </service>
-
-    <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver" android:exported="false">
+    <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+      android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MEDIA_BUTTON" />
       </intent-filter>
     </receiver>
+    <!-- =================== -->
 
     <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
