@@ -212,10 +212,10 @@ abstract class LanguageLocals {
     //   name: "Georgian",
     //   nativeName: "ქართული",
     // ),
-    // "de": const ISOLanguageName(
-    //   name: "German",
-    //   nativeName: "Deutsch",
-    // ),
+    "de": const ISOLanguageName(
+      name: "German",
+      nativeName: "Deutsch",
+    ),
     // "el": const ISOLanguageName(
     //   name: "Greek, Modern",
     //   nativeName: "Ελληνικά",

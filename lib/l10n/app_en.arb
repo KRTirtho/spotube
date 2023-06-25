@@ -246,5 +246,6 @@
   "hour": "{hours} Hour",
   "custom_hours": "Custom Hours",
   "logs": "Logs",
-  "developers": "Developers"
+  "developers": "Developers",
+  "not_logged_in": "You're not logged in"
 }
