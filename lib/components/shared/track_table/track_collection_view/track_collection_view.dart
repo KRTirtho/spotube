@@ -168,7 +168,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                     kIsMobile ? const BackButton(color: Colors.white) : null,
                 iconTheme: IconThemeData(color: color?.titleTextColor),
                 primary: true,
-                backgroundColor: color?.color.withOpacity(.5),
+                backgroundColor: color?.color.withOpacity(.8),
                 title: collapsed.value
                     ? Text(
                         title,

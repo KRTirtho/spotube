@@ -197,8 +197,13 @@ class TrackTile extends HookConsumerWidget {
                         track.artists ?? [],
                       ),
                     )
-                  : TypeConversionUtils.artists_X_ClickableArtists(
-                      track.artists ?? [],
+                  : ClipRect(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 40),
+                        child: TypeConversionUtils.artists_X_ClickableArtists(
+                          track.artists ?? [],
+                        ),
+                      ),
                     ),
             ),
             trailing: Row(
