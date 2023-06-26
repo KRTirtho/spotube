@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/hooks/use_disable_battery_optimizations.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/matched_track.dart';
@@ -188,6 +189,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         // youtube.close();
       };
     }, []);
+
+    useDisableBatterOptimizations();
 
     final lightTheme = useMemoized(
       () => theme(paletteColor ?? accentMaterialColor, Brightness.light),

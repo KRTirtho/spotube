@@ -161,14 +161,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.4.0"
-  badges:
-    dependency: "direct main"
-    description:
-      name: badges
-      sha256: "727580d938b7a1ff47ea42df730d581415606b4224cfa708671c10287f8d3fe6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -466,6 +458,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.2"
+  disable_battery_optimization:
+    dependency: "direct main"
+    description:
+      name: disable_battery_optimization
+      sha256: b3441975ab2a3ab0c19ed78e909a88d245ce689d43d17f9b23582b1ed41c047b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0+1"
   dots_indicator:
     dependency: transitive
     description:
@@ -1439,14 +1439,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.22.0"
-  queue:
-    dependency: "direct main"
-    description:
-      name: queue
-      sha256: "9a41ecadc15db79010108c06eae229a45c56b18db699760f34e8c9ac9b831ff9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0+2"
   quiver:
     dependency: transitive
     description:
@@ -1631,14 +1623,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  simple_circular_progress_bar:
-    dependency: "direct main"
-    description:
-      name: simple_circular_progress_bar
-      sha256: e661ca942fbc617298e975b41fde19003d995de73ca6c2a1526c54d52f07151b
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   skeleton_text:
     dependency: "direct main"
     description:
