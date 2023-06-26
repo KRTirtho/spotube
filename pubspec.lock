@@ -354,6 +354,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  connectivity_plus:
+    dependency: transitive
+    description:
+      name: connectivity_plus
+      sha256: "8599ae9edca5ff96163fca3e36f8e481ea917d1e71cdad912c084b5579913f34"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
+  connectivity_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: connectivity_plus_platform_interface
+      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.4"
   convert:
     dependency: transitive
     description:
@@ -542,18 +558,26 @@ packages:
     dependency: "direct main"
     description:
       name: fl_query
-      sha256: b119e0d7e4cb615780f6cab00e7b40f88f8f549d9f8d20f6e1076e08cbf97c42
+      sha256: "64f482fc09eb1166adca232f68772b2b11c616d88bce3208b2753c940ebc9f71"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.2"
+    version: "1.0.0-alpha.3"
+  fl_query_connectivity_plus_adapter:
+    dependency: "direct main"
+    description:
+      name: fl_query_connectivity_plus_adapter
+      sha256: ce170730117b2da27467953c2d8a063ea89a99cfb666b332b6ea621211f09b8a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0-alpha.1"
   fl_query_hooks:
     dependency: "direct main"
     description:
       name: fl_query_hooks
-      sha256: "9a4263cc5e1ef6e246089602256011172a9d3be212c41c08d67bc365ce6fec22"
+      sha256: b0ffc81fb047cbcedd9766776f9c72b95382730ce173226f0695c3f45774b0bc
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.2"
+    version: "1.0.0-alpha.3"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -1158,6 +1182,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  nm:
+    dependency: transitive
+    description:
+      name: nm
+      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   oauth2:
     dependency: transitive
     description:
@@ -1638,12 +1670,11 @@ packages:
   smtc_windows:
     dependency: "direct main"
     description:
-      path: "packages/smtc_windows"
-      ref: "6cc93624b8fab8d7727c8693e91577a7413ccd13"
-      resolved-ref: "6cc93624b8fab8d7727c8693e91577a7413ccd13"
-      url: "https://github.com/KRTirtho/smtc_windows.git"
-    source: git
-    version: "0.0.1"
+      name: smtc_windows
+      sha256: dd86d0f29b5a73ffed5650279e6abee01846017b9bc16c07c708e129648c08ac
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   source_gen:
     dependency: transitive
     description:
@@ -2102,5 +2133,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.0.0 <4.0.0"
+  dart: ">=3.0.2 <4.0.0"
   flutter: ">=3.10.0"

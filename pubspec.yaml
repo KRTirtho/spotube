@@ -25,8 +25,9 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   envied: ^0.3.0
   file_picker: ^5.2.2
-  fl_query: ^1.0.0-alpha.2
-  fl_query_hooks: ^1.0.0-alpha.2
+  fl_query: ^1.0.0-alpha.3
+  fl_query_hooks: ^1.0.0-alpha.3
+  fl_query_connectivity_plus_adapter: ^0.1.0-alpha.1
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
@@ -73,11 +74,7 @@ dependencies:
   shared_preferences: ^2.0.11
   sidebarx: ^0.15.0
   skeleton_text: ^3.0.0
-  smtc_windows:
-    git:
-      url: https://github.com/KRTirtho/smtc_windows.git
-      ref: 6cc93624b8fab8d7727c8693e91577a7413ccd13
-      path: packages/smtc_windows
+  smtc_windows: ^0.1.0
   spotify: ^0.11.0
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0

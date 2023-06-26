@@ -4,6 +4,7 @@ import 'package:args/args.dart';
 import 'package:catcher/catcher.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_connectivity_plus_adapter/fl_query_connectivity_plus_adapter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -97,6 +98,7 @@ Future<void> main(List<String> rawArgs) async {
   await QueryClient.initialize(
     cachePrefix: "oss.krtirtho.spotube",
     cacheDir: (await getApplicationSupportDirectory()).path,
+    connectivity: FlQueryConnectivityPlusAdapter(),
   );
   Hive.registerAdapter(MatchedTrackAdapter());
 
@@ -134,6 +136,10 @@ Future<void> main(List<String> rawArgs) async {
         DevicePreview(
           availableLocales: L10n.all,
           enabled: !kReleaseMode && DesktopTools.platform.isDesktop,
+          data: const DevicePreviewData(
+            isEnabled: false,
+            orientation: Orientation.portrait,
+          ),
           builder: (context) {
             return ProviderScope(
               child: QueryClientProvider(
