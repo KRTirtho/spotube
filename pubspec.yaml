@@ -91,10 +91,7 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding.git
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
-  piped_client:
-    git:
-      url: https://github.com/KRTirtho/piped_client
-      ref: eaade37d0938d31dbfa35bb5152caca4e284bda6
+  piped_client: ^0.1.0
   supabase_flutter: ^1.9.1
   device_preview: ^1.1.0
   media_kit_native_event_loop: ^1.0.4

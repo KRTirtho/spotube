@@ -1337,11 +1337,10 @@ packages:
   piped_client:
     dependency: "direct main"
     description:
-      path: "."
-      ref: eaade37d0938d31dbfa35bb5152caca4e284bda6
-      resolved-ref: eaade37d0938d31dbfa35bb5152caca4e284bda6
-      url: "https://github.com/KRTirtho/piped_client"
-    source: git
+      name: piped_client
+      sha256: "8b96e1f9d8533c1da7eff7fbbd4bf188256fc76a20900d378b52be09418ea771"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   platform:
     dependency: transitive
