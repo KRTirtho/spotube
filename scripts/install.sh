@@ -101,12 +101,10 @@ function install_spotube(){
 
         case "${reinstall}" in
         [yY]*)
-            uninstall_spotube
-            ;;
+            uninstall_spotube ;;
         *)
             echo 'Aborting installation...'
-            exit 1
-            ;;
+            exit 1 ;;
         esac
     fi
 
@@ -132,12 +130,10 @@ function uninstall_spotube(){
     case "${confirm}" in
     [yY]*)
             echo 'Unstalling Spotube..'
-            rm -rf ${installDir} ${desktopDir} ${appdata} ${icon} ${symlink}
-            ;;
+            rm -rf ${installDir} ${desktopDir} ${appdata} ${icon} ${symlink} ;;
     *)
             echo 'Aborting...'
-            exit 0
-            ;;
+            exit 0 ;;
     esac
 }
 
@@ -153,19 +149,16 @@ case "$1" in
     install_deps
     download_extract_spotube
     install_spotube
-    ;;
+    exit 0 ;;
 -r | --remove)
     rootCheck
     uninstall_spotube
-    exit 0
-    ;;
+    exit 0 ;;
 -h | --help | "")
     help
-    exit 0
-    ;;
+    exit 0 ;;
 *)
-    echo "Invalid flag "$1"."
+    echo "Invalid flag '$1'"
     echo "Please run ./${fname} for more information."
-    exit 1
-    ;;
+    exit 1 ;;
 esac
