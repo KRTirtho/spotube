@@ -57,13 +57,13 @@ class SyncedLyrics extends HookConsumerWidget {
 
     final textTheme = Theme.of(context).textTheme;
 
-    useEffect(() {
-      controller.scrollToIndex(0);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    ref.listen(
+      ProxyPlaylistNotifier.provider.select((s) => s.activeTrack),
+      (previous, next) {
+        controller.scrollToIndex(0);
         ref.read(_delay.notifier).state = 0;
-      });
-      return null;
-    }, [playlist.activeTrack]);
+      },
+    );
 
     final headlineTextStyle = (mediaQuery.mdAndUp
             ? textTheme.displaySmall

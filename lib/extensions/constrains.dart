@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 extension ContainerBreakpoints on BoxConstraints {
   bool get isXs => biggest.width <= 480;
   bool get isSm => biggest.width > 480 && biggest.width <= 640;
-  bool get isMd => biggest.width > 640 && biggest.width <= 768;
-  bool get isLg => biggest.width > 768 && biggest.width <= 1024;
+  bool get isMd => biggest.width > 640 && biggest.width <= 820;
+  bool get isLg => biggest.width > 820 && biggest.width <= 1024;
   bool get isXl => biggest.width > 1024 && biggest.width <= 1280;
   bool get is2Xl => biggest.width > 1280;
 
@@ -22,8 +22,8 @@ extension ContainerBreakpoints on BoxConstraints {
 extension ScreenBreakpoints on MediaQueryData {
   bool get isXs => size.width <= 480;
   bool get isSm => size.width > 480 && size.width <= 640;
-  bool get isMd => size.width > 640 && size.width <= 768;
-  bool get isLg => size.width > 768 && size.width <= 1024;
+  bool get isMd => size.width > 640 && size.width <= 820;
+  bool get isLg => size.width > 820 && size.width <= 1024;
   bool get isXl => size.width > 1024 && size.width <= 1280;
   bool get is2Xl => size.width > 1280;
 
