@@ -116,9 +116,6 @@ class PlayerActions extends HookConsumerWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * .5,
-                      ),
                       builder: (context) {
                         return SiblingTracksSheet(floating: floatingQueue);
                       },

@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
@@ -406,7 +405,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   Future<void> swapSibling(PipedSearchItem video) async {
     if (state.activeTrack is SpotubeTrack && video is PipedSearchItemStream) {
-      populateSibling();
+      await populateSibling();
       final newTrack = await (state.activeTrack as SpotubeTrack)
           .swappedCopy(video, preferences, pipedClient);
       if (newTrack == null) return;

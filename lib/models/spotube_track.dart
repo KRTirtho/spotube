@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:catcher/catcher.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/artist_simple.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
@@ -177,7 +174,8 @@ class SpotubeTrack extends Track {
     UserPreferences preferences,
     PipedClient client,
   ) async {
-    if (siblings.none((element) => element.id == video.id)) return null;
+    // sibling tracks that were manually searched and swapped
+    final isStepSibling = siblings.none((element) => element.id == video.id);
 
     final ytVideo = await client.streams(video.id);
 
@@ -185,13 +183,15 @@ class SpotubeTrack extends Track {
 
     final ytUri = ytStream.url;
 
-    await MatchedTrack.box.put(
-      id!,
-      MatchedTrack(
-        youtubeId: video.id,
-        spotifyId: id!,
-      ),
-    );
+    if (!isStepSibling) {
+      await MatchedTrack.box.put(
+        id!,
+        MatchedTrack(
+          youtubeId: video.id,
+          spotifyId: id!,
+        ),
+      );
+    }
 
     if (preferences.predownload &&
         video.duration < const Duration(minutes: 15)) {
