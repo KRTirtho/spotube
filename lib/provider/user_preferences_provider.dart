@@ -51,8 +51,6 @@ class UserPreferences extends PersistedChangeNotifier {
 
   LayoutMode layoutMode;
 
-  bool predownload;
-
   CloseBehavior closeBehavior;
 
   bool showSystemTrayIcon;
@@ -72,7 +70,6 @@ class UserPreferences extends PersistedChangeNotifier {
     required this.recommendationMarket,
     required this.themeMode,
     required this.layoutMode,
-    required this.predownload,
     required this.accentColorScheme,
     this.albumColorSync = true,
     this.saveTrackLyrics = false,
@@ -93,12 +90,6 @@ class UserPreferences extends PersistedChangeNotifier {
         },
       );
     }
-  }
-
-  void setPredownload(bool value) {
-    predownload = value;
-    notifyListeners();
-    updatePersistence();
   }
 
   void setThemeMode(ThemeMode mode) {
@@ -231,8 +222,6 @@ class UserPreferences extends PersistedChangeNotifier {
       orElse: () => kIsDesktop ? LayoutMode.extended : LayoutMode.compact,
     );
 
-    predownload = map["predownload"] ?? predownload;
-
     closeBehavior = map["closeBehavior"] != null
         ? CloseBehavior.values[map["closeBehavior"]]
         : closeBehavior;
@@ -265,7 +254,6 @@ class UserPreferences extends PersistedChangeNotifier {
       "audioQuality": audioQuality.index,
       "downloadLocation": downloadLocation,
       "layoutMode": layoutMode.name,
-      "predownload": predownload,
       "closeBehavior": closeBehavior.index,
       "showSystemTrayIcon": showSystemTrayIcon,
       "locale":
@@ -284,6 +272,5 @@ final userPreferencesProvider = ChangeNotifierProvider(
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,
     layoutMode: kIsMobile ? LayoutMode.compact : LayoutMode.adaptive,
-    predownload: false,
   ),
 );

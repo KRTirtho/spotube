@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:http/http.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/album_simple.dart';
@@ -142,25 +140,6 @@ class SpotubeTrack extends Track {
     final PipedAudioStream ytStream =
         getStreamInfo(ytVideo, preferences.audioQuality);
 
-    if (preferences.predownload &&
-        ytVideo.duration < const Duration(minutes: 15)) {
-      await DefaultCacheManager().getFileFromCache(track.id!).then(
-        (file) async {
-          if (file != null) return file.file;
-
-          final res = await get(Uri.parse(ytStream.url));
-
-          final cached = await DefaultCacheManager().putFile(
-            track.id!,
-            res.bodyBytes,
-            fileExtension: ytStream.mimeType.split("/").last,
-          );
-
-          return cached;
-        },
-      );
-    }
-
     return SpotubeTrack.fromTrack(
       track: track,
       ytTrack: ytVideo,
@@ -190,25 +169,6 @@ class SpotubeTrack extends Track {
           youtubeId: video.id,
           spotifyId: id!,
         ),
-      );
-    }
-
-    if (preferences.predownload &&
-        video.duration < const Duration(minutes: 15)) {
-      await DefaultCacheManager().getFileFromCache(id!).then(
-        (file) async {
-          if (file != null) return file.file;
-
-          final res = await get(Uri.parse(ytStream.url));
-
-          final cached = await DefaultCacheManager().putFile(
-            id!,
-            res.bodyBytes,
-            fileExtension: ytStream.mimeType.split("/").last,
-          );
-
-          return cached;
-        },
       );
     }
 

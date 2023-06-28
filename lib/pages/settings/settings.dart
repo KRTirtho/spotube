@@ -367,16 +367,6 @@ class SettingsPage extends HookConsumerWidget {
                             ),
                           ),
                         ),
-                        SwitchListTile(
-                          secondary: const Icon(SpotubeIcons.download),
-                          title: Text(context.l10n.pre_download_play),
-                          subtitle:
-                              Text(context.l10n.pre_download_play_description),
-                          value: preferences.predownload,
-                          onChanged: (state) {
-                            preferences.setPredownload(state);
-                          },
-                        ),
                         ListTile(
                           leading: const Icon(SpotubeIcons.playlistRemove),
                           title: Text(context.l10n.blacklist),
