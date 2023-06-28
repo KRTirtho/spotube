@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/extensions/theme.dart';
 

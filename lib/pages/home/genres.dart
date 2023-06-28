@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -7,11 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/genre/category_card.dart';
-import 'package:spotube/components/shared/compact_search.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
-import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -21,7 +18,6 @@ class GenrePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final theme = Theme.of(context);
     final scrollController = useScrollController();
     final recommendationMarket = ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),

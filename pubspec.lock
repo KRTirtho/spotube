@@ -566,10 +566,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_query_connectivity_plus_adapter
-      sha256: ce170730117b2da27467953c2d8a063ea89a99cfb666b332b6ea621211f09b8a
+      sha256: a0e69615e25f6dfe74d1e5a0909aeeb865e93c65dd4e0b236f0846f9e54f758b
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-alpha.1"
+    version: "0.1.0-alpha.2"
   fl_query_hooks:
     dependency: "direct main"
     description:
@@ -1654,14 +1654,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  simple_icons:
-    dependency: "direct main"
-    description:
-      name: simple_icons
-      sha256: "8aa6832dc7a263a3213e40ecbf1328a392308c809d534a3b860693625890483b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.10.0"
   skeleton_text:
     dependency: "direct main"
     description:

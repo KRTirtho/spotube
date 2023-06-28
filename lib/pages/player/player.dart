@@ -240,7 +240,7 @@ class PlayerView extends HookConsumerWidget {
                                                         .7,
                                               ),
                                               builder: (context) {
-                                                return PlayerQueue(
+                                                return const PlayerQueue(
                                                     floating: false);
                                               },
                                             );

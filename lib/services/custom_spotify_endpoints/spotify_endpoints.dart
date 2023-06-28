@@ -144,7 +144,9 @@ class CustomSpotifyEndpoints {
       'seed_tracks': seedTracks
     }.forEach((key, list) => _addList(parameters, key, list!));
     if (market != null) parameters['market'] = market;
-    [min, max, target].forEach((map) => _addTunableTrackMap(parameters, map));
+    for (var map in [min, max, target]) {
+      _addTunableTrackMap(parameters, map);
+    }
     final pathQuery =
         "$_baseUrl/recommendations?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}";
     final res = await _client.get(

@@ -10,7 +10,6 @@ import 'package:spotube/hooks/use_package_info.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 final _licenseProvider = FutureProvider<String>((ref) async {
   return await rootBundle.loadString("LICENSE");
@@ -25,7 +24,7 @@ class AboutSpotube extends HookConsumerWidget {
     final license = ref.watch(_licenseProvider);
     final theme = Theme.of(context);
 
-    final colon = Text(":");
+    const colon = Text(":");
 
     return Scaffold(
       appBar: PageWindowTitleBar(

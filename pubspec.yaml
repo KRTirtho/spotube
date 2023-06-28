@@ -6,7 +6,7 @@ publish_to: "none"
 version: 2.7.1+18
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.0.2 <4.0.0"
   flutter: ">=3.10.0"
 
 dependencies:
@@ -27,7 +27,7 @@ dependencies:
   file_picker: ^5.2.2
   fl_query: ^1.0.0-alpha.3
   fl_query_hooks: ^1.0.0-alpha.3
-  fl_query_connectivity_plus_adapter: ^0.1.0-alpha.1
+  fl_query_connectivity_plus_adapter: ^0.1.0-alpha.2
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter

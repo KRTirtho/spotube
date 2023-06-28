@@ -8,7 +8,7 @@ void useCustomStatusBarColor(
   bool noSetBGColor = false,
 }) {
   final context = useContext();
-  final backgroundColor = Theme.of(context).scaffoldBackgroundColor!;
+  final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
   resetStatusbar() => SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           statusBarColor: backgroundColor, // status bar color
