@@ -1,12 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/logger.dart';
+import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
@@ -62,7 +69,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     () async {
       notificationService = await AudioServices.create(ref, this);
 
-      audioPlayer.activeSourceChangedStream.listen((newActiveSource) {
+      (String, List<SkipSegment>)? currentSegments;
+      bool isFetchingSegments = false;
+      audioPlayer.activeSourceChangedStream.listen((newActiveSource) async {
         final newActiveTrack =
             mapSourcesToTracks([newActiveSource]).firstOrNull;
 
@@ -77,6 +86,10 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
               .toList()
               .indexWhere((element) => element.id == newActiveTrack.id),
         );
+
+        isFetchingSegments = true;
+
+        isFetchingSegments = false;
 
         if (preferences.albumColorSync) {
           updatePalette();
@@ -101,7 +114,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       bool isPreSearching = false;
 
       listenTo60Percent(percent) async {
-        if (isPreSearching || audioPlayer.currentSource == null) return;
+        if (isPreSearching ||
+            audioPlayer.currentSource == null ||
+            audioPlayer.nextSource == null) return;
         try {
           isPreSearching = true;
 
@@ -112,6 +127,19 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
+            if (currentSegments == null ||
+                (oldTrack?.id != null &&
+                        currentSegments!.$1 != oldTrack!.id!) &&
+                    !isFetchingSegments) {
+              isFetchingSegments = true;
+              currentSegments = (
+                audioPlayer.currentSource!,
+                await getAndCacheSkipSegments(
+                  track.ytTrack.id,
+                ),
+              );
+              isFetchingSegments = false;
+            }
           }
 
           /// Sometimes fetching can take a lot of time, so we need to check
@@ -143,6 +171,34 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         if (audioPlayer.nextSource == null ||
             isPlayable(audioPlayer.nextSource!)) return;
         await audioPlayer.pause();
+      });
+
+      audioPlayer.positionStream.listen((position) async {
+        if (preferences.searchMode == SearchMode.youtubeMusic ||
+            !preferences.skipNonMusic) return;
+
+        if (currentSegments == null ||
+            currentSegments!.$1 != state.activeTrack!.id! &&
+                !isFetchingSegments) {
+          isFetchingSegments = true;
+          currentSegments = (
+            audioPlayer.currentSource!,
+            await getAndCacheSkipSegments(
+              (state.activeTrack as SpotubeTrack).ytTrack.id,
+            ),
+          );
+          isFetchingSegments = false;
+        }
+
+        final (_, segments) = currentSegments!;
+        if (segments.isEmpty) return;
+
+        for (final segment in segments) {
+          if ((position.inSeconds >= segment.start &&
+              position.inSeconds < segment.end)) {
+            await audioPlayer.seek(Duration(seconds: segment.end));
+          }
+        }
       });
     }();
   }
@@ -332,7 +388,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   Future<void> populateSibling() async {
     if (state.activeTrack is SpotubeTrack) {
       final activeTrackWithSiblingsForSure =
-          await (state.activeTrack as SpotubeTrack).populatedCopy(pipedClient);
+          await (state.activeTrack as SpotubeTrack).populatedCopy(
+        pipedClient,
+        switch (preferences.searchMode) {
+          SearchMode.youtube => PipedFilter.video,
+          SearchMode.youtubeMusic => PipedFilter.musicSongs,
+        },
+      );
 
       state = state.copyWith(
         tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
@@ -447,6 +509,64 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       );
       ref.read(paletteProvider.notifier).state = palette;
     });
+  }
+
+  Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
+    if (!preferences.skipNonMusic ||
+        preferences.searchMode != SearchMode.youtube) return [];
+
+    try {
+      final box = await Hive.openLazyBox<List>(SkipSegment.boxName);
+      final cached = await box.get(id);
+      if (cached != null && cached.isNotEmpty) {
+        return List.castFrom<dynamic, SkipSegment>(cached);
+      }
+
+      final res = await get(Uri(
+        scheme: "https",
+        host: "sponsor.ajay.app",
+        path: "/api/skipSegments",
+        queryParameters: {
+          "videoID": id,
+          "category": [
+            'sponsor',
+            'selfpromo',
+            'interaction',
+            'intro',
+            'outro',
+            'music_offtopic'
+          ],
+          "actionType": 'skip'
+        },
+      ));
+
+      if (res.body == "Not Found") {
+        return List.castFrom<dynamic, SkipSegment>([]);
+      }
+
+      final data = jsonDecode(res.body) as List;
+      final segments = data.map((obj) {
+        final start = obj["segment"].first.toInt();
+        final end = obj["segment"].last.toInt();
+        return SkipSegment(
+          start,
+          end,
+        );
+      }).toList();
+      getLogger('getSkipSegments').v(
+        "[SponsorBlock] successfully fetched skip segments for $id",
+      );
+
+      await box.put(
+        id,
+        segments,
+      );
+      return List.castFrom<dynamic, SkipSegment>(segments);
+    } catch (e, stack) {
+      await box.put(id, []);
+      Catcher.reportCheckedError(e, stack);
+      return List.castFrom<dynamic, SkipSegment>([]);
+    }
   }
 
   @override

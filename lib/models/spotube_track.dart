@@ -1,18 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:catcher/catcher.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:collection/collection.dart';
-
-typedef SkipSegment = ({int start, int end});
 
 class SpotubeTrack extends Track {
   final PipedStreamResponse ytTrack;
@@ -68,8 +69,9 @@ class SpotubeTrack extends Track {
 
   static Future<List<PipedSearchItemStream>> fetchSiblings(
     Track track,
-    PipedClient client,
-  ) async {
+    PipedClient client, [
+    PipedFilter filter = PipedFilter.musicSongs,
+  ]) async {
     final artists = (track.artists ?? [])
         .map((ar) => ar.name)
         .toList()
@@ -82,12 +84,8 @@ class SpotubeTrack extends Track {
       onlyCleanArtist: true,
     ).trim();
 
-    final List<PipedSearchItemStream> siblings = await client
-        .search(
-      "$title - ${artists.join(", ")}",
-      PipedFilter.musicSongs,
-    )
-        .then(
+    final List<PipedSearchItemStream> siblings =
+        await client.search("$title - ${artists.join(", ")}", filter).then(
       (res) {
         final siblings = res.items
             .whereType<PipedSearchItemStream>()
@@ -122,7 +120,14 @@ class SpotubeTrack extends Track {
     if (matchedCachedTrack != null) {
       ytVideo = await client.streams(matchedCachedTrack.youtubeId);
     } else {
-      siblings = await fetchSiblings(track, client);
+      siblings = await fetchSiblings(
+        track,
+        client,
+        switch (preferences.searchMode) {
+          SearchMode.youtube => PipedFilter.video,
+          SearchMode.youtubeMusic => PipedFilter.musicSongs,
+        },
+      );
       if (siblings.isEmpty) {
         throw Exception("Failed to find any results for ${track.name}");
       }
@@ -229,10 +234,17 @@ class SpotubeTrack extends Track {
     );
   }
 
-  Future<SpotubeTrack> populatedCopy(PipedClient client) async {
+  Future<SpotubeTrack> populatedCopy(
+    PipedClient client,
+    PipedFilter filter,
+  ) async {
     if (this.siblings.isNotEmpty) return this;
 
-    final siblings = await fetchSiblings(this, client);
+    final siblings = await fetchSiblings(
+      this,
+      client,
+      filter,
+    );
 
     return SpotubeTrack.fromTrack(
       track: this,

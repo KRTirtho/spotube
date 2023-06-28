@@ -247,5 +247,6 @@
   "custom_hours": "Custom Hours",
   "logs": "Logs",
   "developers": "Developers",
-  "not_logged_in": "You're not logged in"
+  "not_logged_in": "You're not logged in",
+  "search_mode": "Search Mode"
 }

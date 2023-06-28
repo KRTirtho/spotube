@@ -63,11 +63,13 @@
     "custom_hours",
     "logs",
     "developers",
-    "not_logged_in"
+    "not_logged_in",
+    "search_mode"
   ],
 
   "de": [
-    "not_logged_in"
+    "not_logged_in",
+    "search_mode"
   ],
 
   "fr": [
@@ -134,7 +136,8 @@
     "custom_hours",
     "logs",
     "developers",
-    "not_logged_in"
+    "not_logged_in",
+    "search_mode"
   ],
 
   "hi": [
@@ -201,10 +204,12 @@
     "custom_hours",
     "logs",
     "developers",
-    "not_logged_in"
+    "not_logged_in",
+    "search_mode"
   ],
 
   "ja": [
-    "not_logged_in"
+    "not_logged_in",
+    "search_mode"
   ]
 }

@@ -28,6 +28,15 @@ enum CloseBehavior {
   close,
 }
 
+enum SearchMode {
+  youtube._internal('YouTube'),
+  youtubeMusic._internal('YouTubeMusic');
+
+  final String label;
+
+  const SearchMode._internal(this.label);
+}
+
 class UserPreferences extends PersistedChangeNotifier {
   ThemeMode themeMode;
   String recommendationMarket;
@@ -52,6 +61,10 @@ class UserPreferences extends PersistedChangeNotifier {
 
   String pipedInstance;
 
+  SearchMode searchMode;
+
+  bool skipNonMusic;
+
   final Ref ref;
 
   UserPreferences(
@@ -70,6 +83,8 @@ class UserPreferences extends PersistedChangeNotifier {
     this.showSystemTrayIcon = true,
     this.locale = const Locale("system", "system"),
     this.pipedInstance = "https://pipedapi.kavin.rocks",
+    this.searchMode = SearchMode.youtubeMusic,
+    this.skipNonMusic = true,
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
@@ -170,6 +185,18 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setSearchMode(SearchMode mode) {
+    searchMode = mode;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setSkipNonMusic(bool skip) {
+    skipNonMusic = skip;
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -217,6 +244,13 @@ class UserPreferences extends PersistedChangeNotifier {
         localeMap != null ? Locale(localeMap?["lc"], localeMap?["cc"]) : locale;
 
     pipedInstance = map["pipedInstance"] ?? pipedInstance;
+
+    searchMode = SearchMode.values.firstWhere(
+      (mode) => mode.name == map["searchMode"],
+      orElse: () => SearchMode.youtubeMusic,
+    );
+
+    skipNonMusic = map["skipNonMusic"] ?? skipNonMusic;
   }
 
   @override
@@ -237,6 +271,8 @@ class UserPreferences extends PersistedChangeNotifier {
       "locale":
           jsonEncode({"lc": locale.languageCode, "cc": locale.countryCode}),
       "pipedInstance": pipedInstance,
+      "searchMode": searchMode.name,
+      "skipNonMusic": skipNonMusic,
     };
   }
 }

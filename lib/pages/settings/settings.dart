@@ -324,6 +324,45 @@ class SettingsPage extends HookConsumerWidget {
                                 Text(error.toString()),
                           );
                         }),
+                        AdaptiveSelectTile<SearchMode>(
+                          secondary: const Icon(SpotubeIcons.youtube),
+                          title: Text(context.l10n.search_mode),
+                          value: preferences.searchMode,
+                          options: SearchMode.values
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e.label),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            preferences.setSearchMode(value);
+                          },
+                        ),
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 200),
+                          opacity:
+                              preferences.searchMode == SearchMode.youtubeMusic
+                                  ? 0
+                                  : 1,
+                          child: AnimatedSize(
+                            duration: const Duration(milliseconds: 200),
+                            child: SizedBox(
+                              height: preferences.searchMode ==
+                                      SearchMode.youtubeMusic
+                                  ? 0
+                                  : 50,
+                              child: SwitchListTile(
+                                secondary: const Icon(SpotubeIcons.skip),
+                                title: Text(context.l10n.skip_non_music),
+                                value: preferences.skipNonMusic,
+                                onChanged: (state) {
+                                  preferences.setSkipNonMusic(state);
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
                         SwitchListTile(
                           secondary: const Icon(SpotubeIcons.download),
                           title: Text(context.l10n.pre_download_play),
