@@ -134,14 +134,13 @@ class SyncedLyrics extends HookConsumerWidget {
                                         ? Colors.white
                                         : palette.bodyTextColor,
                                     fontWeight: isActive
-                                        ? FontWeight.bold
+                                        ? FontWeight.w500
                                         : FontWeight.normal,
-                                    fontSize: (isActive ? 30 : 26) *
+                                    fontSize: (isActive ? 28 : 26) *
                                         (textZoomLevel.value / 100),
                                   ),
                                   child: Text(
                                     lyricSlice.text,
-                                    maxLines: 2,
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
