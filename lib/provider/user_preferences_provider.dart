@@ -30,7 +30,7 @@ enum CloseBehavior {
 
 enum SearchMode {
   youtube._internal('YouTube'),
-  youtubeMusic._internal('YouTubeMusic');
+  youtubeMusic._internal('YouTube Music');
 
   final String label;
 
@@ -83,7 +83,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.showSystemTrayIcon = true,
     this.locale = const Locale("system", "system"),
     this.pipedInstance = "https://pipedapi.kavin.rocks",
-    this.searchMode = SearchMode.youtubeMusic,
+    this.searchMode = SearchMode.youtube,
     this.skipNonMusic = true,
   }) : super() {
     if (downloadLocation.isEmpty) {

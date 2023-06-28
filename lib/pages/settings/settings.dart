@@ -6,6 +6,7 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/language_codes.dart';
 
@@ -306,7 +307,10 @@ class SettingsPage extends HookConsumerWidget {
                                     .map(
                                       (e) => DropdownMenuItem(
                                         value: e.apiUrl,
-                                        child: Text(e.name),
+                                        child: Text(
+                                          "${e.name}\n"
+                                          "${e.locations.map(countryCodeToEmoji).join(" ")}",
+                                        ),
                                       ),
                                     )
                                     .toList(),
@@ -325,7 +329,7 @@ class SettingsPage extends HookConsumerWidget {
                           );
                         }),
                         AdaptiveSelectTile<SearchMode>(
-                          secondary: const Icon(SpotubeIcons.youtube),
+                          secondary: const Icon(SpotubeIcons.search),
                           title: Text(context.l10n.search_mode),
                           value: preferences.searchMode,
                           options: SearchMode.values
