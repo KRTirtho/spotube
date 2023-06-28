@@ -19,19 +19,19 @@ import 'package:spotube/provider/piped_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
-/// Things to implement:
+/// Things implemented:
 /// * [x] Sponsor-Block skip
 /// * [x] Prefetch next track as [SpotubeTrack] on 80% of current track
 /// * [x] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
-/// * [ ] Modification of the Queue
+/// * [x] Modification of the Queue
 ///       * [x] Add track at the end
 ///       * [x] Add track at the beginning
 ///       * [x] Remove track
-///       * [ ] Reorder track
+///       * [x] Reorder track
 /// * [x] Caching and loading of cache of tracks
 /// * [x] Shuffling
 /// * [x] loop => playlist, track, none
-/// * [ ] Alternative Track Source
+/// * [x] Alternative Track Source
 /// * [x] Blacklisting of tracks and artist
 ///
 /// Don'ts:

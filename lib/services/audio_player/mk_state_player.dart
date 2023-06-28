@@ -216,20 +216,32 @@ class MkPlayerWithState extends Player {
 
   /// This replaces the old source with a new one
   ///
+  /// If the old source is playing, the new one will play
+  /// from the beginning
+  ///
   /// This doesn't work when [playlist] is null
-  /// Or, when the current media is the one to be replaced
   void replace(String oldUrl, String newUrl) {
-    if (_playlist == null ||
-        _playlist!.medias[_playlist!.index].uri == oldUrl) {
+    if (_playlist == null) {
       return;
     }
+
+    final isOldUrlPlaying = _playlist!.medias[_playlist!.index].uri == oldUrl;
 
     for (var i = 0; i < _playlist!.medias.length - 1; i++) {
       final media = _playlist!.medias[i];
       if (media.uri == oldUrl) {
+        if (isOldUrlPlaying) {
+          pause();
+        }
         final newMedias = _playlist!.medias.toList();
         newMedias[i] = Media(newUrl, extras: media.extras);
         playlist = _playlist!.copyWith(medias: newMedias);
+        if (isOldUrlPlaying) {
+          super.open(
+            newMedias[i],
+            play: true,
+          );
+        }
         break;
       }
     }

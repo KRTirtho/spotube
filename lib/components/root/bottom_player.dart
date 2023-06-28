@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -18,9 +17,9 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -30,6 +29,7 @@ class BottomPlayer extends HookConsumerWidget {
   final logger = getLogger(BottomPlayer);
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(AuthenticationNotifier.provider);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
@@ -87,29 +87,30 @@ class BottomPlayer extends HookConsumerWidget {
                   children: [
                     PlayerActions(
                       extraActions: [
-                        IconButton(
-                          tooltip: context.l10n.mini_player,
-                          icon: const Icon(SpotubeIcons.miniPlayer),
-                          onPressed: () async {
-                            await DesktopTools.window.setMinimumSize(
-                              const Size(300, 300),
-                            );
-                            await DesktopTools.window.setAlwaysOnTop(true);
-                            if (!kIsLinux) {
-                              await DesktopTools.window.setHasShadow(false);
-                            }
-                            await DesktopTools.window
-                                .setAlignment(Alignment.topRight);
-                            await DesktopTools.window
-                                .setSize(const Size(400, 500));
-                            await Future.delayed(
-                              const Duration(milliseconds: 100),
-                              () async {
-                                GoRouter.of(context).go('/mini-player');
-                              },
-                            );
-                          },
-                        ),
+                        if (auth != null)
+                          IconButton(
+                            tooltip: context.l10n.mini_player,
+                            icon: const Icon(SpotubeIcons.miniPlayer),
+                            onPressed: () async {
+                              await DesktopTools.window.setMinimumSize(
+                                const Size(300, 300),
+                              );
+                              await DesktopTools.window.setAlwaysOnTop(true);
+                              if (!kIsLinux) {
+                                await DesktopTools.window.setHasShadow(false);
+                              }
+                              await DesktopTools.window
+                                  .setAlignment(Alignment.topRight);
+                              await DesktopTools.window
+                                  .setSize(const Size(400, 500));
+                              await Future.delayed(
+                                const Duration(milliseconds: 100),
+                                () async {
+                                  GoRouter.of(context).go('/mini-player');
+                                },
+                              );
+                            },
+                          ),
                       ],
                     ),
                     Container(
