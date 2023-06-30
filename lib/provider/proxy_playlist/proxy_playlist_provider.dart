@@ -141,6 +141,15 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
             }
           }
 
+          if (oldTrack != null && track != null) {
+            await storeTrack(
+              oldTrack,
+              track,
+            );
+          }
+        } finally {
+          isPreSearching = false;
+
           /// Sometimes fetching can take a lot of time, so we need to check
           /// if next source is playable or not at 99% progress. If not, then
           /// it'll be paused automatically
@@ -151,15 +160,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           if (audioPlayer.isPaused) {
             await audioPlayer.resume();
           }
-
-          if (oldTrack != null && track != null) {
-            await storeTrack(
-              oldTrack,
-              track,
-            );
-          }
-        } finally {
-          isPreSearching = false;
         }
       }
 

@@ -138,6 +138,7 @@ class SyncedLyrics extends HookConsumerWidget {
                                         : FontWeight.normal,
                                     fontSize: (isActive ? 28 : 26) *
                                         (textZoomLevel.value / 100),
+                                    shadows: kElevationToShadow[9],
                                   ),
                                   child: Text(
                                     lyricSlice.text,
