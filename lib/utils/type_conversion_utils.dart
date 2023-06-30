@@ -5,11 +5,12 @@ import 'dart:io';
 import 'package:flutter/widgets.dart' hide Image;
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
-import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -127,28 +128,19 @@ abstract class TypeConversionUtils {
     String? art,
   }) {
     final track = SpotubeTrack(
-      PipedStreamResponse(
+      YoutubeVideoInfo(
+        searchMode: SearchMode.youtube,
         id: "dQw4w9WgXcQ",
         title: basenameWithoutExtension(file.path),
-        dash: null,
-        description: "",
-        dislikes: -1,
         duration: Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
-        hls: null,
-        lbryId: "",
-        likes: -1,
-        livestream: false,
-        proxyUrl: "",
+        dislikes: 0,
+        likes: 0,
         thumbnailUrl: art ?? "",
-        uploadedDate: DateTime.now().toUtc().toString(),
-        uploader: metadata?.albumArtist ?? "",
-        uploaderUrl: "",
-        uploaderVerified: false,
-        views: -1,
-        audioStreams: [],
-        videoStreams: [],
-        relatedStreams: [],
-        subtitles: [],
+        views: 0,
+        channelName: metadata?.albumArtist ?? "Spotube",
+        channelId: metadata?.albumArtist ?? "Spotube",
+        publishedAt:
+            metadata?.year != null ? DateTime(metadata!.year!) : DateTime(2003),
       ),
       file.path,
       [],

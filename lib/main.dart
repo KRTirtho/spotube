@@ -103,6 +103,7 @@ Future<void> main(List<String> rawArgs) async {
   );
   Hive.registerAdapter(MatchedTrackAdapter());
   Hive.registerAdapter(SkipSegmentAdapter());
+  Hive.registerAdapter(SearchModeAdapter());
 
   await Hive.openLazyBox<MatchedTrack>(
     MatchedTrack.boxName,

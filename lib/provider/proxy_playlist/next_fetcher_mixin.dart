@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/matched_track.dart';
@@ -9,11 +8,12 @@ import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/supabase.dart';
+import 'package:spotube/services/youtube/youtube.dart';
 
 mixin NextFetcher on StateNotifier<ProxyPlaylist> {
   Future<List<SpotubeTrack>> fetchTracks(
     UserPreferences preferences,
-    PipedClient pipedClient, {
+    YoutubeEndpoints youtube, {
     int count = 3,
     int offset = 0,
   }) async {
@@ -29,8 +29,7 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
       bareTracks.mapIndexed((i, track) async {
         final future = SpotubeTrack.fetchFromTrack(
           track,
-          preferences,
-          pipedClient,
+          youtube,
         );
         if (i == 0) {
           return await future;
@@ -117,6 +116,7 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
           MatchedTrack(
             youtubeId: spotubeTrack.ytTrack.id,
             spotifyId: spotubeTrack.id!,
+            searchMode: spotubeTrack.ytTrack.searchMode,
           ),
         );
       }

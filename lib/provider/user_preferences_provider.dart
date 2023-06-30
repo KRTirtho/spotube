@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
@@ -28,13 +29,11 @@ enum CloseBehavior {
   close,
 }
 
-enum SearchMode {
-  youtube._internal('YouTube'),
-  youtubeMusic._internal('YouTube Music');
+enum YoutubeApiType {
+  youtube,
+  piped;
 
-  final String label;
-
-  const SearchMode._internal(this.label);
+  String get label => name[0].toUpperCase() + name.substring(1);
 }
 
 class UserPreferences extends PersistedChangeNotifier {
@@ -63,6 +62,8 @@ class UserPreferences extends PersistedChangeNotifier {
 
   bool skipNonMusic;
 
+  YoutubeApiType youtubeApiType;
+
   final Ref ref;
 
   UserPreferences(
@@ -82,6 +83,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.pipedInstance = "https://pipedapi.kavin.rocks",
     this.searchMode = SearchMode.youtube,
     this.skipNonMusic = true,
+    this.youtubeApiType = YoutubeApiType.youtube,
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
@@ -188,6 +190,12 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setYoutubeApiType(YoutubeApiType type) {
+    youtubeApiType = type;
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -240,6 +248,11 @@ class UserPreferences extends PersistedChangeNotifier {
     );
 
     skipNonMusic = map["skipNonMusic"] ?? skipNonMusic;
+
+    youtubeApiType = YoutubeApiType.values.firstWhere(
+      (type) => type.name == map["youtubeApiType"],
+      orElse: () => YoutubeApiType.youtube,
+    );
   }
 
   @override
@@ -261,6 +274,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "pipedInstance": pipedInstance,
       "searchMode": searchMode.name,
       "skipNonMusic": skipNonMusic,
+      "youtubeApiType": youtubeApiType.name,
     };
   }
 }

@@ -96,6 +96,7 @@ dependencies:
   background_downloader: ^7.4.0
   duration: ^3.0.12
   disable_battery_optimization: ^1.1.0+1
+  youtube_explode_dart: ^1.12.4
 
 dev_dependencies:
   build_runner: ^2.3.2

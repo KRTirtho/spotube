@@ -19,17 +19,20 @@ class MatchedTrackAdapter extends TypeAdapter<MatchedTrack> {
     return MatchedTrack(
       youtubeId: fields[0] as String,
       spotifyId: fields[1] as String,
+      searchMode: fields[2] as SearchMode,
     );
   }
 
   @override
   void write(BinaryWriter writer, MatchedTrack obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.youtubeId)
       ..writeByte(1)
-      ..write(obj.spotifyId);
+      ..write(obj.spotifyId)
+      ..writeByte(2)
+      ..write(obj.searchMode);
   }
 
   @override
@@ -39,6 +42,45 @@ class MatchedTrackAdapter extends TypeAdapter<MatchedTrack> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is MatchedTrackAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SearchModeAdapter extends TypeAdapter<SearchMode> {
+  @override
+  final int typeId = 4;
+
+  @override
+  SearchMode read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return SearchMode.youtube;
+      case 1:
+        return SearchMode.youtubeMusic;
+      default:
+        return SearchMode.youtube;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, SearchMode obj) {
+    switch (obj) {
+      case SearchMode.youtube:
+        writer.writeByte(0);
+        break;
+      case SearchMode.youtubeMusic:
+        writer.writeByte(1);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SearchModeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

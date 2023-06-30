@@ -7,13 +7,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
-import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/provider/piped_provider.dart';
+
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/youtube_provider.dart';
+import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class DownloadManagerProvider extends StateNotifier<List<SpotubeTrack>> {
@@ -104,7 +105,7 @@ class DownloadManagerProvider extends StateNotifier<List<SpotubeTrack>> {
   }
 
   UserPreferences get preferences => ref.read(userPreferencesProvider);
-  PipedClient get pipedClient => ref.read(pipedClientProvider);
+  YoutubeEndpoints get youtube => ref.read(youtubeProvider);
 
   int get totalDownloads => state.length;
   List<Track> get items => state;
@@ -129,8 +130,7 @@ class DownloadManagerProvider extends StateNotifier<List<SpotubeTrack>> {
         ? track
         : await SpotubeTrack.fetchFromTrack(
             track,
-            preferences,
-            pipedClient,
+            youtube,
           );
     state = [...state, spotubeTrack];
     final task = DownloadTask(

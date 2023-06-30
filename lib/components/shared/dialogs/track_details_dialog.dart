@@ -59,8 +59,8 @@ class TrackDetailsDialog extends HookWidget {
               overflow: TextOverflow.ellipsis,
             ),
             context.l10n.channel: Hyperlink(
-              ytTrack.uploader,
-              "https://youtube.com${ytTrack.uploaderUrl}",
+              ytTrack.channelName,
+              "https://youtube.com${ytTrack.channelName}",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

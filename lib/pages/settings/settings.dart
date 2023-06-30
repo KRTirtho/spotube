@@ -20,10 +20,11 @@ import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
+import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/piped_provider.dart';
+import 'package:spotube/provider/piped_instances_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsPage extends HookConsumerWidget {
@@ -290,49 +291,11 @@ class SettingsPage extends HookConsumerWidget {
                             }
                           },
                         ),
-                        Consumer(builder: (context, ref, child) {
-                          final instanceList =
-                              ref.watch(pipedInstancesFutureProvider);
-
-                          return instanceList.when(
-                            data: (data) {
-                              return AdaptiveSelectTile<String>(
-                                secondary: const Icon(SpotubeIcons.piped),
-                                title: Text(context.l10n.piped_instance),
-                                subtitle: Text(context.l10n.piped_description),
-                                value: preferences.pipedInstance,
-                                showValueWhenUnfolded: false,
-                                options: data
-                                    .sortedBy((e) => e.name)
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e.apiUrl,
-                                        child: Text(
-                                          "${e.name}\n"
-                                          "${e.locations.map(countryCodeToEmoji).join(" ")}",
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    preferences.setPipedInstance(value);
-                                  }
-                                },
-                              );
-                            },
-                            loading: () => const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            error: (error, stackTrace) =>
-                                Text(error.toString()),
-                          );
-                        }),
-                        AdaptiveSelectTile<SearchMode>(
-                          secondary: const Icon(SpotubeIcons.search),
-                          title: Text(context.l10n.search_mode),
-                          value: preferences.searchMode,
-                          options: SearchMode.values
+                        AdaptiveSelectTile<YoutubeApiType>(
+                          secondary: const Icon(SpotubeIcons.youtube),
+                          title: Text(context.l10n.youtube_api_type),
+                          value: preferences.youtubeApiType,
+                          options: YoutubeApiType.values
                               .map((e) => DropdownMenuItem(
                                     value: e,
                                     child: Text(e.label),
@@ -340,32 +303,92 @@ class SettingsPage extends HookConsumerWidget {
                               .toList(),
                           onChanged: (value) {
                             if (value == null) return;
-                            preferences.setSearchMode(value);
+                            preferences.setYoutubeApiType(value);
                           },
                         ),
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 200),
-                          opacity:
-                              preferences.searchMode == SearchMode.youtubeMusic
-                                  ? 0
-                                  : 1,
-                          child: AnimatedSize(
-                            duration: const Duration(milliseconds: 200),
-                            child: SizedBox(
-                              height: preferences.searchMode ==
-                                      SearchMode.youtubeMusic
-                                  ? 0
-                                  : 50,
-                              child: SwitchListTile(
-                                secondary: const Icon(SpotubeIcons.skip),
-                                title: Text(context.l10n.skip_non_music),
-                                value: preferences.skipNonMusic,
-                                onChanged: (state) {
-                                  preferences.setSkipNonMusic(state);
-                                },
-                              ),
-                            ),
-                          ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: preferences.youtubeApiType ==
+                                  YoutubeApiType.youtube
+                              ? const SizedBox.shrink()
+                              : Consumer(builder: (context, ref, child) {
+                                  final instanceList =
+                                      ref.watch(pipedInstancesFutureProvider);
+
+                                  return instanceList.when(
+                                    data: (data) {
+                                      return AdaptiveSelectTile<String>(
+                                        secondary:
+                                            const Icon(SpotubeIcons.piped),
+                                        title:
+                                            Text(context.l10n.piped_instance),
+                                        subtitle: Text(
+                                            context.l10n.piped_description),
+                                        value: preferences.pipedInstance,
+                                        showValueWhenUnfolded: false,
+                                        options: data
+                                            .sortedBy((e) => e.name)
+                                            .map(
+                                              (e) => DropdownMenuItem(
+                                                value: e.apiUrl,
+                                                child: Text(
+                                                  "${e.name}\n"
+                                                  "${e.locations.map(countryCodeToEmoji).join(" ")}",
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (value) {
+                                          if (value != null) {
+                                            preferences.setPipedInstance(value);
+                                          }
+                                        },
+                                      );
+                                    },
+                                    loading: () => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    error: (error, stackTrace) =>
+                                        Text(error.toString()),
+                                  );
+                                }),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: preferences.youtubeApiType ==
+                                  YoutubeApiType.youtube
+                              ? const SizedBox.shrink()
+                              : AdaptiveSelectTile<SearchMode>(
+                                  secondary: const Icon(SpotubeIcons.search),
+                                  title: Text(context.l10n.search_mode),
+                                  value: preferences.searchMode,
+                                  options: SearchMode.values
+                                      .map((e) => DropdownMenuItem(
+                                            value: e,
+                                            child: Text(e.label),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    if (value == null) return;
+                                    preferences.setSearchMode(value);
+                                  },
+                                ),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: preferences.searchMode ==
+                                      SearchMode.youtubeMusic &&
+                                  preferences.youtubeApiType ==
+                                      YoutubeApiType.piped
+                              ? const SizedBox.shrink()
+                              : SwitchListTile(
+                                  secondary: const Icon(SpotubeIcons.skip),
+                                  title: Text(context.l10n.skip_non_music),
+                                  value: preferences.skipNonMusic,
+                                  onChanged: (state) {
+                                    preferences.setSkipNonMusic(state);
+                                  },
+                                ),
                         ),
                         ListTile(
                           leading: const Icon(SpotubeIcons.playlistRemove),

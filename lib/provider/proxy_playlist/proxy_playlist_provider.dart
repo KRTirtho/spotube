@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -19,9 +19,10 @@ import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/next_fetcher_mixin.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
-import 'package:spotube/provider/piped_provider.dart';
+import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -51,7 +52,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   late final AudioServices notificationService;
 
   UserPreferences get preferences => ref.read(userPreferencesProvider);
-  PipedClient get pipedClient => ref.read(pipedClientProvider);
+  YoutubeEndpoints get youtube => ref.read(youtubeProvider);
   ProxyPlaylist get playlist => state;
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
@@ -213,7 +214,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     final nthFetchedTrack = switch (track.runtimeType) {
       SpotubeTrack => track as SpotubeTrack,
-      _ => await SpotubeTrack.fetchFromTrack(track, preferences, pipedClient),
+      _ => await SpotubeTrack.fetchFromTrack(track, youtube),
     };
 
     await audioPlayer.replaceSource(
@@ -298,8 +299,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     } else {
       final addableTrack = await SpotubeTrack.fetchFromTrack(
         tracks.elementAtOrNull(initialIndex) ?? tracks.first,
-        preferences,
-        pipedClient,
+        youtube,
       );
 
       state = state.copyWith(
@@ -387,13 +387,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   Future<void> populateSibling() async {
     if (state.activeTrack is SpotubeTrack) {
       final activeTrackWithSiblingsForSure =
-          await (state.activeTrack as SpotubeTrack).populatedCopy(
-        pipedClient,
-        switch (preferences.searchMode) {
-          SearchMode.youtube => PipedFilter.video,
-          SearchMode.youtubeMusic => PipedFilter.musicSongs,
-        },
-      );
+          await (state.activeTrack as SpotubeTrack).populatedCopy(youtube);
 
       state = state.copyWith(
         tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
@@ -403,11 +397,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
   }
 
-  Future<void> swapSibling(PipedSearchItem video) async {
-    if (state.activeTrack is SpotubeTrack && video is PipedSearchItemStream) {
+  Future<void> swapSibling(YoutubeVideoInfo video) async {
+    if (state.activeTrack is SpotubeTrack) {
       await populateSibling();
-      final newTrack = await (state.activeTrack as SpotubeTrack)
-          .swappedCopy(video, preferences, pipedClient);
+      final newTrack =
+          await (state.activeTrack as SpotubeTrack).swappedCopy(video, youtube);
       if (newTrack == null) return;
       state = state.copyWith(
         tracks: mergeTracks([newTrack], state.tracks),

@@ -64,12 +64,14 @@
     "logs",
     "developers",
     "not_logged_in",
-    "search_mode"
+    "search_mode",
+    "youtube_api_type"
   ],
 
   "de": [
     "not_logged_in",
-    "search_mode"
+    "search_mode",
+    "youtube_api_type"
   ],
 
   "fr": [
@@ -137,7 +139,8 @@
     "logs",
     "developers",
     "not_logged_in",
-    "search_mode"
+    "search_mode",
+    "youtube_api_type"
   ],
 
   "hi": [
@@ -205,11 +208,13 @@
     "logs",
     "developers",
     "not_logged_in",
-    "search_mode"
+    "search_mode",
+    "youtube_api_type"
   ],
 
   "ja": [
     "not_logged_in",
-    "search_mode"
+    "search_mode",
+    "youtube_api_type"
   ]
 }
