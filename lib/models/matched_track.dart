@@ -15,7 +15,8 @@ class MatchedTrack {
 
   bool get isSynced => id != null;
 
-  static const boxName = "oss.krtirtho.spotube.matched_tracks";
+  static String version = 'v1';
+  static final boxName = "oss.krtirtho.spotube.matched_tracks.$version";
 
   static LazyBox<MatchedTrack> get box => Hive.lazyBox<MatchedTrack>(boxName);
 

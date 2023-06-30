@@ -96,21 +96,33 @@ Future<void> main(List<String> rawArgs) async {
 
   await SystemTheme.accentColor.load();
   MetadataGod.initialize();
+
+  final hiveCacheDir = (await getApplicationSupportDirectory()).path;
+
   await QueryClient.initialize(
     cachePrefix: "oss.krtirtho.spotube",
-    cacheDir: (await getApplicationSupportDirectory()).path,
+    cacheDir: hiveCacheDir,
     connectivity: FlQueryConnectivityPlusAdapter(),
   );
   Hive.registerAdapter(MatchedTrackAdapter());
   Hive.registerAdapter(SkipSegmentAdapter());
   Hive.registerAdapter(SearchModeAdapter());
 
+  // Cache versioning entities with Adapter
+  MatchedTrack.version = 'v1';
+  SkipSegment.version = 'v1';
+
   await Hive.openLazyBox<MatchedTrack>(
     MatchedTrack.boxName,
-    path: (await getApplicationSupportDirectory()).path,
+    path: hiveCacheDir,
   );
-
-  await PersistedStateNotifier.initializeBoxes();
+  await Hive.openLazyBox<List<SkipSegment>>(
+    SkipSegment.boxName,
+    path: hiveCacheDir,
+  );
+  await PersistedStateNotifier.initializeBoxes(
+    path: hiveCacheDir,
+  );
 
   Catcher(
     enableLogger: arguments["verbose"],

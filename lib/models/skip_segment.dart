@@ -10,8 +10,10 @@ class SkipSegment {
   final int end;
   SkipSegment(this.start, this.end);
 
-  static const boxName = "oss.krtirtho.spotube.skip_segments";
-  static LazyBox<SkipSegment> get box => Hive.lazyBox<SkipSegment>(boxName);
+  static String version = 'v1';
+  static final boxName = "oss.krtirtho.spotube.skip_segments.$version";
+  static LazyBox<List<SkipSegment>> get box =>
+      Hive.lazyBox<List<SkipSegment>>(boxName);
 
   SkipSegment.fromJson(Map<String, dynamic> json)
       : start = json['start'],

@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
@@ -509,8 +508,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         preferences.searchMode != SearchMode.youtube) return [];
 
     try {
-      final box = await Hive.openLazyBox<List>(SkipSegment.boxName);
-      final cached = await box.get(id);
+      final cached = await SkipSegment.box.get(id);
       if (cached != null && cached.isNotEmpty) {
         return List.castFrom<dynamic, SkipSegment>(cached);
       }
@@ -550,13 +548,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         "[SponsorBlock] successfully fetched skip segments for $id",
       );
 
-      await box.put(
+      await SkipSegment.box.put(
         id,
         segments,
       );
       return List.castFrom<dynamic, SkipSegment>(segments);
     } catch (e, stack) {
-      await box.put(id, []);
+      await SkipSegment.box.put(id, []);
       Catcher.reportCheckedError(e, stack);
       return List.castFrom<dynamic, SkipSegment>([]);
     }
