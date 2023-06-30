@@ -246,5 +246,8 @@
   "hour": "{hours} 時間",
   "custom_hours": "時間を指定",
   "logs": "ログ",
-  "developers": "開発"
+  "developers": "開発",
+  "not_logged_in": "ログインしていません",
+  "search_mode": "検索モード",
+  "youtube_api_type": "YouTube APIの種類"
 }
