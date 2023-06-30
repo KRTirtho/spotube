@@ -285,6 +285,6 @@ final userPreferencesProvider = ChangeNotifierProvider(
     accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
     recommendationMarket: 'US',
     themeMode: ThemeMode.system,
-    layoutMode: kIsMobile ? LayoutMode.compact : LayoutMode.adaptive,
+    layoutMode: LayoutMode.adaptive,
   ),
 );
