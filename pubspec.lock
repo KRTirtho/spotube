@@ -1154,10 +1154,10 @@ packages:
     dependency: "direct main"
     description:
       name: metadata_god
-      sha256: "02de939fc2dcfdc959ed34768eecc97038b6e95ebaa3415f9f7582d71a2ad047"
+      sha256: "562c223d83a7bbf0a289ed0d5ed6a8cf8d94d673263203e9ff4930b44bd2f066"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.5.0"
   mime:
     dependency: "direct main"
     description:
