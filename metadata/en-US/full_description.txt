@@ -2,14 +2,13 @@ Open source Spotify client that doesn't require Premium nor uses Electron! Avail
 
 
 Features:
-* Open source/libre software
-* Anonymous/guest login
-* Cross platform support
-* No telemetry, diagnostics or user data collection
-* Lightweight & resource-friendly
-* Native performance (Thanks to Flutter+Skia)
-* Playback control is done locally instead of on the server
-* Small size & less data usage
-* No Spotify or YouTube ads since it uses all public & free APIs (It is still recommended to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify. Purchasing Spotify Premium is usually the best way to support their valuable creations.)
-* Time synced lyrics
+* No ads, thanks to the use of public & free Spotify and YT Music APIs¹
 * Downloadable tracks
+* Cross-platform support
+* Small size & less data usage
+* Anonymous/guest login
+* Time synced lyrics
+* No telemetry, diagnostics or user data collection
+* Native performance
+* Open source/libre software
+* Playback control is done locally, not on the server
