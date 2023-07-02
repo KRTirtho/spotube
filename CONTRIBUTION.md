@@ -122,9 +122,9 @@ Do the following:
 - Install Development dependencies in linux
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
-    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp1 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev
+    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev
     ```
-    - Use `libjsoncpp25` instead of `libjsoncpp1` (for Ubuntu >= 22.04)
+    - Use `libjsoncpp1` instead of `libjsoncpp25` (for Ubuntu < 22.04)
   - Arch/Manjaro
     ```bash
     yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify
