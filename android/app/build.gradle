@@ -34,6 +34,8 @@ if (keystorePropertiesFile.exists()) {
 android {
     compileSdkVersion 33
 
+    ndkVersion "21.4.7075529"
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -50,7 +52,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "oss.krtirtho.spotube"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -77,6 +79,17 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
+    // other deps so just ignore
     implementation 'com.android.support:multidex:2.0.1'
 }

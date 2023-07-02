@@ -1,42 +1,22 @@
 import 'dart:async';
 
-import 'package:catcher/catcher.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:pocketbase/pocketbase.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/extensions/video.dart';
 import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/artist_simple.dart';
-import 'package:spotube/models/track.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/services/pocketbase.dart';
-import 'package:spotube/services/youtube.dart';
-import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/models/matched_track.dart';
+import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:collection/collection.dart';
 
-enum SpotubeTrackMatchAlgorithm {
-  // selects the first result returned from YouTube
-  youtube,
-  // selects the most popular one
-  popular,
-  // selects the most popular one from the author of the track
-  authenticPopular,
-}
-
 class SpotubeTrack extends Track {
-  final Video ytTrack;
+  final YoutubeVideoInfo ytTrack;
   final String ytUri;
-  final List<Map<String, int>> skipSegments;
-  final List<Video> siblings;
+
+  final List<YoutubeVideoInfo> siblings;
 
   SpotubeTrack(
     this.ytTrack,
     this.ytUri,
-    this.skipSegments,
     this.siblings,
   ) : super();
 
@@ -44,7 +24,6 @@ class SpotubeTrack extends Track {
     required Track track,
     required this.ytTrack,
     required this.ytUri,
-    required this.skipSegments,
     required this.siblings,
   }) : super() {
     album = track.album;
@@ -67,8 +46,10 @@ class SpotubeTrack extends Track {
     uri = track.uri;
   }
 
-  static Future<SpotubeTrack> fetchFromTrack(
-      Track track, UserPreferences preferences) async {
+  static Future<List<YoutubeVideoInfo>> fetchSiblings(
+    Track track,
+    YoutubeEndpoints client,
+  ) async {
     final artists = (track.artists ?? [])
         .map((ar) => ar.name)
         .toList()
@@ -81,209 +62,95 @@ class SpotubeTrack extends Track {
       onlyCleanArtist: true,
     ).trim();
 
-    final cachedTracks = await Future<RecordModel?>.value(
-      pb
-          .collection(BackendTrack.collection)
-          .getFirstListItem("spotify_id = '${track.id}'"),
-    ).catchError((e, stack) {
-      Catcher.reportCheckedError(e, stack);
-      return null;
-    });
+    final List<YoutubeVideoInfo> siblings =
+        await client.search("$title - ${artists.join(", ")}").then(
+      (res) {
+        final siblings = res
+            .where((item) {
+              return artists.any(
+                (artist) =>
+                    artist.toLowerCase() == item.channelName.toLowerCase(),
+              );
+            })
+            .take(10)
+            .toList();
 
-    final cachedTrack =
-        cachedTracks != null ? BackendTrack.fromRecord(cachedTracks) : null;
+        if (siblings.isEmpty) {
+          return res.take(10).toList();
+        }
 
-    Video ytVideo;
-    List<Video> siblings = [];
-    if (cachedTrack != null) {
-      ytVideo = await VideoFromCacheTrackExtension.fromBackendTrack(
-        cachedTrack,
-        youtube,
-      );
-    } else {
-      VideoSearchList videos = await PrimitiveUtils.raceMultiple(
-        () => youtube.search.search("${artists.join(", ")} - $title"),
-      );
-      siblings = videos.where((video) => !video.isLive).take(10).toList();
-      ytVideo = siblings.first;
-    }
-
-    StreamManifest trackManifest = await PrimitiveUtils.raceMultiple(
-      () => youtube.videos.streams.getManifest(ytVideo.id),
+        return siblings;
+      },
     );
 
-    final audioManifest = trackManifest.audioOnly.where((info) {
-      final isMp4a = info.codec.mimeType == "audio/mp4";
-      if (kIsLinux) {
-        return !isMp4a;
-      } else if (kIsMacOS || kIsIOS) {
-        return isMp4a;
-      } else {
-        return true;
+    return siblings;
+  }
+
+  static Future<SpotubeTrack> fetchFromTrack(
+    Track track,
+    YoutubeEndpoints client,
+  ) async {
+    final matchedCachedTrack = await MatchedTrack.box.get(track.id!);
+    var siblings = <YoutubeVideoInfo>[];
+    YoutubeVideoInfo ytVideo;
+    String ytStreamUrl;
+    if (matchedCachedTrack != null &&
+        matchedCachedTrack.searchMode == client.preferences.searchMode) {
+      (ytVideo, ytStreamUrl) = await client.video(
+        matchedCachedTrack.youtubeId,
+        matchedCachedTrack.searchMode,
+      );
+    } else {
+      siblings = await fetchSiblings(track, client);
+      if (siblings.isEmpty) {
+        throw Exception("Failed to find any results for ${track.name}");
       }
-    });
+      (ytVideo, ytStreamUrl) =
+          await client.video(siblings.first.id, siblings.first.searchMode);
 
-    final chosenStreamInfo = preferences.audioQuality == AudioQuality.high
-        ? audioManifest.withHighestBitrate()
-        : audioManifest.sortByBitrate().last;
-
-    final ytUri = chosenStreamInfo.url.toString();
-
-    if (cachedTrack == null) {
-      await Future<RecordModel?>.value(
-          pb.collection(BackendTrack.collection).create(
-                body: BackendTrack(
-                  spotifyId: track.id!,
-                  youtubeId: ytVideo.id.value,
-                  votes: 0,
-                ).toJson(),
-              )).catchError((e, stack) {
-        Catcher.reportCheckedError(e, stack);
-        return null;
-      });
-    }
-
-    if (preferences.predownload &&
-        ytVideo.duration! < const Duration(minutes: 15)) {
-      await DefaultCacheManager().getFileFromCache(track.id!).then(
-        (file) async {
-          if (file != null) return file.file;
-          final List<int> bytesStore = [];
-          final bytesFuture = Completer<Uint8List>();
-
-          youtube.videos.streams.get(chosenStreamInfo).listen(
-            (data) {
-              bytesStore.addAll(data);
-            },
-            onDone: () {
-              bytesFuture.complete(Uint8List.fromList(bytesStore));
-            },
-            onError: (e) {
-              bytesFuture.completeError(e);
-            },
-          );
-
-          final cached = await DefaultCacheManager().putFile(
-            track.id!,
-            await bytesFuture.future,
-            fileExtension: chosenStreamInfo.codec.mimeType.split("/").last,
-          );
-
-          return cached;
-        },
+      await MatchedTrack.box.put(
+        track.id!,
+        MatchedTrack(
+          youtubeId: ytVideo.id,
+          spotifyId: track.id!,
+          searchMode: siblings.first.searchMode,
+        ),
       );
     }
 
     return SpotubeTrack.fromTrack(
       track: track,
       ytTrack: ytVideo,
-      ytUri: ytUri,
-      skipSegments: preferences.skipSponsorSegments
-          ? await ytVideo.getSkipSegments(preferences)
-          : [],
+      ytUri: ytStreamUrl,
       siblings: siblings,
     );
   }
 
   Future<SpotubeTrack?> swappedCopy(
-    Video video,
-    UserPreferences preferences,
+    YoutubeVideoInfo video,
+    YoutubeEndpoints client,
   ) async {
-    if (siblings.none((element) => element.id == video.id)) return null;
+    // sibling tracks that were manually searched and swapped
+    final isStepSibling = siblings.none((element) => element.id == video.id);
 
-    StreamManifest trackManifest = await PrimitiveUtils.raceMultiple(
-      () => youtube.videos.streams.getManifest(video.id),
-    );
+    final (ytVideo, ytStreamUrl) =
+        await client.video(video.id, siblings.first.searchMode);
 
-    final audioManifest = trackManifest.audioOnly.where((info) {
-      final isMp4a = info.codec.mimeType == "audio/mp4";
-      if (kIsLinux) {
-        return !isMp4a;
-      } else if (kIsMacOS || kIsIOS) {
-        return isMp4a;
-      } else {
-        return true;
-      }
-    });
-
-    final chosenStreamInfo = preferences.audioQuality == AudioQuality.high
-        ? audioManifest.withHighestBitrate()
-        : audioManifest.sortByBitrate().last;
-
-    final ytUri = chosenStreamInfo.url.toString();
-
-    final cachedTracks = await Future<RecordModel?>.value(
-      pb.collection(BackendTrack.collection).getFirstListItem(
-          "spotify_id = '$id' && youtube_id = '${video.id.value}'"),
-    ).catchError((e, stack) {
-      Catcher.reportCheckedError(e, stack);
-      return null;
-    });
-
-    final cachedTrack =
-        cachedTracks != null ? BackendTrack.fromRecord(cachedTracks) : null;
-
-    if (cachedTrack == null) {
-      await Future<RecordModel?>.value(
-          pb.collection(BackendTrack.collection).create(
-                body: BackendTrack(
-                  spotifyId: id!,
-                  youtubeId: video.id.value,
-                  votes: 1,
-                ).toJson(),
-              )).catchError((e, stack) {
-        Catcher.reportCheckedError(e, stack);
-        return null;
-      });
-    } else {
-      await Future<RecordModel?>.value(
-          pb.collection(BackendTrack.collection).update(
-        cachedTrack.id,
-        body: {"votes": cachedTrack.votes + 1},
-      )).catchError((e, stack) {
-        Catcher.reportCheckedError(e, stack);
-        return null;
-      });
-    }
-
-    if (preferences.predownload &&
-        video.duration! < const Duration(minutes: 15)) {
-      await DefaultCacheManager().getFileFromCache(id!).then(
-        (file) async {
-          if (file != null) return file.file;
-          final List<int> bytesStore = [];
-          final bytesFuture = Completer<Uint8List>();
-
-          youtube.videos.streams.get(chosenStreamInfo).listen(
-            (data) {
-              bytesStore.addAll(data);
-            },
-            onDone: () {
-              bytesFuture.complete(Uint8List.fromList(bytesStore));
-            },
-            onError: (e) {
-              bytesFuture.completeError(e);
-            },
-          );
-
-          final cached = await DefaultCacheManager().putFile(
-            id!,
-            await bytesFuture.future,
-            fileExtension: chosenStreamInfo.codec.mimeType.split("/").last,
-          );
-
-          return cached;
-        },
+    if (!isStepSibling) {
+      await MatchedTrack.box.put(
+        id!,
+        MatchedTrack(
+          youtubeId: video.id,
+          spotifyId: id!,
+          searchMode: siblings.first.searchMode,
+        ),
       );
     }
 
     return SpotubeTrack.fromTrack(
       track: this,
-      ytTrack: video,
-      ytUri: ytUri,
-      skipSegments: preferences.skipSponsorSegments
-          ? await video.getSkipSegments(preferences)
-          : [],
+      ytTrack: ytVideo,
+      ytUri: ytStreamUrl,
       siblings: [
         video,
         ...siblings.where((element) => element.id != video.id),
@@ -294,46 +161,33 @@ class SpotubeTrack extends Track {
   static SpotubeTrack fromJson(Map<String, dynamic> map) {
     return SpotubeTrack.fromTrack(
       track: Track.fromJson(map),
-      ytTrack: VideoToJson.fromJson(map["ytTrack"]),
+      ytTrack: YoutubeVideoInfo.fromJson(map["ytTrack"]),
       ytUri: map["ytUri"],
-      skipSegments:
-          List.castFrom<dynamic, Map<String, int>>(map["skipSegments"]),
       siblings: List.castFrom<dynamic, Map<String, dynamic>>(map["siblings"])
-          .map((sibling) => VideoToJson.fromJson(sibling))
+          .map((sibling) => YoutubeVideoInfo.fromJson(sibling))
           .toList(),
     );
   }
 
-  Future<SpotubeTrack> populatedCopy() async {
+  Future<SpotubeTrack> populatedCopy(YoutubeEndpoints client) async {
     if (this.siblings.isNotEmpty) return this;
-    final artists = (this.artists ?? [])
-        .map((ar) => ar.name)
-        .toList()
-        .whereNotNull()
-        .toList();
 
-    final title = ServiceUtils.getTitle(
-      name!,
-      artists: artists,
-      onlyCleanArtist: true,
-    ).trim();
-    VideoSearchList videos = await PrimitiveUtils.raceMultiple(
-      () => youtube.search.search("${artists.join(", ")} - $title"),
+    final siblings = await fetchSiblings(
+      this,
+      client,
     );
-
-    final siblings = videos.where((video) => !video.isLive).take(10).toList();
 
     return SpotubeTrack.fromTrack(
       track: this,
       ytTrack: ytTrack,
       ytUri: ytUri,
-      skipSegments: skipSegments,
       siblings: siblings,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      // super values
       "album": album?.toJson(),
       "artists": artists?.map((artist) => artist.toJson()).toList(),
       "availableMarkets": availableMarkets,
@@ -350,9 +204,9 @@ class SpotubeTrack extends Track {
       "trackNumber": trackNumber,
       "type": type,
       "uri": uri,
+      // this values
       "ytTrack": ytTrack.toJson(),
       "ytUri": ytUri,
-      "skipSegments": skipSegments,
       "siblings": siblings.map((sibling) => sibling.toJson()).toList(),
     };
   }

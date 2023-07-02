@@ -8,6 +8,8 @@ class Hyperlink extends StatelessWidget {
   final TextAlign? textAlign;
   final TextOverflow? overflow;
   final String url;
+  final int? maxLines;
+
   const Hyperlink(
     this.text,
     this.url, {
@@ -15,6 +17,7 @@ class Hyperlink extends StatelessWidget {
     this.textAlign,
     this.overflow,
     this.style = const TextStyle(),
+    this.maxLines,
   }) : super(key: key);
 
   @override
@@ -29,6 +32,7 @@ class Hyperlink extends StatelessWidget {
       },
       key: key,
       overflow: overflow,
+      maxLines: maxLines,
       style: style.copyWith(color: Colors.blue),
       textAlign: textAlign,
     );

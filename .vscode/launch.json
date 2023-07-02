@@ -2,11 +2,25 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Flutter",
+      "name": "spotube",
       "type": "dart",
       "request": "launch",
-      "program": "${workspaceFolder}/lib/main.dart"
+      "program": "lib/main.dart"
     },
+    {
+      "name": "spotube (profile)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "spotube (release)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "release"
+    }
   ],
   "compounds": []
 }

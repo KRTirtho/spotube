@@ -1,13 +1,13 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 abstract class SpotubeIcons {
-  static const home = FluentIcons.home;
+  static const home = FluentIcons.home_12_regular;
   static const search = FeatherIcons.search;
-  static const library = FluentIcons.library;
+  static const library = FluentIcons.library_16_regular;
   static const music = FeatherIcons.music;
-  static const play = FluentIcons.play;
+  static const play = FluentIcons.play_12_regular;
   static const pause = FeatherIcons.pause;
   static const skipForward = FeatherIcons.skipForward;
   static const skipBack = FeatherIcons.skipBack;
@@ -16,8 +16,8 @@ abstract class SpotubeIcons {
   static const refresh = FeatherIcons.refreshCw;
   static const settings = FeatherIcons.settings;
   static const shuffle = FeatherIcons.shuffle;
-  static const repeat = FluentIcons.repeat_all;
-  static const repeatOne = FluentIcons.repeat_one;
+  static const repeat = FluentIcons.arrow_repeat_all_16_regular;
+  static const repeatOne = Icons.repeat_one_rounded;
   static const remove = FeatherIcons.minus;
   static const removeFilled = FeatherIcons.minusCircle;
   static const add = FeatherIcons.plus;
@@ -67,4 +67,28 @@ abstract class SpotubeIcons {
   static const genres = FeatherIcons.music;
   static const zoomIn = FeatherIcons.zoomIn;
   static const zoomOut = FeatherIcons.zoomOut;
+  static const tray = FeatherIcons.chevronDown;
+  static const miniPlayer = Icons.picture_in_picture_rounded;
+  static const maximize = FeatherIcons.maximize2;
+  static const pinOn = Icons.push_pin_rounded;
+  static const pinOff = Icons.push_pin_outlined;
+  static const hoverOn = Icons.back_hand_rounded;
+  static const hoverOff = Icons.back_hand_outlined;
+  static const dragHandle = Icons.drag_indicator;
+  static const lightning = Icons.flash_on_rounded;
+  static const colorSync = FeatherIcons.activity;
+  static const language = FeatherIcons.globe;
+  static const error = FeatherIcons.alertTriangle;
+  static const piped = FeatherIcons.cloud;
+  static const magic = Icons.auto_fix_high_outlined;
+  static const selectionCheck = Icons.checklist_rounded;
+  static const volumeHigh = FeatherIcons.volume2;
+  static const volumeMedium = FeatherIcons.volume1;
+  static const volumeLow = FeatherIcons.volume;
+  static const volumeMute = FeatherIcons.volumeX;
+  static const timer = FeatherIcons.clock;
+  static const logs = FeatherIcons.fileText;
+  static const clipboard = FeatherIcons.clipboard;
+  static const youtube = FeatherIcons.youtube;
+  static const skip = FeatherIcons.fastForward;
 }

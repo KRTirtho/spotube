@@ -2,20 +2,18 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
-import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:tuple/tuple.dart';
 
 class UserPlaylists extends HookConsumerWidget {
   const UserPlaylists({Key? key}) : super(key: key);
@@ -23,21 +21,15 @@ class UserPlaylists extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final searchText = useState('');
-    final breakpoint = useBreakpoints();
-    final spacing = useBreakpointValue<double>(
-      sm: 0,
-      others: 20,
-    );
-    final viewType = MediaQuery.of(context).size.width < 480
-        ? PlaybuttonCardViewType.list
-        : PlaybuttonCardViewType.square;
+
     final auth = ref.watch(AuthenticationNotifier.provider);
 
     final playlistsQuery = useQueries.playlist.ofMine(ref);
 
     final likedTracksPlaylist = useMemoized(
         () => PlaylistSimple()
-          ..name = "Liked Tracks"
+          ..name = context.l10n.liked_tracks
+          ..description = context.l10n.liked_tracks_description
           ..type = "playlist"
           ..collaborative = false
           ..public = false
@@ -49,7 +41,7 @@ class UserPlaylists extends HookConsumerWidget {
               ..url =
                   "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"
           ],
-        []);
+        [context.l10n]);
 
     final playlists = useMemoized(
       () {
@@ -63,13 +55,10 @@ class UserPlaylists extends HookConsumerWidget {
           likedTracksPlaylist,
           ...?playlistsQuery.data,
         ]
-            .map((e) => Tuple2(
-                  weightedRatio(e.name!, searchText.value),
-                  e,
-                ))
-            .sorted((a, b) => b.item1.compareTo(a.item1))
-            .where((e) => e.item1 > 50)
-            .map((e) => e.item2)
+            .map((e) => (weightedRatio(e.name!, searchText.value), e))
+            .sorted((a, b) => b.$1.compareTo(a.$1))
+            .where((e) => e.$1 > 50)
+            .map((e) => e.$2)
             .toList();
       },
       [playlistsQuery.data, searchText.value],
@@ -79,47 +68,53 @@ class UserPlaylists extends HookConsumerWidget {
       return const AnonymousFallback();
     }
 
-    final children = [
-      const PlaylistCreateDialog(),
-      ...playlists
-          .map((playlist) => PlaylistCard(
-                playlist,
-                viewType: viewType,
-              ))
-          .toList(),
-    ];
     return RefreshIndicator(
       onRefresh: playlistsQuery.refresh,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Material(
-          type: MaterialType.transparency,
-          textStyle: PlatformTheme.of(context).textTheme!.body!,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                PlatformTextField(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: SearchBar(
                   onChanged: (value) => searchText.value = value,
-                  placeholder: "Filter your playlists...",
-                  prefixIcon: SpotubeIcons.filter,
+                  hintText: context.l10n.filter_playlists,
+                  leading: const Icon(SpotubeIcons.filter),
                 ),
-                const SizedBox(height: 20),
-                if (playlistsQuery.isLoading || !playlistsQuery.hasData)
-                  const Center(child: ShimmerPlaybuttonCard(count: 7))
-                else
-                  Center(
-                    child: Wrap(
-                      spacing: spacing, // gap between adjacent chips
-                      runSpacing: 20, // gap between lines
-                      alignment: breakpoint.isSm
-                          ? WrapAlignment.center
-                          : WrapAlignment.start,
-                      children: children,
+              ),
+              AnimatedCrossFade(
+                duration: const Duration(milliseconds: 300),
+                crossFadeState:
+                    playlistsQuery.isLoading || !playlistsQuery.hasData
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                firstChild:
+                    const Center(child: ShimmerPlaybuttonCard(count: 7)),
+                secondChild: Wrap(
+                  runSpacing: 10,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        const PlaylistCreateDialogButton(),
+                        const SizedBox(width: 10),
+                        ElevatedButton.icon(
+                          icon: const Icon(SpotubeIcons.magic),
+                          label: Text(context.l10n.generate_playlist),
+                          onPressed: () {
+                            GoRouter.of(context).push("/library/generate");
+                          },
+                        ),
+                        const SizedBox(width: 10),
+                      ],
                     ),
-                  ),
-              ],
-            ),
+                    ...playlists.map((playlist) => PlaylistCard(playlist))
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

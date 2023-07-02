@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 2.7.1
+        default: 3.0.0
         required: true
       channel:
         type: choice
@@ -14,11 +14,19 @@ on:
           - stable
           - nightly
         default: nightly
+      debug:
+        description: Debug on failed when channel is nightly
+        required: true
+        type: boolean
+        default: false
       dry_run:
         description: Dry run
         required: true
         type: boolean
         default: true
+
+env:
+  FLUTTER_VERSION: '3.10.0'
 
 jobs:
   windows:
@@ -28,6 +36,7 @@ jobs:
       - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}
@@ -61,7 +70,7 @@ jobs:
         run: |
           flutter config --enable-windows-desktop
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Windows Executable
         run: |
@@ -78,6 +87,12 @@ jobs:
           make choco
           mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
 
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -91,6 +106,7 @@ jobs:
       - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Get current date
         id: date
@@ -99,7 +115,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libunwind-dev locate patchelf libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libunwind-dev locate patchelf gir1.2-appindicator3-0.1 libappindicator3-1 libappindicator3-dev libsecret-1-0 libjsoncpp1 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev mpv libmpv-dev
 
       - name: Install AppImage Tool
         run: |
@@ -136,15 +152,15 @@ jobs:
         run: |
           flutter config --enable-linux-desktop
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Linux Packages
         run: |
           dart pub global activate flutter_distributor
           alias dpkg-deb="dpkg-deb --Zxz"
+          flutter_distributor package --platform=linux --targets=deb
           flutter_distributor package --platform=linux --targets=appimage
           flutter_distributor package --platform=linux --targets=rpm
-          flutter_distributor package --platform=linux --targets=deb
 
       - name: Create tar.xz (stable)
         if: ${{ inputs.channel == 'stable' }}
@@ -161,18 +177,25 @@ jobs:
           mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
           mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
 
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Release-Binaries
           path: dist/
 
   android:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Install Dependencies
         run: |
@@ -203,7 +226,7 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Sign Apk
         run: |
@@ -214,6 +237,12 @@ jobs:
         run: |
           flutter build apk
           mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - uses: actions/upload-artifact@v3
         with:
@@ -228,6 +257,7 @@ jobs:
       - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}
@@ -253,7 +283,8 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          flutter pub remove media_kit_native_event_loop
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Macos App
         run: |
@@ -265,16 +296,22 @@ jobs:
         run: |
           npm install -g appdmg
           mkdir -p build/${{ env.BUILD_VERSION }}
-          appdmg appdmg.json build/Spotube-macos-x86_64.dmg
+          appdmg appdmg.json build/Spotube-macos-universal.dmg
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Release-Binaries
           path: |
-            build/Spotube-macos-x86_64.dmg
+            build/Spotube-macos-universal.dmg
 
   upload:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs:
       - windows
       - linux

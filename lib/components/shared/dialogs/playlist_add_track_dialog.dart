@@ -1,10 +1,14 @@
-import 'package:flutter/cupertino.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
   final List<Track> tracks;
@@ -23,6 +27,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
           playlist.owner?.id != null && playlist.owner!.id == me.data?.id,
     );
     final playlistsCheck = useState(<String, bool>{});
+    final queryClient = useQueryClient();
 
     Future<void> onAdd() async {
       final selectedPlaylists = playlistsCheck.value.entries
@@ -39,64 +44,53 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
                   .toList(),
               playlistId),
         ),
-      ).then((_) => Navigator.pop(context));
+      ).then((_) => Navigator.pop(context, true));
+
+      await queryClient.refreshQueries(
+        selectedPlaylists
+            .map((playlistId) => "playlist-tracks/$playlistId")
+            .toList(),
+      );
     }
 
-    return PlatformAlertDialog(
-      title: const PlatformText("Add to Playlist"),
-      secondaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              isSecondary: true,
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              isDestructiveAction: true,
-              child: const Text("Cancel"),
-            );
+    return AlertDialog(
+      title: Text(context.l10n.add_to_playlist),
+      actions: [
+        OutlinedButton(
+          child: Text(context.l10n.cancel),
+          onPressed: () {
+            Navigator.pop(context, false);
           },
         ),
-      ],
-      primaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              onPressed: onAdd,
-              child: const Text("Add"),
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: onAdd,
-              child: const Text("Add"),
-            );
-          },
+        FilledButton(
+          onPressed: onAdd,
+          child: Text(context.l10n.add),
         ),
       ],
       content: SizedBox(
         height: 300,
         width: 300,
         child: !userPlaylists.hasData
-            ? const Center(child: PlatformCircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 shrinkWrap: true,
                 itemCount: filteredPlaylists!.length,
                 itemBuilder: (context, index) {
                   final playlist = filteredPlaylists.elementAt(index);
-                  return PlatformCheckbox(
-                    label: PlatformText(playlist.name!),
+                  return CheckboxListTile(
+                    secondary: CircleAvatar(
+                      backgroundImage: UniversalImage.imageProvider(
+                        TypeConversionUtils.image_X_UrlString(
+                          playlist.images,
+                          placeholder: ImagePlaceholder.collection,
+                        ),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(playlist.name!),
+                    ),
                     value: playlistsCheck.value[playlist.id] ?? false,
                     onChanged: (val) {
                       playlistsCheck.value = {

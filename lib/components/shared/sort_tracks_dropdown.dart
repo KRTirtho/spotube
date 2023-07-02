@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
+import 'package:spotube/extensions/context.dart';
 
 class SortTracksDropdown extends StatelessWidget {
   final SortBy? value;
@@ -14,42 +16,68 @@ class SortTracksDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformPopupMenuButton<SortBy>(
-      items: [
-        PlatformPopupMenuItem(
-          value: SortBy.none,
-          enabled: value != SortBy.none,
-          child: const Text("None"),
+    var theme = Theme.of(context);
+    return ListTileTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: AdaptivePopSheetList<SortBy>(
+        children: [
+          PopSheetEntry(
+            value: SortBy.none,
+            enabled: value != SortBy.none,
+            title: Text(context.l10n.none),
+          ),
+          PopSheetEntry(
+            value: SortBy.ascending,
+            enabled: value != SortBy.ascending,
+            title: Text(context.l10n.sort_a_z),
+          ),
+          PopSheetEntry(
+            value: SortBy.descending,
+            enabled: value != SortBy.descending,
+            title: Text(context.l10n.sort_z_a),
+          ),
+          PopSheetEntry(
+            value: SortBy.newest,
+            enabled: value != SortBy.newest,
+            title: Text(context.l10n.sort_newest),
+          ),
+          PopSheetEntry(
+            value: SortBy.oldest,
+            enabled: value != SortBy.oldest,
+            title: Text(context.l10n.sort_oldest),
+          ),
+          PopSheetEntry(
+            value: SortBy.artist,
+            enabled: value != SortBy.artist,
+            title: Text(context.l10n.sort_artist),
+          ),
+          PopSheetEntry(
+            value: SortBy.album,
+            enabled: value != SortBy.album,
+            title: Text(context.l10n.sort_album),
+          ),
+        ],
+        headings: [
+          Text(context.l10n.sort_tracks),
+        ],
+        onSelected: onChanged,
+        tooltip: context.l10n.sort_tracks,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: DefaultTextStyle(
+            style: theme.textTheme.titleSmall!,
+            child: Row(
+              children: [
+                const Icon(SpotubeIcons.sort),
+                const SizedBox(width: 8),
+                Text(context.l10n.sort_tracks),
+              ],
+            ),
+          ),
         ),
-        PlatformPopupMenuItem(
-          value: SortBy.ascending,
-          enabled: value != SortBy.ascending,
-          child: const Text("Sort by A-Z"),
-        ),
-        PlatformPopupMenuItem(
-          value: SortBy.descending,
-          enabled: value != SortBy.descending,
-          child: const Text("Sort by Z-A"),
-        ),
-        PlatformPopupMenuItem(
-          value: SortBy.dateAdded,
-          enabled: value != SortBy.dateAdded,
-          child: const Text("Sort by Date"),
-        ),
-        PlatformPopupMenuItem(
-          value: SortBy.artist,
-          enabled: value != SortBy.artist,
-          child: const Text("Sort by Artist"),
-        ),
-        PlatformPopupMenuItem(
-          value: SortBy.album,
-          enabled: value != SortBy.album,
-          child: const Text("Sort by Album"),
-        ),
-      ],
-      onSelected: onChanged,
-      tooltip: "Sort tracks",
-      child: const Icon(SpotubeIcons.sort),
+      ),
     );
   }
 }

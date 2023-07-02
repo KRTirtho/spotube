@@ -2,18 +2,14 @@ import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
-import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/hooks/use_palette_color.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
 
-import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:tuple/tuple.dart';
-
-class HeartButton extends ConsumerWidget {
+class HeartButton extends HookConsumerWidget {
   final bool isLiked;
   final void Function()? onPressed;
   final IconData? icon;
@@ -34,52 +30,77 @@ class HeartButton extends ConsumerWidget {
 
     if (auth == null) return Container();
 
-    return PlatformIconButton(
+    return IconButton(
       tooltip: tooltip,
-      icon: Icon(
-        icon ?? (!isLiked ? SpotubeIcons.heart : SpotubeIcons.heartFilled),
-        color: isLiked ? Colors.pink : color,
+      icon: AnimatedSwitcher(
+        switchInCurve: Curves.fastOutSlowIn,
+        switchOutCurve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return ScaleTransition(
+            scale: animation,
+            child: child,
+          );
+        },
+        child: Icon(
+          icon ??
+              (isLiked
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_outline_rounded),
+          key: ValueKey(isLiked),
+          color: color ?? (isLiked ? color ?? Colors.red : null),
+        ),
       ),
       onPressed: onPressed,
     );
   }
 }
 
-Tuple3<bool, Mutation<bool, dynamic, bool>, Query<User, dynamic>>
-    useTrackToggleLike(Track track, WidgetRef ref) {
+({
+  bool isLiked,
+  Mutation<bool, dynamic, bool> toggleTrackLike,
+  Query<User?, dynamic> me,
+}) useTrackToggleLike(Track track, WidgetRef ref) {
   final me = useQueries.user.me(ref);
 
   final savedTracks =
       useQueries.playlist.tracksOfQuery(ref, "user-liked-tracks");
 
   final isLiked =
-      savedTracks.data?.map((track) => track.id).contains(track.id) ?? false;
+      savedTracks.data?.any((element) => element.id == track.id) ?? false;
 
   final mounted = useIsMounted();
 
   final toggleTrackLike = useMutations.track.toggleFavorite(
     ref,
     track.id!,
-    onMutate: (variables) {
-      return variables;
+    onMutate: (isLiked) {
+      savedTracks.setData(
+        [
+          if (isLiked == true)
+            ...?savedTracks.data?.where((element) => element.id != track.id)
+          else
+            ...?savedTracks.data?..add(track)
+        ],
+      );
+      return isLiked;
+    },
+    onData: (data, recoveryData) async {
+      await savedTracks.refresh();
     },
     onError: (payload, isLiked) {
       if (!mounted()) return;
 
-      savedTracks.setData(
-        isLiked == true
-            ? [...(savedTracks.data ?? []), track]
-            : savedTracks.data
-                    ?.where(
-                      (element) => element.id != track.id,
-                    )
-                    .toList() ??
-                [],
-      );
+      savedTracks.setData([
+        if (isLiked != true)
+          ...?savedTracks.data?.where((element) => element.id != track.id)
+        else
+          ...?savedTracks.data?..add(track),
+      ]);
     },
   );
 
-  return Tuple3(isLiked, toggleTrackLike, me);
+  return (isLiked: isLiked, toggleTrackLike: toggleTrackLike, me: me);
 }
 
 class TrackHeartButton extends HookConsumerWidget {
@@ -94,16 +115,18 @@ class TrackHeartButton extends HookConsumerWidget {
     final savedTracks =
         useQueries.playlist.tracksOfQuery(ref, "user-liked-tracks");
     final toggler = useTrackToggleLike(track, ref);
-    if (toggler.item3.isLoading || !toggler.item3.hasData) {
-      return const PlatformCircularProgressIndicator();
+    if (toggler.me.isLoading || !toggler.me.hasData) {
+      return const CircularProgressIndicator();
     }
 
     return HeartButton(
-      tooltip: toggler.item1 ? "Remove from Favorite" : "Add to Favorite",
-      isLiked: toggler.item1,
+      tooltip: toggler.isLiked
+          ? context.l10n.remove_from_favorites
+          : context.l10n.save_as_favorite,
+      isLiked: toggler.isLiked,
       onPressed: savedTracks.hasData
           ? () {
-              toggler.item2.mutate(toggler.item1);
+              toggler.toggleTrackLike.mutate(toggler.isLiked);
             }
           : null,
     );
@@ -137,28 +160,16 @@ class PlaylistHeartButton extends HookConsumerWidget {
       ],
     );
 
-    final titleImage = useMemoized(
-        () => TypeConversionUtils.image_X_UrlString(
-              playlist.images,
-              placeholder: ImagePlaceholder.collection,
-            ),
-        [playlist.images]);
-
-    final color = usePaletteGenerator(
-      context,
-      titleImage,
-    ).dominantColor;
-
     if (me.isLoading || !me.hasData) {
-      return const PlatformCircularProgressIndicator();
+      return const CircularProgressIndicator();
     }
 
     return HeartButton(
       isLiked: isLikedQuery.data ?? false,
       tooltip: isLikedQuery.data ?? false
-          ? "Remove from Favorite"
-          : "Add to Favorite",
-      color: color?.titleTextColor,
+          ? context.l10n.remove_from_favorites
+          : context.l10n.save_as_favorite,
+      color: Colors.white,
       onPressed: isLikedQuery.hasData
           ? () {
               togglePlaylistLike.mutate(isLikedQuery.data!);
@@ -193,12 +204,15 @@ class AlbumHeartButton extends HookConsumerWidget {
     );
 
     if (me.isLoading || !me.hasData) {
-      return const PlatformCircularProgressIndicator();
+      return const CircularProgressIndicator();
     }
 
     return HeartButton(
       isLiked: isLiked,
-      tooltip: isLiked ? "Remove from Favorite" : "Add to Favorite",
+      tooltip: isLiked
+          ? context.l10n.remove_from_favorites
+          : context.l10n.save_as_favorite,
+      color: Colors.white,
       onPressed: albumIsSaved.hasData
           ? () {
               toggleAlbumLike.mutate(isLiked);

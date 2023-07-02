@@ -1,6 +1,6 @@
 ---
 title: Getting Started With Spotube
-cover_image: https://github.com/KRTirtho/spotube/raw/master/assets/spotube-screenshot.jpg
+cover_image: https://github.com/KRTirtho/spotube/raw/master/assets/spotube-screenshot.png
 date: "July 16, 2022"
 author: Kingkor Roy Tirtho
 author_avatar_url: https://avatars.githubusercontent.com/u/61944859?v=4

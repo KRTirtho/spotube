@@ -1,27 +1,25 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:platform_ui/platform_ui.dart';
 
-class SpotubePage extends CustomTransitionPage {
-  SpotubePage({
+class SpotubePage<T> extends MaterialPage<T> {
+  const SpotubePage({required super.child});
+}
+
+class SpotubeSlidePage extends CustomTransitionPage {
+  SpotubeSlidePage({
     required super.child,
+    super.key,
   }) : super(
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+          transitionDuration: const Duration(milliseconds: 150),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return child;
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
           },
         );
-
-  @override
-  Route createRoute(BuildContext context) {
-    if (platform == TargetPlatform.windows) {
-      return FluentPageRoute(
-        builder: (context) => child,
-        settings: this,
-        maintainState: maintainState,
-        barrierLabel: barrierLabel,
-        fullscreenDialog: fullscreenDialog,
-      );
-    }
-    return super.createRoute(context);
-  }
 }

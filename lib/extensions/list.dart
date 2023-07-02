@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:tuple/tuple.dart';
 
 extension MultiSortListMap on List<Map> {
   /// [preference] - List of properties in which you want to sort the list
@@ -48,7 +47,7 @@ extension MultiSortListMap on List<Map> {
   }
 }
 
-extension MultiSortListTupleMap<V> on List<Tuple2<Map, V>> {
+extension MultiSortListTupleMap<V> on List<(Map, V)> {
   /// [preference] - List of properties in which you want to sort the list
   /// i.e.
   /// ```
@@ -61,7 +60,7 @@ extension MultiSortListTupleMap<V> on List<Tuple2<Map, V>> {
   /// ```
   /// List<bool> criteria = [true. false];
   /// ```
-  List<Tuple2<Map, V>> sortByProperties(
+  List<(Map, V)> sortByProperties(
       List<bool> criteria, List<String> preference) {
     if (preference.isEmpty || criteria.isEmpty || isEmpty) {
       return this;
@@ -71,17 +70,17 @@ extension MultiSortListTupleMap<V> on List<Tuple2<Map, V>> {
       return this;
     }
 
-    int compare(int i, Tuple2<Map, V> a, Tuple2<Map, V> b) {
-      if (a.item1[preference[i]] == b.item1[preference[i]]) {
+    int compare(int i, (Map, V) a, (Map, V) b) {
+      if (a.$1[preference[i]] == b.$1[preference[i]]) {
         return 0;
-      } else if (a.item1[preference[i]] > b.item1[preference[i]]) {
+      } else if (a.$1[preference[i]] > b.$1[preference[i]]) {
         return criteria[i] ? 1 : -1;
       } else {
         return criteria[i] ? -1 : 1;
       }
     }
 
-    int sortAll(Tuple2<Map, V> a, Tuple2<Map, V> b) {
+    int sortAll((Map, V) a, (Map, V) b) {
       int i = 0;
       int result = 0;
       while (i < preference.length) {

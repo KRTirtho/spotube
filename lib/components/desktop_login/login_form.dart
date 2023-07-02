@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+import 'package:spotube/extensions/context.dart';
+
 import 'package:spotube/provider/authentication_provider.dart';
 
 class TokenLoginForm extends HookConsumerWidget {
@@ -25,27 +26,31 @@ class TokenLoginForm extends HookConsumerWidget {
       ),
       child: Column(
         children: [
-          PlatformTextField(
+          TextField(
             controller: directCodeController,
-            placeholder: "Spotify \"sp_dc\" Cookie",
-            label: "sp_dc Cookie",
+            decoration: InputDecoration(
+              hintText: context.l10n.spotify_cookie("\"sp_dc\""),
+              labelText: context.l10n.cookie_name_cookie("sp_dc"),
+            ),
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 10),
-          PlatformTextField(
+          TextField(
             controller: keyCodeController,
-            placeholder: "Spotify \"sp_key\" Cookie",
-            label: "sp_key Cookie",
+            decoration: InputDecoration(
+              hintText: context.l10n.spotify_cookie("\"sp_key\""),
+              labelText: context.l10n.cookie_name_cookie("sp_key"),
+            ),
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 20),
-          PlatformFilledButton(
+          FilledButton(
             onPressed: () async {
               if (keyCodeController.text.isEmpty ||
                   directCodeController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: PlatformText("Please fill in all fields"),
+                  SnackBar(
+                    content: Text(context.l10n.fill_in_all_fields),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -61,7 +66,7 @@ class TokenLoginForm extends HookConsumerWidget {
                 onDone?.call();
               }
             },
-            child: const PlatformText("Submit"),
+            child: Text(context.l10n.submit),
           )
         ],
       ),

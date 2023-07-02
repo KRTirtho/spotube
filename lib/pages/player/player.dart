@@ -1,26 +1,28 @@
-import 'dart:ui';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:palette_generator/palette_generator.dart';
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotify/spotify.dart';
+
+import 'package:spotify/spotify.dart' hide Offset;
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
 import 'package:spotube/components/player/player_controls.dart';
+import 'package:spotube/components/player/player_queue.dart';
+import 'package:spotube/components/player/volume_slider.dart';
+import 'package:spotube/components/shared/animated_gradient.dart';
+import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/shared/spotube_marquee_text.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
@@ -30,26 +32,24 @@ class PlayerView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final currentTrack = ref.watch(PlaylistQueueNotifier.provider.select(
-      (value) => value?.activeTrack,
+    final currentTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
+      (value) => value.activeTrack,
     ));
-    final isLocalTrack = ref.watch(PlaylistQueueNotifier.provider.select(
-      (value) => value?.activeTrack is LocalTrack,
+    final isLocalTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
+      (value) => value.activeTrack is LocalTrack,
     ));
-    final breakpoint = useBreakpoints();
-    final canRotate = ref.watch(
-      userPreferencesProvider.select((s) => s.rotatingAlbumArt),
-    );
+    final mediaQuery = MediaQuery.of(context);
 
     useEffect(() {
-      if (breakpoint.isMoreThan(Breakpoints.md)) {
+      if (mediaQuery.lgAndUp) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           GoRouter.of(context).pop();
         });
       }
       return null;
-    }, [breakpoint]);
+    }, [mediaQuery.lgAndUp]);
 
     String albumArt = useMemoized(
       () => TypeConversionUtils.image_X_UrlString(
@@ -59,179 +59,259 @@ class PlayerView extends HookConsumerWidget {
       [currentTrack?.album?.images],
     );
 
-    final PaletteColor paletteColor = usePaletteColor(albumArt, ref);
+    final palette = usePaletteGenerator(albumArt);
+    final bgColor = palette.dominantColor?.color ?? theme.colorScheme.primary;
+    final titleTextColor = palette.dominantColor?.titleTextColor;
+    final bodyTextColor = palette.dominantColor?.bodyTextColor;
 
     useCustomStatusBarColor(
-      paletteColor.color,
+      bgColor,
       GoRouter.of(context).location == "/player",
       noSetBGColor: true,
     );
 
-    return PlatformScaffold(
-      appBar: PageWindowTitleBar(
-        hideWhenWindows: false,
-        backgroundColor: Colors.transparent,
-        foregroundColor: paletteColor.titleTextColor,
-        toolbarOpacity:
-            PlatformProperty.only(android: 1.0, windows: 1.0, other: 0.0)
-                .resolve(platform ?? Theme.of(context).platform),
-        leading: PlatformBackButton(
-          color: PlatformProperty.only(
-            macos: Colors.black,
-            other: paletteColor.titleTextColor,
-          ).resolve(platform!),
+    return IconTheme(
+      data: theme.iconTheme.copyWith(color: bodyTextColor),
+      child: Scaffold(
+        appBar: PageWindowTitleBar(
+          backgroundColor: Colors.transparent,
+          foregroundColor: titleTextColor,
+          toolbarOpacity: 1,
+          leading: const BackButton(),
+          actions: [
+            IconButton(
+              icon: const Icon(SpotubeIcons.info, size: 18),
+              tooltip: context.l10n.details,
+              style: IconButton.styleFrom(foregroundColor: bodyTextColor),
+              onPressed: currentTrack == null
+                  ? null
+                  : () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return TrackDetailsDialog(
+                              track: currentTrack,
+                            );
+                          });
+                    },
+            )
+          ],
         ),
-      ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: UniversalImage.imageProvider(albumArt),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Material(
-            textStyle: PlatformTheme.of(context).textTheme!.body!,
-            color: paletteColor.color.withOpacity(.5),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 30,
-                          child: SpotubeMarqueeText(
-                            text: currentTrack?.name ?? "Not playing",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: paletteColor.titleTextColor,
+        extendBodyBehindAppBar: true,
+        body: SizedBox(
+          height: double.infinity,
+          child: AnimateGradient(
+            animateAlignments: true,
+            primaryBegin: Alignment.topLeft,
+            primaryEnd: Alignment.bottomLeft,
+            secondaryBegin: Alignment.bottomRight,
+            secondaryEnd: Alignment.topRight,
+            duration: const Duration(seconds: 15),
+            primaryColors: [
+              palette.dominantColor?.color ?? theme.colorScheme.primary,
+              palette.mutedColor?.color ?? theme.colorScheme.secondary,
+            ],
+            secondaryColors: [
+              (palette.darkVibrantColor ?? palette.lightVibrantColor)?.color ??
+                  theme.colorScheme.primaryContainer,
+              (palette.darkMutedColor ?? palette.lightMutedColor)?.color ??
+                  theme.colorScheme.secondaryContainer,
+            ],
+            child: SingleChildScrollView(
+              child: Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 580),
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            constraints: const BoxConstraints(
+                                maxHeight: 300, maxWidth: 300),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 0),
                                 ),
-                            isHovering: true,
-                          ),
-                        ),
-                        if (isLocalTrack)
-                          Text(
-                            TypeConversionUtils.artists_X_String<Artist>(
-                              currentTrack?.artists ?? [],
+                              ],
                             ),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: paletteColor.bodyTextColor,
-                                ),
-                          )
-                        else
-                          TypeConversionUtils.artists_X_ClickableArtists(
-                            currentTrack?.artists ?? [],
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: paletteColor.bodyTextColor,
-                                ),
-                            onRouteChange: (route) {
-                              GoRouter.of(context).pop();
-                              GoRouter.of(context).push(route);
-                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: UniversalImage(
+                                path: albumArt,
+                                placeholder: Assets.albumPlaceholder.path,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                      ],
+                          const SizedBox(height: 60),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  currentTrack?.name ?? "Not playing",
+                                  style: TextStyle(
+                                    color: titleTextColor,
+                                    fontSize: 22,
+                                  ),
+                                  maxFontSize: 22,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.start,
+                                ),
+                                if (isLocalTrack)
+                                  Text(
+                                    TypeConversionUtils.artists_X_String<
+                                        Artist>(
+                                      currentTrack?.artists ?? [],
+                                    ),
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: bodyTextColor,
+                                    ),
+                                  )
+                                else
+                                  TypeConversionUtils
+                                      .artists_X_ClickableArtists(
+                                    currentTrack?.artists ?? [],
+                                    textStyle:
+                                        theme.textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: bodyTextColor,
+                                    ),
+                                    onRouteChange: (route) {
+                                      GoRouter.of(context).pop();
+                                      GoRouter.of(context).push(route);
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          PlayerControls(palette: palette),
+                          const SizedBox(height: 25),
+                          PlayerActions(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            showQueue: false,
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                    icon: const Icon(SpotubeIcons.queue),
+                                    label: Text(context.l10n.queue),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: bodyTextColor,
+                                      side: BorderSide(
+                                        color: bodyTextColor ?? Colors.white,
+                                      ),
+                                    ),
+                                    onPressed: currentTrack != null
+                                        ? () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isDismissible: true,
+                                              enableDrag: true,
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.black12,
+                                              barrierColor: Colors.black12,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              constraints: BoxConstraints(
+                                                maxHeight:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        .7,
+                                              ),
+                                              builder: (context) {
+                                                return const PlayerQueue(
+                                                    floating: false);
+                                              },
+                                            );
+                                          }
+                                        : null),
+                              ),
+                              if (auth != null) const SizedBox(width: 10),
+                              if (auth != null)
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    label: Text(context.l10n.lyrics),
+                                    icon: const Icon(SpotubeIcons.music),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: bodyTextColor,
+                                      side: BorderSide(
+                                        color: bodyTextColor ?? Colors.white,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isDismissible: true,
+                                        enableDrag: true,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.black38,
+                                        barrierColor: Colors.black12,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          ),
+                                        ),
+                                        constraints: BoxConstraints(
+                                          maxHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                        ),
+                                        builder: (context) =>
+                                            const LyricsPage(isModal: true),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              const SizedBox(width: 10),
+                            ],
+                          ),
+                          const SizedBox(height: 25),
+                          SliderTheme(
+                            data: theme.sliderTheme.copyWith(
+                              activeTrackColor: titleTextColor,
+                              inactiveTrackColor: bodyTextColor,
+                              thumbColor: titleTextColor,
+                              overlayColor: titleTextColor?.withOpacity(0.2),
+                              trackHeight: 2,
+                              thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 8,
+                              ),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: VolumeSlider(
+                                fullWidth: true,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  HookBuilder(builder: (context) {
-                    final ticker = useSingleTickerProvider();
-                    final controller = useAnimationController(
-                      duration: const Duration(seconds: 10),
-                      vsync: ticker,
-                    );
-
-                    useEffect(
-                      () {
-                        controller.repeat();
-                        if (!canRotate) controller.stop();
-                        return null;
-                      },
-                      [controller],
-                    );
-                    return RotationTransition(
-                      turns: Tween(begin: 0.0, end: 1.0).animate(controller),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: canRotate
-                              ? Border.all(
-                                  color: paletteColor.titleTextColor,
-                                  width: 2,
-                                )
-                              : null,
-                          borderRadius:
-                              !canRotate ? BorderRadius.circular(15) : null,
-                          shape:
-                              canRotate ? BoxShape.circle : BoxShape.rectangle,
-                        ),
-                        child: !canRotate
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: UniversalImage(
-                                  path: albumArt,
-                                  width: MediaQuery.of(context).size.width *
-                                      (breakpoint.isSm ? 0.8 : 0.5),
-                                ),
-                              )
-                            : CircleAvatar(
-                                backgroundImage:
-                                    UniversalImage.imageProvider(albumArt),
-                                radius: MediaQuery.of(context).size.width *
-                                    (breakpoint.isSm ? 0.4 : 0.3),
-                              ),
-                      ),
-                    );
-                  }),
-                  const Spacer(),
-                  PlayerActions(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    floatingQueue: false,
-                    extraActions: [
-                      if (auth != null)
-                        PlatformIconButton(
-                          tooltip: "Open Lyrics",
-                          icon: const Icon(SpotubeIcons.music),
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isDismissible: true,
-                              enableDrag: true,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.black38,
-                              barrierColor: Colors.black12,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              ),
-                              constraints: BoxConstraints(
-                                maxHeight:
-                                    MediaQuery.of(context).size.height * 0.8,
-                              ),
-                              builder: (context) =>
-                                  const LyricsPage(isModal: true),
-                            );
-                          },
-                        )
-                    ],
-                  ),
-                  PlayerControls(iconColor: paletteColor.bodyTextColor),
-                ],
+                ),
               ),
             ),
           ),

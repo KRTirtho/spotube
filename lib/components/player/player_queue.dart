@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_auto_scroll_controller.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
@@ -21,10 +21,10 @@ class PlayerQueue extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final controller = useAutoScrollController();
-    final tracks = playlist?.tracks ?? {};
+    final tracks = playlist.tracks;
 
     if (tracks.isEmpty) {
       return const NotFound(vertical: true);
@@ -36,15 +36,15 @@ class PlayerQueue extends HookConsumerWidget {
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           );
-    final headlineColor =
-        PlatformTheme.of(context).textTheme?.subheading?.color;
+    final theme = Theme.of(context);
+    final headlineColor = theme.textTheme.headlineSmall?.color;
 
     useEffect(() {
-      if (playlist == null) return null;
-      final index = playlist.active;
-      if (index < 0) return;
+      if (playlist.active == null) return null;
+
+      if (playlist.active! < 0) return;
       controller.scrollToIndex(
-        index,
+        playlist.active!,
         preferPosition: AutoScrollPosition.middle,
       );
       return null;
@@ -61,9 +61,7 @@ class PlayerQueue extends HookConsumerWidget {
           top: 5.0,
         ),
         decoration: BoxDecoration(
-          color: PlatformTheme.of(context)
-              .scaffoldBackgroundColor
-              ?.withOpacity(0.5),
+          color: theme.scaffoldBackgroundColor.withOpacity(0.5),
           borderRadius: borderRadius,
         ),
         child: Column(
@@ -80,8 +78,8 @@ class PlayerQueue extends HookConsumerWidget {
             Row(
               children: [
                 const SizedBox(width: 10),
-                PlatformText(
-                  "${tracks.length} tracks in Queue",
+                Text(
+                  context.l10n.tracks_in_queue(tracks.length),
                   style: TextStyle(
                     color: headlineColor,
                     fontWeight: FontWeight.bold,
@@ -89,20 +87,17 @@ class PlayerQueue extends HookConsumerWidget {
                   ),
                 ),
                 const Spacer(),
-                PlatformFilledButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                        PlatformTheme.of(context)
-                            .scaffoldBackgroundColor
-                            ?.withOpacity(0.5)),
-                    foregroundColor: MaterialStatePropertyAll(
-                        PlatformTheme.of(context).textTheme?.subheading?.color),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor:
+                        theme.scaffoldBackgroundColor.withOpacity(0.5),
+                    foregroundColor: theme.textTheme.headlineSmall?.color,
                   ),
                   child: Row(
-                    children: const [
-                      Icon(SpotubeIcons.playlistRemove),
-                      SizedBox(width: 5),
-                      Text("Clear All"),
+                    children: [
+                      const Icon(SpotubeIcons.playlistRemove),
+                      const SizedBox(width: 5),
+                      Text(context.l10n.clear_all),
                     ],
                   ),
                   onPressed: () {
@@ -115,14 +110,16 @@ class PlayerQueue extends HookConsumerWidget {
             ),
             const SizedBox(height: 10),
             Flexible(
-              child: ListView.builder(
-                  controller: controller,
+              child: ReorderableListView.builder(
+                  onReorder: (oldIndex, newIndex) {
+                    playlistNotifier.moveTrack(oldIndex, newIndex);
+                  },
+                  scrollController: controller,
                   itemCount: tracks.length,
                   shrinkWrap: true,
+                  buildDefaultDragHandles: false,
                   itemBuilder: (context, i) {
-                    final track = tracks.toList().asMap().entries.elementAt(i);
-                    String duration =
-                        "${track.value.duration?.inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(track.value.duration?.inSeconds.remainder(60) ?? 0)}";
+                    final track = tracks.elementAt(i);
                     return AutoScrollTag(
                       key: ValueKey(i),
                       controller: controller,
@@ -130,16 +127,20 @@ class PlayerQueue extends HookConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TrackTile(
-                          playlist,
+                          index: i,
                           track: track,
-                          duration: duration,
-                          isActive: playlist?.activeTrack.id == track.value.id,
-                          onTrackPlayButtonPressed: (currentTrack) async {
-                            if (playlist?.activeTrack.id == track.value.id) {
+                          onTap: () async {
+                            if (playlist.activeTrack?.id == track.id) {
                               return;
                             }
-                            await playlistNotifier.playTrack(currentTrack);
+                            await playlistNotifier.jumpToTrack(track);
                           },
+                          leadingActions: [
+                            ReorderableDragStartListener(
+                              index: i,
+                              child: const Icon(SpotubeIcons.dragHandle),
+                            ),
+                          ],
                         ),
                       ),
                     );

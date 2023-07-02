@@ -4,10 +4,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/track_table/track_collection_view.dart';
+import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -17,33 +17,33 @@ class AlbumPage extends HookConsumerWidget {
   const AlbumPage(this.album, {Key? key}) : super(key: key);
 
   Future<void> playPlaylist(
-    PlaylistQueueNotifier playback,
     List<Track> tracks,
     WidgetRef ref, {
     Track? currentTrack,
   }) async {
-    final playlist = ref.read(PlaylistQueueNotifier.provider);
+    final playlist = ref.read(ProxyPlaylistNotifier.provider);
+    final playback = ref.read(ProxyPlaylistNotifier.notifier);
     final sortBy = ref.read(trackCollectionSortState(album.id!));
     final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
     currentTrack ??= sortedTracks.first;
-    final isPlaylistPlaying = playback.isPlayingPlaylist(tracks);
+    final isPlaylistPlaying = playlist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
-      playback.load(
+      await playback.load(
         sortedTracks,
-        active: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
+        initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
       );
-      await playback.play();
+      playback.addCollection(album.id!);
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
-        currentTrack.id != playlist?.activeTrack.id) {
-      await playback.playTrack(currentTrack);
+        currentTrack.id != playlist.activeTrack?.id) {
+      await playback.jumpToTrack(currentTrack);
     }
   }
 
   @override
   Widget build(BuildContext context, ref) {
-    ref.watch(PlaylistQueueNotifier.provider);
-    final playback = ref.watch(PlaylistQueueNotifier.notifier);
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playback = ref.watch(ProxyPlaylistNotifier.notifier);
 
     final tracksSnapshot = useQueries.album.tracksOf(ref, album.id!);
 
@@ -54,10 +54,10 @@ class AlbumPage extends HookConsumerWidget {
             ),
         [album.images]);
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final isAlbumPlaying = useMemoized(
-      () => playback.isPlayingPlaylist(tracksSnapshot.data ?? []),
+      () => playlist.containsTracks(tracksSnapshot.data ?? []),
       [playback, tracksSnapshot.data],
     );
     return TrackCollectionView(
@@ -68,12 +68,11 @@ class AlbumPage extends HookConsumerWidget {
       tracksSnapshot: tracksSnapshot,
       album: album,
       routePath: "/album/${album.id}",
-      bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
+      bottomSpace: mediaQuery.mdAndDown,
       onPlay: ([track]) {
         if (tracksSnapshot.hasData) {
           if (!isAlbumPlaying) {
             playPlaylist(
-              playback,
               tracksSnapshot.data!
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
@@ -82,7 +81,6 @@ class AlbumPage extends HookConsumerWidget {
             );
           } else if (isAlbumPlaying && track != null) {
             playPlaylist(
-              playback,
               tracksSnapshot.data!
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
@@ -91,23 +89,20 @@ class AlbumPage extends HookConsumerWidget {
               ref,
             );
           } else {
-            playback.remove(
-              tracksSnapshot.data!
-                  .map((track) =>
-                      TypeConversionUtils.simpleTrack_X_Track(track, album))
-                  .toList(),
-            );
+            playback
+                .removeTracks(tracksSnapshot.data!.map((track) => track.id!));
           }
         }
       },
       onAddToQueue: () {
         if (tracksSnapshot.hasData && !isAlbumPlaying) {
-          playback.add(
+          playback.addTracks(
             tracksSnapshot.data!
                 .map((track) =>
                     TypeConversionUtils.simpleTrack_X_Track(track, album))
                 .toList(),
           );
+          playback.addCollection(album.id!);
         }
       },
       onShare: () {
@@ -126,19 +121,18 @@ class AlbumPage extends HookConsumerWidget {
             ..shuffle();
           if (!isAlbumPlaying) {
             playPlaylist(
-              playback,
               tracks,
               ref,
             );
           } else if (isAlbumPlaying && track != null) {
             playPlaylist(
-              playback,
               tracks,
               ref,
               currentTrack: track,
             );
           } else {
-            playback.stop();
+            // TODO: Disable ability to stop playback from playlist/album
+            // playback.stop();
           }
         }
       },

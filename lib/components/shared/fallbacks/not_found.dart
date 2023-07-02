@@ -7,6 +7,7 @@ class NotFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final widgets = [
       SizedBox(
         height: 150,
@@ -17,10 +18,10 @@ class NotFound extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Nothing found", style: Theme.of(context).textTheme.headline6),
+          Text("Nothing found", style: theme.textTheme.titleLarge),
           Text(
             "The box is empty",
-            style: Theme.of(context).textTheme.subtitle1,
+            style: theme.textTheme.titleMedium,
           ),
         ],
       ),

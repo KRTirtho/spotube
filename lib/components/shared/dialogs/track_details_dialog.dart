@@ -1,0 +1,166 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/shared/links/hyper_link.dart';
+import 'package:spotube/components/shared/links/link_text.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/extensions/duration.dart';
+
+class TrackDetailsDialog extends HookWidget {
+  final Track track;
+  const TrackDetailsDialog({
+    Key? key,
+    required this.track,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+
+    final detailsMap = {
+      context.l10n.title: track.name!,
+      context.l10n.artist: TypeConversionUtils.artists_X_ClickableArtists(
+        track.artists ?? <Artist>[],
+        mainAxisAlignment: WrapAlignment.start,
+        textStyle: const TextStyle(color: Colors.blue),
+      ),
+      context.l10n.album: LinkText(
+        track.album!.name!,
+        "/album/${track.album?.id}",
+        extra: track.album,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(color: Colors.blue),
+      ),
+      context.l10n.duration: (track is SpotubeTrack
+              ? (track as SpotubeTrack).ytTrack.duration
+              : track.duration!)
+          .toHumanReadableString(),
+      if (track.album!.releaseDate != null)
+        context.l10n.released: track.album!.releaseDate,
+      context.l10n.popularity: track.popularity?.toString() ?? "0",
+    };
+
+    final ytTrack =
+        track is SpotubeTrack ? (track as SpotubeTrack).ytTrack : null;
+
+    final ytTracksDetailsMap = ytTrack == null
+        ? {}
+        : {
+            context.l10n.youtube: Hyperlink(
+              "https://piped.video/watch?v=${ytTrack.id}",
+              "https://piped.video/watch?v=${ytTrack.id}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            context.l10n.channel: Hyperlink(
+              ytTrack.channelName,
+              "https://youtube.com${ytTrack.channelName}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            context.l10n.likes:
+                PrimitiveUtils.toReadableNumber(ytTrack.likes.toDouble()),
+            context.l10n.dislikes:
+                PrimitiveUtils.toReadableNumber(ytTrack.dislikes.toDouble()),
+            context.l10n.views:
+                PrimitiveUtils.toReadableNumber(ytTrack.views.toDouble()),
+            context.l10n.streamUrl: Hyperlink(
+              (track as SpotubeTrack).ytUri,
+              (track as SpotubeTrack).ytUri,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          };
+
+    return AlertDialog(
+      contentPadding: const EdgeInsets.all(16),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),
+      scrollable: true,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(SpotubeIcons.info),
+          const SizedBox(width: 8),
+          Text(
+            context.l10n.details,
+            style: theme.textTheme.titleMedium,
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: mediaQuery.mdAndUp ? double.infinity : 700,
+        child: Table(
+          columnWidths: const {
+            0: FixedColumnWidth(95),
+            1: FixedColumnWidth(10),
+            2: FlexColumnWidth(1),
+          },
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          children: [
+            for (final entry in detailsMap.entries)
+              TableRow(
+                children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.top,
+                    child: Text(
+                      entry.key,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                  const TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.top,
+                    child: Text(":"),
+                  ),
+                  if (entry.value is Widget)
+                    entry.value as Widget
+                  else if (entry.value is String)
+                    Text(
+                      entry.value as String,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                ],
+              ),
+            const TableRow(
+              children: [
+                SizedBox(height: 16),
+                SizedBox(height: 16),
+                SizedBox(height: 16),
+              ],
+            ),
+            for (final entry in ytTracksDetailsMap.entries)
+              TableRow(
+                children: [
+                  TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.top,
+                    child: Text(
+                      entry.key,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                  const TableCell(
+                    verticalAlignment: TableCellVerticalAlignment.top,
+                    child: Text(":"),
+                  ),
+                  if (entry.value is Widget)
+                    entry.value as Widget
+                  else
+                    Text(
+                      entry.value,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

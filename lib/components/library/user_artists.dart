@@ -3,48 +3,44 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotify/spotify.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
-import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/components/artist/artist_card.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:tuple/tuple.dart';
 
 class UserArtists extends HookConsumerWidget {
   const UserArtists({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final artistQuery = useQueries.artist.followedByMe(ref);
-
-    final hasNextPage = artistQuery.pages.isEmpty
-        ? false
-        : (artistQuery.pages.last.items?.length ?? 0) == 15;
+    final artistQuery = useQueries.artist.followedByMeAll(ref);
 
     final searchText = useState('');
 
     final filteredArtists = useMemoized(() {
-      final artists = artistQuery.pages
-          .expand<Artist>((page) => page.items ?? const Iterable.empty());
+      final artists = artistQuery.data ?? [];
 
       if (searchText.value.isEmpty) {
         return artists.toList();
       }
       return artists
-          .map((e) => Tuple2(
+          .map((e) => (
                 weightedRatio(e.name!, searchText.value),
                 e,
               ))
-          .sorted((a, b) => b.item1.compareTo(a.item1))
-          .where((e) => e.item1 > 50)
-          .map((e) => e.item2)
+          .sorted((a, b) => b.$1.compareTo(a.$1))
+          .where((e) => e.$1 > 50)
+          .map((e) => e.$2)
           .toList();
-    }, [artistQuery.pages, searchText.value]);
+    }, [artistQuery.data, searchText.value]);
+
+    final controller = useScrollController();
 
     if (auth == null) {
       return const AnonymousFallback();
@@ -56,57 +52,48 @@ class UserArtists extends HookConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ColoredBox(
-            color: PlatformTheme.of(context).scaffoldBackgroundColor!,
-            child: PlatformTextField(
+            color: theme.scaffoldBackgroundColor,
+            child: SearchBar(
               onChanged: (value) => searchText.value = value,
-              prefixIcon: SpotubeIcons.filter,
-              placeholder: 'Filter artists...',
+              leading: const Icon(SpotubeIcons.filter),
+              hintText: context.l10n.filter_artist,
             ),
           ),
         ),
       ),
-      backgroundColor: PlatformTheme.of(context).scaffoldBackgroundColor,
-      body: artistQuery.pages.isEmpty
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: artistQuery.data?.isEmpty == true
           ? Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  PlatformCircularProgressIndicator(),
-                  SizedBox(width: 10),
-                  PlatformText("Loading..."),
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.loading),
                 ],
               ),
             )
           : RefreshIndicator(
               onRefresh: () async {
-                await artistQuery.refreshAll();
+                await artistQuery.refresh();
               },
-              child: GridView.builder(
-                itemCount: filteredArtists.length,
-                physics: const AlwaysScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  mainAxisExtent: 250,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
+              child: SingleChildScrollView(
+                controller: controller,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: SafeArea(
+                    child: Center(
+                      child: Wrap(
+                        spacing: 15,
+                        runSpacing: 5,
+                        children: filteredArtists
+                            .mapIndexed((index, artist) => ArtistCard(artist))
+                            .toList(),
+                      ),
+                    ),
+                  ),
                 ),
-                padding: const EdgeInsets.all(10),
-                itemBuilder: (context, index) {
-                  return HookBuilder(builder: (context) {
-                    if (index == artistQuery.pages.length - 1 && hasNextPage) {
-                      return Waypoint(
-                        controller: useScrollController(),
-                        isGrid: true,
-                        onTouchEdge: () {
-                          artistQuery.fetchNext();
-                        },
-                        child: ArtistCard(filteredArtists[index]),
-                      );
-                    }
-                    return ArtistCard(filteredArtists[index]);
-                  });
-                },
               ),
             ),
     );

@@ -1,6 +1,9 @@
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:spotube/extensions/constrains.dart';
 
-useBreakpointValue<T>({
+T useBreakpointValue<T>({
+  T? xs,
   T? sm,
   T? md,
   T? lg,
@@ -8,17 +11,46 @@ useBreakpointValue<T>({
   T? xxl,
   T? others,
 }) {
-  final breakpoint = useBreakpoints();
+  final isSomeNull = xs == null ||
+      sm == null ||
+      md == null ||
+      lg == null ||
+      xl == null ||
+      xxl == null;
+  assert(
+    (isSomeNull && others != null) || (!isSomeNull && others == null),
+    'You must provide a value for all breakpoints or a default value for others',
+  );
+  final context = useContext();
+  final mediaQuery = MediaQuery.of(context);
 
-  if (breakpoint.isSm) {
-    return sm ?? others;
-  } else if (breakpoint.isMd) {
-    return md ?? others;
-  } else if (breakpoint.isXl) {
-    return xl ?? others;
-  } else if (breakpoint.isXxl) {
-    return xxl ?? others;
+  if (isSomeNull) {
+    if (mediaQuery.isXs) {
+      return xs ?? others!;
+    } else if (mediaQuery.isSm) {
+      return sm ?? others!;
+    } else if (mediaQuery.isMd) {
+      return md ?? others!;
+    } else if (mediaQuery.isXl) {
+      return xl ?? others!;
+    } else if (mediaQuery.is2Xl) {
+      return xxl ?? others!;
+    } else {
+      return lg ?? others!;
+    }
   } else {
-    return lg ?? others;
+    if (mediaQuery.isXs) {
+      return xs;
+    } else if (mediaQuery.isSm) {
+      return sm;
+    } else if (mediaQuery.isMd) {
+      return md;
+    } else if (mediaQuery.isXl) {
+      return xl;
+    } else if (mediaQuery.is2Xl) {
+      return xxl;
+    } else {
+      return lg;
+    }
   }
 }

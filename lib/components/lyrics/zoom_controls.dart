@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
 
 class ZoomControls extends HookWidget {
@@ -32,15 +32,15 @@ class ZoomControls extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final actions = [
-      PlatformIconButton(
+      IconButton(
         icon: decreaseIcon,
         onPressed: () {
           if (value == min) return;
           onChanged(value - interval);
         },
       ),
-      PlatformText("$value$unit"),
-      PlatformIconButton(
+      Text("$value$unit"),
+      IconButton(
         icon: increaseIcon,
         onPressed: () {
           if (value == max) return;
@@ -51,9 +51,7 @@ class ZoomControls extends HookWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: PlatformTheme.of(context)
-            .secondaryBackgroundColor
-            ?.withOpacity(0.7),
+        color: Theme.of(context).cardColor.withOpacity(0.7),
         borderRadius: BorderRadius.circular(10),
       ),
       constraints: BoxConstraints(

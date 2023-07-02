@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/root/sidebar.dart';
+import 'package:spotube/extensions/context.dart';
 
 final replaceDownloadedFileState = StateProvider<bool?>((ref) => null);
 
@@ -15,85 +14,59 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final groupValue = ref.watch(replaceDownloadedFileState);
+    final theme = Theme.of(context);
+    final replaceAll = ref.watch(replaceDownloadedFileState);
 
-    return PlatformAlertDialog(
-      macosAppIcon: Sidebar.brandLogo(),
-      title: Text("Track ${track.name} Already Exists"),
+    return AlertDialog(
+      title: Text(context.l10n.track_exists(track.name ?? "")),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text("Do you want to replace the already downloaded track?"),
+          Text(context.l10n.do_you_want_to_replace),
           RadioListTile<bool>(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            activeColor: PlatformTheme.of(context).primaryColor,
+            activeColor: theme.colorScheme.primary,
             value: true,
             groupValue: groupValue,
             onChanged: (value) {
               if (value != null) {
-                ref.read(replaceDownloadedFileState.notifier).state = value;
+                ref.read(replaceDownloadedFileState.notifier).state = true;
               }
             },
-            title: const Text("Replace all downloaded tracks"),
+            title: Text(context.l10n.replace_downloaded_tracks),
           ),
           RadioListTile<bool>(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            activeColor: PlatformTheme.of(context).primaryColor,
+            activeColor: theme.colorScheme.primary,
             value: false,
             groupValue: groupValue,
             onChanged: (value) {
               if (value != null) {
-                ref.read(replaceDownloadedFileState.notifier).state = value;
+                ref.read(replaceDownloadedFileState.notifier).state = false;
               }
             },
-            title: const Text("Skip downloading all downloaded tracks"),
+            title: Text(context.l10n.skip_download_tracks),
           ),
         ],
       ),
-      primaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              child: const Text("Yes"),
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              isDefaultAction: true,
-              child: const Text("Yes"),
-            );
-          },
+      actions: [
+        OutlinedButton(
+          onPressed: replaceAll == true
+              ? null
+              : () {
+                  Navigator.pop(context, false);
+                },
+          child: Text(context.l10n.skip),
         ),
-      ],
-      secondaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              isSecondary: true,
-              child: const Text("No"),
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-              isDestructiveAction: true,
-              child: const Text("No"),
-            );
-          },
+        FilledButton(
+          onPressed: replaceAll == false
+              ? null
+              : () {
+                  Navigator.pop(context, true);
+                },
+          child: Text(context.l10n.replace),
         ),
       ],
     );

@@ -118,26 +118,26 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/KRTirt
 
 Do the following:
 
-- Download the latest Flutter SDK (>=2.15.1) & enable desktop support
+- Download the latest Flutter SDK (>=3.10.0) & enable desktop support
 - Install Development dependencies in linux
-  - Debian/Ubuntu
+  - Debian (>=12/Bookworm)/Ubuntu
     ```bash
-    $ apt-get install libjsoncpp1 libjsoncpp-dev libsecret-1-0 libsecret-1-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp1 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev
     ```
     - Use `libjsoncpp25` instead of `libjsoncpp1` (for Ubuntu >= 22.04)
   - Arch/Manjaro
     ```bash
-    yay -S libsecret jsoncpp gstreamer gst-libav gst-plugins-base gst-plugins-good
+    yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify
     ```
   - Fedora
     ```bash
-    dnf install libsecret libsecret-devel jsoncpp gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-doc gstreamer1-plugins-base-devel gstreamer1-plugins-good gstreamer1-plugins-good-extras
+    dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel
     ```
 - Clone the Repo
 - Create a `.env` in root of the project following the `.env.example` template
 - Now run the following to bootstrap the project
   ```bash
-  flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs
+  flutter pub get && dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
   ```
 - Finally run these following commands in the root of the project to start the Spotube Locally
   ```bash

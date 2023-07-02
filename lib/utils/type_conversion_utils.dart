@@ -3,15 +3,16 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart' hide Image;
-import 'package:metadata_god/metadata_god.dart' hide Image;
+import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 enum ImagePlaceholder {
   albumArt,
@@ -127,25 +128,21 @@ abstract class TypeConversionUtils {
     String? art,
   }) {
     final track = SpotubeTrack(
-      Video(
-        VideoId("dQw4w9WgXcQ"),
-        basenameWithoutExtension(file.path),
-        metadata?.artist ?? "",
-        ChannelId(
-          "https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw",
-        ),
-        DateTime.now(),
-        "",
-        DateTime.now(),
-        "",
-        Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
-        ThumbnailSet(metadata?.title ?? ""),
-        [],
-        const Engagement(0, 0, 0),
-        false,
+      YoutubeVideoInfo(
+        searchMode: SearchMode.youtube,
+        id: "dQw4w9WgXcQ",
+        title: basenameWithoutExtension(file.path),
+        duration: Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
+        dislikes: 0,
+        likes: 0,
+        thumbnailUrl: art ?? "",
+        views: 0,
+        channelName: metadata?.albumArtist ?? "Spotube",
+        channelId: metadata?.albumArtist ?? "Spotube",
+        publishedAt:
+            metadata?.year != null ? DateTime(metadata!.year!) : DateTime(2003),
       ),
       file.path,
-      [],
       [],
     );
     track.album = Album()

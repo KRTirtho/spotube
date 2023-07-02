@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
 
 class AnchorButton<T> extends HookWidget {
   final String text;
@@ -8,6 +7,7 @@ class AnchorButton<T> extends HookWidget {
   final TextAlign? textAlign;
   final TextOverflow? overflow;
   final void Function()? onTap;
+  final int? maxLines;
 
   const AnchorButton(
     this.text, {
@@ -15,6 +15,7 @@ class AnchorButton<T> extends HookWidget {
     this.onTap,
     this.textAlign,
     this.overflow,
+    this.maxLines,
     this.style = const TextStyle(),
   }) : super(key: key);
 
@@ -29,12 +30,13 @@ class AnchorButton<T> extends HookWidget {
       onTap: onTap,
       child: MouseRegion(
         cursor: MaterialStateMouseCursor.clickable,
-        child: PlatformText(
+        child: Text(
           text,
           style: style.copyWith(
             decoration:
                 hover.value || tap.value ? TextDecoration.underline : null,
           ),
+          maxLines: maxLines,
           textAlign: textAlign,
           overflow: overflow,
         ),

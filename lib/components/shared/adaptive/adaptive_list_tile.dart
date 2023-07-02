@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/components/root/sidebar.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 
 class AdaptiveListTile extends HookWidget {
   final Widget Function(BuildContext, StateSetter?)? trailing;
@@ -10,7 +8,7 @@ class AdaptiveListTile extends HookWidget {
   final Widget? subtitle;
   final Widget? leading;
   final void Function()? onTap;
-  final Breakpoints breakOn;
+  final bool? breakOn;
 
   const AdaptiveListTile({
     super.key,
@@ -19,29 +17,29 @@ class AdaptiveListTile extends HookWidget {
     this.title,
     this.subtitle,
     this.leading,
-    this.breakOn = Breakpoints.md,
+    this.breakOn,
   });
 
   @override
   Widget build(BuildContext context) {
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
-    return PlatformListTile(
+    return ListTile(
       title: title,
       subtitle: subtitle,
-      trailing:
-          breakpoint.isLessThan(breakOn) ? null : trailing?.call(context, null),
+      trailing: breakOn ?? mediaQuery.smAndDown
+          ? null
+          : trailing?.call(context, null),
       leading: leading,
-      onTap: breakpoint.isLessThan(breakOn)
+      onTap: breakOn ?? mediaQuery.smAndDown
           ? () {
               onTap?.call();
-              showPlatformAlertDialog(
-                context,
+              showDialog(
+                context: context,
                 barrierDismissible: true,
                 builder: (context) {
                   return StatefulBuilder(builder: (context, update) {
-                    return PlatformAlertDialog(
-                      macosAppIcon: Sidebar.brandLogo(),
+                    return AlertDialog(
                       title: title != null
                           ? Row(
                               crossAxisAlignment: CrossAxisAlignment.center,

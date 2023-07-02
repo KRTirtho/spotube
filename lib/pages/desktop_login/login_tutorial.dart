@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -19,16 +20,16 @@ class LoginTutorial extends ConsumerWidget {
     final authenticationNotifier =
         ref.watch(AuthenticationNotifier.provider.notifier);
     final key = GlobalKey<State<IntroductionScreen>>();
+    final theme = Theme.of(context);
 
     final pageDecoration = PageDecoration(
-      bodyTextStyle: PlatformTheme.of(context).textTheme!.body!,
-      titleTextStyle: PlatformTheme.of(context).textTheme!.subheading!,
+      bodyTextStyle: theme.textTheme.bodyMedium!,
+      titleTextStyle: theme.textTheme.headlineMedium!,
     );
-    return PlatformScaffold(
+    return Scaffold(
       appBar: PageWindowTitleBar(
-        hideWhenWindows: false,
-        leading: PlatformTextButton(
-          child: const PlatformText("Exit"),
+        leading: TextButton(
+          child: Text(context.l10n.exit),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -36,86 +37,77 @@ class LoginTutorial extends ConsumerWidget {
       ),
       body: IntroductionScreen(
         key: key,
-        globalBackgroundColor:
-            PlatformTheme.of(context).scaffoldBackgroundColor,
-        overrideBack: PlatformFilledButton(
-          isSecondary: true,
-          child: const Center(child: PlatformText("Previous")),
+        globalBackgroundColor: theme.scaffoldBackgroundColor,
+        overrideBack: OutlinedButton(
+          child: Center(child: Text(context.l10n.previous)),
           onPressed: () {
             (key.currentState as IntroductionScreenState).previous();
           },
         ),
-        overrideNext: PlatformFilledButton(
-          child: const Center(child: PlatformText("Next")),
+        overrideNext: FilledButton(
+          child: Center(child: Text(context.l10n.next)),
           onPressed: () {
             (key.currentState as IntroductionScreenState).next();
           },
         ),
         showBackButton: true,
-        overrideDone: PlatformFilledButton(
+        overrideDone: FilledButton(
           onPressed: authenticationNotifier.isLoggedIn
               ? () {
-                  ServiceUtils.navigate(context, "/");
+                  ServiceUtils.push(context, "/");
                 }
               : null,
-          child: const Center(child: PlatformText("Done")),
+          child: Center(child: Text(context.l10n.done)),
         ),
         pages: [
           PageViewModel(
             decoration: pageDecoration,
-            title: "Step 1",
+            title: context.l10n.step_1,
             image: Assets.tutorial.step1.image(),
             bodyWidget: Wrap(
-              children: const [
-                PlatformText(
-                  "First, Go to ",
-                ),
-                Hyperlink(
+              children: [
+                Text(context.l10n.first_go_to),
+                const SizedBox(width: 5),
+                const Hyperlink(
                   "accounts.spotify.com ",
                   "https://accounts.spotify.com",
                 ),
-                PlatformText(
-                  "and Login/Sign up if you're not logged in",
-                ),
+                Text(context.l10n.login_if_not_logged_in),
               ],
             ),
           ),
           PageViewModel(
             decoration: pageDecoration,
-            title: "Step 2",
+            title: context.l10n.step_2,
             image: Assets.tutorial.step2.image(),
-            bodyWidget: const PlatformText(
-              "1. Once you're logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection",
-              textAlign: TextAlign.left,
-            ),
+            bodyWidget:
+                Text(context.l10n.step_2_steps, textAlign: TextAlign.left),
           ),
           PageViewModel(
             decoration: pageDecoration,
-            title: "Step 3",
+            title: context.l10n.step_3,
             image: Assets.tutorial.step3.image(),
-            bodyWidget: const PlatformText(
-              "Copy the values of \"sp_dc\" and \"sp_key\" Cookies",
-              textAlign: TextAlign.left,
-            ),
+            bodyWidget:
+                Text(context.l10n.step_3_steps, textAlign: TextAlign.left),
           ),
           if (authenticationNotifier.isLoggedIn)
             PageViewModel(
               decoration: pageDecoration.copyWith(
                 bodyAlignment: Alignment.center,
               ),
-              title: "Success🥳",
+              title: context.l10n.success_emoji,
               image: Assets.success.image(),
-              body:
-                  "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
+              body: context.l10n.success_message,
             )
           else
             PageViewModel(
               decoration: pageDecoration,
-              title: "Step 5",
+              title: context.l10n.step_4,
               bodyWidget: Column(
                 children: [
-                  PlatformText.label(
-                    "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
+                  Text(
+                    context.l10n.step_4_steps,
+                    style: theme.textTheme.labelMedium,
                   ),
                   const SizedBox(height: 10),
                   TokenLoginForm(

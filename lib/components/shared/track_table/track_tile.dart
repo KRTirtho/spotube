@@ -1,414 +1,231 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart' hide Action;
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotify/spotify.dart' hide Image;
-import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/adaptive/adaptive_popup_menu_button.dart';
-import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/links/link_text.dart';
+import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/root/sidebar.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/components/shared/links/link_text.dart';
+import 'package:spotube/components/shared/track_table/track_options.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
-import 'package:spotube/services/mutations/mutations.dart';
-
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
-  final PlaylistQueue? playlist;
-  final MapEntry<int, Track> track;
-  final String duration;
-  final void Function(Track currentTrack)? onTrackPlayButtonPressed;
-  final logger = getLogger(TrackTile);
+  /// [index] will not be shown if null
+  final int? index;
+  final Track track;
+  final bool selected;
+  final ValueChanged<bool?>? onChanged;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final bool userPlaylist;
-  // null playlistId indicates its not inside a playlist
   final String? playlistId;
 
-  final bool showAlbum;
+  final List<Widget>? leadingActions;
 
-  final bool isActive;
-
-  final bool isChecked;
-  final bool showCheck;
-
-  final bool isLocal;
-  final void Function(bool?)? onCheckChange;
-
-  TrackTile(
-    this.playlist, {
-    required this.track,
-    required this.duration,
-    required this.isActive,
-    this.playlistId,
-    this.userPlaylist = false,
-    this.onTrackPlayButtonPressed,
-    this.showAlbum = true,
-    this.isChecked = false,
-    this.showCheck = false,
-    this.isLocal = false,
-    this.onCheckChange,
+  const TrackTile({
     Key? key,
+    this.index,
+    required this.track,
+    this.selected = false,
+    this.onTap,
+    this.onLongPress,
+    this.onChanged,
+    this.userPlaylist = false,
+    this.playlistId,
+    this.leadingActions,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
-    final breakpoint = useBreakpoints();
-    final isBlackListed = ref.watch(
-      BlackListNotifier.provider.select(
-        (blacklist) => blacklist.contains(
-          BlacklistedElement.track(track.value.id!, track.value.name!),
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final theme = Theme.of(context);
+
+    final blacklist = ref.watch(BlackListNotifier.provider);
+
+    final isBlackListed = useMemoized(
+      () => blacklist.contains(
+        BlacklistedElement.track(
+          track.id!,
+          track.name!,
         ),
       ),
-    );
-    final auth = ref.watch(AuthenticationNotifier.provider);
-    final spotify = ref.watch(spotifyProvider);
-    final playlistQueueNotifier = ref.watch(PlaylistQueueNotifier.notifier);
-
-    final removingTrack = useState<String?>(null);
-    final removeTrack = useMutations.playlist.removeTrackOf(
-      ref,
-      playlistId ?? "",
+      [blacklist, track],
     );
 
-    void actionShare(Track track) {
-      final data = "https://open.spotify.com/track/${track.id}";
-      Clipboard.setData(ClipboardData(text: data)).then((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            width: 300,
-            behavior: SnackBarBehavior.floating,
-            content: PlatformText(
-              "Copied $data to clipboard",
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
-      });
-    }
+    final isPlaying = track.id == playlist.activeTrack?.id;
 
-    Future<void> actionAddToPlaylist() async {
-      showPlatformAlertDialog(context, builder: (context) {
-        return FutureBuilder<Iterable<PlaylistSimple>>(
-            future: spotify.playlists.me.all().then((playlists) async {
-              final me = await spotify.me.get();
-              return playlists.where((playlist) =>
-                  playlist.owner?.id != null && playlist.owner!.id == me.id);
-            }),
-            builder: (context, snapshot) {
-              return HookBuilder(builder: (context) {
-                final playlistsCheck = useState(<String, bool>{});
-                return PlatformAlertDialog(
-                  macosAppIcon: Sidebar.brandLogo(),
-                  title: PlatformText(
-                    "Add `${track.value.name}` to following Playlists",
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+    return LayoutBuilder(builder: (context, constrains) {
+      return HoverBuilder(
+        permanentState: isPlaying || constrains.smAndDown ? true : null,
+        builder: (context, isHovering) {
+          return ListTile(
+            selected: isPlaying,
+            onTap: onTap,
+            onLongPress: onLongPress,
+            enabled: !isBlackListed,
+            contentPadding: EdgeInsets.zero,
+            tileColor: isBlackListed ? theme.colorScheme.errorContainer : null,
+            horizontalTitleGap: 12,
+            leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...?leadingActions,
+                if (index != null && onChanged == null && constrains.mdAndUp)
+                  SizedBox(
+                    width: 34,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Text(
+                        '$index',
+                        maxLines: 1,
+                        style: theme.textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
+                  )
+                else if (constrains.smAndDown)
+                  const SizedBox(width: 16),
+                if (onChanged != null)
+                  Checkbox.adaptive(
+                    value: selected,
+                    onChanged: onChanged,
                   ),
-                  secondaryActions: [
-                    PlatformFilledButton(
-                      isSecondary: true,
-                      child: const PlatformText("Cancel"),
-                      onPressed: () => Navigator.pop(context),
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: UniversalImage(
+                          path: TypeConversionUtils.image_X_UrlString(
+                            track.album?.images,
+                            placeholder: ImagePlaceholder.albumArt,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: isHovering
+                              ? Colors.black.withOpacity(0.4)
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Center(
+                        child: IconTheme(
+                          data: theme.iconTheme
+                              .copyWith(size: 26, color: Colors.white),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: !isHovering
+                                ? const SizedBox.shrink()
+                                : isPlaying && playlist.isFetching
+                                    ? const SizedBox(
+                                        width: 26,
+                                        height: 26,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 1.5,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : isPlaying
+                                        ? Icon(
+                                            SpotubeIcons.pause,
+                                            color: theme.colorScheme.primary,
+                                          )
+                                        : const Icon(SpotubeIcons.play),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
-                  primaryActions: [
-                    PlatformFilledButton(
-                      child: const PlatformText("Add"),
-                      onPressed: () async {
-                        final selectedPlaylists = playlistsCheck.value.entries
-                            .where((entry) => entry.value)
-                            .map((entry) => entry.key);
-
-                        await Future.wait(
-                          selectedPlaylists.map(
-                            (playlistId) => spotify.playlists
-                                .addTrack(track.value.uri!, playlistId),
-                          ),
-                        ).then((_) => Navigator.pop(context));
-                      },
-                    )
-                  ],
-                  content: SizedBox(
-                    height: 300,
-                    width: 300,
-                    child: !snapshot.hasData
-                        ? const Center(
-                            child: PlatformCircularProgressIndicator())
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              final playlist = snapshot.data!.elementAt(index);
-                              return PlatformCheckbox(
-                                label: PlatformText(playlist.name!),
-                                value:
-                                    playlistsCheck.value[playlist.id] ?? false,
-                                onChanged: (val) {
-                                  playlistsCheck.value = {
-                                    ...playlistsCheck.value,
-                                    playlist.id!: val == true
-                                  };
-                                },
-                              );
-                            },
-                          ),
-                  ),
-                );
-              });
-            });
-      });
-    }
-
-    final String thumbnailUrl = TypeConversionUtils.image_X_UrlString(
-      track.value.album?.images,
-      placeholder: ImagePlaceholder.albumArt,
-      index: track.value.album?.images?.length == 1 ? 0 : 2,
-    );
-
-    final toggler = useTrackToggleLike(track.value, ref);
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      decoration: BoxDecoration(
-        color: isBlackListed
-            ? Colors.red[100]
-            : isActive
-                ? Theme.of(context).popupMenuTheme.color
-                : Colors.transparent,
-        borderRadius: BorderRadius.circular(isActive ? 10 : 0),
-      ),
-      child: Material(
-        type: MaterialType.transparency,
-        textStyle: PlatformTheme.of(context).textTheme!.body!,
-        child: Row(
-          children: [
-            if (showCheck)
-              PlatformCheckbox(
-                value: isChecked,
-                onChanged: (s) => onCheckChange?.call(s),
-              )
-            else
-              SizedBox(
-                height: 20,
-                width: 35,
-                child: Center(
-                  child: AutoSizeText(
-                    (track.key + 1).toString(),
+                ),
+              ],
+            ),
+            title: Row(
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: Text(
+                    track.name!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: breakpoint.isMoreThan(Breakpoints.md) ? 8.0 : 0,
-                vertical: 8.0,
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
-                child: UniversalImage(
-                  path: thumbnailUrl,
-                  height: 40,
-                  width: 40,
-                  placeholder: (context, url) {
-                    return Assets.albumPlaceholder.image(
-                      height: 40,
-                      width: 40,
-                    );
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PlatformIconButton(
-                icon: Icon(
-                  playlist?.activeTrack.id == track.value.id
-                      ? SpotubeIcons.pause
-                      : SpotubeIcons.play,
-                  color: Colors.white,
-                ),
-                backgroundColor: PlatformTheme.of(context).primaryColor,
-                hoverColor:
-                    PlatformTheme.of(context).primaryColor?.withOpacity(0.5),
-                onPressed: !isBlackListed
-                    ? () => onTrackPlayButtonPressed?.call(
-                          track.value,
-                        )
-                    : null,
-              ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: PlatformText(
-                          track.value.name ?? "",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: breakpoint.isSm ? 14 : 17,
-                          ),
+                if (constrains.mdAndUp) ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 4,
+                    child: switch (track.runtimeType) {
+                      LocalTrack => Text(
+                          track.album!.name!,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      if (isBlackListed) ...[
-                        const SizedBox(width: 5),
-                        PlatformText(
-                          "Blacklisted",
-                          style: TextStyle(
-                            color: Colors.red[400],
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                      _ => Align(
+                          alignment: Alignment.centerLeft,
+                          child: LinkText(
+                            track.album!.name!,
+                            "/album/${track.album?.id}",
+                            extra: track.album,
+                            push: true,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ]
-                    ],
-                  ),
-                  isLocal
-                      ? PlatformText(
-                          TypeConversionUtils.artists_X_String<Artist>(
-                              track.value.artists ?? []),
                         )
-                      : TypeConversionUtils.artists_X_ClickableArtists(
-                          track.value.artists ?? [],
-                          textStyle: TextStyle(
-                              fontSize: breakpoint.isLessThan(Breakpoints.lg)
-                                  ? 12
-                                  : 14)),
-                ],
-              ),
-            ),
-            if (breakpoint.isMoreThan(Breakpoints.md) && showAlbum)
-              Expanded(
-                child: isLocal
-                    ? PlatformText(track.value.album?.name ?? "")
-                    : LinkText(
-                        track.value.album!.name!,
-                        "/album/${track.value.album?.id}",
-                        extra: track.value.album,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-              ),
-            if (!breakpoint.isSm) ...[
-              const SizedBox(width: 10),
-              PlatformText(duration),
-            ],
-            const SizedBox(width: 10),
-            if (!isLocal)
-              AdaptiveActions(
-                actions: [
-                  if (!playlistQueueNotifier.isTrackOnQueue(track.value))
-                    Action(
-                      icon: const Icon(SpotubeIcons.queueAdd),
-                      text: const PlatformText("Add to queue"),
-                      onPressed: () {
-                        playlistQueueNotifier.add([track.value]);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: PlatformText(
-                                "Added ${track.value.name} to queue"),
-                          ),
-                        );
-                      },
-                    )
-                  else
-                    Action(
-                      icon: const Icon(SpotubeIcons.queueRemove),
-                      text: const PlatformText("Remove from queue"),
-                      onPressed: () {
-                        playlistQueueNotifier.remove([track.value]);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: PlatformText(
-                                "Removed ${track.value.name} from queue"),
-                          ),
-                        );
-                      },
-                    ),
-                  if (toggler.item3.hasData)
-                    Action(
-                      icon: toggler.item1
-                          ? const Icon(
-                              SpotubeIcons.heartFilled,
-                              color: Colors.pink,
-                            )
-                          : const Icon(SpotubeIcons.heart),
-                      text: const PlatformText("Save as favorite"),
-                      onPressed: () {
-                        toggler.item2.mutate(toggler.item1);
-                      },
-                    ),
-                  if (auth != null)
-                    Action(
-                      icon: const Icon(SpotubeIcons.playlistAdd),
-                      text: const PlatformText("Add To playlist"),
-                      onPressed: actionAddToPlaylist,
-                    ),
-                  if (userPlaylist && auth != null)
-                    Action(
-                      icon: (removeTrack.isMutating || !removeTrack.hasData) &&
-                              removingTrack.value == track.value.uri
-                          ? const Center(
-                              child: PlatformCircularProgressIndicator(),
-                            )
-                          : const Icon(SpotubeIcons.removeFilled),
-                      text: const PlatformText("Remove from playlist"),
-                      onPressed: () {
-                        removingTrack.value = track.value.uri;
-                        removeTrack.mutate(track.value.uri!);
-                      },
-                    ),
-                  Action(
-                    icon: const Icon(SpotubeIcons.share),
-                    text: const PlatformText("Share"),
-                    onPressed: () {
-                      actionShare(track.value);
                     },
                   ),
-                  Action(
-                    icon: Icon(
-                      SpotubeIcons.playlistRemove,
-                      color: isBlackListed ? Colors.white : Colors.red[400],
-                    ),
-                    backgroundColor: isBlackListed ? Colors.red[400] : null,
-                    text: PlatformText(
-                      "${isBlackListed ? "Remove from" : "Add to"} blacklist",
-                      style: TextStyle(
-                        color: isBlackListed ? Colors.white : Colors.red[400],
+                ],
+              ],
+            ),
+            subtitle: Align(
+              alignment: Alignment.centerLeft,
+              child: track is LocalTrack
+                  ? Text(
+                      TypeConversionUtils.artists_X_String<Artist>(
+                        track.artists ?? [],
+                      ),
+                    )
+                  : ClipRect(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 40),
+                        child: TypeConversionUtils.artists_X_ClickableArtists(
+                          track.artists ?? [],
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      if (isBlackListed) {
-                        ref.read(BlackListNotifier.provider.notifier).remove(
-                              BlacklistedElement.track(
-                                  track.value.id!, track.value.name!),
-                            );
-                      } else {
-                        ref.read(BlackListNotifier.provider.notifier).add(
-                              BlacklistedElement.track(
-                                  track.value.id!, track.value.name!),
-                            );
-                      }
-                    },
-                  )
-                ],
-              ),
-          ],
-        ),
-      ),
-    );
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: 8),
+                Text(
+                  Duration(milliseconds: track.durationMs ?? 0)
+                      .toHumanReadableString(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                TrackOptions(
+                  track: track,
+                  playlistId: playlistId,
+                  userPlaylist: userPlaylist,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    });
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:skeleton_text/skeleton_text.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/theme.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
 
 const widths = [20, 56, 89, 60, 25, 69];
 
@@ -12,7 +12,7 @@ class ShimmerLyrics extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = PlatformTheme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final shimmerTheme = ShimmerColorTheme(
       shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
       shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],
@@ -21,7 +21,7 @@ class ShimmerLyrics extends HookWidget {
     final shimmerBackgroundColor =
         shimmerTheme.shimmerBackgroundColor ?? Colors.grey;
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     return ListView.builder(
       itemCount: 20,
@@ -29,10 +29,10 @@ class ShimmerLyrics extends HookWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final widthsCp = [...widths];
-        if (breakpoint.isMd) {
+        if (mediaQuery.isMd) {
           widthsCp.removeLast();
         }
-        if (breakpoint.isSm) {
+        if (mediaQuery.smAndDown) {
           widthsCp.removeLast();
           widthsCp.removeLast();
         }

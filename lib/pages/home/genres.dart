@@ -4,14 +4,14 @@ import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/genre/category_card.dart';
-import 'package:spotube/components/shared/compact_search.dart';
+import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:tuple/tuple.dart';
 
 class GenrePage extends HookConsumerWidget {
   const GenrePage({Key? key}) : super(key: key);
@@ -23,10 +23,15 @@ class GenrePage extends HookConsumerWidget {
       userPreferencesProvider.select((s) => s.recommendationMarket),
     );
     final categoriesQuery = useQueries.category.list(ref, recommendationMarket);
+    final isFiltering = useState(false);
 
     final isMounted = useIsMounted();
 
-    final searchText = useState("");
+    final searchController = useTextEditingController();
+    final searchFocus = useFocusNode();
+
+    useValueListenable(searchController);
+
     final categories = useMemoized(
       () {
         final categories = categoriesQuery.pages
@@ -34,27 +39,20 @@ class GenrePage extends HookConsumerWidget {
               (page) => page.items ?? const Iterable.empty(),
             )
             .toList();
-        if (searchText.value.isEmpty) {
+        if (searchController.text.isEmpty) {
           return categories;
         }
         return categories
-            .map((e) => Tuple2(
-                  weightedRatio(e.name!, searchText.value),
+            .map((e) => (
+                  weightedRatio(e.name!, searchController.text),
                   e,
                 ))
-            .sorted((a, b) => b.item1.compareTo(a.item1))
-            .where((e) => e.item1 > 50)
-            .map((e) => e.item2)
+            .sorted((a, b) => b.$1.compareTo(a.$1))
+            .where((e) => e.$1 > 50)
+            .map((e) => e.$2)
             .toList();
       },
-      [categoriesQuery.pages, searchText.value],
-    );
-
-    final searchbar = CompactSearch(
-      onChanged: (value) {
-        searchText.value = value;
-      },
-      placeholder: "Filter categories or genres...",
+      [categoriesQuery.pages, searchController.text],
     );
 
     final list = RefreshIndicator(
@@ -68,17 +66,32 @@ class GenrePage extends HookConsumerWidget {
           }
         },
         controller: scrollController,
-        child: ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: scrollController,
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            if (searchText.value.isEmpty && index == categories.length - 1) {
-              return const ShimmerCategories();
-            }
-            return CategoryCard(category);
-          },
+        child: Column(
+          children: [
+            ExpandableSearchField(
+              isFiltering: isFiltering,
+              searchController: searchController,
+              searchFocus: searchFocus,
+            ),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  return AnimatedCrossFade(
+                    crossFadeState: searchController.text.isEmpty &&
+                            index == categories.length - 1 &&
+                            categoriesQuery.hasNextPage
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 300),
+                    firstChild: const ShimmerCategories(),
+                    secondChild: CategoryCard(categories[index]),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -89,7 +102,20 @@ class GenrePage extends HookConsumerWidget {
         Positioned(
           top: 0,
           right: 10,
-          child: searchbar,
+          child: ExpandableSearchButton(
+            isFiltering: isFiltering,
+            searchFocus: searchFocus,
+            icon: const Icon(SpotubeIcons.search),
+            onPressed: (value) {
+              if (isFiltering.value) {
+                scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              }
+            },
+          ),
         ),
       ],
     );

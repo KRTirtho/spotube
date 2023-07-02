@@ -30,16 +30,22 @@ class Assets {
 
   static const AssetGenImage albumPlaceholder =
       AssetGenImage('assets/album-placeholder.png');
+  static const AssetGenImage bengaliPatternsBg =
+      AssetGenImage('assets/bengali-patterns-bg.jpg');
+  static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
   static const AssetGenImage placeholder =
       AssetGenImage('assets/placeholder.png');
   static const AssetGenImage spotubeLogoForeground =
       AssetGenImage('assets/spotube-logo-foreground.jpg');
+  static const String spotubeLogoIco = 'assets/spotube-logo.ico';
   static const AssetGenImage spotubeLogoPng =
       AssetGenImage('assets/spotube-logo.png');
   static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
+  static const AssetGenImage spotubeLogoAndroid12 =
+      AssetGenImage('assets/spotube-logo_android12.png');
   static const AssetGenImage spotubeScreenshot =
-      AssetGenImage('assets/spotube-screenshot.jpg');
+      AssetGenImage('assets/spotube-screenshot.png');
   static const AssetGenImage spotubeBanner =
       AssetGenImage('assets/spotube_banner.png');
   static const AssetGenImage success = AssetGenImage('assets/success.png');
@@ -50,11 +56,15 @@ class Assets {
   /// List of all assets
   List<dynamic> get values => [
         albumPlaceholder,
+        bengaliPatternsBg,
+        branding,
         emptyBox,
         placeholder,
         spotubeLogoForeground,
+        spotubeLogoIco,
         spotubeLogoPng,
         spotubeLogoSvg,
+        spotubeLogoAndroid12,
         spotubeScreenshot,
         spotubeBanner,
         success,

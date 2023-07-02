@@ -2,13 +2,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/track_table/track_collection_view.dart';
+import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/service_utils.dart';
@@ -20,39 +20,42 @@ class PlaylistView extends HookConsumerWidget {
   PlaylistView(this.playlist, {Key? key}) : super(key: key);
 
   Future<void> playPlaylist(
-    PlaylistQueueNotifier playlistNotifier,
     List<Track> tracks,
     WidgetRef ref, {
     Track? currentTrack,
   }) async {
+    final proxyPlaylist = ref.read(ProxyPlaylistNotifier.provider);
+    final playback = ref.read(ProxyPlaylistNotifier.notifier);
     final sortBy = ref.read(trackCollectionSortState(playlist.id!));
     final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
     currentTrack ??= sortedTracks.first;
-    final isPlaylistPlaying = playlistNotifier.isPlayingPlaylist(tracks);
+    final isPlaylistPlaying = proxyPlaylist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
-      await playlistNotifier.loadAndPlay(
+      await playback.load(
         sortedTracks,
-        active: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
+        initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
+        autoPlay: true,
       );
+      playback.addCollection(playlist.id!);
     } else if (isPlaylistPlaying &&
         currentTrack.id != null &&
-        currentTrack.id != playlistNotifier.state?.activeTrack.id) {
-      await playlistNotifier.playTrack(currentTrack);
+        currentTrack.id != proxyPlaylist.activeTrack?.id) {
+      await playback.jumpToTrack(currentTrack);
     }
   }
 
   @override
   Widget build(BuildContext context, ref) {
-    ref.watch(PlaylistQueueNotifier.provider);
-    final playlistNotifier = ref.watch(PlaylistQueueNotifier.notifier);
+    final proxyPlaylist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
 
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final meSnapshot = useQueries.user.me(ref);
     final tracksSnapshot = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
 
     final isPlaylistPlaying = useMemoized(
-      () => playlistNotifier.isPlayingPlaylist(tracksSnapshot.data ?? []),
+      () => proxyPlaylist.containsTracks(tracksSnapshot.data ?? []),
       [playlistNotifier, tracksSnapshot.data],
     );
 
@@ -76,29 +79,29 @@ class PlaylistView extends HookConsumerWidget {
         if (tracksSnapshot.hasData) {
           if (!isPlaylistPlaying) {
             playPlaylist(
-              playlistNotifier,
               tracksSnapshot.data!,
               ref,
               currentTrack: track,
             );
           } else if (isPlaylistPlaying && track != null) {
             playPlaylist(
-              playlistNotifier,
               tracksSnapshot.data!,
               ref,
               currentTrack: track,
             );
           } else {
-            playlistNotifier.remove(tracksSnapshot.data!);
+            playlistNotifier
+                .removeTracks(tracksSnapshot.data!.map((e) => e.id!));
           }
         }
       },
       onAddToQueue: () {
         if (tracksSnapshot.hasData && !isPlaylistPlaying) {
-          playlistNotifier.add(tracksSnapshot.data!);
+          playlistNotifier.addTracks(tracksSnapshot.data!);
+          playlistNotifier.addCollection(playlist.id!);
         }
       },
-      bottomSpace: breakpoint.isLessThanOrEqualTo(Breakpoints.md),
+      bottomSpace: mediaQuery.mdAndDown,
       showShare: playlist.id != "user-liked-tracks",
       routePath: "/playlist/${playlist.id}",
       onShare: () {
@@ -125,20 +128,19 @@ class PlaylistView extends HookConsumerWidget {
         if (tracksSnapshot.hasData) {
           if (!isPlaylistPlaying) {
             playPlaylist(
-              playlistNotifier,
               tracks,
               ref,
               currentTrack: track,
             );
           } else if (isPlaylistPlaying && track != null) {
             playPlaylist(
-              playlistNotifier,
               tracks,
               ref,
               currentTrack: track,
             );
           } else {
-            playlistNotifier.stop();
+            // TODO: Remove the ability to stop the playlist
+            // playlistNotifier.stop();
           }
         }
       },

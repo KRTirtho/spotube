@@ -6,10 +6,16 @@
     <true />
     <key>com.apple.security.cs.allow-jit</key>
     <true />
-    <key>com.apple.security.network.client</key>
-    <true />
     <key>com.apple.security.network.server</key>
     <true />
+    <key>com.apple.security.network.client</key>
+    <true />
+    <!-- Just Audio Config -->
+    <!-- <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true />
+    </dict> -->
     <!-- Requires Certification -->
     <!-- <key>keychain-access-groups</key>
     <array /> -->

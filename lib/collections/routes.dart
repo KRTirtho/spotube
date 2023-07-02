@@ -3,9 +3,12 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
+import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
+import 'package:spotube/pages/settings/logs.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/album/album.dart';
@@ -20,6 +23,8 @@ import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
+import '../pages/library/playlist_generate/playlist_generate_result.dart';
+
 final rootNavigatorKey = Catcher.navigatorKey;
 final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
 final router = GoRouter(
@@ -31,41 +36,63 @@ final router = GoRouter(
       routes: [
         GoRoute(
           path: "/",
-          pageBuilder: (context, state) => SpotubePage(child: const HomePage()),
+          pageBuilder: (context, state) => const SpotubePage(child: HomePage()),
         ),
         GoRoute(
           path: "/search",
           name: "Search",
           pageBuilder: (context, state) =>
-              SpotubePage(child: const SearchPage()),
+              const SpotubePage(child: SearchPage()),
         ),
         GoRoute(
-          path: "/library",
-          name: "Library",
-          pageBuilder: (context, state) =>
-              SpotubePage(child: const LibraryPage()),
-        ),
+            path: "/library",
+            name: "Library",
+            pageBuilder: (context, state) =>
+                const SpotubePage(child: LibraryPage()),
+            routes: [
+              GoRoute(
+                  path: "generate",
+                  pageBuilder: (context, state) =>
+                      const SpotubePage(child: PlaylistGeneratorPage()),
+                  routes: [
+                    GoRoute(
+                      path: "result",
+                      pageBuilder: (context, state) => SpotubePage(
+                        child: PlaylistGenerateResultPage(
+                          state:
+                              state.extra as PlaylistGenerateResultRouteState,
+                        ),
+                      ),
+                    ),
+                  ]),
+            ]),
         GoRoute(
           path: "/lyrics",
           name: "Lyrics",
           pageBuilder: (context, state) =>
-              SpotubePage(child: const LyricsPage()),
+              const SpotubePage(child: LyricsPage()),
         ),
         GoRoute(
           path: "/settings",
-          pageBuilder: (context, state) => SpotubePage(
-            child: const SettingsPage(),
+          pageBuilder: (context, state) => const SpotubePage(
+            child: SettingsPage(),
           ),
           routes: [
             GoRoute(
               path: "blacklist",
-              pageBuilder: (context, state) => SpotubePage(
+              pageBuilder: (context, state) => SpotubeSlidePage(
                 child: const BlackListPage(),
               ),
             ),
             GoRoute(
+              path: "logs",
+              pageBuilder: (context, state) => SpotubeSlidePage(
+                child: const LogsPage(),
+              ),
+            ),
+            GoRoute(
               path: "about",
-              pageBuilder: (context, state) => SpotubePage(
+              pageBuilder: (context, state) => SpotubeSlidePage(
                 child: const AboutSpotube(),
               ),
             ),
@@ -97,6 +124,13 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
+      path: "/mini-player",
+      parentNavigatorKey: rootNavigatorKey,
+      pageBuilder: (context, state) => const SpotubePage(
+        child: MiniLyricsPage(),
+      ),
+    ),
+    GoRoute(
       path: "/login",
       parentNavigatorKey: rootNavigatorKey,
       pageBuilder: (context, state) => SpotubePage(
@@ -106,16 +140,16 @@ final router = GoRouter(
     GoRoute(
       path: "/login-tutorial",
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) => SpotubePage(
-        child: const LoginTutorial(),
+      pageBuilder: (context, state) => const SpotubePage(
+        child: LoginTutorial(),
       ),
     ),
     GoRoute(
       path: "/player",
       parentNavigatorKey: rootNavigatorKey,
       pageBuilder: (context, state) {
-        return SpotubePage(
-          child: const PlayerView(),
+        return const SpotubePage(
+          child: PlayerView(),
         );
       },
     ),

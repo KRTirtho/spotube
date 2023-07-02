@@ -1,7 +1,11 @@
 {
     "cmake.configureOnOpen": false,
     "cSpell.words": [
+      "acousticness",
+      "danceability",
+      "instrumentalness",
       "Mpris",
+      "speechiness",
       "Spotube",
       "winget"
     ]

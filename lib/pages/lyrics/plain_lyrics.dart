@@ -6,8 +6,9 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
-import 'package:spotube/provider/playlist_queue_provider.dart';
+import 'package:spotube/extensions/constrains.dart';
+
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -15,23 +16,23 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class PlainLyrics extends HookConsumerWidget {
   final PaletteColor palette;
   final bool? isModal;
+  final int defaultTextZoom;
   const PlainLyrics({
     required this.palette,
     this.isModal,
+    this.defaultTextZoom = 100,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(PlaylistQueueNotifier.provider);
-    final lyricsQuery = useQueries.lyrics.spotifySynced(
-      ref,
-      playlist?.activeTrack,
-    );
-    final breakpoint = useBreakpoints();
+    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final lyricsQuery =
+        useQueries.lyrics.spotifySynced(ref, playlist.activeTrack);
+    final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;
 
-    final textZoomLevel = useState<int>(100);
+    final textZoomLevel = useState<int>(defaultTextZoom);
 
     return Stack(
       children: [
@@ -41,8 +42,8 @@ class PlainLyrics extends HookConsumerWidget {
             if (isModal != true) ...[
               Center(
                 child: Text(
-                  playlist?.activeTrack.name ?? "",
-                  style: breakpoint >= Breakpoints.md
+                  playlist.activeTrack?.name ?? "",
+                  style: mediaQuery.mdAndUp
                       ? textTheme.displaySmall
                       : textTheme.headlineMedium?.copyWith(
                           fontSize: 25,
@@ -53,8 +54,8 @@ class PlainLyrics extends HookConsumerWidget {
               Center(
                 child: Text(
                   TypeConversionUtils.artists_X_String<Artist>(
-                      playlist?.activeTrack.artists ?? []),
-                  style: (breakpoint >= Breakpoints.md
+                      playlist.activeTrack?.artists ?? []),
+                  style: (mediaQuery.mdAndUp
                           ? textTheme.headlineSmall
                           : textTheme.titleLarge)
                       ?.copyWith(color: palette.bodyTextColor),
@@ -72,7 +73,7 @@ class PlainLyrics extends HookConsumerWidget {
                           return const ShimmerLyrics();
                         } else if (lyricsQuery.hasError) {
                           return Text(
-                            "Sorry, no Lyrics were found for `${playlist?.activeTrack.name}` :'(\n${lyricsQuery.error.toString()}",
+                            "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${lyricsQuery.error.toString()}",
                             style: textTheme.bodyLarge?.copyWith(
                               color: palette.bodyTextColor,
                             ),
@@ -104,7 +105,7 @@ class PlainLyrics extends HookConsumerWidget {
                                     : 2,
                           ),
                           child: Text(
-                            lyrics == null && playlist?.activeTrack == null
+                            lyrics == null && playlist.activeTrack == null
                                 ? "No Track being played currently"
                                 : lyrics ?? "",
                           ),

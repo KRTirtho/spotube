@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/extensions/theme.dart';
 
 class ShimmerTrackTilePainter extends CustomPainter {
@@ -26,21 +26,7 @@ class ShimmerTrackTilePainter extends CustomPainter {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(5, 5, 40, 40),
-        const Radius.circular(5),
-      ),
-      Paint()..color = foreground,
-    );
-
-    canvas.drawCircle(
-      const Offset(70, 25),
-      15,
-      Paint()..color = foreground,
-    );
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(95, 10, 100, 10),
+        Rect.fromLTWH(0, 0, size.height, size.height),
         const Radius.circular(5),
       ),
       Paint()..color = foreground,
@@ -48,7 +34,29 @@ class ShimmerTrackTilePainter extends CustomPainter {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(95, 30, 170, 7),
+        const Rect.fromLTWH(70, 10, 100, 10),
+        const Radius.circular(5),
+      ),
+      Paint()..color = foreground,
+    );
+
+    // draw Icons.play
+    const icon = Icons.play_arrow_outlined;
+    TextPainter textPainter = TextPainter(textDirection: TextDirection.rtl);
+    textPainter.text = TextSpan(
+      text: String.fromCharCode(icon.codePoint),
+      style: TextStyle(
+        fontSize: 40.0,
+        fontFamily: icon.fontFamily,
+        color: background,
+      ),
+    );
+    textPainter.layout();
+    textPainter.paint(canvas, const Offset(10, 10));
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(70, 30, 170, 7),
         const Radius.circular(5),
       ),
       Paint()..color = foreground,
@@ -67,7 +75,8 @@ class ShimmerTrackTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = PlatformTheme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final shimmerTheme = ShimmerColorTheme(
       shimmerBackgroundColor: isDark ? Colors.grey[700] : Colors.grey[200],
       shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],
@@ -80,12 +89,11 @@ class ShimmerTrackTile extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
             child: CustomPaint(
-              size: const Size(double.infinity, 50),
+              size: const Size(double.infinity, 60),
               painter: ShimmerTrackTilePainter(
                 background: shimmerTheme.shimmerBackgroundColor ??
-                    Theme.of(context).scaffoldBackgroundColor,
-                foreground:
-                    shimmerTheme.shimmerColor ?? Theme.of(context).cardColor,
+                    theme.scaffoldBackgroundColor,
+                foreground: shimmerTheme.shimmerColor ?? theme.cardColor,
               ),
             ),
           );
@@ -98,12 +106,11 @@ class ShimmerTrackTile extends StatelessWidget {
         (BuildContext context, int index) => Padding(
           padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
           child: CustomPaint(
-            size: const Size(double.infinity, 50),
+            size: const Size(double.infinity, 60),
             painter: ShimmerTrackTilePainter(
               background: shimmerTheme.shimmerBackgroundColor ??
-                  Theme.of(context).scaffoldBackgroundColor,
-              foreground:
-                  shimmerTheme.shimmerColor ?? Theme.of(context).cardColor,
+                  theme.scaffoldBackgroundColor,
+              foreground: shimmerTheme.shimmerColor ?? theme.cardColor,
             ),
           ),
         ),

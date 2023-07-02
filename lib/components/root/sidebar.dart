@@ -1,22 +1,25 @@
-import 'package:badges/badges.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart' hide Badge;
-import 'package:platform_ui/platform_ui.dart';
+import 'package:flutter/material.dart';
+import 'package:sidebarx/sidebarx.dart';
+
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/hooks/use_sidebarx_controller.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/downloader_provider.dart';
 
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 
 class Sidebar extends HookConsumerWidget {
   final int selectedIndex;
@@ -40,143 +43,175 @@ class Sidebar extends HookConsumerWidget {
     );
   }
 
-  static Widget macSpacer = const SizedBox(height: 25);
-
   static void goToSettings(BuildContext context) {
     GoRouter.of(context).go("/settings");
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final breakpoints = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
     final downloadCount = ref.watch(
-      downloaderProvider.select((s) => s.currentlyRunning),
+      downloadManagerProvider.select((s) => s.length),
     );
 
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
-    if (breakpoints.isMd) {
-      return Row(
-        children: [
-          NavigationRail(
-            selectedIndex: selectedIndex,
-            onDestinationSelected: onSelectedIndexChanged,
-            labelType: NavigationRailLabelType.all,
-            extended: false,
-            backgroundColor: PlatformTheme.of(context).scaffoldBackgroundColor,
-            leading: Column(
-              children: [
-                if (kIsMacOS) macSpacer,
-                brandLogo(),
-              ],
-            ),
-            trailing: PlatformIconButton(
-              icon: const Icon(fluent_ui.FluentIcons.settings),
-              onPressed: () => goToSettings(context),
-            ),
-            destinations: [
-              for (final e in sidebarTileList)
-                NavigationRailDestination(
-                  icon: Badge(
-                    badgeColor: PlatformTheme.of(context).primaryColor!,
-                    showBadge: e.title == "Library" && downloadCount > 0,
-                    badgeContent: Text(
+    final controller = useSidebarXController(
+      selectedIndex: selectedIndex,
+      extended: mediaQuery.lgAndUp,
+    );
+
+    final theme = Theme.of(context);
+    final bg = theme.colorScheme.surfaceVariant;
+
+    final bgColor = useBrightnessValue(
+      Color.lerp(bg, Colors.white, 0.7),
+      Color.lerp(bg, Colors.black, 0.45)!,
+    );
+
+    final sidebarTileList =
+        useMemoized(() => getSidebarTileList(context.l10n), [context.l10n]);
+
+    useEffect(() {
+      controller.addListener(() {
+        onSelectedIndexChanged(controller.selectedIndex);
+      });
+      return null;
+    }, [controller]);
+
+    useEffect(() {
+      if (!context.mounted) return;
+      if (mediaQuery.lgAndUp && !controller.extended) {
+        controller.setExtended(true);
+      } else if (mediaQuery.mdAndDown && controller.extended) {
+        controller.setExtended(false);
+      }
+      return null;
+    }, [mediaQuery, controller]);
+
+    if (layoutMode == LayoutMode.compact ||
+        (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
+      return Scaffold(body: child);
+    }
+
+    return Row(
+      children: [
+        SafeArea(
+          child: SidebarX(
+            controller: controller,
+            items: sidebarTileList.mapIndexed(
+              (index, e) {
+                return SidebarXItem(
+                  iconWidget: Badge(
+                    backgroundColor: theme.colorScheme.primary,
+                    isLabelVisible: e.title == "Library" && downloadCount > 0,
+                    label: Text(
                       downloadCount.toString(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
                       ),
                     ),
-                    child: Icon(e.icon),
+                    child: Icon(
+                      e.icon,
+                      color: selectedIndex == index
+                          ? theme.colorScheme.primary
+                          : null,
+                    ),
                   ),
-                  label: PlatformText.label(
-                    e.title,
-                    style: selectedIndex == sidebarTileList.indexOf(e)
-                        ? TextStyle(
-                            color: PlatformTheme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                          )
-                        : null,
-                  ),
+                  label: e.title,
+                );
+              },
+            ).toList(),
+            headerBuilder: (_, __) => const SidebarHeader(),
+            footerBuilder: (_, __) => const Padding(
+              padding: EdgeInsets.only(bottom: 5),
+              child: SidebarFooter(),
+            ),
+            showToggleButton: false,
+            theme: SidebarXTheme(
+              width: 50,
+              margin: EdgeInsets.only(bottom: 10, top: kIsMacOS ? 35 : 5),
+              selectedItemDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: theme.colorScheme.primary.withOpacity(0.1),
+              ),
+              selectedIconTheme: IconThemeData(
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            extendedTheme: SidebarXTheme(
+              width: 250,
+              margin: EdgeInsets.only(
+                bottom: 10,
+                left: 0,
+                top: kIsMacOS ? 35 : 5,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                color: bgColor?.withOpacity(0.8),
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
                 ),
-            ],
+              ),
+              selectedItemDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: theme.colorScheme.primary.withOpacity(0.1),
+              ),
+              selectedIconTheme: IconThemeData(
+                color: theme.colorScheme.primary,
+              ),
+              selectedTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+              itemTextPadding: const EdgeInsets.only(left: 10),
+              selectedItemTextPadding: const EdgeInsets.only(left: 10),
+            ),
           ),
-          Container(
-            width: 1,
-            height: double.infinity,
-            color: PlatformTheme.of(context).borderColor,
-          ),
-          Expanded(child: child)
-        ],
+        ),
+        Expanded(child: child)
+      ],
+    );
+  }
+}
+
+class SidebarHeader extends HookWidget {
+  const SidebarHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final theme = Theme.of(context);
+
+    if (mediaQuery.mdAndDown) {
+      return Container(
+        height: 40,
+        width: 40,
+        margin: const EdgeInsets.only(bottom: 5),
+        child: Sidebar.brandLogo(),
       );
     }
 
-    if (layoutMode == LayoutMode.compact ||
-        (breakpoints.isSm && layoutMode == LayoutMode.adaptive)) {
-      return PlatformScaffold(body: child);
-    }
-
-    return SafeArea(
-      top: false,
-      child: PlatformSidebar(
-        currentIndex: selectedIndex,
-        onIndexChanged: onSelectedIndexChanged,
-        body: Map.fromEntries(
-          sidebarTileList.map(
-            (e) {
-              final icon = Icon(e.icon);
-              return MapEntry(
-                PlatformSidebarItem(
-                  icon: Badge(
-                    badgeColor: PlatformTheme.of(context).primaryColor!,
-                    showBadge: e.title == "Library" && downloadCount > 0,
-                    badgeContent: Text(
-                      downloadCount.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                    ),
-                    child: icon,
-                  ),
-                  title: Text(
-                    e.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                child,
-              );
-            },
-          ),
-        ),
-        expanded: true,
-        header: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          if (kIsMacOS) const SizedBox(height: 25),
+          Row(
             children: [
-              if (kIsMacOS) macSpacer,
-              Row(
-                children: [
-                  brandLogo(),
-                  const SizedBox(width: 10),
-                  PlatformText.headline("Spotube"),
-                ],
+              Sidebar.brandLogo(),
+              const SizedBox(width: 10),
+              Text(
+                "Spotube",
+                style: theme.textTheme.titleLarge,
               ),
             ],
           ),
-        ),
-        windowsFooterItems: [
-          fluent_ui.PaneItemAction(
-            icon: const Icon(SpotubeIcons.settings),
-            onTap: () => goToSettings(context),
-          ),
         ],
-        footer: const SidebarFooter(),
       ),
     );
   }
@@ -189,68 +224,68 @@ class SidebarFooter extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    return SizedBox(
-      width: 256,
-      child: HookBuilder(
-        builder: (context) {
-          final me = useQueries.user.me(ref);
-          final data = me.data;
+    final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    final me = useQueries.user.me(ref);
+    final data = me.data;
 
-          final avatarImg = TypeConversionUtils.image_X_UrlString(
-            data?.images,
-            index: (data?.images?.length ?? 1) - 1,
-            placeholder: ImagePlaceholder.artist,
-          );
+    final avatarImg = TypeConversionUtils.image_X_UrlString(
+      data?.images,
+      index: (data?.images?.length ?? 1) - 1,
+      placeholder: ImagePlaceholder.artist,
+    );
 
-          final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(AuthenticationNotifier.provider);
 
-          return Padding(
-              padding: const EdgeInsets.all(16).copyWith(left: 0),
+    if (mediaQuery.mdAndDown) {
+      return IconButton(
+        icon: const Icon(SpotubeIcons.settings),
+        onPressed: () => Sidebar.goToSettings(context),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.only(left: 12),
+      width: 250,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          if (auth != null && data == null)
+            const CircularProgressIndicator()
+          else if (data != null)
+            Flexible(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (auth != null && data == null)
-                    const Center(
-                      child: PlatformCircularProgressIndicator(),
-                    )
-                  else if (data != null)
-                    Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CircleAvatar(
-                            backgroundImage:
-                                UniversalImage.imageProvider(avatarImg),
-                            onBackgroundImageError: (exception, stackTrace) =>
-                                Assets.userPlaceholder.image(
-                              height: 16,
-                              width: 16,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Flexible(
-                            child: Text(
-                              data.displayName ?? "Guest",
-                              maxLines: 1,
-                              softWrap: false,
-                              overflow: TextOverflow.fade,
-                              style: PlatformTheme.of(context)
-                                  .textTheme
-                                  ?.body
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
+                  CircleAvatar(
+                    backgroundImage: UniversalImage.imageProvider(avatarImg),
+                    onBackgroundImageError: (exception, stackTrace) =>
+                        Assets.userPlaceholder.image(
+                      height: 16,
+                      width: 16,
                     ),
-                  PlatformIconButton(
-                      icon: const Icon(SpotubeIcons.settings),
-                      onPressed: () => Sidebar.goToSettings(context)),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Text(
+                      data.displayName ?? context.l10n.guest,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ],
-              ));
-        },
+              ),
+            ),
+          IconButton(
+            icon: const Icon(SpotubeIcons.settings),
+            onPressed: () {
+              Sidebar.goToSettings(context);
+            },
+          ),
+        ],
       ),
     );
   }

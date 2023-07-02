@@ -58,7 +58,7 @@ class AlbumQueries {
         try {
           final albums = await spotify.browse
               .getNewReleases(country: market)
-              .getPage(5, pageParam);
+              .getPage(50, pageParam);
 
           return albums;
         } catch (e, stack) {

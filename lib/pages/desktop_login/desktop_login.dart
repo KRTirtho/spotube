@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 
 class DesktopLoginPage extends HookConsumerWidget {
   const DesktopLoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.surfaceVariant.withOpacity(.3);
 
     return SafeArea(
-      child: PlatformScaffold(
-        appBar: PageWindowTitleBar(
-          leading: const PlatformBackButton(),
-          hideWhenWindows: false,
+      child: Scaffold(
+        appBar: const PageWindowTitleBar(
+          leading: BackButton(),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -26,20 +28,22 @@ class DesktopLoginPage extends HookConsumerWidget {
               margin: const EdgeInsets.all(10),
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: PlatformTheme.of(context).secondaryBackgroundColor,
+                color: color,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
                 children: [
                   Assets.spotubeLogoPng.image(
                     width: MediaQuery.of(context).size.width *
-                        (breakpoint <= Breakpoints.md ? .5 : .3),
+                        (mediaQuery.mdAndDown ? .5 : .3),
                   ),
-                  PlatformText.subheading(
-                    "Add your spotify credentials to get started",
+                  Text(
+                    context.l10n.add_spotify_credentials,
+                    style: theme.textTheme.titleMedium,
                   ),
-                  PlatformText.label(
-                    "Don't worry, any of your credentials won't be collected or shared with anyone",
+                  Text(
+                    context.l10n.credentials_will_not_be_shared_disclaimer,
+                    style: theme.textTheme.labelMedium,
                   ),
                   const SizedBox(height: 10),
                   TokenLoginForm(
@@ -50,10 +54,10 @@ class DesktopLoginPage extends HookConsumerWidget {
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      const PlatformText("Don't know how to do this?"),
-                      PlatformTextButton(
-                        child: const PlatformText(
-                          "Follow along the Step by Step guide",
+                      Text(context.l10n.know_how_to_login),
+                      TextButton(
+                        child: Text(
+                          context.l10n.follow_step_by_step_guide,
                         ),
                         onPressed: () => GoRouter.of(context).push(
                           "/login-tutorial",

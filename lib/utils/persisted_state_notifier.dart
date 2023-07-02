@@ -53,7 +53,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
     }
   }
 
-  static Future<void> initializeBoxes() async {
+  static Future<void> initializeBoxes({required String path}) async {
     String? boxName = await read(kKeyBoxName);
 
     if (boxName == null) {
@@ -73,7 +73,10 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
       encryptionCipher: HiveAesCipher(base64Url.decode(encryptionKey)),
     );
 
-    _box = await Hive.openLazyBox("spotube_cache");
+    _box = await Hive.openLazyBox(
+      "spotube_cache",
+      path: path,
+    );
   }
 
   LazyBox get box => encrypted ? _encryptedBox : _box;
@@ -109,7 +112,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   }
 
   void save() async {
-    box.put(cacheKey, toJson());
+    await box.put(cacheKey, toJson());
   }
 
   FutureOr<T> fromJson(Map<String, dynamic> json);

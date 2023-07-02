@@ -1,130 +1,105 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:platform_ui/platform_ui.dart';
-import 'package:spotube/components/root/sidebar.dart';
+
 import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:system_theme/system_theme.dart';
 
-final colorsMap = {
-  "Red": Colors.red,
-  "Pink": Colors.pink,
-  "Purple": Colors.purple,
-  "DeepPurple": Colors.deepPurple,
-  "Indigo": Colors.indigo,
-  "Blue": Colors.blue,
-  "LightBlue": Colors.lightBlue,
-  "Cyan": Colors.cyan,
-  "Teal": Colors.teal,
-  "Green": Colors.green,
-  "LightGreen": Colors.lightGreen,
-  "Lime": Colors.lime,
-  "Yellow": Colors.yellow,
-  "Amber": Colors.amber,
-  "Orange": Colors.orange,
-  "DeepOrange": Colors.deepOrange,
-  "Brown": Colors.brown,
-};
+class SpotubeColor extends Color {
+  final String name;
 
-enum ColorSchemeType {
-  accent,
-  background,
+  const SpotubeColor(int color, {required this.name}) : super(color);
+
+  const SpotubeColor.from(int value, {required this.name}) : super(value);
+
+  factory SpotubeColor.fromString(String string) {
+    final slices = string.split(":");
+    return SpotubeColor(int.parse(slices.last), name: slices.first);
+  }
+
+  @override
+  String toString() {
+    return "$name:$value";
+  }
 }
 
+final Set<SpotubeColor> colorsMap = {
+  SpotubeColor(SystemTheme.accentColor.accent.value, name: "System"),
+  SpotubeColor(Colors.red.value, name: "Red"),
+  SpotubeColor(Colors.pink.value, name: "Pink"),
+  SpotubeColor(Colors.purple.value, name: "Purple"),
+  SpotubeColor(Colors.deepPurple.value, name: "DeepPurple"),
+  SpotubeColor(Colors.indigo.value, name: "Indigo"),
+  SpotubeColor(Colors.blue.value, name: "Blue"),
+  SpotubeColor(Colors.lightBlue.value, name: "LightBlue"),
+  SpotubeColor(Colors.cyan.value, name: "Cyan"),
+  SpotubeColor(Colors.teal.value, name: "Teal"),
+  SpotubeColor(Colors.green.value, name: "Green"),
+  SpotubeColor(Colors.lightGreen.value, name: "LightGreen"),
+  SpotubeColor(Colors.yellow.value, name: "Yellow"),
+  SpotubeColor(Colors.amber.value, name: "Amber"),
+  SpotubeColor(Colors.orange.value, name: "Orange"),
+  SpotubeColor(Colors.deepOrange.value, name: "DeepOrange"),
+  SpotubeColor(Colors.brown.value, name: "Brown"),
+};
+
 class ColorSchemePickerDialog extends HookConsumerWidget {
-  final ColorSchemeType schemeType;
-  const ColorSchemePickerDialog({required this.schemeType, Key? key})
-      : super(key: key);
+  const ColorSchemePickerDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
     final scheme = preferences.accentColorScheme;
-    final active = useState<String>(colorsMap.entries.firstWhere(
+    final active = useState<String>(colorsMap.firstWhere(
       (element) {
-        return scheme.value == element.value.value;
+        return scheme.name == element.name;
       },
-    ).key);
+    ).name);
 
     onOk() {
-      switch (schemeType) {
-        case ColorSchemeType.accent:
-          preferences.setAccentColorScheme(colorsMap[active.value]!);
-          break;
-        default:
-          preferences.setBackgroundColorScheme(
-            colorsMap[active.value]!,
-          );
-      }
+      preferences.setAccentColorScheme(
+        colorsMap.firstWhere(
+          (element) {
+            return element.name == active.value;
+          },
+        ),
+      );
       Navigator.pop(context);
     }
 
-    return PlatformAlertDialog(
-      macosAppIcon: Sidebar.brandLogo(),
-      title: Text("Pick ${schemeType.name} color scheme"),
-      primaryActions: [
-        PlatformBuilder(
-          android: (context, data) {
-            return PlatformFilledButton(
-              onPressed: onOk,
-              child: const Text("Save"),
-            );
+    return AlertDialog(
+      title: const Text("Pick color scheme"),
+      actions: [
+        OutlinedButton(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
           },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: onOk,
-              isDefaultAction: true,
-              child: const Text("Save"),
-            );
-          },
-          fallback: PlatformBuilderFallback.android,
         ),
-      ],
-      secondaryActions: [
-        PlatformBuilder(
-          fallback: PlatformBuilderFallback.android,
-          android: (context, _) {
-            return PlatformFilledButton(
-              isSecondary: true,
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );
-          },
-          ios: (context, data) {
-            return CupertinoDialogAction(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              isDestructiveAction: true,
-              child: const Text("Cancel"),
-            );
-          },
+        FilledButton(
+          onPressed: onOk,
+          child: const Text("Save"),
         ),
       ],
       content: SizedBox(
         height: 200,
         width: 400,
-        child: SingleChildScrollView(
-          child: Center(
-            child: Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: colorsMap.entries
-                  .map(
-                    (e) => ColorTile(
-                      color: e.value,
-                      isActive: active.value == e.key,
-                      tooltip: e.key,
-                      onPressed: () {
-                        active.value = e.key;
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
+        child: ListView.separated(
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 10);
+          },
+          itemCount: colorsMap.length,
+          itemBuilder: (context, index) {
+            final color = colorsMap.elementAt(index);
+            return ColorTile(
+              color: color,
+              isActive: active.value == color.name,
+              onPressed: () {
+                active.value = color.name;
+              },
+              tooltip: color.name,
+            );
+          },
         ),
       ),
     );
@@ -132,37 +107,121 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
 }
 
 class ColorTile extends StatelessWidget {
-  final MaterialColor color;
+  final Color color;
   final bool isActive;
   final void Function()? onPressed;
   final String? tooltip;
+  final bool isCompact;
   const ColorTile({
     required this.color,
     this.isActive = false,
     this.onPressed,
     this.tooltip = "",
+    this.isCompact = false,
     Key? key,
   }) : super(key: key);
 
+  factory ColorTile.compact({
+    required Color color,
+    bool isActive = false,
+    void Function()? onPressed,
+    String? tooltip = "",
+    Key? key,
+  }) {
+    return ColorTile(
+      color: color,
+      isActive: isActive,
+      onPressed: onPressed,
+      tooltip: tooltip,
+      isCompact: true,
+      key: key,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: GestureDetector(
+    final theme = Theme.of(context);
+
+    final lead = Container(
+      height: 40,
+      width: 40,
+      decoration: BoxDecoration(
+        border: isActive
+            ? Border.fromBorderSide(
+                BorderSide(
+                  color: Color.lerp(
+                    theme.colorScheme.primary,
+                    theme.colorScheme.onPrimary,
+                    0.5,
+                  )!,
+                  width: 4,
+                ),
+              )
+            : null,
+        borderRadius: BorderRadius.circular(15),
+        color: color,
+      ),
+    );
+
+    if (isCompact) {
+      return GestureDetector(
         onTap: onPressed,
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            border: isActive
-                ? const Border.fromBorderSide(
-                    BorderSide(color: Colors.black, width: 5),
-                  )
-                : null,
-            shape: BoxShape.circle,
-            color: color,
+        child: lead,
+      );
+    }
+
+    final colorScheme = ColorScheme.fromSeed(seedColor: color);
+
+    final palette = [
+      colorScheme.primary,
+      colorScheme.inversePrimary,
+      colorScheme.primaryContainer,
+      colorScheme.secondary,
+      colorScheme.secondaryContainer,
+      colorScheme.background,
+      colorScheme.surface,
+      colorScheme.surfaceVariant,
+      colorScheme.onPrimary,
+      colorScheme.onSurface,
+    ];
+
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              lead,
+              const SizedBox(width: 10),
+              Text(
+                tooltip!,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-        ),
+          const SizedBox(height: 10),
+          Wrap(
+            alignment: WrapAlignment.start,
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              ...palette.map(
+                (e) => Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    color: e,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

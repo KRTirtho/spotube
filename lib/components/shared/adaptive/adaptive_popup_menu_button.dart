@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:platform_ui/platform_ui.dart';
+
 import 'package:popover/popover.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/hooks/use_breakpoints.dart';
+import 'package:spotube/extensions/constrains.dart';
 
 class Action extends StatelessWidget {
   final Widget text;
@@ -23,12 +23,14 @@ class Action extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isExpanded != true) {
-      return PlatformIconButton(
+      return IconButton(
         icon: icon,
         onPressed: onPressed,
-        backgroundColor: backgroundColor,
-        tooltip: text is PlatformText
-            ? (text as PlatformText).data
+        style: IconButton.styleFrom(
+          backgroundColor: backgroundColor,
+        ),
+        tooltip: text is Text
+            ? (text as Text).data
             : text.toStringShallow().split(",").last.replaceAll(
                   "\"",
                   "",
@@ -36,7 +38,7 @@ class Action extends StatelessWidget {
       );
     }
 
-    return PlatformListTile(
+    return ListTile(
       tileColor: backgroundColor,
       onTap: onPressed,
       leading: icon,
@@ -47,19 +49,19 @@ class Action extends StatelessWidget {
 
 class AdaptiveActions extends HookWidget {
   final List<Action> actions;
-  final Breakpoints breakOn;
+  final bool? breakOn;
   const AdaptiveActions({
     required this.actions,
-    this.breakOn = Breakpoints.lg,
+    this.breakOn,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final breakpoint = useBreakpoints();
+    final mediaQuery = MediaQuery.of(context);
 
-    if (breakpoint.isLessThan(breakOn)) {
-      return PlatformIconButton(
+    if (breakOn ?? mediaQuery.lgAndUp) {
+      return IconButton(
         icon: const Icon(SpotubeIcons.moreHorizontal),
         onPressed: () {
           showPopover(
@@ -83,8 +85,7 @@ class AdaptiveActions extends HookWidget {
                     .toList(),
               );
             },
-            backgroundColor:
-                PlatformTheme.of(context).secondaryBackgroundColor!,
+            backgroundColor: Theme.of(context).cardColor,
           );
         },
       );
