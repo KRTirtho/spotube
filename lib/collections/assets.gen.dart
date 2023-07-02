@@ -45,7 +45,7 @@ class Assets {
   static const AssetGenImage spotubeLogoAndroid12 =
       AssetGenImage('assets/spotube-logo_android12.png');
   static const AssetGenImage spotubeScreenshot =
-      AssetGenImage('assets/spotube-screenshot.jpg');
+      AssetGenImage('assets/spotube-screenshot.png');
   static const AssetGenImage spotubeBanner =
       AssetGenImage('assets/spotube_banner.png');
   static const AssetGenImage success = AssetGenImage('assets/success.png');

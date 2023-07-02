@@ -90,9 +90,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
         isFetchingSegments = false;
 
-        if (preferences.albumColorSync) {
-          updatePalette();
-        }
+        updatePalette();
       });
 
       audioPlayer.shuffledStream.listen((event) {
@@ -483,7 +481,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     await audioPlayer.stop();
   }
 
-  Future<void> updatePalette() {
+  Future<void> updatePalette() async {
+    final palette = ref.read(paletteProvider);
+    if (!preferences.albumColorSync) {
+      if (palette != null) ref.read(paletteProvider.notifier).state = null;
+      return;
+    }
     return Future.microtask(() async {
       final activeTrack = state.tracks.elementAtOrNull(state.active ?? 0);
 

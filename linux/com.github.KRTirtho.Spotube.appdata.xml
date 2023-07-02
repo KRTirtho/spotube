@@ -39,7 +39,7 @@
   <screenshots>
     <screenshot>
       <image type="source">
-        https://rawcdn.githack.com/KRTirtho/spotube/ebb00cdcb68c98ee785144568a5af1690ec7e6a3/assets/spotube-screenshot.jpg</image>
+        https://rawcdn.githack.com/KRTirtho/spotube/ebb00cdcb68c98ee785144568a5af1690ec7e6a3/assets/spotube-screenshot.png</image>
     </screenshot>
   </screenshots>
   <launchable type="desktop-id">com.github.KRTirtho.Spotube.desktop</launchable>
