@@ -100,7 +100,7 @@ jobs:
           path: dist/
 
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2.10.0
@@ -296,7 +296,7 @@ jobs:
         run: |
           npm install -g appdmg
           mkdir -p build/${{ env.BUILD_VERSION }}
-          appdmg appdmg.json build/Spotube-macos-x86_64.dmg
+          appdmg appdmg.json build/Spotube-macos-universal.dmg
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
@@ -308,7 +308,7 @@ jobs:
         with:
           name: Spotube-Release-Binaries
           path: |
-            build/Spotube-macos-x86_64.dmg
+            build/Spotube-macos-universal.dmg
 
   upload:
     runs-on: ubuntu-latest

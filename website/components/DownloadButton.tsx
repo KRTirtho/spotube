@@ -50,7 +50,7 @@ const DownloadLinks = Object.freeze({
   [Platform.mac]: [
     {
       name: "dmg",
-      url: baseURL + "Spotube-macos-x86_64.dmg",
+      url: baseURL + "Spotube-macos-universal.dmg",
       icon: <FaApple />,
     },
   ],

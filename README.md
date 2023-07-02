@@ -57,7 +57,7 @@ This handy table lists all methods you can use to install Spotube:
   <tr>
     <td>MacOS</td>
     <td>
-      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-x86_64.dmg">
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-universal.dmg">
         <img width="220" alt="MacOS Download" src="https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png">
       </a>
     </td>
