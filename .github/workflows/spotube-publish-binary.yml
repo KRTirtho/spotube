@@ -103,4 +103,4 @@ jobs:
 
       - name: Publish to Chocolatey Repository
         if: ${{ !inputs.dry_run }}
-        run: choco push Spotube-windows-x86_64.nupkg
+        run: choco push Spotube-windows-x86_64.nupkg --source https://push.chocolatey.org/
