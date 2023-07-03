@@ -50,11 +50,13 @@ function install_deps(){
     elif command_exists pacman; then
         pacman -Sy ${archDeps}
     else   
-    # Deps
-        # JsonCpp
-        wget https://github.com/open-source-parsers/jsoncpp/tarball/master -O jsoncpp.tar.gz
-        tar -xf jsoncpp.tar.gz && cd open-source-parsers-jsoncpp-*
-        
+    # Maybe one day
+    #  # Deps
+    #    # JsonCpp
+    #    wget https://github.com/open-source-parsers/jsoncpp/tarball/master -O jsoncpp.tar.gz
+    #    tar -xf jsoncpp.tar.gz && cd open-source-parsers-jsoncpp-*
+        echo 'You have to install some dependancies manually in order for Spotube to work.'
+        echo "The deps are the following: ${rpmDeps}"
     fi
 }
 
