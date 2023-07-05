@@ -2,6 +2,7 @@
   <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
   An open source, cross-platform Spotify client that doesn't require Premium nor uses Electron!<br />
+  That uses Spotify's data/discovery API and YouTube (or Piped.video) as audio source
 
   <a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
   <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
