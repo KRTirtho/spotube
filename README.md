@@ -161,15 +161,15 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Connor](https://github.com/owencz1998) - The Cool Discord Moderator
-- [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
+- [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
 ## 💼 License
 
 Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
-If you are concerned, feel free to [read the reason of choosing this license](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
+If you are concerned, you can [read the reason of choosing this license](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
 
 <details>
   <summary>
