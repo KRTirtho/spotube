@@ -236,7 +236,9 @@ jobs:
       - name: Build Apk
         run: |
           flutter build apk
+          flutter build appbundle
           mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
+          mv build/app/outputs/bundle/release/app-release.aab build/Spotube-playstore-all-arch.aab
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
@@ -249,6 +251,7 @@ jobs:
           name: Spotube-Release-Binaries
           path: |
             build/Spotube-android-all-arch.apk
+            build/Spotube-playstore-all-arch.aab
 
   macos:
     runs-on: macos-12
