@@ -14,7 +14,9 @@
 
   ---
 
-  <img src="assets/spotube-screenshot.png" alt="Spotube Desktop" width="600"> <img src="assets/mobile-screenshots/player-view.jpg" alt="Spotube Mobile" height="340">
+  ![Spotube Desktop](assets/spotube-screenshot.png)
+
+  ![Spotube Mobile](assets/mobile-screenshots/combined.png)
 
 </div>
 
