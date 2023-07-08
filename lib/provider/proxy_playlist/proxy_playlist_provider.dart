@@ -488,14 +488,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       return;
     }
     return Future.microtask(() async {
-      final activeTrack = state.tracks.elementAtOrNull(state.active ?? 0);
-
-      if (activeTrack == null) return;
+      if (state.activeTrack == null) return;
 
       final palette = await PaletteGenerator.fromImageProvider(
         UniversalImage.imageProvider(
           TypeConversionUtils.image_X_UrlString(
-            activeTrack.album?.images,
+            state.activeTrack?.album?.images,
             placeholder: ImagePlaceholder.albumArt,
           ),
           height: 50,
