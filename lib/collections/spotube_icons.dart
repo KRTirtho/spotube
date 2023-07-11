@@ -89,6 +89,6 @@ abstract class SpotubeIcons {
   static const timer = FeatherIcons.clock;
   static const logs = FeatherIcons.fileText;
   static const clipboard = FeatherIcons.clipboard;
-  static const youtube = FeatherIcons.youtube;
+  static const api = FeatherIcons.database;
   static const skip = FeatherIcons.fastForward;
 }

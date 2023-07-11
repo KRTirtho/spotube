@@ -292,7 +292,7 @@ class SettingsPage extends HookConsumerWidget {
                           },
                         ),
                         AdaptiveSelectTile<YoutubeApiType>(
-                          secondary: const Icon(SpotubeIcons.youtube),
+                          secondary: const Icon(SpotubeIcons.api),
                           title: Text(context.l10n.youtube_api_type),
                           value: preferences.youtubeApiType,
                           options: YoutubeApiType.values
