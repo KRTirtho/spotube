@@ -92,7 +92,7 @@ class TrackTile extends HookConsumerWidget {
                 else if (constrains.smAndDown)
                   const SizedBox(width: 16),
                 if (onChanged != null)
-                  Checkbox.adaptive(
+                  Checkbox(
                     value: selected,
                     onChanged: onChanged,
                   ),

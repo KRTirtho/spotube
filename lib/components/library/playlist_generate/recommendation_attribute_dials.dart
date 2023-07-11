@@ -40,7 +40,7 @@ class RecommendationAttributeDials extends HookWidget {
       children: [
         Text(context.l10n.min, style: labelStyle),
         Expanded(
-          child: Slider.adaptive(
+          child: Slider(
             value: values.min / base,
             min: 0,
             max: 1,
@@ -58,7 +58,7 @@ class RecommendationAttributeDials extends HookWidget {
       children: [
         Text(context.l10n.target, style: labelStyle),
         Expanded(
-          child: Slider.adaptive(
+          child: Slider(
             value: values.target / base,
             min: 0,
             max: 1,
@@ -76,7 +76,7 @@ class RecommendationAttributeDials extends HookWidget {
       children: [
         Text(context.l10n.max, style: labelStyle),
         Expanded(
-          child: Slider.adaptive(
+          child: Slider(
             value: values.max / base,
             min: 0,
             max: 1,

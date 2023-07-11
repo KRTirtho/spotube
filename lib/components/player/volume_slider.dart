@@ -29,7 +29,7 @@ class VolumeSlider extends HookConsumerWidget {
           }
         }
       },
-      child: Slider.adaptive(
+      child: Slider(
         min: 0,
         max: 1,
         value: volume,
