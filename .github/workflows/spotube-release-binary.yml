@@ -236,7 +236,9 @@ jobs:
       - name: Build Apk
         run: |
           flutter build apk
+          flutter build appbundle
           mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
+          mv build/app/outputs/bundle/release/app-release.aab build/Spotube-playstore-all-arch.aab
 
       - name: Build Playstore AppBundle
         run: |

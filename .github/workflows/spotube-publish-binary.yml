@@ -99,8 +99,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Chocolatey
-        run: choco apikey -k ${{ secrets.CHOCO_API_KEY }} -s https://push.chocolatey.org/
+        run: choco apikey -k ${{ secrets.CHOCO_API_KEY }} --source https://push.chocolatey.org/
 
       - name: Publish to Chocolatey Repository
         if: ${{ !inputs.dry_run }}
-        run: choco push Spotube-windows-x86_64.nupkg
+        run: choco push Spotube-windows-x86_64.nupkg --source https://push.chocolatey.org/
