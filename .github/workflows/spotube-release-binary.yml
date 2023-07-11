@@ -258,12 +258,6 @@ jobs:
             build/Spotube-android-all-arch.apk
             build/Spotube-playstore-all-arch.aab
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Spotube-Playstore-Binaries
-          path: |
-            build/Spotube-playstore-all-arch.aab
-
   macos:
     runs-on: macos-12
     steps:
