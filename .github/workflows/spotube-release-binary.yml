@@ -240,6 +240,13 @@ jobs:
           mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
           mv build/app/outputs/bundle/release/app-release.aab build/Spotube-playstore-all-arch.aab
 
+      - name: Build Playstore AppBundle
+        run: |
+          echo 'ENABLE_UPDATE_CHECK=0' >> .env
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          flutter build appbundle
+          mv build/app/outputs/bundle/release/app-release.aab build/Spotube-playstore-all-arch.aab
+
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3

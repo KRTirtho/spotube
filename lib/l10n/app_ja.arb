@@ -249,5 +249,5 @@
   "developers": "開発",
   "not_logged_in": "ログインしていません",
   "search_mode": "検索モード",
-  "youtube_api_type": "YouTube APIの種類"
+  "youtube_api_type": "APIの種類"
 }
