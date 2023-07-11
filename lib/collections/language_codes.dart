@@ -9,7 +9,7 @@ class ISOLanguageName {
 }
 
 // Uncomment the languages as we add support for them
-// Currently supported: bn,en,fr,hi,zh-cn
+// Currently supported: bn,en,fr,hi,zh
 abstract class LanguageLocals {
   static final Map isoLangs = {
     // "ab": const ISOLanguageName(
@@ -128,7 +128,7 @@ abstract class LanguageLocals {
     //   name: "Chichewa",
     //   nativeName: "chiCheŵa",
     // ),
-    "zh-cn": const ISOLanguageName(
+    "zh": const ISOLanguageName(
       name: "Simplified Chinese",
       nativeName: "简体中文",
     ),

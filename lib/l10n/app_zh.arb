@@ -79,7 +79,7 @@
   "removed_track_from_queue": "将 {track} 从播放队列中移除",
   "remove_from_queue": "从播放队列移除",
   "remove_from_favorites": "取消点赞",
-  "save_as_favorite": 点赞",
+  "save_as_favorite": "点赞",
   "add_to_playlist": "添加到歌单",
   "remove_from_playlist": "从歌单中移除",
   "add_to_blacklist": "添加到屏蔽列表",
@@ -249,5 +249,5 @@
   "developers": "开发者",
   "not_logged_in": "你尚未登录",
   "search_mode": "搜索模式",
-  "youtube_api_type": "YouTube API 类型"
+  "youtube_api_type": "API 类型"
 }
