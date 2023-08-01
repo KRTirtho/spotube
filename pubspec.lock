@@ -632,6 +632,14 @@ packages:
       url: "https://github.com/KRTirtho/flutter_desktop_tools.git"
     source: git
     version: "0.0.1"
+  flutter_displaymode:
+    dependency: "direct main"
+    description:
+      name: flutter_displaymode
+      sha256: "42c5e9abd13d28ed74f701b60529d7f8416947e58256e6659c5550db719c57ef"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   flutter_distributor:
     dependency: "direct dev"
     description:

@@ -36,6 +36,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/hooks/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final parser = ArgParser();
@@ -84,6 +85,9 @@ Future<void> main(List<String> rawArgs) async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   MediaKit.ensureInitialized();
+
+  // force High Refresh Rate on some Android devices (like One Plus)
+  await FlutterDisplayMode.setHighRefreshRate();
 
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(
