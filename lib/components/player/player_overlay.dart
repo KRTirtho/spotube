@@ -62,99 +62,95 @@ class PlayerOverlay extends HookConsumerWidget {
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 250),
               opacity: canShow ? 1 : 0,
-              child: RepaintBoundary(
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      HookBuilder(
-                        builder: (context) {
-                          final progress = useProgress(ref);
-                          // animated
-                          return TweenAnimationBuilder<double>(
-                            duration: const Duration(milliseconds: 250),
-                            tween: Tween<double>(
-                              begin: 0,
-                              end: progress.progressStatic,
-                            ),
-                            builder: (context, value, child) {
-                              return LinearProgressIndicator(
-                                value: value,
-                                minHeight: 2,
-                                backgroundColor: Colors.transparent,
-                                valueColor: AlwaysStoppedAnimation(
-                                  theme.colorScheme.primary,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      GoRouter.of(context).push("/player"),
-                                  child: PlayerTrackDetails(
-                                    albumArt: albumArt,
-                                    color: textColor,
-                                  ),
+              child: Material(
+                type: MaterialType.transparency,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    HookBuilder(
+                      builder: (context) {
+                        final progress = useProgress(ref);
+                        // animated
+                        return TweenAnimationBuilder<double>(
+                          duration: const Duration(milliseconds: 250),
+                          tween: Tween<double>(
+                            begin: 0,
+                            end: progress.progressStatic,
+                          ),
+                          builder: (context, value, child) {
+                            return LinearProgressIndicator(
+                              value: value,
+                              minHeight: 2,
+                              backgroundColor: Colors.transparent,
+                              valueColor: AlwaysStoppedAnimation(
+                                theme.colorScheme.primary,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    GoRouter.of(context).push("/player"),
+                                child: PlayerTrackDetails(
+                                  albumArt: albumArt,
+                                  color: textColor,
                                 ),
                               ),
                             ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(
-                                    SpotubeIcons.skipBack,
-                                    color: textColor,
-                                  ),
-                                  onPressed: playlistNotifier.previous,
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  SpotubeIcons.skipBack,
+                                  color: textColor,
                                 ),
-                                Consumer(
-                                  builder: (context, ref, _) {
-                                    return IconButton(
-                                      icon: playlist.isFetching
-                                          ? const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                          : Icon(
-                                              playing
-                                                  ? SpotubeIcons.pause
-                                                  : SpotubeIcons.play,
-                                              color: textColor,
-                                            ),
-                                      onPressed:
-                                          Actions.handler<PlayPauseIntent>(
-                                        context,
-                                        PlayPauseIntent(ref),
-                                      ),
-                                    );
-                                  },
+                                onPressed: playlistNotifier.previous,
+                              ),
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  return IconButton(
+                                    icon: playlist.isFetching
+                                        ? const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : Icon(
+                                            playing
+                                                ? SpotubeIcons.pause
+                                                : SpotubeIcons.play,
+                                            color: textColor,
+                                          ),
+                                    onPressed: Actions.handler<PlayPauseIntent>(
+                                      context,
+                                      PlayPauseIntent(ref),
+                                    ),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  SpotubeIcons.skipForward,
+                                  color: textColor,
                                 ),
-                                IconButton(
-                                  icon: Icon(
-                                    SpotubeIcons.skipForward,
-                                    color: textColor,
-                                  ),
-                                  onPressed: playlistNotifier.next,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                                onPressed: playlistNotifier.next,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
