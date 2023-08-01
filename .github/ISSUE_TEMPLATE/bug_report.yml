@@ -56,6 +56,7 @@ body:
         - "Website (spotube.netlify.app)"
         - "GitHub Releases (Binary)"
         - "GitHub Actions (Nightly Binary)"
+        - "Play Store (Android)"
         - "F-Droid (Android)"
         - "Arch User Repository (AUR)"
         - "Flathub (Flatpak)"
