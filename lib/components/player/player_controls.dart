@@ -48,7 +48,6 @@ class PlayerControls extends HookConsumerWidget {
 
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
-    final buffering = useStream(audioPlayer.bufferingStream).data ?? true;
     final theme = Theme.of(context);
 
     final isDominantColorDark = ThemeData.estimateBrightnessForColor(
@@ -89,215 +88,208 @@ class PlayerControls extends HookConsumerWidget {
       iconSize: compact ? 18 : 24,
     );
 
-    return RepaintBoundary(
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          if (focusNode.canRequestFocus) {
-            focusNode.requestFocus();
-          }
-        },
-        child: FocusableActionDetector(
-          focusNode: focusNode,
-          shortcuts: shortcuts,
-          actions: actions,
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: Column(
-              children: [
-                if (!compact)
-                  HookBuilder(
-                    builder: (context) {
-                      final (
-                        :bufferProgress,
-                        :duration,
-                        :position,
-                        :progressStatic
-                      ) = useProgress(ref);
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        if (focusNode.canRequestFocus) {
+          focusNode.requestFocus();
+        }
+      },
+      child: FocusableActionDetector(
+        focusNode: focusNode,
+        shortcuts: shortcuts,
+        actions: actions,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Column(
+            children: [
+              if (!compact)
+                HookBuilder(
+                  builder: (context) {
+                    final (
+                      :bufferProgress,
+                      :duration,
+                      :position,
+                      :progressStatic
+                    ) = useProgress(ref);
 
-                      final totalMinutes = PrimitiveUtils.zeroPadNumStr(
-                        duration.inMinutes.remainder(60),
-                      );
-                      final totalSeconds = PrimitiveUtils.zeroPadNumStr(
-                        duration.inSeconds.remainder(60),
-                      );
-                      final currentMinutes = PrimitiveUtils.zeroPadNumStr(
-                        position.inMinutes.remainder(60),
-                      );
-                      final currentSeconds = PrimitiveUtils.zeroPadNumStr(
-                        position.inSeconds.remainder(60),
-                      );
+                    final totalMinutes = PrimitiveUtils.zeroPadNumStr(
+                      duration.inMinutes.remainder(60),
+                    );
+                    final totalSeconds = PrimitiveUtils.zeroPadNumStr(
+                      duration.inSeconds.remainder(60),
+                    );
+                    final currentMinutes = PrimitiveUtils.zeroPadNumStr(
+                      position.inMinutes.remainder(60),
+                    );
+                    final currentSeconds = PrimitiveUtils.zeroPadNumStr(
+                      position.inSeconds.remainder(60),
+                    );
 
-                      final progress = useState<num>(
-                        useMemoized(() => progressStatic, []),
-                      );
+                    final progress = useState<num>(
+                      useMemoized(() => progressStatic, []),
+                    );
 
-                      useEffect(() {
-                        progress.value = progressStatic;
-                        return null;
-                      }, [progressStatic]);
+                    useEffect(() {
+                      progress.value = progressStatic;
+                      return null;
+                    }, [progressStatic]);
 
-                      return Column(
-                        children: [
-                          Tooltip(
-                            message: context.l10n.slide_to_seek,
-                            child: Slider(
-                              // cannot divide by zero
-                              // there's an edge case for value being bigger
-                              // than total duration. Keeping it resolved
-                              value: progress.value.toDouble(),
-                              secondaryTrackValue: bufferProgress,
-                              onChanged:
-                                  playlist.isFetching == true || buffering
-                                      ? null
-                                      : (v) {
-                                          progress.value = v;
-                                        },
-                              onChangeEnd: (value) async {
-                                await audioPlayer.seek(
-                                  Duration(
-                                    seconds:
-                                        (value * duration.inSeconds).toInt(),
-                                  ),
-                                );
-                              },
-                              activeColor: sliderColor,
-                              secondaryActiveColor:
-                                  sliderColor.withOpacity(0.2),
-                              inactiveColor: sliderColor.withOpacity(0.15),
+                    return Column(
+                      children: [
+                        Tooltip(
+                          message: context.l10n.slide_to_seek,
+                          child: Slider(
+                            // cannot divide by zero
+                            // there's an edge case for value being bigger
+                            // than total duration. Keeping it resolved
+                            value: progress.value.toDouble(),
+                            secondaryTrackValue: bufferProgress,
+                            onChanged: playlist.isFetching == true
+                                ? null
+                                : (v) {
+                                    progress.value = v;
+                                  },
+                            onChangeEnd: (value) async {
+                              await audioPlayer.seek(
+                                Duration(
+                                  seconds: (value * duration.inSeconds).toInt(),
+                                ),
+                              );
+                            },
+                            activeColor: sliderColor,
+                            secondaryActiveColor: sliderColor.withOpacity(0.2),
+                            inactiveColor: sliderColor.withOpacity(0.15),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                          ),
+                          child: DefaultTextStyle(
+                            style: theme.textTheme.bodySmall!.copyWith(
+                              color: palette?.dominantColor?.bodyTextColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("$currentMinutes:$currentSeconds"),
+                                Text("$totalMinutes:$totalSeconds"),
+                              ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: DefaultTextStyle(
-                              style: theme.textTheme.bodySmall!.copyWith(
-                                color: palette?.dominantColor?.bodyTextColor,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("$currentMinutes:$currentSeconds"),
-                                  Text("$totalMinutes:$totalSeconds"),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    StreamBuilder<bool>(
-                        stream: audioPlayer.shuffledStream,
-                        builder: (context, snapshot) {
-                          final shuffled = snapshot.data ?? false;
-                          return IconButton(
-                            tooltip: shuffled
-                                ? context.l10n.unshuffle_playlist
-                                : context.l10n.shuffle_playlist,
-                            icon: const Icon(SpotubeIcons.shuffle),
-                            style: shuffled ? activeButtonStyle : buttonStyle,
-                            onPressed: playlist.isFetching == true || buffering
-                                ? null
-                                : () {
-                                    if (shuffled) {
-                                      audioPlayer.setShuffle(false);
-                                    } else {
-                                      audioPlayer.setShuffle(true);
-                                    }
-                                  },
-                          );
-                        }),
-                    IconButton(
-                      tooltip: context.l10n.previous_track,
-                      icon: const Icon(SpotubeIcons.skipBack),
-                      style: buttonStyle,
-                      onPressed: playlist.isFetching == true || buffering
-                          ? null
-                          : playlistNotifier.previous,
-                    ),
-                    IconButton(
-                      tooltip: playing
-                          ? context.l10n.pause_playback
-                          : context.l10n.resume_playback,
-                      icon: playlist.isFetching == true
-                          ? SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: accentColor?.titleTextColor ??
-                                    theme.colorScheme.onPrimary,
-                              ),
-                            )
-                          : Icon(
-                              playing ? SpotubeIcons.pause : SpotubeIcons.play,
-                            ),
-                      style: resumePauseStyle,
-                      onPressed: playlist.isFetching == true
-                          ? null
-                          : Actions.handler<PlayPauseIntent>(
-                              context,
-                              PlayPauseIntent(ref),
-                            ),
-                    ),
-                    IconButton(
-                      tooltip: context.l10n.next_track,
-                      icon: const Icon(SpotubeIcons.skipForward),
-                      style: buttonStyle,
-                      onPressed: playlist.isFetching == true || buffering
-                          ? null
-                          : playlistNotifier.next,
-                    ),
-                    StreamBuilder<PlaybackLoopMode>(
-                        stream: audioPlayer.loopModeStream,
-                        builder: (context, snapshot) {
-                          final loopMode =
-                              snapshot.data ?? PlaybackLoopMode.none;
-                          return IconButton(
-                            tooltip: loopMode == PlaybackLoopMode.one
-                                ? context.l10n.loop_track
-                                : loopMode == PlaybackLoopMode.all
-                                    ? context.l10n.repeat_playlist
-                                    : null,
-                            icon: Icon(
-                              loopMode == PlaybackLoopMode.one
-                                  ? SpotubeIcons.repeatOne
-                                  : SpotubeIcons.repeat,
-                            ),
-                            style: loopMode == PlaybackLoopMode.one ||
-                                    loopMode == PlaybackLoopMode.all
-                                ? activeButtonStyle
-                                : buttonStyle,
-                            onPressed: playlist.isFetching == true || buffering
-                                ? null
-                                : () async {
-                                    switch (await audioPlayer.loopMode) {
-                                      case PlaybackLoopMode.all:
-                                        audioPlayer
-                                            .setLoopMode(PlaybackLoopMode.one);
-                                        break;
-                                      case PlaybackLoopMode.one:
-                                        audioPlayer
-                                            .setLoopMode(PlaybackLoopMode.none);
-                                        break;
-                                      case PlaybackLoopMode.none:
-                                        audioPlayer
-                                            .setLoopMode(PlaybackLoopMode.all);
-                                        break;
-                                    }
-                                  },
-                          );
-                        }),
-                  ],
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                const SizedBox(height: 5)
-              ],
-            ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  StreamBuilder<bool>(
+                      stream: audioPlayer.shuffledStream,
+                      builder: (context, snapshot) {
+                        final shuffled = snapshot.data ?? false;
+                        return IconButton(
+                          tooltip: shuffled
+                              ? context.l10n.unshuffle_playlist
+                              : context.l10n.shuffle_playlist,
+                          icon: const Icon(SpotubeIcons.shuffle),
+                          style: shuffled ? activeButtonStyle : buttonStyle,
+                          onPressed: playlist.isFetching == true
+                              ? null
+                              : () {
+                                  if (shuffled) {
+                                    audioPlayer.setShuffle(false);
+                                  } else {
+                                    audioPlayer.setShuffle(true);
+                                  }
+                                },
+                        );
+                      }),
+                  IconButton(
+                    tooltip: context.l10n.previous_track,
+                    icon: const Icon(SpotubeIcons.skipBack),
+                    style: buttonStyle,
+                    onPressed: playlist.isFetching == true
+                        ? null
+                        : playlistNotifier.previous,
+                  ),
+                  IconButton(
+                    tooltip: playing
+                        ? context.l10n.pause_playback
+                        : context.l10n.resume_playback,
+                    icon: playlist.isFetching == true
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: accentColor?.titleTextColor ??
+                                  theme.colorScheme.onPrimary,
+                            ),
+                          )
+                        : Icon(
+                            playing ? SpotubeIcons.pause : SpotubeIcons.play,
+                          ),
+                    style: resumePauseStyle,
+                    onPressed: playlist.isFetching == true
+                        ? null
+                        : Actions.handler<PlayPauseIntent>(
+                            context,
+                            PlayPauseIntent(ref),
+                          ),
+                  ),
+                  IconButton(
+                    tooltip: context.l10n.next_track,
+                    icon: const Icon(SpotubeIcons.skipForward),
+                    style: buttonStyle,
+                    onPressed: playlist.isFetching == true
+                        ? null
+                        : playlistNotifier.next,
+                  ),
+                  StreamBuilder<PlaybackLoopMode>(
+                      stream: audioPlayer.loopModeStream,
+                      builder: (context, snapshot) {
+                        final loopMode = snapshot.data ?? PlaybackLoopMode.none;
+                        return IconButton(
+                          tooltip: loopMode == PlaybackLoopMode.one
+                              ? context.l10n.loop_track
+                              : loopMode == PlaybackLoopMode.all
+                                  ? context.l10n.repeat_playlist
+                                  : null,
+                          icon: Icon(
+                            loopMode == PlaybackLoopMode.one
+                                ? SpotubeIcons.repeatOne
+                                : SpotubeIcons.repeat,
+                          ),
+                          style: loopMode == PlaybackLoopMode.one ||
+                                  loopMode == PlaybackLoopMode.all
+                              ? activeButtonStyle
+                              : buttonStyle,
+                          onPressed: playlist.isFetching == true
+                              ? null
+                              : () async {
+                                  switch (await audioPlayer.loopMode) {
+                                    case PlaybackLoopMode.all:
+                                      audioPlayer
+                                          .setLoopMode(PlaybackLoopMode.one);
+                                      break;
+                                    case PlaybackLoopMode.one:
+                                      audioPlayer
+                                          .setLoopMode(PlaybackLoopMode.none);
+                                      break;
+                                    case PlaybackLoopMode.none:
+                                      audioPlayer
+                                          .setLoopMode(PlaybackLoopMode.all);
+                                      break;
+                                  }
+                                },
+                        );
+                      }),
+                ],
+              ),
+              const SizedBox(height: 5)
+            ],
           ),
         ),
       ),
