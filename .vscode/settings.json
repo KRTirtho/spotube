@@ -5,6 +5,7 @@
       "danceability",
       "instrumentalness",
       "Mpris",
+      "riverpod",
       "speechiness",
       "Spotube",
       "winget"

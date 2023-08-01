@@ -1,6 +1,5 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 ({
@@ -9,21 +8,29 @@ import 'package:spotube/services/audio_player/audio_player.dart';
   Duration duration,
   double bufferProgress
 }) useProgress(WidgetRef ref) {
-  final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-
   final bufferProgress =
       useStream(audioPlayer.bufferedPositionStream).data?.inSeconds ?? 0;
 
+  Duration audioPlayerDuration = Duration.zero;
+  Duration audioPlayerPosition = Duration.zero;
+
   // Duration future is needed for getting the duration of the song
   // as stream can be null when no event occurs (Mostly needed for android)
-  final durationFuture = useFuture(audioPlayer.duration);
-  final duration = useStream(audioPlayer.durationStream).data ??
-      durationFuture.data ??
-      Duration.zero;
+  audioPlayer.duration.then((value) {
+    if (value != null) {
+      audioPlayerDuration = value;
+    }
+  });
 
-  final positionFuture = useFuture(audioPlayer.position);
-  final position = useState<Duration>(positionFuture.data ?? Duration.zero);
+  audioPlayer.position.then((value) {
+    if (value != null) {
+      audioPlayerPosition = value;
+    }
+  });
 
+  final position = useState<Duration>(audioPlayerPosition);
+  final duration =
+      useStream(audioPlayer.durationStream).data ?? audioPlayerDuration;
   final sliderMax = duration.inSeconds;
   final sliderValue = position.value.inSeconds;
 
@@ -38,7 +45,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
       lastPosition = event;
       position.value = event;
     }).cancel;
-  }, []);
+  }, [audioPlayerPosition, audioPlayerDuration]);
 
   return (
     progressStatic:
