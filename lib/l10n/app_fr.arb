@@ -249,5 +249,8 @@
   "developers": "Développeurs",
   "not_logged_in": "Vous n'êtes pas connecté(e)",
   "search_mode": "Mode de recherche",
-  "youtube_api_type": "Type d'API"
+  "youtube_api_type": "Type d'API",
+  "ok": "OK",
+  "failed_to_encrypt": "Échec de la cryptage",
+  "encryption_failed_warning": "Spotube utilise le cryptage pour stocker vos données en toute sécurité. Mais cela a échoué. Il basculera donc vers un stockage non sécurisé\nSi vous utilisez Linux, assurez-vous d'avoir installé des services secrets tels que gnome-keyring, kde-wallet et keepassxc"
 }
