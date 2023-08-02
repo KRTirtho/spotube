@@ -5,12 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/hooks/use_update_checker.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/utils/persisted_state_notifier.dart';
 
 const rootPaths = {
   0: "/",
@@ -32,6 +34,17 @@ class RootApp extends HookConsumerWidget {
     final isMounted = useIsMounted();
     final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider.notifier);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final sharedPreferences = await SharedPreferences.getInstance();
+
+        if (sharedPreferences.getBool(kIsUsingEncryption) == false &&
+            context.mounted) {
+          await PersistedStateNotifier.showNoEncryptionDialog(context);
+        }
+      });
+    }, []);
 
     useEffect(() {
       downloader.onFileExists = (track) async {
