@@ -87,7 +87,9 @@ Future<void> main(List<String> rawArgs) async {
   MediaKit.ensureInitialized();
 
   // force High Refresh Rate on some Android devices (like One Plus)
-  await FlutterDisplayMode.setHighRefreshRate();
+if (DesktopTools.platform.isAndroid) {
+    await FlutterDisplayMode.setHighRefreshRate();
+}
 
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(
