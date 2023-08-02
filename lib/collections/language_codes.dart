@@ -600,10 +600,10 @@ abstract class LanguageLocals {
     //   name: "Southern Sotho",
     //   nativeName: "Sesotho",
     // ),
-    // "es": const ISOLanguageName(
-    //   name: "Spanish; Castilian",
-    //   nativeName: "español, castellano",
-    // ),
+    "es": const ISOLanguageName(
+      name: "Spanish",
+      nativeName: "español",
+    ),
     // "su": const ISOLanguageName(
     //   name: "Sundanese",
     //   nativeName: "Basa Sunda",
