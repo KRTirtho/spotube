@@ -881,6 +881,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.6"
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      sha256: "6b6f10f0ce3c42f6552d1c70d2c28d764cf22bb487f50f66cca31dcd5194f4d6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.4"
   gotrue:
     dependency: transitive
     description:

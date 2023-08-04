@@ -77,13 +77,13 @@ class UserPreferences extends PersistedChangeNotifier {
     this.checkUpdate = true,
     this.audioQuality = AudioQuality.high,
     this.downloadLocation = "",
-    this.closeBehavior = CloseBehavior.minimizeToTray,
+    this.closeBehavior = CloseBehavior.close,
     this.showSystemTrayIcon = true,
     this.locale = const Locale("system", "system"),
     this.pipedInstance = "https://pipedapi.kavin.rocks",
-    this.searchMode = SearchMode.youtube,
+    this.searchMode = SearchMode.youtubeMusic,
     this.skipNonMusic = true,
-    this.youtubeApiType = YoutubeApiType.youtube,
+    this.youtubeApiType = YoutubeApiType.piped,
   }) : super() {
     if (downloadLocation.isEmpty) {
       _getDefaultDownloadDirectory().then(
