@@ -53,7 +53,7 @@ body:
       description: Where did you install Spotube from?
       multiple: true
       options:
-        - "Website (spotube.netlify.app)"
+        - "Website (spotube.netlify.app) or (spotube.krtirtho.dev)"
         - "GitHub Releases (Binary)"
         - "GitHub Actions (Nightly Binary)"
         - "Play Store (Android)"

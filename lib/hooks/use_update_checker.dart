@@ -62,7 +62,7 @@ void useUpdateChecker(WidgetRef ref) {
         barrierColor: Colors.black26,
         builder: (context) {
           const url =
-              "https://spotube.netlify.app/other-downloads/stable-downloads";
+              "https://spotube.krtirtho.dev/other-downloads/stable-downloads";
           return AlertDialog(
             title: const Text("Spotube has an update"),
             actions: [
