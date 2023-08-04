@@ -251,7 +251,7 @@ class UserPreferences extends PersistedChangeNotifier {
 
     youtubeApiType = YoutubeApiType.values.firstWhere(
       (type) => type.name == map["youtubeApiType"],
-      orElse: () => YoutubeApiType.youtube,
+      orElse: () => YoutubeApiType.piped,
     );
   }
 
