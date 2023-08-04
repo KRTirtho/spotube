@@ -16,6 +16,7 @@ dependencies:
   - libsecret-1-0
   - libnotify-bin
   - libjsoncpp25
+  - network-manager
 
 essential: false
 icon: assets/spotube-logo.png
