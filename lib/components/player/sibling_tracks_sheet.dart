@@ -122,112 +122,114 @@ class SiblingTracksSheet extends HookConsumerWidget {
     ]);
 
     var mediaQuery = MediaQuery.of(context);
-    return BackdropFilter(
-      filter: ImageFilter.blur(
-        sigmaX: 12.0,
-        sigmaY: 12.0,
-      ),
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 300),
-        child: Container(
-          height: isSearching.value && mediaQuery.smAndDown
-              ? mediaQuery.size.height
-              : mediaQuery.size.height * .6,
-          margin: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            borderRadius: borderRadius,
-            color: theme.scaffoldBackgroundColor.withOpacity(.3),
-          ),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              centerTitle: true,
-              title: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: !isSearching.value
-                    ? Text(
-                        context.l10n.alternative_track_sources,
-                        style: theme.textTheme.headlineSmall,
-                      )
-                    : TextField(
-                        autofocus: true,
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          hintText: context.l10n.search,
-                          hintStyle: theme.textTheme.headlineSmall,
-                          border: InputBorder.none,
-                        ),
-                        style: theme.textTheme.headlineSmall,
-                      ),
-              ),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              actions: [
-                if (!isSearching.value)
-                  IconButton(
-                    icon: const Icon(SpotubeIcons.search, size: 18),
-                    onPressed: () {
-                      isSearching.value = true;
-                    },
-                  )
-                else ...[
-                  if (preferences.youtubeApiType == YoutubeApiType.piped)
-                    PopupMenuButton(
-                      icon: const Icon(SpotubeIcons.filter, size: 18),
-                      onSelected: (SearchMode mode) {
-                        searchMode.value = mode;
-                      },
-                      initialValue: searchMode.value,
-                      itemBuilder: (context) => SearchMode.values
-                          .map(
-                            (e) => PopupMenuItem(
-                              value: e,
-                              child: Text(e.label),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  IconButton(
-                    icon: const Icon(SpotubeIcons.close, size: 18),
-                    onPressed: () {
-                      isSearching.value = false;
-                    },
-                  ),
-                ]
-              ],
+    return SafeArea(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 12.0,
+          sigmaY: 12.0,
+        ),
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          child: Container(
+            height: isSearching.value && mediaQuery.smAndDown
+                ? mediaQuery.size.height
+                : mediaQuery.size.height * .6,
+            margin: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              color: theme.scaffoldBackgroundColor.withOpacity(.3),
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                transitionBuilder: (child, animation) =>
-                    FadeTransition(opacity: animation, child: child),
-                child: switch (isSearching.value) {
-                  false => ListView.builder(
-                      itemCount: siblings.length,
-                      itemBuilder: (context, index) =>
-                          itemBuilder(siblings[index]),
-                    ),
-                  true => FutureBuilder(
-                      future: searchRequest,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text(snapshot.error.toString()),
-                          );
-                        } else if (!snapshot.hasData) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-
-                        return ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) =>
-                              itemBuilder(snapshot.data![index]),
-                        );
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                centerTitle: true,
+                title: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: !isSearching.value
+                      ? Text(
+                          context.l10n.alternative_track_sources,
+                          style: theme.textTheme.headlineSmall,
+                        )
+                      : TextField(
+                          autofocus: true,
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            hintText: context.l10n.search,
+                            hintStyle: theme.textTheme.headlineSmall,
+                            border: InputBorder.none,
+                          ),
+                          style: theme.textTheme.headlineSmall,
+                        ),
+                ),
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
+                actions: [
+                  if (!isSearching.value)
+                    IconButton(
+                      icon: const Icon(SpotubeIcons.search, size: 18),
+                      onPressed: () {
+                        isSearching.value = true;
+                      },
+                    )
+                  else ...[
+                    if (preferences.youtubeApiType == YoutubeApiType.piped)
+                      PopupMenuButton(
+                        icon: const Icon(SpotubeIcons.filter, size: 18),
+                        onSelected: (SearchMode mode) {
+                          searchMode.value = mode;
+                        },
+                        initialValue: searchMode.value,
+                        itemBuilder: (context) => SearchMode.values
+                            .map(
+                              (e) => PopupMenuItem(
+                                value: e,
+                                child: Text(e.label),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    IconButton(
+                      icon: const Icon(SpotubeIcons.close, size: 18),
+                      onPressed: () {
+                        isSearching.value = false;
                       },
                     ),
-                },
+                  ]
+                ],
+              ),
+              body: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: switch (isSearching.value) {
+                    false => ListView.builder(
+                        itemCount: siblings.length,
+                        itemBuilder: (context, index) =>
+                            itemBuilder(siblings[index]),
+                      ),
+                    true => FutureBuilder(
+                        future: searchRequest,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          } else if (!snapshot.hasData) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) =>
+                                itemBuilder(snapshot.data![index]),
+                          );
+                        },
+                      ),
+                  },
+                ),
               ),
             ),
           ),
