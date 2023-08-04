@@ -141,7 +141,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
       audioPlayer.positionStream.listen((position) async {
         // skipping in very first second breaks stream
-        if (position < const Duration(seconds: 3)) return;
         if ((preferences.youtubeApiType == YoutubeApiType.piped &&
                 preferences.searchMode == SearchMode.youtubeMusic) ||
             !preferences.skipNonMusic) return;
@@ -165,7 +164,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         }
 
         final (source: _, :segments) = currentSegments!;
-        if (segments.isEmpty) return;
+        if (segments.isEmpty || position < const Duration(seconds: 3)) return;
 
         for (final segment in segments) {
           if ((position.inSeconds >= segment.start &&
