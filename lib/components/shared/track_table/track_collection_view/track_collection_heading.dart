@@ -9,6 +9,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
@@ -41,6 +42,8 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
+
+    final cleanDescription = useDescription(description);
 
     return LayoutBuilder(
       builder: (context, constrains) {
@@ -111,13 +114,13 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
-                            if (description != null)
+                            if (cleanDescription != null)
                               ConstrainedBox(
                                 constraints: BoxConstraints(
                                   maxWidth: constrains.mdAndDown ? 400 : 300,
                                 ),
                                 child: Text(
-                                  description!,
+                                  cleanDescription,
                                   style: const TextStyle(color: Colors.white),
                                   maxLines: 2,
                                   overflow: TextOverflow.fade,
