@@ -3,7 +3,10 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.0.0+19
+version: 3.0.1+20
+
+homepage: https://spotube.krtirtho.dev
+repository: https://github.com/KRTirtho/spotube
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

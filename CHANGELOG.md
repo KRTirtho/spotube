@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.1](https://github.com/KRTirtho/spotube/compare/v3.0.0...v3.1.0) (2023-08-04)
+
+
+### Features
+
+* Force High Refresh Rate on some Android devices ([#607](https://github.com/KRTirtho/spotube/issues/607)) ([6dff099](https://github.com/KRTirtho/spotube/commit/6dff0996bdfee603acf242b1316f8793d625267c))
+* **translations:** add spanish translations ([#585](https://github.com/KRTirtho/spotube/issues/585)) ([042d7a4](https://github.com/KRTirtho/spotube/commit/042d7a4a10c78dd93a56a2f32d18a0fb74dbe697))
+* **translations:** add Simplified Chinese translation. ([#556](https://github.com/KRTirtho/spotube/issues/556)) ([26dbd52](https://github.com/KRTirtho/spotube/commit/26dbd523737d868114a47e82acd412cdae622b7c))
+
+
+### Bug Fixes
+
+* alternative track source textfield safe area ([b8c6d7e](https://github.com/KRTirtho/spotube/commit/b8c6d7eb6ae1c54bdc83a455850dfca0f27bd881))
+* avoid sponsor block for first few seconds to not break the stream ([d8cf2ae](https://github.com/KRTirtho/spotube/commit/d8cf2ae1315dc3848fe1ac12286faafe90fdbed7))
+* cache segments casting error ([dfd60bd](https://github.com/KRTirtho/spotube/commit/dfd60bd4cc0fe8fe90e0cbfd26331df505cde2aa))
+* duration is always zero in PlayerView ([4885dca](https://github.com/KRTirtho/spotube/commit/4885dca04f06658391d1063e6c5a009547391a6f))
+* flags not showing up and html in descriptions ([5a563ef](https://github.com/KRTirtho/spotube/commit/5a563ef4289423ceb5c44ba13f3cfda34b2d16dd))
+* **linux:** crash when no secret service provider found ([#608](https://github.com/KRTirtho/spotube/issues/608)) ([888a4b1](https://github.com/KRTirtho/spotube/commit/888a4b1162c25371d7f6e88fae3a2473cabf1434))
+* login dialog stays after login, mention sp_gaid in tutorial ([b492840](https://github.com/KRTirtho/spotube/commit/b4928405122ae5e5d4d4560f316f2a546a2fabe4))
+* **album_sync**: negative index exception in update palette ([#561](https://github.com/KRTirtho/spotube/issues/561)) ([0089d47](https://github.com/KRTirtho/spotube/commit/0089d471ae6d595e058061e3ac44caecdba12f61))
+* remove adaptive widgets ([#520](https://github.com/KRTirtho/spotube/issues/520)) ([e4cbdd3](https://github.com/KRTirtho/spotube/commit/e4cbdd37479a572198c1ca27fcbbba0232275513))
+* shuffle not working ([#562](https://github.com/KRTirtho/spotube/issues/562)) ([dc76634](https://github.com/KRTirtho/spotube/commit/dc76634a6e4ccdca0f09d63a2db82cce53d950d7))
+* track not skipping to next even when source is available ([0b7affd](https://github.com/KRTirtho/spotube/commit/0b7affdc058c028982266d5c93215697301846bd))
+
 ## [3.0.0](https://github.com/KRTirtho/spotube/compare/v2.7.1...v3.0.0) (2023-07-02)
 
 
