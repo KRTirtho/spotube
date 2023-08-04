@@ -270,7 +270,8 @@ class MkPlayerWithState extends Player {
   FutureOr<void> insert(int index, Media media) {
     if (_playlist == null ||
         index < 0 ||
-        index > _playlist!.medias.length - 1) {
+        (_playlist!.medias.length > 1 &&
+            index > _playlist!.medias.length - 1)) {
       return null;
     }
 

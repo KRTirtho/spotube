@@ -87,9 +87,9 @@ Future<void> main(List<String> rawArgs) async {
   MediaKit.ensureInitialized();
 
   // force High Refresh Rate on some Android devices (like One Plus)
-if (DesktopTools.platform.isAndroid) {
+  if (DesktopTools.platform.isAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();
-}
+  }
 
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(
@@ -122,7 +122,7 @@ if (DesktopTools.platform.isAndroid) {
     MatchedTrack.boxName,
     path: hiveCacheDir,
   );
-  await Hive.openLazyBox<List<SkipSegment>>(
+  await Hive.openLazyBox(
     SkipSegment.boxName,
     path: hiveCacheDir,
   );

@@ -70,7 +70,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       notificationService = await AudioServices.create(ref, this);
 
       ({String source, List<SkipSegment> segments})? currentSegments;
-      bool isFetchingSegments = false;
+
       audioPlayer.activeSourceChangedStream.listen((newActiveSource) async {
         final newActiveTrack =
             mapSourcesToTracks([newActiveSource]).firstOrNull;
@@ -86,10 +86,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
               .toList()
               .indexWhere((element) => element.id == newActiveTrack.id),
         );
-
-        isFetchingSegments = true;
-
-        isFetchingSegments = false;
 
         updatePalette();
       });
@@ -114,7 +110,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       listenTo2Percent(int percent) async {
         if (isPreSearching ||
             audioPlayer.currentSource == null ||
-            audioPlayer.nextSource == null) return;
+            audioPlayer.nextSource == null ||
+            isPlayable(audioPlayer.nextSource!)) return;
 
         try {
           isPreSearching = true;
@@ -125,19 +122,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
-            if (currentSegments == null ||
-                (oldTrack?.id != null &&
-                        currentSegments!.source != oldTrack!.id!) &&
-                    !isFetchingSegments) {
-              isFetchingSegments = true;
-              currentSegments = (
-                source: audioPlayer.currentSource!,
-                segments: await getAndCacheSkipSegments(
-                  track.ytTrack.id,
-                ),
-              );
-              isFetchingSegments = false;
-            }
           }
 
           if (oldTrack != null && track != null) {
@@ -148,29 +132,34 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           }
         } finally {
           isPreSearching = false;
-          if (percent > 98 && !audioPlayer.isPlaying) {
-            await audioPlayer.resume();
-          }
         }
       }
 
       audioPlayer.percentCompletedStream(2).listen(listenTo2Percent);
 
+      bool isFetchingSegments = false;
+
       audioPlayer.positionStream.listen((position) async {
-        if (preferences.searchMode == SearchMode.youtubeMusic ||
+        if ((preferences.youtubeApiType == YoutubeApiType.piped &&
+                preferences.searchMode == SearchMode.youtubeMusic) ||
             !preferences.skipNonMusic) return;
 
+        final notSameSegmentId =
+            currentSegments?.source != audioPlayer.currentSource;
+
         if (currentSegments == null ||
-            currentSegments!.source != state.activeTrack!.id! &&
-                !isFetchingSegments) {
+            (notSameSegmentId && !isFetchingSegments)) {
           isFetchingSegments = true;
-          currentSegments = (
-            source: audioPlayer.currentSource!,
-            segments: await getAndCacheSkipSegments(
-              (state.activeTrack as SpotubeTrack).ytTrack.id,
-            ),
-          );
-          isFetchingSegments = false;
+          try {
+            currentSegments = (
+              source: audioPlayer.currentSource!,
+              segments: await getAndCacheSkipSegments(
+                (state.activeTrack as SpotubeTrack).ytTrack.id,
+              ),
+            );
+          } finally {
+            isFetchingSegments = false;
+          }
         }
 
         final (source: _, :segments) = currentSegments!;
@@ -354,6 +343,10 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   }
 
   Future<void> addTracksAtFirst(Iterable<Track> tracks) async {
+    if (state.tracks.length == 1) {
+      return addTracks(tracks);
+    }
+
     tracks = blacklist.filter(tracks).toList() as List<Track>;
     final destIndex = state.active != null ? state.active! + 1 : 0;
     final newTracks = state.tracks.toList()..insertAll(destIndex, tracks);
@@ -492,12 +485,15 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
     if (!preferences.skipNonMusic ||
-        preferences.searchMode != SearchMode.youtube) return [];
+        (preferences.youtubeApiType == YoutubeApiType.piped &&
+            preferences.searchMode == SearchMode.youtubeMusic)) return [];
 
     try {
       final cached = await SkipSegment.box.get(id);
       if (cached != null && cached.isNotEmpty) {
-        return List.castFrom<dynamic, SkipSegment>(cached);
+        return List.castFrom<dynamic, SkipSegment>(
+          (cached as List).map((json) => SkipSegment.fromJson(json)).toList(),
+        );
       }
 
       final res = await get(Uri(
@@ -519,6 +515,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       ));
 
       if (res.body == "Not Found") {
+        Catcher.reportCheckedError(
+          "[SponsorBlock] no skip segments found for $id\n"
+          "${res.request?.url}",
+          StackTrace.current,
+        );
         return List.castFrom<dynamic, SkipSegment>([]);
       }
 
@@ -537,7 +538,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
       await SkipSegment.box.put(
         id,
-        segments,
+        segments.map((e) => e.toJson()).toList(),
       );
       return List.castFrom<dynamic, SkipSegment>(segments);
     } catch (e, stack) {
