@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dbus/dbus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:spotube/provider/dbus_provider.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -11,6 +10,8 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:window_manager/window_manager.dart';
+
+final dbus = DBusClient.session();
 
 class _MprisMediaPlayer2 extends DBusObject {
   /// Creates a new object to expose on [path].

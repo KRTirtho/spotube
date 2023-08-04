@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:async/async.dart';
 import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +69,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     () async {
       notificationService = await AudioServices.create(ref, this);
 
-      (String, List<SkipSegment>)? currentSegments;
+      ({String source, List<SkipSegment> segments})? currentSegments;
       bool isFetchingSegments = false;
       audioPlayer.activeSourceChangedStream.listen((newActiveSource) async {
         final newActiveTrack =
@@ -110,14 +111,14 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
       bool isPreSearching = false;
 
-      listenTo60Percent(percent) async {
+      listenTo2Percent(int percent) async {
         if (isPreSearching ||
             audioPlayer.currentSource == null ||
             audioPlayer.nextSource == null) return;
+
         try {
           isPreSearching = true;
 
-          // TODO: Make repeat mode sensitive changes later
           final oldTrack =
               mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
           final track = await ensureSourcePlayable(audioPlayer.nextSource!);
@@ -126,12 +127,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
             if (currentSegments == null ||
                 (oldTrack?.id != null &&
-                        currentSegments!.$1 != oldTrack!.id!) &&
+                        currentSegments!.source != oldTrack!.id!) &&
                     !isFetchingSegments) {
               isFetchingSegments = true;
               currentSegments = (
-                audioPlayer.currentSource!,
-                await getAndCacheSkipSegments(
+                source: audioPlayer.currentSource!,
+                segments: await getAndCacheSkipSegments(
                   track.ytTrack.id,
                 ),
               );
@@ -147,47 +148,32 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           }
         } finally {
           isPreSearching = false;
-
-          /// Sometimes fetching can take a lot of time, so we need to check
-          /// if next source is playable or not at 99% progress. If not, then
-          /// it'll be paused automatically
-          ///
-          /// After fetching the nextSource and replacing it, we need to check
-          /// if the player is paused or not. If it is paused, then we need to
-          /// resume it to skip to next track
-          if (audioPlayer.isPaused) {
+          if (percent > 98 && !audioPlayer.isPlaying) {
             await audioPlayer.resume();
           }
         }
       }
 
-      audioPlayer.percentCompletedStream(60).listen(listenTo60Percent);
-
-      // player stops at 99% if nextSource is still not playable
-      audioPlayer.percentCompletedStream(99).listen((_) async {
-        if (audioPlayer.nextSource == null ||
-            isPlayable(audioPlayer.nextSource!)) return;
-        await audioPlayer.pause();
-      });
+      audioPlayer.percentCompletedStream(2).listen(listenTo2Percent);
 
       audioPlayer.positionStream.listen((position) async {
         if (preferences.searchMode == SearchMode.youtubeMusic ||
             !preferences.skipNonMusic) return;
 
         if (currentSegments == null ||
-            currentSegments!.$1 != state.activeTrack!.id! &&
+            currentSegments!.source != state.activeTrack!.id! &&
                 !isFetchingSegments) {
           isFetchingSegments = true;
           currentSegments = (
-            audioPlayer.currentSource!,
-            await getAndCacheSkipSegments(
+            source: audioPlayer.currentSource!,
+            segments: await getAndCacheSkipSegments(
               (state.activeTrack as SpotubeTrack).ytTrack.id,
             ),
           );
           isFetchingSegments = false;
         }
 
-        final (_, segments) = currentSegments!;
+        final (source: _, :segments) = currentSegments!;
         if (segments.isEmpty) return;
 
         for (final segment in segments) {
