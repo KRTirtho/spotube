@@ -94,12 +94,13 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
   }
 
   List<Track> mapSourcesToTracks(List<String> sources) {
-    final tracks = state.tracks;
-
     return sources
         .map((source) {
-          final track = tracks.firstWhereOrNull(
-            (track) => makeAppropriateSource(track) == source,
+          final track = state.tracks.firstWhereOrNull(
+            (track) {
+              final newSource = makeAppropriateSource(track);
+              return newSource == source;
+            },
           );
           return track;
         })
