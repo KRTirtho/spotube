@@ -72,7 +72,9 @@ class PlaylistCard extends HookConsumerWidget {
           playlistNotifier.addCollection(playlist.id!);
           tracks.value = fetchedTracks;
         } finally {
-          updating.value = false;
+          if (context.mounted) {
+            updating.value = false;
+          }
         }
       },
       onAddToQueuePressed: () async {

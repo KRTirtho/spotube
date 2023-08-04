@@ -156,7 +156,7 @@ if (DesktopTools.platform.isAndroid) {
       runApp(
         DevicePreview(
           availableLocales: L10n.all,
-          enabled: !kReleaseMode && DesktopTools.platform.isDesktop,
+          enabled: false,
           data: const DevicePreviewData(
             isEnabled: false,
             orientation: Orientation.portrait,
