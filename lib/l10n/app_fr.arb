@@ -176,14 +176,15 @@
   "step_2": "Étape 2",
   "step_2_steps": "1. Une fois connecté, appuyez sur F12 ou clic droit de la souris > Inspecter pour ouvrir les outils de développement du navigateur.\n2. Ensuite, allez dans l'onglet \"Application\" (Chrome, Edge, Brave, etc.) ou l'onglet \"Stockage\" (Firefox, Palemoon, etc.)\n3. Allez dans la section \"Cookies\", puis dans la sous-section \"https://accounts.spotify.com\"",
   "step_3": "Étape 3",
-  "step_3_steps": "Copiez les valeurs des cookies \"sp_dc\" et \"sp_key\"",
+  "step_3_steps": "Copiez les valeurs des cookies \"sp_dc\" et \"sp_key\" (ou sp_gaid)",
   "success_emoji": "Succès🥳",
   "success_message": "Vous êtes maintenant connecté avec succès à votre compte Spotify. Bon travail, mon ami!",
   "step_4": "Étape 4",
-  "step_4_steps": "Collez les valeurs copiées de \"sp_dc\" et \"sp_key\" dans les champs respectifs",
+  "step_4_steps": "Collez les valeurs copiées de \"sp_dc\" et \"sp_key\" (ou sp_gaid) dans les champs respectifs",
   "something_went_wrong": "Quelque chose s'est mal passé",
   "piped_instance": "Instance pipée",
-  "piped_description": "L'instance de serveur Piped à utiliser pour la correspondance des pistes\nCertaines d'entre elles peuvent ne pas fonctionner correctement. Alors utilisez à vos risques et périls",
+  "piped_description": "L'instance de serveur Piped à utiliser pour la correspondance des pistes",
+  "piped_warning": "Certaines d'entre elles peuvent ne pas fonctionner correctement. Alors utilisez à vos risques et périls",
   "generate_playlist": "Générer une playlist",
   "track_exists": "La piste {track} existe déjà",
   "replace_downloaded_tracks": "Remplacer toutes les pistes téléchargées",
@@ -249,5 +250,8 @@
   "developers": "Développeurs",
   "not_logged_in": "Vous n'êtes pas connecté(e)",
   "search_mode": "Mode de recherche",
-  "youtube_api_type": "Type d'API"
+  "youtube_api_type": "Type d'API",
+  "ok": "OK",
+  "failed_to_encrypt": "Échec de la cryptage",
+  "encryption_failed_warning": "Spotube utilise le cryptage pour stocker vos données en toute sécurité. Mais cela a échoué. Il basculera donc vers un stockage non sécurisé\nSi vous utilisez Linux, assurez-vous d'avoir installé des services secrets tels que gnome-keyring, kde-wallet et keepassxc"
 }

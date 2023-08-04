@@ -38,8 +38,8 @@ class TokenLoginForm extends HookConsumerWidget {
           TextField(
             controller: keyCodeController,
             decoration: InputDecoration(
-              hintText: context.l10n.spotify_cookie("\"sp_key\""),
-              labelText: context.l10n.cookie_name_cookie("sp_key"),
+              hintText: context.l10n.spotify_cookie("\"sp_key (or sp_gaid)\""),
+              labelText: context.l10n.cookie_name_cookie("sp_key (or sp_gaid)"),
             ),
             keyboardType: TextInputType.visiblePassword,
           ),

@@ -69,7 +69,7 @@ This handy table lists all methods you can use to install Spotube:
     <td>Android</td>
     <td>
       <a href="https://play.google.com/store/apps/details?id=oss.krtirtho.spotube">
-        <img width="220" alt="Download from Play store" src="https://github.com/steverichey/google-play-badge-svg/raw/master/img/en_get.svg">
+        <img width="220" alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png">
       </a>
       <br>
       <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk">
@@ -168,15 +168,15 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [Owen Connor](https://github.com/owencz1998) - The Cool Discord Moderator
-- [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
+- [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
 ## 💼 License
 
 Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
-If you are concerned, feel free to [read the reason of choosing this license](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
+If you are concerned, you can [read the reason of choosing this license](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
 
 <details>
   <summary>

@@ -131,7 +131,7 @@ Do the following:
     ```
   - Fedora
     ```bash
-    dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel
+    dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel NetworkManager
     ```
 - Clone the Repo
 - Create a `.env` in root of the project following the `.env.example` template

@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/collections/routes.dart';
+import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
@@ -15,6 +19,8 @@ const secureStorage = FlutterSecureStorage(
 );
 
 const kKeyBoxName = "spotube_box_name";
+const kNoEncryptionWarningShownKey = "showedNoEncryptionWarning";
+const kIsUsingEncryption = "isUsingEncryption";
 String getBoxKey(String boxName) => "spotube_box_$boxName";
 
 abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
@@ -34,12 +40,36 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   static late LazyBox _box;
   static late LazyBox _encryptedBox;
 
+  static Future<void> showNoEncryptionDialog(BuildContext context) async {
+    final localStorage = await SharedPreferences.getInstance();
+    final wasShownAlready =
+        localStorage.getBool(kNoEncryptionWarningShownKey) == true;
+
+    if (wasShownAlready || !context.mounted) {
+      return;
+    }
+
+    await showPromptDialog(
+      context: context,
+      title: context.l10n.failed_to_encrypt,
+      message: context.l10n.encryption_failed_warning,
+      cancelText: null,
+    );
+    await localStorage.setBool(kNoEncryptionWarningShownKey, true);
+  }
+
   static Future<String?> read(String key) async {
     final localStorage = await SharedPreferences.getInstance();
     if (kIsMacOS || kIsIOS) {
       return localStorage.getString(key);
     } else {
-      return secureStorage.read(key: key);
+      try {
+        await localStorage.setBool(kIsUsingEncryption, true);
+        return await secureStorage.read(key: key);
+      } catch (e) {
+        await localStorage.setBool(kIsUsingEncryption, false);
+        return localStorage.getString(key);
+      }
     }
   }
 
@@ -49,7 +79,13 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
       await localStorage.setString(key, value);
       return;
     } else {
-      return secureStorage.write(key: key, value: value);
+      try {
+        await localStorage.setBool(kIsUsingEncryption, true);
+        await secureStorage.write(key: key, value: value);
+      } catch (e) {
+        await localStorage.setBool(kIsUsingEncryption, false);
+        await localStorage.setString(key, value);
+      }
     }
   }
 

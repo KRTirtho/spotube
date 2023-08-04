@@ -36,6 +36,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/hooks/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final parser = ArgParser();
@@ -85,6 +86,11 @@ Future<void> main(List<String> rawArgs) async {
 
   MediaKit.ensureInitialized();
 
+  // force High Refresh Rate on some Android devices (like One Plus)
+  if (DesktopTools.platform.isAndroid) {
+    await FlutterDisplayMode.setHighRefreshRate();
+  }
+
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(
       hideTitleBar: true,
@@ -116,7 +122,7 @@ Future<void> main(List<String> rawArgs) async {
     MatchedTrack.boxName,
     path: hiveCacheDir,
   );
-  await Hive.openLazyBox<List<SkipSegment>>(
+  await Hive.openLazyBox(
     SkipSegment.boxName,
     path: hiveCacheDir,
   );
@@ -150,7 +156,7 @@ Future<void> main(List<String> rawArgs) async {
       runApp(
         DevicePreview(
           availableLocales: L10n.all,
-          enabled: !kReleaseMode && DesktopTools.platform.isDesktop,
+          enabled: false,
           data: const DevicePreviewData(
             isEnabled: false,
             orientation: Orientation.portrait,

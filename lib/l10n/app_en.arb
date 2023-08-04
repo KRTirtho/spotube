@@ -176,14 +176,15 @@
   "step_2": "Step 2",
   "step_2_steps": "1. Once you're logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection",
   "step_3": "Step 3",
-  "step_3_steps": "Copy the values of \"sp_dc\" and \"sp_key\" Cookies",
+  "step_3_steps": "Copy the values of \"sp_dc\" and \"sp_key\" (or sp_gaid) Cookies",
   "success_emoji": "Success🥳",
   "success_message": "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
   "step_4": "Step 4",
-  "step_4_steps": "Paste the copied \"sp_dc\" and \"sp_key\" values in the respective fields",
+  "step_4_steps": "Paste the copied \"sp_dc\" and \"sp_key\" (or sp_gaid) values in the respective fields",
   "something_went_wrong": "Something went wrong",
   "piped_instance": "Piped Server Instance",
-  "piped_description": "The Piped server instance to use for track matching\nSome of them might not work well. So use at your own risk",
+  "piped_description": "The Piped server instance to use for track matching",
+  "piped_warning": "Some of them might not work well. So use at your own risk",
   "generate_playlist": "Generate Playlist",
   "track_exists": "Track {track} already exists",
   "replace_downloaded_tracks": "Replace all downloaded tracks",
@@ -249,5 +250,8 @@
   "developers": "Developers",
   "not_logged_in": "You're not logged in",
   "search_mode": "Search Mode",
-  "youtube_api_type": "API Type"
+  "youtube_api_type": "API Type",
+  "ok": "Ok",
+  "failed_to_encrypt": "Failed to encrypt",
+  "encryption_failed_warning": "Spotube uses encryption to securely store your data. But failed to do so. So it'll fallback to insecure storage\nIf you're using linux, please make sure you've any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed"
 }

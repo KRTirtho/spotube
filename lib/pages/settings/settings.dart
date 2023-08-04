@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/env.dart';
@@ -74,37 +75,48 @@ class SettingsPage extends HookConsumerWidget {
                       heading: context.l10n.account,
                       children: [
                         if (auth == null)
-                          AdaptiveListTile(
-                            leading: Icon(
-                              SpotubeIcons.login,
-                              color: theme.colorScheme.primary,
-                            ),
-                            title: Align(
-                              alignment: Alignment.centerLeft,
-                              child: AutoSizeText(
-                                context.l10n.login_with_spotify,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: theme.colorScheme.primary,
-                                ),
+                          LayoutBuilder(builder: (context, constrains) {
+                            return ListTile(
+                              leading: Icon(
+                                SpotubeIcons.login,
+                                color: theme.colorScheme.primary,
                               ),
-                            ),
-                            trailing: (context, update) => FilledButton(
-                              onPressed: () {
-                                GoRouter.of(context).push("/login");
-                              },
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
+                              title: Align(
+                                alignment: Alignment.centerLeft,
+                                child: AutoSizeText(
+                                  context.l10n.login_with_spotify,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    color: theme.colorScheme.primary,
                                   ),
                                 ),
                               ),
-                              child: Text(
-                                context.l10n.connect_with_spotify.toUpperCase(),
-                              ),
-                            ),
-                          )
+                              onTap: constrains.mdAndUp
+                                  ? null
+                                  : () {
+                                      GoRouter.of(context).push("/login");
+                                    },
+                              trailing: constrains.smAndDown
+                                  ? null
+                                  : FilledButton(
+                                      onPressed: () {
+                                        GoRouter.of(context).push("/login");
+                                      },
+                                      style: ButtonStyle(
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(25.0),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        context.l10n.connect_with_spotify
+                                            .toUpperCase(),
+                                      ),
+                                    ),
+                            );
+                          })
                         else
                           Builder(builder: (context) {
                             return ListTile(
@@ -322,8 +334,23 @@ class SettingsPage extends HookConsumerWidget {
                                             const Icon(SpotubeIcons.piped),
                                         title:
                                             Text(context.l10n.piped_instance),
-                                        subtitle: Text(
-                                            context.l10n.piped_description),
+                                        subtitle: RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                  text: context
+                                                      .l10n.piped_description),
+                                              const TextSpan(text: "\n"),
+                                              TextSpan(
+                                                text:
+                                                    context.l10n.piped_warning,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium,
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                         value: preferences.pipedInstance,
                                         showValueWhenUnfolded: false,
                                         options: data
@@ -331,9 +358,26 @@ class SettingsPage extends HookConsumerWidget {
                                             .map(
                                               (e) => DropdownMenuItem(
                                                 value: e.apiUrl,
-                                                child: Text(
-                                                  "${e.name}\n"
-                                                  "${e.locations.map(countryCodeToEmoji).join(" ")}",
+                                                child: RichText(
+                                                  text: TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text:
+                                                            "${e.name.trim()}\n",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .labelLarge,
+                                                      ),
+                                                      TextSpan(
+                                                        text: e.locations
+                                                            .map(
+                                                                countryCodeToEmoji)
+                                                            .join(""),
+                                                        style: GoogleFonts
+                                                            .notoColorEmoji(),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             )

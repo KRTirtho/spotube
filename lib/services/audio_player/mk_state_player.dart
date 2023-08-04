@@ -128,6 +128,7 @@ class MkPlayerWithState extends Player {
     _playlist = null;
     _tempMedias = null;
     _playerStateStream.add(AudioPlaybackState.stopped);
+    _shuffleStream.add(false);
   }
 
   @override
@@ -242,6 +243,12 @@ class MkPlayerWithState extends Player {
             play: true,
           );
         }
+
+        // replace in the _tempMedias if it's not null
+        if (shuffled && _tempMedias != null) {
+          final tempIndex = _tempMedias!.indexOf(media);
+          _tempMedias![tempIndex] = Media(newUrl, extras: media.extras);
+        }
         break;
       }
     }
@@ -263,7 +270,8 @@ class MkPlayerWithState extends Player {
   FutureOr<void> insert(int index, Media media) {
     if (_playlist == null ||
         index < 0 ||
-        index > _playlist!.medias.length - 1) {
+        (_playlist!.medias.length > 1 &&
+            index > _playlist!.medias.length - 1)) {
       return null;
     }
 

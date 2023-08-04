@@ -9,6 +9,15 @@ import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/utils/platform.dart';
 
+final htmlTagRegexp = RegExp(r"<[^>]*>", caseSensitive: true);
+
+String? useDescription(String? description) {
+  return useMemoized(() {
+    if (description == null) return null;
+    return description.replaceAll(htmlTagRegexp, '');
+  }, [description]);
+}
+
 class PlaybuttonCard extends HookWidget {
   final void Function()? onTap;
   final void Function()? onPlaybuttonPressed;
@@ -40,19 +49,17 @@ class PlaybuttonCard extends HookWidget {
     final radius = BorderRadius.circular(15);
 
     final double size = useBreakpointValue<double>(
-          xs: 130,
-          sm: 130,
-          md: 150,
-          others: 170,
-        ) ??
-        170;
+      xs: 130,
+      sm: 130,
+      md: 150,
+      others: 170,
+    );
 
     final end = useBreakpointValue<double>(
-          xs: 15,
-          sm: 15,
-          others: 20,
-        ) ??
-        20;
+      xs: 15,
+      sm: 15,
+      others: 20,
+    );
 
     final textsHeight = useState(
       (textsKey.currentContext?.findRenderObject() as RenderBox?)
@@ -60,6 +67,8 @@ class PlaybuttonCard extends HookWidget {
               .height ??
           110.00,
     );
+
+    final cleanDescription = useDescription(description);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -123,11 +132,11 @@ class PlaybuttonCard extends HookWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      if (description != null)
+                      if (cleanDescription != null)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: AutoSizeText(
-                            description!,
+                            cleanDescription,
                             maxLines: 2,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color:
