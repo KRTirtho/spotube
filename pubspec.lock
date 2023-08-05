@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
-  app_links:
-    dependency: transitive
-    description:
-      name: app_links
-      sha256: d572dcdff49c4cfcfa6f315e2683e518ec6eb54e084d01e51d9631a4dcc1b5e8
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.4.2"
   app_package_maker:
     dependency: transitive
     description:
@@ -853,10 +845,10 @@ packages:
     dependency: transitive
     description:
       name: functions_client
-      sha256: "26059c5fb000ffd0986ae3144d43c2a6f54931610fd61c2584e18e308c7eaa52"
+      sha256: "3b157b4d3ae9e38614fd80fab76d1ef1e0e39ff3412a45de2651f27cecb9d2d2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.3.2"
   fuzzywuzzy:
     dependency: "direct main"
     description:
@@ -893,10 +885,10 @@ packages:
     dependency: transitive
     description:
       name: gotrue
-      sha256: c08f5ac76dcae2dd06cc7f8e80a8ede12c66454fef06caac3b191c8c7a603811
+      sha256: "6ba95e38c06af30d4a365112b433567df70f83d5853923274cb894ea9702c5fa"
       url: "https://pub.dev"
     source: hosted
-    version: "1.7.1"
+    version: "1.11.2"
   graphs:
     dependency: transitive
     description:
@@ -1106,26 +1098,26 @@ packages:
     dependency: "direct main"
     description:
       name: media_kit
-      sha256: d9a32b3f6eafdfbba6aff2e37045a3a80009b6dfbdeec638d51d85e8b254a6a2
+      sha256: "272a9f1dd77ed57b48707fdb0ec0e4a048ef958feccc0d0dd751135fe924b63a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7+1"
+    version: "1.1.1"
   media_kit_libs_android_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_android_audio
-      sha256: e16292bbb1d737ce026fa68154b2fcf5c6f88d6fa752bdb4c0d079c98a82b523
+      sha256: "304b6d4045280b11bf7b4f9a4330556dbc98d7431f2c20e9dec133ed80d3ec78"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.3.0"
   media_kit_libs_ios_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_ios_audio
-      sha256: bb18ed87e8a155fc1d2ee4bf59462ca04d02a0eeb38d0b454facee6d32441ce7
+      sha256: "1b6f7bbaedb2914bb94bb22d5a890238dc883698b42a1a858e9c38194e6281d0"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   media_kit_libs_linux:
     dependency: "direct main"
     description:
@@ -1138,26 +1130,26 @@ packages:
     dependency: "direct main"
     description:
       name: media_kit_libs_macos_audio
-      sha256: b9f4a2995396fd5cc243901e618c0586d4f1781eecf2302999b77d6faee8b250
+      sha256: "070dc90ecf3a07dcb23d39f8473329e8e4616c36d12badd0831fef446428acc2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.5"
+    version: "1.0.6"
   media_kit_libs_windows_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_windows_audio
-      sha256: f6ad5a1b910a6748a7350360756cd99a718fc9661a9583a7fd86a308d068dd81
+      sha256: "34b768e385181b2e475dd846345ed1191bde85a4c64db014d239d4c9f844c5fd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.5"
   media_kit_native_event_loop:
     dependency: "direct main"
     description:
       name: media_kit_native_event_loop
-      sha256: "521125e534603c3f603b93283db3938f557f33ecc383fbd62edd4beb3bf73747"
+      sha256: "5351f0c28124b5358756515d8619abad182cdefe967468d7fb5b274737cc2f59"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.6"
   meta:
     dependency: transitive
     description:
@@ -1426,10 +1418,10 @@ packages:
     dependency: transitive
     description:
       name: postgrest
-      sha256: "7b91eb7b40621d07aaae687f47f3032f30e1b86a9ccebfcfca52d001223f8b6e"
+      sha256: "6a0f28f33af4582a9874ce15520531280d39831f356f9740839ec142fc8deeff"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.4"
+    version: "1.4.0"
   process:
     dependency: transitive
     description:
@@ -1498,10 +1490,10 @@ packages:
     dependency: transitive
     description:
       name: realtime_client
-      sha256: "0f2614f72e5639ddd7abc3dede336f23554f9f744d0b064d41009f9ca94a53d2"
+      sha256: ff743de9bb0f46fcfffcfe64ae93062702dcd0f83a2ce8adc40d5fb7f542af90
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.1.3"
   retry:
     dependency: transitive
     description:
@@ -1646,30 +1638,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.0"
-  sign_in_with_apple:
-    dependency: transitive
-    description:
-      name: sign_in_with_apple
-      sha256: ac3b113767dfdd765078c507dad9d4d9fe96b669cc7bd88fc36fc15376fb3400
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.3.0"
-  sign_in_with_apple_platform_interface:
-    dependency: transitive
-    description:
-      name: sign_in_with_apple_platform_interface
-      sha256: a5883edee09ed6be19de19e7d9f618a617fe41a6fa03f76d082dfb787e9ea18d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
-  sign_in_with_apple_web:
-    dependency: transitive
-    description:
-      name: sign_in_with_apple_web
-      sha256: "44b66528f576e77847c14999d5e881e17e7223b7b0625a185417829e5306f47a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   skeleton_text:
     dependency: "direct main"
     description:
@@ -1759,10 +1727,10 @@ packages:
     dependency: transitive
     description:
       name: storage_client
-      sha256: "4ed4dc8a990d178c96962319d6d8c267c3e206fca2c2b98660bad6e001220ffc"
+      sha256: a3024569213b064587d616827747b766f9bc796e80cec99bd5ffb597b8aeb018
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.1"
+    version: "1.5.1"
   stream_channel:
     dependency: transitive
     description:
@@ -1788,21 +1756,13 @@ packages:
     source: hosted
     version: "1.2.0"
   supabase:
-    dependency: transitive
-    description:
-      name: supabase
-      sha256: "403739cdfea48ba633450e5b191ceeaae81ac10ec89166c0e109235b3e1532f3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.8.1"
-  supabase_flutter:
     dependency: "direct main"
     description:
-      name: supabase_flutter
-      sha256: "7cbdd9a7264dd5b7ab5a6e2da63346054b8e5ddf358467c7f2bc23d5c14d732c"
+      name: supabase
+      sha256: "8186f7ae39b1b27d860b9a8371801ac875a7e251a77235918a1adc3129690014"
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.1"
+    version: "1.9.9"
   sync_http:
     dependency: transitive
     description:
@@ -1907,6 +1867,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: d315be0f6641898b280ffa34e2ddb14f3d12b1a37882557869646e0cc363d0cc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+1"
   uri:
     dependency: transitive
     description:
@@ -2051,38 +2019,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  webview_flutter:
-    dependency: transitive
-    description:
-      name: webview_flutter
-      sha256: "1a37bdbaaf5fbe09ad8579ab09ecfd473284ce482f900b5aea27cf834386a567"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.0"
-  webview_flutter_android:
-    dependency: transitive
-    description:
-      name: webview_flutter_android
-      sha256: "1acea8def62592123e2fbbca164ed8681a98a890bdcbb88f916d5b4a22687759"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.7.0"
-  webview_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: webview_flutter_platform_interface
-      sha256: "78715dc442b7849dbde74e92bb67de1cecf5addf95531c5fb474e72f5fe9a507"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.0"
-  webview_flutter_wkwebview:
-    dependency: transitive
-    description:
-      name: webview_flutter_wkwebview
-      sha256: "4646bb68297803bdbb96d46853e8fcb560d6cb5e04153fa64581535767875dfe"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.4.3"
   win32:
     dependency: transitive
     description:
@@ -2144,10 +2080,10 @@ packages:
     dependency: transitive
     description:
       name: yet_another_json_isolate
-      sha256: "94ba4947ac1ce44bd6a1634d9df712e07b9b5025ba12abd6750be77ba5c08f18"
+      sha256: "86fad76026c4241a32831d6c7febd8f9bded5019e2cd36c5b148499808d8307d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.1.1"
   youtube_explode_dart:
     dependency: "direct main"
     description:

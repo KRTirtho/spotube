@@ -132,11 +132,11 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  FutureOr<void> dispose({int code = 0}) {
+  Future<void> dispose() {
     for (var element in _subscriptions) {
       element.cancel();
     }
-    return super.dispose(code: code);
+    return super.dispose();
   }
 
   @override
@@ -153,9 +153,9 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  FutureOr<void> next() {
+  Future<void> next() async {
     if (_playlist == null || _playlist!.index + 1 >= _playlist!.medias.length) {
-      return null;
+      return;
     }
 
     final isLast = _playlist!.index == _playlist!.medias.length - 1;
@@ -170,8 +170,8 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  FutureOr<void> previous() {
-    if (_playlist == null || _playlist!.index - 1 < 0) return null;
+  Future<void> previous() async {
+    if (_playlist == null || _playlist!.index - 1 < 0) return;
 
     if (loopMode == PlaylistMode.loop && _playlist!.index == 0) {
       playlist = _playlist!.copyWith(index: _playlist!.medias.length - 1);
@@ -183,7 +183,7 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  FutureOr<void> jump(int index) {
+  Future<void> jump(int index) async {
     if (_playlist == null || index < 0 || index >= _playlist!.medias.length) {
       return null;
     }
@@ -193,10 +193,10 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  FutureOr<void> move(int from, int to) {
+  Future<void> move(int from, int to) async {
     if (_playlist == null ||
         from >= _playlist!.medias.length ||
-        to >= _playlist!.medias.length) return null;
+        to >= _playlist!.medias.length) return;
 
     final active = _playlist!.medias[_playlist!.index];
     final newPlaylist = _playlist!.copyWith(
@@ -255,8 +255,8 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  FutureOr<void> add(Media media) {
-    if (_playlist == null) return null;
+  Future<void> add(Media media) async {
+    if (_playlist == null) return;
 
     playlist = _playlist!.copyWith(
       medias: [..._playlist!.medias, media],
@@ -289,16 +289,16 @@ class MkPlayerWithState extends Player {
 
   /// Doesn't work when active media is the one to be removed
   @override
-  FutureOr<void> remove(int index) async {
+  Future<void> remove(int index) async {
     if (_playlist == null ||
         index < 0 ||
         index > _playlist!.medias.length - 1 ||
         _playlist!.index == index) {
-      return null;
+      return;
     }
 
     final targetItem = _playlist!.medias.elementAtOrNull(index);
-    if (targetItem == null) return null;
+    if (targetItem == null) return;
 
     if (shuffled && _tempMedias != null) {
       _tempMedias!.remove(targetItem);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -85,7 +86,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.skipNonMusic = true,
     this.youtubeApiType = YoutubeApiType.piped,
   }) : super() {
-    if (downloadLocation.isEmpty) {
+    if (downloadLocation.isEmpty && !kIsWeb) {
       _getDefaultDownloadDirectory().then(
         (value) {
           downloadLocation = value;
@@ -222,8 +223,11 @@ class UserPreferences extends PersistedChangeNotifier {
     audioQuality = map["audioQuality"] != null
         ? AudioQuality.values[map["audioQuality"]]
         : audioQuality;
-    downloadLocation =
-        map["downloadLocation"] ?? await _getDefaultDownloadDirectory();
+
+    if (!kIsWeb) {
+      downloadLocation =
+          map["downloadLocation"] ?? await _getDefaultDownloadDirectory();
+    }
 
     layoutMode = LayoutMode.values.firstWhere(
       (mode) => mode.name == map["layoutMode"],

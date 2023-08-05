@@ -17,7 +17,6 @@ import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/hooks/use_disable_battery_optimizations.dart';
@@ -30,7 +29,6 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/hooks/use_init_sys_tray.dart';
@@ -75,11 +73,6 @@ Future<void> main(List<String> rawArgs) async {
     exit(0);
   }
 
-  await Supabase.initialize(
-    url: Env.supabaseUrl,
-    anonKey: Env.supabaseAnonKey,
-  );
-
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -101,9 +94,13 @@ Future<void> main(List<String> rawArgs) async {
   );
 
   await SystemTheme.accentColor.load();
-  MetadataGod.initialize();
 
-  final hiveCacheDir = (await getApplicationSupportDirectory()).path;
+  if (!kIsWeb) {
+    MetadataGod.initialize();
+  }
+
+  final hiveCacheDir =
+      kIsWeb ? null : (await getApplicationSupportDirectory()).path;
 
   await QueryClient.initialize(
     cachePrefix: "oss.krtirtho.spotube",
@@ -139,17 +136,18 @@ Future<void> main(List<String> rawArgs) async {
           enableDeviceParameters: false,
           enableApplicationParameters: false,
         ),
-        FileHandler(await getLogsPath(), printLogs: false),
+        if (!kIsWeb) FileHandler(await getLogsPath(), printLogs: false),
       ],
     ),
     releaseConfig: CatcherOptions(
       SilentReportMode(),
       [
         if (arguments["verbose"] ?? false) ConsoleHandler(),
-        FileHandler(
-          await getLogsPath(),
-          printLogs: false,
-        ),
+        if (!kIsWeb)
+          FileHandler(
+            await getLogsPath(),
+            printLogs: false,
+          ),
       ],
     ),
     runAppFunction: () {

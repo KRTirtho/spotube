@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/collections/routes.dart';
 import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/utils/platform.dart';
@@ -89,7 +88,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
     }
   }
 
-  static Future<void> initializeBoxes({required String path}) async {
+  static Future<void> initializeBoxes({required String? path}) async {
     String? boxName = await read(kKeyBoxName);
 
     if (boxName == null) {

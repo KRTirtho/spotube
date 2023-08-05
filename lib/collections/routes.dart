@@ -1,4 +1,5 @@
 import 'package:catcher/catcher.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
@@ -84,12 +85,13 @@ final router = GoRouter(
                 child: const BlackListPage(),
               ),
             ),
-            GoRoute(
-              path: "logs",
-              pageBuilder: (context, state) => SpotubeSlidePage(
-                child: const LogsPage(),
+            if (!kIsWeb)
+              GoRoute(
+                path: "logs",
+                pageBuilder: (context, state) => SpotubeSlidePage(
+                  child: const LogsPage(),
+                ),
               ),
-            ),
             GoRoute(
               path: "about",
               pageBuilder: (context, state) => SpotubeSlidePage(
