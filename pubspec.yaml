@@ -68,7 +68,7 @@ dependencies:
   media_kit_libs_linux: ^1.0.2
   metadata_god: ^0.5.0
   mime: ^1.0.2
-  package_info_plus: ^3.0.2
+  package_info_plus: ^4.1.0
   palette_generator: ^0.3.3
   path: ^1.8.0
   path_provider: ^2.0.8
