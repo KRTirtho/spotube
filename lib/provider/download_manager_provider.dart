@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:metadata_god/metadata_god.dart';
@@ -30,6 +31,8 @@ class DownloadManagerProvider extends StateNotifier<List<SpotubeTrack>> {
       : activeDownloadProgress = StreamController.broadcast(),
         failedDownloads = StreamController.broadcast(),
         super([]) {
+    if (kIsWeb) return;
+
     FileDownloader().registerCallbacks(
       group: FileDownloader.defaultGroup,
       taskNotificationTapCallback: (task, notificationType) {

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -506,19 +507,20 @@ class SettingsPage extends HookConsumerWidget {
                           ),
                         ],
                       ),
-                    SectionCardWithHeading(
-                      heading: context.l10n.developers,
-                      children: [
-                        ListTile(
-                          leading: const Icon(SpotubeIcons.logs),
-                          title: Text(context.l10n.logs),
-                          trailing: const Icon(SpotubeIcons.angleRight),
-                          onTap: () {
-                            GoRouter.of(context).push("/settings/logs");
-                          },
-                        )
-                      ],
-                    ),
+                    if (!kIsWeb)
+                      SectionCardWithHeading(
+                        heading: context.l10n.developers,
+                        children: [
+                          ListTile(
+                            leading: const Icon(SpotubeIcons.logs),
+                            title: Text(context.l10n.logs),
+                            trailing: const Icon(SpotubeIcons.angleRight),
+                            onTap: () {
+                              GoRouter.of(context).push("/settings/logs");
+                            },
+                          )
+                        ],
+                      ),
                     SectionCardWithHeading(
                       heading: context.l10n.about,
                       children: [

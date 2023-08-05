@@ -1,8 +1,12 @@
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/models/matched_track.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase/supabase.dart';
 
 class SupabaseService {
-  static SupabaseClient get api => Supabase.instance.client;
+  static final api = SupabaseClient(
+    Env.supabaseUrl,
+    Env.supabaseAnonKey,
+  );
 
   Future<void> insertTrack(MatchedTrack track) async {
     await api.from("tracks").insert(track.toJson());

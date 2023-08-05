@@ -6,7 +6,6 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <app_links/app_links_plugin_c_api.h>
 #include <catcher/catcher_plugin.h>
 #include <connectivity_plus/connectivity_plus_windows_plugin.h>
 #include <flutter_secure_storage_windows/flutter_secure_storage_windows_plugin.h>
@@ -21,8 +20,6 @@
 #include <window_size/window_size_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  AppLinksPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("AppLinksPluginCApi"));
   CatcherPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("CatcherPlugin"));
   ConnectivityPlusWindowsPluginRegisterWithRegistrar(
