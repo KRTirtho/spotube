@@ -1,6 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:background_downloader/background_downloader.dart';
-// import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -10,6 +8,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/services/download_manager/download_manager.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class UserDownloads extends HookConsumerWidget {
@@ -31,7 +30,7 @@ class UserDownloads extends HookConsumerWidget {
               Expanded(
                 child: AutoSizeText(
                   context.l10n
-                      .currently_downloading(downloadManager.totalDownloads),
+                      .currently_downloading(downloadManager.$downloadCount),
                   maxLines: 1,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
@@ -42,7 +41,7 @@ class UserDownloads extends HookConsumerWidget {
                   backgroundColor: Colors.red[50],
                   foregroundColor: Colors.red[400],
                 ),
-                onPressed: downloadManager.totalDownloads == 0
+                onPressed: downloadManager.$downloadCount == 0
                     ? null
                     : downloadManager.cancelAll,
                 child: Text(context.l10n.cancel_all),
@@ -53,24 +52,16 @@ class UserDownloads extends HookConsumerWidget {
         Expanded(
           child: SafeArea(
             child: ListView.builder(
-              itemCount: downloadManager.totalDownloads,
+              itemCount: downloadManager.$downloadCount,
               itemBuilder: (context, index) {
-                final track = downloadManager.items.elementAt(index);
+                final track = downloadManager.$history.elementAt(index);
                 return HookBuilder(builder: (context) {
-                  final task = useStream(
-                    downloadManager.activeDownloadProgress.stream
-                        .where((element) => element.task.taskId == track.id),
+                  final taskStatus = useListenable(
+                    useMemoized(
+                      () => downloadManager.getStatusNotifier(track),
+                      [track],
+                    ),
                   );
-                  final failedTaskStream = useStream(
-                    downloadManager.failedDownloads.stream
-                        .where((element) => element.taskId == track.id),
-                  );
-                  final taskItSelf = useFuture(
-                    FileDownloader().database.recordForId(track.id!),
-                  );
-
-                  final hasFailed = failedTaskStream.hasData ||
-                      taskItSelf.data?.status == TaskStatus.failed;
 
                   return ListTile(
                     title: Text(track.name ?? ''),
@@ -88,19 +79,83 @@ class UserDownloads extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    horizontalTitleGap: 10,
-                    trailing: downloadManager.activeItem?.id == track.id &&
-                            !hasFailed
-                        ? CircularProgressIndicator(
-                            value: task.data?.progress ?? 0,
-                          )
-                        : hasFailed
-                            ? Icon(SpotubeIcons.error, color: Colors.red[400])
-                            : IconButton(
+                    trailing: taskStatus == null
+                        ? null
+                        : switch (taskStatus.value) {
+                            DownloadStatus.downloading =>
+                              HookBuilder(builder: (context) {
+                                final taskProgress = useListenable(useMemoized(
+                                  () => downloadManager
+                                      .getProgressNotifier(track),
+                                  [track],
+                                ));
+                                return SizedBox(
+                                  width: 140,
+                                  child: Row(
+                                    children: [
+                                      CircularProgressIndicator(
+                                        value: taskProgress?.value ?? 0,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      IconButton(
+                                          icon: const Icon(SpotubeIcons.pause),
+                                          onPressed: () {
+                                            downloadManager.pause(track);
+                                          }),
+                                      const SizedBox(width: 10),
+                                      IconButton(
+                                          icon: const Icon(SpotubeIcons.close),
+                                          onPressed: () {
+                                            downloadManager.cancel(track);
+                                          }),
+                                    ],
+                                  ),
+                                );
+                              }),
+                            DownloadStatus.paused => Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                      icon: const Icon(SpotubeIcons.play),
+                                      onPressed: () {
+                                        downloadManager.resume(track);
+                                      }),
+                                  const SizedBox(width: 10),
+                                  IconButton(
+                                      icon: const Icon(SpotubeIcons.close),
+                                      onPressed: () {
+                                        downloadManager.cancel(track);
+                                      })
+                                ],
+                              ),
+                            DownloadStatus.failed ||
+                            DownloadStatus.canceled =>
+                              SizedBox(
+                                width: 100,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      SpotubeIcons.error,
+                                      color: Colors.red[400],
+                                    ),
+                                    const SizedBox(width: 10),
+                                    IconButton(
+                                      icon: const Icon(SpotubeIcons.refresh),
+                                      onPressed: () {
+                                        downloadManager.retry(track);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            DownloadStatus.completed =>
+                              Icon(SpotubeIcons.done, color: Colors.green[400]),
+                            DownloadStatus.queued => IconButton(
                                 icon: const Icon(SpotubeIcons.close),
                                 onPressed: () {
-                                  downloadManager.cancel(track);
+                                  downloadManager.removeFromQueue(track);
                                 }),
+                          },
                     subtitle: TypeConversionUtils.artists_X_ClickableArtists(
                       track.artists ?? <Artist>[],
                       mainAxisAlignment: WrapAlignment.start,

@@ -14,6 +14,7 @@ import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
@@ -99,6 +100,20 @@ class TrackOptions extends HookConsumerWidget {
       playlistId ?? "",
     );
 
+    final isInQueue = useMemoized(() {
+      if (playlist.activeTrack == null) return false;
+      return downloadManager.isActive(playlist.activeTrack!);
+    }, [
+      playlist.activeTrack,
+      downloadManager,
+    ]);
+
+    final progressNotifier = useMemoized(() {
+      final spotubeTrack = downloadManager.mapToSpotubeTrack(track);
+      if (spotubeTrack == null) return null;
+      return downloadManager.getProgressNotifier(spotubeTrack);
+    });
+
     return ListTileTheme(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -175,7 +190,7 @@ class TrackOptions extends HookConsumerWidget {
               );
               break;
             case TrackOptionValue.download:
-              await downloadManager.enqueue(track);
+              await downloadManager.addToQueue(track);
               break;
           }
         },
@@ -268,9 +283,14 @@ class TrackOptions extends HookConsumerWidget {
                 ),
               PopSheetEntry(
                 value: TrackOptionValue.download,
-                enabled: downloadManager.activeItem?.id != track.id!,
-                leading: downloadManager.activeItem?.id == track.id!
-                    ? const CircularProgressIndicator()
+                enabled: isInQueue,
+                leading: isInQueue
+                    ? HookBuilder(builder: (context) {
+                        final progress = useListenable(progressNotifier!);
+                        return CircularProgressIndicator(
+                          value: progress.value,
+                        );
+                      })
                     : const Icon(SpotubeIcons.download),
                 title: Text(context.l10n.download_track),
               ),

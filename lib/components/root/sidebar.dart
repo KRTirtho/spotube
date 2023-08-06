@@ -52,7 +52,7 @@ class Sidebar extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     final downloadCount = ref.watch(
-      downloadManagerProvider.select((s) => s.length),
+      downloadManagerProvider.select((s) => s.$downloadCount),
     );
 
     final layoutMode =

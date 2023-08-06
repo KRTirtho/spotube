@@ -33,7 +33,7 @@ class RootApp extends HookConsumerWidget {
     final index = useState(0);
     final isMounted = useIsMounted();
     final showingDialogCompleter = useRef(Completer()..complete());
-    final downloader = ref.watch(downloadManagerProvider.notifier);
+    final downloader = ref.watch(downloadManagerProvider);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {

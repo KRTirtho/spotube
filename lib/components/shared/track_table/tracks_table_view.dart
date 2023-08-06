@@ -196,7 +196,7 @@ class TracksTableView extends HookConsumerWidget {
                             );
                             if (confirmed != true) return;
                             await downloader
-                                .enqueueAll(selectedTracks.toList());
+                                .batchAddToQueue(selectedTracks.toList());
                             if (context.mounted) {
                               selected.value = [];
                               showCheck.value = false;

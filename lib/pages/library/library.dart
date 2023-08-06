@@ -16,7 +16,7 @@ class LibraryPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final downloadingCount =
-        ref.watch(downloadManagerProvider.select((s) => s.length));
+        ref.watch(downloadManagerProvider.select((s) => s.$downloadCount));
 
     return DefaultTabController(
       length: 5,
