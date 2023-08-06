@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
+import 'package:catcher/core/catcher.dart';
 import 'package:collection/collection.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:spotube/services/download_manager/chunked_download.dart';
 import 'package:spotube/services/download_manager/download_request.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/download_manager/download_task.dart';
@@ -54,35 +56,39 @@ class DownloadManager {
         if (total == -1) {}
       };
 
-  Future<void> download(String url, String savePath, cancelToken,
-      {forceDownload = false}) async {
+  Future<void> download(
+    String url,
+    String savePath,
+    CancelToken cancelToken, {
+    forceDownload = false,
+  }) async {
     late String partialFilePath;
     late File partialFile;
     try {
-      var task = getDownload(url);
+      final task = getDownload(url);
 
       if (task == null || task.status.value == DownloadStatus.canceled) {
         return;
       }
       setStatus(task, DownloadStatus.downloading);
 
-      debugPrint(url);
-      var file = File(savePath.toString());
+      debugPrint("[DownloadManager] $url");
+      final file = File(savePath.toString());
       partialFilePath = savePath + partialExtension;
       partialFile = File(partialFilePath);
 
-      var fileExist = await file.exists();
-      var partialFileExist = await partialFile.exists();
+      final fileExist = await file.exists();
+      final partialFileExist = await partialFile.exists();
 
       if (fileExist) {
-        debugPrint("File Exists");
+        debugPrint("[DownloadManager] File Exists");
         setStatus(task, DownloadStatus.completed);
       } else if (partialFileExist) {
-        debugPrint("Partial File Exists");
+        debugPrint("[DownloadManager] Partial File Exists");
 
-        var partialFileLength = await partialFile.length();
+        final partialFileLength = await partialFile.length();
 
-        var response = await dio.download(
+        final response = await dio.download(
           url,
           partialFilePath + tempExtension,
           onReceiveProgress: createCallback(url, partialFileLength),
@@ -97,23 +103,20 @@ class DownloadManager {
         );
 
         if (response.statusCode == HttpStatus.partialContent) {
-          var ioSink = partialFile.openWrite(mode: FileMode.writeOnlyAppend);
-          var _f = File(partialFilePath + tempExtension);
-          await ioSink.addStream(_f.openRead());
-          await _f.delete();
+          final ioSink = partialFile.openWrite(mode: FileMode.writeOnlyAppend);
+          final partialChunkFile = File(partialFilePath + tempExtension);
+          await ioSink.addStream(partialChunkFile.openRead());
+          await partialChunkFile.delete();
           await ioSink.close();
           await partialFile.rename(savePath);
 
           setStatus(task, DownloadStatus.completed);
         }
       } else {
-        var response = await dio.download(
+        final response = await dio.chunkedDownload(
           url,
-          partialFilePath,
+          savePath: partialFilePath,
           onReceiveProgress: createCallback(url, 0),
-          options: Options(headers: {
-            HttpHeaders.connectionHeader: "close",
-          }),
           cancelToken: cancelToken,
           deleteOnError: false,
         );
@@ -123,7 +126,9 @@ class DownloadManager {
           setStatus(task, DownloadStatus.completed);
         }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      Catcher.reportCheckedError(e, stackTrace);
+
       var task = getDownload(url)!;
       if (task.status.value != DownloadStatus.canceled &&
           task.status.value != DownloadStatus.paused) {
@@ -169,21 +174,9 @@ class DownloadManager {
     }
   }
 
-  Future<DownloadTask?> addDownload(String url, String savedDir) async {
-    if (url.isNotEmpty) {
-      if (savedDir.isEmpty) {
-        savedDir = ".";
-      }
-
-      var isDirectory = await Directory(savedDir).exists();
-      var downloadFilename = isDirectory
-          ? savedDir + Platform.pathSeparator + getFileNameFromUrl(url)
-          : savedDir;
-
-      return _addDownloadRequest(DownloadRequest(url, downloadFilename));
-    }
-
-    return null;
+  Future<DownloadTask?> addDownload(String url, String savedPath) async {
+    if (url.isEmpty) throw Exception("Invalid Url. Url is empty: $url");
+    return _addDownloadRequest(DownloadRequest(url, savedPath));
   }
 
   Future<DownloadTask> _addDownloadRequest(
@@ -200,7 +193,8 @@ class DownloadManager {
     }
 
     _queue.add(DownloadRequest(downloadRequest.url, downloadRequest.path));
-    var task = DownloadTask(_queue.last);
+
+    final task = DownloadTask(_queue.last);
 
     _cache[downloadRequest.url] = task;
 
@@ -210,7 +204,7 @@ class DownloadManager {
   }
 
   Future<void> pauseDownload(String url) async {
-    debugPrint("Pause Download");
+    debugPrint("[DownloadManager] Pause Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.paused);
     task.request.cancelToken.cancel();
@@ -219,7 +213,7 @@ class DownloadManager {
   }
 
   Future<void> cancelDownload(String url) async {
-    debugPrint("Cancel Download");
+    debugPrint("[DownloadManager] Cancel Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.canceled);
     _queue.remove(task.request);
@@ -227,7 +221,7 @@ class DownloadManager {
   }
 
   Future<void> resumeDownload(String url) async {
-    debugPrint("Resume Download");
+    debugPrint("[DownloadManager] Resume Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.downloading);
     task.request.cancelToken = CancelToken();
@@ -262,10 +256,10 @@ class DownloadManager {
   }
 
   // Batch Download Mechanism
-  Future<void> addBatchDownloads(List<String> urls, String savedDir) async {
-    urls.forEach((url) {
-      addDownload(url, savedDir);
-    });
+  Future<void> addBatchDownloads(List<String> urls, String savePath) async {
+    for (final url in urls) {
+      addDownload(url, savePath);
+    }
   }
 
   List<DownloadTask?> getBatchDownloads(List<String> urls) {
@@ -349,7 +343,7 @@ class DownloadManager {
     var completed = 0;
     var total = urls.length;
 
-    urls.forEach((url) {
+    for (final url in urls) {
       DownloadTask? task = getDownload(url);
 
       if (task != null) {
@@ -381,7 +375,7 @@ class DownloadManager {
           completer.complete(null);
         }
       }
-    });
+    }
 
     return completer.future.timeout(timeout);
   }

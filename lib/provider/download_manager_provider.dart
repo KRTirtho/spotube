@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:catcher/catcher.dart';
@@ -31,6 +30,7 @@ class DownloadManagerProvider extends ChangeNotifier {
       if (track == null) return;
 
       final savePath = getTrackFileUrl(track);
+      // related to onFileExists
       final oldFile = File("$savePath.old");
 
       if ((status == DownloadStatus.failed ||
@@ -40,12 +40,7 @@ class DownloadManagerProvider extends ChangeNotifier {
       }
       if (status != DownloadStatus.completed) return;
 
-      var file = File(request.path);
-
-      file.copySync(savePath);
-      file.deleteSync();
-
-      file = File(savePath);
+      final file = File(request.path);
 
       if (await oldFile.exists()) {
         await oldFile.delete();
@@ -62,13 +57,13 @@ class DownloadManagerProvider extends ChangeNotifier {
         album: track.album?.name,
         albumArtist: track.artists?.map((a) => a.name).join(", "),
         year: track.album?.releaseDate != null
-            ? int.tryParse(track.album!.releaseDate!)
-            : null,
+            ? int.tryParse(track.album!.releaseDate!) ?? 1969
+            : 1969,
         trackNumber: track.trackNumber,
         discNumber: track.discNumber,
-        durationMs: track.durationMs?.toDouble(),
-        fileSize: file.lengthSync(),
-        trackTotal: track.album?.tracks?.length,
+        durationMs: track.durationMs?.toDouble() ?? 0.0,
+        fileSize: await file.length(),
+        trackTotal: track.album?.tracks?.length ?? 0,
         picture: imageBytes != null
             ? Picture(
                 data: imageBytes,
