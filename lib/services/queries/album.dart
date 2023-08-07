@@ -42,7 +42,8 @@ class AlbumQueries {
     return useSpotifyQuery<bool, dynamic>(
       "is-saved-for-me/$album",
       (spotify) {
-        return spotify.me.isSavedAlbums([album]).then((value) => value.first);
+        return spotify.me
+            .containsSavedAlbums([album]).then((value) => value[album]);
       },
       ref: ref,
     );

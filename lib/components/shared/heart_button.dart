@@ -156,7 +156,6 @@ class PlaylistHeartButton extends HookConsumerWidget {
       playlist.id!,
       refreshQueries: [
         isLikedQuery.key,
-        "current-user-playlists",
       ],
     );
 
