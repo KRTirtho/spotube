@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/services/audio_services/smtc_windows_web.dart'
-    if (dart.library.io) 'package:smtc_windows/smtc_windows.dart';
+import 'package:smtc_windows/smtc_windows.dart'
+    if (dart.library.html) 'package:spotube/services/audio_services/smtc_windows_web.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
