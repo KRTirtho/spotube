@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,11 +22,33 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
     final userPlaylists = useQueries.playlist.ofMine(ref);
+
+    useEffect(() {
+      final op = CancelableOperation.fromFuture(
+        () async {
+          while (userPlaylists.hasNextPage) {
+            await userPlaylists.fetchNext();
+          }
+        }(),
+      );
+
+      return () {
+        op.cancel();
+      };
+    }, [userPlaylists.hasNextPage]);
+
     final me = useQueries.user.me(ref);
-    final filteredPlaylists = userPlaylists.data?.where(
-      (playlist) =>
-          playlist.owner?.id != null && playlist.owner!.id == me.data?.id,
+
+    final filteredPlaylists = useMemoized(
+      () => userPlaylists.pages
+          .expand((page) => page.items?.toList() ?? <PlaylistSimple>[])
+          .where(
+            (playlist) =>
+                playlist.owner?.id != null && playlist.owner!.id == me.data?.id,
+          ),
+      [userPlaylists.pages, me.data?.id],
     );
+
     final playlistsCheck = useState(<String, bool>{});
     final queryClient = useQueryClient();
 
@@ -70,11 +93,11 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
       content: SizedBox(
         height: 300,
         width: 300,
-        child: !userPlaylists.hasData
+        child: userPlaylists.hasNextPage
             ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 shrinkWrap: true,
-                itemCount: filteredPlaylists!.length,
+                itemCount: filteredPlaylists.length,
                 itemBuilder: (context, index) {
                   final playlist = filteredPlaylists.elementAt(index);
                   return CheckboxListTile(

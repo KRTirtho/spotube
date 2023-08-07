@@ -126,12 +126,18 @@ class PlaylistQueries {
     );
   }
 
-  Query<Iterable<PlaylistSimple>, dynamic> ofMine(WidgetRef ref) {
-    return useSpotifyQuery<Iterable<PlaylistSimple>, dynamic>(
+  InfiniteQuery<Page<PlaylistSimple>, dynamic, int> ofMine(WidgetRef ref) {
+    return useSpotifyInfiniteQuery<Page<PlaylistSimple>, dynamic, int>(
       "current-user-playlists",
-      (spotify) {
-        return spotify.playlists.me.all();
+      (page, spotify) async {
+        final playlists = await spotify.playlists.me.getPage(10, page * 10);
+        return playlists;
       },
+      initialPage: 0,
+      nextPage: (lastPage, lastPageData) =>
+          (lastPageData.items?.length ?? 0) < 10 || lastPageData.isLast
+              ? null
+              : lastPage + 1,
       ref: ref,
     );
   }

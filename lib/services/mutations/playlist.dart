@@ -1,4 +1,5 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/hooks/use_spotify_mutation.dart';
 
@@ -9,7 +10,9 @@ class PlaylistMutations {
     WidgetRef ref,
     String playlistId, {
     List<String>? refreshQueries,
+    List<String>? refreshInfiniteQueries,
   }) {
+    final queryClient = useQueryClient();
     return useSpotifyMutation<bool, dynamic, bool, dynamic>(
       "toggle-playlist-like/$playlistId",
       (isLiked, spotify) async {
@@ -22,6 +25,11 @@ class PlaylistMutations {
       },
       ref: ref,
       refreshQueries: refreshQueries,
+      refreshInfiniteQueries: refreshInfiniteQueries,
+      onData: (data, recoveryData) async {
+        await queryClient
+            .refreshInfiniteQueryAllPages("current-user-playlists");
+      },
     );
   }
 
