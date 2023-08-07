@@ -26,9 +26,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final downloadCount = ref.watch(
-      downloadManagerProvider.select((s) => s.length),
-    );
+    final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
     final mediaQuery = MediaQuery.of(context);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));

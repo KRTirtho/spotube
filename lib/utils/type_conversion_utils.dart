@@ -167,7 +167,7 @@ abstract class TypeConversionUtils {
     track.name = metadata?.title ?? basenameWithoutExtension(file.path);
     track.type = "track";
     track.uri = file.path;
-    track.durationMs = metadata?.durationMs?.toInt();
+    track.durationMs = (metadata?.durationMs?.toInt() ?? 0) * 1000;
 
     return track;
   }

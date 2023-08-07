@@ -253,5 +253,6 @@
   "youtube_api_type": "Tipo de API de YouTube",
   "ok": "OK",
   "failed_to_encrypt": "Error al cifrar",
-  "encryption_failed_warning": "Spotube utiliza el cifrado para almacenar sus datos de forma segura. Pero ha fallado. Por lo tanto, volverá a un almacenamiento no seguro\nSi está utilizando Linux, asegúrese de tener instalados servicios secretos como gnome-keyring, kde-wallet y keepassxc"
+  "encryption_failed_warning": "Spotube utiliza el cifrado para almacenar sus datos de forma segura. Pero ha fallado. Por lo tanto, volverá a un almacenamiento no seguro\nSi está utilizando Linux, asegúrese de tener instalados servicios secretos como gnome-keyring, kde-wallet y keepassxc",
+  "querying_info": "Consultando información..."
 }

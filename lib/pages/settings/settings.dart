@@ -23,7 +23,6 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/piped_instances_provider.dart';
@@ -36,8 +35,6 @@ class SettingsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final UserPreferences preferences = ref.watch(userPreferencesProvider);
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final isDownloading =
-        ref.watch(downloadManagerProvider.select((s) => s.isNotEmpty));
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
@@ -449,21 +446,15 @@ class SettingsPage extends HookConsumerWidget {
                     SectionCardWithHeading(
                       heading: context.l10n.downloads,
                       children: [
-                        Tooltip(
-                          message: isDownloading
-                              ? context.l10n.wait_for_download_to_finish
-                              : "",
-                          child: ListTile(
-                            leading: const Icon(SpotubeIcons.download),
-                            title: Text(context.l10n.download_location),
-                            subtitle: Text(preferences.downloadLocation),
-                            trailing: FilledButton(
-                              onPressed:
-                                  isDownloading ? null : pickDownloadLocation,
-                              child: const Icon(SpotubeIcons.folder),
-                            ),
-                            onTap: isDownloading ? null : pickDownloadLocation,
+                        ListTile(
+                          leading: const Icon(SpotubeIcons.download),
+                          title: Text(context.l10n.download_location),
+                          subtitle: Text(preferences.downloadLocation),
+                          trailing: FilledButton(
+                            onPressed: pickDownloadLocation,
+                            child: const Icon(SpotubeIcons.folder),
                           ),
+                          onTap: pickDownloadLocation,
                         ),
                         SwitchListTile(
                           secondary: const Icon(SpotubeIcons.lyrics),

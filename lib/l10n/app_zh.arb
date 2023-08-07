@@ -253,5 +253,6 @@
   "youtube_api_type": "API 类型",
   "ok": "确定",
   "failed_to_encrypt": "加密失败",
-  "encryption_failed_warning": "Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务"
+  "encryption_failed_warning": "Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务",
+  "querying_info": "正在查询信息..."
 }
