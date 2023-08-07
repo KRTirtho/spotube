@@ -330,14 +330,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  colorize:
-    dependency: transitive
-    description:
-      name: colorize
-      sha256: "584746cd6ba1cba0633b6720f494fe6f9601c4170f0666c1579d2aa2a61071ba"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   connectivity_plus:
     dependency: transitive
     description:
@@ -510,10 +502,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: a38574032c5f1dd06c4aee541789906c12ccaab8ba01446e800d9c5b79c4a978
+      sha256: ed5337a5660c506388a9f012be0288fb38b49020ce2b45fe1f8b8323fe429f99
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   file:
     dependency: transitive
     description:
@@ -734,10 +726,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: "34f5becca2df35955b2ec5e875349028ea609a826de7aade4de80534cf876b27"
+      sha256: ff90d5ddd0cda6d94ed048cc9c4a4d993d1a4bb11605d60a1282fc1bbf173c77
       url: "https://pub.dev"
     source: hosted
-    version: "1.72.1"
+    version: "1.80.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -1466,10 +1458,10 @@ packages:
     dependency: transitive
     description:
       name: puppeteer
-      sha256: "1304d8044054a8c89df648ef12352cf840ed2d34bbfbfa03d91537c72ae0f2c7"
+      sha256: "59e723cc5b69537159a7c34efd645dc08a6a1ac4647d7d7823606802c0f93cdb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.22.0"
+    version: "3.2.0"
   quiver:
     dependency: transitive
     description:

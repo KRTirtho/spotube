@@ -283,7 +283,7 @@ class TrackOptions extends HookConsumerWidget {
                 ),
               PopSheetEntry(
                 value: TrackOptionValue.download,
-                enabled: isInQueue,
+                enabled: !isInQueue,
                 leading: isInQueue
                     ? HookBuilder(builder: (context) {
                         final progress = useListenable(progressNotifier!);

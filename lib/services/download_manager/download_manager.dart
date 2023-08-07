@@ -118,7 +118,7 @@ class DownloadManager {
           savePath: partialFilePath,
           onReceiveProgress: createCallback(url, 0),
           cancelToken: cancelToken,
-          deleteOnError: false,
+          deleteOnError: true,
         );
 
         if (response.statusCode == HttpStatus.ok) {
