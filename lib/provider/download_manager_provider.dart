@@ -19,7 +19,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class DownloadManagerProvider extends ChangeNotifier {
   DownloadManagerProvider({required this.ref})
       : $history = <SpotubeTrack>{},
-        backHistory = <Track>{},
+        $backHistory = <Track>{},
         dl = DownloadManager() {
     dl.statusStream.listen((event) async {
       final (:request, :status) = event;
@@ -100,7 +100,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   final Set<SpotubeTrack> $history;
   // these are the tracks which metadata hasn't been fetched yet
-  final Set<Track> backHistory;
+  final Set<Track> $backHistory;
   final DownloadManager dl;
 
   /// Spotify Images are always JPEGs
@@ -133,7 +133,7 @@ class DownloadManagerProvider extends ChangeNotifier {
   }
 
   bool isActive(Track track) {
-    if (backHistory.contains(track)) return true;
+    if ($backHistory.contains(track)) return true;
 
     final spotubeTrack = mapToSpotubeTrack(track);
 
@@ -170,10 +170,10 @@ class DownloadManagerProvider extends ChangeNotifier {
         $history.add(track);
       }
     } else {
-      backHistory.add(track);
+      $backHistory.add(track);
       final spotubeTrack =
           await SpotubeTrack.fetchFromTrack(track, yt).then((d) {
-        backHistory.remove(track);
+        $backHistory.remove(track);
         return d;
       });
       final downloadTask = await dl.addDownload(spotubeTrack.ytUri, savePath);
@@ -186,12 +186,24 @@ class DownloadManagerProvider extends ChangeNotifier {
   }
 
   Future<void> batchAddToQueue(List<Track> tracks) async {
-    backHistory.addAll(
+    $backHistory.addAll(
       tracks.where((element) => element is! SpotubeTrack),
     );
+    notifyListeners();
     for (final track in tracks) {
-      await addToQueue(track);
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        if (track == tracks.first) {
+          await addToQueue(track);
+        } else {
+          await Future.delayed(
+            const Duration(seconds: 5),
+            () => addToQueue(track),
+          );
+        }
+      } catch (e) {
+        Catcher.reportCheckedError(e, StackTrace.current);
+        continue;
+      }
     }
   }
 

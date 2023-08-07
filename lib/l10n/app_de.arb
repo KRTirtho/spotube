@@ -253,5 +253,6 @@
   "youtube_api_type": "API-Typ",
   "ok": "OK",
   "failed_to_encrypt": "Verschlüsselung fehlgeschlagen",
-  "encryption_failed_warning": "Spotube verwendet Verschlüsselung, um Ihre Daten sicher zu speichern. Dies ist jedoch fehlgeschlagen. Daher wird es auf unsichere Speicherung zurückgreifen\nWenn Sie Linux verwenden, stellen Sie bitte sicher, dass Sie Secret-Services wie gnome-keyring, kde-wallet und keepassxc installiert haben"
+  "encryption_failed_warning": "Spotube verwendet Verschlüsselung, um Ihre Daten sicher zu speichern. Dies ist jedoch fehlgeschlagen. Daher wird es auf unsichere Speicherung zurückgreifen\nWenn Sie Linux verwenden, stellen Sie bitte sicher, dass Sie Secret-Services wie gnome-keyring, kde-wallet und keepassxc installiert haben",
+  "querying_info": "Abfrageinformationen..."
 }
