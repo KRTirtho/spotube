@@ -281,6 +281,45 @@ class UserPreferences extends PersistedChangeNotifier {
       "youtubeApiType": youtubeApiType.name,
     };
   }
+
+  UserPreferences copyWith({
+    ThemeMode? themeMode,
+    SpotubeColor? accentColorScheme,
+    bool? albumColorSync,
+    bool? checkUpdate,
+    AudioQuality? audioQuality,
+    String? downloadLocation,
+    LayoutMode? layoutMode,
+    CloseBehavior? closeBehavior,
+    bool? showSystemTrayIcon,
+    Locale? locale,
+    String? pipedInstance,
+    SearchMode? searchMode,
+    bool? skipNonMusic,
+    YoutubeApiType? youtubeApiType,
+    String? recommendationMarket,
+    bool? saveTrackLyrics,
+  }) {
+    return UserPreferences(
+      ref,
+      themeMode: themeMode ?? this.themeMode,
+      accentColorScheme: accentColorScheme ?? this.accentColorScheme,
+      albumColorSync: albumColorSync ?? this.albumColorSync,
+      checkUpdate: checkUpdate ?? this.checkUpdate,
+      audioQuality: audioQuality ?? this.audioQuality,
+      downloadLocation: downloadLocation ?? this.downloadLocation,
+      layoutMode: layoutMode ?? this.layoutMode,
+      closeBehavior: closeBehavior ?? this.closeBehavior,
+      showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
+      locale: locale ?? this.locale,
+      pipedInstance: pipedInstance ?? this.pipedInstance,
+      searchMode: searchMode ?? this.searchMode,
+      skipNonMusic: skipNonMusic ?? this.skipNonMusic,
+      youtubeApiType: youtubeApiType ?? this.youtubeApiType,
+      recommendationMarket: recommendationMarket ?? this.recommendationMarket,
+      saveTrackLyrics: saveTrackLyrics ?? this.saveTrackLyrics,
+    );
+  }
 }
 
 final userPreferencesProvider = ChangeNotifierProvider(

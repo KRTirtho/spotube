@@ -33,6 +33,7 @@ class DownloadManagerProvider extends ChangeNotifier {
       // related to onFileExists
       final oldFile = File("$savePath.old");
 
+      // if download failed and old file exists, rename it back
       if ((status == DownloadStatus.failed ||
               status == DownloadStatus.canceled) &&
           await oldFile.exists()) {
@@ -84,7 +85,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   final Ref<DownloadManagerProvider> ref;
 
-  YoutubeEndpoints get yt => ref.read(youtubeProvider);
+  YoutubeEndpoints get yt => ref.read(downloadYoutubeProvider);
   String get downloadDirectory =>
       ref.read(userPreferencesProvider.select((s) => s.downloadLocation));
 
@@ -196,7 +197,7 @@ class DownloadManagerProvider extends ChangeNotifier {
           await addToQueue(track);
         } else {
           await Future.delayed(
-            const Duration(seconds: 5),
+            const Duration(seconds: 1),
             () => addToQueue(track),
           );
         }
@@ -230,6 +231,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   void cancelAll() {
     for (final download in dl.getAllDownloads()) {
+      if (download.status.value == DownloadStatus.completed) continue;
       dl.cancelDownload(download.request.url);
     }
   }
