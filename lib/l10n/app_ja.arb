@@ -253,5 +253,6 @@
   "youtube_api_type": "APIの種類",
   "ok": "分かりました",
   "failed_to_encrypt": "暗号化に失敗しました",
-  "encryption_failed_warning": "Spotubeはデータを安全に保存するために暗号化を使用しています。しかし、失敗しました。したがって、安全でないストレージにフォールバックします\nLinuxを使用している場合は、gnome-keyring、kde-wallet、keepassxcなどのシークレットサービスがインストールされていることを確認してください"
+  "encryption_failed_warning": "Spotubeはデータを安全に保存するために暗号化を使用しています。しかし、失敗しました。したがって、安全でないストレージにフォールバックします\nLinuxを使用している場合は、gnome-keyring、kde-wallet、keepassxcなどのシークレットサービスがインストールされていることを確認してください",
+  "querying_info": "情報を取得中..."
 }

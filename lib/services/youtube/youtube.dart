@@ -162,15 +162,13 @@ class YoutubeEndpoints {
   }
 
   String _pipedStreamResponseToStreamUrl(PipedStreamResponse stream) {
-    final streamFormat = DesktopTools.platform.isLinux
-        ? PipedAudioStreamFormat.webm
-        : PipedAudioStreamFormat.m4a;
-
     return switch (preferences.audioQuality) {
-      AudioQuality.high =>
-        stream.highestBitrateAudioStreamOfFormat(streamFormat)!.url,
-      AudioQuality.low =>
-        stream.lowestBitrateAudioStreamOfFormat(streamFormat)!.url,
+      AudioQuality.high => stream
+          .highestBitrateAudioStreamOfFormat(PipedAudioStreamFormat.m4a)!
+          .url,
+      AudioQuality.low => stream
+          .lowestBitrateAudioStreamOfFormat(PipedAudioStreamFormat.m4a)!
+          .url,
     };
   }
 
@@ -180,15 +178,7 @@ class YoutubeEndpoints {
         () => youtube!.videos.streams.getManifest(id),
       );
       final audioOnlyManifests = res.audioOnly.where((info) {
-        final isMp4a = info.codec.mimeType == "audio/mp4";
-        if (DesktopTools.platform.isLinux) {
-          return !isMp4a;
-        } else if (DesktopTools.platform.isMacOS ||
-            DesktopTools.platform.isIOS) {
-          return isMp4a;
-        } else {
-          return true;
-        }
+        return info.codec.mimeType == "audio/mp4";
       });
 
       return switch (preferences.audioQuality) {

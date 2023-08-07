@@ -13,6 +13,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -39,8 +40,14 @@ class PlayerActions extends HookConsumerWidget {
     final isLocalTrack = playlist.activeTrack is LocalTrack;
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
-    final isInQueue = downloader.activeItem != null &&
-        downloader.activeItem!.id == playlist.activeTrack?.id;
+    final isInQueue = useMemoized(() {
+      if (playlist.activeTrack == null) return false;
+      return downloader.isActive(playlist.activeTrack!);
+    }, [
+      playlist.activeTrack,
+      downloader,
+    ]);
+
     final localTracks = [] /* ref.watch(localTracksProvider).value */;
     final auth = ref.watch(AuthenticationNotifier.provider);
     final sleepTimer = ref.watch(SleepTimerNotifier.provider);
@@ -139,7 +146,7 @@ class PlayerActions extends HookConsumerWidget {
                 isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
               ),
               onPressed: playlist.activeTrack != null
-                  ? () => downloader.enqueue(playlist.activeTrack!)
+                  ? () => downloader.addToQueue(playlist.activeTrack!)
                   : null,
             ),
         if (playlist.activeTrack != null && !isLocalTrack && auth != null)
