@@ -51,9 +51,7 @@ class Sidebar extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mediaQuery = MediaQuery.of(context);
 
-    final downloadCount = ref.watch(
-      downloadManagerProvider.select((s) => s.$downloadCount),
-    );
+    final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
 
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
