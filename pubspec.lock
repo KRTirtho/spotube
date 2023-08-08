@@ -419,13 +419,13 @@ packages:
     source: hosted
     version: "1.1.0"
   device_info_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "9b1a0c32b2a503f8fe9f8764fac7b5fcd4f6bd35d8f49de5350bccf9e2a33b8a"
+      sha256: "86add5ef97215562d2e090535b0a16f197902b10c369c558a100e74ea06e8659"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "9.0.3"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
