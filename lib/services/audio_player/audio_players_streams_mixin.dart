@@ -4,7 +4,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
   // stream getters
   Stream<Duration> get durationStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.duration;
+    return _mkPlayer.stream.duration;
     // } else {
     //   return _justAudio!.durationStream
     //       .where((event) => event != null)
@@ -15,7 +15,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
 
   Stream<Duration> get positionStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.position;
+    return _mkPlayer.stream.position;
     // } else {
     //   return _justAudio!.positionStream;
     // }
@@ -24,7 +24,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
   Stream<Duration> get bufferedPositionStream {
     // if (mkSupportedPlatform) {
     // audioplayers doesn't have the capability to get buffered position
-    return _mkPlayer.streams.buffer;
+    return _mkPlayer.stream.buffer;
     // } else {
     //   return _justAudio!.bufferedPositionStream;
     // }
@@ -32,7 +32,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
 
   Stream<void> get completedStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.completed;
+    return _mkPlayer.stream.completed;
     // } else {
     //   return _justAudio!.playerStateStream
     //       .where(
@@ -57,7 +57,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
 
   Stream<bool> get playingStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.playing;
+    return _mkPlayer.stream.playing;
     // } else {
     //   return _justAudio!.playingStream;
     // }
@@ -83,7 +83,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
 
   Stream<double> get volumeStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.streams.volume.map((event) => event / 100);
+    return _mkPlayer.stream.volume.map((event) => event / 100);
     // } else {
     //   return _justAudio!.volumeStream;
     // }

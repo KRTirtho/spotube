@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:async/async.dart';
 import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,37 +71,45 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       ({String source, List<SkipSegment> segments})? currentSegments;
 
       audioPlayer.activeSourceChangedStream.listen((newActiveSource) async {
-        final newActiveTrack =
-            mapSourcesToTracks([newActiveSource]).firstOrNull;
+        try {
+          final newActiveTrack =
+              mapSourcesToTracks([newActiveSource]).firstOrNull;
 
-        if (newActiveTrack == null ||
-            newActiveTrack.id == state.activeTrack?.id) {
-          return;
+          if (newActiveTrack == null ||
+              newActiveTrack.id == state.activeTrack?.id) {
+            return;
+          }
+
+          notificationService.addTrack(newActiveTrack);
+          state = state.copyWith(
+            active: state.tracks
+                .toList()
+                .indexWhere((element) => element.id == newActiveTrack.id),
+          );
+
+          updatePalette();
+        } catch (e, stackTrace) {
+          Catcher.reportCheckedError(e, stackTrace);
         }
-
-        notificationService.addTrack(newActiveTrack);
-        state = state.copyWith(
-          active: state.tracks
-              .toList()
-              .indexWhere((element) => element.id == newActiveTrack.id),
-        );
-
-        updatePalette();
       });
 
       audioPlayer.shuffledStream.listen((event) {
-        final newlyOrderedTracks = mapSourcesToTracks(audioPlayer.sources);
+        try {
+          final newlyOrderedTracks = mapSourcesToTracks(audioPlayer.sources);
 
-        final newActiveIndex = newlyOrderedTracks.indexWhere(
-          (element) => element.id == state.activeTrack?.id,
-        );
+          final newActiveIndex = newlyOrderedTracks.indexWhere(
+            (element) => element.id == state.activeTrack?.id,
+          );
 
-        if (newActiveIndex == -1) return;
+          if (newActiveIndex == -1) return;
 
-        state = state.copyWith(
-          tracks: newlyOrderedTracks.toSet(),
-          active: newActiveIndex,
-        );
+          state = state.copyWith(
+            tracks: newlyOrderedTracks.toSet(),
+            active: newActiveIndex,
+          );
+        } catch (e, stackTrace) {
+          Catcher.reportCheckedError(e, stackTrace);
+        }
       });
 
       bool isPreSearching = false;
@@ -130,6 +137,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
               track,
             );
           }
+        } catch (e, stackTrace) {
+          Catcher.reportCheckedError(e, stackTrace);
         } finally {
           isPreSearching = false;
         }
@@ -140,37 +149,45 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       bool isFetchingSegments = false;
 
       audioPlayer.positionStream.listen((position) async {
-        // skipping in very first second breaks stream
-        if ((preferences.youtubeApiType == YoutubeApiType.piped &&
-                preferences.searchMode == SearchMode.youtubeMusic) ||
-            !preferences.skipNonMusic) return;
-
-        final notSameSegmentId =
-            currentSegments?.source != audioPlayer.currentSource;
-
-        if (currentSegments == null ||
-            (notSameSegmentId && !isFetchingSegments)) {
-          isFetchingSegments = true;
-          try {
-            currentSegments = (
-              source: audioPlayer.currentSource!,
-              segments: await getAndCacheSkipSegments(
-                (state.activeTrack as SpotubeTrack).ytTrack.id,
-              ),
-            );
-          } finally {
+        try {
+          if (state.activeTrack == null || state.activeTrack is LocalTrack) {
             isFetchingSegments = false;
+            return;
           }
-        }
+          // skipping in very first second breaks stream
+          if ((preferences.youtubeApiType == YoutubeApiType.piped &&
+                  preferences.searchMode == SearchMode.youtubeMusic) ||
+              !preferences.skipNonMusic) return;
 
-        final (source: _, :segments) = currentSegments!;
-        if (segments.isEmpty || position < const Duration(seconds: 3)) return;
+          final notSameSegmentId =
+              currentSegments?.source != audioPlayer.currentSource;
 
-        for (final segment in segments) {
-          if ((position.inSeconds >= segment.start &&
-              position.inSeconds < segment.end)) {
-            await audioPlayer.seek(Duration(seconds: segment.end));
+          if (currentSegments == null ||
+              (notSameSegmentId && !isFetchingSegments)) {
+            isFetchingSegments = true;
+            try {
+              currentSegments = (
+                source: audioPlayer.currentSource!,
+                segments: await getAndCacheSkipSegments(
+                  (state.activeTrack as SpotubeTrack).ytTrack.id,
+                ),
+              );
+            } finally {
+              isFetchingSegments = false;
+            }
           }
+
+          final (source: _, :segments) = currentSegments!;
+          if (segments.isEmpty || position < const Duration(seconds: 3)) return;
+
+          for (final segment in segments) {
+            if ((position.inSeconds >= segment.start &&
+                position.inSeconds < segment.end)) {
+              await audioPlayer.seek(Duration(seconds: segment.end));
+            }
+          }
+        } catch (e, stackTrace) {
+          Catcher.reportCheckedError(e, stackTrace);
         }
       });
     }();
