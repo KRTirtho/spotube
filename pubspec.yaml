@@ -102,6 +102,7 @@ dependencies:
   google_fonts: ^4.0.4
   supabase: ^1.9.9
   dio: ^5.3.2
+  device_info_plus: ^9.0.3
 
 dev_dependencies:
   build_runner: ^2.3.2
