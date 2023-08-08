@@ -20,7 +20,7 @@ abstract class AudioPlayerInterface {
   // _mkPlayer = _mkSupportedPlatform ? MkPlayerWithState() : null,
   // _justAudio = !_mkSupportedPlatform ? ja.AudioPlayer() : null
   {
-    _mkPlayer.streams.error.listen((event) {
+    _mkPlayer.stream.error.listen((event) {
       Catcher.reportCheckedError(event, StackTrace.current);
     });
   }

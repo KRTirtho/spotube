@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart';
 // ignore: implementation_imports
@@ -30,35 +31,39 @@ class MkPlayerWithState extends Player {
         _shuffled = false,
         _loopMode = PlaylistMode.none {
     _subscriptions = [
-      streams.buffering.listen((event) {
+      stream.buffering.listen((event) {
         _playerStateStream.add(AudioPlaybackState.buffering);
       }),
-      streams.playing.listen((playing) {
+      stream.playing.listen((playing) {
         if (playing) {
           _playerStateStream.add(AudioPlaybackState.playing);
         } else {
           _playerStateStream.add(AudioPlaybackState.paused);
         }
       }),
-      streams.position.listen((position) async {
-        final isComplete = state.duration != Duration.zero &&
-            position != Duration.zero &&
-            state.duration.inSeconds == position.inSeconds;
+      stream.completed.listen((isCompleted) async {
+        try {
+          if (!isCompleted) return;
 
-        if (!isComplete || _playlist == null) return;
-        _playerStateStream.add(AudioPlaybackState.completed);
+          _playerStateStream.add(AudioPlaybackState.completed);
 
-        if (loopMode == PlaylistMode.single) {
-          await super.open(_playlist!.medias[_playlist!.index], play: true);
-        } else {
-          await next();
-          await Future.delayed(const Duration(milliseconds: 250), play);
+          if (loopMode == PlaylistMode.single) {
+            await super.open(_playlist!.medias[_playlist!.index], play: true);
+          } else {
+            await next();
+            await Future.delayed(const Duration(milliseconds: 250), play);
+          }
+        } catch (e, stackTrace) {
+          Catcher.reportCheckedError(e, stackTrace);
         }
       }),
-      streams.playlist.listen((event) {
+      stream.playlist.listen((event) {
         if (event.medias.isEmpty) {
           _playerStateStream.add(AudioPlaybackState.stopped);
         }
+      }),
+      stream.error.listen((event) {
+        Catcher.reportCheckedError('[MediaKitError] \n$event', null);
       }),
     ];
   }
