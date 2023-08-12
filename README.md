@@ -38,7 +38,7 @@
 
 ### ❌ Unsupported features
 
-- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts can **never be supported** because the audio tracks are _only_ available on Spotify and accessing them would require Spotify Premium.
+- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts can <ins>**never be supported**</ins> because the audio tracks are _only_ available on Spotify and accessing them would require Spotify Premium.
 - 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
 
 ## 📜 ⬇️ Installation guide
