@@ -5,7 +5,7 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
   <queries>
     <!-- If your app opens https URLs -->
@@ -25,7 +25,7 @@
     android:requestLegacyExternalStorage="true"
   >
     <activity
-      android:name="com.ryanheise.audioservice.AudioServiceActivity" 
+      android:name="com.ryanheise.audioservice.AudioServiceActivity"
       android:exported="true"
       android:launchMode="singleTop"
       android:theme="@style/LaunchTheme"
@@ -65,6 +65,9 @@
       </intent-filter>
     </receiver>
     <!-- =================== -->
+
+    <meta-data android:name="com.google.android.gms.car.application"
+      android:resource="@xml/automotive_app_desc" />
 
     <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
