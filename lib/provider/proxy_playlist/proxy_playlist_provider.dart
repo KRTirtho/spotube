@@ -290,7 +290,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       final addableTrack = await SpotubeTrack.fetchFromTrack(
         tracks.elementAtOrNull(initialIndex) ?? tracks.first,
         youtube,
-      );
+      ).catchError((e, stackTrace) {
+        return SpotubeTrack.fetchFromTrack(
+          tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
+          youtube,
+        );
+      });
 
       state = state.copyWith(
         tracks: mergeTracks([addableTrack], tracks),

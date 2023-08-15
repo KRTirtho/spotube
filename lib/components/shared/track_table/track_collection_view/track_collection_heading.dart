@@ -13,6 +13,12 @@ import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
+enum PlayButtonState {
+  playing,
+  notPlaying,
+  loading,
+}
+
 class TrackCollectionHeading<T> extends HookConsumerWidget {
   final String title;
   final String? description;
@@ -20,7 +26,7 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
   final List<Widget> buttons;
   final AlbumSimple? album;
   final Query<List<TrackSimple>, T> tracksSnapshot;
-  final bool isPlaying;
+  final PlayButtonState playingState;
   final void Function([Track? currentTrack]) onPlay;
   final void Function([Track? currentTrack]) onShuffledPlay;
   final PaletteColor? color;
@@ -31,7 +37,7 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
     required this.titleImage,
     required this.buttons,
     required this.tracksSnapshot,
-    required this.isPlaying,
+    required this.playingState,
     required this.onPlay,
     required this.onShuffledPlay,
     required this.color,
@@ -155,7 +161,8 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                                       label: Text(context.l10n.shuffle),
                                       icon: const Icon(SpotubeIcons.shuffle),
                                       onPressed: tracksSnapshot.data == null ||
-                                              isPlaying
+                                              playingState ==
+                                                  PlayButtonState.playing
                                           ? null
                                           : onShuffledPlay,
                                     ),
@@ -167,16 +174,27 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                                         backgroundColor: color?.color,
                                         foregroundColor: color?.bodyTextColor,
                                       ),
-                                      onPressed: tracksSnapshot.data != null
+                                      onPressed: tracksSnapshot.data != null ||
+                                              playingState ==
+                                                  PlayButtonState.loading
                                           ? onPlay
                                           : null,
-                                      icon: Icon(
-                                        isPlaying
-                                            ? SpotubeIcons.stop
-                                            : SpotubeIcons.play,
-                                      ),
+                                      icon: switch (playingState) {
+                                        PlayButtonState.playing =>
+                                          const Icon(SpotubeIcons.pause),
+                                        PlayButtonState.notPlaying =>
+                                          const Icon(SpotubeIcons.play),
+                                        PlayButtonState.loading =>
+                                          const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: .7,
+                                            ),
+                                          ),
+                                      },
                                       label: Text(
-                                        isPlaying
+                                        playingState == PlayButtonState.playing
                                             ? context.l10n.stop
                                             : context.l10n.play,
                                       ),

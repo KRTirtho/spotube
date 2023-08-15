@@ -2,12 +2,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/shared/heart_button.dart';
+import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
@@ -31,6 +33,7 @@ class PlaylistView extends HookConsumerWidget {
     currentTrack ??= sortedTracks.first;
     final isPlaylistPlaying = proxyPlaylist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
+      playback.addCollection(playlist.id!); // for enabling loading indicator
       await playback.load(
         sortedTracks,
         initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
@@ -55,8 +58,8 @@ class PlaylistView extends HookConsumerWidget {
     final tracksSnapshot = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
 
     final isPlaylistPlaying = useMemoized(
-      () => proxyPlaylist.containsTracks(tracksSnapshot.data ?? []),
-      [playlistNotifier, tracksSnapshot.data],
+      () => proxyPlaylist.collections.contains(playlist.id!),
+      [proxyPlaylist, playlist],
     );
 
     final titleImage = useMemoized(
@@ -66,9 +69,22 @@ class PlaylistView extends HookConsumerWidget {
             ),
         [playlist.images]);
 
+    final playlistTrackPlaying = useMemoized(
+      () =>
+          tracksSnapshot.data
+                  ?.any((s) => s.id! == proxyPlaylist.activeTrack?.id!) ==
+              true &&
+          proxyPlaylist.activeTrack is SpotubeTrack,
+      [proxyPlaylist.activeTrack, tracksSnapshot.data],
+    );
+
     return TrackCollectionView(
       id: playlist.id!,
-      isPlaying: isPlaylistPlaying,
+      playingState: isPlaylistPlaying && playlistTrackPlaying
+          ? PlayButtonState.playing
+          : isPlaylistPlaying && !playlistTrackPlaying
+              ? PlayButtonState.loading
+              : PlayButtonState.notPlaying,
       title: playlist.name!,
       titleImage: titleImage,
       tracksSnapshot: tracksSnapshot,
