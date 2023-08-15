@@ -26,6 +26,12 @@ dependencies:
   collection: ^1.15.0
   cupertino_icons: ^1.0.5
   curved_navigation_bar: ^1.0.3
+  dbus: ^0.7.8
+  device_info_plus: ^9.0.3
+  device_preview: ^1.1.0
+  dio: ^5.3.2
+  disable_battery_optimization: ^1.1.0+1
+  duration: ^3.0.12
   envied: ^0.3.0
   file_picker: ^5.2.2
   fl_query: ^1.0.0-alpha.3
@@ -39,8 +45,9 @@ dependencies:
     git:
       url: https://github.com/KRTirtho/flutter_desktop_tools.git
       ref: 1f0bec3283626dcbd8ee2f54e238d096d8dea50e
+  flutter_displaymode: ^0.6.0
   flutter_feather_icons: ^2.0.0+1
-  flutter_hooks: ^0.18.2+1
+  flutter_hooks: ^0.20.0
   flutter_inappwebview: ^5.7.2+3
   flutter_localizations:
     sdk: flutter
@@ -49,30 +56,32 @@ dependencies:
   flutter_secure_storage: ^8.0.0
   flutter_svg: ^1.1.6
   fuzzywuzzy: ^0.2.0
-  go_router: ^6.0.2
+  google_fonts: ^5.1.0
+  go_router: ^10.0.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hooks_riverpod: ^2.1.1
   html: ^0.15.1
-  http: ^0.13.5
+  http: ^1.1.0
   intl: ^0.18.0
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.1
   logger: ^1.1.0
-  media_kit: ^1.1.1
-  media_kit_native_event_loop: ^1.0.6
-  media_kit_libs_android_audio: ^1.3.0
-  media_kit_libs_ios_audio: ^1.0.5
-  media_kit_libs_macos_audio: ^1.0.6
-  media_kit_libs_windows_audio: ^1.0.5
-  media_kit_libs_linux: ^1.0.2
+  media_kit: ^1.1.3
+  media_kit_native_event_loop: ^1.0.7
+  media_kit_libs_android_audio: ^1.3.1
+  media_kit_libs_ios_audio: ^1.1.2
+  media_kit_libs_macos_audio: ^1.1.2
+  media_kit_libs_windows_audio: ^1.0.6
+  media_kit_libs_linux: ^1.1.0
   metadata_god: ^0.5.0
   mime: ^1.0.2
-  package_info_plus: ^3.0.2
+  package_info_plus: ^4.1.0
   palette_generator: ^0.3.3
   path: ^1.8.0
   path_provider: ^2.0.8
   permission_handler: ^10.2.0
+  piped_client: ^0.1.0
   popover: ^0.2.6+3
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.11
@@ -80,6 +89,7 @@ dependencies:
   skeleton_text: ^3.0.0
   smtc_windows: ^0.1.0
   spotify: ^0.11.0
+  supabase: ^1.9.9
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
   url_launcher: ^6.1.7
@@ -92,17 +102,7 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding.git
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
-  piped_client: ^0.1.0
-  device_preview: ^1.1.0
-  dbus: ^0.7.8
-  duration: ^3.0.12
-  disable_battery_optimization: ^1.1.0+1
-  youtube_explode_dart: ^1.12.4
-  flutter_displaymode: ^0.6.0
-  google_fonts: ^4.0.4
-  supabase: ^1.9.9
-  dio: ^5.3.2
-  device_info_plus: ^9.0.3
+  youtube_explode_dart: ^2.0.1
 
 dev_dependencies:
   build_runner: ^2.3.2
@@ -121,7 +121,8 @@ dev_dependencies:
   pubspec_parse: ^1.2.2
 
 dependency_overrides:
-  package_info_plus: ^3.0.2
+  http: ^1.1.0
+  flutter_hooks: ^0.20.0
 
 flutter:
   generate: true

@@ -110,8 +110,8 @@ final router = GoRouter(
         GoRoute(
           path: "/artist/:id",
           pageBuilder: (context, state) {
-            assert(state.params["id"] != null);
-            return SpotubePage(child: ArtistPage(state.params["id"]!));
+            assert(state.pathParameters["id"] != null);
+            return SpotubePage(child: ArtistPage(state.pathParameters["id"]!));
           },
         ),
         GoRoute(

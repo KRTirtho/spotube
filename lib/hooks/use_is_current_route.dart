@@ -7,7 +7,7 @@ bool? useIsCurrentRoute([String matcher = "/"]) {
   final context = useContext();
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((timer) {
-      final isCurrent = GoRouter.of(context).location == matcher;
+      final isCurrent = GoRouterState.of(context).matchedLocation == matcher;
       if (isCurrent != isCurrentRoute.value) {
         isCurrentRoute.value = isCurrent;
       }
