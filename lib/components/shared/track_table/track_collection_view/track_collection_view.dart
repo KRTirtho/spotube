@@ -89,7 +89,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
 
     useCustomStatusBarColor(
       Colors.transparent,
-      GoRouter.of(context).location == routePath,
+      GoRouterState.of(context).matchedLocation == routePath,
     );
 
     useEffect(() {

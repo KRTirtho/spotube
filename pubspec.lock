@@ -657,10 +657,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_hooks
-      sha256: "6a126f703b89499818d73305e4ce1e3de33b4ae1c5512e3b8eab4b986f46774c"
+      sha256: "9eab8fd7aa752c3c1c0a364f9825851d410eb935243411682f4b1b0a4c569d71"
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.6"
+    version: "0.20.0"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -853,18 +853,18 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "5a0b2e0bc88a006c09d2b419004ffabecf83a74520b8852ea148f22e82634c27"
+      sha256: b3cadd2cd59a4103fd5f6bc572ca75111264698784e927aa471921c3477d5475
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.6"
+    version: "10.0.0"
   google_fonts:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: "6b6f10f0ce3c42f6552d1c70d2c28d764cf22bb487f50f66cca31dcd5194f4d6"
+      sha256: e20ff62b158b96f392bfc8afe29dee1503c94fbea2cbe8186fd59b756b8ae982
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.4"
+    version: "5.1.0"
   gotrue:
     dependency: transitive
     description:
@@ -933,10 +933,10 @@ packages:
     dependency: "direct main"
     description:
       name: http
-      sha256: "6aa2946395183537c8b880962d935877325d6a09a2867c3970c05c0fed6ac482"
+      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.5"
+    version: "1.1.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -1082,58 +1082,58 @@ packages:
     dependency: "direct main"
     description:
       name: media_kit
-      sha256: "272a9f1dd77ed57b48707fdb0ec0e4a048ef958feccc0d0dd751135fe924b63a"
+      sha256: f19151ff1a1724ed8675f066b40e74af6d155fc859cb74487daeae2cbeff53e0
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.3+1"
   media_kit_libs_android_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_android_audio
-      sha256: "304b6d4045280b11bf7b4f9a4330556dbc98d7431f2c20e9dec133ed80d3ec78"
+      sha256: "767a93c44da73b7103a1fcbe2346f7211b7c44fa727f359410e690a156f630c5"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "1.3.1"
   media_kit_libs_ios_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_ios_audio
-      sha256: "1b6f7bbaedb2914bb94bb22d5a890238dc883698b42a1a858e9c38194e6281d0"
+      sha256: d643550be8ae26e2400dbae451fbaf4b19aede16646526807272702b83053322
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.5"
+    version: "1.1.2"
   media_kit_libs_linux:
     dependency: "direct main"
     description:
       name: media_kit_libs_linux
-      sha256: "21acc71cbae3518b3aeef9023a6a3a3decb579a40153764333814987ccd61040"
+      sha256: "838b9e8041d376873cc938872c75812989d0feb247ad93afd8dbc92bf052680a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.1.0"
   media_kit_libs_macos_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_macos_audio
-      sha256: "070dc90ecf3a07dcb23d39f8473329e8e4616c36d12badd0831fef446428acc2"
+      sha256: "408cceb6e2c8a8f332e5e97f0534ac82f260328bb3fc3464a27f1862f55a0244"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
+    version: "1.1.2"
   media_kit_libs_windows_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_windows_audio
-      sha256: "34b768e385181b2e475dd846345ed1191bde85a4c64db014d239d4c9f844c5fd"
+      sha256: "1ab55cc89ece7ebc0859ebf17b09e39a03d44c24667bdd96bd7ea3d6a2e9f69a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.5"
+    version: "1.0.6"
   media_kit_native_event_loop:
     dependency: "direct main"
     description:
       name: media_kit_native_event_loop
-      sha256: "5351f0c28124b5358756515d8619abad182cdefe967468d7fb5b274737cc2f59"
+      sha256: e37ce6fb5fa71b8cf513c6a6cd591367743a342a385e7da621a047dd8ef6f4a4
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.7"
   meta:
     dependency: transitive
     description:
@@ -1210,10 +1210,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "8df5ab0a481d7dc20c0e63809e90a588e496d276ba53358afc4c4443d0a00697"
+      sha256: "6ff267fcd9d48cb61c8df74a82680e8b82e940231bb5f68356672fde0397334a"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.3"
+    version: "4.1.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -1647,10 +1647,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: c2bea18c95cfa0276a366270afaa2850b09b4a76db95d546f3d003dcc7011298
+      sha256: fc0da689e5302edb6177fdd964efcb7f58912f43c28c2047a808f5bfff643d16
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.7"
+    version: "1.4.0"
   source_helper:
     dependency: transitive
     description:
@@ -2072,10 +2072,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: "07889a6229a63e78f8d45a3b852897c2e0fa42e96c4daa38d411be211575bc38"
+      sha256: c5c5a7ddec7d42d341cb8e49d628c4b81618f927bbf81dbfa9c550bee39ef45d
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.4"
+    version: "2.0.1"
 sdks:
   dart: ">=3.0.0 <4.0.0"
   flutter: ">=3.10.0"

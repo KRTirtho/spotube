@@ -66,7 +66,7 @@ class PlayerView extends HookConsumerWidget {
 
     useCustomStatusBarColor(
       bgColor,
-      GoRouter.of(context).location == "/player",
+      GoRouterState.of(context).matchedLocation == "/player",
       noSetBGColor: true,
     );
 

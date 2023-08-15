@@ -23,7 +23,6 @@ abstract class ServiceUtils {
         .trim();
   }
 
-  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static String getTitle(
     String title, {
     List<String> artists = const [],
