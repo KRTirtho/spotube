@@ -1,1 +1,42 @@
-{}
+{
+  "bn": [
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ],
+
+  "ca": [
+    "querying_info",
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ],
+
+  "de": [
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ],
+
+  "es": [
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ],
+
+  "fr": [
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ],
+
+  "hi": [
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ],
+
+  "ja": [
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ],
+
+  "zh": [
+    "piped_api_down",
+    "piped_down_error_instructions"
+  ]
+}

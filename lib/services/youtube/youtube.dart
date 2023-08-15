@@ -1,5 +1,8 @@
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:piped_client/piped_client.dart';
+import 'package:spotube/collections/routes.dart';
+import 'package:spotube/components/shared/dialogs/piped_down_dialog.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -133,6 +136,18 @@ class YoutubeEndpoints {
     }
   }
 
+  Future<void> showPipedErrorDialog(Exception e) async {
+    if (e is DioException && (e.response?.statusCode ?? 0) >= 500) {
+      final context = rootNavigatorKey?.currentContext;
+      if (context != null) {
+        await showDialog(
+          context: context,
+          builder: (context) => const PipedDownDialog(),
+        );
+      }
+    }
+  }
+
   Future<List<YoutubeVideoInfo>> search(String query) async {
     if (youtube != null) {
       final res = await youtube!.search(
@@ -142,22 +157,27 @@ class YoutubeEndpoints {
 
       return res.map(YoutubeVideoInfo.fromVideo).toList();
     } else {
-      final res = await piped!.search(
-        query,
-        switch (preferences.searchMode) {
-          SearchMode.youtube => PipedFilter.video,
-          SearchMode.youtubeMusic => PipedFilter.musicSongs,
-        },
-      );
-      return res.items
-          .whereType<PipedSearchItemStream>()
-          .map(
-            (e) => YoutubeVideoInfo.fromSearchItemStream(
-              e,
-              preferences.searchMode,
-            ),
-          )
-          .toList();
+      try {
+        final res = await piped!.search(
+          query,
+          switch (preferences.searchMode) {
+            SearchMode.youtube => PipedFilter.video,
+            SearchMode.youtubeMusic => PipedFilter.musicSongs,
+          },
+        );
+        return res.items
+            .whereType<PipedSearchItemStream>()
+            .map(
+              (e) => YoutubeVideoInfo.fromSearchItemStream(
+                e,
+                preferences.searchMode,
+              ),
+            )
+            .toList();
+      } on Exception catch (e) {
+        await showPipedErrorDialog(e);
+        rethrow;
+      }
     }
   }
 
@@ -193,7 +213,9 @@ class YoutubeEndpoints {
   }
 
   Future<(YoutubeVideoInfo info, String streamingUrl)> video(
-      String id, SearchMode searchMode) async {
+    String id,
+    SearchMode searchMode,
+  ) async {
     if (youtube != null) {
       final res = await youtube!.videos.get(id);
       return (
@@ -201,11 +223,16 @@ class YoutubeEndpoints {
         await streamingUrl(id),
       );
     } else {
-      final res = await piped!.streams(id);
-      return (
-        YoutubeVideoInfo.fromStreamResponse(res, searchMode),
-        _pipedStreamResponseToStreamUrl(res),
-      );
+      try {
+        final res = await piped!.streams(id);
+        return (
+          YoutubeVideoInfo.fromStreamResponse(res, searchMode),
+          _pipedStreamResponseToStreamUrl(res),
+        );
+      } on Exception catch (e) {
+        await showPipedErrorDialog(e);
+        rethrow;
+      }
     }
   }
 }

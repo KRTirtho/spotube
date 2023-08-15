@@ -254,5 +254,7 @@
   "ok": "Ok",
   "failed_to_encrypt": "Failed to encrypt",
   "encryption_failed_warning": "Spotube uses encryption to securely store your data. But failed to do so. So it'll fallback to insecure storage\nIf you're using linux, please make sure you've any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed",
-  "querying_info": "Querying info..."
+  "querying_info": "Querying info...",
+  "piped_api_down": "Piped API is down",
+  "piped_down_error_instructions": "The Piped instance {pipedInstance} is currently down\n\nEither change the instance or change the 'API type' to official YouTube API\n\nMake sure to restart the app after change"
 }
