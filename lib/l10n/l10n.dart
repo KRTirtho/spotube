@@ -4,6 +4,7 @@
 /// ChatGPT (GPT 3.5) XD => Hindi, French
 /// maboroshin@github => Japanese
 /// iceyear@github => Simplified Chinese
+/// TexturedPolak@github => Polish
 import 'package:flutter/material.dart';
 
 class L10n {
@@ -16,5 +17,6 @@ class L10n {
     const Locale('hi', 'IN'),
     const Locale('ja', 'JP'),
     const Locale('zh', 'CN'),
+    const Locale('pl', 'PL'),
   ];
 }
