@@ -112,10 +112,10 @@ abstract class LanguageLocals {
     //   name: "Burmese",
     //   nativeName: "ဗမာစာ",
     // ),
-    // "ca": const ISOLanguageName(
-    //   name: "Catalan; Valencian",
-    //   nativeName: "Català",
-    // ),
+    "ca": const ISOLanguageName(
+      name: "Catalan",
+      nativeName: "Català",
+    ),
     // "ch": const ISOLanguageName(
     //   name: "Chamorro",
     //   nativeName: "Chamoru",
