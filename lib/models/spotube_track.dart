@@ -66,7 +66,7 @@ class SpotubeTrack extends Track {
         await client.search("$title - ${artists.join(", ")}").then(
       (res) {
         final siblings = res
-            .sorted((a, b) => a.views.compareTo(b.views))
+            .sorted((a, b) => b.views.compareTo(a.views))
             .where((item) {
               return artists.any(
                 (artist) =>

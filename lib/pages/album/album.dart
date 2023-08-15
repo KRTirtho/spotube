@@ -4,9 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/heart_button.dart';
+import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -26,14 +28,15 @@ class AlbumPage extends HookConsumerWidget {
     final sortBy = ref.read(trackCollectionSortState(album.id!));
     final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
     currentTrack ??= sortedTracks.first;
-    final isPlaylistPlaying = playlist.containsTracks(tracks);
-    if (!isPlaylistPlaying) {
+    final isAlbumPlaying = playlist.containsTracks(tracks);
+    if (!isAlbumPlaying) {
+      playback.addCollection(album.id!); // for enabling loading indicator
       await playback.load(
         sortedTracks,
         initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
       );
       playback.addCollection(album.id!);
-    } else if (isPlaylistPlaying &&
+    } else if (isAlbumPlaying &&
         currentTrack.id != null &&
         currentTrack.id != playlist.activeTrack?.id) {
       await playback.jumpToTrack(currentTrack);
@@ -57,12 +60,25 @@ class AlbumPage extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     final isAlbumPlaying = useMemoized(
-      () => playlist.containsTracks(tracksSnapshot.data ?? []),
-      [playback, tracksSnapshot.data],
+      () => playlist.collections.contains(album.id!),
+      [playlist, album],
     );
+
+    final albumTrackPlaying = useMemoized(
+      () =>
+          tracksSnapshot.data?.any((s) => s.id! == playlist.activeTrack?.id!) ==
+              true &&
+          playlist.activeTrack is SpotubeTrack,
+      [playlist.activeTrack, tracksSnapshot.data],
+    );
+
     return TrackCollectionView(
       id: album.id!,
-      isPlaying: isAlbumPlaying,
+      playingState: isAlbumPlaying && albumTrackPlaying
+          ? PlayButtonState.playing
+          : isAlbumPlaying && !albumTrackPlaying
+              ? PlayButtonState.loading
+              : PlayButtonState.notPlaying,
       title: album.name!,
       titleImage: albumArt,
       tracksSnapshot: tracksSnapshot,

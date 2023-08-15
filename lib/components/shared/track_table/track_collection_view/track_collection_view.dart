@@ -25,7 +25,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   final String? description;
   final Query<List<TrackSimple>, T> tracksSnapshot;
   final String titleImage;
-  final bool isPlaying;
+  final PlayButtonState playingState;
   final void Function([Track? currentTrack]) onPlay;
   final void Function([Track? currentTrack]) onShuffledPlay;
   final void Function() onAddToQueue;
@@ -43,7 +43,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
     required this.id,
     required this.tracksSnapshot,
     required this.titleImage,
-    required this.isPlaying,
+    required this.playingState,
     required this.onPlay,
     required this.onShuffledPlay,
     required this.onAddToQueue,
@@ -62,6 +62,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
+
     final color = usePaletteGenerator(titleImage).dominantColor;
 
     final List<Widget> buttons = [
@@ -72,7 +73,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         ),
       if (heartBtn != null && auth != null) heartBtn!,
       IconButton(
-        onPressed: isPlaying
+        onPressed: playingState == PlayButtonState.playing
             ? null
             : tracksSnapshot.data != null
                 ? onAddToQueue
@@ -143,7 +144,9 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                     child: IconButton(
                       tooltip: context.l10n.shuffle,
                       icon: const Icon(SpotubeIcons.shuffle),
-                      onPressed: isPlaying ? null : onShuffledPlay,
+                      onPressed: playingState == PlayButtonState.playing
+                          ? null
+                          : onShuffledPlay,
                     ),
                   ),
                   AnimatedScale(
@@ -155,8 +158,19 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         backgroundColor: theme.colorScheme.inversePrimary,
                       ),
                       onPressed: tracksSnapshot.data != null ? onPlay : null,
-                      child: Icon(
-                          isPlaying ? SpotubeIcons.stop : SpotubeIcons.play),
+                      child: switch (playingState) {
+                        PlayButtonState.playing =>
+                          const Icon(SpotubeIcons.pause),
+                        PlayButtonState.notPlaying =>
+                          const Icon(SpotubeIcons.play),
+                        PlayButtonState.loading => const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: .7,
+                            ),
+                          ),
+                      },
                     ),
                   ),
                 ],
@@ -185,7 +199,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                     title: title,
                     description: description,
                     titleImage: titleImage,
-                    isPlaying: isPlaying,
+                    playingState: playingState,
                     onPlay: onPlay,
                     onShuffledPlay: onShuffledPlay,
                     tracksSnapshot: tracksSnapshot,
