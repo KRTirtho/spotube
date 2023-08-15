@@ -66,18 +66,16 @@ class SpotubeTrack extends Track {
         await client.search("$title - ${artists.join(", ")}").then(
       (res) {
         final siblings = res
+            .sorted((a, b) => a.views.compareTo(b.views))
             .where((item) {
               return artists.any(
                 (artist) =>
+                    client.preferences.searchMode == SearchMode.youtube ||
                     artist.toLowerCase() == item.channelName.toLowerCase(),
               );
             })
             .take(10)
             .toList();
-
-        if (siblings.isEmpty) {
-          return res.take(10).toList();
-        }
 
         return siblings;
       },
