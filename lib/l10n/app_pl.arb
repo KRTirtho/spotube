@@ -240,7 +240,7 @@
   "streamUrl": "URL strumienia",
   "stop": "Stop",
   "sort_newest": "Sortuj po dodanych najpóźniej",
-  "sort_oldest": "Sortuj po dodanych najwcześniej",
+  "sort_oldest": "Sortuj według najstarszych dodanych",
   "sleep_timer": "Minutnik",
   "mins": "{minutes} Minuty",
   "hours": "{hours} Godziny",
