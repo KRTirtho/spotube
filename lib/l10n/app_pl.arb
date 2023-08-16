@@ -252,7 +252,7 @@
   "search_mode": "Tryb szukania",
   "youtube_api_type": "Typ API",
   "ok": "Ok",
-  "failed_to_encrypt": "Nie można rozszyfrować :(",
+  "failed_to_encrypt": "Nie można zaszyfrować :(",
   "encryption_failed_warning": "Spotube używa szyfrowania do bezpiecznego przechowywania danych. Ale nie udało się tego zrobić. Więc powróci do niezabezpieczonego przechowywania\nJeśli używasz Linuksa, upewnij się, że masz zainstalowane jakieś usługi do szyfrowania (gnome-keyring, kde-wallet, keepassxc itp.)",
   "querying_info": "Szukam informacji...",
   "piped_api_down": "Piped API jest wyłączone",
