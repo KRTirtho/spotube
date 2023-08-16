@@ -253,5 +253,8 @@
   "youtube_api_type": "Typ API",
   "ok": "Ok",
   "failed_to_encrypt": "Nie można rozszyfrować :(",
-  "encryption_failed_warning": "Spotube używa szyfrowania do bezpiecznego przechowywania danych. Ale nie udało się tego zrobić. Więc powróci do niezabezpieczonego przechowywania\nJeśli używasz Linuksa, upewnij się, że masz zainstalowane jakieś tajne usługi (gnome-keyring, kde-wallet, keepassxc itp.)"
+  "encryption_failed_warning": "Spotube używa szyfrowania do bezpiecznego przechowywania danych. Ale nie udało się tego zrobić. Więc powróci do niezabezpieczonego przechowywania\nJeśli używasz Linuksa, upewnij się, że masz zainstalowane jakieś tajne usługi (gnome-keyring, kde-wallet, keepassxc itp.)",
+  "querying_info": "Szukam informacji...",
+  "piped_api_down": "Piped API jest wyłączone",
+  "piped_down_error_instructions": "Instancja Piped {pipedInstance} jest obecnie wyłączona\n\nJednak możesz zmienić instancję lub 'Typ API' na oficialne API YouTube'a\n\nUpewnij się, że uruchomiłeś ponownie aplikacje po tej zmianie."
 }
