@@ -224,7 +224,7 @@
   "generating_playlist": "Generowanie twojej własnej playlisty...",
   "selected_count_tracks": "Wybrano {count} utworów",
   "download_warning": "Jeśli hurtowo pobierasz wszystkie utwory, wyraźnie piracisz muzykę i wyrządzasz szkody kreatywnej społeczności muzycznej. Mam nadzieję, że jesteś tego świadomy. Zawsze staraj się szanować i wspierać ciężką pracę Artysty",
-  "download_ip_ban_warning": "Przy okazji, Twój adres IP może zostać zablokowany w YouTube z powodu nadmiernych żądań pobierania niż zwykle. Blokada IP oznacza, że nie możesz korzystać z YouTube (nawet jeśli jesteś zalogowany) przez co najmniej 2-3 miesiące z tego urządzenia IP. Spotube nie ponosi żadnej odpowiedzialności, jeśli tak się stanie",
+  "download_ip_ban_warning": "Przy okazji, Twój adres IP może zostać zablokowany w YouTube z powodu nadmiernych żądań pobierania niż zwykle. Blokada IP oznacza, że nie możesz korzystać z YouTube (nawet jeśli jesteś zalogowany) przez co najmniej 2-3 miesiące z IP tego urządzenia. Spotube nie ponosi żadnej odpowiedzialności, jeśli tak się stanie",
   "by_clicking_accept_terms": "Klikając 'Akceptuj' zgadzasz się z następującymi warunkami:",
   "download_agreement_1": "Wiem, że piracę muzykę. Jestem zły.",
   "download_agreement_2": "Będę wspierał artystę i robię to tylko dlatego, że nie mam pieniędzy na albumy wykonawcy. ",
