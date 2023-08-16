@@ -239,7 +239,7 @@
   "views": "Wyświetlenia",
   "streamUrl": "URL strumienia",
   "stop": "Stop",
-  "sort_newest": "Sortuj po dodanych najpóźniej",
+  "sort_newest": "Sortuj według ostatnio dodanych",
   "sort_oldest": "Sortuj według najstarszych dodanych",
   "sleep_timer": "Minutnik",
   "mins": "{minutes} Minuty",
