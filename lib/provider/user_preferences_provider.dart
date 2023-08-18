@@ -82,9 +82,9 @@ class UserPreferences extends PersistedChangeNotifier {
     this.showSystemTrayIcon = true,
     this.locale = const Locale("system", "system"),
     this.pipedInstance = "https://pipedapi.kavin.rocks",
-    this.searchMode = SearchMode.youtubeMusic,
+    this.searchMode = SearchMode.youtube,
     this.skipNonMusic = true,
-    this.youtubeApiType = YoutubeApiType.piped,
+    this.youtubeApiType = YoutubeApiType.youtube,
   }) : super() {
     if (downloadLocation.isEmpty && !kIsWeb) {
       _getDefaultDownloadDirectory().then(
@@ -248,14 +248,14 @@ class UserPreferences extends PersistedChangeNotifier {
 
     searchMode = SearchMode.values.firstWhere(
       (mode) => mode.name == map["searchMode"],
-      orElse: () => SearchMode.youtubeMusic,
+      orElse: () => SearchMode.youtube,
     );
 
     skipNonMusic = map["skipNonMusic"] ?? skipNonMusic;
 
     youtubeApiType = YoutubeApiType.values.firstWhere(
       (type) => type.name == map["youtubeApiType"],
-      orElse: () => YoutubeApiType.piped,
+      orElse: () => YoutubeApiType.youtube,
     );
   }
 
