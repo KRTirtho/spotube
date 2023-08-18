@@ -10,7 +10,7 @@ import 'package:spotube/utils/service_utils.dart';
 import 'package:collection/collection.dart';
 
 final officialMusicRegex = RegExp(
-  r"official\s(video|audio|music\svideo)",
+  r"official\s(video|audio|music\svideo|lyric\svideo|visualizer)",
   caseSensitive: false,
 );
 
@@ -101,15 +101,23 @@ class SpotubeTrack extends Track {
                     }
                   }
 
-                  if (sibling.title
+                  final titleContainsTrackName = sibling.title
                       .toLowerCase()
-                      .contains(track.name!.toLowerCase())) {
+                      .contains(track.name!.toLowerCase());
+
+                  final hasOfficialFlag =
+                      officialMusicRegex.hasMatch(sibling.title.toLowerCase());
+
+                  if (titleContainsTrackName) {
                     score += 3;
                   }
 
-                  if (officialMusicRegex
-                      .hasMatch(sibling.title.toLowerCase())) {
+                  if (hasOfficialFlag) {
                     score += 1;
+                  }
+
+                  if (hasOfficialFlag && titleContainsTrackName) {
+                    score += 2;
                   }
 
                   return (sibling: sibling, score: score);
