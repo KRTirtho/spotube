@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/KRTirtho/spotube/compare/v3.0.1...v3.1.0) (2023-08-18)
+
+
+### Features
+
+* add android auto media session control support ([0f5748a](https://github.com/KRTirtho/spotube/commit/0f5748a24b4b5a32862f7b2f28151e2d42bcce33))
+* better track matching on youtube API ([904a0d3](https://github.com/KRTirtho/spotube/commit/904a0d3e15a8e4a76d0842e978809d2838439f86))
+* blazingly™ fast download manager ([#619](https://github.com/KRTirtho/spotube/issues/619)) ([38dc4be](https://github.com/KRTirtho/spotube/commit/38dc4beb44827a20044afd120d7c32f097938660))
+* paginated user playlists ([e7c6813](https://github.com/KRTirtho/spotube/commit/e7c6813ccb2afcda9a8b044570a1c0a27785a59f))
+* show error dialog on piped API 500 error ([c69f81e](https://github.com/KRTirtho/spotube/commit/c69f81ec6f01f0f67ad06446e890aa1351516626))
+* **translation:** add catalan translations ([#621](https://github.com/KRTirtho/spotube/issues/621)) ([c94e5ba](https://github.com/KRTirtho/spotube/commit/c94e5ba4301ed0cb760daff56c56d2701b35131f))
+* **translations:** add polish translation ([#631](https://github.com/KRTirtho/spotube/issues/631)) ([f90e9be](https://github.com/KRTirtho/spotube/commit/f90e9bee3104a3812c2f775dd16cabbb56f668cb))
+* web compatibility ([cf7b849](https://github.com/KRTirtho/spotube/commit/cf7b849cddca3260d9c3a6a064418b0ba2d63270))
+
+
+### Bug Fixes
+
+* always showing play in playlist/album views ([8521cc5](https://github.com/KRTirtho/spotube/commit/8521cc5c88730caa9db74da6c04b679bf29ed56d))
+* **android:** android 13 local tracks not showing up ([e3f4344](https://github.com/KRTirtho/spotube/commit/e3f4344ae9c1ec93860d4c5d1b8de1a803b29569))
+* default to youtube API by default ([5a8a1e4](https://github.com/KRTirtho/spotube/commit/5a8a1e41e93fb74756b8c88f6325b8b46d7af131))
+* generate playlist page max width ([4adf695](https://github.com/KRTirtho/spotube/commit/4adf6951d9ee78ac4b198d541dada28dc00ca0cb))
+* tracks doesn't change when ended ([aa4ac86](https://github.com/KRTirtho/spotube/commit/aa4ac8641a7dceb4626ab675ba376b24a3480d30))
+* windows media controls not working ([ae5edd1](https://github.com/KRTirtho/spotube/commit/ae5edd17ef24f2a38ec1cc9c9623868b6ee9e352))
+
 ## [3.0.1](https://github.com/KRTirtho/spotube/compare/v3.0.0...v3.1.0) (2023-08-04)
 
 
