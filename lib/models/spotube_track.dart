@@ -104,7 +104,7 @@ class SpotubeTrack extends Track {
                   if (sibling.title
                       .toLowerCase()
                       .contains(track.name!.toLowerCase())) {
-                    score += 2;
+                    score += 3;
                   }
 
                   if (officialMusicRegex
