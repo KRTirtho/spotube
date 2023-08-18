@@ -4,9 +4,15 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/models/matched_track.dart';
+import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:collection/collection.dart';
+
+final officialMusicRegex = RegExp(
+  r"official\s(video|audio|music\svideo)",
+  caseSensitive: false,
+);
 
 class SpotubeTrack extends Track {
   final YoutubeVideoInfo ytTrack;
@@ -65,19 +71,59 @@ class SpotubeTrack extends Track {
     final List<YoutubeVideoInfo> siblings =
         await client.search("$title - ${artists.join(", ")}").then(
       (res) {
-        final siblings = res
-            .sorted((a, b) => b.views.compareTo(a.views))
-            .where((item) {
-              return artists.any(
-                (artist) =>
-                    client.preferences.searchMode == SearchMode.youtube ||
-                    artist.toLowerCase() == item.channelName.toLowerCase(),
-              );
-            })
-            .take(10)
-            .toList();
+        final isYoutubeApi =
+            client.preferences.youtubeApiType == YoutubeApiType.youtube;
+        final siblings = isYoutubeApi ||
+                client.preferences.searchMode == SearchMode.youtube
+            ? res
+                .sorted((a, b) => b.views.compareTo(a.views))
+                .map((sibling) {
+                  int score = 0;
 
-        return siblings;
+                  for (final artist in artists) {
+                    final isSameChannelArtist =
+                        sibling.channelName.toLowerCase() ==
+                            artist.toLowerCase();
+                    final channelContainsArtist = sibling.channelName
+                        .toLowerCase()
+                        .contains(artist.toLowerCase());
+
+                    if (isSameChannelArtist || channelContainsArtist) {
+                      score += 1;
+                    }
+
+                    final titleContainsArtist = sibling.title
+                        .toLowerCase()
+                        .contains(artist.toLowerCase());
+
+                    if (titleContainsArtist) {
+                      score += 1;
+                    }
+                  }
+
+                  if (sibling.title
+                      .toLowerCase()
+                      .contains(track.name!.toLowerCase())) {
+                    score += 2;
+                  }
+
+                  if (officialMusicRegex
+                      .hasMatch(sibling.title.toLowerCase())) {
+                    score += 1;
+                  }
+
+                  return (sibling: sibling, score: score);
+                })
+                .sorted((a, b) => b.score.compareTo(a.score))
+                .map((e) => e.sibling)
+            : res.sorted((a, b) => b.views.compareTo(a.views)).where((item) {
+                return artists.any(
+                  (artist) =>
+                      artist.toLowerCase() == item.channelName.toLowerCase(),
+                );
+              });
+
+        return siblings.take(10).toList();
       },
     );
 
