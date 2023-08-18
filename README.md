@@ -203,13 +203,20 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [collection](https://pub.dev/packages/collection) - Collections and utilities functions and classes related to collections.
 1. [cupertino_icons](https://pub.dev/packages/cupertino_icons) - Default icons asset for Cupertino widgets based on Apple styled icons
 1. [curved_navigation_bar](https://github.com/rafalbednarczuk/curved_navigation_bar) - Stunning Animating Curved Shape Navigation Bar. Adjustable color, background color, animation curve, animation duration.
+1. [dbus](https://github.com/canonical/dbus.dart) - A native Dart implementation of the D-Bus message bus client. This package allows Dart applications to directly access services on the Linux desktop.
+1. [device_info_plus](https://plus.fluttercommunity.dev/) - Flutter plugin providing detailed information about the device (make, model, etc.), and Android or iOS version the app is running on.
+1. [device_preview](https://github.com/aloisdeniel/flutter_device_preview) - Approximate how your Flutter app looks and performs on another device.
+1. [dio](https://github.com/cfug/dio) - A powerful HTTP networking package,supports Interceptors,Aborting and canceling a request,Custom adapters, Transformers, etc.
+1. [disable_battery_optimization](https://github.com/pvsvamsi/Disable-Battery-Optimizations) - Flutter plugin to check and disable battery optimizations. Also shows custom steps to disable the optimizations in devices like mi, xiaomi, samsung, oppo, huawei, oneplus etc
+1. [duration](https://github.com/desktop-dart/duration) - Utilities to make working with 'Duration's easier. Formats duration in human readable form and also parses duration in human readable form to Dart's Duration.
 1. [envied](https://github.com/petercinibulk/envied) - Explicitly reads environment variables into a dart file from a .env file for more security and faster start up times.
 1. [file_picker](https://github.com/miguelpruivo/plugins_flutter_file_picker) - A package that allows you to use a native file explorer to pick single or multiple absolute file paths, with extension filtering support.
 1. [fl_query](https://fl-query.vercel.app) - Asynchronous data caching, refetching & invalidation library for Flutter
 1. [fl_query_hooks](https://fl-query.vercel.app) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
 1. [fl_query_connectivity_plus_adapter](https://fl-query.vercel.app) - Connectivity Plus adapter for FlQuery Connectivity
 1. [fluentui_system_icons](https://github.com/microsoft/fluentui-system-icons/tree/main) - Fluent UI System Icons are a collection of familiar, friendly and modern icons from Microsoft.
-1. [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/master/flutter_cache_manager) - Generic cache manager for flutter. Saves web files on the storages of the device and saves the cache info using sqflite.
+1. [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/develop/flutter_cache_manager) - Generic cache manager for flutter. Saves web files on the storages of the device and saves the cache info using sqflite.
+1. [flutter_displaymode](https://github.com/ajinasokan/flutter_displaymode) - A Flutter plugin to set display mode (resolution, refresh rate) on Android platform. Allows to enable high refresh rate on supported devices.
 1. [flutter_feather_icons](https://github.com/muj-programmer/flutter_feather_icons) - Feather is a collection of simply beautiful open source icons. Each icon is designed on a 24x24 grid with an emphasis on simplicity, consistency and usability.
 1. [flutter_hooks](https://github.com/rrousselGit/flutter_hooks) - A flutter implementation of React hooks. It adds a new kind of widget with enhanced code reuse.
 1. [flutter_inappwebview](https://inappwebview.dev/) - A Flutter plugin that allows you to add an inline webview, to use an headless webview, and to open an in-app browser window.
@@ -218,6 +225,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) - Flutter Secure Storage provides API to store data in secure storage. Keychain is used in iOS, KeyStore based solution is used in Android.
 1. [flutter_svg](https://pub.dev/packages/flutter_svg) - An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
 1. [fuzzywuzzy](https://github.com/sphericalkat/dart-fuzzywuzzy) - An implementation of the popular fuzzywuzzy package in Dart, to suit all your fuzzy string matching/searching needs!
+1. [google_fonts](https://pub.dev/packages/google_fonts) - A Flutter package to use fonts from fonts.google.com. Supports HTTP fetching, caching, and asset bundling.
 1. [go_router](https://pub.dev/packages/go_router) - A declarative router for Flutter based on Navigation 2 supporting deep linking, data-driven routes and more
 1. [hive](https://github.com/hivedb/hive/tree/master/hive) - Lightweight and blazing fast key-value database written in pure Dart. Strongly encrypted using AES-256.
 1. [hive_flutter](https://github.com/hivedb/hive/tree/master/hive_flutter) - Extension for Hive. Makes it easier to use Hive in Flutter apps.
@@ -228,12 +236,13 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [introduction_screen](https://github.com/pyozer/introduction_screen) - Introduction/Onboarding package for flutter app with some customizations possibilities
 1. [json_annotation](https://pub.dev/packages/json_annotation) - Classes and helper functions that support JSON code generation via the `json_serializable` package.
 1. [logger](https://pub.dev/packages/logger) - Small, easy to use and extensible logger which prints beautiful logs.
-1. [media_kit](https://github.com/alexmercerind/media_kit) - A complete video & audio playback library for Flutter & Dart. Performant, stable, feature-proof & modular.
-1. [media_kit_libs_android_audio](https://github.com/alexmercerind/media_kit.git) - Android package providing audio (only) native libraries for package:media_kit.
-1. [media_kit_libs_ios_audio](https://github.com/alexmercerind/media_kit.git) - iOS package providing audio native libraries for package:media_kit.
-1. [media_kit_libs_linux](https://github.com/alexmercerind/media_kit.git) - GNU/Linux dependency package for package:media_kit. Necessary for initialization.
-1. [media_kit_libs_macos_audio](https://github.com/alexmercerind/media_kit.git) - macOS package providing audio native libraries for package:media_kit.
-1. [media_kit_libs_windows_audio](https://github.com/alexmercerind/media_kit.git) - Windows package providing audio (only) native libraries for package:media_kit.
+1. [media_kit](https://github.com/media-kit/media-kit) - A cross-platform video player & audio player for Flutter & Dart. Performant, stable, feature-proof & modular.
+1. [media_kit_native_event_loop](https://github.com/media-kit/media-kit) - Platform specific threaded event handling for media_kit. Enables support for higher number of concurrent instances.
+1. [media_kit_libs_android_audio](https://github.com/media-kit/media-kit.git) - Android package providing audio (only) native libraries for package:media_kit.
+1. [media_kit_libs_ios_audio](https://github.com/media-kit/media-kit.git) - iOS package providing audio native libraries for package:media_kit.
+1. [media_kit_libs_macos_audio](https://github.com/media-kit/media-kit.git) - macOS package providing audio native libraries for package:media_kit.
+1. [media_kit_libs_windows_audio](https://github.com/media-kit/media-kit.git) - Windows package providing audio (only) native libraries for package:media_kit.
+1. [media_kit_libs_linux](https://github.com/media-kit/media-kit.git) - GNU/Linux dependency package for package:media_kit. Necessary for initialization.
 1. [metadata_god](https://github.com/KRTirtho/metadata_god) - Plugin for retrieving and writing audio tags/metadata from audio files
 1. [mime](https://pub.dev/packages/mime) - Utilities for handling media (MIME) types, including determining a type from a file extension and file contents.
 1. [package_info_plus](https://plus.fluttercommunity.dev/) - Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.
@@ -241,6 +250,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [path](https://pub.dev/packages/path) - A string-based path manipulation library. All of the path operations you know and love, with solid support for Windows, POSIX (Linux and Mac OS X), and the web.
 1. [path_provider](https://pub.dev/packages/path_provider) - Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.
 1. [permission_handler](https://pub.dev/packages/permission_handler) - Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.
+1. [piped_client](https://github.com/KRTirtho/piped_client) - API Client for piped.video
 1. [popover](https://github.com/minikin/popover) - A popover is a transient view that appears above other content onscreen when you tap a control or in an area.
 1. [scroll_to_index](https://github.com/quire-io/scroll-to-index) - Scroll to a specific child of any scrollable widget in Flutter
 1. [shared_preferences](https://pub.dev/packages/shared_preferences) - Flutter plugin for reading and writing simple key-value pairs. Wraps NSUserDefaults on iOS and SharedPreferences on Android.
@@ -248,6 +258,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [skeleton_text](https://github.com/101Loop/Skeleton-Text) - A package that provides an easy way to add skeleton text loading animation in Flutter project. This project is a part of 101Loop community.
 1. [smtc_windows](https://github.com/KRTirtho/smtc_windows) - Windows `SystemMediaTransportControls` implementation for Flutter giving access to Windows OS Media Control applet.
 1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.
+1. [supabase](https://supabase.com) - A dart client for Supabase. This client makes it simple for developers to build secure and scalable products.
 1. [system_theme](https://pub.dev/packages/system_theme) - A plugin to get the current system theme info. Supports Android, Web, Windows, Linux and macOS
 1. [titlebar_buttons](https://github.com/gtk-flutter/titlebar_buttons) - A package which provides most of the titlebar buttons from windows, linux and macos.
 1. [url_launcher](https://pub.dev/packages/url_launcher) - Flutter plugin for launching a URL. Supports web, phone, SMS, and email schemes.
@@ -255,14 +266,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [version](https://github.com/dartninja/version) - Provides a simple class for parsing and comparing semantic versions as defined by http://semver.org/
 1. [visibility_detector](https://pub.dev/packages/visibility_detector) - A widget that detects the visibility of its child and notifies a callback.
 1. [window_manager](https://github.com/leanflutter/window_manager) - This plugin allows Flutter desktop apps to resizing and repositioning the window.
-1. [piped_client](https://github.com/KRTirtho/piped_client) - API Client for piped.video
-1. [supabase_flutter](https://supabase.com) - Flutter integration for Supabase. This package makes it simple for developers to build secure and scalable products.
-1. [device_preview](https://github.com/aloisdeniel/flutter_device_preview) - Approximate how your Flutter app looks and performs on another device.
-1. [media_kit_native_event_loop](https://github.com/alexmercerind/media_kit) - Platform specific threaded event handling for media_kit. Enables support for higher number of concurrent instances.
-1. [dbus](https://github.com/canonical/dbus.dart) - A native Dart implementation of the D-Bus message bus client. This package allows Dart applications to directly access services on the Linux desktop.
-1. [background_downloader](https://pub.dev/packages/background_downloader) - A multi-platform background file downloader and uploader. Define the task, enqueue and monitor progress
-1. [duration](https://github.com/desktop-dart/duration) - Utilities to make working with 'Duration's easier. Formats duration in human readable form and also parses duration in human readable form to Dart's Duration.
-1. [disable_battery_optimization](https://github.com/pvsvamsi/Disable-Battery-Optimizations) - Flutter plugin to check and disable battery optimizations. Also shows custom steps to disable the optimizations in devices like mi, xiaomi, samsung, oppo, huawei, oneplus etc
 1. [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - A port in dart of the youtube explode library. Supports several API functions without the need of Youtube API Key.
 1. [build_runner](https://pub.dev/packages/build_runner) - A build system for Dart code generation and modular compilation.
 1. [envied_generator](https://github.com/petercinibulk/envied) - Generator for the Envied package. See https://pub.dev/packages/envied.
@@ -277,7 +280,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [catcher](https://github.com/jhomlala/catcher) - Plugin for error catching which provides multiple handlers for dealing with errors when they are not caught by the developer.
 1. [flutter_desktop_tools](https://github.com/KRTirtho/flutter_desktop_tools) - Essential collection of tools for flutter desktop app development
 1. [window_size](https://github.com/google/flutter-desktop-embedding.git) - Allows resizing and repositioning the window containing Flutter.
-
 </details>
 
 <div align="center"><h4>© Copyright Spotube 2023</h4></div>

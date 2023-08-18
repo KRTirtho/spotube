@@ -72,7 +72,7 @@ void main() async {
     packageInfo
         .map(
           (package) =>
-              '- [${package.name}](${package.latestPubspec.homepage ?? package.url}) - ${package.description.replaceAll('\n', '')}',
+              '1. [${package.name}](${package.latestPubspec.homepage ?? package.url}) - ${package.description.replaceAll('\n', '')}',
         )
         .join('\n'),
   );
@@ -85,7 +85,7 @@ void main() async {
                 ?.value
                 .url
                 .toString();
-        return '- [${package.name}]($packageUrl) - ${package.description?.replaceAll('\n', '')}';
+        return '1. [${package.name}]($packageUrl) - ${package.description?.replaceAll('\n', '')}';
       },
     ).join('\n'),
   );
