@@ -68,62 +68,64 @@ class SpotubeTrack extends Track {
       onlyCleanArtist: true,
     ).trim();
 
-    final List<YoutubeVideoInfo> siblings =
-        await client.search("$title - ${artists.join(", ")}").then(
+    final query = "$title - ${artists.join(", ")}";
+    final List<YoutubeVideoInfo> siblings = await client.search(query).then(
       (res) {
         final isYoutubeApi =
             client.preferences.youtubeApiType == YoutubeApiType.youtube;
         final siblings = isYoutubeApi ||
                 client.preferences.searchMode == SearchMode.youtube
-            ? res
-                .sorted((a, b) => b.views.compareTo(a.views))
-                .map((sibling) {
-                  int score = 0;
+            ? ServiceUtils.onlyContainsEnglish(query)
+                ? res
+                : res
+                    .sorted((a, b) => b.views.compareTo(a.views))
+                    .map((sibling) {
+                      int score = 0;
 
-                  for (final artist in artists) {
-                    final isSameChannelArtist =
-                        sibling.channelName.toLowerCase() ==
-                            artist.toLowerCase();
-                    final channelContainsArtist = sibling.channelName
-                        .toLowerCase()
-                        .contains(artist.toLowerCase());
+                      for (final artist in artists) {
+                        final isSameChannelArtist =
+                            sibling.channelName.toLowerCase() ==
+                                artist.toLowerCase();
+                        final channelContainsArtist = sibling.channelName
+                            .toLowerCase()
+                            .contains(artist.toLowerCase());
 
-                    if (isSameChannelArtist || channelContainsArtist) {
-                      score += 1;
-                    }
+                        if (isSameChannelArtist || channelContainsArtist) {
+                          score += 1;
+                        }
 
-                    final titleContainsArtist = sibling.title
-                        .toLowerCase()
-                        .contains(artist.toLowerCase());
+                        final titleContainsArtist = sibling.title
+                            .toLowerCase()
+                            .contains(artist.toLowerCase());
 
-                    if (titleContainsArtist) {
-                      score += 1;
-                    }
-                  }
+                        if (titleContainsArtist) {
+                          score += 1;
+                        }
+                      }
 
-                  final titleContainsTrackName = sibling.title
-                      .toLowerCase()
-                      .contains(track.name!.toLowerCase());
+                      final titleContainsTrackName = sibling.title
+                          .toLowerCase()
+                          .contains(track.name!.toLowerCase());
 
-                  final hasOfficialFlag =
-                      officialMusicRegex.hasMatch(sibling.title.toLowerCase());
+                      final hasOfficialFlag = officialMusicRegex
+                          .hasMatch(sibling.title.toLowerCase());
 
-                  if (titleContainsTrackName) {
-                    score += 3;
-                  }
+                      if (titleContainsTrackName) {
+                        score += 3;
+                      }
 
-                  if (hasOfficialFlag) {
-                    score += 1;
-                  }
+                      if (hasOfficialFlag) {
+                        score += 1;
+                      }
 
-                  if (hasOfficialFlag && titleContainsTrackName) {
-                    score += 2;
-                  }
+                      if (hasOfficialFlag && titleContainsTrackName) {
+                        score += 2;
+                      }
 
-                  return (sibling: sibling, score: score);
-                })
-                .sorted((a, b) => b.score.compareTo(a.score))
-                .map((e) => e.sibling)
+                      return (sibling: sibling, score: score);
+                    })
+                    .sorted((a, b) => b.score.compareTo(a.score))
+                    .map((e) => e.sibling)
             : res.sorted((a, b) => b.views.compareTo(a.views)).where((item) {
                 return artists.any(
                   (artist) =>
