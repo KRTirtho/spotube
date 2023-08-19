@@ -66,8 +66,8 @@
     </receiver>
     <!-- =================== -->
 
-    <!-- <meta-data android:name="com.google.android.gms.car.application"
-      android:resource="@xml/automotive_app_desc" /> -->
+    <meta-data android:name="com.google.android.gms.car.application"
+      android:resource="@xml/automotive_app_desc" />
 
     <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
