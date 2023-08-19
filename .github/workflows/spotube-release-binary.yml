@@ -200,7 +200,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse xmlstarlet
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}
@@ -244,6 +244,9 @@ jobs:
         run: |
           echo 'ENABLE_UPDATE_CHECK=0' >> .env
           dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          export MANIFEST=android/app/src/main/AndroidManifest.xml
+          xmlstarlet ed -d '//meta-data[@android:name="com.google.android.gms.car.application"]' $MANIFEST > $MANIFEST.tmp
+          mv $MANIFEST.tmp $MANIFEST
           flutter build appbundle
           mv build/app/outputs/bundle/release/app-release.aab build/Spotube-playstore-all-arch.aab
 
