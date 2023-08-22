@@ -7,7 +7,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import DownloadButton from "components/DownloadButton";
-import Image from "next/image";
+import Image from 'next/image';
 
 const Root = () => {
   const textColor = useColorModeValue("#171717", "#f5f5f5");
@@ -46,17 +46,43 @@ const Root = () => {
         {/* <DisplayAd slot="9501208974" /> */}
         <chakra.div bgGradient="linear-gradient(180deg, rgba(249,207,143,1) 0%, rgba(250,250,250,1) 45%)">
           <VStack
-            bgImage="url(/headline-1.png)"
-            m="10"
-            bgRepeat="no-repeat"
-            bgSize="contain"
-            h="60vh"
-            alignItems={useColorModeValue("flex-end", "flex-start")}
-            bgPos={useColorModeValue("left", "right")}
-            justify="center"
+            p="5"
+            mt="10"
+            pos="relative"
+            _before={{
+              content: "''",
+              position: "absolute",
+              left: 0,
+              right: 0,
+              zIndex: -1,
+              display: "block",
+              height: "100%",
+              width: "100%",
+              background: "url('/headline-2b.png') rgba(0, 0, 0, 0.9)",
+              bgSize: "contain",
+              bgRepeat: "no-repeat",
+              bgPos: "center",
+              filter: "blur(2px)",
+            }}
+            flexDirection={{ base: "column", md: "row" }} // Stack content vertically on mobile, reverse order on desktop
+            alignItems="center" // Center align content vertically on mobile
+            textAlign="center" // Center align text horizontally on mobile
           >
+            <chakra.div maxW="600px">
+              <Image
+                src="/headline-1.png"
+                m="10"
+                bgRepeat="no-repeat"
+                bgSize="contain"
+                h="60vh"
+                width="1020"
+                height="780"
+                layout="intrinsic"
+                alt="Headline 2"
+              />
+            </chakra.div>
             <chakra.div
-              maxW={{ base: "full", md: "300px", lg: " 400px" }}
+              maxW="500px"
               bgGradient={{
                 base: "radial-gradient(circle, #ffffff 23%, rgba(0,0,0,0) 82%)",
                 md: "radial-gradient(circle, #ffffff00 23%, rgba(0,0,0,0) 82%)",
@@ -67,7 +93,7 @@ const Root = () => {
               <Text>
                 You can use all your Spotify tracks & playlists here. Everything
                 will be in Sync & some action taken from Spotube will also
-                reflect on your Spotify Account
+                reflect on your Spotify Account.
               </Text>
             </chakra.div>
           </VStack>
@@ -137,12 +163,11 @@ const Root = () => {
             />
           </chakra.div>
         </HStack>
-        <VStack py="10">
+        <VStack py="10" alignItems="center" textAlign="center">
           <div>
             <Heading size="lg">Download Now</Heading>
             <Text>
-              Download Spotube for every platform you want. It&apos;s available
-              everywhere
+              Download Spotube for every platform you want. It's available everywhere.
             </Text>
           </div>
           <DownloadButton />
