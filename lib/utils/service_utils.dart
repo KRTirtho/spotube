@@ -17,6 +17,13 @@ import 'package:html/parser.dart' as parser;
 abstract class ServiceUtils {
   static final logger = getLogger("ServiceUtils");
 
+  static final _englishMatcherRegex = RegExp(
+    "^[a-zA-Z0-9\\s!\"#\$%&\\'()*+,-.\\/:;<=>?@\\[\\]^_`{|}~]*\$",
+  );
+  static bool onlyContainsEnglish(String text) {
+    return _englishMatcherRegex.hasMatch(text);
+  }
+
   static String clearArtistsOfTitle(String title, List<String> artists) {
     return title
         .replaceAll(RegExp(artists.join("|"), caseSensitive: false), "")
