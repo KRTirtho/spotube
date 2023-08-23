@@ -9,7 +9,7 @@ import UserDetailedCard from "components/UserDetailedCard";
 import { octokit } from "configurations/ocotokit";
 import useSwr from "swr";
 
-const maintainers = ["KRTirtho", "RustyApple"];
+const maintainers = ["KRTirtho", "RustyApple", "raptag"];
 
 const About = () => {
   const { data } = useSwr("contributors", () =>

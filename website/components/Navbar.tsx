@@ -17,7 +17,7 @@ import {
 import NavLink from "next/link";
 import { GoLightBulb } from "react-icons/go";
 import { FiGithub, FiSun } from "react-icons/fi";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsHeartFill } from "react-icons/bs";

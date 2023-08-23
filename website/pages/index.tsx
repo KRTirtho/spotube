@@ -7,7 +7,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import DownloadButton from "components/DownloadButton";
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 const Root = () => {
   const textColor = useColorModeValue("#171717", "#f5f5f5");
@@ -23,7 +23,12 @@ const Root = () => {
           bgSize="contain"
           bgPos={useColorModeValue("right", "left")}
         >
-          <VStack mt="10" mx="6" spacing="4" alignItems={useColorModeValue("flex-start", "flex-end")}>
+          <VStack
+            mt="10"
+            mx="6"
+            spacing="4"
+            alignItems={useColorModeValue("flex-start", "flex-end")}
+          >
             <chakra.section
               p={{ base: "5", md: "0" }}
               borderRadius="2xl"
@@ -71,10 +76,10 @@ const Root = () => {
             <chakra.div maxW="600px">
               <Image
                 src="/headline-1.png"
-                m="10"
-                bgRepeat="no-repeat"
-                bgSize="contain"
-                h="60vh"
+                style={{
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "contain",
+                }}
                 width="1020"
                 height="780"
                 layout="intrinsic"
@@ -167,7 +172,8 @@ const Root = () => {
           <div>
             <Heading size="lg">Download Now</Heading>
             <Text>
-              Download Spotube for every platform you want. It's available everywhere.
+              Download Spotube for every platform you want. It&apos;s available
+              everywhere.
             </Text>
           </div>
           <DownloadButton />
