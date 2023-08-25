@@ -67,7 +67,7 @@ abstract class TypeConversionUtils {
                   if (onRouteChange != null) {
                     onRouteChange("/artist/${artist.value.id}");
                   } else {
-                    ServiceUtils.navigate(
+                    ServiceUtils.push(
                       context,
                       "/artist/${artist.value.id}",
                     );
