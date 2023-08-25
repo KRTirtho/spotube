@@ -170,6 +170,7 @@ class MkPlayerWithState extends Player {
       return super.open(_playlist!.medias[_playlist!.index], play: true);
     } else if (!isLast) {
       playlist = _playlist!.copyWith(index: _playlist!.index + 1);
+
       return super.open(_playlist!.medias[_playlist!.index], play: true);
     }
   }
@@ -233,30 +234,30 @@ class MkPlayerWithState extends Player {
 
     final isOldUrlPlaying = _playlist!.medias[_playlist!.index].uri == oldUrl;
 
-    for (var i = 0; i < _playlist!.medias.length - 1; i++) {
-      final media = _playlist!.medias[i];
-      if (media.uri == oldUrl) {
-        if (isOldUrlPlaying) {
-          pause();
-        }
-        final newMedias = _playlist!.medias.toList();
-        newMedias[i] = Media(newUrl, extras: media.extras);
-        playlist = _playlist!.copyWith(medias: newMedias);
-        if (isOldUrlPlaying) {
-          super.open(
-            newMedias[i],
-            play: true,
-          );
-        }
-
-        // replace in the _tempMedias if it's not null
-        if (shuffled && _tempMedias != null) {
-          final tempIndex = _tempMedias!.indexOf(media);
-          _tempMedias![tempIndex] = Media(newUrl, extras: media.extras);
-        }
-        break;
+    // ends the loop where match is found
+    // tends to be a bit more efficient than forEach
+    _playlist!.medias.firstWhereIndexedOrNull((i, media) {
+      if (media.uri != oldUrl) return false;
+      if (isOldUrlPlaying) {
+        pause();
       }
-    }
+      final copyMedias = [..._playlist!.medias];
+      copyMedias[i] = Media(newUrl, extras: media.extras);
+      playlist = _playlist!.copyWith(medias: copyMedias);
+      if (isOldUrlPlaying) {
+        super.open(
+          copyMedias[i],
+          play: true,
+        );
+      }
+
+      // replace in the _tempMedias if it's not null
+      if (shuffled && _tempMedias != null) {
+        final tempIndex = _tempMedias!.indexOf(media);
+        _tempMedias![tempIndex] = Media(newUrl, extras: media.extras);
+      }
+      return true;
+    });
   }
 
   @override
