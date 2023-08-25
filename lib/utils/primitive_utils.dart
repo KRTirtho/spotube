@@ -57,4 +57,8 @@ abstract class PrimitiveUtils {
       }),
     );
   }
+
+  static String toSafeFileName(String str) {
+    return str.replaceAll(RegExp(r'[^\w\s\.\-_]'), "_");
+  }
 }
