@@ -111,7 +111,7 @@ abstract class AudioPlayerInterface {
     // }
   }
 
-  Future<PlaybackLoopMode> get loopMode async {
+  PlaybackLoopMode get loopMode {
     return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.loopMode);
     // if (mkSupportedPlatform) {
     //   return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.loopMode);

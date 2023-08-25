@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
@@ -129,6 +130,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
           final oldTrack =
               mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
+
           final track = await ensureSourcePlayable(audioPlayer.nextSource!);
 
           if (track != null) {
@@ -439,13 +441,16 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   Future<void> next() async {
     if (audioPlayer.nextSource == null) return;
     final oldTrack = mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
+
     state = state.copyWith(
       active: state.tracks
           .toList()
           .indexWhere((element) => element.id == oldTrack?.id),
     );
+
     await audioPlayer.pause();
     final track = await ensureSourcePlayable(audioPlayer.nextSource!);
+
     if (track != null) {
       state = state.copyWith(
         tracks: mergeTracks([track], state.tracks),
@@ -613,7 +618,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     final oldCollections = state.collections;
     await load(
       state.tracks,
-      initialIndex: state.active ?? 0,
+      initialIndex: max(state.active ?? 0, 0),
       autoPlay: false,
     );
     state = state.copyWith(collections: oldCollections);

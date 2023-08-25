@@ -98,10 +98,10 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
     return sources
         .map((source) {
           final track = state.tracks.firstWhereOrNull(
-            (track) {
-              final newSource = makeAppropriateSource(track);
-              return newSource == source;
-            },
+            (track) =>
+                trackToUnplayableSource(track) == source ||
+                (track is SpotubeTrack && track.ytUri == source) ||
+                (track is LocalTrack && track.path == source),
           );
           return track;
         })

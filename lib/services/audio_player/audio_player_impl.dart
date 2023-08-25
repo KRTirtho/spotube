@@ -156,6 +156,12 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   String? get nextSource {
     // if (mkSupportedPlatform) {
+
+    if (loopMode == PlaybackLoopMode.all &&
+        _mkPlayer.playlist.index == _mkPlayer.playlist.medias.length - 1) {
+      return sources.first;
+    }
+
     return _mkPlayer.playlist.medias
         .elementAtOrNull(_mkPlayer.playlist.index + 1)
         ?.uri;
@@ -169,6 +175,10 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   }
 
   String? get previousSource {
+    if (loopMode == PlaybackLoopMode.all && _mkPlayer.playlist.index == 0) {
+      return sources.last;
+    }
+
     // if (mkSupportedPlatform) {
     return _mkPlayer.playlist.medias
         .elementAtOrNull(_mkPlayer.playlist.index - 1)
