@@ -6,13 +6,3 @@ final youtubeProvider = Provider<YoutubeEndpoints>((ref) {
   final preferences = ref.watch(userPreferencesProvider);
   return YoutubeEndpoints(preferences);
 });
-
-// this provider overrides the API provider to use piped.video for downloading
-final downloadYoutubeProvider = Provider<YoutubeEndpoints>((ref) {
-  final preferences = ref.watch(userPreferencesProvider);
-  return YoutubeEndpoints(
-    preferences.copyWith(
-      youtubeApiType: YoutubeApiType.piped,
-    ),
-  );
-});

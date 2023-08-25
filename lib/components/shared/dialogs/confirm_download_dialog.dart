@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
 class ConfirmDownloadDialog extends StatelessWidget {
@@ -24,8 +25,9 @@ class ConfirmDownloadDialog extends StatelessWidget {
           ],
         ),
       ),
-      content: Padding(
+      content: Container(
         padding: const EdgeInsets.all(15),
+        constraints: BoxConstraints(maxWidth: Breakpoints.sm),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -87,7 +89,7 @@ class BulletPoint extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("●"),
+        const Text("\u2022"),
         const SizedBox(width: 5),
         Flexible(child: Text(text)),
       ],

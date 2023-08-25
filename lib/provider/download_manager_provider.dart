@@ -85,7 +85,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   final Ref<DownloadManagerProvider> ref;
 
-  YoutubeEndpoints get yt => ref.read(downloadYoutubeProvider);
+  YoutubeEndpoints get yt => ref.read(youtubeProvider);
   String get downloadDirectory =>
       ref.read(userPreferencesProvider.select((s) => s.downloadLocation));
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:catcher/catcher.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -68,7 +69,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     () async {
       notificationService = await AudioServices.create(ref, this);
 
-      ({String source, List<SkipSegment> segments})? currentSegments;
+      // listeners state
+      final currentSegments =
+          // using source as unique id because alternative track source support
+          ObjectRef<({String source, List<SkipSegment> segments})?>(null);
+      final isPreSearching = ObjectRef(false);
+      final isFetchingSegments = ObjectRef(false);
 
       audioPlayer.activeSourceChangedStream.listen((newActiveSource) async {
         try {
@@ -112,16 +118,14 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         }
       });
 
-      bool isPreSearching = false;
-
       listenTo2Percent(int percent) async {
-        if (isPreSearching ||
+        if (isPreSearching.value ||
             audioPlayer.currentSource == null ||
             audioPlayer.nextSource == null ||
             isPlayable(audioPlayer.nextSource!)) return;
 
         try {
-          isPreSearching = true;
+          isPreSearching.value = true;
 
           final oldTrack =
               mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
@@ -138,51 +142,64 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
             );
           }
         } catch (e, stackTrace) {
+          // Removing tracks that were not found to avoid queue interruption
+          // TODO: Add a flag to enable/disable skip not found tracks
+          if (e is TrackNotFoundException) {
+            final oldTrack =
+                mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
+            await removeTrack(oldTrack!.id!);
+          }
           Catcher.reportCheckedError(e, stackTrace);
         } finally {
-          isPreSearching = false;
+          isPreSearching.value = false;
         }
       }
 
       audioPlayer.percentCompletedStream(2).listen(listenTo2Percent);
 
-      bool isFetchingSegments = false;
-
       audioPlayer.positionStream.listen((position) async {
+        if (state.activeTrack == null || state.activeTrack is LocalTrack) {
+          isFetchingSegments.value = false;
+          return;
+        }
         try {
-          if (state.activeTrack == null || state.activeTrack is LocalTrack) {
-            isFetchingSegments = false;
-            return;
-          }
-          // skipping in very first second breaks stream
-          if ((preferences.youtubeApiType == YoutubeApiType.piped &&
-                  preferences.searchMode == SearchMode.youtubeMusic) ||
-              !preferences.skipNonMusic) return;
+          final isYTMusicMode =
+              preferences.youtubeApiType == YoutubeApiType.piped &&
+                  preferences.searchMode == SearchMode.youtubeMusic;
 
-          final notSameSegmentId =
-              currentSegments?.source != audioPlayer.currentSource;
+          if (isYTMusicMode || !preferences.skipNonMusic) return;
 
-          if (currentSegments == null ||
-              (notSameSegmentId && !isFetchingSegments)) {
-            isFetchingSegments = true;
+          final isNotSameSegmentId =
+              currentSegments.value?.source != audioPlayer.currentSource;
+
+          if (currentSegments.value == null ||
+              (isNotSameSegmentId && !isFetchingSegments.value)) {
+            isFetchingSegments.value = true;
             try {
-              currentSegments = (
+              currentSegments.value = (
                 source: audioPlayer.currentSource!,
                 segments: await getAndCacheSkipSegments(
                   (state.activeTrack as SpotubeTrack).ytTrack.id,
                 ),
               );
+            } catch (e) {
+              currentSegments.value = (
+                source: audioPlayer.currentSource!,
+                segments: [],
+              );
             } finally {
-              isFetchingSegments = false;
+              isFetchingSegments.value = false;
             }
           }
 
-          final (source: _, :segments) = currentSegments!;
+          final (source: _, :segments) = currentSegments.value!;
+
+          // skipping in first 2 second breaks stream
           if (segments.isEmpty || position < const Duration(seconds: 3)) return;
 
           for (final segment in segments) {
-            if ((position.inSeconds >= segment.start &&
-                position.inSeconds < segment.end)) {
+            if (position.inSeconds >= segment.start &&
+                position.inSeconds < segment.end) {
               await audioPlayer.seek(Duration(seconds: segment.end));
             }
           }
