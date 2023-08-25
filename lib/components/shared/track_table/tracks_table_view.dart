@@ -20,6 +20,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 final trackCollectionSortState =
@@ -55,7 +56,9 @@ class TracksTableView extends HookConsumerWidget {
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
-    TextStyle tableHeadStyle =
+    final apiType =
+        ref.watch(userPreferencesProvider.select((s) => s.youtubeApiType));
+    final tableHeadStyle =
         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
     final selected = useState<List<String>>([]);
@@ -188,12 +191,13 @@ class TracksTableView extends HookConsumerWidget {
                       switch (action) {
                         case "download":
                           {
-                            final confirmed = await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const ConfirmDownloadDialog();
-                              },
-                            );
+                            final confirmed = apiType == YoutubeApiType.piped ||
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return const ConfirmDownloadDialog();
+                                  },
+                                );
                             if (confirmed != true) return;
                             await downloader
                                 .batchAddToQueue(selectedTracks.toList());
