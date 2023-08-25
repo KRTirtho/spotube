@@ -257,11 +257,19 @@ abstract class ServiceUtils {
   }
 
   static void navigate(BuildContext context, String location, {Object? extra}) {
+    if (GoRouterState.of(context).matchedLocation == location) return;
     GoRouter.of(context).go(location, extra: extra);
   }
 
   static void push(BuildContext context, String location, {Object? extra}) {
-    GoRouter.of(context).push(location, extra: extra);
+    final router = GoRouter.of(context);
+    final routerState = GoRouterState.of(context);
+    final routerStack = router.routerDelegate.currentConfiguration.matches
+        .map((e) => e.matchedLocation);
+
+    if (routerState.matchedLocation == location ||
+        routerStack.contains(location)) return;
+    router.push(location, extra: extra);
   }
 
   static List<T> sortTracks<T extends Track>(List<T> tracks, SortBy sortBy) {
