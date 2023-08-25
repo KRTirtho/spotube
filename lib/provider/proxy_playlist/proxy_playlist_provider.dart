@@ -336,15 +336,18 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   Future<void> jumpTo(int index) async {
     final oldTrack =
         mapSourcesToTracks([audioPlayer.currentSource!]).firstOrNull;
+
     state = state.copyWith(active: index);
     await audioPlayer.pause();
     final track = await ensureSourcePlayable(audioPlayer.sources[index]);
+
     if (track != null) {
       state = state.copyWith(
         tracks: mergeTracks([track], state.tracks),
         active: index,
       );
     }
+
     await audioPlayer.jumpTo(index);
 
     if (oldTrack != null || track != null) {

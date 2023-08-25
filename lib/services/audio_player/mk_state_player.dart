@@ -159,7 +159,7 @@ class MkPlayerWithState extends Player {
 
   @override
   Future<void> next() async {
-    if (_playlist == null || _playlist!.index + 1 >= _playlist!.medias.length) {
+    if (_playlist == null) {
       return;
     }
 
@@ -190,7 +190,7 @@ class MkPlayerWithState extends Player {
   @override
   Future<void> jump(int index) async {
     if (_playlist == null || index < 0 || index >= _playlist!.medias.length) {
-      return null;
+      return;
     }
 
     playlist = _playlist!.copyWith(index: index);
