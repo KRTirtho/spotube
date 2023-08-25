@@ -532,7 +532,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       final cached = await SkipSegment.box.get(id);
       if (cached != null && cached.isNotEmpty) {
         return List.castFrom<dynamic, SkipSegment>(
-          (cached as List).map((json) => SkipSegment.fromJson(json)).toList(),
+          (cached as List)
+              .map(
+                (json) => SkipSegment.fromJson(
+                  Map.castFrom<dynamic, dynamic, String, dynamic>(json),
+                ),
+              )
+              .toList(),
         );
       }
 
