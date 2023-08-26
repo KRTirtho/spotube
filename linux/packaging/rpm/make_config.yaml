@@ -12,7 +12,6 @@ requires:
   - jsoncpp
   - libsecret
   - libnotify
-  - NetworkManager
 
 display_name: Spotube
 
