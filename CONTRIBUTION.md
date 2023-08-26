@@ -25,6 +25,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
       - [Before Submitting an Enhancement](#before-submitting-an-enhancement)
       - [How Do I Submit a Good Enhancement Suggestion?](#how-do-i-submit-a-good-enhancement-suggestion)
     - [Your First Code Contribution](#your-first-code-contribution)
+    - [Submit translations](#submit-translations)
 
 ## Code of Conduct
 
@@ -145,3 +146,21 @@ Do the following:
   ```
 
 Do debugging/testing/build etc then submit to us with PR against the development branch (master) & we'll review your code
+
+
+### Submit Translations
+
+Make sure you're familiar with [Flutter localization](https://docs.flutter.dev/ui/accessibility-and-localization/internationalization). Then, you can start translating the app by following these steps:
+
+- Do all the steps in [Your First Code Contribution](#your-first-code-contribution)
+- Make sure application starts in debug mode
+- Now, in `lib/l10n/app_<2-letter code of your language>.arb` (create if not exists) add necessary translations  
+  > (You can follow the `lib/l10n/app_en.arb` for reference)
+- If you're adding missing translations, you can check the `/untranslated_messages.json` file to see which messages are missing in your native locale
+- If you added entirely new translations:
+  - Add `const Locale('<2-letter language code>', '<2-letter ISO country code>')` in `lib/l10n/l10n.dart`'s `static final all = [...]` variable
+  - Uncomment the Map entry of your locale from `lib/collections/language_codes.dart`'s `static final Map isoLangs = {` variable
+- Now restart (hot restart if running already) the app in debug mode & go to "Settings" > "Language" & see if your locale shows up
+- If it does, select it & see if the app is translated properly
+- Now git commit the changes & push
+- Finally, submit a PR against the development branch (dev) & we'll review your code
