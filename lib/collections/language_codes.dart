@@ -540,10 +540,10 @@ abstract class LanguageLocals {
     //   name: "Romanian, Moldavian, Moldovan",
     //   nativeName: "română",
     // ),
-    // "ru": const ISOLanguageName(
-    //   name: "Russian",
-    //   nativeName: "русский язык",
-    // ),
+    "ru": const ISOLanguageName(
+      name: "Russian",
+      nativeName: "русский язык",
+    ),
     // "sa": const ISOLanguageName(
     //   name: "Sanskrit (Saṁskṛta)",
     //   nativeName: "संस्कृतम्",
