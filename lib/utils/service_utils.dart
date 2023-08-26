@@ -272,6 +272,21 @@ abstract class ServiceUtils {
     router.push(location, extra: extra);
   }
 
+  static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
+    if (album == null || album.releaseDate == null) {
+      return DateTime.parse("1975-01-01");
+    }
+
+    switch (album.releaseDatePrecision ?? DatePrecision.year) {
+      case DatePrecision.day:
+        return DateTime.parse(album.releaseDate!);
+      case DatePrecision.month:
+        return DateTime.parse("${album.releaseDate}-01");
+      case DatePrecision.year:
+        return DateTime.parse("${album.releaseDate}-01-01");
+    }
+  }
+
   static List<T> sortTracks<T extends Track>(List<T> tracks, SortBy sortBy) {
     if (sortBy == SortBy.none) return tracks;
     return List<T>.from(tracks)
@@ -286,12 +301,12 @@ abstract class ServiceUtils {
           case SortBy.ascending:
             return a.name?.compareTo(b.name ?? "") ?? 0;
           case SortBy.oldest:
-            final aDate = DateTime.parse(a.album?.releaseDate ?? "2069-01-01");
-            final bDate = DateTime.parse(b.album?.releaseDate ?? "2069-01-01");
+            final aDate = parseSpotifyAlbumDate(a.album);
+            final bDate = parseSpotifyAlbumDate(b.album);
             return aDate.compareTo(bDate);
           case SortBy.newest:
-            final aDate = DateTime.parse(a.album?.releaseDate ?? "2069-01-01");
-            final bDate = DateTime.parse(b.album?.releaseDate ?? "2069-01-01");
+            final aDate = parseSpotifyAlbumDate(a.album);
+            final bDate = parseSpotifyAlbumDate(b.album);
             return bDate.compareTo(aDate);
           case SortBy.descending:
             return b.name?.compareTo(a.name ?? "") ?? 0;

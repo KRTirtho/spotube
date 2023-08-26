@@ -59,7 +59,7 @@ class DownloadManagerProvider extends ChangeNotifier {
         album: track.album?.name,
         albumArtist: track.artists?.map((a) => a.name).join(", "),
         year: track.album?.releaseDate != null
-            ? int.tryParse(track.album!.releaseDate!) ?? 1969
+            ? int.tryParse(track.album!.releaseDate!.split("-").first) ?? 1969
             : 1969,
         trackNumber: track.trackNumber,
         discNumber: track.discNumber,
