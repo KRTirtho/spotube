@@ -1,8 +1,9 @@
 <div align="center">
   <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
-  An open source, cross-platform Spotify client that doesn't require Premium nor uses Electron!<br />
-  That uses Spotify's data/discovery API and YouTube (or Piped.video) as audio source
+  An open source, cross-platform Spotify client compatible across multiple platforms<br />
+  utilizing Spotify's data API and YouTube (or Piped.video) as an audio source,<br />
+  eliminating the need for Spotify Premium and Electron.
 
   <a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
   <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
@@ -37,7 +38,7 @@
 
 ### ❌ Unsupported features
 
-- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts can **never be supported** because the audio tracks are _only_ available on Spotify and accessing them would require Spotify Premium.
+- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts can <ins>**never be supported**</ins> because the audio tracks are _only_ available on Spotify and accessing them would require Spotify Premium.
 - 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
 
 ## 📜 ⬇️ Installation guide
