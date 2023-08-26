@@ -336,15 +336,17 @@ class SettingsPage extends HookConsumerWidget {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                  text: context
-                                                      .l10n.piped_description),
+                                                text: context
+                                                    .l10n.piped_description,
+                                                style:
+                                                    theme.textTheme.bodyMedium,
+                                              ),
                                               const TextSpan(text: "\n"),
                                               TextSpan(
                                                 text:
                                                     context.l10n.piped_warning,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium,
+                                                style:
+                                                    theme.textTheme.labelMedium,
                                               )
                                             ],
                                           ),

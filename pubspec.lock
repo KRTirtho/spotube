@@ -1715,6 +1715,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  stroke_text:
+    dependency: "direct main"
+    description:
+      name: stroke_text
+      sha256: "0ec0e526c0eae7d21ce628d78eb9ae9be634259f26b0f1735f9ed540890d8cf6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   supabase:
     dependency: "direct main"
     description:
