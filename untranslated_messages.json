@@ -54,6 +54,11 @@
     "connection_restored"
   ],
 
+  "pt": [
+    "you_are_offline",
+    "connection_restored"
+  ],
+
   "zh": [
     "piped_api_down",
     "piped_down_error_instructions",
