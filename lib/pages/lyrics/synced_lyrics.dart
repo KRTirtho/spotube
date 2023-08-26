@@ -1,9 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
@@ -16,6 +15,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:stroke_text/stroke_text.dart';
 
 final _delay = StateProvider<int>((ref) => 0);
 
@@ -130,15 +130,13 @@ class SyncedLyrics extends HookConsumerWidget {
                                 child: AnimatedDefaultTextStyle(
                                   duration: const Duration(milliseconds: 250),
                                   style: TextStyle(
-                                    color: isActive
-                                        ? Colors.white
-                                        : palette.bodyTextColor,
                                     fontWeight: isActive
                                         ? FontWeight.w500
                                         : FontWeight.normal,
                                     fontSize: (isActive ? 28 : 26) *
                                         (textZoomLevel.value / 100),
                                   ),
+                                  textAlign: TextAlign.center,
                                   child: InkWell(
                                     onTap: () async {
                                       final duration =
@@ -153,10 +151,19 @@ class SyncedLyrics extends HookConsumerWidget {
                                       }
                                       audioPlayer.seek(time);
                                     },
-                                    child: Text(
-                                      lyricSlice.text,
-                                      textAlign: TextAlign.center,
-                                    ),
+                                    child: Builder(builder: (context) {
+                                      return StrokeText(
+                                        text: lyricSlice.text,
+                                        textStyle:
+                                            DefaultTextStyle.of(context).style,
+                                        textColor: isActive
+                                            ? Colors.white
+                                            : palette.bodyTextColor,
+                                        strokeColor: isActive
+                                            ? Colors.black
+                                            : Colors.transparent,
+                                      );
+                                    }),
                                   ),
                                 ),
                               ),
