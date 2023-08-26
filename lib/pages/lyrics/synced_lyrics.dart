@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
@@ -11,9 +11,11 @@ import 'package:spotube/hooks/use_auto_scroll_controller.dart';
 import 'package:spotube/hooks/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:stroke_text/stroke_text.dart';
 
 final _delay = StateProvider<int>((ref) => 0);
 
@@ -114,9 +116,7 @@ class SyncedLyrics extends HookConsumerWidget {
                           ? Container(
                               padding: index == lyricValue.lyrics.length - 1
                                   ? EdgeInsets.only(
-                                      bottom:
-                                          MediaQuery.of(context).size.height /
-                                              2,
+                                      bottom: mediaQuery.size.height / 2,
                                     )
                                   : null,
                             )
@@ -130,19 +130,40 @@ class SyncedLyrics extends HookConsumerWidget {
                                 child: AnimatedDefaultTextStyle(
                                   duration: const Duration(milliseconds: 250),
                                   style: TextStyle(
-                                    color: isActive
-                                        ? Colors.white
-                                        : palette.bodyTextColor,
                                     fontWeight: isActive
                                         ? FontWeight.w500
                                         : FontWeight.normal,
                                     fontSize: (isActive ? 28 : 26) *
                                         (textZoomLevel.value / 100),
-                                    shadows: kElevationToShadow[9],
                                   ),
-                                  child: Text(
-                                    lyricSlice.text,
-                                    textAlign: TextAlign.center,
+                                  textAlign: TextAlign.center,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final duration =
+                                          await audioPlayer.duration ??
+                                              Duration.zero;
+                                      final time = Duration(
+                                        seconds:
+                                            lyricSlice.time.inSeconds - delay,
+                                      );
+                                      if (time > duration || time.isNegative) {
+                                        return;
+                                      }
+                                      audioPlayer.seek(time);
+                                    },
+                                    child: Builder(builder: (context) {
+                                      return StrokeText(
+                                        text: lyricSlice.text,
+                                        textStyle:
+                                            DefaultTextStyle.of(context).style,
+                                        textColor: isActive
+                                            ? Colors.white
+                                            : palette.bodyTextColor,
+                                        strokeColor: isActive
+                                            ? Colors.black
+                                            : Colors.transparent,
+                                      );
+                                    }),
                                   ),
                                 ),
                               ),

@@ -258,5 +258,6 @@
   "piped_api_down": "Piped API is down",
   "piped_down_error_instructions": "The Piped instance {pipedInstance} is currently down\n\nEither change the instance or change the 'API type' to official YouTube API\n\nMake sure to restart the app after change",
   "you_are_offline": "You are currently offline",
-  "connection_restored": "Your internet connection was restored"
+  "connection_restored": "Your internet connection was restored",
+  "use_system_title_bar": "Use system title bar"
 }

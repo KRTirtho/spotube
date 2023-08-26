@@ -11,8 +11,8 @@ installed_size: 24400
 
 dependencies:
   - mpv
-  - libappindicator3-1
-  - gir1.2-appindicator3-0.1
+  - libappindicator3-1 | libayatana-appindicator3-1
+  - gir1.2-appindicator3-0.1 | gir1.2-ayatanaappindicator3-0.1
   - libsecret-1-0
   - libnotify-bin
   - libjsoncpp25

@@ -50,8 +50,13 @@ class AlbumCard extends HookConsumerWidget {
       () => playlist.containsCollection(album.id!),
       [playlist, album.id],
     );
-    final int marginH =
-        useBreakpointValue(xs: 10, sm: 10, md: 15, lg: 20, xl: 20, xxl: 20);
+
+    final marginH = useBreakpointValue<int>(
+      xs: 10,
+      sm: 10,
+      md: 15,
+      others: 20,
+    );
 
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);

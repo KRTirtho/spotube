@@ -1074,10 +1074,10 @@ packages:
     dependency: "direct main"
     description:
       name: media_kit_libs_android_audio
-      sha256: "767a93c44da73b7103a1fcbe2346f7211b7c44fa727f359410e690a156f630c5"
+      sha256: f16e67d4c5a85cb603290da253456bc8ea3d85d932c778e3afd11195db2dc26d
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.1"
+    version: "1.3.2"
   media_kit_libs_ios_audio:
     dependency: "direct main"
     description:
@@ -1715,6 +1715,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  stroke_text:
+    dependency: "direct main"
+    description:
+      name: stroke_text
+      sha256: "0ec0e526c0eae7d21ce628d78eb9ae9be634259f26b0f1735f9ed540890d8cf6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   supabase:
     dependency: "direct main"
     description:

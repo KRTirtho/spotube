@@ -92,6 +92,8 @@ class BottomPlayer extends HookConsumerWidget {
                             tooltip: context.l10n.mini_player,
                             icon: const Icon(SpotubeIcons.miniPlayer),
                             onPressed: () async {
+                              final prevSize =
+                                  await DesktopTools.window.getSize();
                               await DesktopTools.window.setMinimumSize(
                                 const Size(300, 300),
                               );
@@ -106,7 +108,10 @@ class BottomPlayer extends HookConsumerWidget {
                               await Future.delayed(
                                 const Duration(milliseconds: 100),
                                 () async {
-                                  GoRouter.of(context).go('/mini-player');
+                                  GoRouter.of(context).go(
+                                    '/mini-player',
+                                    extra: prevSize,
+                                  );
                                 },
                               );
                             },

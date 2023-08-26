@@ -336,15 +336,17 @@ class SettingsPage extends HookConsumerWidget {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                  text: context
-                                                      .l10n.piped_description),
+                                                text: context
+                                                    .l10n.piped_description,
+                                                style:
+                                                    theme.textTheme.bodyMedium,
+                                              ),
                                               const TextSpan(text: "\n"),
                                               TextSpan(
                                                 text:
                                                     context.l10n.piped_warning,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium,
+                                                style:
+                                                    theme.textTheme.labelMedium,
                                               )
                                             ],
                                           ),
@@ -495,6 +497,12 @@ class SettingsPage extends HookConsumerWidget {
                             title: Text(context.l10n.show_tray_icon),
                             value: preferences.showSystemTrayIcon,
                             onChanged: preferences.setShowSystemTrayIcon,
+                          ),
+                          SwitchListTile(
+                            secondary: const Icon(SpotubeIcons.window),
+                            title: Text(context.l10n.use_system_title_bar),
+                            value: preferences.systemTitleBar,
+                            onChanged: preferences.setSystemTitleBar,
                           ),
                         ],
                       ),

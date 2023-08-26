@@ -520,10 +520,10 @@ abstract class LanguageLocals {
     //   name: "Pashto, Pushto",
     //   nativeName: "پښتو",
     // ),
-    // "pt": const ISOLanguageName(
-    //   name: "Portuguese",
-    //   nativeName: "Português",
-    // ),
+    "pt": const ISOLanguageName(
+      name: "Portuguese",
+      nativeName: "Português",
+    ),
     // "qu": const ISOLanguageName(
     //   name: "Quechua",
     //   nativeName: "Runa Simi, Kichwa",

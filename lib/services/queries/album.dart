@@ -9,12 +9,20 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 class AlbumQueries {
   const AlbumQueries();
 
-  Query<Iterable<AlbumSimple>, dynamic> ofMine(WidgetRef ref) {
-    return useSpotifyQuery<Iterable<AlbumSimple>, dynamic>(
+  InfiniteQuery<Page<AlbumSimple>, dynamic, int> ofMine(WidgetRef ref) {
+    return useSpotifyInfiniteQuery<Page<AlbumSimple>, dynamic, int>(
       "current-user-albums",
-      (spotify) {
-        return spotify.me.savedAlbums().all();
+      (page, spotify) {
+        return spotify.me.savedAlbums().getPage(
+              20,
+              page * 20,
+            );
       },
+      initialPage: 0,
+      nextPage: (lastPage, lastPageData) =>
+          (lastPageData.items?.length ?? 0) < 20 || lastPageData.isLast
+              ? null
+              : lastPage + 1,
       ref: ref,
     );
   }

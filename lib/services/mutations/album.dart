@@ -9,6 +9,8 @@ class AlbumMutations {
     WidgetRef ref,
     String albumId, {
     List<String>? refreshQueries,
+    List<String>? refreshInfiniteQueries,
+    MutationOnDataFn<bool, dynamic>? onData,
   }) {
     return useSpotifyMutation<bool, dynamic, bool, dynamic>(
       "toggle-album-like/$albumId",
@@ -22,6 +24,8 @@ class AlbumMutations {
       },
       ref: ref,
       refreshQueries: refreshQueries,
+      refreshInfiniteQueries: refreshInfiniteQueries,
+      onData: onData,
     );
   }
 }

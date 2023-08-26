@@ -14,6 +14,12 @@ final officialMusicRegex = RegExp(
   caseSensitive: false,
 );
 
+class TrackNotFoundException implements Exception {
+  factory TrackNotFoundException(Track track) {
+    throw Exception("Failed to find any results for ${track.name}");
+  }
+}
+
 class SpotubeTrack extends Track {
   final YoutubeVideoInfo ytTrack;
   final String ytUri;
@@ -157,7 +163,7 @@ class SpotubeTrack extends Track {
     } else {
       siblings = await fetchSiblings(track, client);
       if (siblings.isEmpty) {
-        throw Exception("Failed to find any results for ${track.name}");
+        throw TrackNotFoundException(track);
       }
       (ytVideo, ytStreamUrl) =
           await client.video(siblings.first.id, siblings.first.searchMode);

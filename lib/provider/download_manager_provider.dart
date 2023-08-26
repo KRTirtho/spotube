@@ -14,6 +14,7 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
 import 'package:spotube/services/youtube/youtube.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class DownloadManagerProvider extends ChangeNotifier {
@@ -58,7 +59,7 @@ class DownloadManagerProvider extends ChangeNotifier {
         album: track.album?.name,
         albumArtist: track.artists?.map((a) => a.name).join(", "),
         year: track.album?.releaseDate != null
-            ? int.tryParse(track.album!.releaseDate!) ?? 1969
+            ? int.tryParse(track.album!.releaseDate!.split("-").first) ?? 1969
             : 1969,
         trackNumber: track.trackNumber,
         discNumber: track.discNumber,
@@ -85,7 +86,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   final Ref<DownloadManagerProvider> ref;
 
-  YoutubeEndpoints get yt => ref.read(downloadYoutubeProvider);
+  YoutubeEndpoints get yt => ref.read(youtubeProvider);
   String get downloadDirectory =>
       ref.read(userPreferencesProvider.select((s) => s.downloadLocation));
 
@@ -130,7 +131,7 @@ class DownloadManagerProvider extends ChangeNotifier {
   String getTrackFileUrl(Track track) {
     final name =
         "${track.name} - ${TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[])}.m4a";
-    return join(downloadDirectory, name);
+    return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 
   bool isActive(Track track) {

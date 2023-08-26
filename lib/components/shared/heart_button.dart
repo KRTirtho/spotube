@@ -1,4 +1,5 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -188,6 +189,7 @@ class AlbumHeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final client = useQueryClient();
     final me = useQueries.user.me(ref);
 
     final albumIsSaved = useQueries.album.isSavedForMe(ref, album.id!);
@@ -196,10 +198,10 @@ class AlbumHeartButton extends HookConsumerWidget {
     final toggleAlbumLike = useMutations.album.toggleFavorite(
       ref,
       album.id!,
-      refreshQueries: [
-        albumIsSaved.key,
-        "current-user-albums",
-      ],
+      refreshQueries: [albumIsSaved.key],
+      onData: (_, __) async {
+        await client.refreshInfiniteQueryAllPages("current-user-albums");
+      },
     );
 
     if (me.isLoading || !me.hasData) {

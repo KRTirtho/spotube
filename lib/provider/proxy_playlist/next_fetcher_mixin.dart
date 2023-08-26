@@ -86,21 +86,22 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
     } else if (track is LocalTrack) {
       return track.path;
     } else {
-      return "https://youtube.com/unplayable.m4a?id=${track.id}&title=${track.name?.replaceAll(
-        RegExp(r'\s+', caseSensitive: false),
-        '-',
-      )}";
+      return trackToUnplayableSource(track);
     }
+  }
+
+  String trackToUnplayableSource(Track track) {
+    return "https://youtube.com/unplayable.m4a?id=${track.id}&title=${Uri.encodeComponent(track.name!)}";
   }
 
   List<Track> mapSourcesToTracks(List<String> sources) {
     return sources
         .map((source) {
           final track = state.tracks.firstWhereOrNull(
-            (track) {
-              final newSource = makeAppropriateSource(track);
-              return newSource == source;
-            },
+            (track) =>
+                trackToUnplayableSource(track) == source ||
+                (track is SpotubeTrack && track.ytUri == source) ||
+                (track is LocalTrack && track.path == source),
           );
           return track;
         })
