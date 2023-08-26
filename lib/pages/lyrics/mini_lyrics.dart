@@ -19,13 +19,13 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
 class MiniLyricsPage extends HookConsumerWidget {
-  const MiniLyricsPage({Key? key}) : super(key: key);
+  final Size prevSize;
+  const MiniLyricsPage({Key? key, required this.prevSize}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final update = useForceUpdate();
-    final prevSize = useRef<Size?>(null);
     final wasMaximized = useRef<bool>(false);
 
     final playlistQueue = ref.watch(ProxyPlaylistNotifier.provider);
@@ -35,7 +35,6 @@ class MiniLyricsPage extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        prevSize.value = await DesktopTools.window.getSize();
         wasMaximized.value = await DesktopTools.window.isMaximized();
       });
       return null;
@@ -213,7 +212,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                           if (wasMaximized.value) {
                             await DesktopTools.window.maximize();
                           } else {
-                            await DesktopTools.window.setSize(prevSize.value!);
+                            await DesktopTools.window.setSize(prevSize);
                           }
                           await DesktopTools.window
                               .setAlignment(Alignment.center);
