@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
@@ -65,6 +66,8 @@ class UserPreferences extends PersistedChangeNotifier {
 
   YoutubeApiType youtubeApiType;
 
+  bool systemTitleBar;
+
   final Ref ref;
 
   UserPreferences(
@@ -85,6 +88,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.searchMode = SearchMode.youtube,
     this.skipNonMusic = true,
     this.youtubeApiType = YoutubeApiType.youtube,
+    this.systemTitleBar = false,
   }) : super() {
     if (downloadLocation.isEmpty && !kIsWeb) {
       _getDefaultDownloadDirectory().then(
@@ -197,6 +201,15 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setSystemTitleBar(bool isSystemTitleBar) {
+    systemTitleBar = isSystemTitleBar;
+    DesktopTools.window.setTitleBarStyle(
+      systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+    );
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -257,6 +270,10 @@ class UserPreferences extends PersistedChangeNotifier {
       (type) => type.name == map["youtubeApiType"],
       orElse: () => YoutubeApiType.youtube,
     );
+
+    systemTitleBar = map["systemTitleBar"] ?? systemTitleBar;
+    // updates the title bar
+    setSystemTitleBar(systemTitleBar);
   }
 
   @override
@@ -279,6 +296,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "searchMode": searchMode.name,
       "skipNonMusic": skipNonMusic,
       "youtubeApiType": youtubeApiType.name,
+      'systemTitleBar': systemTitleBar,
     };
   }
 

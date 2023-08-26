@@ -21,7 +21,7 @@ final closeNotification = DesktopTools.createNotification(
     windowManager.close();
   };
 
-class PageWindowTitleBar extends StatefulHookWidget
+class PageWindowTitleBar extends StatefulHookConsumerWidget
     implements PreferredSizeWidget {
   final Widget? leading;
   final bool automaticallyImplyLeading;
@@ -60,23 +60,23 @@ class PageWindowTitleBar extends StatefulHookWidget
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
-  State<PageWindowTitleBar> createState() => _PageWindowTitleBarState();
+  ConsumerState<PageWindowTitleBar> createState() => _PageWindowTitleBarState();
 }
 
-class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
+class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
+  void onDrag(details) {
+    final systemTitleBar =
+        ref.read(userPreferencesProvider.select((s) => s.systemTitleBar));
+    if (kIsDesktop && !systemTitleBar) {
+      DesktopTools.window.startDragging();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onHorizontalDragStart: (details) {
-        if (kIsDesktop) {
-          windowManager.startDragging();
-        }
-      },
-      onVerticalDragStart: (details) {
-        if (kIsDesktop) {
-          windowManager.startDragging();
-        }
-      },
+      onHorizontalDragStart: onDrag,
+      onVerticalDragStart: onDrag,
       child: AppBar(
         leading: widget.leading,
         automaticallyImplyLeading: widget.automaticallyImplyLeading,
@@ -108,13 +108,12 @@ class WindowTitleBarButtons extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final closeBehavior =
-        ref.watch(userPreferencesProvider.select((s) => s.closeBehavior));
+    final preferences = ref.watch(userPreferencesProvider);
     final isMaximized = useState<bool?>(null);
     const type = ThemeType.auto;
 
     Future<void> onClose() async {
-      if (closeBehavior == CloseBehavior.close) {
+      if (preferences.closeBehavior == CloseBehavior.close) {
         await windowManager.close();
       } else {
         await windowManager.hide();
@@ -131,7 +130,7 @@ class WindowTitleBarButtons extends HookConsumerWidget {
       return null;
     }, []);
 
-    if (!kIsDesktop || kIsMacOS) {
+    if (!kIsDesktop || kIsMacOS || preferences.systemTitleBar) {
       return const SizedBox.shrink();
     }
 

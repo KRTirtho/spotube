@@ -496,6 +496,12 @@ class SettingsPage extends HookConsumerWidget {
                             value: preferences.showSystemTrayIcon,
                             onChanged: preferences.setShowSystemTrayIcon,
                           ),
+                          SwitchListTile(
+                            secondary: const Icon(SpotubeIcons.window),
+                            title: Text(context.l10n.use_system_title_bar),
+                            value: preferences.systemTitleBar,
+                            onChanged: preferences.setSystemTitleBar,
+                          ),
                         ],
                       ),
                     if (!kIsWeb)

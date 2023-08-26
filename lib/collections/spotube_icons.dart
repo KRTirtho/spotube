@@ -93,4 +93,5 @@ abstract class SpotubeIcons {
   static const skip = FeatherIcons.fastForward;
   static const noWifi = FeatherIcons.wifiOff;
   static const wifi = FeatherIcons.wifi;
+  static const window = Icons.window_rounded;
 }
