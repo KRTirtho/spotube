@@ -330,22 +330,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  connectivity_plus:
-    dependency: transitive
-    description:
-      name: connectivity_plus
-      sha256: "8599ae9edca5ff96163fca3e36f8e481ea917d1e71cdad912c084b5579913f34"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
-  connectivity_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: connectivity_plus_platform_interface
-      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.4"
   convert:
     dependency: transitive
     description:
@@ -538,14 +522,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0-alpha.3"
-  fl_query_connectivity_plus_adapter:
-    dependency: "direct main"
-    description:
-      name: fl_query_connectivity_plus_adapter
-      sha256: a0e69615e25f6dfe74d1e5a0909aeeb865e93c65dd4e0b236f0846f9e54f758b
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0-alpha.2"
   fl_query_hooks:
     dependency: "direct main"
     description:
@@ -966,6 +942,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  internet_connection_checker:
+    dependency: "direct main"
+    description:
+      name: internet_connection_checker
+      sha256: "1c683e63e89c9ac66a40748b1b20889fd9804980da732bf2b58d6d5456c8e876"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+1"
   intl:
     dependency: "direct main"
     description:
@@ -1174,14 +1158,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  nm:
-    dependency: transitive
-    description:
-      name: nm
-      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0"
   oauth2:
     dependency: transitive
     description:

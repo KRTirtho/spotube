@@ -36,7 +36,6 @@ dependencies:
   file_picker: ^5.2.2
   fl_query: ^1.0.0-alpha.3
   fl_query_hooks: ^1.0.0-alpha.3
-  fl_query_connectivity_plus_adapter: ^0.1.0-alpha.2
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
@@ -63,6 +62,7 @@ dependencies:
   hooks_riverpod: ^2.1.1
   html: ^0.15.1
   http: ^1.1.0
+  internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.1

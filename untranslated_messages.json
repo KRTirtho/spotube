@@ -1,42 +1,63 @@
 {
   "bn": [
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
   ],
 
   "ca": [
     "querying_info",
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
   ],
 
   "de": [
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
   ],
 
   "es": [
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
   ],
 
   "fr": [
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
   ],
 
   "hi": [
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
   ],
 
   "ja": [
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
+  ],
+
+  "pl": [
+    "you_are_offline",
+    "connection_restored"
   ],
 
   "zh": [
     "piped_api_down",
-    "piped_down_error_instructions"
+    "piped_down_error_instructions",
+    "you_are_offline",
+    "connection_restored"
   ]
 }
