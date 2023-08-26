@@ -4,7 +4,6 @@ import 'package:args/args.dart';
 import 'package:catcher/catcher.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
-import 'package:fl_query_connectivity_plus_adapter/fl_query_connectivity_plus_adapter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +26,7 @@ import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:system_theme/system_theme.dart';
@@ -105,7 +105,7 @@ Future<void> main(List<String> rawArgs) async {
   await QueryClient.initialize(
     cachePrefix: "oss.krtirtho.spotube",
     cacheDir: hiveCacheDir,
-    connectivity: FlQueryConnectivityPlusAdapter(),
+    connectivity: FlQueryInternetConnectionCheckerAdapter(),
   );
   Hive.registerAdapter(MatchedTrackAdapter());
   Hive.registerAdapter(SkipSegmentAdapter());

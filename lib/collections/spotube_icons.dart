@@ -91,4 +91,6 @@ abstract class SpotubeIcons {
   static const clipboard = FeatherIcons.clipboard;
   static const api = FeatherIcons.database;
   static const skip = FeatherIcons.fastForward;
+  static const noWifi = FeatherIcons.wifiOff;
+  static const wifi = FeatherIcons.wifi;
 }
