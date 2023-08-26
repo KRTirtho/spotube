@@ -128,8 +128,8 @@ final router = GoRouter(
     GoRoute(
       path: "/mini-player",
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) => const SpotubePage(
-        child: MiniLyricsPage(),
+      pageBuilder: (context, state) => SpotubePage(
+        child: MiniLyricsPage(prevSize: state.extra as Size),
       ),
     ),
     GoRoute(
