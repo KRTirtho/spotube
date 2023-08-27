@@ -68,6 +68,10 @@
     "use_system_title_bar"
   ],
 
+  "ru": [
+    "use_system_title_bar"
+  ],
+
   "zh": [
     "piped_api_down",
     "piped_down_error_instructions",
