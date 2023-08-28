@@ -196,7 +196,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [F-Droid](https://f-droid.org) - F-Droid is an installable catalogue of FOSS (Free and Open Source Software) applications for the Android platform. The client makes it easy to browse, install, and keep track of updates on your device
 1. [args](https://pub.dev/packages/args) - Library for defining parsers for parsing raw command-line arguments into a set of options and values using GNU and POSIX style options.
 1. [async](https://pub.dev/packages/async) - Utility functions and classes related to the 'dart:async' library.
-1. [audio_service](https://github.com/ryanheise/audio_service/tree/master/audio_service) - Flutter plugin to play audio in the background while the screen is off.
+1. [audio_service](https://pub.dev/packages/audio_service) - Flutter plugin to play audio in the background while the screen is off.
 1. [audio_session](https://github.com/ryanheise/audio_session) - Sets the iOS audio session category and Android audio attributes for your app, and manages your app's audio focus, mixing and ducking behaviour.
 1. [auto_size_text](https://github.com/leisim/auto_size_text) - Flutter widget that automatically resizes text to fit perfectly within its bounds.
 1. [buttons_tabbar](https://afonsoraposo.com) - A Flutter package that implements a TabBar where each label is a toggle button.
@@ -214,7 +214,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [file_picker](https://github.com/miguelpruivo/plugins_flutter_file_picker) - A package that allows you to use a native file explorer to pick single or multiple absolute file paths, with extension filtering support.
 1. [fl_query](https://fl-query.vercel.app) - Asynchronous data caching, refetching & invalidation library for Flutter
 1. [fl_query_hooks](https://fl-query.vercel.app) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
-1. [fl_query_connectivity_plus_adapter](https://fl-query.vercel.app) - Connectivity Plus adapter for FlQuery Connectivity
 1. [fluentui_system_icons](https://github.com/microsoft/fluentui-system-icons/tree/main) - Fluent UI System Icons are a collection of familiar, friendly and modern icons from Microsoft.
 1. [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/develop/flutter_cache_manager) - Generic cache manager for flutter. Saves web files on the storages of the device and saves the cache info using sqflite.
 1. [flutter_displaymode](https://github.com/ajinasokan/flutter_displaymode) - A Flutter plugin to set display mode (resolution, refresh rate) on Android platform. Allows to enable high refresh rate on supported devices.
@@ -233,17 +232,13 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [hooks_riverpod](https://riverpod.dev) - A simple way to access state from anywhere in your application while robust and testable.
 1. [html](https://pub.dev/packages/html) - APIs for parsing and manipulating HTML content outside the browser.
 1. [http](https://pub.dev/packages/http) - A composable, multi-platform, Future-based API for HTTP requests.
+1. [internet_connection_checker](https://github.com/RounakTadvi/internet_connection_checker/tree/main) - A pure Dart library that checks for internet by opening a socket to a list of specified addresses, each with individual port and timeout. Defaults are provided for convenience.
 1. [intl](https://pub.dev/packages/intl) - Contains code to deal with internationalized/localized messages, date and number formatting and parsing, bi-directional text, and other internationalization issues.
 1. [introduction_screen](https://github.com/pyozer/introduction_screen) - Introduction/Onboarding package for flutter app with some customizations possibilities
 1. [json_annotation](https://pub.dev/packages/json_annotation) - Classes and helper functions that support JSON code generation via the `json_serializable` package.
 1. [logger](https://pub.dev/packages/logger) - Small, easy to use and extensible logger which prints beautiful logs.
 1. [media_kit](https://github.com/media-kit/media-kit) - A cross-platform video player & audio player for Flutter & Dart. Performant, stable, feature-proof & modular.
-1. [media_kit_native_event_loop](https://github.com/media-kit/media-kit) - Platform specific threaded event handling for media_kit. Enables support for higher number of concurrent instances.
-1. [media_kit_libs_android_audio](https://github.com/media-kit/media-kit.git) - Android package providing audio (only) native libraries for package:media_kit.
-1. [media_kit_libs_ios_audio](https://github.com/media-kit/media-kit.git) - iOS package providing audio native libraries for package:media_kit.
-1. [media_kit_libs_macos_audio](https://github.com/media-kit/media-kit.git) - macOS package providing audio native libraries for package:media_kit.
-1. [media_kit_libs_windows_audio](https://github.com/media-kit/media-kit.git) - Windows package providing audio (only) native libraries for package:media_kit.
-1. [media_kit_libs_linux](https://github.com/media-kit/media-kit.git) - GNU/Linux dependency package for package:media_kit. Necessary for initialization.
+1. [media_kit_libs_audio](https://github.com/media-kit/media-kit.git) - package:media_kit audio (only) playback native libraries for all platforms.
 1. [metadata_god](https://github.com/KRTirtho/metadata_god) - Plugin for retrieving and writing audio tags/metadata from audio files
 1. [mime](https://pub.dev/packages/mime) - Utilities for handling media (MIME) types, including determining a type from a file extension and file contents.
 1. [package_info_plus](https://plus.fluttercommunity.dev/) - Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.
@@ -268,6 +263,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [visibility_detector](https://pub.dev/packages/visibility_detector) - A widget that detects the visibility of its child and notifies a callback.
 1. [window_manager](https://github.com/leanflutter/window_manager) - This plugin allows Flutter desktop apps to resizing and repositioning the window.
 1. [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - A port in dart of the youtube explode library. Supports several API functions without the need of Youtube API Key.
+1. [stroke_text](https://github.com/MohamedAbd0/stroke_text) - A Simple Flutter plugin for applying stroke (border) style to a text widget
 1. [build_runner](https://pub.dev/packages/build_runner) - A build system for Dart code generation and modular compilation.
 1. [envied_generator](https://github.com/petercinibulk/envied) - Generator for the Envied package. See https://pub.dev/packages/envied.
 1. [flutter_distributor](https://distributor.leanflutter.org) - A complete tool for packaging and publishing your Flutter apps.
