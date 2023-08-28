@@ -3,7 +3,9 @@
 
   An open source, cross-platform Spotify client compatible across multiple platforms<br />
   utilizing Spotify's data API and YouTube (or Piped.video) as an audio source,<br />
-  eliminating the need for Spotify Premium and Electron.
+  eliminating the need for Spotify Premium
+
+  Btw it's not another Electron app😉
 
   <a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
   <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
