@@ -255,6 +255,9 @@
   "failed_to_encrypt": "Falha ao criptografar",
   "encryption_failed_warning": "O Spotube usa criptografia para armazenar seus dados com segurança, mas falhou em fazê-lo. Portanto, ele voltará para o armazenamento não seguro.\nSe você estiver usando o Linux, certifique-se de ter algum serviço secreto (gnome-keyring, kde-wallet, keepassxc, etc.) instalado",
   "querying_info": "Consultando informações...",
-  "piped_api_down": "A API do Piped está fora do ar",
-  "piped_down_error_instructions": "A instância do Piped {pipedInstance} está fora do ar no momento\n\nMude a instância ou altere o 'Tipo de API' para a API oficial do YouTube\n\nCertifique-se de reiniciar o aplicativo após a alteração"
+  "piped_api_down": "A API do Piped está indisponível",
+  "piped_down_error_instructions": "A instância do Piped {pipedInstance} está atualmente indisponível\n\nMude a instância ou mude o 'Tipo de API' para a API oficial do YouTube\n\nCertifique-se de reiniciar o aplicativo após a alteração",
+  "you_are_offline": "Você está offline no momento",
+  "connection_restored": "Sua conexão com a internet foi restaurada",
+  "use_system_title_bar": "Usar a barra de título do sistema"
 }
