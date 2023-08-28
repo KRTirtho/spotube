@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.1](https://github.com/KRTirtho/spotube/compare/v3.1.0...v3.1.1) (2023-08-28)
+
+
+### Features
+
+* ability to toggle system title bar & custom title bar ([#185](https://github.com/KRTirtho/spotube/issues/185)) ([8d46029](https://github.com/KRTirtho/spotube/commit/8d4602962be20ea4bafc20db10eae1160f83ac52))
+* jump to specific time on lyric click ([#590](https://github.com/KRTirtho/spotube/issues/590)) ([a14fb9e](https://github.com/KRTirtho/spotube/commit/a14fb9ec389822e5ffa0c537e162b87cbba34e6c))
+* paginated user albums ([d239d64](https://github.com/KRTirtho/spotube/commit/d239d641ff8f1b3edd64243994fd4a58cf71a5d3))
+* **translations:** add Russian translation ([#661](https://github.com/KRTirtho/spotube/issues/661)) ([e9a0911](https://github.com/KRTirtho/spotube/commit/e9a0911bfcea2374ee282aee738c12ad9ed93b02)), closes [#625](https://github.com/KRTirtho/spotube/issues/625)
+* **translations:** added Portuguese (Brazil) translation ([#634](https://github.com/KRTirtho/spotube/issues/634)) ([76f30a0](https://github.com/KRTirtho/spotube/commit/76f30a0f20f2b09680d27525cde3d1c9617fad5a))
+
+
+### Bug Fixes
+
+* always fetching SponsorBlock if no segments found & download failing ([6ced0a0](https://github.com/KRTirtho/spotube/commit/6ced0a0fad06f9f431636ca0fe5dae83eafe33ce))
+* debian bookworm invalid dependencies ([633415d](https://github.com/KRTirtho/spotube/commit/633415dd3e702a38c5a7e7d7b3b1c2713d9c9cc9))
+* disable android auto for playstore version :"( ([0f0d240](https://github.com/KRTirtho/spotube/commit/0f0d240c04d77db6f7c127d59ba8b331d5534469))
+* infinite route push glitch ([e90eceb](https://github.com/KRTirtho/spotube/commit/e90eceb285a84028df690c25a687ff9b5168bba8))
+* jump to track going to wrong track ([190df17](https://github.com/KRTirtho/spotube/commit/190df17adcf4c01cb2bcebfdec47908828b33816))
+* last track of queue never plays & repeat playlist never works ([c3c09f5](https://github.com/KRTirtho/spotube/commit/c3c09f5b76c9547a306d15cd3768dacc1622876d))
+* lyrics page text contrast ([179d536](https://github.com/KRTirtho/spotube/commit/179d536ccc10a5e63f11a63680a6e61c2d1314c8))
+* replace connectivity_plus with internet_connection_checker ([f23e871](https://github.com/KRTirtho/spotube/commit/f23e8719eec7f5bed677ea866cb4bfab7aee5373))
+* sanitize song title for file name ([#644](https://github.com/KRTirtho/spotube/issues/644)) ([1a7ea0c](https://github.com/KRTirtho/spotube/commit/1a7ea0ce6aae1a7cbe195f6b2fae7d99082bb828))
+* sorting by date crashes app ([#551](https://github.com/KRTirtho/spotube/issues/551)) ([48e90a4](https://github.com/KRTirtho/spotube/commit/48e90a42294a6287cad65f840a7cc305988d34ff))
+* window size remains same after exiting mini player ([#618](https://github.com/KRTirtho/spotube/issues/618)) ([fb36003](https://github.com/KRTirtho/spotube/commit/fb360035ade09c270b46a0c3b99ab1594ece07c0))
+
 ## [3.1.0](https://github.com/KRTirtho/spotube/compare/v3.0.1...v3.1.0) (2023-08-18)
 
 
