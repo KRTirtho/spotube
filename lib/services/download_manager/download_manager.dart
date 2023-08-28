@@ -10,6 +10,7 @@ import 'package:spotube/services/download_manager/chunked_download.dart';
 import 'package:spotube/services/download_manager/download_request.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/download_manager/download_task.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 
 export './download_request.dart';
 export './download_status.dart';
@@ -402,6 +403,6 @@ class DownloadManager {
 
   /// This function is used for get file name with extension from url
   String getFileNameFromUrl(String url) {
-    return url.split('/').last;
+    return PrimitiveUtils.toSafeFileName(url.split('/').last);
   }
 }
