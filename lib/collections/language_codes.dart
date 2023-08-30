@@ -288,10 +288,10 @@ abstract class LanguageLocals {
     //   name: "Icelandic",
     //   nativeName: "Íslenska",
     // ),
-    // "it": const ISOLanguageName(
-    //   name: "Italian",
-    //   nativeName: "Italiano",
-    // ),
+    "it": const ISOLanguageName(
+      name: "Italian",
+      nativeName: "Italiano",
+    ),
     // "iu": const ISOLanguageName(
     //   name: "Inuktitut",
     //   nativeName: "ᐃᓄᒃᑎᑐᑦ",
