@@ -138,6 +138,10 @@ class PlaylistQueries {
           (lastPageData.items?.length ?? 0) < 10 || lastPageData.isLast
               ? null
               : lastPage + 1,
+      retryConfig: RetryConfig.withConstantDefaults(
+        maxRetries: 1,
+        retryDelay: const Duration(seconds: 5),
+      ),
       ref: ref,
     );
   }
