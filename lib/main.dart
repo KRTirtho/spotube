@@ -14,7 +14,6 @@ import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
@@ -26,6 +25,7 @@ import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/cli/cli.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -37,41 +37,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 
 Future<void> main(List<String> rawArgs) async {
-  final parser = ArgParser();
-
-  parser.addFlag(
-    'verbose',
-    abbr: 'v',
-    help: 'Verbose mode',
-    defaultsTo: !kReleaseMode,
-    callback: (verbose) {
-      if (verbose) {
-        logEnv['VERBOSE'] = 'true';
-        logEnv['DEBUG'] = 'true';
-        logEnv['ERROR'] = 'true';
-      }
-    },
-  );
-  parser.addFlag(
-    "version",
-    help: "Print version and exit",
-    negatable: false,
-  );
-
-  parser.addFlag("help", abbr: "h", negatable: false);
-
-  final arguments = parser.parse(rawArgs);
-
-  if (arguments["help"] == true) {
-    print(parser.usage);
-    exit(0);
-  }
-
-  if (arguments["version"] == true) {
-    final package = await PackageInfo.fromPlatform();
-    print("Spotube v${package.version}");
-    exit(0);
-  }
+  final arguments = await startCLI(rawArgs);
 
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
@@ -215,7 +181,7 @@ class SpotubeState extends ConsumerState<Spotube> {
       };
     }, []);
 
-    useDisableBatterOptimizations();
+    useDisableBatteryOptimizations();
 
     final lightTheme = useMemoized(
       () => theme(paletteColor ?? accentMaterialColor, Brightness.light),
