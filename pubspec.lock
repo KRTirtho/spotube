@@ -517,23 +517,26 @@ packages:
   fl_query:
     dependency: "direct main"
     description:
-      path: "../fl-query/packages/fl_query"
-      relative: true
-    source: path
+      name: fl_query
+      sha256: "64f482fc09eb1166adca232f68772b2b11c616d88bce3208b2753c940ebc9f71"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.0-alpha.3"
   fl_query_devtools:
     dependency: "direct main"
     description:
-      path: "../fl-query/packages/fl_query_devtools"
-      relative: true
-    source: path
+      name: fl_query_devtools
+      sha256: f46148364d7fc49fb02ab2d3b2c280e6652edd3984e9fdf14c1b49d4d8473907
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0-alpha.1"
   fl_query_hooks:
     dependency: "direct main"
     description:
-      path: "../fl-query/packages/fl_query_hooks"
-      relative: true
-    source: path
+      name: fl_query_hooks
+      sha256: b0ffc81fb047cbcedd9766776f9c72b95382730ce173226f0695c3f45774b0bc
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.0-alpha.3"
   fluentui_system_icons:
     dependency: "direct main"

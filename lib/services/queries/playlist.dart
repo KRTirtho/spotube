@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
@@ -10,6 +12,7 @@ import 'package:spotube/extensions/track.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/use_spotify_query.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 
@@ -138,19 +141,26 @@ class PlaylistQueries {
           (lastPageData.items?.length ?? 0) < 10 || lastPageData.isLast
               ? null
               : lastPage + 1,
-      retryConfig: RetryConfig.withConstantDefaults(
-        maxRetries: 1,
-        retryDelay: const Duration(seconds: 5),
-      ),
       ref: ref,
     );
   }
 
-  Future<List<Track>> tracksOf(String playlistId, SpotifyApi spotify) {
+  Future<List<Track>> tracksOf(
+    String playlistId,
+    SpotifyApi spotify,
+    WidgetRef ref,
+  ) {
     if (playlistId == "user-liked-tracks") {
-      return spotify.tracks.me.saved.all().then(
+      return spotify.tracks.me.saved
+          .all()
+          .then(
             (tracks) => tracks.map((e) => e.track!).toList(),
-          );
+          )
+          .catchError((e) {
+        final isLoggedIn = ref.read(AuthenticationNotifier.provider) != null;
+        if (e is SocketException && isLoggedIn) return <Track>[];
+        throw e;
+      });
     }
     return spotify.playlists.getTracksByPlaylistId(playlistId).all().then(
           (value) => value.toList(),
@@ -163,7 +173,7 @@ class PlaylistQueries {
   ) {
     return useSpotifyQuery<List<Track>, dynamic>(
       "playlist-tracks/$playlistId",
-      (spotify) => tracksOf(playlistId, spotify),
+      (spotify) => tracksOf(playlistId, spotify, ref),
       jsonConfig: playlistId == "user-liked-tracks"
           ? JsonConfig(
               toJson: (tracks) => <String, dynamic>{
@@ -176,6 +186,10 @@ class PlaylistQueries {
                   .toList(),
             )
           : null,
+      retryConfig: RetryConfig.withConstantDefaults(
+        maxRetries: 1,
+        retryDelay: const Duration(seconds: 5),
+      ),
       ref: ref,
     );
   }
