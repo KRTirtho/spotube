@@ -207,11 +207,7 @@ class SpotubeState extends ConsumerState<Spotube> {
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,
-          DragToResizeArea(
-            child: FlQueryDevtools(
-              child: child!,
-            ),
-          ),
+          DragToResizeArea(child: child!),
         );
       },
       themeMode: themeMode,
