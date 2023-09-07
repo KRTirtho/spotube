@@ -82,7 +82,7 @@ dependencies:
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.11
   sidebarx: ^0.15.0
-  skeleton_text: ^3.0.0
+  skeleton_text: ^3.0.1
   smtc_windows: ^0.1.0
   spotify: ^0.11.0
   supabase: ^1.9.9
