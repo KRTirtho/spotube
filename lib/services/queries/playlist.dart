@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
@@ -145,23 +146,47 @@ class PlaylistQueries {
     );
   }
 
+  Future<List<Track>> likedTracks(
+    SpotifyApi spotify,
+    WidgetRef ref,
+  ) async {
+    final tracks = await spotify.tracks.me.saved.all();
+
+    return tracks.map((e) => e.track!).toList();
+  }
+
+  Query<List<Track>, dynamic> likedTracksQuery(WidgetRef ref) {
+    final query = useCallback((spotify) => likedTracks(spotify, ref), []);
+    final context = useContext();
+
+    return useSpotifyQuery<List<Track>, dynamic>(
+      "user-liked-tracks",
+      query,
+      jsonConfig: JsonConfig(
+        toJson: (tracks) => <String, dynamic>{
+          'tracks': tracks.map((e) => e.toJson()).toList(),
+        },
+        fromJson: (json) => (json['tracks'] as List)
+            .map(
+              (e) => Track.fromJson((e as Map).castKeyDeep<String>()),
+            )
+            .toList(),
+      ),
+      refreshConfig: RefreshConfig.withDefaults(
+        context,
+        // will never make it stale
+        staleDuration: const Duration(days: 60),
+      ),
+      ref: ref,
+    );
+  }
+
   Future<List<Track>> tracksOf(
     String playlistId,
     SpotifyApi spotify,
     WidgetRef ref,
-  ) {
-    if (playlistId == "user-liked-tracks") {
-      return spotify.tracks.me.saved
-          .all()
-          .then(
-            (tracks) => tracks.map((e) => e.track!).toList(),
-          )
-          .catchError((e) {
-        final isLoggedIn = ref.read(AuthenticationNotifier.provider) != null;
-        if (e is SocketException && isLoggedIn) return <Track>[];
-        throw e;
-      });
-    }
+  ) async {
+    if (playlistId == "user-liked-tracks") return <Track>[];
     return spotify.playlists.getTracksByPlaylistId(playlistId).all().then(
           (value) => value.toList(),
         );
@@ -174,22 +199,6 @@ class PlaylistQueries {
     return useSpotifyQuery<List<Track>, dynamic>(
       "playlist-tracks/$playlistId",
       (spotify) => tracksOf(playlistId, spotify, ref),
-      jsonConfig: playlistId == "user-liked-tracks"
-          ? JsonConfig(
-              toJson: (tracks) => <String, dynamic>{
-                'tracks': tracks.map((e) => e.toJson()).toList()
-              },
-              fromJson: (json) => (json['tracks'] as List)
-                  .map((e) => Track.fromJson(
-                        (e as Map).castKeyDeep<String>(),
-                      ))
-                  .toList(),
-            )
-          : null,
-      retryConfig: RetryConfig.withConstantDefaults(
-        maxRetries: 1,
-        retryDelay: const Duration(seconds: 5),
-      ),
       ref: ref,
     );
   }

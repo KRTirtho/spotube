@@ -55,7 +55,12 @@ class PlaylistView extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     final meSnapshot = useQueries.user.me(ref);
-    final tracksSnapshot = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
+    final playlistTrackSnapshot =
+        useQueries.playlist.tracksOfQuery(ref, playlist.id!);
+    final likedTracksSnapshot = useQueries.playlist.likedTracksQuery(ref);
+    final tracksSnapshot = playlist.id! == "user-liked-tracks"
+        ? likedTracksSnapshot
+        : playlistTrackSnapshot;
 
     final isPlaylistPlaying = useMemoized(
       () => proxyPlaylist.collections.contains(playlist.id!),
