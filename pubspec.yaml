@@ -36,6 +36,7 @@ dependencies:
   file_picker: ^5.2.2
   fl_query: ^1.0.0-alpha.3
   fl_query_hooks: ^1.0.0-alpha.3
+  fl_query_devtools: ^0.1.0-alpha.1
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
@@ -81,7 +82,7 @@ dependencies:
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.11
   sidebarx: ^0.15.0
-  skeleton_text: ^3.0.0
+  skeleton_text: ^3.0.1
   smtc_windows: ^0.1.0
   spotify: ^0.11.0
   supabase: ^1.9.9

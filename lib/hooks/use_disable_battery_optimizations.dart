@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/hooks/use_async_effect.dart';
 
 bool _asked = false;
-void useDisableBatterOptimizations() {
+void useDisableBatteryOptimizations() {
   useAsyncEffect(() async {
     if (!DesktopTools.platform.isAndroid || _asked) return;
     final localStorage = await SharedPreferences.getInstance();
