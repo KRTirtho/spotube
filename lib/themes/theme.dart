@@ -51,6 +51,7 @@ ThemeData theme(Color seed, Brightness brightness) {
     sliderTheme: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
     searchBarTheme: SearchBarThemeData(
       constraints: const BoxConstraints(maxWidth: double.infinity),
+      padding: const MaterialStatePropertyAll(EdgeInsets.all(8)),
       backgroundColor: MaterialStatePropertyAll(
         Color.lerp(
           scheme.surfaceVariant,

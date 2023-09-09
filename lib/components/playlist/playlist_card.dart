@@ -60,11 +60,18 @@ class PlaylistCard extends HookConsumerWidget {
             return audioPlayer.resume();
           }
 
-          List<Track> fetchedTracks = await queryBowl.fetchQuery(
-                "playlist-tracks/${playlist.id}",
-                () => useQueries.playlist.tracksOf(playlist.id!, spotify, ref),
-              ) ??
-              [];
+          List<Track> fetchedTracks = playlist.id == 'user-liked-tracks'
+              ? await queryBowl.fetchQuery(
+                    "user-liked-tracks",
+                    () => useQueries.playlist.likedTracks(spotify, ref),
+                  ) ??
+                  []
+              : await queryBowl.fetchQuery(
+                    "playlist-tracks/${playlist.id}",
+                    () => useQueries.playlist
+                        .tracksOf(playlist.id!, spotify, ref),
+                  ) ??
+                  [];
 
           if (fetchedTracks.isEmpty) return;
 
