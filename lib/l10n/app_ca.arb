@@ -253,15 +253,5 @@
   "youtube_api_type": "Tipus d'API de YouTube",
   "ok": "OK",
   "failed_to_encrypt": "Error al xifrar",
-  "encryption_failed_warning": "Spotube utilitza el xifrado per emmagatzemar les seves dades de forma segura. Però ha fallat. Per tant, tornarà a un emmagatzament no segur\nSi estè utilizant Linux, asseguri's de tenir instal·lats els serveis secrets com gnome-keyring, kde-wallet i keepassxc",
-  "piped_api_down": "La API de Piped no està operativa",
-  "piped_down_error_instructions": "La instància de Piped {pipedInstance} no està operativa en aquest moment\n\nCanvieu la instància o canvieu el 'Tipus d'API' a l'API oficial de YouTube\n\nAssegureu-vos de reiniciar l'aplicació després del canvi",
-  "you_are_offline": "Actualment no teniu connexió a internet",
-  "connection_restored": "S'ha restablert la connexió a internet",
-  "use_system_title_bar": "Utilitza la barra de títol del sistema",
-  "querying_info": "Consultant informació...",
-  "update_playlist": "Actualitzar la llista de reproducció",
-  "update": "Actualitzar",
-  "crunching_results": "Processant resultats...",
-  "search_to_get_results": "Cerca per obtenir resultats"
+  "encryption_failed_warning": "Spotube utilitza el xifrado per emmagatzemar les seves dades de forma segura. Però ha fallat. Per tant, tornarà a un emmagatzament no segur\nSi estè utilizant Linux, asseguri's de tenir instal·lats els serveis secrets com gnome-keyring, kde-wallet i keepassxc"
 }

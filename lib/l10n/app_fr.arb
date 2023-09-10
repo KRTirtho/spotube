@@ -254,14 +254,5 @@
   "ok": "OK",
   "failed_to_encrypt": "Échec de la cryptage",
   "encryption_failed_warning": "Spotube utilise le cryptage pour stocker vos données en toute sécurité. Mais cela a échoué. Il basculera donc vers un stockage non sécurisé\nSi vous utilisez Linux, assurez-vous d'avoir installé des services secrets tels que gnome-keyring, kde-wallet et keepassxc",
-  "querying_info": "Interrogation des info...",
-  "piped_api_down": "L'API Piped est hors service",
-  "piped_down_error_instructions": "L'instance Piped {pipedInstance} est actuellement indisponible\n\nChangez soit l'instance, soit le 'Type d'API' pour utiliser l'API officielle de YouTube\n\nN'oubliez pas de redémarrer l'application après la modification",
-  "you_are_offline": "Vous êtes actuellement hors ligne",
-  "connection_restored": "Votre connexion internet a été rétablie",
-  "use_system_title_bar": "Utiliser la barre de titre système",
-  "update_playlist": "Mettre à jour la playlist",
-  "update": "Mettre à jour",
-  "crunching_results": "Traitement des résultats...",
-  "search_to_get_results": "Recherche pour obtenir des résultats"
+  "querying_info": "Interrogation des info..."
 }

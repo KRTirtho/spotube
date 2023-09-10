@@ -255,13 +255,6 @@
   "failed_to_encrypt": "Nie można zaszyfrować :(",
   "encryption_failed_warning": "Spotube używa szyfrowania do bezpiecznego przechowywania danych. Ale nie udało się tego zrobić. Więc powróci do niezabezpieczonego przechowywania\nJeśli używasz Linuksa, upewnij się, że masz zainstalowane jakieś usługi do szyfrowania (gnome-keyring, kde-wallet, keepassxc itp.)",
   "querying_info": "Szukam informacji...",
-  "piped_api_down": "API Piped jest niedostępne",
-  "piped_down_error_instructions": "Instancja Piped {pipedInstance} jest obecnie niedostępna\n\nZmień instancję lub zmień 'Rodzaj API' na oficjalne API YouTube\n\nUpewnij się, że po zmianie zrestartujesz aplikację",
-  "you_are_offline": "Obecnie jesteś offline",
-  "connection_restored": "Twoje połączenie z internetem zostało przywrócone",
-  "use_system_title_bar": "Użyj paska tytułu systemu",
-  "update_playlist": "Zaktualizuj playlistę",
-  "update": "Aktualizuj",
-  "crunching_results": "Przetwarzanie wyników...",
-  "search_to_get_results": "Szukaj, aby uzyskać wyniki"
+  "piped_api_down": "Piped API jest wyłączone",
+  "piped_down_error_instructions": "Instancja Piped {pipedInstance} jest obecnie wyłączona.\n\nJednak możesz zmienić instancję lub 'Typ API' na oficialne API YouTube'a.\n\nUpewnij się, że uruchomiłeś ponownie aplikacje po tej zmianie."
 }
