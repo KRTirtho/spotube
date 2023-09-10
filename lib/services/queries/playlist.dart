@@ -188,7 +188,7 @@ class PlaylistQueries {
   ) async {
     if (playlistId == "user-liked-tracks") return <Track>[];
     return spotify.playlists.getTracksByPlaylistId(playlistId).all().then(
-          (value) => value.toList(),
+          (value) => value.where((track) => track.id != null).toList(),
         );
   }
 
