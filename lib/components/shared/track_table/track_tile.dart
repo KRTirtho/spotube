@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -57,174 +58,191 @@ class TrackTile extends HookConsumerWidget {
       [blacklist, track],
     );
 
+    final showOptionCbRef = useRef<ValueChanged<RelativeRect>?>(null);
+
     final isPlaying = track.id == playlist.activeTrack?.id;
 
     return LayoutBuilder(builder: (context, constrains) {
-      return HoverBuilder(
-        permanentState: isPlaying || constrains.smAndDown ? true : null,
-        builder: (context, isHovering) {
-          return ListTile(
-            selected: isPlaying,
-            onTap: onTap,
-            onLongPress: onLongPress,
-            enabled: !isBlackListed,
-            contentPadding: EdgeInsets.zero,
-            tileColor: isBlackListed ? theme.colorScheme.errorContainer : null,
-            horizontalTitleGap: 12,
-            leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
-            leading: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...?leadingActions,
-                if (index != null && onChanged == null && constrains.mdAndUp)
-                  SizedBox(
-                    width: 34,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Text(
-                        '$index',
-                        maxLines: 1,
-                        style: theme.textTheme.bodySmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                else if (constrains.smAndDown)
-                  const SizedBox(width: 16),
-                if (onChanged != null)
-                  Checkbox(
-                    value: selected,
-                    onChanged: onChanged,
-                  ),
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: UniversalImage(
-                          path: TypeConversionUtils.image_X_UrlString(
-                            track.album?.images,
-                            placeholder: ImagePlaceholder.albumArt,
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: isHovering
-                              ? Colors.black.withOpacity(0.4)
-                              : Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: Center(
-                        child: IconTheme(
-                          data: theme.iconTheme
-                              .copyWith(size: 26, color: Colors.white),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: !isHovering
-                                ? const SizedBox.shrink()
-                                : isPlaying && playlist.isFetching
-                                    ? const SizedBox(
-                                        width: 26,
-                                        height: 26,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 1.5,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : isPlaying
-                                        ? Icon(
-                                            SpotubeIcons.pause,
-                                            color: theme.colorScheme.primary,
-                                          )
-                                        : const Icon(SpotubeIcons.play),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            title: Row(
-              children: [
-                Expanded(
-                  flex: 6,
-                  child: Text(
-                    track.name!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (constrains.mdAndUp) ...[
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 4,
-                    child: switch (track.runtimeType) {
-                      LocalTrack => Text(
-                          track.album!.name!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      _ => Align(
-                          alignment: Alignment.centerLeft,
-                          child: LinkText(
-                            track.album!.name!,
-                            "/album/${track.album?.id}",
-                            extra: track.album,
-                            push: true,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )
-                    },
-                  ),
-                ],
-              ],
-            ),
-            subtitle: Align(
-              alignment: Alignment.centerLeft,
-              child: track is LocalTrack
-                  ? Text(
-                      TypeConversionUtils.artists_X_String<Artist>(
-                        track.artists ?? [],
-                      ),
-                    )
-                  : ClipRect(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 40),
-                        child: TypeConversionUtils.artists_X_ClickableArtists(
-                          track.artists ?? [],
-                        ),
-                      ),
-                    ),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(width: 8),
-                Text(
-                  Duration(milliseconds: track.durationMs ?? 0)
-                      .toHumanReadableString(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                TrackOptions(
-                  track: track,
-                  playlistId: playlistId,
-                  userPlaylist: userPlaylist,
-                ),
-              ],
+      return Listener(
+        onPointerDown: (event) {
+          if (event.buttons != kSecondaryMouseButton) return;
+          showOptionCbRef.value?.call(
+            RelativeRect.fromLTRB(
+              event.position.dx,
+              event.position.dy,
+              constrains.maxWidth - event.position.dx,
+              constrains.maxHeight - event.position.dy,
             ),
           );
         },
+        child: HoverBuilder(
+          permanentState: isPlaying || constrains.smAndDown ? true : null,
+          builder: (context, isHovering) {
+            return ListTile(
+              selected: isPlaying,
+              onTap: onTap,
+              onLongPress: onLongPress,
+              enabled: !isBlackListed,
+              contentPadding: EdgeInsets.zero,
+              tileColor:
+                  isBlackListed ? theme.colorScheme.errorContainer : null,
+              horizontalTitleGap: 12,
+              leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
+              leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...?leadingActions,
+                  if (index != null && onChanged == null && constrains.mdAndUp)
+                    SizedBox(
+                      width: 34,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Text(
+                          '$index',
+                          maxLines: 1,
+                          style: theme.textTheme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  else if (constrains.smAndDown)
+                    const SizedBox(width: 16),
+                  if (onChanged != null)
+                    Checkbox(
+                      value: selected,
+                      onChanged: onChanged,
+                    ),
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: UniversalImage(
+                            path: TypeConversionUtils.image_X_UrlString(
+                              track.album?.images,
+                              placeholder: ImagePlaceholder.albumArt,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: isHovering
+                                ? Colors.black.withOpacity(0.4)
+                                : Colors.transparent,
+                          ),
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Center(
+                          child: IconTheme(
+                            data: theme.iconTheme
+                                .copyWith(size: 26, color: Colors.white),
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              child: !isHovering
+                                  ? const SizedBox.shrink()
+                                  : isPlaying && playlist.isFetching
+                                      ? const SizedBox(
+                                          width: 26,
+                                          height: 26,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 1.5,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : isPlaying
+                                          ? Icon(
+                                              SpotubeIcons.pause,
+                                              color: theme.colorScheme.primary,
+                                            )
+                                          : const Icon(SpotubeIcons.play),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              title: Row(
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: Text(
+                      track.name!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (constrains.mdAndUp) ...[
+                    const SizedBox(width: 8),
+                    Expanded(
+                      flex: 4,
+                      child: switch (track.runtimeType) {
+                        LocalTrack => Text(
+                            track.album!.name!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        _ => Align(
+                            alignment: Alignment.centerLeft,
+                            child: LinkText(
+                              track.album!.name!,
+                              "/album/${track.album?.id}",
+                              extra: track.album,
+                              push: true,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                      },
+                    ),
+                  ],
+                ],
+              ),
+              subtitle: Align(
+                alignment: Alignment.centerLeft,
+                child: track is LocalTrack
+                    ? Text(
+                        TypeConversionUtils.artists_X_String<Artist>(
+                          track.artists ?? [],
+                        ),
+                      )
+                    : ClipRect(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 40),
+                          child: TypeConversionUtils.artists_X_ClickableArtists(
+                            track.artists ?? [],
+                          ),
+                        ),
+                      ),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(width: 8),
+                  Text(
+                    Duration(milliseconds: track.durationMs ?? 0)
+                        .toHumanReadableString(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  TrackOptions(
+                    track: track,
+                    playlistId: playlistId,
+                    userPlaylist: userPlaylist,
+                    showMenuCbRef: showOptionCbRef,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       );
     });
   }

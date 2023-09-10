@@ -78,6 +78,31 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
           'Either icon or child must be provided',
         );
 
+  Future<T?> showPopupMenu(BuildContext context, RelativeRect position) {
+    final mediaQuery = MediaQuery.of(context);
+
+    return showMenu<T>(
+      context: context,
+      useRootNavigator: useRootNavigator,
+      constraints: BoxConstraints(
+        maxHeight: mediaQuery.size.height * 0.6,
+      ),
+      position: position,
+      items: children
+          .map(
+            (item) => PopupMenuItem<T>(
+              padding: EdgeInsets.zero,
+              enabled: false,
+              child: _AdaptivePopSheetListItem<T>(
+                item: item,
+                onSelected: onSelected,
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
