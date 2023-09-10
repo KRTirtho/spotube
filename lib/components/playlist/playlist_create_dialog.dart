@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -154,39 +155,85 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    Center(
-                      child: Stack(
-                        children: [
-                          UniversalImage(
-                            path: image.value?.path ??
-                                TypeConversionUtils.image_X_UrlString(
-                                  updatingPlaylist?.images,
-                                  placeholder: ImagePlaceholder.collection,
-                                ),
-                            height: 200,
-                          ),
-                          Positioned(
-                            bottom: 20,
-                            right: 20,
-                            child: IconButton.filled(
-                              icon: const Icon(SpotubeIcons.edit),
-                              style: IconButton.styleFrom(
-                                backgroundColor: theme.colorScheme.surface,
-                                foregroundColor: theme.colorScheme.primary,
-                                elevation: 2,
-                                shadowColor: theme.colorScheme.onSurface,
-                              ),
-                              onPressed: () async {
-                                final imageFile = await ImagePicker()
-                                    .pickImage(source: ImageSource.gallery);
+                    FormField<XFile?>(
+                        initialValue: image.value,
+                        onSaved: (newValue) {
+                          image.value = newValue;
+                        },
+                        validator: (value) {
+                          if (value == null) return null;
+                          final file = File(value.path);
 
-                                image.value = imageFile ?? image.value;
-                              },
+                          if (file.lengthSync() > 256000) {
+                            return "Image size should be less than 256kb";
+                          }
+                          return null;
+                        },
+                        builder: (field) {
+                          return Center(
+                            child: Stack(
+                              children: [
+                                UniversalImage(
+                                  path: field.value?.path ??
+                                      TypeConversionUtils.image_X_UrlString(
+                                        updatingPlaylist?.images,
+                                        placeholder:
+                                            ImagePlaceholder.collection,
+                                      ),
+                                  height: 200,
+                                ),
+                                Positioned(
+                                  bottom: 20,
+                                  right: 20,
+                                  child: IconButton.filled(
+                                    icon: const Icon(SpotubeIcons.edit),
+                                    style: IconButton.styleFrom(
+                                      backgroundColor:
+                                          theme.colorScheme.surface,
+                                      foregroundColor:
+                                          theme.colorScheme.primary,
+                                      elevation: 2,
+                                      shadowColor: theme.colorScheme.onSurface,
+                                    ),
+                                    onPressed: () async {
+                                      final imageFile = await ImagePicker()
+                                          .pickImage(
+                                              source: ImageSource.gallery);
+
+                                      if (imageFile != null) {
+                                        field.didChange(imageFile);
+                                        field.validate();
+                                        field.save();
+                                      }
+                                    },
+                                  ),
+                                ),
+                                if (field.hasError)
+                                  Positioned(
+                                    bottom: 20,
+                                    left: 20,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.error,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        field.errorText ?? "",
+                                        style: theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                          color: theme.colorScheme.onError,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
+                          );
+                        }),
                     const SizedBox(height: 10),
                     TextFormField(
                       controller: playlistName,
@@ -203,6 +250,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                         hintText: context.l10n.description,
                       ),
                       keyboardType: TextInputType.multiline,
+                      validator: ValidationBuilder().required().build(),
                       maxLines: 5,
                     ),
                     const SizedBox(height: 10),
