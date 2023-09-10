@@ -1,56 +1,78 @@
 {
   "bn": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "ca": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "de": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "es": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "fr": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "hi": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "ja": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "pl": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "pt": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "ru": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ],
 
   "zh": [
     "update_playlist",
-    "update"
+    "update",
+    "crunching_results",
+    "search_to_get_results"
   ]
 }
