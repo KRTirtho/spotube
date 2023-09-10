@@ -203,6 +203,16 @@ class PlaylistQueries {
     );
   }
 
+  Query<Playlist, dynamic> byId(WidgetRef ref, String id) {
+    return useSpotifyQuery<Playlist, dynamic>(
+      "playlist/$id",
+      (spotify) async {
+        return await spotify.playlists.get(id);
+      },
+      ref: ref,
+    );
+  }
+
   InfiniteQuery<Page<PlaylistSimple>, dynamic, int> featured(
     WidgetRef ref,
   ) {

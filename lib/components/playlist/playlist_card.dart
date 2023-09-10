@@ -32,6 +32,7 @@ class PlaylistCard extends HookConsumerWidget {
 
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);
+    final me = useQueries.user.me(ref);
 
     return PlaybuttonCard(
       margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -44,6 +45,7 @@ class PlaylistCard extends HookConsumerWidget {
       isPlaying: isPlaylistPlaying,
       isLoading:
           (isPlaylistPlaying && playlistQueue.isFetching) || updating.value,
+      isOwner: playlist.owner?.id == me.data?.id && me.data?.id != null,
       onTap: () {
         ServiceUtils.push(
           context,

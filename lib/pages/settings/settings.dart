@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
@@ -11,7 +11,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/language_codes.dart';
-
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/components/settings/section_card_with_heading.dart';
@@ -47,8 +46,8 @@ class SettingsPage extends HookConsumerWidget {
     }, []);
 
     final pickDownloadLocation = useCallback(() async {
-      final dirStr = await FilePicker.platform.getDirectoryPath(
-        dialogTitle: context.l10n.download_location,
+      final dirStr = await getDirectoryPath(
+        initialDirectory: preferences.downloadLocation,
       );
       if (dirStr == null) return;
       preferences.setDownloadLocation(dirStr);
