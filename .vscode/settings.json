@@ -1,19 +1,13 @@
 {
-  "cmake.configureOnOpen": false,
-  "cSpell.words": [
-    "acousticness",
-    "danceability",
-    "instrumentalness",
-    "Mpris",
-    "riverpod",
-    "speechiness",
-    "Spotube",
-    "winget"
-  ],
-  "editor.formatOnSave": true,
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.patterns": {
-    "pubspec.yaml": "pubspec.lock,analysis_options.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies",
-    "README.md": "LICENSE,CODE_OF_CONDUCT.md,CONTRIBUTING.md,SECURITY.md,CONTRIBUTION.md,CHANGELOG.md,PRIVACY_POLICY.md",
-  }
+    "cmake.configureOnOpen": false,
+    "cSpell.words": [
+      "acousticness",
+      "danceability",
+      "instrumentalness",
+      "Mpris",
+      "riverpod",
+      "speechiness",
+      "Spotube",
+      "winget"
+    ]
 }
