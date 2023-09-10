@@ -37,7 +37,8 @@ class SpotubeLogger extends Logger {
   SpotubeLogger([this.owner]) : super(filter: _SpotubeLogFilter());
 
   @override
-  void log(Level level, message, [error, StackTrace? stackTrace]) async {
+  void log(Level level, dynamic message,
+      {Object? error, StackTrace? stackTrace, DateTime? time}) async {
     if (!kIsWeb) {
       if (level == Level.error) {
         String dir = (await getApplicationDocumentsDirectory()).path;
@@ -56,7 +57,7 @@ class SpotubeLogger extends Logger {
       }
     }
 
-    super.log(level, "[$owner] $message", error, stackTrace);
+    super.log(level, "[$owner] $message", error: error, stackTrace: stackTrace);
   }
 }
 
@@ -64,7 +65,7 @@ class _SpotubeLogFilter extends DevelopmentFilter {
   @override
   bool shouldLog(LogEvent event) {
     if ((logEnv["DEBUG"] == "true" && event.level == Level.debug) ||
-        (logEnv["VERBOSE"] == "true" && event.level == Level.verbose) ||
+        (logEnv["VERBOSE"] == "true" && event.level == Level.trace) ||
         (logEnv["ERROR"] == "true" && event.level == Level.error)) {
       return true;
     }

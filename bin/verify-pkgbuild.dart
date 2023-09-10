@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:spotube/models/logger.dart';
 
 void main() {
+  final logger = getLogger("VerifyPKGBuild");
   Process.run("sh", ["-c", '"./scripts/pkgbuild2json.sh aur-struct/PKGBUILD"'])
       .then((result) {
     try {
@@ -15,8 +17,7 @@ void main() {
         throw Exception("In new releases pkgrel should be 1");
       }
     } catch (e) {
-      // ignore: avoid_print
-      print("[Failed to parse PKGBUILD] $e");
+      logger.d("[Failed to parse PKGBUILD] $e");
     }
   });
 }
