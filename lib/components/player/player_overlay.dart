@@ -100,9 +100,13 @@ class PlayerOverlay extends HookConsumerWidget {
                               child: GestureDetector(
                                 onTap: () =>
                                     GoRouter.of(context).push("/player"),
-                                child: PlayerTrackDetails(
-                                  albumArt: albumArt,
-                                  color: textColor,
+                                child: Container(
+                                  width: double.infinity,
+                                  color: Colors.transparent,
+                                  child: PlayerTrackDetails(
+                                    albumArt: albumArt,
+                                    color: textColor,
+                                  ),
                                 ),
                               ),
                             ),
@@ -114,7 +118,9 @@ class PlayerOverlay extends HookConsumerWidget {
                                   SpotubeIcons.skipBack,
                                   color: textColor,
                                 ),
-                                onPressed: playlistNotifier.previous,
+                                onPressed: playlist.isFetching
+                                    ? null
+                                    : playlistNotifier.previous,
                               ),
                               Consumer(
                                 builder: (context, ref, _) {
@@ -143,7 +149,9 @@ class PlayerOverlay extends HookConsumerWidget {
                                   SpotubeIcons.skipForward,
                                   color: textColor,
                                 ),
-                                onPressed: playlistNotifier.next,
+                                onPressed: playlist.isFetching
+                                    ? null
+                                    : playlistNotifier.next,
                               ),
                             ],
                           ),
