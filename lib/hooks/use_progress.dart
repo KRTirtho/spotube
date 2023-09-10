@@ -40,14 +40,14 @@ import 'package:spotube/services/audio_player/audio_player.dart';
       }
     });
 
+    var lastPosition = position.value;
+
     // audioPlayer.positionStream is fired every 200ms and only 1s delay is
     // enough. Thus only update the position if the difference is more than 1s
     // Reduces CPU usage
-    var lastPosition = position.value;
-
     final positionSubscription = audioPlayer.positionStream.listen((event) {
-      if (event.inMilliseconds > 1000 &&
-          event.inMilliseconds - lastPosition.inMilliseconds < 1000) return;
+      final diff = event.inMilliseconds - lastPosition.inMilliseconds;
+      if (event.inMilliseconds > 1000 && diff < 1000 && diff > 0) return;
 
       lastPosition = event;
       position.value = event;
