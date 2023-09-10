@@ -159,10 +159,14 @@ class TrackHeartButton extends HookConsumerWidget {
 
 class PlaylistHeartButton extends HookConsumerWidget {
   final PlaylistSimple playlist;
+  final IconData? icon;
+  final ValueChanged<bool>? onData;
 
   const PlaylistHeartButton({
     required this.playlist,
     Key? key,
+    this.icon,
+    this.onData,
   }) : super(key: key);
 
   @override
@@ -181,6 +185,7 @@ class PlaylistHeartButton extends HookConsumerWidget {
       refreshQueries: [
         isLikedQuery.key,
       ],
+      onData: onData,
     );
 
     if (me.isLoading || !me.hasData) {
@@ -193,6 +198,7 @@ class PlaylistHeartButton extends HookConsumerWidget {
           ? context.l10n.remove_from_favorites
           : context.l10n.save_as_favorite,
       color: Colors.white,
+      icon: icon,
       onPressed: isLikedQuery.hasData
           ? () {
               togglePlaylistLike.mutate(isLikedQuery.data!);

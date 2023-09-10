@@ -1,1 +1,56 @@
-{}
+{
+  "bn": [
+    "update_playlist",
+    "update"
+  ],
+
+  "ca": [
+    "update_playlist",
+    "update"
+  ],
+
+  "de": [
+    "update_playlist",
+    "update"
+  ],
+
+  "es": [
+    "update_playlist",
+    "update"
+  ],
+
+  "fr": [
+    "update_playlist",
+    "update"
+  ],
+
+  "hi": [
+    "update_playlist",
+    "update"
+  ],
+
+  "ja": [
+    "update_playlist",
+    "update"
+  ],
+
+  "pl": [
+    "update_playlist",
+    "update"
+  ],
+
+  "pt": [
+    "update_playlist",
+    "update"
+  ],
+
+  "ru": [
+    "update_playlist",
+    "update"
+  ],
+
+  "zh": [
+    "update_playlist",
+    "update"
+  ]
+}

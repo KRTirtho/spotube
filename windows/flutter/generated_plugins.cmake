@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   catcher
+  file_selector_windows
   flutter_secure_storage_windows
   local_notifier
   media_kit_libs_windows_audio

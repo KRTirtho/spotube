@@ -1,7 +1,17 @@
 import 'package:fl_query/fl_query.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/use_spotify_mutation.dart';
+import 'package:spotube/services/queries/queries.dart';
+
+typedef PlaylistCRUDVariables = ({
+  String playlistName,
+  bool? public,
+  bool? collaborative,
+  String? description,
+  String? base64Image,
+});
 
 class PlaylistMutations {
   const PlaylistMutations();
@@ -11,8 +21,8 @@ class PlaylistMutations {
     String playlistId, {
     List<String>? refreshQueries,
     List<String>? refreshInfiniteQueries,
+    ValueChanged<bool>? onData,
   }) {
-    final queryClient = useQueryClient();
     return useSpotifyMutation<bool, dynamic, bool, dynamic>(
       "toggle-playlist-like/$playlistId",
       (isLiked, spotify) async {
@@ -25,10 +35,12 @@ class PlaylistMutations {
       },
       ref: ref,
       refreshQueries: refreshQueries,
-      refreshInfiniteQueries: refreshInfiniteQueries,
-      onData: (data, recoveryData) async {
-        await queryClient
-            .refreshInfiniteQueryAllPages("current-user-playlists");
+      refreshInfiniteQueries: [
+        ...?refreshInfiniteQueries,
+        "current-user-playlists",
+      ],
+      onData: (data, recoveryData) {
+        onData?.call(data);
       },
     );
   }
@@ -45,6 +57,93 @@ class PlaylistMutations {
       },
       ref: ref,
       refreshQueries: ["playlist-tracks/$playlistId"],
+    );
+  }
+
+  Mutation<Playlist, dynamic, PlaylistCRUDVariables> create(
+    WidgetRef ref, {
+    List<String>? trackIds,
+    ValueChanged<dynamic>? onError,
+    ValueChanged<Playlist>? onData,
+  }) {
+    final me = useQueries.user.me(ref);
+    return useSpotifyMutation<Playlist, dynamic, PlaylistCRUDVariables, void>(
+      "create-playlist",
+      (variable, spotify) async {
+        final playlist = await spotify.playlists.createPlaylist(
+          me.data!.id!,
+          variable.playlistName,
+          collaborative: variable.collaborative,
+          description: variable.description,
+          public: variable.public,
+        );
+
+        if (variable.base64Image != null) {
+          await spotify.playlists.updatePlaylistImage(
+            playlist.id!,
+            variable.base64Image!,
+          );
+        }
+
+        if (trackIds != null && trackIds.isNotEmpty) {
+          await spotify.playlists.addTracks(
+            trackIds.map((id) => "spotify:track:$id").toList(),
+            playlist.id!,
+          );
+        }
+
+        return playlist;
+      },
+      refreshInfiniteQueries: [
+        "current-user-playlists",
+      ],
+      ref: ref,
+      onError: (error, recoveryData) {
+        onError?.call(error);
+      },
+      onData: (data, recoveryData) {
+        onData?.call(data);
+      },
+    );
+  }
+
+  Mutation<void, dynamic, PlaylistCRUDVariables> update(
+    WidgetRef ref, {
+    String? playlistId,
+    ValueChanged<dynamic>? onError,
+    ValueChanged<void>? onData,
+  }) {
+    return useSpotifyMutation<void, dynamic, PlaylistCRUDVariables, void>(
+      "update-playlist/$playlistId",
+      (variable, spotify) async {
+        if (playlistId == null) return;
+        await spotify.playlists.updatePlaylist(
+          playlistId,
+          variable.playlistName,
+          collaborative: variable.collaborative,
+          description: variable.description,
+          public: variable.public,
+        );
+        if (variable.base64Image != null) {
+          await spotify.playlists.updatePlaylistImage(
+            playlistId,
+            variable.base64Image!,
+          );
+        }
+      },
+      refreshQueries: [
+        "playlist/$playlistId",
+      ],
+      refreshInfiniteQueries: [
+        "current-user-playlists",
+      ],
+      ref: ref,
+      onError: (error, recoveryData) {
+        onError?.call(error);
+      },
+      onData: (data, recoveryData) {
+        onData?.call(data);
+      },
     );
   }
 }

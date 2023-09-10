@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
@@ -18,34 +20,8 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistView extends HookConsumerWidget {
   final logger = getLogger(PlaylistView);
-  final PlaylistSimple playlist;
-  PlaylistView(this.playlist, {Key? key}) : super(key: key);
-
-  Future<void> playPlaylist(
-    List<Track> tracks,
-    WidgetRef ref, {
-    Track? currentTrack,
-  }) async {
-    final proxyPlaylist = ref.read(ProxyPlaylistNotifier.provider);
-    final playback = ref.read(ProxyPlaylistNotifier.notifier);
-    final sortBy = ref.read(trackCollectionSortState(playlist.id!));
-    final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
-    currentTrack ??= sortedTracks.first;
-    final isPlaylistPlaying = proxyPlaylist.containsTracks(tracks);
-    if (!isPlaylistPlaying) {
-      playback.addCollection(playlist.id!); // for enabling loading indicator
-      await playback.load(
-        sortedTracks,
-        initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
-        autoPlay: true,
-      );
-      playback.addCollection(playlist.id!);
-    } else if (isPlaylistPlaying &&
-        currentTrack.id != null &&
-        currentTrack.id != proxyPlaylist.activeTrack?.id) {
-      await playback.jumpToTrack(currentTrack);
-    }
-  }
+  final PlaylistSimple playlistSimple;
+  PlaylistView(this.playlistSimple, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -55,6 +31,10 @@ class PlaylistView extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     final meSnapshot = useQueries.user.me(ref);
+
+    final playlistQuery = useQueries.playlist.byId(ref, playlistSimple.id!);
+    final playlist = playlistQuery.data ?? playlistSimple;
+
     final playlistTrackSnapshot =
         useQueries.playlist.tracksOfQuery(ref, playlist.id!);
     final likedTracksSnapshot = useQueries.playlist.likedTracksQuery(ref);
@@ -83,6 +63,35 @@ class PlaylistView extends HookConsumerWidget {
       [proxyPlaylist.activeTrack, tracksSnapshot.data],
     );
 
+    final playPlaylist = useCallback((
+      List<Track> tracks,
+      WidgetRef ref, {
+      Track? currentTrack,
+    }) async {
+      final playback = ref.read(ProxyPlaylistNotifier.notifier);
+      final sortBy = ref.read(trackCollectionSortState(playlist.id!));
+      final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
+      currentTrack ??= sortedTracks.first;
+      final isPlaylistPlaying = proxyPlaylist.containsTracks(tracks);
+      if (!isPlaylistPlaying) {
+        playback.addCollection(playlist.id!); // for enabling loading indicator
+        await playback.load(
+          sortedTracks,
+          initialIndex:
+              sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
+          autoPlay: true,
+        );
+        playback.addCollection(playlist.id!);
+      } else if (isPlaylistPlaying &&
+          currentTrack.id != null &&
+          currentTrack.id != proxyPlaylist.activeTrack?.id) {
+        await playback.jumpToTrack(currentTrack);
+      }
+    }, [proxyPlaylist, playlist]);
+
+    final ownPlaylist =
+        playlist.owner?.id != null && playlist.owner?.id == meSnapshot.data?.id;
+
     return TrackCollectionView(
       id: playlist.id!,
       playingState: isPlaylistPlaying && playlistTrackPlaying
@@ -94,8 +103,7 @@ class PlaylistView extends HookConsumerWidget {
       titleImage: titleImage,
       tracksSnapshot: tracksSnapshot,
       description: playlist.description,
-      isOwned: playlist.owner?.id != null &&
-          playlist.owner!.id == meSnapshot.data?.id,
+      isOwned: ownPlaylist,
       onPlay: ([track]) {
         if (tracksSnapshot.hasData) {
           if (!isPlaylistPlaying) {
@@ -142,7 +150,13 @@ class PlaylistView extends HookConsumerWidget {
           );
         });
       },
-      heartBtn: PlaylistHeartButton(playlist: playlist),
+      heartBtn: PlaylistHeartButton(
+        playlist: playlist,
+        icon: ownPlaylist ? SpotubeIcons.trash : null,
+        onData: (data) {
+          GoRouter.of(context).pop();
+        },
+      ),
       onShuffledPlay: ([track]) {
         final tracks = [...?tracksSnapshot.data]..shuffle();
 

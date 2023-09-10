@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
@@ -70,6 +71,18 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         IconButton(
           icon: const Icon(SpotubeIcons.share),
           onPressed: onShare,
+        ),
+      if (isOwned)
+        IconButton(
+          icon: const Icon(SpotubeIcons.edit),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return PlaylistCreateDialog(playlistId: id);
+              },
+            );
+          },
         ),
       if (heartBtn != null && auth != null) heartBtn!,
       IconButton(

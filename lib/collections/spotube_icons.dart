@@ -94,4 +94,6 @@ abstract class SpotubeIcons {
   static const noWifi = FeatherIcons.wifiOff;
   static const wifi = FeatherIcons.wifi;
   static const window = Icons.window_rounded;
+  static const user = FeatherIcons.user;
+  static const edit = FeatherIcons.edit;
 }

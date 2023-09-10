@@ -17,5 +17,7 @@
     <!-- Requires Certification -->
     <!-- <key>keychain-access-groups</key>
     <array /> -->
+    <key>com.apple.security.files.user-selected.read-only</key>
+    <true />
   </dict>
 </plist>
