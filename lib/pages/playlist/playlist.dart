@@ -104,22 +104,16 @@ class PlaylistView extends HookConsumerWidget {
       tracksSnapshot: tracksSnapshot,
       description: playlist.description,
       isOwned: ownPlaylist,
-      onPlay: ([track]) {
+      onPlay: ([track]) async {
         if (tracksSnapshot.hasData) {
-          if (!isPlaylistPlaying) {
-            playPlaylist(
-              tracksSnapshot.data!,
-              ref,
-              currentTrack: track,
-            );
-          } else if (isPlaylistPlaying && track != null) {
-            playPlaylist(
+          if (!isPlaylistPlaying || (isPlaylistPlaying && track != null)) {
+            await playPlaylist(
               tracksSnapshot.data!,
               ref,
               currentTrack: track,
             );
           } else {
-            playlistNotifier
+            await playlistNotifier
                 .removeTracks(tracksSnapshot.data!.map((e) => e.id!));
           }
         }

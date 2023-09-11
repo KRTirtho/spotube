@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +29,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   final Query<List<TrackSimple>, T> tracksSnapshot;
   final String titleImage;
   final PlayButtonState playingState;
-  final void Function([Track? currentTrack]) onPlay;
+  final Future<void> Function([Track? currentTrack]) onPlay;
   final void Function([Track? currentTrack]) onShuffledPlay;
   final void Function() onAddToQueue;
   final void Function() onShare;
