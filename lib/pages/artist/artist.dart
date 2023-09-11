@@ -390,7 +390,7 @@ class ArtistPage extends HookConsumerWidget {
                               return TrackTile(
                                 index: i,
                                 track: track,
-                                onTap: () {
+                                onTap: () async {
                                   playPlaylist(
                                     topTracks.toList(),
                                     currentTrack: track,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,7 +23,7 @@ class TrackTile extends HookConsumerWidget {
   final Track track;
   final bool selected;
   final ValueChanged<bool?>? onChanged;
-  final VoidCallback? onTap;
+  final Future<void> Function()? onTap;
   final VoidCallback? onLongPress;
   final bool userPlaylist;
   final String? playlistId;
@@ -62,6 +64,10 @@ class TrackTile extends HookConsumerWidget {
 
     final isPlaying = track.id == playlist.activeTrack?.id;
 
+    final isLoading = useState(false);
+
+    final isSelected = isPlaying || isLoading.value;
+
     return LayoutBuilder(builder: (context, constrains) {
       return Listener(
         onPointerDown: (event) {
@@ -76,11 +82,18 @@ class TrackTile extends HookConsumerWidget {
           );
         },
         child: HoverBuilder(
-          permanentState: isPlaying || constrains.smAndDown ? true : null,
+          permanentState: isSelected || constrains.smAndDown ? true : null,
           builder: (context, isHovering) {
             return ListTile(
-              selected: isPlaying,
-              onTap: onTap,
+              selected: isSelected,
+              onTap: () async {
+                try {
+                  isLoading.value = true;
+                  await onTap?.call();
+                } finally {
+                  isLoading.value = false;
+                }
+              },
               onLongPress: onLongPress,
               enabled: !isBlackListed,
               contentPadding: EdgeInsets.zero,
@@ -145,22 +158,23 @@ class TrackTile extends HookConsumerWidget {
                                 .copyWith(size: 26, color: Colors.white),
                             child: AnimatedSwitcher(
                               duration: const Duration(milliseconds: 300),
-                              child: !isHovering
-                                  ? const SizedBox.shrink()
-                                  : isPlaying && playlist.isFetching
-                                      ? const SizedBox(
-                                          width: 26,
-                                          height: 26,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 1.5,
-                                            color: Colors.white,
-                                          ),
+                              child: (isPlaying && playlist.isFetching) ||
+                                      isLoading.value
+                                  ? const SizedBox(
+                                      width: 26,
+                                      height: 26,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1.5,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : isPlaying
+                                      ? Icon(
+                                          SpotubeIcons.pause,
+                                          color: theme.colorScheme.primary,
                                         )
-                                      : isPlaying
-                                          ? Icon(
-                                              SpotubeIcons.pause,
-                                              color: theme.colorScheme.primary,
-                                            )
+                                      : !isHovering
+                                          ? const SizedBox.shrink()
                                           : const Icon(SpotubeIcons.play),
                             ),
                           ),
