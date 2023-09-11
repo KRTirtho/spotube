@@ -1,25 +1,25 @@
 <div align="center">
   <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
-  An open source, cross-platform Spotify client compatible across multiple platforms<br />
-  utilizing Spotify's data API and YouTube (or Piped.video) as an audio source,<br />
-  eliminating the need for Spotify Premium
+An open source, cross-platform Spotify client compatible across multiple platforms<br />
+utilizing Spotify's data API and YouTube (or Piped.video) as an audio source,<br />
+eliminating the need for Spotify Premium
 
-  Btw it's not another Electron app😉
+Btw it's not another Electron app😉
 
-  <a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
-  <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
+<a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
+<a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
 
-  <a href="https://patreon.com/krtirtho"><img alt="Support me on Patron" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_vector.svg"></a>
-  <a href="https://www.buymeacoffee.com/krtirtho"><img alt="Buy me a Coffee" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/buymeacoffee-singular_vector.svg"></a>
+<a href="https://patreon.com/krtirtho"><img alt="Support me on Patron" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_vector.svg"></a>
+<a href="https://www.buymeacoffee.com/krtirtho"><img alt="Buy me a Coffee" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/buymeacoffee-singular_vector.svg"></a>
 
-  <a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="45"></a>
+<a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="45"></a>
 
-  ---
+---
 
-  ![Spotube Desktop](assets/spotube-screenshot.png)
+![Spotube Desktop](assets/spotube-screenshot.png)
 
-  ![Spotube Mobile](assets/mobile-screenshots/combined.png)
+![Spotube Mobile](assets/mobile-screenshots/combined.png)
 
 </div>
 
@@ -161,7 +161,7 @@ This handy table lists all methods you can use to install Spotube:
 
 Grab the latest nightly builds of Spotube [from the GitHub Releases](https://github.com/KRTirtho/spotube/releases/tag/nightly).
 
-## 🕳️ Building from source 
+## 🕳️ Building from source
 
 <a href="https://github.com/KRTirtho/spotube/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>
 
@@ -170,8 +170,9 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 ## 👥 The Spotube team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
-- [Owen Connor](https://github.com/owencz1998) - The Cool Discord Moderator
 - [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
+- [Owen Connor](https://github.com/owencz1998) - The Cool Discord Moderator
+- [Meenbeese](https://github.com/meenbeese) - The Android Developer
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
