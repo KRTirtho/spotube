@@ -242,7 +242,7 @@ class TrackTile extends HookConsumerWidget {
                   const SizedBox(width: 8),
                   Text(
                     Duration(milliseconds: track.durationMs ?? 0)
-                        .toHumanReadableString(),
+                        .toHumanReadableString(padZero: false),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
