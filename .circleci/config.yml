@@ -18,9 +18,10 @@ jobs:
           flutter precache
           flutter doctor -v
 
-      - run:
-          name: Add Spotify Keys
-          command: echo "SPOTIFY_SECRETS=${SPOTIFY_SECRETS}" >> .env
+      - run: |
+          echo "SPOTIFY_SECRETS=${SPOTIFY_SECRETS}" >> .env
+          echo "SUPABASE_URL=" >> .env
+          echo "SUPABASE_API_KEY=" >> .env
 
       - run: |
           export PATH="$PATH:`pwd`/flutter/bin"
