@@ -40,10 +40,8 @@ jobs:
           tar -cJf build/spotube-linux-3.1.1-aarch64.tar.xz -C /tmp/spotube-tar .
           rm -rf /tmp/spotube-tar
 
-      - persist_to_workspace:
-          root: build
-          paths:
-            - spotube-linux-3.1.1-aarch64.tar.xz
+      - store_artifacts:
+          path: build/spotube-linux-3.1.1-aarch64.tar.xz
 
 workflows:
   build_flutter_for_arm_workflow:
