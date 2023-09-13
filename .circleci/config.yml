@@ -1,26 +1,47 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
-jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+orbs:
+  flutter: circleci/flutter@2.0.2
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
+jobs:
+  flutter_linux_arm:
+    machine:
+      image: ubuntu-2004:current
+    resource_class: arm.medium
+    steps:
+      - flutter/install_sdk_and_pub:
+          version: 3.13.2
+      - checkout
+      - run: |
+          sudo apt-get update -y &&
+          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libunwind-dev locate patchelf gir1.2-appindicator3-0.1 libappindicator3-1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev mpv libmpv-dev
+
+      - run:
+          name: Add .Env
+          command: echo $DOTENV | base64 --decode >> .env
+
+      - run: |
+          flutter config --enable-linux-desktop
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+
+      - run: |
+          dart pub global activate flutter_distributor
+          flutter build linux --target-platform=linux-arm64
+          mkdir -p /tmp/spotube-tar
+          cp -r build/linux/arm64/release/bundle/* /tmp/spotube-tar
+          cp linux/spotube.desktop /tmp/spotube-tar
+          cp assets/spotube-logo.png /tmp/spotube-tar
+          cp linux/com.github.KRTirtho.Spotube.appdata.xml /tmp/spotube-tar
+          tar -cJf build/spotube-linux-3.1.1-aarch64.tar.xz -C /tmp/spotube-tar .
+          rm -rf /tmp/spotube-tar
+
+      - persist_to_workspace:
+          root: build
+          paths:
+            - spotube-linux-3.1.1-aarch64.tar.xz
+
 workflows:
-  say-hello-workflow:
+  build_flutter_for_arm_workflow:
     jobs:
-      - say-hello
+      - flutter_linux_arm
