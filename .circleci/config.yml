@@ -20,7 +20,7 @@ jobs:
 
       - run:
           name: Add .Env
-          command: echo $DOTENV | base64 --decode >> .env
+          command: echo ${DOTENV} | base64 --decode >> .env
 
       - run: |
           flutter config --enable-linux-desktop
