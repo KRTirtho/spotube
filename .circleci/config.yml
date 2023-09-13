@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   flutter_linux_arm:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:current
     resource_class: arm.medium
     steps:
       - checkout
