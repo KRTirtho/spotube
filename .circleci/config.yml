@@ -14,7 +14,7 @@ jobs:
       - run: |
           git clone https://github.com/flutter/flutter.git
           cd flutter && git checkout stable && cd ..
-          export PATH="$PATH:`pwd`/flutter/bin"
+          echo 'export PATH="$PATH:`pwd`/flutter/bin"' >> $BASH_ENV
           flutter precache
           flutter doctor -v
 
