@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
@@ -26,7 +29,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
   final Query<List<TrackSimple>, T> tracksSnapshot;
   final String titleImage;
   final PlayButtonState playingState;
-  final void Function([Track? currentTrack]) onPlay;
+  final Future<void> Function([Track? currentTrack]) onPlay;
   final void Function([Track? currentTrack]) onShuffledPlay;
   final void Function() onAddToQueue;
   final void Function() onShare;
@@ -70,6 +73,18 @@ class TrackCollectionView<T> extends HookConsumerWidget {
         IconButton(
           icon: const Icon(SpotubeIcons.share),
           onPressed: onShare,
+        ),
+      if (isOwned)
+        IconButton(
+          icon: const Icon(SpotubeIcons.edit),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return PlaylistCreateDialog(playlistId: id);
+              },
+            );
+          },
         ),
       if (heartBtn != null && auth != null) heartBtn!,
       IconButton(

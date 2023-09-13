@@ -32,6 +32,7 @@ class PlaylistCard extends HookConsumerWidget {
 
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);
+    final me = useQueries.user.me(ref);
 
     return PlaybuttonCard(
       margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -44,6 +45,7 @@ class PlaylistCard extends HookConsumerWidget {
       isPlaying: isPlaylistPlaying,
       isLoading:
           (isPlaylistPlaying && playlistQueue.isFetching) || updating.value,
+      isOwner: playlist.owner?.id == me.data?.id && me.data?.id != null,
       onTap: () {
         ServiceUtils.push(
           context,
@@ -60,11 +62,18 @@ class PlaylistCard extends HookConsumerWidget {
             return audioPlayer.resume();
           }
 
-          List<Track> fetchedTracks = await queryBowl.fetchQuery(
-                "playlist-tracks/${playlist.id}",
-                () => useQueries.playlist.tracksOf(playlist.id!, spotify),
-              ) ??
-              [];
+          List<Track> fetchedTracks = playlist.id == 'user-liked-tracks'
+              ? await queryBowl.fetchQuery(
+                    "user-liked-tracks",
+                    () => useQueries.playlist.likedTracks(spotify, ref),
+                  ) ??
+                  []
+              : await queryBowl.fetchQuery(
+                    "playlist-tracks/${playlist.id}",
+                    () => useQueries.playlist
+                        .tracksOf(playlist.id!, spotify, ref),
+                  ) ??
+                  [];
 
           if (fetchedTracks.isEmpty) return;
 
@@ -83,7 +92,7 @@ class PlaylistCard extends HookConsumerWidget {
           if (isPlaylistPlaying) return;
           List<Track> fetchedTracks = await queryBowl.fetchQuery(
                 "playlist-tracks/${playlist.id}",
-                () => useQueries.playlist.tracksOf(playlist.id!, spotify),
+                () => useQueries.playlist.tracksOf(playlist.id!, spotify, ref),
               ) ??
               [];
 

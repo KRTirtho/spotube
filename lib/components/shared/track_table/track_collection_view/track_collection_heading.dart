@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -103,11 +104,19 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Text(
-                              title,
-                              style: theme.textTheme.titleLarge!.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: constrains.mdAndDown ? 400 : 300,
+                              ),
+                              child: AutoSizeText(
+                                title,
+                                style: theme.textTheme.titleLarge!.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 2,
+                                minFontSize: 16,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             if (album != null)
@@ -125,11 +134,12 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                                 constraints: BoxConstraints(
                                   maxWidth: constrains.mdAndDown ? 400 : 300,
                                 ),
-                                child: Text(
+                                child: AutoSizeText(
                                   cleanDescription,
                                   style: const TextStyle(color: Colors.white),
                                   maxLines: 2,
                                   overflow: TextOverflow.fade,
+                                  minFontSize: 14,
                                 ),
                               ),
                             const SizedBox(height: 10),

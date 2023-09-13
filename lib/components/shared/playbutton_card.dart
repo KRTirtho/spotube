@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/hooks/use_brightness_value.dart';
@@ -28,6 +29,7 @@ class PlaybuttonCard extends HookWidget {
   final bool isPlaying;
   final bool isLoading;
   final String title;
+  final bool isOwner;
 
   const PlaybuttonCard({
     required this.imageUrl,
@@ -39,6 +41,7 @@ class PlaybuttonCard extends HookWidget {
     this.onPlaybuttonPressed,
     this.onAddToQueuePressed,
     this.onTap,
+    this.isOwner = false,
     Key? key,
   }) : super(key: key);
 
@@ -153,6 +156,42 @@ class PlaybuttonCard extends HookWidget {
             ),
           ),
         ),
+        if (isOwner)
+          Positioned(
+            top: 15,
+            left: 25,
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 150),
+              alignment: Alignment.centerLeft,
+              curve: Curves.easeInExpo,
+              child: HoverBuilder(builder: (context, isHovered) {
+                return Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        SpotubeIcons.user,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      if (isHovered)
+                        Text(
+                          "Owned by you",
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
         AnimatedPositioned(
           duration: const Duration(milliseconds: 300),
           right: end,

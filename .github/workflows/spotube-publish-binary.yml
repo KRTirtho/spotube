@@ -22,12 +22,12 @@ jobs:
     runs-on: ubuntu-22.04
     if: contains(inputs.jobs, 'flathub')
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: KRTirtho/com.github.KRTirtho.Spotube
           token: ${{ secrets.FLATHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: spotube
 
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: contains(inputs.jobs, 'aur')
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: dsaltares/fetch-gh-release-asset@master
         with:

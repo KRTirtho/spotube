@@ -131,7 +131,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
 class UserLocalTracks extends HookConsumerWidget {
   const UserLocalTracks({Key? key}) : super(key: key);
 
-  void playLocalTracks(
+  Future<void> playLocalTracks(
     WidgetRef ref,
     List<LocalTrack> tracks, {
     LocalTrack? currentTrack,
@@ -203,10 +203,10 @@ class UserLocalTracks extends HookConsumerWidget {
               const SizedBox(width: 10),
               FilledButton(
                 onPressed: trackSnapshot.value != null
-                    ? () {
+                    ? () async {
                         if (trackSnapshot.value?.isNotEmpty == true) {
                           if (!isPlaylistPlaying) {
-                            playLocalTracks(
+                            await playLocalTracks(
                               ref,
                               trackSnapshot.value!,
                             );
@@ -295,8 +295,8 @@ class UserLocalTracks extends HookConsumerWidget {
                       index: index,
                       track: track,
                       userPlaylist: false,
-                      onTap: () {
-                        playLocalTracks(
+                      onTap: () async {
+                        await playLocalTracks(
                           ref,
                           sortedTracks,
                           currentTrack: track,

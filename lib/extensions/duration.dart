@@ -1,10 +1,21 @@
 import 'package:duration/locale.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 import 'package:duration/duration.dart';
 
 extension DurationToHumanReadableString on Duration {
-  String toHumanReadableString() =>
-      "${inMinutes.remainder(60)}:${PrimitiveUtils.zeroPadNumStr(inSeconds.remainder(60))}";
+  String toHumanReadableString({padZero = true}) {
+    final mm = inMinutes
+        .remainder(60)
+        .toString()
+        .padLeft(2, !padZero && inHours == 0 ? '' : "0");
+    final ss = inSeconds.remainder(60).toString().padLeft(2, "0");
+
+    if (inHours > 0) {
+      final hh = inHours.toString().padLeft(2, !padZero ? '' : "0");
+      return "$hh:$mm:$ss";
+    }
+
+    return "$mm:$ss";
+  }
 
   String format({
     DurationTersity tersity = DurationTersity.second,

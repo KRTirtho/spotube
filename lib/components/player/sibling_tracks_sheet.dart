@@ -9,6 +9,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/hooks/use_debounce.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/spotube_track.dart';
@@ -99,9 +100,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        trailing: Text(
-          PrimitiveUtils.toReadableDuration(video.duration),
-        ),
+        trailing: Text(video.duration.toHumanReadableString()),
         subtitle: Text(video.channelName),
         enabled: playlist.isFetching != true,
         selected: playlist.isFetching != true &&

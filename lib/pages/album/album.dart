@@ -85,10 +85,10 @@ class AlbumPage extends HookConsumerWidget {
       album: album,
       routePath: "/album/${album.id}",
       bottomSpace: mediaQuery.mdAndDown,
-      onPlay: ([track]) {
+      onPlay: ([track]) async {
         if (tracksSnapshot.hasData) {
           if (!isAlbumPlaying) {
-            playPlaylist(
+            await playPlaylist(
               tracksSnapshot.data!
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
@@ -96,7 +96,7 @@ class AlbumPage extends HookConsumerWidget {
               ref,
             );
           } else if (isAlbumPlaying && track != null) {
-            playPlaylist(
+            await playPlaylist(
               tracksSnapshot.data!
                   .map((track) =>
                       TypeConversionUtils.simpleTrack_X_Track(track, album))
@@ -105,7 +105,7 @@ class AlbumPage extends HookConsumerWidget {
               ref,
             );
           } else {
-            playback
+            await playback
                 .removeTracks(tracksSnapshot.data!.map((track) => track.id!));
           }
         }
