@@ -1980,13 +1980,13 @@ packages:
     source: hosted
     version: "0.0.2"
   system_tray:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: system_tray
-      sha256: "40444e5de8ed907822a98694fd031b8accc3cb3c0baa547634ce76189cf3d9cf"
+      sha256: "087edb877f22f286d82d42f330fa640138c192e98aa9d20c2b83aa4e406bb432"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.2"
   term_glyph:
     dependency: transitive
     description:
