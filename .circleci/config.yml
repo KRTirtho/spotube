@@ -14,7 +14,7 @@ jobs:
       - run: |
           git clone https://github.com/flutter/flutter.git
           cd flutter && git checkout stable && cd ..
-          echo 'export PATH="$PATH:`pwd`/flutter/bin"' >> $BASH_ENV
+          export PATH="$PATH:`pwd`/flutter/bin"
           flutter precache
           flutter doctor -v
 
@@ -23,11 +23,13 @@ jobs:
           command: echo "SPOTIFY_SECRETS=${SPOTIFY_SECRETS}" >> .env
 
       - run: |
+          export PATH="$PATH:`pwd`/flutter/bin"
           flutter config --enable-linux-desktop
           flutter pub get
           dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - run: |
+          export PATH="$PATH:`pwd`/flutter/bin"
           dart pub global activate flutter_distributor
           flutter build linux --target-platform=linux-arm64
           mkdir -p /tmp/spotube-tar
