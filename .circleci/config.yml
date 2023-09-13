@@ -19,8 +19,8 @@ jobs:
           flutter doctor -v
 
       - run:
-          name: Add .Env
-          command: echo ${DOTENV} | base64 --decode >> .env
+          name: Add Spotify Keys
+          command: echo "SPOTIFY_SECRETS=${SPOTIFY_SECRETS}" >> .env
 
       - run: |
           flutter config --enable-linux-desktop
