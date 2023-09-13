@@ -4,8 +4,8 @@ import 'package:supabase/supabase.dart';
 
 class SupabaseService {
   static final api = SupabaseClient(
-    Env.supabaseUrl,
-    Env.supabaseAnonKey,
+    Env.supabaseUrl ?? "",
+    Env.supabaseAnonKey ?? "",
   );
 
   Future<void> insertTrack(MatchedTrack track) async {

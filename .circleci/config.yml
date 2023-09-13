@@ -30,7 +30,6 @@ jobs:
 
       - run: |
           export PATH="$PATH:`pwd`/flutter/bin"
-          dart pub global activate flutter_distributor
           flutter build linux --target-platform=linux-arm64
           mkdir -p /tmp/spotube-tar
           cp -r build/linux/arm64/release/bundle/* /tmp/spotube-tar
