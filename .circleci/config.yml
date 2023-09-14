@@ -39,9 +39,9 @@ jobs:
           export PATH="$PATH":"$HOME/.pub-cache/bin"
           dart pub global activate flutter_distributor
           alias dpkg-deb="dpkg-deb --Zxz"
-          dart run flutter_distributor package --platform=linux --targets=deb
-          dart run flutter_distributor package --platform=linux --targets=appimage
-          dart run flutter_distributor package --platform=linux --targets=rpm
+          flutter_distributor package --platform=linux --targets=deb
+          flutter_distributor package --platform=linux --targets=appimage
+          flutter_distributor package --platform=linux --targets=rpm
           make tar VERSION=nightly ARCH=arm64 PKG_ARCH=aaarch64
 
       - run: |
