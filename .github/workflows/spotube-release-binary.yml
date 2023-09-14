@@ -164,11 +164,11 @@ jobs:
 
       - name: Create tar.xz (stable)
         if: ${{ inputs.channel == 'stable' }}
-        run: make tar VERSION=${{ env.BUILD_VERSION }}
+        run: make tar VERSION=${{ env.BUILD_VERSION }} ARCH=x64 PKG_ARCH=x86_64
       
       - name: Create tar.xz (nightly)
         if: ${{ inputs.channel == 'nightly' }}
-        run: make tar VERSION=nightly
+        run: make tar VERSION=nightly ARCH=x64 PKG_ARCH=x86_64
 
       - name: Move Files to dist
         run: |
