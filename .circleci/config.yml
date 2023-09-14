@@ -14,7 +14,7 @@ jobs:
       - run: |
           wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x appimagetool
-          mv appimagetool /usr/local/bin/
+          sudo mv appimagetool /usr/local/bin/
 
       - run: |
           git clone https://github.com/flutter/flutter.git
