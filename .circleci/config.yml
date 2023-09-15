@@ -68,7 +68,7 @@ jobs:
             flutter_distributor package --platform=linux --targets=deb
             flutter_distributor package --platform=linux --targets=appimage
             flutter_distributor package --platform=linux --targets=rpm
-            make tar VERSION=nightly ARCH=arm64 PKG_ARCH=aaarch64
+            make tar VERSION=nightly ARCH=arm64 PKG_ARCH=aarch64
 
       - run:
           name: Move artifacts
@@ -85,8 +85,7 @@ jobs:
 
       - run:
           name: Upload to release
-          command: |
-            gh release upload nightly bundle/* --clobber
+          command: gh release upload nightly bundle/* --clobber
 
 workflows:
   build_flutter_for_arm_workflow:
