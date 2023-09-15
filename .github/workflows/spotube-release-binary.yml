@@ -323,23 +323,23 @@ jobs:
           path: |
             build/Spotube-macos-universal.dmg
   
-  linux_arm:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          sudo apt-get update -y
-          sudo apt-get install -y curl
+  # linux_arm:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: |
+  #         sudo apt-get update -y
+  #         sudo apt-get install -y curl
     
-      - name: Extract branch name
-        shell: bash
-        run: echo "BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+  #     - name: Extract branch name
+  #       shell: bash
+  #       run: echo "BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
-      - name: Trigger CircleCI Pipeline
-        run: |
-          curl -X POST https://circleci.com/api/v2/project/cci-f9azl/spotube/pipeline \
-          --header "Circle-Token: ${{secrets.CCI_TOKEN}}" \
-          --header "content-type: application/json" \
-          --data '{"branch": "${{env.BRANCH}}", "parameters":{"GHA_Action":"true","version":"${{inputs.version}}","channel":"${{inputs.channel}}","dry_run":${{inputs.dry_run}}}}'
+  #     - name: Trigger CircleCI Pipeline
+  #       run: |
+  #         curl -X POST https://circleci.com/api/v2/project/cci-f9azl/spotube/pipeline \
+  #         --header "Circle-Token: ${{secrets.CCI_TOKEN}}" \
+  #         --header "content-type: application/json" \
+  #         --data '{"branch": "${{env.BRANCH}}", "parameters":{"GHA_Action":"true","version":"${{inputs.version}}","channel":"${{inputs.channel}}","dry_run":${{inputs.dry_run}}}}'
 
   upload:
     runs-on: ubuntu-latest
