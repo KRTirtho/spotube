@@ -7,55 +7,74 @@ jobs:
     resource_class: arm.medium
     steps:
       - checkout
-      - run: |
-          sudo apt-get update -y &&
-          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libunwind-dev locate patchelf gir1.2-appindicator3-0.1 libappindicator3-1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev mpv libmpv-dev zip rpm
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libunwind-dev locate patchelf gir1.2-appindicator3-0.1 libappindicator3-1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev mpv libmpv-dev zip rpm
 
-      - run: |
-          git clone https://github.com/flutter/flutter.git
-          cd flutter && git checkout stable && cd ..
-          export PATH="$PATH:`pwd`/flutter/bin"
-          flutter precache
-          flutter doctor -v
+      - run:
+          name: Install Flutter
+          command: |
+            git clone https://github.com/flutter/flutter.git
+            cd flutter && git checkout stable && cd ..
+            export PATH="$PATH:`pwd`/flutter/bin"
+            flutter precache
+            flutter doctor -v
 
-      - run: |
-          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-aarch64.AppImage"
-          chmod +x appimagetool
-          mv appimagetool flutter/bin
+      - run:
+          name: Install AppImageTool
+          command: |
+            wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-aarch64.AppImage"
+            chmod +x appimagetool
+            mv appimagetool flutter/bin
 
       - persist_to_workspace:
           root: flutter
           paths:
             - .
 
-      - run: |
-          echo "SPOTIFY_SECRETS=${SPOTIFY_SECRETS}" >> .env
-          echo "SUPABASE_URL=${SUPABASE_URL}" >> .env
-          echo "SUPABASE_API_KEY=${SUPABASE_API_KEY}" >> .env
+      - run:
+          name: Replace texts in files
+          command: |
+            echo "build_arch: arm64" >> linux/packaging/rpm/make_config.yaml
 
-      - run: |
-          export PATH="$PATH:`pwd`/flutter/bin"
-          flutter config --enable-linux-desktop
-          flutter pub get
-          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+      - run:
+          name: Generate .env file
+          command: |
+            echo "SPOTIFY_SECRETS=${SPOTIFY_SECRETS}" >> .env
+            echo "SUPABASE_URL=${SUPABASE_URL}" >> .env
+            echo "SUPABASE_API_KEY=${SUPABASE_API_KEY}" >> .env
 
-      - run: |
-          export PATH="$PATH:`pwd`/flutter/bin"
-          export PATH="$PATH":"$HOME/.pub-cache/bin"
-          dart pub global activate flutter_distributor
-          alias dpkg-deb="dpkg-deb --Zxz"
-          flutter_distributor package --platform=linux --targets=deb
-          flutter_distributor package --platform=linux --targets=appimage
-          flutter_distributor package --platform=linux --targets=rpm
-          make tar VERSION=nightly ARCH=arm64 PKG_ARCH=aaarch64
+      - run:
+          name: Build secrets
+          command: |
+            export PATH="$PATH:`pwd`/flutter/bin"
+            flutter config --enable-linux-desktop
+            flutter pub get
+            dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
-      - run: |
-          mkdir bundle
-          mv build/spotube-linux-*-aarch64.tar.xz bundle/
-          mv dist/**/spotube-*-linux.deb bundle/Spotube-linux-aarch64.deb
-          mv dist/**/spotube-*-linux.rpm bundle/Spotube-linux-aarch64.rpm
-          mv dist/**/spotube-*-linux.AppImage bundle/Spotube-linux-aarch64.AppImage
-          zip -r Spotube-linux-aarch64.zip bundle
+      - run:
+          name: Build Flutter app
+          command: |
+            export PATH="$PATH:`pwd`/flutter/bin"
+            export PATH="$PATH":"$HOME/.pub-cache/bin"
+            dart pub global activate flutter_distributor
+            alias dpkg-deb="dpkg-deb --Zxz"
+            flutter_distributor package --platform=linux --targets=deb
+            flutter_distributor package --platform=linux --targets=appimage
+            flutter_distributor package --platform=linux --targets=rpm
+            make tar VERSION=nightly ARCH=arm64 PKG_ARCH=aaarch64
+
+      - run:
+          name: Move artifacts
+          command: |
+            mkdir bundle
+            mv build/spotube-linux-*-aarch64.tar.xz bundle/
+            mv dist/**/spotube-*-linux.deb bundle/Spotube-linux-aarch64.deb
+            mv dist/**/spotube-*-linux.rpm bundle/Spotube-linux-aarch64.rpm
+            mv dist/**/spotube-*-linux.AppImage bundle/Spotube-linux-aarch64.AppImage
+            zip -r Spotube-linux-aarch64.zip bundle
 
       - store_artifacts:
           path: Spotube-linux-aarch64.zip
