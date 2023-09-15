@@ -8,7 +8,6 @@ jobs:
     machine:
       image: ubuntu-2204:current
     resource_class: arm.medium
-    parallelism: 3
     steps:
       - checkout
       - gh/setup
