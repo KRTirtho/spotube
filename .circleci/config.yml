@@ -19,7 +19,7 @@ jobs:
           flutter doctor -v
 
       - run: |
-          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+          wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-aarch64.AppImage"
           chmod +x appimagetool
           mv appimagetool flutter/bin
 
