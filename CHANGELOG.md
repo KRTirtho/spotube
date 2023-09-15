@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.2](https://github.com/KRTirtho/spotube/compare/v3.1.1...v3.1.2) (2023-09-15)
+
+
+### Features
+
+* **player_queue:** filtering track support ([d4f99ec](https://github.com/KRTirtho/spotube/commit/d4f99ec89927ea78f070707509ff3222ec402942))
+* right click to open track option ([1540999](https://github.com/KRTirtho/spotube/commit/1540999f50d7ba78d9706d73127483b98d800d86))
+* search loading animation ([b9d5c70](https://github.com/KRTirtho/spotube/commit/b9d5c70301dd33ec26332e5e9a456ce5bfe73da0))
+* show loading indicator on play track ([d12ea48](https://github.com/KRTirtho/spotube/commit/d12ea48b97596205d6309012d561ce83e5cbc9c1))
+
+
+### Bug Fixes
+
+* add missing dependency in debian package ([#704](https://github.com/KRTirtho/spotube/issues/704)) ([c987ea7](https://github.com/KRTirtho/spotube/commit/c987ea78414f094dead2c2b35ddf8ae83a70f2fe))
+* hour not showing for tracks longer than 60 minutes ([#648](https://github.com/KRTirtho/spotube/issues/648)) ([de335f4](https://github.com/KRTirtho/spotube/commit/de335f48342e45a077d6c3202706ef48dfb0a326))
+* liked tracks card play not working ([d3e1cef](https://github.com/KRTirtho/spotube/commit/d3e1cef8a21ef7d64e74ca4e99b4b57b653b60a7))
+* limit cover image upload to allowed 256kb size ([1c50612](https://github.com/KRTirtho/spotube/commit/1c50612559a78dce9c108f7e7b816d1b84540fe4))
+* playlist grey page ([#707](https://github.com/KRTirtho/spotube/issues/707)) ([0df8d9c](https://github.com/KRTirtho/spotube/commit/0df8d9cacee718fbb4cf3ec7b950b489630f3145))
+* rewind breaks track progress bar ([#695](https://github.com/KRTirtho/spotube/issues/695)) ([e321743](https://github.com/KRTirtho/spotube/commit/e3217436c9985b86c68dab93ea65ee414b32fb49))
+* Windows memory leak due refetchOnStale user-liked-tracks ([#705](https://github.com/KRTirtho/spotube/issues/705)) ([142dc49](https://github.com/KRTirtho/spotube/commit/142dc498f8f9d26e6b370c9c52f790a20832fc38))
+
 ## [3.1.1](https://github.com/KRTirtho/spotube/compare/v3.1.0...v3.1.1) (2023-08-28)
 
 

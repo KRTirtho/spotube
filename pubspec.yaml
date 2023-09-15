@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.1.1+23
+version: 3.1.2+24
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -33,6 +33,7 @@ dependencies:
   disable_battery_optimization: ^1.1.0+1
   duration: ^3.0.12
   envied: ^0.3.0
+  file_selector: ^1.0.1
   fl_query: ^1.0.0-alpha.4
   fl_query_hooks: ^1.0.0-alpha.4+1
   fl_query_devtools: ^0.1.0-alpha.2
@@ -63,6 +64,7 @@ dependencies:
   hooks_riverpod: ^2.1.1
   html: ^0.15.1
   http: ^1.1.0
+  image_picker: ^1.0.4
   internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
   introduction_screen: ^3.0.2
@@ -85,6 +87,7 @@ dependencies:
   skeleton_text: ^3.0.1
   smtc_windows: ^0.1.0
   spotify: ^0.11.0
+  stroke_text: ^0.0.2
   supabase: ^1.9.9
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
@@ -99,9 +102,6 @@ dependencies:
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
   youtube_explode_dart: ^2.0.1
-  stroke_text: ^0.0.2
-  image_picker: ^1.0.4
-  file_selector: ^1.0.1
 
 dev_dependencies:
   build_runner: ^2.3.2
