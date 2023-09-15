@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  gh: circleci/github-cli@2.2.0
+
 jobs:
   flutter_linux_arm:
     machine:
@@ -7,6 +10,7 @@ jobs:
     resource_class: arm.medium
     steps:
       - checkout
+      - gh/setup
       - run:
           name: Install dependencies
           command: |
@@ -37,7 +41,7 @@ jobs:
       - run:
           name: Replace texts in files
           command: |
-            echo "build_arch: arm64" >> linux/packaging/rpm/make_config.yaml
+            echo "build_arch: aarch64" >> linux/packaging/rpm/make_config.yaml
 
       - run:
           name: Generate .env file
@@ -78,6 +82,11 @@ jobs:
 
       - store_artifacts:
           path: Spotube-linux-aarch64.zip
+
+      - run:
+          name: Upload to release
+          command: |
+            gh release upload nightly bundle/* --clobber
 
 workflows:
   build_flutter_for_arm_workflow:
