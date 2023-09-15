@@ -8,9 +8,11 @@ jobs:
     machine:
       image: ubuntu-2204:current
     resource_class: arm.medium
+    parallelism: 3
     steps:
       - checkout
-      - gh/setup
+      - gh/setup:
+          token: $GITHUB_TOKEN
       - run:
           name: Install dependencies
           command: |
@@ -91,4 +93,7 @@ jobs:
 workflows:
   build_flutter_for_arm_workflow:
     jobs:
-      - flutter_linux_arm
+      - flutter_linux_arm:
+          context:
+            - org-global
+            - GITHUB_CREDS
