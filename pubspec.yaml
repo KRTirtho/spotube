@@ -121,6 +121,7 @@ dev_dependencies:
 
 dependency_overrides:
   http: ^1.1.0
+  system_tray: 2.0.2
 
 flutter:
   generate: true

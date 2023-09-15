@@ -1,17 +1,8 @@
 INNO_VERSION=6.2.0
 TEMP_DIR=/tmp/spotube-tar
 USR_SHARE=deb-struct/usr/share
-BUNDLE_DIR=build/linux/x64/release/bundle
+BUNDLE_DIR=build/linux/${ARCH}/release/bundle
 MIRRORLIST=${PWD}/build/mirrorlist
-deb: 
-		mkdir -p ${USR_SHARE}/spotube\
-		&& mkdir -p $(USR_SHARE)/applications $(USR_SHARE)/icons/spotube $(USR_SHARE)/spotube $(USR_SHARE)/appdata\
-		&& cp -r $(BUNDLE_DIR)/* $(USR_SHARE)/spotube\
-		&& cp linux/spotube.desktop $(USR_SHARE)/applications/\
-		&& cp linux/com.github.KRTirtho.Spotube.appdata.xml $(USR_SHARE)/appdata/spotube.appdata.xml\
-		&& cp assets/spotube-logo.png $(USR_SHARE)/icons/spotube\
-		&& sed -i 's|com.github.KRTirtho.Spotube|spotube|' $(USR_SHARE)/appdata/spotube.appdata.xml\
-		&& dpkg-deb -b deb-struct/ build/Spotube-linux-x86_64.deb
 
 tar:
 		mkdir -p $(TEMP_DIR)\
@@ -19,12 +10,8 @@ tar:
 		&& cp linux/spotube.desktop $(TEMP_DIR)\
 		&& cp assets/spotube-logo.png $(TEMP_DIR)\
 		&& cp linux/com.github.KRTirtho.Spotube.appdata.xml $(TEMP_DIR)\
-		&& tar -cJf build/spotube-linux-${VERSION}-x86_64.tar.xz -C $(TEMP_DIR) .\
+		&& tar -cJf build/spotube-linux-${VERSION}-${PKG_ARCH}.tar.xz -C $(TEMP_DIR) .\
 		&& rm -rf $(TEMP_DIR)
-
-appimage:
-				 appimage-builder --recipe AppImageBuilder.yml\
-				 && mv Spotube-*-x86_64.AppImage build
 
 aursrcinfo:
 					 docker run -e EXPORT_SRC=1 -v ${PWD}/aur-struct:/pkg -v ${MIRRORLIST}:/etc/pacman.d/mirrorlist:ro whynothugo/makepkg
