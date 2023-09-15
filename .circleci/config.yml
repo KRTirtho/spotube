@@ -11,8 +11,7 @@ jobs:
     parallelism: 3
     steps:
       - checkout
-      - gh/setup:
-          token: $GITHUB_TOKEN
+      - gh/setup
       - run:
           name: Install dependencies
           command: |
