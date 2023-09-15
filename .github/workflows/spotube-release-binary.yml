@@ -339,7 +339,7 @@ jobs:
           curl -X POST https://circleci.com/api/v2/project/4VrphdJCCiduQ1MoV1hd4Y/krtirtho/spotube/pipeline \
           --header "Circle-Token: ${{secrets.CCI_TOKEN}}" \
           --header "content-type: application/json" \
-          --data '{"branch": "${{env.BRANCH}}", "parameters":{"GHA_Action":"true","version":"${{inputs.version}}","channel":"${{inputs.channel}}","dry_run":"${{inputs.dry_run}}"}}'
+          --data '{"branch": "${{env.BRANCH}}", "parameters":{"GHA_Action":"true","version":"${{inputs.version}}","channel":"${{inputs.channel}}","dry_run":${{inputs.dry_run}}}}'
 
   upload:
     runs-on: ubuntu-latest
