@@ -26,7 +26,7 @@ on:
         default: true
 
 env:
-  FLUTTER_VERSION: '3.10.0'
+  FLUTTER_VERSION: '3.13.2'
 
 jobs:
   windows:
@@ -322,6 +322,19 @@ jobs:
           name: Spotube-Release-Binaries
           path: |
             build/Spotube-macos-universal.dmg
+  
+  linux_arm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.1.0
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
+        with:
+          GHA_Action: true
+          version: ${{ inputs.version }}
+          channel: ${{ inputs.channel }}
+          github_run_number: ${{ github.run_number }}
+          dry_run: ${{ inputs.dry_run }}
 
   upload:
     runs-on: ubuntu-latest
