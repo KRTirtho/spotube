@@ -326,15 +326,20 @@ jobs:
   linux_arm:
     runs-on: ubuntu-latest
     steps:
-      - uses: CircleCI-Public/trigger-circleci-pipeline-action@v1.1.0
-        env:
-          CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
-        with:
-          GHA_Action: true
-          version: ${{ inputs.version }}
-          channel: ${{ inputs.channel }}
-          github_run_number: ${{ github.run_number }}
-          dry_run: ${{ inputs.dry_run }}
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y curl
+    
+      - name: Extract branch name
+        shell: bash
+        run: echo "BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+
+      - name: Trigger CircleCI Pipeline
+        run: |
+          curl -X POST https://circleci.com/api/v2/project/4VrphdJCCiduQ1MoV1hd4Y/krtirtho/spotube/pipeline \
+          --header "Circle-Token: ${{secrets.CCI_TOKEN}}" \
+          --header "content-type: application/json" \
+          --data '{"branch": "${{env.BRANCH}}", "parameters":{"GHA_Action":"true","version":"${{inputs.version}}","channel":"${{inputs.channel}}","dry_run":"${{inputs.dry_run}}"}}'
 
   upload:
     runs-on: ubuntu-latest
