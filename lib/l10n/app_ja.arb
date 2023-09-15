@@ -259,5 +259,9 @@
   "piped_down_error_instructions": "Pipedインスタンス{pipedInstance}は現在ダウンしています\n\nインスタンスを変更するか、'APIタイプ'を公式のYouTube APIに変更してください\n\n変更後にアプリを再起動してください",
   "you_are_offline": "現在、オフラインです",
   "connection_restored": "インターネット接続が復旧しました",
-  "use_system_title_bar": "システムタイトルバーを使用する"
+  "use_system_title_bar": "システムタイトルバーを使用する",
+  "update_playlist": "プレイリストを更新",
+  "update": "更新",
+  "crunching_results": "結果を処理中...",
+  "search_to_get_results": "結果を取得するために検索"
 }

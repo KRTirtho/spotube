@@ -259,5 +259,9 @@
   "piped_down_error_instructions": "Instancja Piped {pipedInstance} jest obecnie niedostępna\n\nZmień instancję lub zmień 'Rodzaj API' na oficjalne API YouTube\n\nUpewnij się, że po zmianie zrestartujesz aplikację",
   "you_are_offline": "Obecnie jesteś offline",
   "connection_restored": "Twoje połączenie z internetem zostało przywrócone",
-  "use_system_title_bar": "Użyj paska tytułu systemu"
+  "use_system_title_bar": "Użyj paska tytułu systemu",
+  "update_playlist": "Zaktualizuj playlistę",
+  "update": "Aktualizuj",
+  "crunching_results": "Przetwarzanie wyników...",
+  "search_to_get_results": "Szukaj, aby uzyskać wyniki"
 }

@@ -259,5 +259,9 @@
   "you_are_offline": "Actualment no teniu connexió a internet",
   "connection_restored": "S'ha restablert la connexió a internet",
   "use_system_title_bar": "Utilitza la barra de títol del sistema",
-  "querying_info": "Consultant informació..."
+  "querying_info": "Consultant informació...",
+  "update_playlist": "Actualitzar la llista de reproducció",
+  "update": "Actualitzar",
+  "crunching_results": "Processant resultats...",
+  "search_to_get_results": "Cerca per obtenir resultats"
 }

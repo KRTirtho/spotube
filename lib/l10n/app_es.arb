@@ -259,5 +259,9 @@
   "piped_down_error_instructions": "La instancia de Piped {pipedInstance} no está funcionando en este momento\n\nCambie la instancia o cambie el 'Tipo de API' a la API oficial de YouTube\n\nAsegúrese de reiniciar la aplicación después del cambio",
   "you_are_offline": "Actualmente estás sin conexión",
   "connection_restored": "Se ha restablecido tu conexión a internet",
-  "use_system_title_bar": "Usar la barra de título del sistema"
+  "use_system_title_bar": "Usar la barra de título del sistema",
+  "update_playlist": "Actualizar lista de reproducción",
+  "update": "Actualizar",
+  "crunching_results": "Procesando resultados...",
+  "search_to_get_results": "Buscar para obtener resultados"
 }

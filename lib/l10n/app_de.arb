@@ -259,5 +259,9 @@
   "piped_down_error_instructions": "Die Piped-Instanz {pipedInstance} ist derzeit nicht verfügbar\n\nEntweder ändern Sie die Instanz oder wechseln Sie den 'API-Typ' zur offiziellen YouTube API\n\nStellen Sie sicher, dass Sie die App nach der Änderung neu starten",
   "you_are_offline": "Sie sind derzeit offline",
   "connection_restored": "Ihre Internetverbindung wurde wiederhergestellt",
-  "use_system_title_bar": "System-Titelleiste verwenden"
+  "use_system_title_bar": "System-Titelleiste verwenden",
+  "update_playlist": "Wiedergabeliste aktualisieren",
+  "update": "Aktualisieren",
+  "crunching_results": "Ergebnisse werden verarbeitet...",
+  "search_to_get_results": "Suche, um Ergebnisse zu erhalten"
 }

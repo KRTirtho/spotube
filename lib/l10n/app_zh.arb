@@ -259,5 +259,9 @@
   "piped_down_error_instructions": "当前Piped实例{pipedInstance}不可用\n\n请更改实例或将'API类型'更改为官方YouTube API\n\n更改后请确保重新启动应用程序",
   "you_are_offline": "您当前处于离线状态",
   "connection_restored": "您的互联网连接已恢复",
-  "use_system_title_bar": "使用系统标题栏"
+  "use_system_title_bar": "使用系统标题栏",
+  "update_playlist": "更新播放列表",
+  "update": "更新",
+  "crunching_results": "处理结果中...",
+  "search_to_get_results": "搜索以获取结果"
 }
