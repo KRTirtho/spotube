@@ -73,24 +73,27 @@ class GenrePage extends HookConsumerWidget {
               searchController: searchController,
               searchFocus: searchFocus,
             ),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return AnimatedCrossFade(
-                    crossFadeState: searchController.text.isEmpty &&
-                            index == categories.length - 1 &&
-                            categoriesQuery.hasNextPage
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    duration: const Duration(milliseconds: 300),
-                    firstChild: const ShimmerCategories(),
-                    secondChild: CategoryCard(categories[index]),
-                  );
-                },
+            if (!categoriesQuery.hasPageData)
+              const ShimmerCategories()
+            else
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    return AnimatedCrossFade(
+                      crossFadeState: searchController.text.isEmpty &&
+                              index == categories.length - 1 &&
+                              categoriesQuery.hasNextPage
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
+                      duration: const Duration(milliseconds: 300),
+                      firstChild: const ShimmerCategories(),
+                      secondChild: CategoryCard(categories[index]),
+                    );
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),

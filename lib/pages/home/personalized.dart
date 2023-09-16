@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/context.dart';
@@ -107,12 +108,9 @@ class PersonalizedPage extends HookConsumerWidget {
     final madeForUser = useQueries.views.get(ref, "made-for-x-hub");
 
     final newReleases = useQueries.album.newReleases(ref);
-    final userArtists = useQueries.artist
-            .followedByMeAll(ref)
-            .data
-            ?.map((s) => s.id!)
-            .toList() ??
-        const [];
+    final userArtistsQuery = useQueries.artist.followedByMeAll(ref);
+    final userArtists =
+        userArtistsQuery.data?.map((s) => s.id!).toList() ?? const [];
 
     final albums = useMemoized(
       () => newReleases.pages
@@ -128,13 +126,16 @@ class PersonalizedPage extends HookConsumerWidget {
 
     return ListView(
       children: [
-        PersonalizedItemCard(
-          playlists: playlists,
-          title: context.l10n.featured,
-          hasNextPage: featuredPlaylistsQuery.hasNextPage,
-          onFetchMore: featuredPlaylistsQuery.fetchNext,
-        ),
-        if (auth != null)
+        if (!featuredPlaylistsQuery.hasPageData)
+          const ShimmerCategories()
+        else
+          PersonalizedItemCard(
+            playlists: playlists,
+            title: context.l10n.featured,
+            hasNextPage: featuredPlaylistsQuery.hasNextPage,
+            onFetchMore: featuredPlaylistsQuery.fetchNext,
+          ),
+        if (auth != null && newReleases.hasPageData && userArtistsQuery.hasData)
           PersonalizedItemCard(
             albums: albums,
             title: context.l10n.new_releases,
