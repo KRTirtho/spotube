@@ -5,7 +5,11 @@
       "name": "spotube",
       "type": "dart",
       "request": "launch",
-      "program": "lib/main.dart"
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "nightly"
+      ]
     },
     {
       "name": "spotube (profile)",

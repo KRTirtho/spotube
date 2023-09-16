@@ -18,7 +18,7 @@
   <application
     android:allowBackup="false"
     android:fullBackupContent="false"
-    android:label="Spotube"
+    android:label="@string/app_name"
     android:name="${applicationName}"
     android:icon="@mipmap/ic_launcher"
     android:usesCleartextTraffic="true"
