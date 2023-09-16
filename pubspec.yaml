@@ -131,7 +131,7 @@ flutter:
     - assets/tutorial/
     - LICENSE
 
-flutter_icons:
+flutter_launcher_icons:
   android: true
   image_path: "assets/spotube-logo.png"
   adaptive_icon_foreground: "assets/spotube-logo-foreground.jpg"
