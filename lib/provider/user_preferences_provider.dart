@@ -68,6 +68,8 @@ class UserPreferences extends PersistedChangeNotifier {
 
   bool systemTitleBar;
 
+  bool amoledDarkTheme;
+
   final Ref ref;
 
   UserPreferences(
@@ -89,6 +91,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.skipNonMusic = true,
     this.youtubeApiType = YoutubeApiType.youtube,
     this.systemTitleBar = false,
+    this.amoledDarkTheme = false,
   }) : super() {
     if (downloadLocation.isEmpty && !kIsWeb) {
       _getDefaultDownloadDirectory().then(
@@ -210,6 +213,12 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
+  void setAmoledDarkTheme(bool isAmoled) {
+    amoledDarkTheme = isAmoled;
+    notifyListeners();
+    updatePersistence();
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -274,6 +283,8 @@ class UserPreferences extends PersistedChangeNotifier {
     systemTitleBar = map["systemTitleBar"] ?? systemTitleBar;
     // updates the title bar
     setSystemTitleBar(systemTitleBar);
+
+    amoledDarkTheme = map["amoledDarkTheme"] ?? amoledDarkTheme;
   }
 
   @override
@@ -297,6 +308,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "skipNonMusic": skipNonMusic,
       "youtubeApiType": youtubeApiType.name,
       'systemTitleBar': systemTitleBar,
+      "amoledDarkTheme": amoledDarkTheme,
     };
   }
 

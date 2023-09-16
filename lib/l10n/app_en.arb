@@ -263,5 +263,6 @@
   "connection_restored": "Your internet connection was restored",
   "use_system_title_bar": "Use system title bar",
   "crunching_results": "Crunching results...",
-  "search_to_get_results": "Search to get results"
+  "search_to_get_results": "Search to get results",
+  "use_amoled_dark_theme": "Use AMOLED (Pitch Black) dark theme"
 }

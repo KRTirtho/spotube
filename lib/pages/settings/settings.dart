@@ -253,6 +253,12 @@ class SettingsPage extends HookConsumerWidget {
                             }
                           },
                         ),
+                        SwitchListTile(
+                          secondary: const Icon(SpotubeIcons.amoled),
+                          title: Text(context.l10n.use_amoled_dark_theme),
+                          value: preferences.amoledDarkTheme,
+                          onChanged: preferences.setAmoledDarkTheme,
+                        ),
                         ListTile(
                           leading: const Icon(SpotubeIcons.palette),
                           title: Text(context.l10n.accent_color),

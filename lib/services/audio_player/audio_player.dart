@@ -16,8 +16,12 @@ abstract class AudioPlayerInterface {
   final MkPlayerWithState _mkPlayer;
   // final ja.AudioPlayer? _justAudio;
 
-  AudioPlayerInterface() : _mkPlayer = MkPlayerWithState()
-  // _mkPlayer = _mkSupportedPlatform ? MkPlayerWithState() : null,
+  AudioPlayerInterface()
+      : _mkPlayer = MkPlayerWithState(
+          configuration: const mk.PlayerConfiguration(
+            title: "Spotube",
+          ),
+        )
   // _justAudio = !_mkSupportedPlatform ? ja.AudioPlayer() : null
   {
     _mkPlayer.stream.error.listen((event) {

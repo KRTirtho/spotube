@@ -1,1 +1,45 @@
-{}
+{
+  "bn": [
+    "use_amoled_dark_theme"
+  ],
+
+  "ca": [
+    "use_amoled_dark_theme"
+  ],
+
+  "de": [
+    "use_amoled_dark_theme"
+  ],
+
+  "es": [
+    "use_amoled_dark_theme"
+  ],
+
+  "fr": [
+    "use_amoled_dark_theme"
+  ],
+
+  "hi": [
+    "use_amoled_dark_theme"
+  ],
+
+  "ja": [
+    "use_amoled_dark_theme"
+  ],
+
+  "pl": [
+    "use_amoled_dark_theme"
+  ],
+
+  "pt": [
+    "use_amoled_dark_theme"
+  ],
+
+  "ru": [
+    "use_amoled_dark_theme"
+  ],
+
+  "zh": [
+    "use_amoled_dark_theme"
+  ]
+}
