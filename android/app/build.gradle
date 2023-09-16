@@ -72,6 +72,22 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        nightly {
+            dimension "default"
+            resValue "string", "app_name", "Spotube Nightly"
+            applicationIdSuffix ".nightly"
+            versionNameSuffix "-nightly"
+        }
+        stable {
+            dimension "default"
+            resValue "string", "app_name", "Spotube"
+        }
+    }
+
 }
 
 flutter {
