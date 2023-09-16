@@ -236,7 +236,7 @@ jobs:
       - name: Build Apk
         run: |
           flutter build apk --flavor ${{ inputs.channel }}          
-          mv build/app/outputs/apk/release/app-${{ inputs.channel }}-release.apk build/Spotube-android-all-arch.apk
+          mv build/app/outputs/flutter-apk/app-${{ inputs.channel }}-release.apk build/Spotube-android-all-arch.apk
 
       - name: Build Playstore AppBundle
         run: |
@@ -246,7 +246,7 @@ jobs:
           xmlstarlet ed -d '//meta-data[@android:name="com.google.android.gms.car.application"]' $MANIFEST > $MANIFEST.tmp
           mv $MANIFEST.tmp $MANIFEST
           flutter build appbundle --flavor ${{ inputs.channel }}
-          mv build/app/outputs/bundle/release/app-${{ inputs.channel }}-release.aab build/Spotube-playstore-all-arch.aab
+          mv build/app/outputs/bundle/${{ inputs.channel }}Release/app-${{ inputs.channel }}-release.aab build/Spotube-playstore-all-arch.aab
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
