@@ -24,10 +24,6 @@ abstract class AudioPlayerInterface {
         )
   // _justAudio = !_mkSupportedPlatform ? ja.AudioPlayer() : null
   {
-    //? Normalizing the audio
-    (_mkPlayer.platform as mk.NativePlayer)
-        .setProperty('af', 'dynaudnorm=g=5:f=250:r=0.9:p=0.5');
-
     _mkPlayer.stream.error.listen((event) {
       Catcher.reportCheckedError(event, StackTrace.current);
     });

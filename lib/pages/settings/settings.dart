@@ -448,6 +448,13 @@ class SettingsPage extends HookConsumerWidget {
                           },
                           trailing: const Icon(SpotubeIcons.angleRight),
                         ),
+                        SwitchListTile(
+                          secondary: const Icon(SpotubeIcons.playlistRemove),
+                          title: Text(context.l10n.normalize_audio),
+                          subtitle: Text(context.l10n.blacklist_description),
+                          value: preferences.normalizeAudio,
+                          onChanged: preferences.setNormalizeAudio,
+                        ),
                       ],
                     ),
                     SectionCardWithHeading(

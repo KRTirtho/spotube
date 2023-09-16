@@ -1,45 +1,56 @@
 {
   "bn": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "ca": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "de": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "es": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "fr": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "hi": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "ja": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "pl": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "pt": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "ru": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ],
 
   "zh": [
-    "use_amoled_dark_theme"
+    "use_amoled_dark_theme",
+    "normalize_audio"
   ]
 }

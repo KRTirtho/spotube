@@ -318,4 +318,14 @@ class MkPlayerWithState extends Player {
       index: newMedias.indexOf(_playlist!.medias[_playlist!.index]),
     );
   }
+
+  NativePlayer get nativePlayer => platform as NativePlayer;
+
+  Future<void> setAudioNormalization(bool normalize) async {
+    if (normalize) {
+      await nativePlayer.setProperty('af', 'dynaudnorm=g=5:f=250:r=0.9:p=0.5');
+    } else {
+      await nativePlayer.setProperty('af', '');
+    }
+  }
 }

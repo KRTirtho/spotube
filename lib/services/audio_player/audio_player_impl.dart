@@ -312,4 +312,8 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     //   await _justAudio!.setLoopMode(loop.toLoopMode());
     // }
   }
+
+  Future<void> setAudioNormalization(bool normalize) async {
+    await _mkPlayer.setAudioNormalization(normalize);
+  }
 }
