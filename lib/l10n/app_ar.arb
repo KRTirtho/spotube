@@ -97,7 +97,7 @@
   "resume_playback": "استئناف التشغيل",
   "loop_track": "تشغيل المقطوعة بشكل لا نهائي",
   "repeat_playlist": "تكرار قائمة التشغيل",
-  "queue": "قائمة الإنتار",
+  "queue": "قائمة الإنتظار",
   "alternative_track_sources": "Alternative track sources",
   "download_track": "Download track",
   "tracks_in_queue": "{tracks} tracks in queue",
