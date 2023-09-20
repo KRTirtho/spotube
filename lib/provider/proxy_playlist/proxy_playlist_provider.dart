@@ -586,7 +586,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           end,
         );
       }).toList();
-      getLogger('getSkipSegments').v(
+      getLogger('getSkipSegments').t(
         "[SponsorBlock] successfully fetched skip segments for $id",
       );
 
