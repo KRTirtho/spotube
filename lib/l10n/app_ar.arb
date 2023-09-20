@@ -176,24 +176,24 @@
   "first_go_to": "أولا، اذهب إلى",
   "login_if_not_logged_in": "وتسجيل الدخول/الاشتراك إذا لم تقم بتسجيل الدخول",
   "step_2": "الخطوة 2",
-  "step_2_steps": "1. Once you're logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection",
-  "step_3": "Step 3",
-  "step_3_steps": "Copy the values of \"sp_dc\" and \"sp_key\" (or sp_gaid) Cookies",
-  "success_emoji": "Success🥳",
-  "success_message": "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
-  "step_4": "Step 4",
-  "step_4_steps": "Paste the copied \"sp_dc\" and \"sp_key\" (or sp_gaid) values in the respective fields",
-  "something_went_wrong": "Something went wrong",
-  "piped_instance": "Piped Server Instance",
-  "piped_description": "The Piped server instance to use for track matching",
-  "piped_warning": "Some of them might not work well. So use at your own risk",
-  "generate_playlist": "Generate Playlist",
-  "track_exists": "Track {track} already exists",
-  "replace_downloaded_tracks": "Replace all downloaded tracks",
-  "skip_download_tracks": "Skip downloading all downloaded tracks",
-  "do_you_want_to_replace": "Do you want to replace the existing track??",
-  "replace": "Replace",
-  "skip": "Skip",
+  "step_2_steps": "1. بمجرد تسجيل الدخول، اضغط على F12 أو انقر بزر الماوس الأيمن > فحص لفتح أدوات تطوير المتصفح.\n2. ثم انتقل إلى علامة التبويب \"التطبيقات\" (Chrome وEdge وBrave وما إلى ذلك.) أو علامة التبويب \"التخزين\" (Firefox وPalemoon وما إلى ذلك..)\n3. انتقل إلى قسم \"ملفات تعريف الارتباط\" ثم القسم الفرعي \"https://accounts.spotify.com\"",
+  "step_3": "الخطوة 3",
+  "step_3_steps": "انسخ قيم \"sp_dc\" و \"sp_key\" (أو sp_gaid) الكويز",
+  "success_emoji": "نجاح 🥳",
+  "success_message": "لقد قمت الآن بتسجيل الدخول بنجاح باستخدام حساب Spotify الخاص بك. عمل جيد يا صديقي!",
+  "step_4": "الخطوة 4",
+  "step_4_steps": "قم بلصق قيم \"sp_dc\" و \"sp_key\" (أو sp_gaid) المنسوخة في الحقول المعنية",
+  "something_went_wrong": "هناك خطأ ما",
+  "piped_instance": "مثيل خادم Piped",
+  "piped_description": "مثيل خادم Piped الذي سيتم استخدامه لمطابقة المقطوعة",
+  "piped_warning": "البعض منهم قد لا يعمل بشكل جيد. لذلك استخدمه على مسؤوليتك",
+  "generate_playlist": "إنشاء قائمة التشغيل",
+  "track_exists": "المقطوعة {track} بالفعل موجودة",
+  "replace_downloaded_tracks": "استبدل جميع المقطوعات التي تم تنزيلها",
+  "skip_download_tracks": "تخطي تنزيل كافة المقطوعات التي تم تنزيلها",
+  "do_you_want_to_replace": "هل تريد استبدال المقطوعة الحالية؟",
+  "replace": "إستبدال",
+  "skip": "تخطي",
   "select_up_to_count_type": "Select up to {count} {type}",
   "select_genres": "Select Genres",
   "add_genres": "Add Genres",
