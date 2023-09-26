@@ -204,9 +204,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
-      routeInformationProvider: router.routeInformationProvider,
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       builder: (context, child) {
@@ -229,22 +227,22 @@ class SpotubeState extends ConsumerState<Spotube> {
         LogicalKeySet(LogicalKeyboardKey.comma, LogicalKeyboardKey.control):
             NavigationIntent(router, "/settings"),
         LogicalKeySet(
-          LogicalKeyboardKey.keyB,
+          LogicalKeyboardKey.digit1,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.browse),
         LogicalKeySet(
-          LogicalKeyboardKey.keyS,
+          LogicalKeyboardKey.digit2,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.search),
         LogicalKeySet(
-          LogicalKeyboardKey.keyL,
+          LogicalKeyboardKey.digit3,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.library),
         LogicalKeySet(
-          LogicalKeyboardKey.keyY,
+          LogicalKeyboardKey.digit4,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.lyrics),

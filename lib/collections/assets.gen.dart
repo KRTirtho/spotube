@@ -44,6 +44,13 @@ class Assets {
   static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
   static const AssetGenImage spotubeLogoAndroid12 =
       AssetGenImage('assets/spotube-logo_android12.png');
+  static const AssetGenImage spotubeNightlyLogoForeground =
+      AssetGenImage('assets/spotube-nightly-logo-foreground.jpg');
+  static const AssetGenImage spotubeNightlyLogoPng =
+      AssetGenImage('assets/spotube-nightly-logo.png');
+  static const String spotubeNightlyLogoSvg = 'assets/spotube-nightly-logo.svg';
+  static const AssetGenImage spotubeNightlyLogoAndroid12 =
+      AssetGenImage('assets/spotube-nightly-logo_android12.png');
   static const AssetGenImage spotubeScreenshot =
       AssetGenImage('assets/spotube-screenshot.png');
   static const AssetGenImage spotubeBanner =
@@ -65,6 +72,10 @@ class Assets {
         spotubeLogoPng,
         spotubeLogoSvg,
         spotubeLogoAndroid12,
+        spotubeNightlyLogoForeground,
+        spotubeNightlyLogoPng,
+        spotubeNightlyLogoSvg,
+        spotubeNightlyLogoAndroid12,
         spotubeScreenshot,
         spotubeBanner,
         success,

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -39,6 +40,21 @@ class RootApp extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final theme = Theme.of(context);
+    final location = GoRouterState.of(context).matchedLocation;
+
+    useEffect(() {
+      final newIndex = rootPaths.entries.firstWhereOrNull((e) {
+        if (e.value == "/" || location == "/") {
+          return location == e.value;
+        }
+        return location.startsWith(e.value);
+      })?.key;
+      if (newIndex != null) {
+        index.value = newIndex;
+      }
+
+      return null;
+    }, [location]);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {

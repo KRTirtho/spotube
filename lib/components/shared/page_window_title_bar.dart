@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:titlebar_buttons/titlebar_buttons.dart';
-import 'package:window_manager/window_manager.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
@@ -18,7 +17,7 @@ final closeNotification = DesktopTools.createNotification(
     LocalNotificationAction(text: 'Close The App'),
   ],
 )?..onClickAction = (value) {
-    windowManager.close();
+    DesktopTools.window.close();
   };
 
 class PageWindowTitleBar extends StatefulHookConsumerWidget
@@ -114,16 +113,16 @@ class WindowTitleBarButtons extends HookConsumerWidget {
 
     Future<void> onClose() async {
       if (preferences.closeBehavior == CloseBehavior.close) {
-        await windowManager.close();
+        await DesktopTools.window.close();
       } else {
-        await windowManager.hide();
+        await DesktopTools.window.hide();
         await closeNotification?.show();
       }
     }
 
     useEffect(() {
       if (kIsDesktop) {
-        windowManager.isMaximized().then((value) {
+        DesktopTools.window.isMaximized().then((value) {
           isMaximized.value = value;
         });
       }
@@ -160,14 +159,14 @@ class WindowTitleBarButtons extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MinimizeWindowButton(
-              onPressed: windowManager.minimize,
+              onPressed: DesktopTools.window.minimize,
               colors: colors,
             ),
             if (isMaximized.value != true)
               MaximizeWindowButton(
                 colors: colors,
                 onPressed: () {
-                  windowManager.maximize();
+                  DesktopTools.window.maximize();
                   isMaximized.value = true;
                 },
               )
@@ -175,7 +174,7 @@ class WindowTitleBarButtons extends HookConsumerWidget {
               RestoreWindowButton(
                 colors: colors,
                 onPressed: () {
-                  windowManager.unmaximize();
+                  DesktopTools.window.unmaximize();
                   isMaximized.value = false;
                 },
               ),
@@ -195,16 +194,16 @@ class WindowTitleBarButtons extends HookConsumerWidget {
         children: [
           DecoratedMinimizeButton(
             type: type,
-            onPressed: windowManager.minimize,
+            onPressed: DesktopTools.window.minimize,
           ),
           DecoratedMaximizeButton(
             type: type,
             onPressed: () async {
-              if (await windowManager.isMaximized()) {
-                await windowManager.unmaximize();
+              if (await DesktopTools.window.isMaximized()) {
+                await DesktopTools.window.unmaximize();
                 isMaximized.value = false;
               } else {
-                await windowManager.maximize();
+                await DesktopTools.window.maximize();
                 isMaximized.value = true;
               }
             },

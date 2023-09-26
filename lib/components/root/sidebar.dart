@@ -69,8 +69,17 @@ class Sidebar extends HookConsumerWidget {
       Color.lerp(bg, Colors.black, 0.45)!,
     );
 
-    final sidebarTileList =
-        useMemoized(() => getSidebarTileList(context.l10n), [context.l10n]);
+    final sidebarTileList = useMemoized(
+      () => getSidebarTileList(context.l10n),
+      [context.l10n],
+    );
+
+    useEffect(() {
+      if (controller.selectedIndex != selectedIndex) {
+        controller.selectIndex(selectedIndex);
+      }
+      return null;
+    }, [selectedIndex]);
 
     useEffect(() {
       controller.addListener(() {

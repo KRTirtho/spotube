@@ -37,3 +37,13 @@ extension DurationToHumanReadableString on Duration {
         abbreviated: abbreviated,
       );
 }
+
+extension ParseDuration on Duration {
+  static Duration fromString(String duration) {
+    final parts = duration.split(':').reversed.toList();
+    final seconds = int.parse(parts[0]);
+    final minutes = parts.length > 1 ? int.parse(parts[1]) : 0;
+    final hours = parts.length > 2 ? int.parse(parts[2]) : 0;
+    return Duration(hours: hours, minutes: minutes, seconds: seconds);
+  }
+}
