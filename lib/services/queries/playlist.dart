@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:math';
-
 import 'package:catcher/catcher.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
@@ -13,7 +10,6 @@ import 'package:spotube/extensions/track.dart';
 import 'package:spotube/hooks/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/use_spotify_query.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
-import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 
@@ -244,7 +240,7 @@ class PlaylistQueries {
     ({List<String> tracks, List<String> artists, List<String> genres})? seeds,
     RecommendationParameters? parameters,
     int limit = 20,
-    String? market,
+    Market? market,
   }) {
     final marketOfPreference = ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),

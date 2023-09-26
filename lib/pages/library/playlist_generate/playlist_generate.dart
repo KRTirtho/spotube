@@ -37,7 +37,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     final genresCollection = useQueries.category.genreSeeds(ref);
 
     final limit = useValueNotifier<int>(10);
-    final market = useValueNotifier<String>(preferences.recommendationMarket);
+    final market = useValueNotifier<Market>(preferences.recommendationMarket);
 
     final genres = useState<List<String>>([]);
     final artists = useState<List<Artist>>([]);
@@ -220,7 +220,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     final countrySelector = ValueListenableBuilder(
       valueListenable: market,
       builder: (context, value, _) {
-        return DropdownButtonFormField<String>(
+        return DropdownButtonFormField<Market>(
           decoration: InputDecoration(
             labelText: context.l10n.country,
             labelStyle: textTheme.titleMedium,

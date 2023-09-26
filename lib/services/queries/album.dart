@@ -66,7 +66,7 @@ class AlbumQueries {
       (pageParam, spotify) async {
         try {
           final albums = await spotify.browse
-              .getNewReleases(country: market)
+              .newReleases(country: market)
               .getPage(50, pageParam);
 
           return albums;

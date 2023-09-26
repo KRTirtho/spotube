@@ -11,24 +11,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
-enum AlbumType {
-  album,
-  single,
-  compilation;
-
-  factory AlbumType.from(String? type) {
-    switch (type) {
-      case "album":
-        return AlbumType.album;
-      case "single":
-        return AlbumType.single;
-      case "compilation":
-        return AlbumType.compilation;
-      default:
-        return AlbumType.album;
-    }
-  }
-
+extension FormattedAlbumType on AlbumType {
   String get formatted => name.replaceFirst(name[0], name[0].toUpperCase());
 }
 
@@ -71,7 +54,7 @@ class AlbumCard extends HookConsumerWidget {
         isLoading: isPlaylistPlaying && playlist.isFetching == true,
         title: album.name!,
         description:
-            "${AlbumType.from(album.albumType!).formatted} • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
+            "${album.albumType?.formatted} • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
         onTap: () {
           ServiceUtils.push(context, "/album/${album.id}", extra: album);
         },

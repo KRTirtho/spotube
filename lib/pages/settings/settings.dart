@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/language_codes.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -180,7 +181,7 @@ class SettingsPage extends HookConsumerWidget {
                               ),
                           ],
                         ),
-                        AdaptiveSelectTile<String>(
+                        AdaptiveSelectTile<Market>(
                           breakLayout: mediaQuery.lgAndUp,
                           secondary: const Icon(SpotubeIcons.shoppingBag),
                           title: Text(context.l10n.market_place_region),

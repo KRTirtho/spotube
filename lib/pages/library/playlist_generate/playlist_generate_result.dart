@@ -18,7 +18,7 @@ typedef PlaylistGenerateResultRouteState = ({
   ({List<String> tracks, List<String> artists, List<String> genres})? seeds,
   RecommendationParameters? parameters,
   int limit,
-  String? market,
+  Market? market,
 });
 
 class PlaylistGenerateResultPage extends HookConsumerWidget {

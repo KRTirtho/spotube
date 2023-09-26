@@ -1,4 +1,9 @@
 {
+  "ar": [
+    "use_amoled_dark_theme",
+    "normalize_audio"
+  ],
+
   "bn": [
     "use_amoled_dark_theme",
     "normalize_audio"

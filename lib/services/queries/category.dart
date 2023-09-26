@@ -13,7 +13,7 @@ class CategoryQueries {
 
   InfiniteQuery<Page<Category>, dynamic, int> list(
     WidgetRef ref,
-    String recommendationMarket,
+    Market recommendationMarket,
   ) {
     ref.watch(userPreferencesProvider.select((s) => s.locale));
     final locale = useContext().l10n.localeName;

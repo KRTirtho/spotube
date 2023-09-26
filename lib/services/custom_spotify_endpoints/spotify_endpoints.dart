@@ -43,8 +43,8 @@ class CustomSpotifyEndpoints {
     String imageStyle = "gradient_overlay",
     String includeExternal = "audio",
     String? locale,
-    String? market,
-    String? country,
+    Market? market,
+    Market? country,
   }) async {
     if (accessToken.isEmpty) {
       throw Exception('[CustomSpotifyEndpoints.getView]: accessToken is empty');
@@ -124,7 +124,7 @@ class CustomSpotifyEndpoints {
     Iterable<String>? seedGenres,
     Iterable<String>? seedTracks,
     int limit = 20,
-    String? market,
+    Market? market,
     Map<String, num>? max,
     Map<String, num>? min,
     Map<String, num>? target,
@@ -143,7 +143,7 @@ class CustomSpotifyEndpoints {
       'seed_genres': seedGenres,
       'seed_tracks': seedTracks
     }.forEach((key, list) => _addList(parameters, key, list!));
-    if (market != null) parameters['market'] = market;
+    if (market != null) parameters['market'] = market.name;
     for (var map in [min, max, target]) {
       _addTunableTrackMap(parameters, map);
     }

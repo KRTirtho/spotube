@@ -36,10 +36,10 @@ abstract class LanguageLocals {
     //   name: "Amharic",
     //   nativeName: "አማርኛ",
     // ),
-    // "ar": const ISOLanguageName(
-    //   name: "Arabic",
-    //   nativeName: "العربية",
-    // ),
+    "ar": const ISOLanguageName(
+      name: "Arabic",
+      nativeName: "العربية",
+    ),
     // "an": const ISOLanguageName(
     //   name: "Aragonese",
     //   nativeName: "Aragonés",
