@@ -49,6 +49,11 @@
     "normalize_audio"
   ],
 
+  "uk": [
+    "use_amoled_dark_theme",
+    "normalize_audio"
+  ],
+
   "zh": [
     "use_amoled_dark_theme",
     "normalize_audio"
