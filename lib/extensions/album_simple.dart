@@ -3,7 +3,7 @@ import 'package:spotify/spotify.dart';
 extension AlbumJson on AlbumSimple {
   Map<String, dynamic> toJson() {
     return {
-      "albumType": albumType,
+      "albumType": albumType?.name,
       "id": id,
       "name": name,
       "images": images

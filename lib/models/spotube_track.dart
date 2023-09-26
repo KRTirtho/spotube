@@ -250,7 +250,7 @@ class SpotubeTrack extends Track {
       // super values
       "album": album?.toJson(),
       "artists": artists?.map((artist) => artist.toJson()).toList(),
-      "availableMarkets": availableMarkets,
+      "availableMarkets": availableMarkets?.map((m) => m.name),
       "discNumber": discNumber,
       "duration": duration.toString(),
       "durationMs": durationMs,

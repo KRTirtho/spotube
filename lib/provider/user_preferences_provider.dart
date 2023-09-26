@@ -246,7 +246,10 @@ class UserPreferences extends PersistedChangeNotifier {
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
     saveTrackLyrics = map["saveTrackLyrics"] ?? false;
-    recommendationMarket = map["recommendationMarket"] ?? recommendationMarket;
+    recommendationMarket = Market.values.firstWhere(
+      (market) =>
+          market.name == (map["recommendationMarket"] ?? recommendationMarket),
+    );
     checkUpdate = map["checkUpdate"] ?? checkUpdate;
 
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
@@ -306,7 +309,7 @@ class UserPreferences extends PersistedChangeNotifier {
   FutureOr<Map<String, dynamic>> toMap() {
     return {
       "saveTrackLyrics": saveTrackLyrics,
-      "recommendationMarket": recommendationMarket,
+      "recommendationMarket": recommendationMarket.name,
       "themeMode": themeMode.index,
       "accentColorScheme": accentColorScheme.toString(),
       "albumColorSync": albumColorSync,

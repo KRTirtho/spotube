@@ -370,8 +370,7 @@ class SettingsPage extends HookConsumerWidget {
                                                       TextSpan(
                                                         text:
                                                             "${e.name.trim()}\n",
-                                                        style: Theme.of(context)
-                                                            .textTheme
+                                                        style: theme.textTheme
                                                             .labelLarge,
                                                       ),
                                                       TextSpan(
