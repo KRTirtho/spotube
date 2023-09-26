@@ -47,10 +47,15 @@ class SettingsPage extends HookConsumerWidget {
     }, []);
 
     final pickDownloadLocation = useCallback(() async {
-      final dirStr = await getDirectoryPath(
+      await openFile();
+      String? dirStr = await getDirectoryPath(
         initialDirectory: preferences.downloadLocation,
       );
       if (dirStr == null) return;
+      if (DesktopTools.platform.isAndroid && dirStr.startsWith("content://")) {
+        dirStr =
+            "/storage/emulated/0/${Uri.decodeFull(dirStr).split("primary:").last}";
+      }
       preferences.setDownloadLocation(dirStr);
     }, [preferences.downloadLocation]);
 

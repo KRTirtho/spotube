@@ -7,7 +7,7 @@ extension TrackJson on Track {
     return {
       "album": album?.toJson(),
       "artists": artists?.map((artist) => artist.toJson()).toList(),
-      "availableMarkets": availableMarkets,
+      "availableMarkets": availableMarkets?.map((e) => e.name).toList(),
       "discNumber": discNumber,
       "duration": duration.toString(),
       "durationMs": durationMs,

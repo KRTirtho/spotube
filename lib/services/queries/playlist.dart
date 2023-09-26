@@ -119,8 +119,9 @@ class PlaylistQueries {
     return useSpotifyQuery<bool, dynamic>(
       "playlist-is-followed/$playlistId/$userId",
       (spotify) async {
-        final result = await spotify.playlists.followedBy(playlistId, [userId]);
-        return result.first;
+        final result =
+            await spotify.playlists.followedByUsers(playlistId, [userId]);
+        return result[userId] ?? false;
       },
       ref: ref,
     );
