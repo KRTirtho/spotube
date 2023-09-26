@@ -47,7 +47,6 @@ class SettingsPage extends HookConsumerWidget {
     }, []);
 
     final pickDownloadLocation = useCallback(() async {
-      await openFile();
       String? dirStr = await getDirectoryPath(
         initialDirectory: preferences.downloadLocation,
       );
