@@ -18,15 +18,31 @@ class MobileAudioService extends BaseAudioHandler {
       session = s;
       session?.configure(const AudioSessionConfiguration.music());
       s.interruptionEventStream.listen((event) async {
-        switch (event.type) {
-          case AudioInterruptionType.duck:
-            await audioPlayer.setVolume(event.begin ? 0.5 : 1.0);
-            break;
-          case AudioInterruptionType.pause:
-          case AudioInterruptionType.unknown:
-            await audioPlayer.pause();
-            break;
+        if (event.begin) {
+          switch (event.type) {
+            case AudioInterruptionType.duck:
+              await audioPlayer.setVolume(0.5);
+              break;
+            case AudioInterruptionType.pause:
+            case AudioInterruptionType.unknown:
+              await audioPlayer.pause();
+              break;
+          }
+        } else {
+          switch (event.type) {
+            case AudioInterruptionType.duck:
+              await audioPlayer.setVolume(1.0);
+              break;
+            case AudioInterruptionType.pause:
+            case AudioInterruptionType.unknown:
+              await audioPlayer.resume();
+              break;
+          }
         }
+      });
+
+      s.becomingNoisyEventStream.listen((_) {
+        audioPlayer.pause();
       });
     });
     audioPlayer.playerStateStream.listen((state) async {

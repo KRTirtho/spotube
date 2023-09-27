@@ -569,11 +569,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       ));
 
       if (res.body == "Not Found") {
-        Catcher.reportCheckedError(
-          "[SponsorBlock] no skip segments found for $id\n"
-          "${res.request?.url}",
-          StackTrace.current,
-        );
         return List.castFrom<dynamic, SkipSegment>([]);
       }
 
