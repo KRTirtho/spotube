@@ -47,7 +47,7 @@ class UserPreferences extends PersistedChangeNotifier {
   bool checkUpdate;
   AudioQuality audioQuality;
 
-  SpotubeColor accentColorScheme;
+  late SpotubeColor accentColorScheme;
   bool albumColorSync;
 
   String downloadLocation;
@@ -78,10 +78,9 @@ class UserPreferences extends PersistedChangeNotifier {
 
   UserPreferences(
     this.ref, {
-    required this.recommendationMarket,
-    required this.themeMode,
-    required this.layoutMode,
-    required this.accentColorScheme,
+    this.recommendationMarket = Market.US,
+    this.themeMode = ThemeMode.system,
+    this.layoutMode = LayoutMode.adaptive,
     this.albumColorSync = true,
     this.saveTrackLyrics = false,
     this.checkUpdate = true,
@@ -97,7 +96,10 @@ class UserPreferences extends PersistedChangeNotifier {
     this.systemTitleBar = false,
     this.amoledDarkTheme = false,
     this.normalizeAudio = true,
+    SpotubeColor? accentColorScheme,
   }) : super() {
+    this.accentColorScheme =
+        accentColorScheme ?? SpotubeColor(Colors.blue.value, name: "Blue");
     if (downloadLocation.isEmpty && !kIsWeb) {
       _getDefaultDownloadDirectory().then(
         (value) {
@@ -105,6 +107,28 @@ class UserPreferences extends PersistedChangeNotifier {
         },
       );
     }
+  }
+
+  void reset() {
+    setRecommendationMarket(Market.US);
+    setThemeMode(ThemeMode.system);
+    setLayoutMode(LayoutMode.adaptive);
+    setAlbumColorSync(true);
+    setSaveTrackLyrics(false);
+    setCheckUpdate(true);
+    setAudioQuality(AudioQuality.high);
+    setDownloadLocation("");
+    setCloseBehavior(CloseBehavior.close);
+    setShowSystemTrayIcon(true);
+    setLocale(const Locale("system", "system"));
+    setPipedInstance("https://pipedapi.kavin.rocks");
+    setSearchMode(SearchMode.youtube);
+    setSkipNonMusic(true);
+    setYoutubeApiType(YoutubeApiType.youtube);
+    setSystemTitleBar(false);
+    setAmoledDarkTheme(false);
+    setNormalizeAudio(true);
+    setAccentColorScheme(SpotubeColor(Colors.blue.value, name: "Blue"));
   }
 
   void setThemeMode(ThemeMode mode) {
@@ -372,11 +396,5 @@ class UserPreferences extends PersistedChangeNotifier {
 }
 
 final userPreferencesProvider = ChangeNotifierProvider(
-  (ref) => UserPreferences(
-    ref,
-    accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
-    recommendationMarket: Market.US,
-    themeMode: ThemeMode.system,
-    layoutMode: LayoutMode.adaptive,
-  ),
+  (ref) => UserPreferences(ref),
 );

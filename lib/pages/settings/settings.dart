@@ -33,7 +33,7 @@ class SettingsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final UserPreferences preferences = ref.watch(userPreferencesProvider);
+    final preferences = ref.watch(userPreferencesProvider);
     final auth = ref.watch(AuthenticationNotifier.provider);
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
@@ -602,6 +602,13 @@ class SettingsPage extends HookConsumerWidget {
                         )
                       ],
                     ),
+                    Center(
+                      child: FilledButton(
+                        onPressed: preferences.reset,
+                        child: Text(context.l10n.restore_defaults),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),

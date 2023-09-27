@@ -3,90 +3,103 @@
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "bn": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "ca": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "de": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "es": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "fr": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "hi": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "ja": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "pl": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "pt": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "ru": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "uk": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ],
 
   "zh": [
     "use_amoled_dark_theme",
     "normalize_audio",
     "change_cover",
-    "add_cover"
+    "add_cover",
+    "restore_defaults"
   ]
 }

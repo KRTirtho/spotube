@@ -267,5 +267,6 @@
   "use_amoled_dark_theme": "Use AMOLED (Pitch Black) dark theme",
   "normalize_audio": "Normalize audio",
   "change_cover": "Change cover",
-  "add_cover": "Add cover"
+  "add_cover": "Add cover",
+  "restore_defaults": "Restore defaults"
 }
