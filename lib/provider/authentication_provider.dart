@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:spotube/collections/routes.dart';
+import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 
@@ -21,24 +24,44 @@ class AuthenticationCredentials {
   });
 
   static Future<AuthenticationCredentials> fromCookie(String cookie) async {
-    final Map body = await get(
-      Uri.parse(
-        "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
-      ),
-      headers: {
-        "Cookie": cookie,
-        "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-      },
-    ).then((res) => jsonDecode(res.body));
+    try {
+      final res = await get(
+        Uri.parse(
+          "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
+        ),
+        headers: {
+          "Cookie": cookie,
+          "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+        },
+      );
+      final body = jsonDecode(res.body);
 
-    return AuthenticationCredentials(
-      cookie: cookie,
-      accessToken: body['accessToken'],
-      expiration: DateTime.fromMillisecondsSinceEpoch(
-        body['accessTokenExpirationTimestampMs'],
-      ),
-    );
+      if (res.statusCode >= 400) {
+        throw Exception(
+          "Failed to get access token: ${body['error'] ?? res.reasonPhrase}",
+        );
+      }
+
+      return AuthenticationCredentials(
+        cookie: cookie,
+        accessToken: body['accessToken'],
+        expiration: DateTime.fromMillisecondsSinceEpoch(
+          body['accessTokenExpirationTimestampMs'],
+        ),
+      );
+    } catch (e) {
+      if (rootNavigatorKey?.currentContext != null) {
+        showPromptDialog(
+          context: rootNavigatorKey!.currentContext!,
+          title: rootNavigatorKey!.currentContext!.l10n
+              .error("Authentication Failure"),
+          message: e.toString(),
+          cancelText: null,
+        );
+      }
+      rethrow;
+    }
   }
 
   factory AuthenticationCredentials.fromJson(Map<String, dynamic> json) {

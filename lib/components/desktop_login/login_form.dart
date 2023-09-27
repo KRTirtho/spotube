@@ -20,6 +20,8 @@ class TokenLoginForm extends HookConsumerWidget {
     final keyCodeController = useTextEditingController();
     final mounted = useIsMounted();
 
+    final isLoading = useState(false);
+
     return ConstrainedBox(
       constraints: const BoxConstraints(
         maxWidth: 400,
@@ -45,27 +47,35 @@ class TokenLoginForm extends HookConsumerWidget {
           ),
           const SizedBox(height: 20),
           FilledButton(
-            onPressed: () async {
-              if (keyCodeController.text.isEmpty ||
-                  directCodeController.text.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(context.l10n.fill_in_all_fields),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-                return;
-              }
-              final cookieHeader =
-                  "sp_dc=${directCodeController.text}; sp_key=${keyCodeController.text}";
+            onPressed: isLoading.value
+                ? null
+                : () async {
+                    try {
+                      isLoading.value = true;
+                      if (keyCodeController.text.isEmpty ||
+                          directCodeController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(context.l10n.fill_in_all_fields),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                        return;
+                      }
+                      final cookieHeader =
+                          "sp_dc=${directCodeController.text}; sp_key=${keyCodeController.text}";
 
-              authenticationNotifier.setCredentials(
-                await AuthenticationCredentials.fromCookie(cookieHeader),
-              );
-              if (mounted()) {
-                onDone?.call();
-              }
-            },
+                      authenticationNotifier.setCredentials(
+                        await AuthenticationCredentials.fromCookie(
+                            cookieHeader),
+                      );
+                      if (mounted()) {
+                        onDone?.call();
+                      }
+                    } finally {
+                      isLoading.value = false;
+                    }
+                  },
             child: Text(context.l10n.submit),
           )
         ],
