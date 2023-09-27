@@ -265,5 +265,7 @@
   "crunching_results": "Crunching results...",
   "search_to_get_results": "Search to get results",
   "use_amoled_dark_theme": "Use AMOLED (Pitch Black) dark theme",
-  "normalize_audio": "Normalize audio"
+  "normalize_audio": "Normalize audio",
+  "change_cover": "Change cover",
+  "add_cover": "Add cover"
 }

@@ -1,66 +1,92 @@
 {
   "ar": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "bn": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "ca": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "de": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "es": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "fr": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "hi": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "ja": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "pl": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "pt": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "ru": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "uk": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ],
 
   "zh": [
     "use_amoled_dark_theme",
-    "normalize_audio"
+    "normalize_audio",
+    "change_cover",
+    "add_cover"
   ]
 }
