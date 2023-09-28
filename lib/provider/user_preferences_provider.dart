@@ -40,39 +40,36 @@ enum YoutubeApiType {
   String get label => name[0].toUpperCase() + name.substring(1);
 }
 
+enum MusicCodec {
+  m4a._("M4a\n(best for downloaded music)"),
+  weba._("WebA\n(best for streamed music)");
+
+  final String label;
+  const MusicCodec._(this.label);
+}
+
 class UserPreferences extends PersistedChangeNotifier {
-  ThemeMode themeMode;
-  Market recommendationMarket;
-  bool saveTrackLyrics;
-  bool checkUpdate;
   AudioQuality audioQuality;
-
-  late SpotubeColor accentColorScheme;
   bool albumColorSync;
-
-  String downloadLocation;
-
-  LayoutMode layoutMode;
-
-  CloseBehavior closeBehavior;
-
-  bool showSystemTrayIcon;
-
-  Locale locale;
-
-  String pipedInstance;
-
-  SearchMode searchMode;
-
-  bool skipNonMusic;
-
-  YoutubeApiType youtubeApiType;
-
-  bool systemTitleBar;
-
   bool amoledDarkTheme;
-
+  bool checkUpdate;
   bool normalizeAudio;
+  bool saveTrackLyrics;
+  bool showSystemTrayIcon;
+  bool skipNonMusic;
+  bool systemTitleBar;
+  CloseBehavior closeBehavior;
+  late SpotubeColor accentColorScheme;
+  LayoutMode layoutMode;
+  Locale locale;
+  Market recommendationMarket;
+  SearchMode searchMode;
+  String downloadLocation;
+  String pipedInstance;
+  ThemeMode themeMode;
+  YoutubeApiType youtubeApiType;
+  MusicCodec streamMusicCodec;
+  MusicCodec downloadMusicCodec;
 
   final Ref ref;
 
@@ -96,6 +93,8 @@ class UserPreferences extends PersistedChangeNotifier {
     this.systemTitleBar = false,
     this.amoledDarkTheme = false,
     this.normalizeAudio = true,
+    this.streamMusicCodec = MusicCodec.weba,
+    this.downloadMusicCodec = MusicCodec.m4a,
     SpotubeColor? accentColorScheme,
   }) : super() {
     this.accentColorScheme =
@@ -129,6 +128,20 @@ class UserPreferences extends PersistedChangeNotifier {
     setAmoledDarkTheme(false);
     setNormalizeAudio(true);
     setAccentColorScheme(SpotubeColor(Colors.blue.value, name: "Blue"));
+    setStreamMusicCodec(MusicCodec.weba);
+    setDownloadMusicCodec(MusicCodec.m4a);
+  }
+
+  void setStreamMusicCodec(MusicCodec codec) {
+    streamMusicCodec = codec;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setDownloadMusicCodec(MusicCodec codec) {
+    downloadMusicCodec = codec;
+    notifyListeners();
+    updatePersistence();
   }
 
   void setThemeMode(ThemeMode mode) {
@@ -327,6 +340,16 @@ class UserPreferences extends PersistedChangeNotifier {
 
     normalizeAudio = map["normalizeAudio"] ?? normalizeAudio;
     audioPlayer.setAudioNormalization(normalizeAudio);
+
+    streamMusicCodec = MusicCodec.values.firstWhere(
+      (codec) => codec.name == map["streamMusicCodec"],
+      orElse: () => MusicCodec.weba,
+    );
+
+    downloadMusicCodec = MusicCodec.values.firstWhere(
+      (codec) => codec.name == map["downloadMusicCodec"],
+      orElse: () => MusicCodec.m4a,
+    );
   }
 
   @override
@@ -352,6 +375,8 @@ class UserPreferences extends PersistedChangeNotifier {
       'systemTitleBar': systemTitleBar,
       "amoledDarkTheme": amoledDarkTheme,
       "normalizeAudio": normalizeAudio,
+      "streamMusicCodec": streamMusicCodec.name,
+      "downloadMusicCodec": downloadMusicCodec.name,
     };
   }
 

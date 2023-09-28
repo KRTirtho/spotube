@@ -459,6 +459,42 @@ class SettingsPage extends HookConsumerWidget {
                           value: preferences.normalizeAudio,
                           onChanged: preferences.setNormalizeAudio,
                         ),
+                        AdaptiveSelectTile<MusicCodec>(
+                          secondary: const Icon(SpotubeIcons.stream),
+                          title: Text(context.l10n.streaming_music_codec),
+                          value: preferences.streamMusicCodec,
+                          options: MusicCodec.values
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(
+                                      e.label,
+                                      style: theme.textTheme.labelMedium,
+                                    ),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            preferences.setStreamMusicCodec(value);
+                          },
+                        ),
+                        AdaptiveSelectTile<MusicCodec>(
+                          secondary: const Icon(SpotubeIcons.file),
+                          title: Text(context.l10n.download_music_codec),
+                          value: preferences.downloadMusicCodec,
+                          options: MusicCodec.values
+                              .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(
+                                      e.label,
+                                      style: theme.textTheme.labelMedium,
+                                    ),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            preferences.setDownloadMusicCodec(value);
+                          },
+                        ),
                       ],
                     ),
                     SectionCardWithHeading(
