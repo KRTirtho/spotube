@@ -463,6 +463,7 @@ class SettingsPage extends HookConsumerWidget {
                           secondary: const Icon(SpotubeIcons.stream),
                           title: Text(context.l10n.streaming_music_codec),
                           value: preferences.streamMusicCodec,
+                          showValueWhenUnfolded: false,
                           options: MusicCodec.values
                               .map((e) => DropdownMenuItem(
                                     value: e,
@@ -481,6 +482,7 @@ class SettingsPage extends HookConsumerWidget {
                           secondary: const Icon(SpotubeIcons.file),
                           title: Text(context.l10n.download_music_codec),
                           value: preferences.downloadMusicCodec,
+                          showValueWhenUnfolded: false,
                           options: MusicCodec.values
                               .map((e) => DropdownMenuItem(
                                     value: e,
