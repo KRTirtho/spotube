@@ -30,6 +30,7 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
         final future = SpotubeTrack.fetchFromTrack(
           track,
           youtube,
+          preferences.streamMusicCodec,
         );
         if (i == 0) {
           return await future;

@@ -23,6 +23,7 @@ class TrackNotFoundException implements Exception {
 class SpotubeTrack extends Track {
   final YoutubeVideoInfo ytTrack;
   final String ytUri;
+  final MusicCodec codec;
 
   final List<YoutubeVideoInfo> siblings;
 
@@ -30,6 +31,7 @@ class SpotubeTrack extends Track {
     this.ytTrack,
     this.ytUri,
     this.siblings,
+    this.codec,
   ) : super();
 
   SpotubeTrack.fromTrack({
@@ -37,6 +39,7 @@ class SpotubeTrack extends Track {
     required this.ytTrack,
     required this.ytUri,
     required this.siblings,
+    required this.codec,
   }) : super() {
     album = track.album;
     artists = track.artists;
@@ -149,6 +152,7 @@ class SpotubeTrack extends Track {
   static Future<SpotubeTrack> fetchFromTrack(
     Track track,
     YoutubeEndpoints client,
+    MusicCodec codec,
   ) async {
     final matchedCachedTrack = await MatchedTrack.box.get(track.id!);
     var siblings = <YoutubeVideoInfo>[];
@@ -157,16 +161,17 @@ class SpotubeTrack extends Track {
     if (matchedCachedTrack != null &&
         matchedCachedTrack.searchMode == client.preferences.searchMode) {
       (ytVideo, ytStreamUrl) = await client.video(
-        matchedCachedTrack.youtubeId,
-        matchedCachedTrack.searchMode,
-      );
+          matchedCachedTrack.youtubeId, matchedCachedTrack.searchMode, codec);
     } else {
       siblings = await fetchSiblings(track, client);
       if (siblings.isEmpty) {
         throw TrackNotFoundException(track);
       }
-      (ytVideo, ytStreamUrl) =
-          await client.video(siblings.first.id, siblings.first.searchMode);
+      (ytVideo, ytStreamUrl) = await client.video(
+        siblings.first.id,
+        siblings.first.searchMode,
+        codec,
+      );
 
       await MatchedTrack.box.put(
         track.id!,
@@ -183,6 +188,7 @@ class SpotubeTrack extends Track {
       ytTrack: ytVideo,
       ytUri: ytStreamUrl,
       siblings: siblings,
+      codec: codec,
     );
   }
 
@@ -193,8 +199,12 @@ class SpotubeTrack extends Track {
     // sibling tracks that were manually searched and swapped
     final isStepSibling = siblings.none((element) => element.id == video.id);
 
-    final (ytVideo, ytStreamUrl) =
-        await client.video(video.id, siblings.first.searchMode);
+    final (ytVideo, ytStreamUrl) = await client.video(
+      video.id,
+      siblings.first.searchMode,
+      // siblings are always swapped when streaming
+      client.preferences.streamMusicCodec,
+    );
 
     if (!isStepSibling) {
       await MatchedTrack.box.put(
@@ -215,6 +225,7 @@ class SpotubeTrack extends Track {
         video,
         ...siblings.where((element) => element.id != video.id),
       ],
+      codec: client.preferences.streamMusicCodec,
     );
   }
 
@@ -226,6 +237,10 @@ class SpotubeTrack extends Track {
       siblings: List.castFrom<dynamic, Map<String, dynamic>>(map["siblings"])
           .map((sibling) => YoutubeVideoInfo.fromJson(sibling))
           .toList(),
+      codec: MusicCodec.values.firstWhere(
+        (element) => element.name == map["codec"],
+        orElse: () => MusicCodec.m4a,
+      ),
     );
   }
 
@@ -242,6 +257,7 @@ class SpotubeTrack extends Track {
       ytTrack: ytTrack,
       ytUri: ytUri,
       siblings: siblings,
+      codec: codec,
     );
   }
 
@@ -268,6 +284,7 @@ class SpotubeTrack extends Track {
       "ytTrack": ytTrack.toJson(),
       "ytUri": ytUri,
       "siblings": siblings.map((sibling) => sibling.toJson()).toList(),
+      "codec": codec.name,
     };
   }
 }

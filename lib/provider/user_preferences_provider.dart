@@ -41,8 +41,8 @@ enum YoutubeApiType {
 }
 
 enum MusicCodec {
-  m4a._("M4a\n(best for downloaded music)"),
-  weba._("WebA\n(best for streamed music)");
+  m4a._("M4a (Best for downloaded music)"),
+  weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
 
   final String label;
   const MusicCodec._(this.label);
