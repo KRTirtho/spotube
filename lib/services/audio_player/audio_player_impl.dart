@@ -142,6 +142,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   String? get currentSource {
     // if (mkSupportedPlatform) {
+    if (_mkPlayer.playlist.index == -1) return null;
     return _mkPlayer.playlist.medias
         .elementAtOrNull(_mkPlayer.playlist.index)
         ?.uri;

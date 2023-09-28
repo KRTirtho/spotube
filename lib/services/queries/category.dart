@@ -53,7 +53,7 @@ class CategoryQueries {
       (pageParam, spotify) async {
         final playlists = await Pages<PlaylistSimple?>(
           spotify,
-          "v1/browse/categories/$category/playlists?country=$market&locale=$locale",
+          "v1/browse/categories/$category/playlists?country=${market.name}&locale=$locale",
           (json) => json == null ? null : PlaylistSimple.fromJson(json),
           'playlists',
           (json) => PlaylistsFeatured.fromJson(json),

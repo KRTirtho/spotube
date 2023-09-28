@@ -58,8 +58,8 @@ class CustomSpotifyEndpoints {
       'include_external': includeExternal,
       'timestamp': DateTime.now().toUtc().toIso8601String(),
       if (locale != null) 'locale': locale,
-      if (market != null) 'market': market,
-      if (country != null) 'country': country,
+      if (market != null) 'market': market.name,
+      if (country != null) 'country': country.name,
     }.entries.map((e) => '${e.key}=${e.value}').join('&');
 
     final res = await _client.get(
