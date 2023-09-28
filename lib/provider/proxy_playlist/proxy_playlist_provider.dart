@@ -185,10 +185,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
                 ),
               );
             } catch (e) {
-              currentSegments.value = (
-                source: audioPlayer.currentSource!,
-                segments: [],
-              );
+              if (audioPlayer.currentSource != null) {
+                currentSegments.value = (
+                  source: audioPlayer.currentSource!,
+                  segments: [],
+                );
+              }
             } finally {
               isFetchingSegments.value = false;
             }
@@ -223,7 +225,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     final nthFetchedTrack = switch (track.runtimeType) {
       SpotubeTrack => track as SpotubeTrack,
-      _ => await SpotubeTrack.fetchFromTrack(track, youtube),
+      _ => await SpotubeTrack.fetchFromTrack(
+          track,
+          youtube,
+          preferences.streamMusicCodec,
+        ),
     };
 
     await audioPlayer.replaceSource(
@@ -309,10 +315,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       final addableTrack = await SpotubeTrack.fetchFromTrack(
         tracks.elementAtOrNull(initialIndex) ?? tracks.first,
         youtube,
+        preferences.streamMusicCodec,
       ).catchError((e, stackTrace) {
         return SpotubeTrack.fetchFromTrack(
           tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
           youtube,
+          preferences.streamMusicCodec,
         );
       });
 

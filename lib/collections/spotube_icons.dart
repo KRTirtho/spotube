@@ -98,4 +98,6 @@ abstract class SpotubeIcons {
   static const edit = FeatherIcons.edit;
   static const web = FeatherIcons.globe;
   static const amoled = FeatherIcons.sunset;
+  static const file = FeatherIcons.file;
+  static const stream = Icons.stream_rounded;
 }

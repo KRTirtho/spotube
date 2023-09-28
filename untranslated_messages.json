@@ -4,7 +4,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "bn": [
@@ -12,7 +14,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "ca": [
@@ -20,7 +24,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "de": [
@@ -28,7 +34,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "es": [
@@ -36,7 +44,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "fr": [
@@ -44,7 +54,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "hi": [
@@ -52,7 +64,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "ja": [
@@ -60,7 +74,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "pl": [
@@ -68,7 +84,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "pt": [
@@ -76,7 +94,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "ru": [
@@ -84,7 +104,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "uk": [
@@ -92,7 +114,9 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ],
 
   "zh": [
@@ -100,6 +124,8 @@
     "normalize_audio",
     "change_cover",
     "add_cover",
-    "restore_defaults"
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec"
   ]
 }
