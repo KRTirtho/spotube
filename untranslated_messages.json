@@ -6,7 +6,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "bn": [
@@ -16,7 +25,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "ca": [
@@ -26,7 +44,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "de": [
@@ -36,7 +63,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "es": [
@@ -46,7 +82,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "fr": [
@@ -56,7 +101,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "hi": [
@@ -66,7 +120,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "ja": [
@@ -76,7 +139,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "pl": [
@@ -86,7 +158,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "pt": [
@@ -96,7 +177,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "ru": [
@@ -106,7 +196,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "uk": [
@@ -116,7 +215,16 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ],
 
   "zh": [
@@ -126,6 +234,15 @@
     "add_cover",
     "restore_defaults",
     "download_music_codec",
-    "streaming_music_codec"
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
   ]
 }

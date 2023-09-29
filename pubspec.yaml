@@ -81,6 +81,8 @@ dependencies:
   permission_handler: ^10.2.0
   piped_client: ^0.1.0
   popover: ^0.2.6+3
+  scrobblenaut:
+    path: ../Scrobblenaut
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.11
   sidebarx: ^0.15.0
@@ -102,6 +104,7 @@ dependencies:
       ref: a738913c8ce2c9f47515382d40827e794a334274
       path: plugins/window_size
   youtube_explode_dart: ^2.0.1
+  simple_icons: ^7.10.0
 
 dev_dependencies:
   build_runner: ^2.3.2

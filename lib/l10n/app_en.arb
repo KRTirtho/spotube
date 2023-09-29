@@ -270,5 +270,14 @@
   "add_cover": "Add cover",
   "restore_defaults": "Restore defaults",
   "download_music_codec": "Download music codec",
-  "streaming_music_codec": "Streaming music codec"
+  "streaming_music_codec": "Streaming music codec",
+  "login_with_lastfm": "Login with Last.fm",
+  "connect": "Connect",
+  "disconnect_lastfm": "Disconnect Last.fm",
+  "disconnect": "Disconnect",
+  "username": "Username",
+  "password": "Password",
+  "login": "Login",
+  "login_with_your_lastfm": "Login with your Last.fm account",
+  "scrobble_to_lastfm": "Scrobble to Last.fm"
 }

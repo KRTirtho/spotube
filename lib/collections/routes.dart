@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
@@ -145,6 +146,12 @@ final router = GoRouter(
       pageBuilder: (context, state) => const SpotubePage(
         child: LoginTutorial(),
       ),
+    ),
+    GoRoute(
+      path: "/lastfm-login",
+      parentNavigatorKey: rootNavigatorKey,
+      pageBuilder: (context, state) =>
+          const SpotubePage(child: LastFMLoginPage()),
     ),
     GoRoute(
       path: "/player",
