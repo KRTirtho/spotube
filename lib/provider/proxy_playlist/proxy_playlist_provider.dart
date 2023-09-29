@@ -19,6 +19,7 @@ import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/next_fetcher_mixin.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
+import 'package:spotube/provider/scrobbler_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -52,6 +53,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   final Ref ref;
   late final AudioServices notificationService;
 
+  ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
   UserPreferences get preferences => ref.read(userPreferencesProvider);
   YoutubeEndpoints get youtube => ref.read(youtubeProvider);
   ProxyPlaylist get playlist => state;
@@ -196,12 +198,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
             }
           }
 
-          final (source: _, :segments) = currentSegments.value!;
-
           // skipping in first 2 second breaks stream
-          if (segments.isEmpty || position < const Duration(seconds: 3)) return;
+          if (currentSegments.value == null ||
+              currentSegments.value!.segments.isEmpty ||
+              position < const Duration(seconds: 3)) return;
 
-          for (final segment in segments) {
+          for (final segment in currentSegments.value!.segments) {
             if (position.inSeconds >= segment.start &&
                 position.inSeconds < segment.end) {
               await audioPlayer.seek(Duration(seconds: segment.end));
@@ -607,12 +609,30 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   @override
   set state(state) {
+    final hasActiveTrackChanged = super.state.activeTrack is SpotubeTrack
+        ? state.activeTrack?.id != super.state.activeTrack?.id
+        : super.state.activeTrack is LocalTrack &&
+                state.activeTrack is LocalTrack
+            ? (super.state.activeTrack as LocalTrack).path !=
+                (state.activeTrack as LocalTrack).path
+            : super.state.activeTrack?.id != state.activeTrack?.id;
+
+    final oldTrack = super.state.activeTrack;
+
     super.state = state;
     if (state.tracks.isEmpty && ref.read(paletteProvider) != null) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
       updatePalette();
     }
+    audioPlayer.position.then((position) {
+      final isMoreThan30secs = position != null &&
+          (position == Duration.zero || position.inSeconds > 30);
+
+      if (hasActiveTrackChanged && oldTrack != null && isMoreThan30secs) {
+        scrobbler.scrobble(oldTrack);
+      }
+    });
   }
 
   @override

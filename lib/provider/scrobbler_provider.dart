@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:catcher/catcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrobblenaut/scrobblenaut.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ScrobblerState {
   final String username;
@@ -28,9 +32,30 @@ class ScrobblerState {
 class ScrobblerNotifier extends PersistedStateNotifier<ScrobblerState?> {
   final Scrobblenaut? scrobblenaut;
 
+  /// Directly scrobbling in set state of [ProxyPlaylistNotifier]
+  /// brings extra latency in playback
+  final StreamController<Track> _scrobbleController =
+      StreamController<Track>.broadcast();
+
   ScrobblerNotifier()
       : scrobblenaut = null,
-        super(null, "scrobbler", encrypted: true);
+        super(null, "scrobbler", encrypted: true) {
+    _scrobbleController.stream.listen((track) async {
+      try {
+        await state?.scrobblenaut.track.scrobble(
+          artist: TypeConversionUtils.artists_X_String(track.artists!),
+          track: track.name!,
+          album: track.album!.name!,
+          chosenByUser: true,
+          duration: track.duration,
+          timestamp: DateTime.now().toUtc(),
+          trackNumber: track.trackNumber,
+        );
+      } catch (e, stackTrace) {
+        Catcher.reportCheckedError(e, stackTrace);
+      }
+    });
+  }
 
   Future<void> login(
     String username,
@@ -52,6 +77,24 @@ class ScrobblerNotifier extends PersistedStateNotifier<ScrobblerState?> {
 
   Future<void> logout() async {
     state = null;
+  }
+
+  void scrobble(Track track) {
+    _scrobbleController.add(track);
+  }
+
+  Future<void> love(Track track) async {
+    await state?.scrobblenaut.track.love(
+      artist: TypeConversionUtils.artists_X_String(track.artists!),
+      track: track.name!,
+    );
+  }
+
+  Future<void> unlove(Track track) async {
+    await state?.scrobblenaut.track.unLove(
+      artist: TypeConversionUtils.artists_X_String(track.artists!),
+      track: track.name!,
+    );
   }
 
   @override
