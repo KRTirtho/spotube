@@ -1705,9 +1705,11 @@ packages:
   scrobblenaut:
     dependency: "direct main"
     description:
-      path: "../Scrobblenaut"
-      relative: true
-    source: path
+      path: "."
+      ref: dart-3-support
+      resolved-ref: d90cb75d71737f3cfa2de4469d48080c0f3eedc2
+      url: "https://github.com/KRTirtho/scrobblenaut.git"
+    source: git
     version: "3.0.0"
   scroll_to_index:
     dependency: "direct main"

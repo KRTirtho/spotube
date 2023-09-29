@@ -82,7 +82,9 @@ dependencies:
   piped_client: ^0.1.0
   popover: ^0.2.6+3
   scrobblenaut:
-    path: ../Scrobblenaut
+    git:
+      url: https://github.com/KRTirtho/scrobblenaut.git
+      ref: dart-3-support
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.0.11
   sidebarx: ^0.15.0
