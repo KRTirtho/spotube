@@ -23,7 +23,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/pages/settings/sections/accounts.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/piped_instances_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -34,7 +34,6 @@ class SettingsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
-    final auth = ref.watch(AuthenticationNotifier.provider);
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
@@ -73,87 +72,7 @@ class SettingsPage extends HookConsumerWidget {
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: ListView(
                   children: [
-                    SectionCardWithHeading(
-                      heading: context.l10n.account,
-                      children: [
-                        if (auth == null)
-                          LayoutBuilder(builder: (context, constrains) {
-                            return ListTile(
-                              leading: Icon(
-                                SpotubeIcons.login,
-                                color: theme.colorScheme.primary,
-                              ),
-                              title: Align(
-                                alignment: Alignment.centerLeft,
-                                child: AutoSizeText(
-                                  context.l10n.login_with_spotify,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ),
-                              onTap: constrains.mdAndUp
-                                  ? null
-                                  : () {
-                                      GoRouter.of(context).push("/login");
-                                    },
-                              trailing: constrains.smAndDown
-                                  ? null
-                                  : FilledButton(
-                                      onPressed: () {
-                                        GoRouter.of(context).push("/login");
-                                      },
-                                      style: ButtonStyle(
-                                        shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                          ),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        context.l10n.connect_with_spotify
-                                            .toUpperCase(),
-                                      ),
-                                    ),
-                            );
-                          })
-                        else
-                          Builder(builder: (context) {
-                            return ListTile(
-                              leading: const Icon(SpotubeIcons.logout),
-                              title: SizedBox(
-                                height: 50,
-                                width: 180,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: AutoSizeText(
-                                    context.l10n.logout_of_this_account,
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ),
-                              trailing: FilledButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.red),
-                                  foregroundColor:
-                                      MaterialStateProperty.all(Colors.white),
-                                ),
-                                onPressed: () async {
-                                  ref
-                                      .read(AuthenticationNotifier
-                                          .provider.notifier)
-                                      .logout();
-                                  GoRouter.of(context).pop();
-                                },
-                                child: Text(context.l10n.logout),
-                              ),
-                            );
-                          }),
-                      ],
-                    ),
+                    const SettingsAccountSection(),
                     SectionCardWithHeading(
                       heading: context.l10n.language_region,
                       children: [

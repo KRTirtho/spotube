@@ -13,6 +13,12 @@ abstract class Env {
   @EnviedField(varName: 'SPOTIFY_SECRETS')
   static final String rawSpotifySecrets = _Env.rawSpotifySecrets;
 
+  @EnviedField(varName: 'LASTFM_API_KEY')
+  static final String lastFmApiKey = _Env.lastFmApiKey;
+
+  @EnviedField(varName: 'LASTFM_API_SECRET')
+  static final String lastFmApiSecret = _Env.lastFmApiSecret;
+
   static final spotifySecrets = rawSpotifySecrets.split(',').map((e) {
     final secrets = e.trim().split(":").map((e) => e.trim());
     return {
