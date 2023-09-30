@@ -94,6 +94,25 @@
     "scrobble_to_lastfm"
   ],
 
+  "fa": [
+    "use_amoled_dark_theme",
+    "normalize_audio",
+    "change_cover",
+    "add_cover",
+    "restore_defaults",
+    "download_music_codec",
+    "streaming_music_codec",
+    "login_with_lastfm",
+    "connect",
+    "disconnect_lastfm",
+    "disconnect",
+    "username",
+    "password",
+    "login",
+    "login_with_your_lastfm",
+    "scrobble_to_lastfm"
+  ],
+
   "fr": [
     "use_amoled_dark_theme",
     "normalize_audio",
