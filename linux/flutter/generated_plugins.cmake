@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  catcher
   file_selector_linux
   flutter_secure_storage_linux
   local_notifier

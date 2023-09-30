@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +99,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
             if (e is FfiException) {
               return {"file": f};
             }
-            Catcher.reportCheckedError(e, stack);
+            Catcher2.reportCheckedError(e, stack);
             return {};
           }
         },
@@ -123,7 +123,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
 
     return tracks;
   } catch (e, stack) {
-    Catcher.reportCheckedError(e, stack);
+    Catcher2.reportCheckedError(e, stack);
     return [];
   }
 });

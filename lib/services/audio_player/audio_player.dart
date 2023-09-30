@@ -1,4 +1,4 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:spotube/services/audio_player/mk_state_player.dart';
 // import 'package:just_audio/just_audio.dart' as ja;
 import 'dart:async';
@@ -25,7 +25,7 @@ abstract class AudioPlayerInterface {
   // _justAudio = !_mkSupportedPlatform ? ja.AudioPlayer() : null
   {
     _mkPlayer.stream.error.listen((event) {
-      Catcher.reportCheckedError(event, StackTrace.current);
+      Catcher2.reportCheckedError(event, StackTrace.current);
     });
   }
 

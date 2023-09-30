@@ -1,4 +1,4 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -221,7 +221,7 @@ class PlaylistQueries {
               await spotify.playlists.featured.getPage(5, pageParam);
           return playlists;
         } catch (e, stack) {
-          Catcher.reportCheckedError(e, stack);
+          Catcher2.reportCheckedError(e, stack);
           rethrow;
         }
       },

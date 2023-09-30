@@ -1,4 +1,4 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +27,7 @@ import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
 import '../pages/library/playlist_generate/playlist_generate_result.dart';
 
-final rootNavigatorKey = Catcher.navigatorKey;
+final rootNavigatorKey = Catcher2.navigatorKey;
 final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,

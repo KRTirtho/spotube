@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -98,7 +98,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
           updatePalette();
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       });
 
@@ -117,7 +117,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
             active: newActiveIndex,
           );
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       });
 
@@ -153,7 +153,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
                 mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
             await removeTrack(oldTrack!.id!);
           }
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         } finally {
           isPreSearching.value = false;
         }
@@ -210,7 +210,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
             }
           }
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       });
     }();
@@ -602,7 +602,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       return List.castFrom<dynamic, SkipSegment>(segments);
     } catch (e, stack) {
       await SkipSegment.box.put(id, []);
-      Catcher.reportCheckedError(e, stack);
+      Catcher2.reportCheckedError(e, stack);
       return List.castFrom<dynamic, SkipSegment>([]);
     }
   }

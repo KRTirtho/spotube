@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart';
 // ignore: implementation_imports
@@ -53,7 +53,7 @@ class MkPlayerWithState extends Player {
             await Future.delayed(const Duration(milliseconds: 250), play);
           }
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       }),
       stream.playlist.listen((event) {
@@ -62,7 +62,7 @@ class MkPlayerWithState extends Player {
         }
       }),
       stream.error.listen((event) {
-        Catcher.reportCheckedError('[MediaKitError] \n$event', null);
+        Catcher2.reportCheckedError('[MediaKitError] \n$event', null);
       }),
     ];
   }

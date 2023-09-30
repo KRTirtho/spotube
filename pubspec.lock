@@ -257,15 +257,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  catcher:
+  catcher_2:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "354108cbfe75299e8dd25be521946b32c41f621d"
-      url: "https://github.com/ThexXTURBOXx/catcher"
-    source: git
-    version: "0.8.0"
+      name: catcher_2
+      sha256: "8a33bfa845de8aa4306e607d8c76a52b0f111576089f9f329270d56023900ad2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-alpha.1"
   change_case:
     dependency: transitive
     description:

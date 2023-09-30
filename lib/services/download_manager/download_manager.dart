@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
-import 'package:catcher/core/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 
 import 'package:dio/dio.dart';
@@ -130,7 +130,7 @@ class DownloadManager {
         }
       }
     } catch (e, stackTrace) {
-      Catcher.reportCheckedError(e, stackTrace);
+      Catcher2.reportCheckedError(e, stackTrace);
 
       var task = getDownload(url)!;
       if (task.status.value != DownloadStatus.canceled &&

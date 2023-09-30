@@ -1,4 +1,4 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
@@ -90,9 +90,9 @@ Future<void> main(List<String> rawArgs) async {
     path: hiveCacheDir,
   );
 
-  Catcher(
+  Catcher2(
     enableLogger: arguments["verbose"],
-    debugConfig: CatcherOptions(
+    debugConfig: Catcher2Options(
       SilentReportMode(),
       [
         ConsoleHandler(
@@ -102,7 +102,7 @@ Future<void> main(List<String> rawArgs) async {
         if (!kIsWeb) FileHandler(await getLogsPath(), printLogs: false),
       ],
     ),
-    releaseConfig: CatcherOptions(
+    releaseConfig: Catcher2Options(
       SilentReportMode(),
       [
         if (arguments["verbose"] ?? false) ConsoleHandler(),
