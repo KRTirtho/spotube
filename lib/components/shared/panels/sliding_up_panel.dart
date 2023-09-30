@@ -377,7 +377,10 @@ class SlidingUpPanelState extends State<SlidingUpPanel>
 
                               // if the panel is open ignore pointers (touch events) on the collapsed
                               // child so that way touch events go through to whatever is underneath
-                              child: widget.collapsed,
+                              child: IgnorePointer(
+                                ignoring: _animationController.value == 1.0,
+                                child: widget.collapsed,
+                              ),
                             ),
                     ),
                   ),

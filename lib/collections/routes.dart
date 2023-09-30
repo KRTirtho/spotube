@@ -19,7 +19,6 @@ import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/desktop_login/login_tutorial.dart';
 import 'package:spotube/pages/desktop_login/desktop_login.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/pages/player/player.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
@@ -152,15 +151,6 @@ final router = GoRouter(
       parentNavigatorKey: rootNavigatorKey,
       pageBuilder: (context, state) =>
           const SpotubePage(child: LastFMLoginPage()),
-    ),
-    GoRoute(
-      path: "/player",
-      parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) {
-        return const SpotubePage(
-          child: PlayerView(),
-        );
-      },
     ),
   ],
 );

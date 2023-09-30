@@ -248,9 +248,11 @@ class UserPreferences extends PersistedChangeNotifier {
 
   void setSystemTitleBar(bool isSystemTitleBar) {
     systemTitleBar = isSystemTitleBar;
-    DesktopTools.window.setTitleBarStyle(
-      systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-    );
+    if (DesktopTools.platform.isDesktop) {
+      DesktopTools.window.setTitleBarStyle(
+        systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+      );
+    }
     notifyListeners();
     updatePersistence();
   }
@@ -286,6 +288,7 @@ class UserPreferences extends PersistedChangeNotifier {
     recommendationMarket = Market.values.firstWhere(
       (market) =>
           market.name == (map["recommendationMarket"] ?? recommendationMarket),
+      orElse: () => Market.US,
     );
     checkUpdate = map["checkUpdate"] ?? checkUpdate;
 

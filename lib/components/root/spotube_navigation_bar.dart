@@ -56,7 +56,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     }
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 100),
       height: panelHeight,
       child: ClipRect(
         child: BackdropFilter(

@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/components/player/player_track_details.dart';
@@ -11,7 +10,7 @@ import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/hooks/use_progress.dart';
-import 'package:spotube/pages/player/player.dart';
+import 'package:spotube/components/player/player.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -52,13 +51,14 @@ class PlayerOverlay extends HookConsumerWidget {
     }, []);
 
     return SlidingUpPanel(
-      maxHeight: mediaQuery.size.height - mediaQuery.padding.top,
+      maxHeight: mediaQuery.size.height,
       backdropEnabled: false,
       minHeight: canShow ? 53 : 0,
       onPanelSlide: (position) {
         final invertedPosition = 1 - position;
         ref.read(navigationPanelHeight.notifier).state = 50 * invertedPosition;
       },
+      controller: panelController,
       collapsed: ClipRRect(
         borderRadius: radius,
         child: BackdropFilter(
@@ -106,18 +106,16 @@ class PlayerOverlay extends HookConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: () =>
-                                    GoRouter.of(context).push("/player"),
-                                child: Container(
-                                  width: double.infinity,
-                                  color: Colors.transparent,
-                                  child: PlayerTrackDetails(
-                                    albumArt: albumArt,
-                                    color: textColor,
-                                  ),
+                            child: GestureDetector(
+                              onTap: () {
+                                panelController.open();
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                color: Colors.transparent,
+                                child: PlayerTrackDetails(
+                                  albumArt: albumArt,
+                                  color: textColor,
                                 ),
                               ),
                             ),
@@ -186,7 +184,14 @@ class PlayerOverlay extends HookConsumerWidget {
           decoration: navigationHeight == 0
               ? const BoxDecoration(borderRadius: BorderRadius.zero)
               : const BoxDecoration(borderRadius: radius),
-          child: const PlayerView(),
+          child: HorizontalScrollableWidget(
+            child: PlayerView(
+              isOpen: panelController.isPanelOpen,
+              onClosePage: () {
+                panelController.close();
+              },
+            ),
+          ),
         );
       },
     );
