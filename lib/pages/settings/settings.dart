@@ -179,7 +179,8 @@ class SettingsPage extends HookConsumerWidget {
                         ),
                         SwitchListTile(
                           secondary: const Icon(SpotubeIcons.amoled),
-                          title: Text(context.l10n.use_amoled_dark_theme),
+                          title: Text(context.l10n.use_amoled_mode),
+                          subtitle: Text(context.l10n.pitch_dark_theme),
                           value: preferences.amoledDarkTheme,
                           onChanged: preferences.setAmoledDarkTheme,
                         ),
@@ -372,7 +373,7 @@ class SettingsPage extends HookConsumerWidget {
                           trailing: const Icon(SpotubeIcons.angleRight),
                         ),
                         SwitchListTile(
-                          secondary: const Icon(SpotubeIcons.playlistRemove),
+                          secondary: const Icon(SpotubeIcons.normalize),
                           title: Text(context.l10n.normalize_audio),
                           subtitle: Text(context.l10n.blacklist_description),
                           value: preferences.normalizeAudio,
