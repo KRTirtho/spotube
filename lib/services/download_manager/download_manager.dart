@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:spotube/models/logger.dart';
 import 'package:spotube/services/download_manager/chunked_download.dart';
 import 'package:spotube/services/download_manager/download_request.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
@@ -22,6 +23,7 @@ typedef DownloadStatusEvent = ({
 });
 
 class DownloadManager {
+  final logger = getLogger("DownloadManager");
   final Map<String, DownloadTask> _cache = <String, DownloadTask>{};
   final Queue<DownloadRequest> _queue = Queue();
   var dio = Dio();
@@ -73,7 +75,7 @@ class DownloadManager {
       }
       setStatus(task, DownloadStatus.downloading);
 
-      debugPrint("[DownloadManager] $url");
+      logger.d("[DownloadManager] $url");
       final file = File(savePath.toString());
       partialFilePath = savePath + partialExtension;
       partialFile = File(partialFilePath);
@@ -82,10 +84,10 @@ class DownloadManager {
       final partialFileExist = await partialFile.exists();
 
       if (fileExist) {
-        debugPrint("[DownloadManager] File Exists");
+        logger.d("[DownloadManager] File Exists");
         setStatus(task, DownloadStatus.completed);
       } else if (partialFileExist) {
-        debugPrint("[DownloadManager] Partial File Exists");
+        logger.d("[DownloadManager] Partial File Exists");
 
         final partialFileLength = await partialFile.length();
 
@@ -205,7 +207,7 @@ class DownloadManager {
   }
 
   Future<void> pauseDownload(String url) async {
-    debugPrint("[DownloadManager] Pause Download");
+    logger.d("[DownloadManager] Pause Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.paused);
     task.request.cancelToken.cancel();
@@ -214,7 +216,7 @@ class DownloadManager {
   }
 
   Future<void> cancelDownload(String url) async {
-    debugPrint("[DownloadManager] Cancel Download");
+    logger.d("[DownloadManager] Cancel Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.canceled);
     _queue.remove(task.request);
@@ -222,7 +224,7 @@ class DownloadManager {
   }
 
   Future<void> resumeDownload(String url) async {
-    debugPrint("[DownloadManager] Resume Download");
+    logger.d("[DownloadManager] Resume Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.downloading);
     task.request.cancelToken = CancelToken();
@@ -388,7 +390,7 @@ class DownloadManager {
 
     while (_queue.isNotEmpty && runningTasks < maxConcurrentTasks) {
       runningTasks++;
-      debugPrint('Concurrent workers: $runningTasks');
+      logger.d('Concurrent workers: $runningTasks');
       var currentRequest = _queue.removeFirst();
 
       await download(

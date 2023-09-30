@@ -35,6 +35,7 @@ void main(List<String> args) {
     );
   }
 
+  // ignore: avoid_print
   print(
     const JsonEncoder.withIndent('  ').convert(
       args.isNotEmpty ? messagesWithValues[args.first] : messagesWithValues,
