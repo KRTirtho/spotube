@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:spotube/models/logger.dart';
 
 /// Generate JSON output for untranslated messages with English values
 /// for quick translation in ChatGPT
@@ -14,8 +13,6 @@ import 'package:spotube/models/logger.dart';
 /// Example: dart bin/untranslated_messages.dart bn
 
 void main(List<String> args) {
-  final logger = getLogger("");
-
   final file = jsonDecode(
     File('untranslated_messages.json').readAsStringSync(),
   ) as Map<String, dynamic>;
@@ -38,7 +35,8 @@ void main(List<String> args) {
     );
   }
 
-  logger.d(
+  // ignore: avoid_print
+  print(
     const JsonEncoder.withIndent('  ').convert(
       args.isNotEmpty ? messagesWithValues[args.first] : messagesWithValues,
     ),

@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:spotube/models/logger.dart';
 
 void main() {
-  final logger = getLogger("");
   Process.run("sh", ["-c", '"./scripts/pkgbuild2json.sh aur-struct/PKGBUILD"'])
       .then((result) {
     try {
@@ -18,7 +16,7 @@ void main() {
       }
     } catch (e) {
       // ignore: avoid_print
-      logger.e("[Failed to parse PKGBUILD] $e");
+      print("[Failed to parse PKGBUILD] $e");
     }
   });
 }

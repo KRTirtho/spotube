@@ -6,11 +6,8 @@ import 'package:http/http.dart';
 import 'package:html/parser.dart';
 import 'package:pub_api_client/pub_api_client.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
-import 'package:spotube/models/logger.dart';
 
 void main() async {
-  final logger = getLogger("");
-
   final client = PubClient();
 
   final pubspec = Pubspec.parse(File('pubspec.yaml').readAsStringSync());
@@ -71,7 +68,8 @@ void main() async {
     ),
   );
 
-  logger.d(
+  // ignore: avoid_print
+  print(
     packageInfo
         .map(
           (package) =>
@@ -79,7 +77,8 @@ void main() async {
         )
         .join('\n'),
   );
-  logger.d(
+  // ignore: avoid_print
+  print(
     gitPubspecs.map(
       (package) {
         final packageUrl = package.homepage ??
