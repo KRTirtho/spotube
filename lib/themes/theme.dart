@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
   final scheme = ColorScheme.fromSeed(
@@ -68,5 +69,14 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
         ),
       ),
     ),
+    scrollbarTheme: DesktopTools.platform.isMobile
+        ? const ScrollbarThemeData(
+            interactive: true,
+            thickness: MaterialStatePropertyAll(18),
+            minThumbLength: 20,
+          )
+        : const ScrollbarThemeData(
+            thickness: MaterialStatePropertyAll(14),
+          ),
   );
 }
