@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/section_card_with_heading.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
@@ -91,47 +92,49 @@ class LogsPage extends HookWidget {
         ],
       ),
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: logs.value.length,
-          itemBuilder: (context, index) {
-            final log = logs.value[index];
-            return Stack(
-              children: [
-                SectionCardWithHeading(
-                  heading: log.date.toString(),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: SelectableText(log.body),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  right: 10,
-                  top: 0,
-                  child: IconButton(
-                    icon: const Icon(SpotubeIcons.clipboard),
-                    onPressed: () async {
-                      await Clipboard.setData(
-                        ClipboardData(text: log.body),
-                      );
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              context.l10n.copied_to_clipboard(
-                                log.date.toString(),
+        child: InterScrollbar(
+          child: ListView.builder(
+            itemCount: logs.value.length,
+            itemBuilder: (context, index) {
+              final log = logs.value[index];
+              return Stack(
+                children: [
+                  SectionCardWithHeading(
+                    heading: log.date.toString(),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SelectableText(log.body),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    right: 10,
+                    top: 0,
+                    child: IconButton(
+                      icon: const Icon(SpotubeIcons.clipboard),
+                      onPressed: () async {
+                        await Clipboard.setData(
+                          ClipboardData(text: log.body),
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                context.l10n.copied_to_clipboard(
+                                  log.date.toString(),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                    },
+                          );
+                        }
+                      },
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
