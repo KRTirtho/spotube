@@ -51,7 +51,8 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     }, [selectedIndex]);
 
     if (layoutMode == LayoutMode.extended ||
-        (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive)) {
+        (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||
+        panelHeight < 10) {
       return const SizedBox();
     }
 

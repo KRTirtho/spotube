@@ -175,21 +175,19 @@ class PlayerOverlay extends HookConsumerWidget {
         ),
       ),
       panelBuilder: (position) {
+        // this is the reason we're getting an update
         final navigationHeight = ref.watch(navigationPanelHeight);
-        if (navigationHeight == 50) return const SizedBox();
 
-        return AnimatedContainer(
-          clipBehavior: Clip.antiAlias,
-          duration: const Duration(milliseconds: 250),
-          decoration: navigationHeight == 0
-              ? const BoxDecoration(borderRadius: BorderRadius.zero)
-              : const BoxDecoration(borderRadius: radius),
-          child: HorizontalScrollableWidget(
-            child: PlayerView(
-              isOpen: panelController.isPanelOpen,
-              onClosePage: () {
-                panelController.close();
-              },
+        return IgnorePointer(
+          ignoring: !panelController.isPanelOpen,
+          child: AnimatedContainer(
+            clipBehavior: Clip.antiAlias,
+            duration: const Duration(milliseconds: 250),
+            decoration: navigationHeight == 0
+                ? const BoxDecoration(borderRadius: BorderRadius.zero)
+                : const BoxDecoration(borderRadius: radius),
+            child: HorizontalScrollableWidget(
+              child: PlayerView(panelController: panelController),
             ),
           ),
         );

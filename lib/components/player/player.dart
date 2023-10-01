@@ -15,6 +15,7 @@ import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
@@ -26,13 +27,10 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
-  final bool isOpen;
-  final Function() onClosePage;
-
+  final PanelController panelController;
   const PlayerView({
     Key? key,
-    required this.isOpen,
-    required this.onClosePage,
+    required this.panelController,
   }) : super(key: key);
 
   @override
@@ -50,7 +48,7 @@ class PlayerView extends HookConsumerWidget {
     useEffect(() {
       if (mediaQuery.lgAndUp) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          onClosePage();
+          panelController.close();
         });
       }
       return null;
@@ -65,35 +63,53 @@ class PlayerView extends HookConsumerWidget {
     );
 
     final palette = usePaletteGenerator(albumArt);
-    final bgColor = palette.dominantColor?.color ?? theme.colorScheme.primary;
     final titleTextColor = palette.dominantColor?.titleTextColor;
     final bodyTextColor = palette.dominantColor?.bodyTextColor;
 
+    final bgColor = palette.dominantColor?.color ?? theme.colorScheme.primary;
+
+    final GlobalKey<ScaffoldState> scaffoldKey =
+        useMemoized(() => GlobalKey(), []);
+
+    useEffect(() {
+      WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
+
+      return () {
+        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = true;
+      };
+    }, [panelController.isPanelOpen]);
+
     useCustomStatusBarColor(
       bgColor,
-      isOpen,
+      panelController.isPanelOpen,
       noSetBGColor: true,
+      automaticSystemUiAdjustment: false,
     );
+
+    final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
 
     return WillPopScope(
       onWillPop: () async {
-        onClosePage();
+        panelController.close();
         return false;
       },
       child: IconTheme(
         data: theme.iconTheme.copyWith(color: bodyTextColor),
         child: Scaffold(
+          key: scaffoldKey,
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: SafeArea(
-              minimum: const EdgeInsets.only(top: 30),
+            preferredSize: Size.fromHeight(
+              kToolbarHeight + topPadding,
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(top: topPadding),
               child: PageWindowTitleBar(
                 backgroundColor: Colors.transparent,
                 foregroundColor: titleTextColor,
                 toolbarOpacity: 1,
                 leading: IconButton(
                   icon: const Icon(SpotubeIcons.angleDown, size: 18),
-                  onPressed: onClosePage,
+                  onPressed: panelController.close,
                 ),
                 actions: [
                   IconButton(
@@ -207,7 +223,7 @@ class PlayerView extends HookConsumerWidget {
                                       color: bodyTextColor,
                                     ),
                                     onRouteChange: (route) {
-                                      onClosePage();
+                                      panelController.close();
                                       GoRouter.of(context).push(route);
                                     },
                                   ),
