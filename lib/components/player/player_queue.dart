@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
@@ -196,21 +197,55 @@ class PlayerQueue extends HookConsumerWidget {
                 const SizedBox(height: 10),
                 if (!isSearching.value && searchText.value.isEmpty)
                   Flexible(
-                    child: ReorderableListView.builder(
-                      onReorder: (oldIndex, newIndex) {
-                        playlistNotifier.moveTrack(oldIndex, newIndex);
-                      },
-                      scrollController: controller,
-                      itemCount: tracks.length,
-                      shrinkWrap: true,
-                      buildDefaultDragHandles: false,
-                      itemBuilder: (context, i) {
-                        final track = tracks.elementAt(i);
-                        return AutoScrollTag(
-                          key: ValueKey(i),
-                          controller: controller,
-                          index: i,
-                          child: Padding(
+                    child: InterScrollbar(
+                      controller: controller,
+                      child: ReorderableListView.builder(
+                        onReorder: (oldIndex, newIndex) {
+                          playlistNotifier.moveTrack(oldIndex, newIndex);
+                        },
+                        scrollController: controller,
+                        itemCount: tracks.length,
+                        shrinkWrap: true,
+                        buildDefaultDragHandles: false,
+                        itemBuilder: (context, i) {
+                          final track = tracks.elementAt(i);
+                          return AutoScrollTag(
+                            key: ValueKey(i),
+                            controller: controller,
+                            index: i,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: TrackTile(
+                                index: i,
+                                track: track,
+                                onTap: () async {
+                                  if (playlist.activeTrack?.id == track.id) {
+                                    return;
+                                  }
+                                  await playlistNotifier.jumpToTrack(track);
+                                },
+                                leadingActions: [
+                                  ReorderableDragStartListener(
+                                    index: i,
+                                    child: const Icon(SpotubeIcons.dragHandle),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                else
+                  Flexible(
+                    child: InterScrollbar(
+                      child: ListView.builder(
+                        itemCount: filteredTracks.length,
+                        itemBuilder: (context, i) {
+                          final track = filteredTracks.elementAt(i);
+                          return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: TrackTile(
@@ -222,38 +257,10 @@ class PlayerQueue extends HookConsumerWidget {
                                 }
                                 await playlistNotifier.jumpToTrack(track);
                               },
-                              leadingActions: [
-                                ReorderableDragStartListener(
-                                  index: i,
-                                  child: const Icon(SpotubeIcons.dragHandle),
-                                ),
-                              ],
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                else
-                  Flexible(
-                    child: ListView.builder(
-                      itemCount: filteredTracks.length,
-                      itemBuilder: (context, i) {
-                        final track = filteredTracks.elementAt(i);
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: TrackTile(
-                            index: i,
-                            track: track,
-                            onTap: () async {
-                              if (playlist.activeTrack?.id == track.id) {
-                                return;
-                              }
-                              await playlistNotifier.jumpToTrack(track);
-                            },
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
               ],

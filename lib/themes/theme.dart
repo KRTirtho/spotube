@@ -69,14 +69,8 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
         ),
       ),
     ),
-    scrollbarTheme: DesktopTools.platform.isMobile
-        ? const ScrollbarThemeData(
-            interactive: true,
-            thickness: MaterialStatePropertyAll(18),
-            minThumbLength: 20,
-          )
-        : const ScrollbarThemeData(
-            thickness: MaterialStatePropertyAll(14),
-          ),
+    scrollbarTheme: const ScrollbarThemeData(
+      thickness: MaterialStatePropertyAll(14),
+    ),
   );
 }

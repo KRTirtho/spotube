@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
@@ -79,59 +80,62 @@ class UserPlaylists extends HookConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: playlistsQuery.refresh,
-      child: SingleChildScrollView(
+      child: InterScrollbar(
         controller: controller,
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Waypoint(
+        child: SingleChildScrollView(
           controller: controller,
-          onTouchEdge: () {
-            if (playlistsQuery.hasNextPage) {
-              playlistsQuery.fetchNext();
-            }
-          },
-          child: SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: SearchBar(
-                    onChanged: (value) => searchText.value = value,
-                    hintText: context.l10n.filter_playlists,
-                    leading: const Icon(SpotubeIcons.filter),
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Waypoint(
+            controller: controller,
+            onTouchEdge: () {
+              if (playlistsQuery.hasNextPage) {
+                playlistsQuery.fetchNext();
+              }
+            },
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: SearchBar(
+                      onChanged: (value) => searchText.value = value,
+                      hintText: context.l10n.filter_playlists,
+                      leading: const Icon(SpotubeIcons.filter),
+                    ),
                   ),
-                ),
-                AnimatedCrossFade(
-                  duration: const Duration(milliseconds: 300),
-                  crossFadeState: playlistsQuery.isLoadingPage ||
-                          !playlistsQuery.hasPageData
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  firstChild:
-                      const Center(child: ShimmerPlaybuttonCard(count: 7)),
-                  secondChild: Wrap(
-                    runSpacing: 10,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          const SizedBox(width: 10),
-                          const PlaylistCreateDialogButton(),
-                          const SizedBox(width: 10),
-                          ElevatedButton.icon(
-                            icon: const Icon(SpotubeIcons.magic),
-                            label: Text(context.l10n.generate_playlist),
-                            onPressed: () {
-                              GoRouter.of(context).push("/library/generate");
-                            },
-                          ),
-                          const SizedBox(width: 10),
-                        ],
-                      ),
-                      ...playlists.map((playlist) => PlaylistCard(playlist))
-                    ],
+                  AnimatedCrossFade(
+                    duration: const Duration(milliseconds: 300),
+                    crossFadeState: playlistsQuery.isLoadingPage ||
+                            !playlistsQuery.hasPageData
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    firstChild:
+                        const Center(child: ShimmerPlaybuttonCard(count: 7)),
+                    secondChild: Wrap(
+                      runSpacing: 10,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            const SizedBox(width: 10),
+                            const PlaylistCreateDialogButton(),
+                            const SizedBox(width: 10),
+                            ElevatedButton.icon(
+                              icon: const Icon(SpotubeIcons.magic),
+                              label: Text(context.l10n.generate_playlist),
+                              onPressed: () {
+                                GoRouter.of(context).push("/library/generate");
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+                        ...playlists.map((playlist) => PlaylistCard(playlist))
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

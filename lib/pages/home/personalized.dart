@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
@@ -96,6 +97,7 @@ class PersonalizedPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final controller = useScrollController();
     final auth = ref.watch(AuthenticationNotifier.provider);
     final featuredPlaylistsQuery = useQueries.playlist.featured(ref);
     final playlists = useMemoized(
@@ -124,40 +126,46 @@ class PersonalizedPage extends HookConsumerWidget {
       [newReleases.pages],
     );
 
-    return ListView(
-      children: [
-        if (!featuredPlaylistsQuery.hasPageData)
-          const ShimmerCategories()
-        else
-          PersonalizedItemCard(
-            playlists: playlists,
-            title: context.l10n.featured,
-            hasNextPage: featuredPlaylistsQuery.hasNextPage,
-            onFetchMore: featuredPlaylistsQuery.fetchNext,
-          ),
-        if (auth != null && newReleases.hasPageData && userArtistsQuery.hasData)
-          PersonalizedItemCard(
-            albums: albums,
-            title: context.l10n.new_releases,
-            hasNextPage: newReleases.hasNextPage,
-            onFetchMore: newReleases.fetchNext,
-          ),
-        ...?madeForUser.data?["content"]?["items"]?.map((item) {
-          final playlists = item["content"]?["items"]
-                  ?.where((itemL2) => itemL2["type"] == "playlist")
-                  .map((itemL2) => PlaylistSimple.fromJson(itemL2))
-                  .toList()
-                  .cast<PlaylistSimple>() ??
-              <PlaylistSimple>[];
-          if (playlists.isEmpty) return const SizedBox.shrink();
-          return PersonalizedItemCard(
-            playlists: playlists,
-            title: item["name"] ?? "",
-            hasNextPage: false,
-            onFetchMore: () {},
-          );
-        })
-      ],
+    return InterScrollbar(
+      controller: controller,
+      child: ListView(
+        controller: controller,
+        children: [
+          if (!featuredPlaylistsQuery.hasPageData)
+            const ShimmerCategories()
+          else
+            PersonalizedItemCard(
+              playlists: playlists,
+              title: context.l10n.featured,
+              hasNextPage: featuredPlaylistsQuery.hasNextPage,
+              onFetchMore: featuredPlaylistsQuery.fetchNext,
+            ),
+          if (auth != null &&
+              newReleases.hasPageData &&
+              userArtistsQuery.hasData)
+            PersonalizedItemCard(
+              albums: albums,
+              title: context.l10n.new_releases,
+              hasNextPage: newReleases.hasNextPage,
+              onFetchMore: newReleases.fetchNext,
+            ),
+          ...?madeForUser.data?["content"]?["items"]?.map((item) {
+            final playlists = item["content"]?["items"]
+                    ?.where((itemL2) => itemL2["type"] == "playlist")
+                    .map((itemL2) => PlaylistSimple.fromJson(itemL2))
+                    .toList()
+                    .cast<PlaylistSimple>() ??
+                <PlaylistSimple>[];
+            if (playlists.isEmpty) return const SizedBox.shrink();
+            return PersonalizedItemCard(
+              playlists: playlists,
+              title: item["name"] ?? "",
+              hasNextPage: false,
+              onFetchMore: () {},
+            );
+          })
+        ],
+      ),
     );
   }
 }

@@ -17,6 +17,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
@@ -286,24 +287,26 @@ class UserLocalTracks extends HookConsumerWidget {
                 onRefresh: () async {
                   ref.refresh(localTracksProvider);
                 },
-                child: ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: filteredTracks.length,
-                  itemBuilder: (context, index) {
-                    final track = filteredTracks[index];
-                    return TrackTile(
-                      index: index,
-                      track: track,
-                      userPlaylist: false,
-                      onTap: () async {
-                        await playLocalTracks(
-                          ref,
-                          sortedTracks,
-                          currentTrack: track,
-                        );
-                      },
-                    );
-                  },
+                child: InterScrollbar(
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: filteredTracks.length,
+                    itemBuilder: (context, index) {
+                      final track = filteredTracks[index];
+                      return TrackTile(
+                        index: index,
+                        track: track,
+                        userPlaylist: false,
+                        onTap: () async {
+                          await playLocalTracks(
+                            ref,
+                            sortedTracks,
+                            currentTrack: track,
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             );

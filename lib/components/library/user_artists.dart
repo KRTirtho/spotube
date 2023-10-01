@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/artist/artist_card.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -78,18 +79,21 @@ class UserArtists extends HookConsumerWidget {
               onRefresh: () async {
                 await artistQuery.refresh();
               },
-              child: SingleChildScrollView(
+              child: InterScrollbar(
                 controller: controller,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SafeArea(
-                    child: Center(
-                      child: Wrap(
-                        spacing: 15,
-                        runSpacing: 5,
-                        children: filteredArtists
-                            .mapIndexed((index, artist) => ArtistCard(artist))
-                            .toList(),
+                child: SingleChildScrollView(
+                  controller: controller,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: SafeArea(
+                      child: Center(
+                        child: Wrap(
+                          spacing: 15,
+                          runSpacing: 5,
+                          children: filteredArtists
+                              .mapIndexed((index, artist) => ArtistCard(artist))
+                              .toList(),
+                        ),
                       ),
                     ),
                   ),
