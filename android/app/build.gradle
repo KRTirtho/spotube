@@ -82,6 +82,12 @@ android {
             applicationIdSuffix ".nightly"
             versionNameSuffix "-nightly"
         }
+        dev {
+            dimension "default"
+            resValue "string", "app_name", "Spotube Dev"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
         stable {
             dimension "default"
             resValue "string", "app_name", "Spotube"
