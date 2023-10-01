@@ -178,7 +178,7 @@ class PlayerOverlay extends HookConsumerWidget {
         // this is the reason we're getting an update
         final navigationHeight = ref.watch(navigationPanelHeight);
 
-        if (!panelController.isPanelOpen) return const SizedBox();
+        if (navigationHeight == 50) return const SizedBox();
 
         return IgnorePointer(
           ignoring: !panelController.isPanelOpen,
