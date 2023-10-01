@@ -71,6 +71,8 @@ class TracksTableView extends HookConsumerWidget {
     final searchController = useTextEditingController();
     final searchFocus = useFocusNode();
 
+    final controller = useScrollController();
+
     // this will trigger update on each change in searchController
     useValueListenable(searchController);
 
@@ -210,14 +212,16 @@ class TracksTableView extends HookConsumerWidget {
                           }
                         case "add-to-playlist":
                           {
-                            await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return PlaylistAddTrackDialog(
-                                  tracks: selectedTracks.toList(),
-                                );
-                              },
-                            );
+                            if (context.mounted) {
+                              await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return PlaylistAddTrackDialog(
+                                    tracks: selectedTracks.toList(),
+                                  );
+                                },
+                              );
+                            }
                             break;
                           }
                         case "play-next":
@@ -348,11 +352,16 @@ class TracksTableView extends HookConsumerWidget {
     if (isSliver) {
       return SliverSafeArea(
         top: false,
-        sliver: SliverList(delegate: SliverChildListDelegate(children)),
+        sliver: SliverList(
+          delegate: SliverChildListDelegate(children),
+        ),
       );
     }
     return SafeArea(
-      child: ListView(children: children),
+      child: ListView(
+        controller: controller,
+        children: children,
+      ),
     );
   }
 }
