@@ -59,7 +59,7 @@ dependencies:
   go_router: ^10.0.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  hooks_riverpod: ^2.1.1
+  hooks_riverpod: ^2.4.2
   html: ^0.15.1
   http: ^1.1.0
   image_picker: ^1.0.4

@@ -813,10 +813,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_riverpod
-      sha256: "1bd39b04f1bcd217a969589777ca6bd642d116e3e5de65c3e6a8e8bdd8b178ec"
+      sha256: "890a872705cdbda11efd2bff2f672f1c8180b86b9509490822ee96a3e20cd4aa"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.2"
   flutter_rust_bridge:
     dependency: transitive
     description:
@@ -1020,10 +1020,10 @@ packages:
     dependency: "direct main"
     description:
       name: hooks_riverpod
-      sha256: ad7b877c3687e38764633d221a1f65491bc7a540e724101e9a404a84db2a4276
+      sha256: ffd7078949ac3903d53f2a58c5f62c3031b60b2a8b0765c4f2cf0f82021b1fad
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.2"
   html:
     dependency: "direct main"
     description:
@@ -1673,10 +1673,10 @@ packages:
     dependency: transitive
     description:
       name: riverpod
-      sha256: a600120d6f213a9922860eea1abc32597436edd5b2c4e73b91410f8c2af67d22
+      sha256: ff676bd8a715c7085692fe4919564f78fb90d33b10a1c5c14e740581857cc914
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.1"
   rxdart:
     dependency: transitive
     description:
