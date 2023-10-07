@@ -1273,58 +1273,58 @@ packages:
     dependency: transitive
     description:
       name: media_kit_libs_android_audio
-      sha256: "109f5907b4ba2b464e7dc8fcc3062900a9fdce1fdf81e43a9fe1722c3e5fe618"
+      sha256: "1d9ba8814e58a12ae69014884abf96893d38e444abfb806ff38896dfe089dd15"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.3"
+    version: "1.3.5"
   media_kit_libs_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_audio
-      sha256: "67c0644ffd61df4c64d914e52a7ea344737e23301f5f5d7c72002ba3617d1d0b"
+      sha256: "9ccf9019edc220b8d0bfa1f53a91aa2cf2506ac860b4d5774c9d6bbdd49796ca"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   media_kit_libs_ios_audio:
     dependency: transitive
     description:
       name: media_kit_libs_ios_audio
-      sha256: b121cb552f644813993af9baa0fe34082759bbdc8920b3580b5b17ff4eccc1b8
+      sha256: "78ccf04e27d6b4ba00a355578ccb39b772f00d48269a6ac3db076edf2d51934f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.3"
+    version: "1.1.4"
   media_kit_libs_linux:
     dependency: transitive
     description:
       name: media_kit_libs_linux
-      sha256: "3b7c272179639a914dc8a50bf8a3f2df0e9a503bd727c88fab499dbdf6cb1eb8"
+      sha256: e186891c31daa6bedab4d74dcdb4e8adfccc7d786bfed6ad81fe24a3b3010310
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.3"
   media_kit_libs_macos_audio:
     dependency: transitive
     description:
       name: media_kit_libs_macos_audio
-      sha256: c50a0feee961b7c9d4b9b367f94ce8415938b095ef0cc3d975b9c1f27e76e394
+      sha256: "3be21844df98f286de32808592835073cdef2c1a10078bac135da790badca950"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.3"
+    version: "1.1.4"
   media_kit_libs_windows_audio:
     dependency: transitive
     description:
       name: media_kit_libs_windows_audio
-      sha256: "9f2dda645ef2d28f7945259848a6dcc6b0b36cb537d8e79d59d5054f08dbce13"
+      sha256: c2fd558cc87b9d89a801141fcdffe02e338a3b21a41a18fbd63d5b221a1b8e53
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.9"
   media_kit_native_event_loop:
     dependency: transitive
     description:
       name: media_kit_native_event_loop
-      sha256: e37ce6fb5fa71b8cf513c6a6cd591367743a342a385e7da621a047dd8ef6f4a4
+      sha256: a605cf185499d14d58935b8784955a92a4bf0ff4e19a23de3d17a9106303930e
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.7"
+    version: "1.0.8"
   meta:
     dependency: transitive
     description:
