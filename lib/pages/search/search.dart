@@ -72,7 +72,10 @@ class SearchPage extends HookConsumerWidget {
 
     final queries = [searchTrack, searchAlbum, searchPlaylist, searchArtist];
     final isFetching = queries.every(
-          (s) => s.isLoadingPage || s.isRefreshingPage || !s.hasPageData,
+          (s) =>
+              (!s.hasPageData && !s.hasPageError) ||
+              s.isRefreshingPage ||
+              !s.hasPageData,
         ) &&
         searchTerm.isNotEmpty;
 
@@ -120,7 +123,9 @@ class SearchPage extends HookConsumerWidget {
                           style: theme.textTheme.titleLarge!,
                         ),
                       ),
-                    if (searchTrack.isLoadingPage)
+                    if (!searchTrack.hasPageData &&
+                        !searchTrack.hasPageError &&
+                        !searchTrack.isLoadingNextPage)
                       const CircularProgressIndicator()
                     else if (searchTrack.hasPageError)
                       Text(
@@ -160,10 +165,10 @@ class SearchPage extends HookConsumerWidget {
                     if (searchTrack.hasNextPage && tracks.isNotEmpty)
                       Center(
                         child: TextButton(
-                          onPressed: searchTrack.isRefreshingPage
+                          onPressed: searchTrack.isLoadingNextPage
                               ? null
                               : () => searchTrack.fetchNext(),
-                          child: searchTrack.isRefreshingPage
+                          child: searchTrack.isLoadingNextPage
                               ? const CircularProgressIndicator()
                               : Text(context.l10n.load_more),
                         ),
@@ -216,7 +221,8 @@ class SearchPage extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    if (searchPlaylist.isLoadingPage)
+                    if (!searchPlaylist.hasPageData &&
+                        !searchPlaylist.hasPageError)
                       const CircularProgressIndicator(),
                     if (searchPlaylist.hasPageError)
                       Padding(
@@ -274,7 +280,7 @@ class SearchPage extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    if (searchArtist.isLoadingPage)
+                    if (!searchArtist.hasPageData && !searchArtist.hasPageError)
                       const CircularProgressIndicator(),
                     if (searchArtist.hasPageError)
                       Padding(
@@ -330,7 +336,7 @@ class SearchPage extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    if (searchAlbum.isLoadingPage)
+                    if (!searchAlbum.hasPageData && !searchAlbum.hasPageError)
                       const CircularProgressIndicator(),
                     if (searchAlbum.hasPageError)
                       Padding(
@@ -363,7 +369,8 @@ class SearchPage extends HookConsumerWidget {
                     ),
                     color: theme.scaffoldBackgroundColor,
                     child: TextField(
-                      autofocus: queries.none((s) => s.hasPageData),
+                      autofocus:
+                          queries.none((s) => s.hasPageData && !s.hasPageError),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(SpotubeIcons.search),
                         hintText: "${context.l10n.search}...",

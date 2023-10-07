@@ -105,8 +105,9 @@ class UserPlaylists extends HookConsumerWidget {
                   ),
                   AnimatedCrossFade(
                     duration: const Duration(milliseconds: 300),
-                    crossFadeState: playlistsQuery.isLoadingPage ||
-                            !playlistsQuery.hasPageData
+                    crossFadeState: !playlistsQuery.hasPageData &&
+                            !playlistsQuery.hasPageError &&
+                            !playlistsQuery.isLoadingNextPage
                         ? CrossFadeState.showFirst
                         : CrossFadeState.showSecond,
                     firstChild:

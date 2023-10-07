@@ -581,26 +581,26 @@ packages:
     dependency: "direct main"
     description:
       name: fl_query
-      sha256: "3d71cd1eeb3232efa5e32363a351d74fd9ff07c6eb80aeb672b1970962764945"
+      sha256: a97bd9234c3e8aefe43735d0ac6b7153154ea7aeeac123b0621afb0e4dca3291
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.4"
+    version: "1.0.0-alpha.5"
   fl_query_devtools:
     dependency: "direct main"
     description:
       name: fl_query_devtools
-      sha256: "72fac45293902b9f99c726609cd5416573566cce0b7c6e27311efde7fdf1b8b1"
+      sha256: e827512a8601ba57272a9171581e789ffb68375a8a86c994750b45f8cdc0a993
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-alpha.2"
+    version: "0.1.0-alpha.3"
   fl_query_hooks:
     dependency: "direct main"
     description:
       name: fl_query_hooks
-      sha256: "7f0880696666714f77981777509a8aedb765857dcdbdde23e623da20a24c4ae0"
+      sha256: "97ad03d0d2d506353d8f3de62ac2aa0b465d85827d15641e3e4b76b16e0a5bbd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.4+1"
+    version: "1.0.0-alpha.5"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -821,10 +821,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: a2ff791f96ed03be0d4a8d249130688371ab3612ef95efeddef23600b904a1ef
+      sha256: e12415c3bce49bcbc3fed383f0ea41ad7d828f6cf0eccba0588ffa5a812fe522
       url: "https://pub.dev"
     source: hosted
-    version: "1.81.0"
+    version: "1.82.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -1337,10 +1337,10 @@ packages:
     dependency: "direct main"
     description:
       name: metadata_god
-      sha256: "562c223d83a7bbf0a289ed0d5ed6a8cf8d94d673263203e9ff4930b44bd2f066"
+      sha256: cf13931c39eba0b9443d16e8940afdabee125bf08945f18d4c0d02bcae2a3317
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.2+1"
   mime:
     dependency: "direct main"
     description:
@@ -1839,10 +1839,10 @@ packages:
     dependency: "direct main"
     description:
       name: smtc_windows
-      sha256: dd86d0f29b5a73ffed5650279e6abee01846017b9bc16c07c708e129648c08ac
+      sha256: aba2bad5ddfaf595496db04df3d9fdb54fb128fc1f39c8f024945a67455388fe
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   source_gen:
     dependency: transitive
     description:

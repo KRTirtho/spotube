@@ -32,9 +32,9 @@ dependencies:
   duration: ^3.0.12
   envied: ^0.3.0
   file_selector: ^1.0.1
-  fl_query: ^1.0.0-alpha.4
-  fl_query_hooks: ^1.0.0-alpha.4+1
-  fl_query_devtools: ^0.1.0-alpha.2
+  fl_query: ^1.0.0-alpha.5
+  fl_query_hooks: ^1.0.0-alpha.5
+  fl_query_devtools: ^0.1.0-alpha.3
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
@@ -70,7 +70,7 @@ dependencies:
   logger: ^2.0.2
   media_kit: ^1.1.3
   media_kit_libs_audio: ^1.0.1
-  metadata_god: ^0.5.0
+  metadata_god: ^0.5.2+1
   mime: ^1.0.2
   package_info_plus: ^4.1.0
   palette_generator: ^0.3.3
@@ -87,7 +87,7 @@ dependencies:
   shared_preferences: ^2.0.11
   sidebarx: ^0.15.0
   skeleton_text: ^3.0.1
-  smtc_windows: ^0.1.0
+  smtc_windows: ^0.1.1
   spotify: ^0.12.0
   stroke_text: ^0.0.2
   supabase: ^1.9.9
