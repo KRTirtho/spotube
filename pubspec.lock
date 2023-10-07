@@ -940,10 +940,10 @@ packages:
     dependency: "direct main"
     description:
       name: fuzzywuzzy
-      sha256: f685751951297e560361b6416d9ba62d40231599d7b3e8c078318990d3bab84a
+      sha256: a84b99ebb21c448e02267070c91b218b4fbbef9c668b344aaeada49865985cae
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "1.1.6"
   glob:
     dependency: transitive
     description:

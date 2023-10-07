@@ -54,7 +54,7 @@ dependencies:
   flutter_secure_storage: ^8.0.0
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
-  fuzzywuzzy: ^0.2.0
+  fuzzywuzzy: ^1.1.6
   google_fonts: ^5.1.0
   go_router: ^10.0.0
   hive: ^2.2.3
