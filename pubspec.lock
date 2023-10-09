@@ -261,10 +261,10 @@ packages:
     dependency: "direct main"
     description:
       name: catcher_2
-      sha256: "8a33bfa845de8aa4306e607d8c76a52b0f111576089f9f329270d56023900ad2"
+      sha256: "73e251057b1b59442d58b5109d26401cfed850df21da44b028338d4f85f69105"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.1"
+    version: "1.0.0"
   change_case:
     dependency: transitive
     description:
