@@ -20,7 +20,7 @@ dependencies:
   auto_size_text: ^3.0.0
   buttons_tabbar: ^1.3.6
   cached_network_image: ^3.3.0
-  catcher_2: 1.0.0-alpha.1
+  catcher_2: 1.0.0
   collection: ^1.15.0
   cupertino_icons: ^1.0.5
   curved_navigation_bar: ^1.0.3
@@ -49,9 +49,9 @@ dependencies:
   flutter_inappwebview: ^5.7.2+3
   flutter_localizations:
     sdk: flutter
-  flutter_native_splash: ^2.2.19
+  flutter_native_splash: ^2.3.3
   flutter_riverpod: ^2.4.3
-  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage: ^9.0.0
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
   fuzzywuzzy: ^1.1.6
@@ -76,7 +76,7 @@ dependencies:
   palette_generator: ^0.3.3
   path: ^1.8.0
   path_provider: ^2.0.8
-  permission_handler: ^10.2.0
+  permission_handler: ^11.0.1
   piped_client: ^0.1.0
   popover: ^0.2.6+3
   scrobblenaut:
