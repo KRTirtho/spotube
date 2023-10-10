@@ -51,7 +51,7 @@ dependencies:
     sdk: flutter
   flutter_native_splash: ^2.2.19
   flutter_riverpod: ^2.4.3
-  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage: ^9.0.0
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
   fuzzywuzzy: ^1.1.6
