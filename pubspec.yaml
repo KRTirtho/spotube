@@ -63,7 +63,6 @@ dependencies:
   html: ^0.15.1
   http: ^1.1.0
   image_picker: ^1.0.4
-  internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.1

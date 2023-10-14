@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
+import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
@@ -52,44 +51,43 @@ class RootApp extends HookConsumerWidget {
       });
 
       final subscription =
-          InternetConnectionChecker().onStatusChange.listen((status) {
-        switch (status) {
-          case InternetConnectionStatus.connected:
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      SpotubeIcons.wifi,
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(context.l10n.connection_restored),
-                  ],
-                ),
-                backgroundColor: theme.colorScheme.primary,
-                showCloseIcon: true,
-                width: 350,
+          QueryClient.connectivity.onConnectivityChanged.listen((status) {
+        if (status) {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(
+                    SpotubeIcons.wifi,
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.connection_restored),
+                ],
               ),
-            );
-          case InternetConnectionStatus.disconnected:
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      SpotubeIcons.noWifi,
-                      color: theme.colorScheme.onError,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(context.l10n.you_are_offline),
-                  ],
-                ),
-                backgroundColor: theme.colorScheme.error,
-                showCloseIcon: true,
-                width: 300,
+              backgroundColor: theme.colorScheme.primary,
+              showCloseIcon: true,
+              width: 350,
+            ),
+          );
+        } else {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(
+                    SpotubeIcons.noWifi,
+                    color: theme.colorScheme.onError,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.you_are_offline),
+                ],
               ),
-            );
+              backgroundColor: theme.colorScheme.error,
+              showCloseIcon: true,
+              width: 300,
+            ),
+          );
         }
       });
 

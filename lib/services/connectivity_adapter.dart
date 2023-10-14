@@ -1,12 +1,95 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:fl_query/fl_query.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:flutter/widgets.dart';
 
-class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter {
-  @override
-  Future<bool> get isConnected => InternetConnectionChecker().hasConnection;
+class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
+    with WidgetsBindingObserver {
+  final _connectionStreamController = StreamController<bool>.broadcast();
+
+  FlQueryInternetConnectionCheckerAdapter() : super() {
+    Timer.periodic(const Duration(minutes: 3), (timer) async {
+      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.paused) {
+        return;
+      }
+      await isConnected;
+    });
+  }
 
   @override
-  Stream<bool> get onConnectivityChanged => InternetConnectionChecker()
-      .onStatusChange
-      .map((status) => status == InternetConnectionStatus.connected);
+  didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      await isConnected;
+    }
+  }
+
+  final vpnNames = [
+    'tun',
+    'tap',
+    'ppp',
+    'pptp',
+    'l2tp',
+    'ipsec',
+    'vpn',
+    'wireguard',
+    'openvpn',
+    'softether',
+    'proton',
+    'strongswan',
+    'cisco',
+    'forticlient',
+    'fortinet',
+    'hideme',
+    'hidemy',
+    'hideman',
+    'hidester',
+    'lightway',
+  ];
+
+  Future<bool> isVpnActive() async {
+    final interfaces = await NetworkInterface.list(
+      includeLoopback: false,
+      type: InternetAddressType.any,
+    );
+
+    if (interfaces.isEmpty) {
+      return false;
+    }
+
+    return interfaces.any(
+      (interface) =>
+          vpnNames.any((name) => interface.name.toLowerCase().contains(name)),
+    );
+  }
+
+  Future<bool> doesConnectTo(String address) async {
+    try {
+      final result = await InternetAddress.lookup(address);
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+      return false;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> _isConnected() async {
+    return await doesConnectTo('google.com') ||
+        await doesConnectTo('www.baidu.com') || // for China
+        await isVpnActive(); // when VPN is active that means we are connected
+  }
+
+  @override
+  Future<bool> get isConnected async {
+    final connected = await _isConnected();
+    if (connected != isConnectedSync /*previous value*/) {
+      _connectionStreamController.add(connected);
+    }
+    return connected;
+  }
+
+  @override
+  Stream<bool> get onConnectivityChanged => _connectionStreamController.stream;
 }
