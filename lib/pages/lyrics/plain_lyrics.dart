@@ -104,7 +104,7 @@ class PlainLyrics extends HookConsumerWidget {
                                     ? 1.7
                                     : 2,
                           ),
-                          child: Text(
+                          child: SelectableText(
                             lyrics == null && playlist.activeTrack == null
                                 ? "No Track being played currently"
                                 : lyrics ?? "",
