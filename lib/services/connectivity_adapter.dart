@@ -9,11 +9,21 @@ class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
   final _connectionStreamController = StreamController<bool>.broadcast();
 
   FlQueryInternetConnectionCheckerAdapter() : super() {
-    Timer.periodic(const Duration(minutes: 3), (timer) async {
-      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.paused) {
-        return;
+    Timer? timer;
+
+    onConnectivityChanged.listen((connected) {
+      if (!connected && timer == null) {
+        timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+          if (WidgetsBinding.instance.lifecycleState ==
+              AppLifecycleState.paused) {
+            return;
+          }
+          await isConnected;
+        });
+      } else {
+        timer?.cancel();
+        timer = null;
       }
-      await isConnected;
     });
   }
 

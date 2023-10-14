@@ -95,62 +95,64 @@ class PlayerView extends HookConsumerWidget {
       },
       child: IconTheme(
         data: theme.iconTheme.copyWith(color: bodyTextColor),
-        child: Scaffold(
-          key: scaffoldKey,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(
-              kToolbarHeight + topPadding,
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(top: topPadding),
-              child: PageWindowTitleBar(
-                backgroundColor: Colors.transparent,
-                foregroundColor: titleTextColor,
-                toolbarOpacity: 1,
-                leading: IconButton(
-                  icon: const Icon(SpotubeIcons.angleDown, size: 18),
-                  onPressed: panelController.close,
+        child: AnimateGradient(
+          animateAlignments: true,
+          primaryBegin: Alignment.topLeft,
+          primaryEnd: Alignment.bottomLeft,
+          secondaryBegin: Alignment.bottomRight,
+          secondaryEnd: Alignment.topRight,
+          duration: const Duration(seconds: 15),
+          primaryColors: [
+            palette.dominantColor?.color ?? theme.colorScheme.primary,
+            palette.mutedColor?.color ?? theme.colorScheme.secondary,
+          ],
+          secondaryColors: [
+            (palette.darkVibrantColor ?? palette.lightVibrantColor)?.color ??
+                theme.colorScheme.primaryContainer,
+            (palette.darkMutedColor ?? palette.lightMutedColor)?.color ??
+                theme.colorScheme.secondaryContainer,
+          ],
+          child: Scaffold(
+            key: scaffoldKey,
+            backgroundColor: Colors.transparent,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(
+                kToolbarHeight + topPadding,
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(top: topPadding),
+                child: PageWindowTitleBar(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: titleTextColor,
+                  toolbarOpacity: 1,
+                  leading: IconButton(
+                    icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                    onPressed: panelController.close,
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(SpotubeIcons.info, size: 18),
+                      tooltip: context.l10n.details,
+                      style:
+                          IconButton.styleFrom(foregroundColor: bodyTextColor),
+                      onPressed: currentTrack == null
+                          ? null
+                          : () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return TrackDetailsDialog(
+                                      track: currentTrack,
+                                    );
+                                  });
+                            },
+                    )
+                  ],
                 ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(SpotubeIcons.info, size: 18),
-                    tooltip: context.l10n.details,
-                    style: IconButton.styleFrom(foregroundColor: bodyTextColor),
-                    onPressed: currentTrack == null
-                        ? null
-                        : () {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return TrackDetailsDialog(
-                                    track: currentTrack,
-                                  );
-                                });
-                          },
-                  )
-                ],
               ),
             ),
-          ),
-          extendBodyBehindAppBar: true,
-          body: AnimateGradient(
-            animateAlignments: true,
-            primaryBegin: Alignment.topLeft,
-            primaryEnd: Alignment.bottomLeft,
-            secondaryBegin: Alignment.bottomRight,
-            secondaryEnd: Alignment.topRight,
-            duration: const Duration(seconds: 15),
-            primaryColors: [
-              palette.dominantColor?.color ?? theme.colorScheme.primary,
-              palette.mutedColor?.color ?? theme.colorScheme.secondary,
-            ],
-            secondaryColors: [
-              (palette.darkVibrantColor ?? palette.lightVibrantColor)?.color ??
-                  theme.colorScheme.primaryContainer,
-              (palette.darkMutedColor ?? palette.lightMutedColor)?.color ??
-                  theme.colorScheme.secondaryContainer,
-            ],
-            child: SingleChildScrollView(
+            extendBodyBehindAppBar: true,
+            body: SingleChildScrollView(
               child: Container(
                 alignment: Alignment.center,
                 width: double.infinity,

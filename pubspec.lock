@@ -580,26 +580,29 @@ packages:
   fl_query:
     dependency: "direct main"
     description:
-      name: fl_query
-      sha256: a97bd9234c3e8aefe43735d0ac6b7153154ea7aeeac123b0621afb0e4dca3291
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/fl_query"
+      ref: HEAD
+      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
     version: "1.0.0-alpha.5"
   fl_query_devtools:
     dependency: "direct main"
     description:
-      name: fl_query_devtools
-      sha256: e827512a8601ba57272a9171581e789ffb68375a8a86c994750b45f8cdc0a993
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/fl_query_devtools"
+      ref: HEAD
+      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
     version: "0.1.0-alpha.3"
   fl_query_hooks:
     dependency: "direct main"
     description:
-      name: fl_query_hooks
-      sha256: "97ad03d0d2d506353d8f3de62ac2aa0b465d85827d15641e3e4b76b16e0a5bbd"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/fl_query_hooks"
+      ref: HEAD
+      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
     version: "1.0.0-alpha.5"
   fluentui_system_icons:
     dependency: "direct main"
