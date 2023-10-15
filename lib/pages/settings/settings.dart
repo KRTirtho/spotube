@@ -379,7 +379,6 @@ class SettingsPage extends HookConsumerWidget {
                           SwitchListTile(
                             secondary: const Icon(SpotubeIcons.normalize),
                             title: Text(context.l10n.normalize_audio),
-                            subtitle: Text(context.l10n.blacklist_description),
                             value: preferences.normalizeAudio,
                             onChanged: preferences.setNormalizeAudio,
                           ),
