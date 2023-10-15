@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/widgets.dart';
 
 class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
     with WidgetsBindingObserver {
   final _connectionStreamController = StreamController<bool>.broadcast();
+  final Dio dio;
 
-  FlQueryInternetConnectionCheckerAdapter() : super() {
+  FlQueryInternetConnectionCheckerAdapter()
+      : dio = Dio(),
+        super() {
     Timer? timer;
 
     onConnectivityChanged.listen((connected) {
@@ -81,7 +85,12 @@ class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
       }
       return false;
     } on SocketException catch (_) {
-      return false;
+      try {
+        final response = await dio.head('https://$address');
+        return (response.statusCode ?? 500) <= 400;
+      } on DioException catch (_) {
+        return false;
+      }
     }
   }
 
