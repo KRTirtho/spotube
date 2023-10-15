@@ -138,7 +138,6 @@
   "skip_non_music": "Skip non-music segments (SponsorBlock)",
   "blacklist_description": "Blacklisted tracks and artists",
   "wait_for_download_to_finish": "Please wait for the current download to finish",
-  "download_lyrics": "Download lyrics along with tracks",
   "desktop": "Desktop",
   "close_behavior": "Close Behavior",
   "close": "Close",

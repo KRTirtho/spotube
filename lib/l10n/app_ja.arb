@@ -136,7 +136,6 @@
   "skip_non_music": "音楽でない部分をスキップ (SponsorBlock)",
   "blacklist_description": "曲とアーティストのブラックリスト",
   "wait_for_download_to_finish": "現在のダウンロードが完了するまでお待ちください",
-  "download_lyrics": "曲と共に歌詞もダウンロード",
   "desktop": "デスクトップ",
   "close_behavior": "閉じた時の動作",
   "close": "閉じる",

@@ -54,7 +54,6 @@ class UserPreferences extends PersistedChangeNotifier {
   bool amoledDarkTheme;
   bool checkUpdate;
   bool normalizeAudio;
-  bool saveTrackLyrics;
   bool showSystemTrayIcon;
   bool skipNonMusic;
   bool systemTitleBar;
@@ -79,7 +78,6 @@ class UserPreferences extends PersistedChangeNotifier {
     this.themeMode = ThemeMode.system,
     this.layoutMode = LayoutMode.adaptive,
     this.albumColorSync = true,
-    this.saveTrackLyrics = false,
     this.checkUpdate = true,
     this.audioQuality = AudioQuality.high,
     this.downloadLocation = "",
@@ -113,7 +111,6 @@ class UserPreferences extends PersistedChangeNotifier {
     setThemeMode(ThemeMode.system);
     setLayoutMode(LayoutMode.adaptive);
     setAlbumColorSync(true);
-    setSaveTrackLyrics(false);
     setCheckUpdate(true);
     setAudioQuality(AudioQuality.high);
     setDownloadLocation("");
@@ -146,12 +143,6 @@ class UserPreferences extends PersistedChangeNotifier {
 
   void setThemeMode(ThemeMode mode) {
     themeMode = mode;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setSaveTrackLyrics(bool shouldSave) {
-    saveTrackLyrics = shouldSave;
     notifyListeners();
     updatePersistence();
   }
@@ -284,7 +275,6 @@ class UserPreferences extends PersistedChangeNotifier {
 
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
-    saveTrackLyrics = map["saveTrackLyrics"] ?? false;
     recommendationMarket = Market.values.firstWhere(
       (market) =>
           market.name == (map["recommendationMarket"] ?? recommendationMarket),
@@ -358,7 +348,6 @@ class UserPreferences extends PersistedChangeNotifier {
   @override
   FutureOr<Map<String, dynamic>> toMap() {
     return {
-      "saveTrackLyrics": saveTrackLyrics,
       "recommendationMarket": recommendationMarket.name,
       "themeMode": themeMode.index,
       "accentColorScheme": accentColorScheme.toString(),
@@ -418,7 +407,6 @@ class UserPreferences extends PersistedChangeNotifier {
       skipNonMusic: skipNonMusic ?? this.skipNonMusic,
       youtubeApiType: youtubeApiType ?? this.youtubeApiType,
       recommendationMarket: recommendationMarket ?? this.recommendationMarket,
-      saveTrackLyrics: saveTrackLyrics ?? this.saveTrackLyrics,
     );
   }
 }

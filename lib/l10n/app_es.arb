@@ -136,7 +136,6 @@
   "skip_non_music": "Omitir segmentos que no son música (SponsorBlock)",
   "blacklist_description": "Canciones y artistas en la lista negra",
   "wait_for_download_to_finish": "Por favor, espera a que termine la descarga actual",
-  "download_lyrics": "Descargar letras junto con las canciones",
   "desktop": "Escritorio",
   "close_behavior": "Comportamiento al cerrar",
   "close": "Cerrar",

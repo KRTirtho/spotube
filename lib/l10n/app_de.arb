@@ -136,7 +136,6 @@
   "skip_non_music": "Überspringe Nicht-Musik-Segmente (SponsorBlock)",
   "blacklist_description": "Gesperrte Titel und Künstler",
   "wait_for_download_to_finish": "Bitte warten Sie, bis der aktuelle Download abgeschlossen ist",
-  "download_lyrics": "Songtexte zusammen mit den Tracks herunterladen",
   "desktop": "Desktop",
   "close_behavior": "Verhalten beim Schließen",
   "close": "Schließen",

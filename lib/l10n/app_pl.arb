@@ -136,7 +136,6 @@
   "skip_non_music": "Pomiń nie-muzyczne segmenty (SponsorBlock)",
   "blacklist_description": "Czarna lista utworów i artystów",
   "wait_for_download_to_finish": "Proszę poczekać na zakończenie obecnego pobierania.",
-  "download_lyrics": "Pobierz utwory razem z tekstem",
   "desktop": "Pulpit",
   "close_behavior": "Zamknij",
   "close": "Zamknij",

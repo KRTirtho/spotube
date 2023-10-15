@@ -136,7 +136,6 @@
   "skip_non_music": "গানের নন-মিউজিক সেগমেন্ট এড়িয়ে যান (SponsorBlock)",
   "blacklist_description": "কালো তালিকাভুক্ত গানের ট্র্যাক এবং শিল্পী",
   "wait_for_download_to_finish": "ডাউনলোড শেষ হওয়ার জন্য অপেক্ষা করুন",
-  "download_lyrics": "গানের সাথে লিরিক্স ডাউনলোড করুন",
   "desktop": "ডেস্কটপ",
   "close_behavior": "বন্ধ করার প্রক্রিয়া",
   "close": "বন্ধ করুন",

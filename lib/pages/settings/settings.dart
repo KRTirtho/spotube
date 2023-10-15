@@ -435,14 +435,6 @@ class SettingsPage extends HookConsumerWidget {
                             ),
                             onTap: pickDownloadLocation,
                           ),
-                          SwitchListTile(
-                            secondary: const Icon(SpotubeIcons.lyrics),
-                            title: Text(context.l10n.download_lyrics),
-                            value: preferences.saveTrackLyrics,
-                            onChanged: (state) {
-                              preferences.setSaveTrackLyrics(state);
-                            },
-                          ),
                         ],
                       ),
                       if (DesktopTools.platform.isDesktop)

@@ -136,7 +136,6 @@
   "skip_non_music": "Ometre segments que no son música (SponsorBlock)",
   "blacklist_description": "Cançons i artistes de la llista negra",
   "wait_for_download_to_finish": "Si us plau, esperi que acabi la descàrrega actual",
-  "download_lyrics": "Descarregar lletres amb les cançons",
   "desktop": "Escriptori",
   "close_behavior": "Comportament al tancar",
   "close": "Tancar",

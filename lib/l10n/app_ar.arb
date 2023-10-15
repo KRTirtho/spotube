@@ -138,7 +138,6 @@
   "skip_non_music": "تخطي المقاطع غير الموسيقية (SponsorBlock)",
   "blacklist_description": "المقطوعات والفنانون المدرجون في القائمة السوداء",
   "wait_for_download_to_finish": "يرجى الانتظار حتى انتهاء التنزيل الحالي",
-  "download_lyrics": "تحميل الكلمات مع المقطوعات",
   "desktop": "سطح المكتب",
   "close_behavior": "إغلاق التصرف",
   "close": "إغلاق",

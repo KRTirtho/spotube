@@ -136,7 +136,6 @@
   "skip_non_music": "Пропускать немузыкальные сегменты (SponsorBlock)",
   "blacklist_description": "Черный список треков и артистов",
   "wait_for_download_to_finish": "Пожалуйста, дождитесь завершения текущей загрузки",
-  "download_lyrics": "Скачивать тексты вместе с треками",
   "desktop": "Компьютер",
   "close_behavior": "Поведение при закрытии",
   "close": "Закрыть",
