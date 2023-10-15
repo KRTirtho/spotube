@@ -45,7 +45,6 @@ class MkPlayerWithState extends Player {
           if (!isCompleted) return;
 
           _playerStateStream.add(AudioPlaybackState.completed);
-
           if (loopMode == PlaylistMode.single) {
             await super.open(_playlist!.medias[_playlist!.index], play: true);
           } else {
@@ -166,10 +165,22 @@ class MkPlayerWithState extends Player {
 
     final isLast = _playlist!.index == _playlist!.medias.length - 1;
 
-    if (loopMode == PlaylistMode.loop && isLast) {
-      playlist = _playlist!.copyWith(index: 0);
-      return super.open(_playlist!.medias[_playlist!.index], play: true);
-    } else if (!isLast) {
+    if (isLast) {
+      switch (loopMode) {
+        case PlaylistMode.loop:
+          playlist = _playlist!.copyWith(index: 0);
+          super.open(_playlist!.medias[_playlist!.index], play: true);
+          break;
+        case PlaylistMode.none:
+          // Fixes auto-repeating the last track
+          await super.stop();
+          await Future.delayed(const Duration(seconds: 2), () {
+            super.open(_playlist!.medias[_playlist!.index], play: false);
+          });
+          break;
+        default:
+      }
+    } else {
       playlist = _playlist!.copyWith(index: _playlist!.index + 1);
 
       return super.open(_playlist!.medias[_playlist!.index], play: true);
