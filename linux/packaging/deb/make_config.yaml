@@ -17,6 +17,7 @@ dependencies:
   - libnotify-bin
   - libjsoncpp25
   - libmpv1 | libmpv2
+  - xdg-user-dirs
 
 essential: false
 icon: assets/spotube-logo.png

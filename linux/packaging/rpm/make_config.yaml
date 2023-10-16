@@ -12,6 +12,7 @@ requires:
   - jsoncpp
   - libsecret
   - libnotify
+  - xdg-user-dirs
 
 display_name: Spotube
 
