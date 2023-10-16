@@ -87,19 +87,21 @@ jobs:
           make choco
           mv dist/spotube.*.nupkg dist/Spotube-windows-x86_64.nupkg
 
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            dist/Spotube-windows-x86_64.nupkg
+            dist/Spotube-windows-x86_64-setup.exe
+
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: Spotube-Release-Binaries
-          path: |
-            dist/Spotube-windows-x86_64.nupkg
-            dist/Spotube-windows-x86_64-setup.exe
 
   linux:
     runs-on: ubuntu-latest
@@ -179,20 +181,23 @@ jobs:
           mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
           mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
 
-      - name: Debug With SSH When fails
-        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
 
       - uses: actions/upload-artifact@v3
         with:
+          if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
             dist/Spotube-linux-x86_64.AppImage
             dist/Spotube-linux-x86_64.deb
             dist/Spotube-linux-x86_64.rpm
             dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
 
   android:
     runs-on: ubuntu-latest
@@ -254,20 +259,23 @@ jobs:
           flutter build appbundle --flavor ${{ inputs.channel }}
           mv build/app/outputs/bundle/${{ inputs.channel }}Release/app-${{ inputs.channel }}-release.aab build/Spotube-playstore-all-arch.aab
 
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            build/Spotube-android-all-arch.apk
+            build/Spotube-playstore-all-arch.aab
+
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Spotube-Release-Binaries
-          path: |
-            build/Spotube-android-all-arch.apk
-            build/Spotube-playstore-all-arch.aab
-
   macos:
+
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v4
@@ -315,20 +323,23 @@ jobs:
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-universal.dmg
 
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            build/Spotube-macos-universal.dmg
+
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Spotube-Release-Binaries
-          path: |
-            build/Spotube-macos-universal.dmg
-
+          
   upload:
     runs-on: ubuntu-latest
+
     needs:
       - windows
       - linux
@@ -352,6 +363,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
+          if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
             RELEASE.md5sum
