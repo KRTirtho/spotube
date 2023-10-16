@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/KRTirtho/spotube/compare/v3.1.2...v3.2.0) (2023-10-16)
+
+
+### Features
+
+* ability to select/copy lyrics [#802](https://github.com/KRTirtho/spotube/issues/802) ([0eb9ee8](https://github.com/KRTirtho/spotube/commit/0eb9ee8648bee43a8009e6752674b1be646c0916))
+* add Amoled theme [#724](https://github.com/KRTirtho/spotube/issues/724) ([5c5dbf6](https://github.com/KRTirtho/spotube/commit/5c5dbf69ecea95c92d3c3900ad690a500d75b4e2))
+* add audio normalization [#164](https://github.com/KRTirtho/spotube/issues/164) ([da10ab2](https://github.com/KRTirtho/spotube/commit/da10ab2e291d4ba4d3082b9a6ae535639fb8f1b7))
+* add restore default settings button ([94c3866](https://github.com/KRTirtho/spotube/commit/94c386638f2e5a42d21c8f157835443333ee6d5c))
+* configurable audio normalization switch ([c325911](https://github.com/KRTirtho/spotube/commit/c325911c0d87758a203a52df02179c1513bad3fd))
+* customizable stream/download file formats ([#757](https://github.com/KRTirtho/spotube/issues/757)) ([e54762b](https://github.com/KRTirtho/spotube/commit/e54762be6add6524ab614d103fc3557a101c75f4))
+* improve and unify the logging framework ([#738](https://github.com/KRTirtho/spotube/issues/738)) ([c7432bb](https://github.com/KRTirtho/spotube/commit/c7432bbd986d576a93957f0a22bdbca5c1e87f20))
+* LastFM scrobbling support ([#761](https://github.com/KRTirtho/spotube/issues/761)) ([f5bd907](https://github.com/KRTirtho/spotube/commit/f5bd90731d9abc19d684c8bcb231eff399e73023))
+* loading indicator for genre and personalized pages ([ffe8d9c](https://github.com/KRTirtho/spotube/commit/ffe8d9ca6da25cb3e6fd2c781d5ed3a7b919510e))
+* manual offline detection ([854ab89](https://github.com/KRTirtho/spotube/commit/854ab8910dffb2837c011d3439173a1f0ebe9c6c))
+* show error dialog on failed to login ([101c325](https://github.com/KRTirtho/spotube/commit/101c32523d3be8c05527261f6f63f939d388ad79))
+* sliding up player support ([083319f](https://github.com/KRTirtho/spotube/commit/083319fd2445ab179e3dcda0a6aeaca6f13dda29))
+* swipe to open player view ([#765](https://github.com/KRTirtho/spotube/issues/765)) ([9aee056](https://github.com/KRTirtho/spotube/commit/9aee0568bf42eed9fea8d517e960a010abf0ebf2))
+* thicken the scrollbars & make 'em interactive for mobile ([#764](https://github.com/KRTirtho/spotube/issues/764)) ([84a4bcd](https://github.com/KRTirtho/spotube/commit/84a4bcd948ab459489aaf6f39d6954776c3401d7))
+* **translations:**  add Arabic Translations ([#740](https://github.com/KRTirtho/spotube/issues/740)) ([38493f9](https://github.com/KRTirtho/spotube/commit/38493f9dd75303890857a626c0b276ee1ab75bb2))
+* **translations:** add Farsi Translations ([#760](https://github.com/KRTirtho/spotube/issues/760)) ([fe42cfe](https://github.com/KRTirtho/spotube/commit/fe42cfe8430035d9b67dd158fb7b835ee4071497))
+
+
+### Bug Fixes
+
+* add libmpv1 for ubuntu-based systems ([#739](https://github.com/KRTirtho/spotube/issues/739)) ([5115e04](https://github.com/KRTirtho/spotube/commit/5115e041e78c20fce798a80f1d844bfc60746958))
+* add xdg-user-dirs as deps ([f3e331e](https://github.com/KRTirtho/spotube/commit/f3e331ecf733995da24c9b907efc5ed4bd02ffdd))
+* **android :** file_selector getDirectoryPath returns unusable content urls [#720](https://github.com/KRTirtho/spotube/issues/720) ([b3cf639](https://github.com/KRTirtho/spotube/commit/b3cf639ee2f970f4df9b394b260c3ad8a5732a9c))
+* **android:** audio doesn't resume on interruption end ([15d466a](https://github.com/KRTirtho/spotube/commit/15d466a04538ec70c3a0c132f2baaaf8690f8d4e))
+* **android:** system navigator back doesn't close player ([20d7092](https://github.com/KRTirtho/spotube/commit/20d70927c909347e84ffa8e456f8fab88d49d179))
+* get rid of overflow errors & status bar dark color ([5bb8231](https://github.com/KRTirtho/spotube/commit/5bb8231782287faf75c778fadb3a03ac774d14f0))
+* keyboard shortcuts changing route but not update sidebar ([2d93441](https://github.com/KRTirtho/spotube/commit/2d934411887bd104d8265236df5bf595c5ad2278))
+* last track repeats ([ed6ca00](https://github.com/KRTirtho/spotube/commit/ed6ca006ce237ed8d509cde9ed47cd6ea3396b63))
+* minor glitches ([e5d0aaf](https://github.com/KRTirtho/spotube/commit/e5d0aaf80d22b2291b6f7e7c5e18dd99ae1a7a82))
+* not fetching all followed artists ([#759](https://github.com/KRTirtho/spotube/issues/759)) ([c09a572](https://github.com/KRTirtho/spotube/commit/c09a5729251d8df820442d55477455f78c19c52e))
+* use audio_service_mpris plugin ([e29cc25](https://github.com/KRTirtho/spotube/commit/e29cc2578cab36729e235b117c1b5489c3452902))
+* valid non-ASCII characters get removed from downloaded file name [#745](https://github.com/KRTirtho/spotube/issues/745) ([a7e102f](https://github.com/KRTirtho/spotube/commit/a7e102ffc726d00df369560ec9a7f742f9d387bb))
+
 ## [3.1.2](https://github.com/KRTirtho/spotube/compare/v3.1.1...v3.1.2) (2023-09-15)
 
 
