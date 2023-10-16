@@ -76,7 +76,7 @@ jobs:
         run: |
           dart pub global activate flutter_distributor
           make innoinstall
-          flutter_distributor package --platform=windows --targets=exe --skip-clean
+          flutter_distributor package --platform=windows --targets=exe --skip-clean --flutter-build-args=verbose
           mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
           if (!(Test-Path dist\Spotube-windows-x86_64-setup.exe)) { exit 1 }
 
