@@ -262,5 +262,22 @@
   "update_playlist": "更新播放列表",
   "update": "更新",
   "crunching_results": "处理结果中...",
-  "search_to_get_results": "搜索以获取结果"
+  "search_to_get_results": "搜索以获取结果",
+  "use_amoled_mode": "使用 AMOLED 模式",
+  "pitch_dark_theme": "深色主题",
+  "normalize_audio": "标准化音频",
+  "change_cover": "更改封面",
+  "add_cover": "添加封面",
+  "restore_defaults": "恢复默认值",
+  "download_music_codec": "下载音乐编解码器",
+  "streaming_music_codec": "流媒体音乐编解码器",
+  "login_with_lastfm": "使用 Last.fm 登录",
+  "connect": "连接",
+  "disconnect_lastfm": "断开 Last.fm 连接",
+  "disconnect": "断开连接",
+  "username": "用户名",
+  "password": "密码",
+  "login": "登录",
+  "login_with_your_lastfm": "使用您的 Last.fm 帐户登录",
+  "scrobble_to_lastfm": "在 Last.fm 上记录播放"
 }

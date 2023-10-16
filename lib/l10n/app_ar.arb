@@ -262,5 +262,22 @@
   "connection_restored": "تمت استعادة اتصالك بالإنترنت",
   "use_system_title_bar": "استخدم شريط عنوان النظام",
   "crunching_results": "تدمير النتائج",
-  "search_to_get_results": "إبحث للحصول على النتائج"
+  "search_to_get_results": "إبحث للحصول على النتائج",
+  "use_amoled_mode": "استخدم وضع AMOLED",
+  "pitch_dark_theme": "موضوع دارت الأسود الفحمي",
+  "normalize_audio": "تطبيع الصوت",
+  "change_cover": "تغيير الغلاف",
+  "add_cover": "إضافة غلاف",
+  "restore_defaults": "استعادة الإعدادات الافتراضية",
+  "download_music_codec": "تنزيل ترميز الموسيقى",
+  "streaming_music_codec": "ترميز الموسيقى بالتدفق",
+  "login_with_lastfm": "تسجيل الدخول باستخدام Last.fm",
+  "connect": "اتصال",
+  "disconnect_lastfm": "قطع الاتصال بـ Last.fm",
+  "disconnect": "قطع الاتصال",
+  "username": "اسم المستخدم",
+  "password": "كلمة المرور",
+  "login": "تسجيل الدخول",
+  "login_with_your_lastfm": "تسجيل الدخول باستخدام حساب Last.fm الخاص بك",
+  "scrobble_to_lastfm": "تسجيل الاستماع على Last.fm"
 }

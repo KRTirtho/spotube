@@ -262,5 +262,22 @@
   "update_playlist": "प्लेलिस्ट अपडेट करें",
   "update": "अपडेट करें",
   "crunching_results": "परिणाम को प्रसंस्कृत किया जा रहा है...",
-  "search_to_get_results": "परिणाम प्राप्त करने के लिए खोजें"
+  "search_to_get_results": "परिणाम प्राप्त करने के लिए खोजें",
+  "use_amoled_mode": "AMOLED मोड का उपयोग करें",
+  "pitch_dark_theme": "पिच ब्लैक डार्ट थीम",
+  "normalize_audio": "ऑडियो को सामान्य करें",
+  "change_cover": "कवर बदलें",
+  "add_cover": "कवर जोड़ें",
+  "restore_defaults": "डिफ़ॉल्ट सेटिंग्स को बहाल करें",
+  "download_music_codec": "संगीत कोडेक डाउनलोड करें",
+  "streaming_music_codec": "स्ट्रीमिंग संगीत कोडेक",
+  "login_with_lastfm": "Last.fm से लॉगिन करें",
+  "connect": "कनेक्ट करें",
+  "disconnect_lastfm": "Last.fm से डिस्कनेक्ट करें",
+  "disconnect": "डिस्कनेक्ट करें",
+  "username": "उपयोगकर्ता नाम",
+  "password": "पासवर्ड",
+  "login": "लॉग इन करें",
+  "login_with_your_lastfm": "अपने Last.fm अकाउंट से लॉगिन करें",
+  "scrobble_to_lastfm": "Last.fm पर स्क्रॉबल करें"
 }

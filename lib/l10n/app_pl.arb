@@ -262,5 +262,22 @@
   "update_playlist": "Zaktualizuj playlistę",
   "update": "Aktualizuj",
   "crunching_results": "Przetwarzanie wyników...",
-  "search_to_get_results": "Szukaj, aby uzyskać wyniki"
+  "search_to_get_results": "Szukaj, aby uzyskać wyniki",
+  "use_amoled_mode": "Tryb AMOLED",
+  "pitch_dark_theme": "Ciemny motyw",
+  "normalize_audio": "Normalizuj dźwięk",
+  "change_cover": "Zmień okładkę",
+  "add_cover": "Dodaj okładkę",
+  "restore_defaults": "Przywróć domyślne",
+  "download_music_codec": "Pobierz kodek muzyczny",
+  "streaming_music_codec": "Kodek strumieniowy muzyki",
+  "login_with_lastfm": "Zaloguj się z Last.fm",
+  "connect": "Połącz",
+  "disconnect_lastfm": "Rozłącz z Last.fm",
+  "disconnect": "Rozłącz",
+  "username": "Nazwa użytkownika",
+  "password": "Hasło",
+  "login": "Zaloguj",
+  "login_with_your_lastfm": "Zaloguj się na swoje konto Last.fm",
+  "scrobble_to_lastfm": "Scrobbluj do Last.fm"
 }

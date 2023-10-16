@@ -262,5 +262,22 @@
   "connection_restored": "اتصال به اینترنت شما بازیابی شد ",
   "use_system_title_bar": "از نوار عنوان سیستم استفاده کنید ",
   "crunching_results": "نتایج خرد کردن...",
-  "search_to_get_results": "جستجو کنید تا به نتیجه برسید"
+  "search_to_get_results": "جستجو کنید تا به نتیجه برسید",
+  "use_amoled_mode": "استفاده از حالت AMOLED",
+  "pitch_dark_theme": "تم تیره دارت",
+  "normalize_audio": "نرمال کردن صدا",
+  "change_cover": "تغییر جلد",
+  "add_cover": "افزودن جلد",
+  "restore_defaults": "بازیابی پیش فرض ها",
+  "download_music_codec": "دانلود کدک موسیقی",
+  "streaming_music_codec": "کدک موسیقی استریمینگ",
+  "login_with_lastfm": "ورود با Last.fm",
+  "connect": "اتصال",
+  "disconnect_lastfm": "قطع ارتباط با Last.fm",
+  "disconnect": "قطع ارتباط",
+  "username": "نام کاربری",
+  "password": "رمز عبور",
+  "login": "ورود",
+  "login_with_your_lastfm": "ورود با حساب کاربری Last.fm خود",
+  "scrobble_to_lastfm": "Scrobble به Last.fm"
 }

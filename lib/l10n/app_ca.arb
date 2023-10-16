@@ -262,5 +262,22 @@
   "update_playlist": "Actualitzar la llista de reproducció",
   "update": "Actualitzar",
   "crunching_results": "Processant resultats...",
-  "search_to_get_results": "Cerca per obtenir resultats"
+  "search_to_get_results": "Cerca per obtenir resultats",
+  "use_amoled_mode": "Utilitza el mode AMOLED",
+  "pitch_dark_theme": "Tema de dart negre intens",
+  "normalize_audio": "Normalitza l'àudio",
+  "change_cover": "Canvia la coberta",
+  "add_cover": "Afegeix una coberta",
+  "restore_defaults": "Restaura els valors per defecte",
+  "download_music_codec": "Descarrega el codec de música",
+  "streaming_music_codec": "Codec de música en streaming",
+  "login_with_lastfm": "Inicia la sessió amb Last.fm",
+  "connect": "Connecta",
+  "disconnect_lastfm": "Desconnecta de Last.fm",
+  "disconnect": "Desconnecta",
+  "username": "Nom d'usuari",
+  "password": "Contrasenya",
+  "login": "Inicia la sessió",
+  "login_with_your_lastfm": "Inicia la sessió amb el teu compte de Last.fm",
+  "scrobble_to_lastfm": "Scrobble a Last.fm"
 }

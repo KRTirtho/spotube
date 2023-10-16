@@ -262,5 +262,22 @@
   "update_playlist": "প্লেলিস্ট আপডেট করুন",
   "update": "আপডেট",
   "crunching_results": "ফলাফল বিশ্লেষণ করা হচ্ছে...",
-  "search_to_get_results": "ফলাফল পেতে খোঁজ করুন"
+  "search_to_get_results": "ফলাফল পেতে খোঁজ করুন",
+  "use_amoled_mode": "AMOLED মোড ব্যবহার করুন",
+  "pitch_dark_theme": "পিচ ব্ল্যাক ডার্ট থিম",
+  "normalize_audio": "অডিও স্তরমান করুন",
+  "change_cover": "কভার পরিবর্তন করুন",
+  "add_cover": "কভার যোগ করুন",
+  "restore_defaults": "ডিফল্ট সেটিংস পুনরুদ্ধার করুন",
+  "download_music_codec": "সঙ্গীত কোডেক ডাউনলোড করুন",
+  "streaming_music_codec": "স্ট্রিমিং সঙ্গীত কোডেক",
+  "login_with_lastfm": "Last.fm দিয়ে লগইন করুন",
+  "connect": "সংযোগ করুন",
+  "disconnect_lastfm": "Last.fm সংযোগ বিচ্ছিন্ন করুন",
+  "disconnect": "সংযোগ বিচ্ছিন্ন করুন",
+  "username": "ব্যবহারকারীর নাম",
+  "password": "পাসওয়ার্ড",
+  "login": "লগইন",
+  "login_with_your_lastfm": "আপনার Last.fm অ্যাকাউন্ট দিয়ে লগইন করুন",
+  "scrobble_to_lastfm": "Last.fm এ স্ক্রবল করুন"
 }

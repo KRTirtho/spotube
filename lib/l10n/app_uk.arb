@@ -262,5 +262,22 @@
   "connection_restored": "Ваше інтернет-з'єднання відновлено",
   "use_system_title_bar": "Використовувати системний заголовок",
   "crunching_results": "Опрацювання результатів...",
-  "search_to_get_results": "Почніть пошук, щоб отримати результати"
+  "search_to_get_results": "Почніть пошук, щоб отримати результати",
+  "use_amoled_mode": "Режим AMOLED",
+  "pitch_dark_theme": "Темна тема",
+  "normalize_audio": "Нормалізувати звук",
+  "change_cover": "Змінити обкладинку",
+  "add_cover": "Додати обкладинку",
+  "restore_defaults": "Відновити налаштування за замовчуванням",
+  "download_music_codec": "Завантажити кодек для музики",
+  "streaming_music_codec": "Кодек потокової передачі музики",
+  "login_with_lastfm": "Увійти з Last.fm",
+  "connect": "Підключити",
+  "disconnect_lastfm": "Відключитися від Last.fm",
+  "disconnect": "Відключити",
+  "username": "Ім'я користувача",
+  "password": "Пароль",
+  "login": "Увійти",
+  "login_with_your_lastfm": "Увійти в свій обліковий запис Last.fm",
+  "scrobble_to_lastfm": "Скробблінг на Last.fm"
 }
