@@ -78,6 +78,7 @@ jobs:
           make innoinstall
           flutter_distributor package --platform=windows --targets=exe --skip-clean
           mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
+          if (!(Test-Path dist\Spotube-windows-x86_64-setup.exe)) { exit 1 }
 
       - name: Create Chocolatey Package and set hash
         if: ${{ inputs.channel == 'stable' }}
