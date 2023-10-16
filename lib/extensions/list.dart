@@ -1,4 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:spotube/models/logger.dart';
+
+final logger = getLogger("List");
 
 extension MultiSortListMap on List<Map> {
   /// [preference] - List of properties in which you want to sort the list
@@ -18,7 +21,7 @@ extension MultiSortListMap on List<Map> {
       return this;
     }
     if (preference.length != criteria.length) {
-      print('Criteria length is not equal to preference');
+      logger.d('Criteria length is not equal to preference');
       return this;
     }
 
@@ -66,7 +69,7 @@ extension MultiSortListTupleMap<V> on List<(Map, V)> {
       return this;
     }
     if (preference.length != criteria.length) {
-      print('Criteria length is not equal to preference');
+      logger.d('Criteria length is not equal to preference');
       return this;
     }
 

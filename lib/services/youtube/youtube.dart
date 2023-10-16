@@ -181,24 +181,33 @@ class YoutubeEndpoints {
     }
   }
 
-  String _pipedStreamResponseToStreamUrl(PipedStreamResponse stream) {
+  String _pipedStreamResponseToStreamUrl(
+    PipedStreamResponse stream,
+    MusicCodec codec,
+  ) {
+    final pipedStreamFormat = switch (codec) {
+      MusicCodec.m4a => PipedAudioStreamFormat.m4a,
+      MusicCodec.weba => PipedAudioStreamFormat.webm,
+    };
+
     return switch (preferences.audioQuality) {
-      AudioQuality.high => stream
-          .highestBitrateAudioStreamOfFormat(PipedAudioStreamFormat.m4a)!
-          .url,
-      AudioQuality.low => stream
-          .lowestBitrateAudioStreamOfFormat(PipedAudioStreamFormat.m4a)!
-          .url,
+      AudioQuality.high =>
+        stream.highestBitrateAudioStreamOfFormat(pipedStreamFormat)!.url,
+      AudioQuality.low =>
+        stream.lowestBitrateAudioStreamOfFormat(pipedStreamFormat)!.url,
     };
   }
 
-  Future<String> streamingUrl(String id) async {
+  Future<String> streamingUrl(String id, MusicCodec codec) async {
     if (youtube != null) {
       final res = await PrimitiveUtils.raceMultiple(
         () => youtube!.videos.streams.getManifest(id),
       );
       final audioOnlyManifests = res.audioOnly.where((info) {
-        return info.codec.mimeType == "audio/mp4";
+        return switch (codec) {
+          MusicCodec.m4a => info.codec.mimeType == "audio/mp4",
+          MusicCodec.weba => info.codec.mimeType == "audio/webm",
+        };
       });
 
       return switch (preferences.audioQuality) {
@@ -208,26 +217,27 @@ class YoutubeEndpoints {
           audioOnlyManifests.sortByBitrate().last.url.toString(),
       };
     } else {
-      return _pipedStreamResponseToStreamUrl(await piped!.streams(id));
+      return _pipedStreamResponseToStreamUrl(await piped!.streams(id), codec);
     }
   }
 
   Future<(YoutubeVideoInfo info, String streamingUrl)> video(
     String id,
     SearchMode searchMode,
+    MusicCodec codec,
   ) async {
     if (youtube != null) {
       final res = await youtube!.videos.get(id);
       return (
         YoutubeVideoInfo.fromVideo(res),
-        await streamingUrl(id),
+        await streamingUrl(id, codec),
       );
     } else {
       try {
         final res = await piped!.streams(id);
         return (
           YoutubeVideoInfo.fromStreamResponse(res, searchMode),
-          _pipedStreamResponseToStreamUrl(res),
+          _pipedStreamResponseToStreamUrl(res, codec),
         );
       } on Exception catch (e) {
         await showPipedErrorDialog(e);

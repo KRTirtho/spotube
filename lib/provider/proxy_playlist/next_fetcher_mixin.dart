@@ -3,12 +3,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/supabase.dart';
 import 'package:spotube/services/youtube/youtube.dart';
+
+final logger = getLogger("NextFetcherMixin");
 
 mixin NextFetcher on StateNotifier<ProxyPlaylist> {
   Future<List<SpotubeTrack>> fetchTracks(
@@ -30,6 +33,7 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
         final future = SpotubeTrack.fetchFromTrack(
           track,
           youtube,
+          preferences.streamMusicCodec,
         );
         if (i == 0) {
           return await future;
@@ -123,8 +127,8 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
         );
       }
     } catch (e, stackTrace) {
-      debugPrint(e.toString());
-      debugPrintStack(stackTrace: stackTrace);
+      logger.e(e.toString());
+      logger.t(stackTrace);
     }
   }
 }

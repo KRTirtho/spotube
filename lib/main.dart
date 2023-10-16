@@ -1,7 +1,6 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
-import 'package:fl_query_devtools/fl_query_devtools.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -91,9 +90,9 @@ Future<void> main(List<String> rawArgs) async {
     path: hiveCacheDir,
   );
 
-  Catcher(
+  Catcher2(
     enableLogger: arguments["verbose"],
-    debugConfig: CatcherOptions(
+    debugConfig: Catcher2Options(
       SilentReportMode(),
       [
         ConsoleHandler(
@@ -103,7 +102,7 @@ Future<void> main(List<String> rawArgs) async {
         if (!kIsWeb) FileHandler(await getLogsPath(), printLogs: false),
       ],
     ),
-    releaseConfig: CatcherOptions(
+    releaseConfig: Catcher2Options(
       SilentReportMode(),
       [
         if (arguments["verbose"] ?? false) ConsoleHandler(),
@@ -163,6 +162,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+    final isAmoledTheme =
+        ref.watch(userPreferencesProvider.select((s) => s.amoledDarkTheme));
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     final paletteColor =
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
@@ -182,12 +183,16 @@ class SpotubeState extends ConsumerState<Spotube> {
     useDisableBatteryOptimizations();
 
     final lightTheme = useMemoized(
-      () => theme(paletteColor ?? accentMaterialColor, Brightness.light),
+      () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
       [paletteColor, accentMaterialColor],
     );
     final darkTheme = useMemoized(
-      () => theme(paletteColor ?? accentMaterialColor, Brightness.dark),
-      [paletteColor, accentMaterialColor],
+      () => theme(
+        paletteColor ?? accentMaterialColor,
+        Brightness.dark,
+        isAmoledTheme,
+      ),
+      [paletteColor, accentMaterialColor, isAmoledTheme],
     );
 
     return MaterialApp.router(
@@ -199,9 +204,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
-      routeInformationProvider: router.routeInformationProvider,
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       builder: (context, child) {
@@ -224,22 +227,22 @@ class SpotubeState extends ConsumerState<Spotube> {
         LogicalKeySet(LogicalKeyboardKey.comma, LogicalKeyboardKey.control):
             NavigationIntent(router, "/settings"),
         LogicalKeySet(
-          LogicalKeyboardKey.keyB,
+          LogicalKeyboardKey.digit1,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.browse),
         LogicalKeySet(
-          LogicalKeyboardKey.keyS,
+          LogicalKeyboardKey.digit2,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.search),
         LogicalKeySet(
-          LogicalKeyboardKey.keyL,
+          LogicalKeyboardKey.digit3,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.library),
         LogicalKeySet(
-          LogicalKeyboardKey.keyY,
+          LogicalKeyboardKey.digit4,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
         ): HomeTabIntent(ref, tab: HomeTabs.lyrics),

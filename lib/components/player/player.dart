@@ -15,6 +15,7 @@ import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/use_custom_status_bar_color.dart';
@@ -26,8 +27,10 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
+  final PanelController panelController;
   const PlayerView({
     Key? key,
+    required this.panelController,
   }) : super(key: key);
 
   @override
@@ -45,7 +48,7 @@ class PlayerView extends HookConsumerWidget {
     useEffect(() {
       if (mediaQuery.lgAndUp) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          GoRouter.of(context).pop();
+          panelController.close();
         });
       }
       return null;
@@ -60,64 +63,96 @@ class PlayerView extends HookConsumerWidget {
     );
 
     final palette = usePaletteGenerator(albumArt);
-    final bgColor = palette.dominantColor?.color ?? theme.colorScheme.primary;
     final titleTextColor = palette.dominantColor?.titleTextColor;
     final bodyTextColor = palette.dominantColor?.bodyTextColor;
 
+    final bgColor = palette.dominantColor?.color ?? theme.colorScheme.primary;
+
+    final GlobalKey<ScaffoldState> scaffoldKey =
+        useMemoized(() => GlobalKey(), []);
+
+    useEffect(() {
+      WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
+
+      return () {
+        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = true;
+      };
+    }, [panelController.isPanelOpen]);
+
     useCustomStatusBarColor(
       bgColor,
-      GoRouterState.of(context).matchedLocation == "/player",
+      panelController.isPanelOpen,
       noSetBGColor: true,
+      automaticSystemUiAdjustment: false,
     );
 
-    return IconTheme(
-      data: theme.iconTheme.copyWith(color: bodyTextColor),
-      child: Scaffold(
-        appBar: PageWindowTitleBar(
-          backgroundColor: Colors.transparent,
-          foregroundColor: titleTextColor,
-          toolbarOpacity: 1,
-          leading: const BackButton(),
-          actions: [
-            IconButton(
-              icon: const Icon(SpotubeIcons.info, size: 18),
-              tooltip: context.l10n.details,
-              style: IconButton.styleFrom(foregroundColor: bodyTextColor),
-              onPressed: currentTrack == null
-                  ? null
-                  : () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return TrackDetailsDialog(
-                              track: currentTrack,
-                            );
-                          });
-                    },
-            )
+    final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
+
+    return WillPopScope(
+      onWillPop: () async {
+        panelController.close();
+        return false;
+      },
+      child: IconTheme(
+        data: theme.iconTheme.copyWith(color: bodyTextColor),
+        child: AnimateGradient(
+          animateAlignments: true,
+          primaryBegin: Alignment.topLeft,
+          primaryEnd: Alignment.bottomLeft,
+          secondaryBegin: Alignment.bottomRight,
+          secondaryEnd: Alignment.topRight,
+          duration: const Duration(seconds: 15),
+          primaryColors: [
+            palette.dominantColor?.color ?? theme.colorScheme.primary,
+            palette.mutedColor?.color ?? theme.colorScheme.secondary,
           ],
-        ),
-        extendBodyBehindAppBar: true,
-        body: SizedBox(
-          height: double.infinity,
-          child: AnimateGradient(
-            animateAlignments: true,
-            primaryBegin: Alignment.topLeft,
-            primaryEnd: Alignment.bottomLeft,
-            secondaryBegin: Alignment.bottomRight,
-            secondaryEnd: Alignment.topRight,
-            duration: const Duration(seconds: 15),
-            primaryColors: [
-              palette.dominantColor?.color ?? theme.colorScheme.primary,
-              palette.mutedColor?.color ?? theme.colorScheme.secondary,
-            ],
-            secondaryColors: [
-              (palette.darkVibrantColor ?? palette.lightVibrantColor)?.color ??
-                  theme.colorScheme.primaryContainer,
-              (palette.darkMutedColor ?? palette.lightMutedColor)?.color ??
-                  theme.colorScheme.secondaryContainer,
-            ],
-            child: SingleChildScrollView(
+          secondaryColors: [
+            (palette.darkVibrantColor ?? palette.lightVibrantColor)?.color ??
+                theme.colorScheme.primaryContainer,
+            (palette.darkMutedColor ?? palette.lightMutedColor)?.color ??
+                theme.colorScheme.secondaryContainer,
+          ],
+          child: Scaffold(
+            key: scaffoldKey,
+            backgroundColor: Colors.transparent,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(
+                kToolbarHeight + topPadding,
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(top: topPadding),
+                child: PageWindowTitleBar(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: titleTextColor,
+                  toolbarOpacity: 1,
+                  leading: IconButton(
+                    icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                    onPressed: panelController.close,
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(SpotubeIcons.info, size: 18),
+                      tooltip: context.l10n.details,
+                      style:
+                          IconButton.styleFrom(foregroundColor: bodyTextColor),
+                      onPressed: currentTrack == null
+                          ? null
+                          : () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return TrackDetailsDialog(
+                                      track: currentTrack,
+                                    );
+                                  });
+                            },
+                    )
+                  ],
+                ),
+              ),
+            ),
+            extendBodyBehindAppBar: true,
+            body: SingleChildScrollView(
               child: Container(
                 alignment: Alignment.center,
                 width: double.infinity,
@@ -190,7 +225,7 @@ class PlayerView extends HookConsumerWidget {
                                       color: bodyTextColor,
                                     ),
                                     onRouteChange: (route) {
-                                      GoRouter.of(context).pop();
+                                      panelController.close();
                                       GoRouter.of(context).push(route);
                                     },
                                   ),

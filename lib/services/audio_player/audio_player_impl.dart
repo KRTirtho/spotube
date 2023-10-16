@@ -142,6 +142,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   String? get currentSource {
     // if (mkSupportedPlatform) {
+    if (_mkPlayer.playlist.index == -1) return null;
     return _mkPlayer.playlist.medias
         .elementAtOrNull(_mkPlayer.playlist.index)
         ?.uri;
@@ -311,5 +312,9 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // } else {
     //   await _justAudio!.setLoopMode(loop.toLoopMode());
     // }
+  }
+
+  Future<void> setAudioNormalization(bool normalize) async {
+    await _mkPlayer.setAudioNormalization(normalize);
   }
 }

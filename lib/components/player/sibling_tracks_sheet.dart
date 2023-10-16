@@ -7,6 +7,7 @@ import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
@@ -17,7 +18,6 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/youtube/youtube.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -202,32 +202,36 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   duration: const Duration(milliseconds: 300),
                   transitionBuilder: (child, animation) =>
                       FadeTransition(opacity: animation, child: child),
-                  child: switch (isSearching.value) {
-                    false => ListView.builder(
-                        itemCount: siblings.length,
-                        itemBuilder: (context, index) =>
-                            itemBuilder(siblings[index]),
-                      ),
-                    true => FutureBuilder(
-                        future: searchRequest,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Text(snapshot.error.toString()),
-                            );
-                          } else if (!snapshot.hasData) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
+                  child: InterScrollbar(
+                    child: switch (isSearching.value) {
+                      false => ListView.builder(
+                          itemCount: siblings.length,
+                          itemBuilder: (context, index) =>
+                              itemBuilder(siblings[index]),
+                        ),
+                      true => FutureBuilder(
+                          future: searchRequest,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Text(snapshot.error.toString()),
+                              );
+                            } else if (!snapshot.hasData) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
 
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) =>
-                                itemBuilder(snapshot.data![index]),
-                          );
-                        },
-                      ),
-                  },
+                            return InterScrollbar(
+                              child: ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) =>
+                                    itemBuilder(snapshot.data![index]),
+                              ),
+                            );
+                          },
+                        ),
+                    },
+                  ),
                 ),
               ),
             ),

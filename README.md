@@ -204,6 +204,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [auto_size_text](https://github.com/leisim/auto_size_text) - Flutter widget that automatically resizes text to fit perfectly within its bounds.
 1. [buttons_tabbar](https://afonsoraposo.com) - A Flutter package that implements a TabBar where each label is a toggle button.
 1. [cached_network_image](https://github.com/Baseflow/flutter_cached_network_image) - Flutter library to load and cache network images. Can also be used with placeholder and error widgets.
+1. [catcher_2](https://github.com/ThexXTURBOXx/catcher_2) - Plugin for error catching which provides multiple handlers for dealing with errors when they are not caught by the developer.
 1. [collection](https://pub.dev/packages/collection) - Collections and utilities functions and classes related to collections.
 1. [cupertino_icons](https://pub.dev/packages/cupertino_icons) - Default icons asset for Cupertino widgets based on Apple styled icons
 1. [curved_navigation_bar](https://github.com/rafalbednarczuk/curved_navigation_bar) - Stunning Animating Curved Shape Navigation Bar. Adjustable color, background color, animation curve, animation duration.
@@ -215,9 +216,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [duration](https://github.com/desktop-dart/duration) - Utilities to make working with 'Duration's easier. Formats duration in human readable form and also parses duration in human readable form to Dart's Duration.
 1. [envied](https://github.com/petercinibulk/envied) - Explicitly reads environment variables into a dart file from a .env file for more security and faster start up times.
 1. [file_selector](https://pub.dev/packages/file_selector) - Flutter plugin for opening and saving files, or selecting directories, using native file selection UI.
-1. [fl_query](https://fl-query.vercel.app) - Asynchronous data caching, refetching & invalidation library for Flutter
-1. [fl_query_hooks](https://fl-query.vercel.app) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
-1. [fl_query_devtools](https://fl-query.vercel.app) - Devtools support for Fl-Query
 1. [fluentui_system_icons](https://github.com/microsoft/fluentui-system-icons/tree/main) - Fluent UI System Icons are a collection of familiar, friendly and modern icons from Microsoft.
 1. [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/develop/flutter_cache_manager) - Generic cache manager for flutter. Saves web files on the storages of the device and saves the cache info using sqflite.
 1. [flutter_displaymode](https://github.com/ajinasokan/flutter_displaymode) - A Flutter plugin to set display mode (resolution, refresh rate) on Android platform. Allows to enable high refresh rate on supported devices.
@@ -238,7 +236,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [html](https://pub.dev/packages/html) - APIs for parsing and manipulating HTML content outside the browser.
 1. [http](https://pub.dev/packages/http) - A composable, multi-platform, Future-based API for HTTP requests.
 1. [image_picker](https://pub.dev/packages/image_picker) - Flutter plugin for selecting images from the Android and iOS image library, and taking new pictures with the camera.
-1. [internet_connection_checker](https://github.com/RounakTadvi/internet_connection_checker/tree/main) - A pure Dart library that checks for internet by opening a socket to a list of specified addresses, each with individual port and timeout. Defaults are provided for convenience.
 1. [intl](https://pub.dev/packages/intl) - Contains code to deal with internationalized/localized messages, date and number formatting and parsing, bi-directional text, and other internationalization issues.
 1. [introduction_screen](https://github.com/pyozer/introduction_screen) - Introduction/Onboarding package for flutter app with some customizations possibilities
 1. [json_annotation](https://pub.dev/packages/json_annotation) - Classes and helper functions that support JSON code generation via the `json_serializable` package.
@@ -265,11 +262,13 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [system_theme](https://pub.dev/packages/system_theme) - A plugin to get the current system theme info. Supports Android, Web, Windows, Linux and macOS
 1. [titlebar_buttons](https://github.com/gtk-flutter/titlebar_buttons) - A package which provides most of the titlebar buttons from windows, linux and macos.
 1. [url_launcher](https://pub.dev/packages/url_launcher) - Flutter plugin for launching a URL. Supports web, phone, SMS, and email schemes.
-1. [uuid](https://github.com/Daegalus/dart-uuid) - RFC4122 (v1, v4, v5, v6, v7, v8) UUID Generator and Parser for Dart
+1. [uuid](https://pub.dev/packages/uuid) - RFC4122 (v1, v4, v5, v6, v7, v8) UUID Generator and Parser for Dart
 1. [version](https://github.com/dartninja/version) - Provides a simple class for parsing and comparing semantic versions as defined by http://semver.org/
 1. [visibility_detector](https://pub.dev/packages/visibility_detector) - A widget that detects the visibility of its child and notifies a callback.
 1. [window_manager](https://github.com/leanflutter/window_manager) - This plugin allows Flutter desktop apps to resizing and repositioning the window.
 1. [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - A port in dart of the youtube explode library. Supports several API functions without the need of Youtube API Key.
+1. [simple_icons](https://jlnrrg.github.io/) - The Simple Icon pack available as Flutter Icons. Provides over 1500 Free SVG icons for popular brands.
+1. [audio_service_mpris](https://github.com/bdrazhzhov/audio-service-mpris) - audio_service platform interface supporting Media Player Remote Interfacing Specification.
 1. [build_runner](https://pub.dev/packages/build_runner) - A build system for Dart code generation and modular compilation.
 1. [envied_generator](https://github.com/petercinibulk/envied) - Generator for the Envied package. See https://pub.dev/packages/envied.
 1. [flutter_distributor](https://distributor.leanflutter.org) - A complete tool for packaging and publishing your Flutter apps.
@@ -280,8 +279,11 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [json_serializable](https://pub.dev/packages/json_serializable) - Automatically generate code for converting to and from JSON by annotating Dart classes.
 1. [pub_api_client](https://github.com/leoafarias/pub_api_client) - An API Client for Pub to interact with public package information.
 1. [pubspec_parse](https://pub.dev/packages/pubspec_parse) - Simple package for parsing pubspec.yaml files with a type-safe API and rich error reporting.
-1. [catcher](https://github.com/jhomlala/catcher) - Plugin for error catching which provides multiple handlers for dealing with errors when they are not caught by the developer.
+1. [fl_query](https://fl-query.vercel.app) - Asynchronous data caching, refetching & invalidation library for Flutter
+1. [fl_query_hooks](https://fl-query.vercel.app) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
+1. [fl_query_devtools](https://fl-query.vercel.app) - Devtools support for Fl-Query
 1. [flutter_desktop_tools](https://github.com/KRTirtho/flutter_desktop_tools) - Essential collection of tools for flutter desktop app development
+1. [scrobblenaut](https://github.com/Nebulino/Scrobblenaut) - A deadly simple LastFM API Wrapper for Dart. So deadly simple that it's gonna hit the mark.
 1. [window_size](https://github.com/google/flutter-desktop-embedding.git) - Allows resizing and repositioning the window containing Flutter.
 </details>
 

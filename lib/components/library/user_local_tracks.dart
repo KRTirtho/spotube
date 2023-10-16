@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
@@ -28,7 +29,8 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart'
+    show FfiException;
 
 const supportedAudioTypes = [
   "audio/webm",
@@ -76,14 +78,14 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
         final mimetype = lookupMimeType(file.path);
         return mimetype != null && supportedAudioTypes.contains(mimetype);
       }).map(
-        (f) async {
+        (file) async {
           try {
-            final metadata = await MetadataGod.readMetadata(file: f.path);
+            final metadata = await MetadataGod.readMetadata(file: file.path);
 
             final imageFile = File(join(
               (await getTemporaryDirectory()).path,
               "spotube",
-              basenameWithoutExtension(f.path) +
+              basenameWithoutExtension(file.path) +
                   imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
             ));
             if (!await imageFile.exists() && metadata.picture != null) {
@@ -94,12 +96,12 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
               );
             }
 
-            return {"metadata": metadata, "file": f, "art": imageFile.path};
+            return {"metadata": metadata, "file": file, "art": imageFile.path};
           } catch (e, stack) {
             if (e is FfiException) {
-              return {"file": f};
+              return {"file": file};
             }
-            Catcher.reportCheckedError(e, stack);
+            Catcher2.reportCheckedError(e, stack);
             return {};
           }
         },
@@ -123,7 +125,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
 
     return tracks;
   } catch (e, stack) {
-    Catcher.reportCheckedError(e, stack);
+    Catcher2.reportCheckedError(e, stack);
     return [];
   }
 });
@@ -286,24 +288,26 @@ class UserLocalTracks extends HookConsumerWidget {
                 onRefresh: () async {
                   ref.refresh(localTracksProvider);
                 },
-                child: ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: filteredTracks.length,
-                  itemBuilder: (context, index) {
-                    final track = filteredTracks[index];
-                    return TrackTile(
-                      index: index,
-                      track: track,
-                      userPlaylist: false,
-                      onTap: () async {
-                        await playLocalTracks(
-                          ref,
-                          sortedTracks,
-                          currentTrack: track,
-                        );
-                      },
-                    );
-                  },
+                child: InterScrollbar(
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: filteredTracks.length,
+                    itemBuilder: (context, index) {
+                      final track = filteredTracks[index];
+                      return TrackTile(
+                        index: index,
+                        track: track,
+                        userPlaylist: false,
+                        onTap: () async {
+                          await playLocalTracks(
+                            ref,
+                            sortedTracks,
+                            currentTrack: track,
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             );

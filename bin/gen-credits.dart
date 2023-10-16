@@ -68,6 +68,7 @@ void main() async {
     ),
   );
 
+  // ignore: avoid_print
   print(
     packageInfo
         .map(
@@ -76,6 +77,7 @@ void main() async {
         )
         .join('\n'),
   );
+  // ignore: avoid_print
   print(
     gitPubspecs.map(
       (package) {

@@ -13,7 +13,7 @@ class CategoryQueries {
 
   InfiniteQuery<Page<Category>, dynamic, int> list(
     WidgetRef ref,
-    String recommendationMarket,
+    Market recommendationMarket,
   ) {
     ref.watch(userPreferencesProvider.select((s) => s.locale));
     final locale = useContext().l10n.localeName;
@@ -53,7 +53,7 @@ class CategoryQueries {
       (pageParam, spotify) async {
         final playlists = await Pages<PlaylistSimple?>(
           spotify,
-          "v1/browse/categories/$category/playlists?country=$market&locale=$locale",
+          "v1/browse/categories/$category/playlists?country=${market.name}&locale=$locale",
           (json) => json == null ? null : PlaylistSimple.fromJson(json),
           'playlists',
           (json) => PlaylistsFeatured.fromJson(json),

@@ -7,6 +7,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 
@@ -73,24 +74,30 @@ class GenrePage extends HookConsumerWidget {
               searchController: searchController,
               searchFocus: searchFocus,
             ),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return AnimatedCrossFade(
-                    crossFadeState: searchController.text.isEmpty &&
-                            index == categories.length - 1 &&
-                            categoriesQuery.hasNextPage
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    duration: const Duration(milliseconds: 300),
-                    firstChild: const ShimmerCategories(),
-                    secondChild: CategoryCard(categories[index]),
-                  );
-                },
+            if (!categoriesQuery.hasPageData)
+              const ShimmerCategories()
+            else
+              Expanded(
+                child: InterScrollbar(
+                  controller: scrollController,
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      return AnimatedCrossFade(
+                        crossFadeState: searchController.text.isEmpty &&
+                                index == categories.length - 1 &&
+                                categoriesQuery.hasNextPage
+                            ? CrossFadeState.showFirst
+                            : CrossFadeState.showSecond,
+                        duration: const Duration(milliseconds: 300),
+                        firstChild: const ShimmerCategories(),
+                        secondChild: CategoryCard(categories[index]),
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       ),

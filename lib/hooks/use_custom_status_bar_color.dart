@@ -6,6 +6,7 @@ void useCustomStatusBarColor(
   Color color,
   bool isCurrentRoute, {
   bool noSetBGColor = false,
+  bool? automaticSystemUiAdjustment,
 }) {
   final context = useContext();
   final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
@@ -21,20 +22,30 @@ void useCustomStatusBarColor(
   final statusBarColor = SystemChrome.latestStyle?.statusBarColor;
 
   useEffect(() {
-    if (isCurrentRoute && statusBarColor != color) {
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(
-          statusBarColor:
-              noSetBGColor ? Colors.transparent : color, // status bar color
-          statusBarIconBrightness: color.computeLuminance() > 0.179
-              ? Brightness.dark
-              : Brightness.light,
-        ),
-      );
-    } else if (!isCurrentRoute && statusBarColor == color) {
-      resetStatusbar();
-    }
-    return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (automaticSystemUiAdjustment != null) {
+        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment =
+            automaticSystemUiAdjustment;
+      }
+      if (isCurrentRoute && statusBarColor != color) {
+        final isLight = color.computeLuminance() > 0.179;
+        SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(
+            statusBarColor:
+                noSetBGColor ? Colors.transparent : color, // status bar color
+            statusBarIconBrightness:
+                isLight ? Brightness.dark : Brightness.light,
+          ),
+        );
+      } else if (!isCurrentRoute && statusBarColor == color) {
+        resetStatusbar();
+      }
+    });
+    return () {
+      if (automaticSystemUiAdjustment != null) {
+        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
+      }
+    };
   }, [color, isCurrentRoute, statusBarColor]);
 
   useEffect(() {

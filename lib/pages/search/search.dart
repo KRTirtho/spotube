@@ -9,6 +9,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -71,7 +72,10 @@ class SearchPage extends HookConsumerWidget {
 
     final queries = [searchTrack, searchAlbum, searchPlaylist, searchArtist];
     final isFetching = queries.every(
-          (s) => s.isLoadingPage || s.isRefreshingPage || !s.hasPageData,
+          (s) =>
+              (!s.hasPageData && !s.hasPageError) ||
+              s.isRefreshingPage ||
+              !s.hasPageData,
         ) &&
         searchTerm.isNotEmpty;
 
@@ -103,240 +107,246 @@ class SearchPage extends HookConsumerWidget {
           }
         }
 
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (tracks.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        context.l10n.songs,
-                        style: theme.textTheme.titleLarge!,
+        return InterScrollbar(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (tracks.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          context.l10n.songs,
+                          style: theme.textTheme.titleLarge!,
+                        ),
                       ),
-                    ),
-                  if (searchTrack.isLoadingPage)
-                    const CircularProgressIndicator()
-                  else if (searchTrack.hasPageError)
-                    Text(
-                      searchTrack.errors.lastOrNull?.toString() ?? "",
-                    )
-                  else
-                    ...tracks.mapIndexed((i, track) {
-                      return TrackTile(
-                        index: i,
-                        track: track,
-                        onTap: () async {
-                          final isTrackPlaying =
-                              playlist.activeTrack?.id == track.id;
-                          if (!isTrackPlaying && context.mounted) {
-                            final shouldPlay = (playlist.tracks.length) > 20
-                                ? await showPromptDialog(
-                                    context: context,
-                                    title: context.l10n.playing_track(
-                                      track.name!,
-                                    ),
-                                    message: context.l10n.queue_clear_alert(
-                                      playlist.tracks.length,
-                                    ),
-                                  )
-                                : true;
+                    if (!searchTrack.hasPageData &&
+                        !searchTrack.hasPageError &&
+                        !searchTrack.isLoadingNextPage)
+                      const CircularProgressIndicator()
+                    else if (searchTrack.hasPageError)
+                      Text(
+                        searchTrack.errors.lastOrNull?.toString() ?? "",
+                      )
+                    else
+                      ...tracks.mapIndexed((i, track) {
+                        return TrackTile(
+                          index: i,
+                          track: track,
+                          onTap: () async {
+                            final isTrackPlaying =
+                                playlist.activeTrack?.id == track.id;
+                            if (!isTrackPlaying && context.mounted) {
+                              final shouldPlay = (playlist.tracks.length) > 20
+                                  ? await showPromptDialog(
+                                      context: context,
+                                      title: context.l10n.playing_track(
+                                        track.name!,
+                                      ),
+                                      message: context.l10n.queue_clear_alert(
+                                        playlist.tracks.length,
+                                      ),
+                                    )
+                                  : true;
 
-                            if (shouldPlay) {
-                              await playlistNotifier.load(
-                                [track],
-                                autoPlay: true,
-                              );
-                            }
-                          }
-                        },
-                      );
-                    }),
-                  if (searchTrack.hasNextPage && tracks.isNotEmpty)
-                    Center(
-                      child: TextButton(
-                        onPressed: searchTrack.isRefreshingPage
-                            ? null
-                            : () => searchTrack.fetchNext(),
-                        child: searchTrack.isRefreshingPage
-                            ? const CircularProgressIndicator()
-                            : Text(context.l10n.load_more),
-                      ),
-                    ),
-                  if (playlists.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        context.l10n.playlists,
-                        style: theme.textTheme.titleLarge!,
-                      ),
-                    ),
-                  const SizedBox(height: 10),
-                  ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                      },
-                    ),
-                    child: Scrollbar(
-                      scrollbarOrientation: mediaQuery.lgAndUp
-                          ? ScrollbarOrientation.bottom
-                          : ScrollbarOrientation.top,
-                      controller: playlistController,
-                      child: Waypoint(
-                        onTouchEdge: () {
-                          searchPlaylist.fetchNext();
-                        },
-                        controller: playlistController,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          controller: playlistController,
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            children: [
-                              ...playlists.mapIndexed(
-                                (i, playlist) {
-                                  if (i == playlists.length - 1 &&
-                                      searchPlaylist.hasNextPage) {
-                                    return const ShimmerPlaybuttonCard(
-                                        count: 1);
-                                  }
-                                  return PlaylistCard(playlist);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (searchPlaylist.isLoadingPage)
-                    const CircularProgressIndicator(),
-                  if (searchPlaylist.hasPageError)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        searchPlaylist.errors.lastOrNull?.toString() ?? "",
-                      ),
-                    ),
-                  const SizedBox(height: 20),
-                  if (artists.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        context.l10n.artists,
-                        style: theme.textTheme.titleLarge!,
-                      ),
-                    ),
-                  const SizedBox(height: 10),
-                  ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                      },
-                    ),
-                    child: Scrollbar(
-                      controller: artistController,
-                      child: Waypoint(
-                        controller: artistController,
-                        onTouchEdge: () {
-                          searchArtist.fetchNext();
-                        },
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          controller: artistController,
-                          child: Row(
-                            children: [
-                              ...artists.mapIndexed(
-                                (i, artist) {
-                                  if (i == artists.length - 1 &&
-                                      searchArtist.hasNextPage) {
-                                    return const ShimmerPlaybuttonCard(
-                                        count: 1);
-                                  }
-                                  return Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: ArtistCard(artist),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (searchArtist.isLoadingPage)
-                    const CircularProgressIndicator(),
-                  if (searchArtist.hasPageError)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        searchArtist.errors.lastOrNull?.toString() ?? "",
-                      ),
-                    ),
-                  const SizedBox(height: 20),
-                  if (albums.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        context.l10n.albums,
-                        style: theme.textTheme.titleLarge!,
-                      ),
-                    ),
-                  const SizedBox(height: 10),
-                  ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                      },
-                    ),
-                    child: Scrollbar(
-                      controller: albumController,
-                      child: Waypoint(
-                        controller: albumController,
-                        onTouchEdge: () {
-                          searchAlbum.fetchNext();
-                        },
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          controller: albumController,
-                          child: Row(
-                            children: [
-                              ...albums.mapIndexed((i, album) {
-                                if (i == albums.length - 1 &&
-                                    searchAlbum.hasNextPage) {
-                                  return const ShimmerPlaybuttonCard(count: 1);
-                                }
-                                return AlbumCard(
-                                  TypeConversionUtils.simpleAlbum_X_Album(
-                                    album,
-                                  ),
+                              if (shouldPlay) {
+                                await playlistNotifier.load(
+                                  [track],
+                                  autoPlay: true,
                                 );
-                              }),
-                            ],
+                              }
+                            }
+                          },
+                        );
+                      }),
+                    if (searchTrack.hasNextPage && tracks.isNotEmpty)
+                      Center(
+                        child: TextButton(
+                          onPressed: searchTrack.isLoadingNextPage
+                              ? null
+                              : () => searchTrack.fetchNext(),
+                          child: searchTrack.isLoadingNextPage
+                              ? const CircularProgressIndicator()
+                              : Text(context.l10n.load_more),
+                        ),
+                      ),
+                    if (playlists.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          context.l10n.playlists,
+                          style: theme.textTheme.titleLarge!,
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+                    ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        dragDevices: {
+                          PointerDeviceKind.touch,
+                          PointerDeviceKind.mouse,
+                        },
+                      ),
+                      child: Scrollbar(
+                        scrollbarOrientation: mediaQuery.lgAndUp
+                            ? ScrollbarOrientation.bottom
+                            : ScrollbarOrientation.top,
+                        controller: playlistController,
+                        child: Waypoint(
+                          onTouchEdge: () {
+                            searchPlaylist.fetchNext();
+                          },
+                          controller: playlistController,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: playlistController,
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              children: [
+                                ...playlists.mapIndexed(
+                                  (i, playlist) {
+                                    if (i == playlists.length - 1 &&
+                                        searchPlaylist.hasNextPage) {
+                                      return const ShimmerPlaybuttonCard(
+                                          count: 1);
+                                    }
+                                    return PlaylistCard(playlist);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  if (searchAlbum.isLoadingPage)
-                    const CircularProgressIndicator(),
-                  if (searchAlbum.hasPageError)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        searchAlbum.errors.lastOrNull?.toString() ?? "",
+                    if (!searchPlaylist.hasPageData &&
+                        !searchPlaylist.hasPageError)
+                      const CircularProgressIndicator(),
+                    if (searchPlaylist.hasPageError)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          searchPlaylist.errors.lastOrNull?.toString() ?? "",
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+                    if (artists.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          context.l10n.artists,
+                          style: theme.textTheme.titleLarge!,
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+                    ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        dragDevices: {
+                          PointerDeviceKind.touch,
+                          PointerDeviceKind.mouse,
+                        },
+                      ),
+                      child: Scrollbar(
+                        controller: artistController,
+                        child: Waypoint(
+                          controller: artistController,
+                          onTouchEdge: () {
+                            searchArtist.fetchNext();
+                          },
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: artistController,
+                            child: Row(
+                              children: [
+                                ...artists.mapIndexed(
+                                  (i, artist) {
+                                    if (i == artists.length - 1 &&
+                                        searchArtist.hasNextPage) {
+                                      return const ShimmerPlaybuttonCard(
+                                          count: 1);
+                                    }
+                                    return Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: ArtistCard(artist),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                ],
+                    if (!searchArtist.hasPageData && !searchArtist.hasPageError)
+                      const CircularProgressIndicator(),
+                    if (searchArtist.hasPageError)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          searchArtist.errors.lastOrNull?.toString() ?? "",
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+                    if (albums.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          context.l10n.albums,
+                          style: theme.textTheme.titleLarge!,
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+                    ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        dragDevices: {
+                          PointerDeviceKind.touch,
+                          PointerDeviceKind.mouse,
+                        },
+                      ),
+                      child: Scrollbar(
+                        controller: albumController,
+                        child: Waypoint(
+                          controller: albumController,
+                          onTouchEdge: () {
+                            searchAlbum.fetchNext();
+                          },
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            controller: albumController,
+                            child: Row(
+                              children: [
+                                ...albums.mapIndexed((i, album) {
+                                  if (i == albums.length - 1 &&
+                                      searchAlbum.hasNextPage) {
+                                    return const ShimmerPlaybuttonCard(
+                                        count: 1);
+                                  }
+                                  return AlbumCard(
+                                    TypeConversionUtils.simpleAlbum_X_Album(
+                                      album,
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (!searchAlbum.hasPageData && !searchAlbum.hasPageError)
+                      const CircularProgressIndicator(),
+                    if (searchAlbum.hasPageError)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          searchAlbum.errors.lastOrNull?.toString() ?? "",
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -359,7 +369,8 @@ class SearchPage extends HookConsumerWidget {
                     ),
                     color: theme.scaffoldBackgroundColor,
                     child: TextField(
-                      autofocus: queries.none((s) => s.hasPageData),
+                      autofocus:
+                          queries.none((s) => s.hasPageData && !s.hasPageError),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(SpotubeIcons.search),
                         hintText: "${context.l10n.search}...",

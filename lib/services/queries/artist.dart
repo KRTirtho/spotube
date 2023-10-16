@@ -51,11 +51,12 @@ class ArtistQueries {
           return page.items?.toList() ?? [];
         }
 
+        following.addAll(page.items ?? []);
         while (page?.isLast != true) {
-          following.addAll(page?.items ?? []);
           page = await spotify.me
               .following(FollowingType.artist)
               .getPage(50, page?.after ?? '');
+          following.addAll(page.items ?? []);
         }
 
         return following;

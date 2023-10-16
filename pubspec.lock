@@ -85,10 +85,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: e0902a06f0e00414e4e3438a084580161279f137aeb862274710f29ec10cf01e
+      sha256: ca12e6c9ac022f33fd89128e7007fb5e97ab6e814d4fa05dd8d4f2db1e3c69cb
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.9"
+    version: "3.4.5"
   args:
     dependency: "direct main"
     description:
@@ -113,6 +113,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.12"
+  audio_service_mpris:
+    dependency: "direct main"
+    description:
+      name: audio_service_mpris
+      sha256: "31be5de2db0c71b217157afce1974ac6d0ad329bd91deb1f19ad094d29340d8e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   audio_service_platform_interface:
     dependency: transitive
     description:
@@ -237,35 +245,34 @@ packages:
     dependency: "direct main"
     description:
       name: cached_network_image
-      sha256: fd3d0dc1d451f9a252b32d95d3f0c3c487bc41a75eba2e6097cb0b9c71491b15
+      sha256: f98972704692ba679db144261172a8e20feb145636c617af0eb4022132a6797f
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.3"
+    version: "3.3.0"
   cached_network_image_platform_interface:
     dependency: transitive
     description:
       name: cached_network_image_platform_interface
-      sha256: bb2b8403b4ccdc60ef5f25c70dead1f3d32d24b9d6117cfc087f496b178594a7
+      sha256: "56aa42a7a01e3c9db8456d9f3f999931f1e05535b5a424271e9a38cabf066613"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "3.0.0"
   cached_network_image_web:
     dependency: transitive
     description:
       name: cached_network_image_web
-      sha256: b8eb814ebfcb4dea049680f8c1ffb2df399e4d03bf7a352c775e26fa06e02fa0
+      sha256: "759b9a9f8f6ccbb66c185df805fac107f05730b1dab9c64626d1008cca532257"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
-  catcher:
+    version: "1.1.0"
+  catcher_2:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "354108cbfe75299e8dd25be521946b32c41f621d"
-      url: "https://github.com/ThexXTURBOXx/catcher"
-    source: git
-    version: "0.8.0"
+      name: catcher_2
+      sha256: "73e251057b1b59442d58b5109d26401cfed850df21da44b028338d4f85f69105"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   change_case:
     dependency: transitive
     description:
@@ -438,10 +445,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: ce75a1b40947fea0a0e16ce73337122a86762e38b982e1ccb909daa3b9bc4197
+      sha256: "417e2a6f9d83ab396ec38ff4ea5da6c254da71e4db765ad737a42af6930140b7"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.2"
+    version: "5.3.3"
   disable_battery_optimization:
     dependency: "direct main"
     description:
@@ -581,27 +588,30 @@ packages:
   fl_query:
     dependency: "direct main"
     description:
-      name: fl_query
-      sha256: "3d71cd1eeb3232efa5e32363a351d74fd9ff07c6eb80aeb672b1970962764945"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0-alpha.4"
+      path: "packages/fl_query"
+      ref: HEAD
+      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
+    version: "1.0.0-alpha.5"
   fl_query_devtools:
     dependency: "direct main"
     description:
-      name: fl_query_devtools
-      sha256: "72fac45293902b9f99c726609cd5416573566cce0b7c6e27311efde7fdf1b8b1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0-alpha.2"
+      path: "packages/fl_query_devtools"
+      ref: HEAD
+      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
+    version: "0.1.0-alpha.3"
   fl_query_hooks:
     dependency: "direct main"
     description:
-      name: fl_query_hooks
-      sha256: "7f0880696666714f77981777509a8aedb765857dcdbdde23e623da20a24c4ae0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0-alpha.4+1"
+      path: "packages/fl_query_hooks"
+      ref: HEAD
+      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
+      url: "https://github.com/KRTirtho/fl-query.git"
+    source: git
+    version: "1.0.0-alpha.5"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -631,14 +641,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.9"
-  flutter_blurhash:
-    dependency: transitive
-    description:
-      name: flutter_blurhash
-      sha256: "05001537bd3fac7644fa6558b09ec8c0a3f2eba78c0765f88912882b1331a5c6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.0"
   flutter_cache_manager:
     dependency: "direct main"
     description:
@@ -798,10 +800,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_native_splash
-      sha256: ecff62b3b893f2f665de7e4ad3de89f738941fcfcaaba8ee601e749efafa4698
+      sha256: "91004565166dbbc7a85e7e99b84124a287839830ca957cfe45004793fe6fe69f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -814,26 +816,26 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_riverpod
-      sha256: "1bd39b04f1bcd217a969589777ca6bd642d116e3e5de65c3e6a8e8bdd8b178ec"
+      sha256: e667e406a74d67715f1fa0bd941d9ded49aff72f3a9f4440a36aece4e8d457a7
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.3"
   flutter_rust_bridge:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: a2ff791f96ed03be0d4a8d249130688371ab3612ef95efeddef23600b904a1ef
+      sha256: e12415c3bce49bcbc3fed383f0ea41ad7d828f6cf0eccba0588ffa5a812fe522
       url: "https://pub.dev"
     source: hosted
-    version: "1.81.0"
+    version: "1.82.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
       name: flutter_secure_storage
-      sha256: "22dbf16f23a4bcf9d35e51be1c84ad5bb6f627750565edd70dab70f3ff5fff8f"
+      sha256: ffdbb60130e4665d2af814a0267c481bcf522c41ae2e43caf69fa0146876d685
       url: "https://pub.dev"
     source: hosted
-    version: "8.1.0"
+    version: "9.0.0"
   flutter_secure_storage_linux:
     dependency: transitive
     description:
@@ -870,10 +872,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage_windows
-      sha256: "38f9501c7cb6f38961ef0e1eacacee2b2d4715c63cc83fe56449c4d3d0b47255"
+      sha256: "5809c66f9dd3b4b93b0a6e2e8561539405322ee767ac2f64d084e2ab5429d108"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "3.0.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -941,10 +943,10 @@ packages:
     dependency: "direct main"
     description:
       name: fuzzywuzzy
-      sha256: f685751951297e560361b6416d9ba62d40231599d7b3e8c078318990d3bab84a
+      sha256: a84b99ebb21c448e02267070c91b218b4fbbef9c668b344aaeada49865985cae
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "1.1.6"
   glob:
     dependency: transitive
     description:
@@ -957,10 +959,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "5668e6d3dbcb2d0dfa25f7567554b88c57e1e3f3c440b672b24d4a9477017d5b"
+      sha256: a07c781bf55bf11ae85133338e4850f0b4e33e261c44a66c750fc707d65d8393
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.2"
+    version: "11.1.2"
   google_fonts:
     dependency: "direct main"
     description:
@@ -1021,10 +1023,10 @@ packages:
     dependency: "direct main"
     description:
       name: hooks_riverpod
-      sha256: ad7b877c3687e38764633d221a1f65491bc7a540e724101e9a404a84db2a4276
+      sha256: "69dcb88acbc68c81fc27ec15a89a4e24b7812c83c13a6307a1a9366ada758541"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.3"
   html:
     dependency: "direct main"
     description:
@@ -1061,10 +1063,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: a72242c9a0ffb65d03de1b7113bc4e189686fc07c7147b8b41811d0dd0e0d9bf
+      sha256: "028f61960d56f26414eb616b48b04eb37d700cbe477b7fb09bf1d7ce57fd9271"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.17"
+    version: "4.1.3"
   image_picker:
     dependency: "direct main"
     description:
@@ -1134,14 +1136,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  internet_connection_checker:
-    dependency: "direct main"
-    description:
-      name: internet_connection_checker
-      sha256: "1c683e63e89c9ac66a40748b1b20889fd9804980da732bf2b58d6d5456c8e876"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0+1"
   intl:
     dependency: "direct main"
     description:
@@ -1226,10 +1220,10 @@ packages:
     dependency: "direct main"
     description:
       name: logger
-      sha256: "7ad7215c15420a102ec687bb320a7312afd449bac63bfb1c60d9787c27b9767f"
+      sha256: ba3bc83117b2b49bdd723c0ea7848e8285a0fbc597ba09203b20d329d020c24a
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.0"
+    version: "2.0.2"
   logging:
     dependency: transitive
     description:
@@ -1274,58 +1268,58 @@ packages:
     dependency: transitive
     description:
       name: media_kit_libs_android_audio
-      sha256: "109f5907b4ba2b464e7dc8fcc3062900a9fdce1fdf81e43a9fe1722c3e5fe618"
+      sha256: "1d9ba8814e58a12ae69014884abf96893d38e444abfb806ff38896dfe089dd15"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.3"
+    version: "1.3.5"
   media_kit_libs_audio:
     dependency: "direct main"
     description:
       name: media_kit_libs_audio
-      sha256: "67c0644ffd61df4c64d914e52a7ea344737e23301f5f5d7c72002ba3617d1d0b"
+      sha256: "9ccf9019edc220b8d0bfa1f53a91aa2cf2506ac860b4d5774c9d6bbdd49796ca"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   media_kit_libs_ios_audio:
     dependency: transitive
     description:
       name: media_kit_libs_ios_audio
-      sha256: b121cb552f644813993af9baa0fe34082759bbdc8920b3580b5b17ff4eccc1b8
+      sha256: "78ccf04e27d6b4ba00a355578ccb39b772f00d48269a6ac3db076edf2d51934f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.3"
+    version: "1.1.4"
   media_kit_libs_linux:
     dependency: transitive
     description:
       name: media_kit_libs_linux
-      sha256: "3b7c272179639a914dc8a50bf8a3f2df0e9a503bd727c88fab499dbdf6cb1eb8"
+      sha256: e186891c31daa6bedab4d74dcdb4e8adfccc7d786bfed6ad81fe24a3b3010310
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.3"
   media_kit_libs_macos_audio:
     dependency: transitive
     description:
       name: media_kit_libs_macos_audio
-      sha256: c50a0feee961b7c9d4b9b367f94ce8415938b095ef0cc3d975b9c1f27e76e394
+      sha256: "3be21844df98f286de32808592835073cdef2c1a10078bac135da790badca950"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.3"
+    version: "1.1.4"
   media_kit_libs_windows_audio:
     dependency: transitive
     description:
       name: media_kit_libs_windows_audio
-      sha256: "9f2dda645ef2d28f7945259848a6dcc6b0b36cb537d8e79d59d5054f08dbce13"
+      sha256: c2fd558cc87b9d89a801141fcdffe02e338a3b21a41a18fbd63d5b221a1b8e53
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.9"
   media_kit_native_event_loop:
     dependency: transitive
     description:
       name: media_kit_native_event_loop
-      sha256: e37ce6fb5fa71b8cf513c6a6cd591367743a342a385e7da621a047dd8ef6f4a4
+      sha256: a605cf185499d14d58935b8784955a92a4bf0ff4e19a23de3d17a9106303930e
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.7"
+    version: "1.0.8"
   meta:
     dependency: transitive
     description:
@@ -1338,10 +1332,10 @@ packages:
     dependency: "direct main"
     description:
       name: metadata_god
-      sha256: "562c223d83a7bbf0a289ed0d5ed6a8cf8d94d673263203e9ff4930b44bd2f066"
+      sha256: cf13931c39eba0b9443d16e8940afdabee125bf08945f18d4c0d02bcae2a3317
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.2+1"
   mime:
     dependency: "direct main"
     description:
@@ -1378,10 +1372,10 @@ packages:
     dependency: transitive
     description:
       name: octo_image
-      sha256: "107f3ed1330006a3bea63615e81cf637433f5135a52466c7caa0e7152bca9143"
+      sha256: "45b40f99622f11901238e18d48f5f12ea36426d8eced9f4cbf58479c7aa2430d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "2.0.0"
   package_config:
     dependency: transitive
     description:
@@ -1486,30 +1480,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
-  pedantic:
-    dependency: transitive
-    description:
-      name: pedantic
-      sha256: "67fc27ed9639506c856c840ccce7594d0bdcd91bc8d53d6e52359449a1d50602"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.11.1"
   permission_handler:
     dependency: "direct main"
     description:
       name: permission_handler
-      sha256: bc56bfe9d3f44c3c612d8d393bd9b174eb796d706759f9b495ac254e4294baa5
+      sha256: "284a66179cabdf942f838543e10413246f06424d960c92ba95c84439154fcac8"
       url: "https://pub.dev"
     source: hosted
-    version: "10.4.5"
+    version: "11.0.1"
   permission_handler_android:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: "59c6322171c29df93a22d150ad95f3aa19ed86542eaec409ab2691b8f35f9a47"
+      sha256: ace7d15a3d1a4a0b91c041d01e5405df221edb9de9116525efc773c74e6fc790
       url: "https://pub.dev"
     source: hosted
-    version: "10.3.6"
+    version: "11.0.5"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -1682,10 +1668,10 @@ packages:
     dependency: transitive
     description:
       name: riverpod
-      sha256: a600120d6f213a9922860eea1abc32597436edd5b2c4e73b91410f8c2af67d22
+      sha256: "494bf2cfb4df30000273d3052bdb1cc1de738574c6b678f0beb146ea56f5e208"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.3"
   rxdart:
     dependency: transitive
     description:
@@ -1710,6 +1696,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.9"
+  scrobblenaut:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: dart-3-support
+      resolved-ref: d90cb75d71737f3cfa2de4469d48080c0f3eedc2
+      url: "https://github.com/KRTirtho/scrobblenaut.git"
+    source: git
+    version: "3.0.0"
   scroll_to_index:
     dependency: "direct main"
     description:
@@ -1814,6 +1809,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.0"
+  simple_icons:
+    dependency: "direct main"
+    description:
+      name: simple_icons
+      sha256: "8aa6832dc7a263a3213e40ecbf1328a392308c809d534a3b860693625890483b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.10.0"
   skeleton_text:
     dependency: "direct main"
     description:
@@ -1831,10 +1834,10 @@ packages:
     dependency: "direct main"
     description:
       name: smtc_windows
-      sha256: dd86d0f29b5a73ffed5650279e6abee01846017b9bc16c07c708e129648c08ac
+      sha256: aba2bad5ddfaf595496db04df3d9fdb54fb128fc1f39c8f024945a67455388fe
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   source_gen:
     dependency: transitive
     description:
@@ -1863,10 +1866,10 @@ packages:
     dependency: "direct main"
     description:
       name: spotify
-      sha256: c7c3f157f052143f713477bd5a764b080a0023ed084428bd0cf5a9e3bc260cc6
+      sha256: e967c5e295792e9d38f4c5e9e60d7c2868ed9cb2a8fac2a67c75303f8395e374
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.0"
+    version: "0.12.0"
   sqflite:
     dependency: transitive
     description:

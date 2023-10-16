@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/scrobbler_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
 
@@ -75,12 +76,12 @@ UseTrackToggleLike useTrackToggleLike(Track track, WidgetRef ref) {
 
   final mounted = useIsMounted();
 
+  final scrobblerNotifier = ref.read(scrobblerProvider.notifier);
+
   final toggleTrackLike = useMutations.track.toggleFavorite(
     ref,
     track.id!,
     onMutate: (isLiked) {
-      print("Toggle Like onMutate: $isLiked");
-
       if (isLiked) {
         savedTracks.setData(
           savedTracks.data
@@ -98,12 +99,15 @@ UseTrackToggleLike useTrackToggleLike(Track track, WidgetRef ref) {
       }
       return isLiked;
     },
-    onData: (data, recoveryData) async {
-      print("Toggle Like onData: $data");
+    onData: (isLiked, recoveryData) async {
       await savedTracks.refresh();
+      if (isLiked) {
+        await scrobblerNotifier.love(track);
+      } else {
+        await scrobblerNotifier.unlove(track);
+      }
     },
     onError: (payload, isLiked) {
-      print("Toggle Like onError: $payload");
       if (!mounted()) return;
 
       if (isLiked != true) {

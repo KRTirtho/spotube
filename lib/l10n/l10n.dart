@@ -5,6 +5,7 @@
 /// maboroshin@github => Japanese
 /// iceyear@github => Simplified Chinese
 /// TexturedPolak@github => Polish
+/// yuri-val@github => Ukrainian
 import 'package:flutter/material.dart';
 
 class L10n {
@@ -14,6 +15,7 @@ class L10n {
     const Locale('de', 'GE'),
     const Locale('ca', 'AD'),
     const Locale('es', 'ES'),
+    const Locale("fa", "IR"),
     const Locale('fr', 'FR'),
     const Locale('hi', 'IN'),
 	const locale('it', 'IT'),
@@ -22,5 +24,7 @@ class L10n {
     const Locale('pl', 'PL'),
     const Locale('ru', 'RU'),
     const Locale('pt', 'PT'),
+    const Locale('uk', 'UA'),
+    const Locale('ar', 'SA'),
   ];
 }

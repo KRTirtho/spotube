@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +19,7 @@ import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/next_fetcher_mixin.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
+import 'package:spotube/provider/scrobbler_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -52,6 +53,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   final Ref ref;
   late final AudioServices notificationService;
 
+  ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
   UserPreferences get preferences => ref.read(userPreferencesProvider);
   YoutubeEndpoints get youtube => ref.read(youtubeProvider);
   ProxyPlaylist get playlist => state;
@@ -96,7 +98,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
           updatePalette();
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       });
 
@@ -115,7 +117,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
             active: newActiveIndex,
           );
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       });
 
@@ -151,7 +153,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
                 mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
             await removeTrack(oldTrack!.id!);
           }
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         } finally {
           isPreSearching.value = false;
         }
@@ -185,28 +187,30 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
                 ),
               );
             } catch (e) {
-              currentSegments.value = (
-                source: audioPlayer.currentSource!,
-                segments: [],
-              );
+              if (audioPlayer.currentSource != null) {
+                currentSegments.value = (
+                  source: audioPlayer.currentSource!,
+                  segments: [],
+                );
+              }
             } finally {
               isFetchingSegments.value = false;
             }
           }
 
-          final (source: _, :segments) = currentSegments.value!;
-
           // skipping in first 2 second breaks stream
-          if (segments.isEmpty || position < const Duration(seconds: 3)) return;
+          if (currentSegments.value == null ||
+              currentSegments.value!.segments.isEmpty ||
+              position < const Duration(seconds: 3)) return;
 
-          for (final segment in segments) {
+          for (final segment in currentSegments.value!.segments) {
             if (position.inSeconds >= segment.start &&
                 position.inSeconds < segment.end) {
               await audioPlayer.seek(Duration(seconds: segment.end));
             }
           }
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       });
     }();
@@ -223,7 +227,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     final nthFetchedTrack = switch (track.runtimeType) {
       SpotubeTrack => track as SpotubeTrack,
-      _ => await SpotubeTrack.fetchFromTrack(track, youtube),
+      _ => await SpotubeTrack.fetchFromTrack(
+          track,
+          youtube,
+          preferences.streamMusicCodec,
+        ),
     };
 
     await audioPlayer.replaceSource(
@@ -309,10 +317,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       final addableTrack = await SpotubeTrack.fetchFromTrack(
         tracks.elementAtOrNull(initialIndex) ?? tracks.first,
         youtube,
+        preferences.streamMusicCodec,
       ).catchError((e, stackTrace) {
         return SpotubeTrack.fetchFromTrack(
           tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
           youtube,
+          preferences.streamMusicCodec,
         );
       });
 
@@ -569,11 +579,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       ));
 
       if (res.body == "Not Found") {
-        Catcher.reportCheckedError(
-          "[SponsorBlock] no skip segments found for $id\n"
-          "${res.request?.url}",
-          StackTrace.current,
-        );
         return List.castFrom<dynamic, SkipSegment>([]);
       }
 
@@ -586,7 +591,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           end,
         );
       }).toList();
-      getLogger('getSkipSegments').v(
+      getLogger('getSkipSegments').t(
         "[SponsorBlock] successfully fetched skip segments for $id",
       );
 
@@ -597,19 +602,37 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       return List.castFrom<dynamic, SkipSegment>(segments);
     } catch (e, stack) {
       await SkipSegment.box.put(id, []);
-      Catcher.reportCheckedError(e, stack);
+      Catcher2.reportCheckedError(e, stack);
       return List.castFrom<dynamic, SkipSegment>([]);
     }
   }
 
   @override
   set state(state) {
+    final hasActiveTrackChanged = super.state.activeTrack is SpotubeTrack
+        ? state.activeTrack?.id != super.state.activeTrack?.id
+        : super.state.activeTrack is LocalTrack &&
+                state.activeTrack is LocalTrack
+            ? (super.state.activeTrack as LocalTrack).path !=
+                (state.activeTrack as LocalTrack).path
+            : super.state.activeTrack?.id != state.activeTrack?.id;
+
+    final oldTrack = super.state.activeTrack;
+
     super.state = state;
     if (state.tracks.isEmpty && ref.read(paletteProvider) != null) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
       updatePalette();
     }
+    audioPlayer.position.then((position) {
+      final isMoreThan30secs = position != null &&
+          (position == Duration.zero || position.inSeconds > 30);
+
+      if (hasActiveTrackChanged && oldTrack != null && isMoreThan30secs) {
+        scrobbler.scrobble(oldTrack);
+      }
+    });
   }
 
   @override

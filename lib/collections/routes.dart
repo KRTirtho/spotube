@@ -1,9 +1,10 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
@@ -18,7 +19,6 @@ import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/desktop_login/login_tutorial.dart';
 import 'package:spotube/pages/desktop_login/desktop_login.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/pages/player/player.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
@@ -26,7 +26,7 @@ import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
 import '../pages/library/playlist_generate/playlist_generate_result.dart';
 
-final rootNavigatorKey = Catcher.navigatorKey;
+final rootNavigatorKey = Catcher2.navigatorKey;
 final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -147,13 +147,10 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: "/player",
+      path: "/lastfm-login",
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) {
-        return const SpotubePage(
-          child: PlayerView(),
-        );
-      },
+      pageBuilder: (context, state) =>
+          const SpotubePage(child: LastFMLoginPage()),
     ),
   ],
 );

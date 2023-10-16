@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -40,7 +40,11 @@ class DownloadManagerProvider extends ChangeNotifier {
           await oldFile.exists()) {
         await oldFile.rename(savePath);
       }
-      if (status != DownloadStatus.completed) return;
+      if (status != DownloadStatus.completed ||
+          //? WebA audiotagging is not supported yet
+          //? Although in future by converting weba to opus & then tagging it
+          //? is possible using vorbis comments
+          downloadCodec == MusicCodec.weba) return;
 
       final file = File(request.path);
 
@@ -89,6 +93,8 @@ class DownloadManagerProvider extends ChangeNotifier {
   YoutubeEndpoints get yt => ref.read(youtubeProvider);
   String get downloadDirectory =>
       ref.read(userPreferencesProvider.select((s) => s.downloadLocation));
+  MusicCodec get downloadCodec =>
+      ref.read(userPreferencesProvider.select((s) => s.downloadMusicCodec));
 
   int get $downloadCount => dl
       .getAllDownloads()
@@ -123,14 +129,14 @@ class DownloadManagerProvider extends ChangeNotifier {
 
       return Uint8List.fromList(bytes);
     } catch (e, stackTrace) {
-      Catcher.reportCheckedError(e, stackTrace);
+      Catcher2.reportCheckedError(e, stackTrace);
       return null;
     }
   }
 
   String getTrackFileUrl(Track track) {
     final name =
-        "${track.name} - ${TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[])}.m4a";
+        "${track.name} - ${TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[])}.${downloadCodec.name}";
     return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 
@@ -166,7 +172,7 @@ class DownloadManagerProvider extends ChangeNotifier {
       await oldFile.rename("$savePath.old");
     }
 
-    if (track is SpotubeTrack) {
+    if (track is SpotubeTrack && track.codec == downloadCodec) {
       final downloadTask = await dl.addDownload(track.ytUri, savePath);
       if (downloadTask != null) {
         $history.add(track);
@@ -174,7 +180,7 @@ class DownloadManagerProvider extends ChangeNotifier {
     } else {
       $backHistory.add(track);
       final spotubeTrack =
-          await SpotubeTrack.fetchFromTrack(track, yt).then((d) {
+          await SpotubeTrack.fetchFromTrack(track, yt, downloadCodec).then((d) {
         $backHistory.remove(track);
         return d;
       });
@@ -203,7 +209,7 @@ class DownloadManagerProvider extends ChangeNotifier {
           );
         }
       } catch (e) {
-        Catcher.reportCheckedError(e, StackTrace.current);
+        Catcher2.reportCheckedError(e, StackTrace.current);
         continue;
       }
     }

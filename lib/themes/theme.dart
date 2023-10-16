@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-ThemeData theme(Color seed, Brightness brightness) {
+ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
   final scheme = ColorScheme.fromSeed(
     seedColor: seed,
     shadow: Colors.black12,
+    background: isAmoled ? Colors.black : null,
+    surface: isAmoled ? Colors.black : null,
     brightness: brightness,
   );
   return ThemeData(
@@ -65,6 +67,9 @@ ThemeData theme(Color seed, Brightness brightness) {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+    ),
+    scrollbarTheme: const ScrollbarThemeData(
+      thickness: MaterialStatePropertyAll(14),
     ),
   );
 }

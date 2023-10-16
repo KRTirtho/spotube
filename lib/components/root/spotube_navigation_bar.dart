@@ -13,6 +13,8 @@ import 'package:spotube/hooks/use_brightness_value.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 
+final navigationPanelHeight = StateProvider<double>((ref) => 50);
+
 class SpotubeNavigationBar extends HookConsumerWidget {
   final int selectedIndex;
   final void Function(int) onSelectedIndexChanged;
@@ -41,54 +43,61 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final navbarTileList =
         useMemoized(() => getNavbarTileList(context.l10n), [context.l10n]);
 
+    final panelHeight = ref.watch(navigationPanelHeight);
+
     useEffect(() {
       insideSelectedIndex.value = selectedIndex;
       return null;
     }, [selectedIndex]);
 
     if (layoutMode == LayoutMode.extended ||
-        (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive)) {
+        (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||
+        panelHeight < 10) {
       return const SizedBox();
     }
 
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: CurvedNavigationBar(
-          backgroundColor:
-              theme.colorScheme.secondaryContainer.withOpacity(0.72),
-          buttonBackgroundColor: buttonColor,
-          color: theme.colorScheme.background,
-          height: 50,
-          animationDuration: const Duration(milliseconds: 350),
-          items: navbarTileList.map(
-            (e) {
-              /// Using this [Builder] as an workaround for the first item's
-              /// icon color not updating unless navigating to another page
-              return Builder(builder: (context) {
-                return MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Badge(
-                    isLabelVisible: e.id == "library" && downloadCount > 0,
-                    label: Text(downloadCount.toString()),
-                    child: Icon(
-                      e.icon,
-                      color: Theme.of(context).colorScheme.primary,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
+      height: panelHeight,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: CurvedNavigationBar(
+            backgroundColor:
+                theme.colorScheme.secondaryContainer.withOpacity(0.72),
+            buttonBackgroundColor: buttonColor,
+            color: theme.colorScheme.background,
+            height: panelHeight,
+            animationDuration: const Duration(milliseconds: 350),
+            items: navbarTileList.map(
+              (e) {
+                /// Using this [Builder] as an workaround for the first item's
+                /// icon color not updating unless navigating to another page
+                return Builder(builder: (context) {
+                  return MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Badge(
+                      isLabelVisible: e.id == "library" && downloadCount > 0,
+                      label: Text(downloadCount.toString()),
+                      child: Icon(
+                        e.icon,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
-                  ),
-                );
-              });
+                  );
+                });
+              },
+            ).toList(),
+            index: insideSelectedIndex.value,
+            onTap: (i) {
+              insideSelectedIndex.value = i;
+              if (navbarTileList[i].id == "settings") {
+                Sidebar.goToSettings(context);
+                return;
+              }
+              onSelectedIndexChanged(i);
             },
-          ).toList(),
-          index: insideSelectedIndex.value,
-          onTap: (i) {
-            insideSelectedIndex.value = i;
-            if (navbarTileList[i].id == "settings") {
-              Sidebar.goToSettings(context);
-              return;
-            }
-            onSelectedIndexChanged(i);
-          },
+          ),
         ),
       ),
     );

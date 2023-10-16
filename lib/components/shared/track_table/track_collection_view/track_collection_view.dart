@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
@@ -139,131 +140,134 @@ class TrackCollectionView<T> extends HookConsumerWidget {
           onRefresh: () async {
             await tracksSnapshot.refresh();
           },
-          child: CustomScrollView(
+          child: InterScrollbar(
             controller: controller,
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                actions: [
-                  AnimatedScale(
-                    duration: const Duration(milliseconds: 200),
-                    scale: collapsed.value ? 1 : 0,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: buttons,
-                    ),
-                  ),
-                  AnimatedScale(
-                    duration: const Duration(milliseconds: 200),
-                    scale: collapsed.value ? 1 : 0,
-                    child: IconButton(
-                      tooltip: context.l10n.shuffle,
-                      icon: const Icon(SpotubeIcons.shuffle),
-                      onPressed: playingState == PlayButtonState.playing
-                          ? null
-                          : onShuffledPlay,
-                    ),
-                  ),
-                  AnimatedScale(
-                    duration: const Duration(milliseconds: 200),
-                    scale: collapsed.value ? 1 : 0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: theme.colorScheme.inversePrimary,
+            child: CustomScrollView(
+              controller: controller,
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  actions: [
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 200),
+                      scale: collapsed.value ? 1 : 0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: buttons,
                       ),
-                      onPressed: tracksSnapshot.data != null ? onPlay : null,
-                      child: switch (playingState) {
-                        PlayButtonState.playing =>
-                          const Icon(SpotubeIcons.pause),
-                        PlayButtonState.notPlaying =>
-                          const Icon(SpotubeIcons.play),
-                        PlayButtonState.loading => const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: .7,
-                            ),
-                          ),
-                      },
                     ),
-                  ),
-                ],
-                floating: false,
-                pinned: true,
-                expandedHeight: 400,
-                automaticallyImplyLeading: kIsMobile,
-                leading:
-                    kIsMobile ? const BackButton(color: Colors.white) : null,
-                iconTheme: IconThemeData(color: color?.titleTextColor),
-                primary: true,
-                backgroundColor: color?.color.withOpacity(.8),
-                title: collapsed.value
-                    ? Text(
-                        title,
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          color: color?.titleTextColor,
-                          fontWeight: FontWeight.w600,
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 200),
+                      scale: collapsed.value ? 1 : 0,
+                      child: IconButton(
+                        tooltip: context.l10n.shuffle,
+                        icon: const Icon(SpotubeIcons.shuffle),
+                        onPressed: playingState == PlayButtonState.playing
+                            ? null
+                            : onShuffledPlay,
+                      ),
+                    ),
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 200),
+                      scale: collapsed.value ? 1 : 0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: theme.colorScheme.inversePrimary,
                         ),
-                      )
-                    : null,
-                centerTitle: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: TrackCollectionHeading<T>(
-                    color: color,
-                    title: title,
-                    description: description,
-                    titleImage: titleImage,
-                    playingState: playingState,
-                    onPlay: onPlay,
-                    onShuffledPlay: onShuffledPlay,
-                    tracksSnapshot: tracksSnapshot,
-                    buttons: buttons,
-                    album: album,
+                        onPressed: tracksSnapshot.data != null ? onPlay : null,
+                        child: switch (playingState) {
+                          PlayButtonState.playing =>
+                            const Icon(SpotubeIcons.pause),
+                          PlayButtonState.notPlaying =>
+                            const Icon(SpotubeIcons.play),
+                          PlayButtonState.loading => const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: .7,
+                              ),
+                            ),
+                        },
+                      ),
+                    ),
+                  ],
+                  floating: false,
+                  pinned: true,
+                  expandedHeight: 400,
+                  automaticallyImplyLeading: kIsMobile,
+                  leading:
+                      kIsMobile ? const BackButton(color: Colors.white) : null,
+                  iconTheme: IconThemeData(color: color?.titleTextColor),
+                  primary: true,
+                  backgroundColor: color?.color.withOpacity(.8),
+                  title: collapsed.value
+                      ? Text(
+                          title,
+                          style: theme.textTheme.titleMedium!.copyWith(
+                            color: color?.titleTextColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      : null,
+                  centerTitle: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: TrackCollectionHeading<T>(
+                      color: color,
+                      title: title,
+                      description: description,
+                      titleImage: titleImage,
+                      playingState: playingState,
+                      onPlay: onPlay,
+                      onShuffledPlay: onShuffledPlay,
+                      tracksSnapshot: tracksSnapshot,
+                      buttons: buttons,
+                      album: album,
+                    ),
                   ),
                 ),
-              ),
-              HookBuilder(
-                builder: (context) {
-                  if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
-                    return const ShimmerTrackTile();
-                  } else if (tracksSnapshot.hasError) {
-                    return SliverToBoxAdapter(
-                      child: Text(
-                        context.l10n.error(tracksSnapshot.error ?? ""),
-                      ),
-                    );
-                  }
-
-                  return TracksTableView(
-                    (tracksSnapshot.data ?? []).map(
-                      (track) {
-                        if (track is Track) {
-                          return track;
-                        } else {
-                          return TypeConversionUtils.simpleTrack_X_Track(
-                            track,
-                            album!,
-                          );
-                        }
-                      },
-                    ).toList(),
-                    onTrackPlayButtonPressed: onPlay,
-                    playlistId: id,
-                    userPlaylist: isOwned,
-                    onFiltering: () {
-                      // scroll the flexible space
-                      // to allow more space for search results
-                      controller.animateTo(
-                        330,
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeInOut,
+                HookBuilder(
+                  builder: (context) {
+                    if (tracksSnapshot.isLoading || !tracksSnapshot.hasData) {
+                      return const ShimmerTrackTile();
+                    } else if (tracksSnapshot.hasError) {
+                      return SliverToBoxAdapter(
+                        child: Text(
+                          context.l10n.error(tracksSnapshot.error ?? ""),
+                        ),
                       );
-                    },
-                  );
-                },
-              )
-            ],
+                    }
+          
+                    return TracksTableView(
+                      (tracksSnapshot.data ?? []).map(
+                        (track) {
+                          if (track is Track) {
+                            return track;
+                          } else {
+                            return TypeConversionUtils.simpleTrack_X_Track(
+                              track,
+                              album!,
+                            );
+                          }
+                        },
+                      ).toList(),
+                      onTrackPlayButtonPressed: onPlay,
+                      playlistId: id,
+                      userPlaylist: isOwned,
+                      onFiltering: () {
+                        // scroll the flexible space
+                        // to allow more space for search results
+                        controller.animateTo(
+                          330,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                    );
+                  },
+                )
+              ],
+            ),
           ),
         ));
   }

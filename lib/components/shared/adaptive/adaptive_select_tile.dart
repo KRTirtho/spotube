@@ -42,6 +42,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
       items: options,
       value: value,
       onChanged: onChanged,
+      menuMaxHeight: mediaQuery.size.height * 0.6,
     );
     final controlPlaceholder = useMemoized(
         () => options

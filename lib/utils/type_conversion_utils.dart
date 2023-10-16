@@ -126,21 +126,21 @@ abstract class TypeConversionUtils {
   }) {
     final track = Track();
     track.album = Album()
-      ..name = metadata?.album ?? "Spotube"
+      ..name = metadata?.album ?? "Unknown"
       ..images = [if (art != null) Image()..url = art]
       ..genres = [if (metadata?.genre != null) metadata!.genre!]
       ..artists = [
         Artist()
-          ..name = metadata?.albumArtist ?? "Spotube"
-          ..id = metadata?.albumArtist ?? "Spotube"
+          ..name = metadata?.albumArtist ?? "Unknown"
+          ..id = metadata?.albumArtist ?? "Unknown"
           ..type = "artist",
       ]
       ..id = metadata?.album
       ..releaseDate = metadata?.year?.toString();
     track.artists = [
       Artist()
-        ..name = metadata?.artist ?? "Spotube"
-        ..id = metadata?.artist ?? "Spotube"
+        ..name = metadata?.artist ?? "Unknown"
+        ..id = metadata?.artist ?? "Unknown"
     ];
 
     track.id = metadata?.title ?? basenameWithoutExtension(file.path);

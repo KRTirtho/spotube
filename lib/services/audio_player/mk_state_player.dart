@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart';
 // ignore: implementation_imports
-import 'package:media_kit/src/models/playable.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
 
 /// MediaKit [Player] by default doesn't have a state stream.
@@ -46,7 +45,6 @@ class MkPlayerWithState extends Player {
           if (!isCompleted) return;
 
           _playerStateStream.add(AudioPlaybackState.completed);
-
           if (loopMode == PlaylistMode.single) {
             await super.open(_playlist!.medias[_playlist!.index], play: true);
           } else {
@@ -54,7 +52,7 @@ class MkPlayerWithState extends Player {
             await Future.delayed(const Duration(milliseconds: 250), play);
           }
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       }),
       stream.playlist.listen((event) {
@@ -63,7 +61,7 @@ class MkPlayerWithState extends Player {
         }
       }),
       stream.error.listen((event) {
-        Catcher.reportCheckedError('[MediaKitError] \n$event', null);
+        Catcher2.reportCheckedError('[MediaKitError] \n$event', null);
       }),
     ];
   }
@@ -124,7 +122,9 @@ class MkPlayerWithState extends Player {
     _loopModeStream.add(playlistMode);
   }
 
+  @override
   Future<void> stop() async {
+    await super.stop();
     await pause();
     await seek(Duration.zero);
 
@@ -165,10 +165,22 @@ class MkPlayerWithState extends Player {
 
     final isLast = _playlist!.index == _playlist!.medias.length - 1;
 
-    if (loopMode == PlaylistMode.loop && isLast) {
-      playlist = _playlist!.copyWith(index: 0);
-      return super.open(_playlist!.medias[_playlist!.index], play: true);
-    } else if (!isLast) {
+    if (isLast) {
+      switch (loopMode) {
+        case PlaylistMode.loop:
+          playlist = _playlist!.copyWith(index: 0);
+          super.open(_playlist!.medias[_playlist!.index], play: true);
+          break;
+        case PlaylistMode.none:
+          // Fixes auto-repeating the last track
+          await super.stop();
+          await Future.delayed(const Duration(seconds: 2), () {
+            super.open(_playlist!.medias[_playlist!.index], play: false);
+          });
+          break;
+        default:
+      }
+    } else {
       playlist = _playlist!.copyWith(index: _playlist!.index + 1);
 
       return super.open(_playlist!.medias[_playlist!.index], play: true);
@@ -316,5 +328,15 @@ class MkPlayerWithState extends Player {
       medias: newMedias,
       index: newMedias.indexOf(_playlist!.medias[_playlist!.index]),
     );
+  }
+
+  NativePlayer get nativePlayer => platform as NativePlayer;
+
+  Future<void> setAudioNormalization(bool normalize) async {
+    if (normalize) {
+      await nativePlayer.setProperty('af', 'dynaudnorm=g=5:f=250:r=0.9:p=0.5');
+    } else {
+      await nativePlayer.setProperty('af', '');
+    }
   }
 }

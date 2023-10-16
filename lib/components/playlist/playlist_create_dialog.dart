@@ -170,30 +170,27 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                           return null;
                         },
                         builder: (field) {
-                          return Center(
-                            child: Stack(
-                              children: [
-                                UniversalImage(
-                                  path: field.value?.path ??
-                                      TypeConversionUtils.image_X_UrlString(
-                                        updatingPlaylist?.images,
-                                        placeholder:
-                                            ImagePlaceholder.collection,
-                                      ),
-                                  height: 200,
-                                ),
-                                Positioned(
-                                  bottom: 20,
-                                  right: 20,
-                                  child: IconButton.filled(
+                          return Column(
+                            children: [
+                              UniversalImage(
+                                path: field.value?.path ??
+                                    TypeConversionUtils.image_X_UrlString(
+                                      updatingPlaylist?.images,
+                                      placeholder: ImagePlaceholder.collection,
+                                    ),
+                                height: 200,
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  FilledButton.icon(
                                     icon: const Icon(SpotubeIcons.edit),
-                                    style: IconButton.styleFrom(
-                                      backgroundColor:
-                                          theme.colorScheme.surface,
-                                      foregroundColor:
-                                          theme.colorScheme.primary,
-                                      elevation: 2,
-                                      shadowColor: theme.colorScheme.onSurface,
+                                    label: Text(
+                                      field.value?.path != null ||
+                                              updatingPlaylist?.images != null
+                                          ? context.l10n.change_cover
+                                          : context.l10n.add_cover,
                                     ),
                                     onPressed: () async {
                                       final imageFile = await ImagePicker()
@@ -207,31 +204,32 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                                       }
                                     },
                                   ),
-                                ),
-                                if (field.hasError)
-                                  Positioned(
-                                    bottom: 20,
-                                    left: 20,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.error,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Text(
-                                        field.errorText ?? "",
-                                        style: theme.textTheme.bodyMedium!
-                                            .copyWith(
-                                          color: theme.colorScheme.onError,
-                                        ),
-                                      ),
+                                  const SizedBox(width: 10),
+                                  IconButton.filled(
+                                    icon: const Icon(SpotubeIcons.trash),
+                                    style: IconButton.styleFrom(
+                                      backgroundColor:
+                                          theme.colorScheme.errorContainer,
+                                      foregroundColor: theme.colorScheme.error,
                                     ),
+                                    onPressed: field.value == null
+                                        ? null
+                                        : () {
+                                            field.didChange(null);
+                                            field.validate();
+                                            field.save();
+                                          },
                                   ),
-                              ],
-                            ),
+                                ],
+                              ),
+                              if (field.hasError)
+                                Text(
+                                  field.errorText ?? "",
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    color: theme.colorScheme.error,
+                                  ),
+                                )
+                            ],
                           );
                         }),
                     const SizedBox(height: 10),

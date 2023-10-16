@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:spotube/utils/platform.dart';
@@ -38,46 +40,44 @@ enum YoutubeApiType {
   String get label => name[0].toUpperCase() + name.substring(1);
 }
 
+enum MusicCodec {
+  m4a._("M4a (Best for downloaded music)"),
+  weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
+
+  final String label;
+  const MusicCodec._(this.label);
+}
+
 class UserPreferences extends PersistedChangeNotifier {
-  ThemeMode themeMode;
-  String recommendationMarket;
-  bool saveTrackLyrics;
-  bool checkUpdate;
   AudioQuality audioQuality;
-
-  SpotubeColor accentColorScheme;
   bool albumColorSync;
-
-  String downloadLocation;
-
-  LayoutMode layoutMode;
-
-  CloseBehavior closeBehavior;
-
+  bool amoledDarkTheme;
+  bool checkUpdate;
+  bool normalizeAudio;
   bool showSystemTrayIcon;
-
-  Locale locale;
-
-  String pipedInstance;
-
-  SearchMode searchMode;
-
   bool skipNonMusic;
-
-  YoutubeApiType youtubeApiType;
-
   bool systemTitleBar;
+  CloseBehavior closeBehavior;
+  late SpotubeColor accentColorScheme;
+  LayoutMode layoutMode;
+  Locale locale;
+  Market recommendationMarket;
+  SearchMode searchMode;
+  String downloadLocation;
+  String pipedInstance;
+  ThemeMode themeMode;
+  YoutubeApiType youtubeApiType;
+  MusicCodec streamMusicCodec;
+  MusicCodec downloadMusicCodec;
 
   final Ref ref;
 
   UserPreferences(
     this.ref, {
-    required this.recommendationMarket,
-    required this.themeMode,
-    required this.layoutMode,
-    required this.accentColorScheme,
+    this.recommendationMarket = Market.US,
+    this.themeMode = ThemeMode.system,
+    this.layoutMode = LayoutMode.adaptive,
     this.albumColorSync = true,
-    this.saveTrackLyrics = false,
     this.checkUpdate = true,
     this.audioQuality = AudioQuality.high,
     this.downloadLocation = "",
@@ -89,7 +89,14 @@ class UserPreferences extends PersistedChangeNotifier {
     this.skipNonMusic = true,
     this.youtubeApiType = YoutubeApiType.youtube,
     this.systemTitleBar = false,
+    this.amoledDarkTheme = false,
+    this.normalizeAudio = true,
+    this.streamMusicCodec = MusicCodec.weba,
+    this.downloadMusicCodec = MusicCodec.m4a,
+    SpotubeColor? accentColorScheme,
   }) : super() {
+    this.accentColorScheme =
+        accentColorScheme ?? SpotubeColor(Colors.blue.value, name: "Blue");
     if (downloadLocation.isEmpty && !kIsWeb) {
       _getDefaultDownloadDirectory().then(
         (value) {
@@ -99,19 +106,48 @@ class UserPreferences extends PersistedChangeNotifier {
     }
   }
 
+  void reset() {
+    setRecommendationMarket(Market.US);
+    setThemeMode(ThemeMode.system);
+    setLayoutMode(LayoutMode.adaptive);
+    setAlbumColorSync(true);
+    setCheckUpdate(true);
+    setAudioQuality(AudioQuality.high);
+    setDownloadLocation("");
+    setCloseBehavior(CloseBehavior.close);
+    setShowSystemTrayIcon(true);
+    setLocale(const Locale("system", "system"));
+    setPipedInstance("https://pipedapi.kavin.rocks");
+    setSearchMode(SearchMode.youtube);
+    setSkipNonMusic(true);
+    setYoutubeApiType(YoutubeApiType.youtube);
+    setSystemTitleBar(false);
+    setAmoledDarkTheme(false);
+    setNormalizeAudio(true);
+    setAccentColorScheme(SpotubeColor(Colors.blue.value, name: "Blue"));
+    setStreamMusicCodec(MusicCodec.weba);
+    setDownloadMusicCodec(MusicCodec.m4a);
+  }
+
+  void setStreamMusicCodec(MusicCodec codec) {
+    streamMusicCodec = codec;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setDownloadMusicCodec(MusicCodec codec) {
+    downloadMusicCodec = codec;
+    notifyListeners();
+    updatePersistence();
+  }
+
   void setThemeMode(ThemeMode mode) {
     themeMode = mode;
     notifyListeners();
     updatePersistence();
   }
 
-  void setSaveTrackLyrics(bool shouldSave) {
-    saveTrackLyrics = shouldSave;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setRecommendationMarket(String country) {
+  void setRecommendationMarket(Market country) {
     recommendationMarket = country;
     notifyListeners();
     updatePersistence();
@@ -203,9 +239,24 @@ class UserPreferences extends PersistedChangeNotifier {
 
   void setSystemTitleBar(bool isSystemTitleBar) {
     systemTitleBar = isSystemTitleBar;
-    DesktopTools.window.setTitleBarStyle(
-      systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-    );
+    if (DesktopTools.platform.isDesktop) {
+      DesktopTools.window.setTitleBarStyle(
+        systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+      );
+    }
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setAmoledDarkTheme(bool isAmoled) {
+    amoledDarkTheme = isAmoled;
+    notifyListeners();
+    updatePersistence();
+  }
+
+  void setNormalizeAudio(bool normalize) {
+    normalizeAudio = normalize;
+    audioPlayer.setAudioNormalization(normalize);
     notifyListeners();
     updatePersistence();
   }
@@ -224,8 +275,11 @@ class UserPreferences extends PersistedChangeNotifier {
 
   @override
   FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
-    saveTrackLyrics = map["saveTrackLyrics"] ?? false;
-    recommendationMarket = map["recommendationMarket"] ?? recommendationMarket;
+    recommendationMarket = Market.values.firstWhere(
+      (market) =>
+          market.name == (map["recommendationMarket"] ?? recommendationMarket),
+      orElse: () => Market.US,
+    );
     checkUpdate = map["checkUpdate"] ?? checkUpdate;
 
     themeMode = ThemeMode.values[map["themeMode"] ?? 0];
@@ -274,13 +328,27 @@ class UserPreferences extends PersistedChangeNotifier {
     systemTitleBar = map["systemTitleBar"] ?? systemTitleBar;
     // updates the title bar
     setSystemTitleBar(systemTitleBar);
+
+    amoledDarkTheme = map["amoledDarkTheme"] ?? amoledDarkTheme;
+
+    normalizeAudio = map["normalizeAudio"] ?? normalizeAudio;
+    audioPlayer.setAudioNormalization(normalizeAudio);
+
+    streamMusicCodec = MusicCodec.values.firstWhere(
+      (codec) => codec.name == map["streamMusicCodec"],
+      orElse: () => MusicCodec.weba,
+    );
+
+    downloadMusicCodec = MusicCodec.values.firstWhere(
+      (codec) => codec.name == map["downloadMusicCodec"],
+      orElse: () => MusicCodec.m4a,
+    );
   }
 
   @override
   FutureOr<Map<String, dynamic>> toMap() {
     return {
-      "saveTrackLyrics": saveTrackLyrics,
-      "recommendationMarket": recommendationMarket,
+      "recommendationMarket": recommendationMarket.name,
       "themeMode": themeMode.index,
       "accentColorScheme": accentColorScheme.toString(),
       "albumColorSync": albumColorSync,
@@ -297,6 +365,10 @@ class UserPreferences extends PersistedChangeNotifier {
       "skipNonMusic": skipNonMusic,
       "youtubeApiType": youtubeApiType.name,
       'systemTitleBar': systemTitleBar,
+      "amoledDarkTheme": amoledDarkTheme,
+      "normalizeAudio": normalizeAudio,
+      "streamMusicCodec": streamMusicCodec.name,
+      "downloadMusicCodec": downloadMusicCodec.name,
     };
   }
 
@@ -315,7 +387,7 @@ class UserPreferences extends PersistedChangeNotifier {
     SearchMode? searchMode,
     bool? skipNonMusic,
     YoutubeApiType? youtubeApiType,
-    String? recommendationMarket,
+    Market? recommendationMarket,
     bool? saveTrackLyrics,
   }) {
     return UserPreferences(
@@ -335,17 +407,10 @@ class UserPreferences extends PersistedChangeNotifier {
       skipNonMusic: skipNonMusic ?? this.skipNonMusic,
       youtubeApiType: youtubeApiType ?? this.youtubeApiType,
       recommendationMarket: recommendationMarket ?? this.recommendationMarket,
-      saveTrackLyrics: saveTrackLyrics ?? this.saveTrackLyrics,
     );
   }
 }
 
 final userPreferencesProvider = ChangeNotifierProvider(
-  (ref) => UserPreferences(
-    ref,
-    accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
-    recommendationMarket: 'US',
-    themeMode: ThemeMode.system,
-    layoutMode: LayoutMode.adaptive,
-  ),
+  (ref) => UserPreferences(ref),
 );

@@ -121,7 +121,7 @@ class TrackCollectionHeading<T> extends HookConsumerWidget {
                             ),
                             if (album != null)
                               Text(
-                                "${AlbumType.from(album?.albumType).formatted} • ${context.l10n.released} • ${DateTime.tryParse(
+                                "${album?.albumType?.formatted} • ${context.l10n.released} • ${DateTime.tryParse(
                                   album?.releaseDate ?? "",
                                 )?.year}",
                                 style: theme.textTheme.titleMedium!.copyWith(
