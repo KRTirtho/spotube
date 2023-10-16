@@ -30,7 +30,7 @@ env:
 
 jobs:
   windows:
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2.10.0
@@ -76,9 +76,8 @@ jobs:
         run: |
           dart pub global activate flutter_distributor
           make innoinstall
-          flutter_distributor package --platform=windows --targets=exe --skip-clean --flutter-build-args=verbose
+          flutter_distributor package --platform=windows --targets=exe --skip-clean
           mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
-          if (!(Test-Path dist\Spotube-windows-x86_64-setup.exe)) { exit 1 }
 
       - name: Create Chocolatey Package and set hash
         if: ${{ inputs.channel == 'stable' }}
@@ -98,7 +97,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Spotube-Release-Binaries
-          path: dist/
+          path: |
+            dist/Spotube-windows-x86_64.nupkg
+            dist/Spotube-windows-x86_64-setup.exe
 
   linux:
     runs-on: ubuntu-latest
@@ -187,7 +188,11 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Spotube-Release-Binaries
-          path: dist/
+          path: |
+            dist/Spotube-linux-x86_64.AppImage
+            dist/Spotube-linux-x86_64.deb
+            dist/Spotube-linux-x86_64.rpm
+            dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
 
   android:
     runs-on: ubuntu-latest
@@ -321,24 +326,6 @@ jobs:
           name: Spotube-Release-Binaries
           path: |
             build/Spotube-macos-universal.dmg
-  
-  # linux_arm:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - run: |
-  #         sudo apt-get update -y
-  #         sudo apt-get install -y curl
-    
-  #     - name: Extract branch name
-  #       shell: bash
-  #       run: echo "BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
-
-  #     - name: Trigger CircleCI Pipeline
-  #       run: |
-  #         curl -X POST https://circleci.com/api/v2/project/cci-f9azl/spotube/pipeline \
-  #         --header "Circle-Token: ${{secrets.CCI_TOKEN}}" \
-  #         --header "content-type: application/json" \
-  #         --data '{"branch": "${{env.BRANCH}}", "parameters":{"GHA_Action":"true","version":"${{inputs.version}}","channel":"${{inputs.channel}}","dry_run":${{inputs.dry_run}}}}'
 
   upload:
     runs-on: ubuntu-latest
