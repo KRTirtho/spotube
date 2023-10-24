@@ -25,6 +25,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/themes/theme.dart';
+import 'package:spotube/utils/device_utils.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -44,7 +45,10 @@ Future<void> main(List<String> rawArgs) async {
 
   // force High Refresh Rate on some Android devices (like One Plus)
   if (DesktopTools.platform.isAndroid) {
-    await FlutterDisplayMode.setHighRefreshRate();
+    final props = await buildProps;
+    if (isBuggyOs(props)) {
+      await FlutterDisplayMode.setHighRefreshRate();
+    }
   }
 
   await DesktopTools.ensureInitialized(
