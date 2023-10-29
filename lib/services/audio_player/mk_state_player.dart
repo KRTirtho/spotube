@@ -174,9 +174,6 @@ class MkPlayerWithState extends Player {
         case PlaylistMode.none:
           // Fixes auto-repeating the last track
           await super.stop();
-          await Future.delayed(const Duration(seconds: 2), () {
-            super.open(_playlist!.medias[_playlist!.index], play: false);
-          });
           break;
         default:
       }

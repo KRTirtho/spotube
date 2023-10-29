@@ -91,7 +91,9 @@ class TrackTile extends HookConsumerWidget {
                   isLoading.value = true;
                   await onTap?.call();
                 } finally {
-                  isLoading.value = false;
+                  if (context.mounted) {
+                    isLoading.value = false;
+                  }
                 }
               },
               onLongPress: onLongPress,

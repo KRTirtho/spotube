@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:catcher_2/catcher_2.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,7 +11,6 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -22,15 +20,12 @@ import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_table/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_async_effect.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart'
-    show FfiException;
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
 
 const supportedAudioTypes = [
   "audio/webm",
@@ -162,39 +157,11 @@ class UserLocalTracks extends HookConsumerWidget {
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying =
         playlist.containsTracks(trackSnapshot.value ?? []);
-    final isMounted = useIsMounted();
 
     final searchController = useTextEditingController();
     useValueListenable(searchController);
     final searchFocus = useFocusNode();
     final isFiltering = useState(false);
-
-    useAsyncEffect(
-      () async {
-        if (!kIsMobile) return;
-
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
-
-        final hasNoStoragePerm = androidInfo.version.sdkInt < 33 &&
-            !await Permission.storage.isGranted &&
-            !await Permission.storage.isLimited;
-
-        final hasNoAudioPerm = androidInfo.version.sdkInt >= 33 &&
-            !await Permission.audio.isGranted &&
-            !await Permission.audio.isLimited;
-
-        if (hasNoStoragePerm) {
-          await Permission.storage.request();
-          if (isMounted()) ref.refresh(localTracksProvider);
-        }
-        if (hasNoAudioPerm) {
-          await Permission.audio.request();
-          if (isMounted()) ref.refresh(localTracksProvider);
-        }
-      },
-      null,
-      [],
-    );
 
     return Column(
       children: [
