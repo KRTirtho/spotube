@@ -131,7 +131,8 @@ class PersonalizedPage extends HookConsumerWidget {
       child: ListView(
         controller: controller,
         children: [
-          if (!featuredPlaylistsQuery.hasPageData)
+          if (!featuredPlaylistsQuery.hasPageData &&
+              !featuredPlaylistsQuery.isLoadingNextPage)
             const ShimmerCategories()
           else
             PersonalizedItemCard(

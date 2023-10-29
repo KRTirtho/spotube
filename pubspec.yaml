@@ -32,18 +32,9 @@ dependencies:
   duration: ^3.0.12
   envied: ^0.3.0
   file_selector: ^1.0.1
-  fl_query:
-    git:
-      url: https://github.com/KRTirtho/fl-query.git
-      path: packages/fl_query
-  fl_query_hooks:
-    git:
-      url: https://github.com/KRTirtho/fl-query.git
-      path: packages/fl_query_hooks
-  fl_query_devtools:
-    git:
-      url: https://github.com/KRTirtho/fl-query.git
-      path: packages/fl_query_devtools
+  fl_query: ^1.0.0
+  fl_query_hooks: ^1.0.0
+  fl_query_devtools: ^0.1.0
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter
@@ -135,14 +126,6 @@ dev_dependencies:
 dependency_overrides:
   http: ^1.1.0
   system_tray: 2.0.2
-  fl_query:
-    git:
-      url: https://github.com/KRTirtho/fl-query.git
-      path: packages/fl_query
-  fl_query_hooks:
-    git:
-      url: https://github.com/KRTirtho/fl-query.git
-      path: packages/fl_query_hooks
 
 flutter:
   generate: true

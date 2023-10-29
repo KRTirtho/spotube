@@ -28,7 +28,9 @@ class CategoryCard extends HookConsumerWidget {
       category.id!,
     );
 
-    if (playlistQuery.hasErrors && !playlistQuery.hasPageData) {
+    if (playlistQuery.hasErrors &&
+        !playlistQuery.hasPageData &&
+        !playlistQuery.isLoadingNextPage) {
       return const SizedBox.shrink();
     }
     final playlists = playlistQuery.pages.expand(

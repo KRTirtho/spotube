@@ -222,7 +222,8 @@ class SearchPage extends HookConsumerWidget {
                       ),
                     ),
                     if (!searchPlaylist.hasPageData &&
-                        !searchPlaylist.hasPageError)
+                        !searchPlaylist.hasPageError &&
+                        !searchPlaylist.isLoadingNextPage)
                       const CircularProgressIndicator(),
                     if (searchPlaylist.hasPageError)
                       Padding(
@@ -280,7 +281,9 @@ class SearchPage extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    if (!searchArtist.hasPageData && !searchArtist.hasPageError)
+                    if (!searchArtist.hasPageData &&
+                        !searchArtist.hasPageError &&
+                        !searchArtist.isLoadingNextPage)
                       const CircularProgressIndicator(),
                     if (searchArtist.hasPageError)
                       Padding(
@@ -336,7 +339,9 @@ class SearchPage extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    if (!searchAlbum.hasPageData && !searchAlbum.hasPageError)
+                    if (!searchAlbum.hasPageData &&
+                        !searchAlbum.hasPageError &&
+                        !searchAlbum.isLoadingNextPage)
                       const CircularProgressIndicator(),
                     if (searchAlbum.hasPageError)
                       Padding(
