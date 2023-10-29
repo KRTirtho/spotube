@@ -86,8 +86,7 @@ class _MprisMediaPlayer2 extends DBusObject {
 
   /// Implementation of org.mpris.MediaPlayer2.Quit()
   Future<DBusMethodResponse> doQuit() async {
-    await windowManager.close();
-    return DBusMethodSuccessResponse();
+    exit(0);
   }
 
   @override

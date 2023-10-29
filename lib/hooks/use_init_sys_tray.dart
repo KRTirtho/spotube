@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -70,7 +72,7 @@ void useInitSysTray(WidgetRef ref) {
           label: "Quit",
           name: "quit",
           onClicked: (item) async {
-            await DesktopTools.window.close();
+            exit(0);
           },
         ),
       ],
