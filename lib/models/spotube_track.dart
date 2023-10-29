@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:spotify/spotify.dart';
-import 'package:spotube/extensions/album_simple.dart';
-import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/youtube/youtube.dart';
@@ -264,22 +263,7 @@ class SpotubeTrack extends Track {
   Map<String, dynamic> toJson() {
     return {
       // super values
-      "album": album?.toJson(),
-      "artists": artists?.map((artist) => artist.toJson()).toList(),
-      "availableMarkets": availableMarkets?.map((m) => m.name),
-      "discNumber": discNumber,
-      "duration": duration.toString(),
-      "durationMs": durationMs,
-      "explicit": explicit,
-      "href": href,
-      "id": id,
-      "isPlayable": isPlayable,
-      "name": name,
-      "popularity": popularity,
-      "previewUrl": previewUrl,
-      "trackNumber": trackNumber,
-      "type": type,
-      "uri": uri,
+      ...TrackJson.trackToJson(this),
       // this values
       "ytTrack": ytTrack.toJson(),
       "ytUri": ytUri,
