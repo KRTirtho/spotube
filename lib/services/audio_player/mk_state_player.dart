@@ -96,7 +96,10 @@ class MkPlayerWithState extends Player {
     if (shuffle) {
       _tempMedias = _playlist!.medias;
       final active = _playlist!.medias[_playlist!.index];
-      final newMedias = _playlist!.medias.toList()..shuffle();
+      final newMedias = _playlist!.medias.toList()
+        ..shuffle()
+        ..remove(active)
+        ..insert(0, active);
       playlist = _playlist!.copyWith(
         medias: newMedias,
         index: newMedias.indexOf(active),
