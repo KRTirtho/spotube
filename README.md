@@ -108,7 +108,7 @@ This handy table lists all methods you can use to install Spotube:
       <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.deb">
         <img width="220" alt="Debian/Ubuntu Download" src="https://user-images.githubusercontent.com/61944859/169097994-e92aff78-fd75-4c93-b6e4-f072a4b5a7ed.png">
       </a>
-      <p>Then run: <code>sudo apt install Spotube-linux-x86_64.deb</code></p>
+      <p>Then run: <code>sudo apt install ./Spotube-linux-x86_64.deb</code></p>
     </td>
   </tr>
   <tr>
