@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,15 +48,19 @@ class SettingsPage extends HookConsumerWidget {
     }, []);
 
     final pickDownloadLocation = useCallback(() async {
-      String? dirStr = await getDirectoryPath(
-        initialDirectory: preferences.downloadLocation,
-      );
-      if (dirStr == null) return;
-      if (DesktopTools.platform.isAndroid && dirStr.startsWith("content://")) {
-        dirStr =
-            "/storage/emulated/0/${Uri.decodeFull(dirStr).split("primary:").last}";
+      if (DesktopTools.platform.isMobile) {
+        final dirStr = await FilePicker.platform.getDirectoryPath(
+          initialDirectory: preferences.downloadLocation,
+        );
+        if (dirStr == null) return;
+        preferences.setDownloadLocation(dirStr);
+      } else {
+        String? dirStr = await getDirectoryPath(
+          initialDirectory: preferences.downloadLocation,
+        );
+        if (dirStr == null) return;
+        preferences.setDownloadLocation(dirStr);
       }
-      preferences.setDownloadLocation(dirStr);
     }, [preferences.downloadLocation]);
 
     return SafeArea(
