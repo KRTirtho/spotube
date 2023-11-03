@@ -6,7 +6,7 @@
 /// iceyear@github => Simplified Chinese
 /// TexturedPolak@github => Polish
 /// yuri-val@github => Ukrainian
-/// energywave@github => Italian
+/// energywave@github, ncvescera@github, OpenCode@github => Italian
 import 'package:flutter/material.dart';
 
 class L10n {
