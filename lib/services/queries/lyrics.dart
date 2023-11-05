@@ -73,21 +73,16 @@ class LyricsQueries {
         final token = await spotify.getCredentials();
         final res = await http.get(
             Uri.parse(
-              "https://spclient.wg.spotify.com/color-lyrics/v2/track/${track.id}?format=json&market=from_token",
+              "https://spotify-lyric-api-984e7b4face0.herokuapp.com/?trackid=${track.id}",
             ),
-            headers: {
-              "User-Agent":
-                  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
-              "App-platform": "WebPlayer",
-              "authorization": "Bearer ${token.accessToken}"
-            });
+        );
 
         if (res.statusCode != 200) {
           throw Exception("Unable to find lyrics");
         }
         final linesRaw = Map.castFrom<dynamic, dynamic, String, dynamic>(
           jsonDecode(res.body),
-        )["lyrics"]?["lines"] as List?;
+        )["lines"] as List?;
 
         final lines = linesRaw?.map((line) {
               return LyricSlice(
