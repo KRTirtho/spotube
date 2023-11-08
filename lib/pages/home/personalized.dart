@@ -10,6 +10,7 @@ import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -38,6 +39,7 @@ class PersonalizedItemCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
+    final mediaQuery = MediaQuery.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -52,36 +54,48 @@ class PersonalizedItemCard extends HookWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
-          ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(
-              dragDevices: {
-                PointerDeviceKind.touch,
-                PointerDeviceKind.mouse,
-              },
-            ),
-            child: Scrollbar(
-              controller: scrollController,
-              interactive: false,
-              child: Waypoint(
+          SizedBox(
+            height: mediaQuery.smAndDown ? 226 : 266,
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                },
+              ),
+              child: Scrollbar(
                 controller: scrollController,
-                onTouchEdge: hasNextPage ? onFetchMore : null,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  controller: scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
+                interactive: false,
+                child: ListView.builder(
+                  itemCount: (playlists?.length ?? albums?.length)! + 1,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ...?playlists?.map((playlist) => PlaylistCard(playlist)),
-                      ...?albums?.map(
-                        (album) => AlbumCard(
-                          TypeConversionUtils.simpleAlbum_X_Album(album),
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    if (index == (playlists?.length ?? albums?.length)!) {
+                      if (!hasNextPage) return const SizedBox.shrink();
+
+                      return Waypoint(
+                        controller: scrollController,
+                        onTouchEdge: onFetchMore,
+                        isGrid: true,
+                        child: const ShimmerPlaybuttonCard(count: 1),
+                      );
+                    }
+
+                    final item = playlists == null
+                        ? albums!.elementAt(index)
+                        : playlists!.elementAt(index);
+
+                    if (playlists == null) {
+                      return AlbumCard(
+                        TypeConversionUtils.simpleAlbum_X_Album(
+                          item as AlbumSimple,
                         ),
-                      ),
-                      if (hasNextPage) const ShimmerPlaybuttonCard(count: 1),
-                    ],
-                  ),
+                      );
+                    }
+
+                    return PlaylistCard(item as PlaylistSimple);
+                  },
                 ),
               ),
             ),

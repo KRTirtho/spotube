@@ -113,7 +113,7 @@ class TrackTile extends HookConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Text(
-                          '$index',
+                          '${(index ?? 0) + 1}',
                           maxLines: 1,
                           style: theme.textTheme.bodySmall,
                           textAlign: TextAlign.center,
