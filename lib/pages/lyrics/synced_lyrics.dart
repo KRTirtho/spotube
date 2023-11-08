@@ -45,6 +45,11 @@ class SyncedLyrics extends HookConsumerWidget {
 
     final lyricValue = timedLyricsQuery.data;
 
+    final isUnSyncLyric = useMemoized(
+      () => lyricValue?.lyrics.every((l) => l.time == Duration.zero),
+      [lyricValue],
+    );
+
     final lyricsMap = useMemoized(
       () =>
           lyricValue?.lyrics
@@ -72,6 +77,9 @@ class SyncedLyrics extends HookConsumerWidget {
             : textTheme.headlineMedium?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
 
+    var bodyTextTheme = textTheme.bodyLarge?.copyWith(
+      color: palette.bodyTextColor,
+    );
     return Stack(
       children: [
         Column(
@@ -93,7 +101,9 @@ class SyncedLyrics extends HookConsumerWidget {
                       : textTheme.titleLarge,
                 ),
               ),
-            if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
+            if (lyricValue != null &&
+                lyricValue.lyrics.isNotEmpty &&
+                isUnSyncLyric == false)
               Expanded(
                 child: ListView.builder(
                   controller: controller,
@@ -102,7 +112,7 @@ class SyncedLyrics extends HookConsumerWidget {
                     final lyricSlice = lyricValue.lyrics[index];
                     final isActive = lyricSlice.time.inSeconds == currentTime;
 
-                    if (isActive) {
+                    if (isActive && isUnSyncLyric == true) {
                       controller.scrollToIndex(
                         index,
                         preferPosition: AutoScrollPosition.middle,
@@ -173,8 +183,39 @@ class SyncedLyrics extends HookConsumerWidget {
                 ),
               ),
             if (playlist.activeTrack != null &&
-                (lyricValue == null || lyricValue.lyrics.isEmpty == true))
-              const Expanded(child: ShimmerLyrics()),
+                (timedLyricsQuery.isLoading || timedLyricsQuery.isRefreshing))
+              const Expanded(child: ShimmerLyrics())
+            else if (playlist.activeTrack != null &&
+                (timedLyricsQuery.hasError))
+              Text(
+                "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${timedLyricsQuery.error.toString()}",
+                style: bodyTextTheme,
+              )
+            else if (isUnSyncLyric == true)
+              Expanded(
+                child: Center(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: bodyTextTheme,
+                      children: [
+                        const TextSpan(
+                          text:
+                              "Synced lyrics is not available for this song. Please use the",
+                        ),
+                        TextSpan(
+                          text: " Plain Lyrics ",
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: palette.bodyTextColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const TextSpan(text: "tab instead."),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
         Align(
