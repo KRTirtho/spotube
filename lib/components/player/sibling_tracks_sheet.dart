@@ -86,151 +86,153 @@ class SiblingTracksSheet extends HookConsumerWidget {
       return null;
     }, [playlist.activeTrack]);
 
-    final itemBuilder = useCallback((YoutubeVideoInfo video) {
-      return ListTile(
-        title: Text(video.title),
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: UniversalImage(
-            path: video.thumbnailUrl,
-            height: 60,
-            width: 60,
+    final itemBuilder = useCallback(
+      (YoutubeVideoInfo video) {
+        return ListTile(
+          title: Text(video.title),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: UniversalImage(
+              path: video.thumbnailUrl,
+              height: 60,
+              width: 60,
+            ),
           ),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        trailing: Text(video.duration.toHumanReadableString()),
-        subtitle: Text(video.channelName),
-        enabled: playlist.isFetching != true,
-        selected: playlist.isFetching != true &&
-            video.id == (playlist.activeTrack as SpotubeTrack).ytTrack.id,
-        selectedTileColor: theme.popupMenuTheme.color,
-        onTap: () {
-          if (playlist.isFetching == false &&
-              video.id != (playlist.activeTrack as SpotubeTrack).ytTrack.id) {
-            playlistNotifier.swapSibling(video);
-            Navigator.of(context).pop();
-          }
-        },
-      );
-    }, [
-      playlist.isFetching,
-      playlist.activeTrack,
-      siblings,
-    ]);
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          trailing: Text(video.duration.toHumanReadableString()),
+          subtitle: Text(video.channelName),
+          enabled: playlist.isFetching != true,
+          selected: playlist.isFetching != true &&
+              video.id == (playlist.activeTrack as SpotubeTrack).ytTrack.id,
+          selectedTileColor: theme.popupMenuTheme.color,
+          onTap: () {
+            if (playlist.isFetching == false &&
+                video.id != (playlist.activeTrack as SpotubeTrack).ytTrack.id) {
+              playlistNotifier.swapSibling(video);
+              Navigator.of(context).pop();
+            }
+          },
+        );
+      },
+      [playlist.isFetching, playlist.activeTrack, siblings],
+    );
 
     var mediaQuery = MediaQuery.of(context);
     return SafeArea(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 12.0,
-          sigmaY: 12.0,
-        ),
-        child: AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          child: Container(
-            height: isSearching.value && mediaQuery.smAndDown
-                ? mediaQuery.size.height
-                : mediaQuery.size.height * .6,
-            margin: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              color: theme.scaffoldBackgroundColor.withOpacity(.3),
-            ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                centerTitle: true,
-                title: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: !isSearching.value
-                      ? Text(
-                          context.l10n.alternative_track_sources,
-                          style: theme.textTheme.headlineSmall,
-                        )
-                      : TextField(
-                          autofocus: true,
-                          controller: searchController,
-                          decoration: InputDecoration(
-                            hintText: context.l10n.search,
-                            hintStyle: theme.textTheme.headlineSmall,
-                            border: InputBorder.none,
-                          ),
-                          style: theme.textTheme.headlineSmall,
-                        ),
-                ),
-                automaticallyImplyLeading: false,
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        clipBehavior: Clip.hardEdge,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 12.0,
+            sigmaY: 12.0,
+          ),
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            child: Container(
+              height: isSearching.value && mediaQuery.smAndDown
+                  ? mediaQuery.size.height - mediaQuery.padding.top
+                  : mediaQuery.size.height * .6,
+              decoration: BoxDecoration(
+                borderRadius: borderRadius,
+                color: theme.colorScheme.surfaceVariant.withOpacity(.5),
+              ),
+              child: Scaffold(
                 backgroundColor: Colors.transparent,
-                actions: [
-                  if (!isSearching.value)
-                    IconButton(
-                      icon: const Icon(SpotubeIcons.search, size: 18),
-                      onPressed: () {
-                        isSearching.value = true;
-                      },
-                    )
-                  else ...[
-                    if (preferences.youtubeApiType == YoutubeApiType.piped)
-                      PopupMenuButton(
-                        icon: const Icon(SpotubeIcons.filter, size: 18),
-                        onSelected: (SearchMode mode) {
-                          searchMode.value = mode;
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: !isSearching.value
+                        ? Text(
+                            context.l10n.alternative_track_sources,
+                            style: theme.textTheme.headlineSmall,
+                          )
+                        : TextField(
+                            autofocus: true,
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              hintText: context.l10n.search,
+                              hintStyle: theme.textTheme.headlineSmall,
+                              border: InputBorder.none,
+                            ),
+                            style: theme.textTheme.headlineSmall,
+                          ),
+                  ),
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  actions: [
+                    if (!isSearching.value)
+                      IconButton(
+                        icon: const Icon(SpotubeIcons.search, size: 18),
+                        onPressed: () {
+                          isSearching.value = true;
                         },
-                        initialValue: searchMode.value,
-                        itemBuilder: (context) => SearchMode.values
-                            .map(
-                              (e) => PopupMenuItem(
-                                value: e,
-                                child: Text(e.label),
-                              ),
-                            )
-                            .toList(),
+                      )
+                    else ...[
+                      if (preferences.youtubeApiType == YoutubeApiType.piped)
+                        PopupMenuButton(
+                          icon: const Icon(SpotubeIcons.filter, size: 18),
+                          onSelected: (SearchMode mode) {
+                            searchMode.value = mode;
+                          },
+                          initialValue: searchMode.value,
+                          itemBuilder: (context) => SearchMode.values
+                              .map(
+                                (e) => PopupMenuItem(
+                                  value: e,
+                                  child: Text(e.label),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      IconButton(
+                        icon: const Icon(SpotubeIcons.close, size: 18),
+                        onPressed: () {
+                          isSearching.value = false;
+                        },
                       ),
-                    IconButton(
-                      icon: const Icon(SpotubeIcons.close, size: 18),
-                      onPressed: () {
-                        isSearching.value = false;
+                    ]
+                  ],
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) =>
+                        FadeTransition(opacity: animation, child: child),
+                    child: InterScrollbar(
+                      child: switch (isSearching.value) {
+                        false => ListView.builder(
+                            itemCount: siblings.length,
+                            itemBuilder: (context, index) =>
+                                itemBuilder(siblings[index]),
+                          ),
+                        true => FutureBuilder(
+                            future: searchRequest,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Center(
+                                  child: Text(snapshot.error.toString()),
+                                );
+                              } else if (!snapshot.hasData) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+
+                              return InterScrollbar(
+                                child: ListView.builder(
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context, index) =>
+                                      itemBuilder(snapshot.data![index]),
+                                ),
+                              );
+                            },
+                          ),
                       },
                     ),
-                  ]
-                ],
-              ),
-              body: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (child, animation) =>
-                      FadeTransition(opacity: animation, child: child),
-                  child: InterScrollbar(
-                    child: switch (isSearching.value) {
-                      false => ListView.builder(
-                          itemCount: siblings.length,
-                          itemBuilder: (context, index) =>
-                              itemBuilder(siblings[index]),
-                        ),
-                      true => FutureBuilder(
-                          future: searchRequest,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              return Center(
-                                child: Text(snapshot.error.toString()),
-                              );
-                            } else if (!snapshot.hasData) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-
-                            return InterScrollbar(
-                              child: ListView.builder(
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) =>
-                                    itemBuilder(snapshot.data![index]),
-                              ),
-                            );
-                          },
-                        ),
-                    },
                   ),
                 ),
               ),

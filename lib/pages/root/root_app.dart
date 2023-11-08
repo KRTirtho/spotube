@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
@@ -164,6 +166,22 @@ class RootApp extends HookConsumerWidget {
         child: child,
       ),
       extendBody: true,
+      drawerScrimColor: Colors.transparent,
+      endDrawer: DesktopTools.platform.isDesktop
+          ? Container(
+              constraints: const BoxConstraints(maxWidth: 800),
+              decoration: BoxDecoration(
+                boxShadow: theme.brightness == Brightness.light
+                    ? null
+                    : kElevationToShadow[8],
+              ),
+              margin: const EdgeInsets.only(
+                top: 40,
+                bottom: 100,
+              ),
+              child: const PlayerQueue(floating: true),
+            )
+          : null,
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
