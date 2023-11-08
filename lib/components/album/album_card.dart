@@ -51,7 +51,8 @@ class AlbumCard extends HookConsumerWidget {
         ),
         margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
         isPlaying: isPlaylistPlaying,
-        isLoading: isPlaylistPlaying && playlist.isFetching == true,
+        isLoading: (isPlaylistPlaying && playlist.isFetching == true) ||
+            updating.value,
         title: album.name!,
         description:
             "${album.albumType?.formatted} • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
@@ -92,7 +93,7 @@ class AlbumCard extends HookConsumerWidget {
               "album-tracks/${album.id}",
               () {
                 return spotify.albums
-                    .getTracks(album.id!)
+                    .tracks(album.id!)
                     .all()
                     .then((value) => value.toList());
               },
