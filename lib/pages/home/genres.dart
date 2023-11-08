@@ -74,7 +74,8 @@ class GenrePage extends HookConsumerWidget {
               searchController: searchController,
               searchFocus: searchFocus,
             ),
-            if (!categoriesQuery.hasPageData)
+            if (!categoriesQuery.hasPageData &&
+                !categoriesQuery.isLoadingNextPage)
               const ShimmerCategories()
             else
               Expanded(
