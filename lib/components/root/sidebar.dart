@@ -22,7 +22,7 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
-  final int selectedIndex;
+  final int? selectedIndex;
   final void Function(int) onSelectedIndexChanged;
   final Widget child;
 
@@ -57,7 +57,7 @@ class Sidebar extends HookConsumerWidget {
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
     final controller = useSidebarXController(
-      selectedIndex: selectedIndex,
+      selectedIndex: selectedIndex ?? 0,
       extended: mediaQuery.lgAndUp,
     );
 
@@ -75,17 +75,21 @@ class Sidebar extends HookConsumerWidget {
     );
 
     useEffect(() {
-      if (controller.selectedIndex != selectedIndex) {
-        controller.selectIndex(selectedIndex);
+      if (controller.selectedIndex != selectedIndex && selectedIndex != null) {
+        controller.selectIndex(selectedIndex!);
       }
       return null;
     }, [selectedIndex]);
 
     useEffect(() {
-      controller.addListener(() {
+      void listener() {
         onSelectedIndexChanged(controller.selectedIndex);
-      });
-      return null;
+      }
+
+      controller.addListener(listener);
+      return () {
+        controller.removeListener(listener);
+      };
     }, [controller]);
 
     useEffect(() {

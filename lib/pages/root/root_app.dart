@@ -159,7 +159,7 @@ class RootApp extends HookConsumerWidget {
 
     return Scaffold(
       body: Sidebar(
-        selectedIndex: rootPaths[location] ?? 0,
+        selectedIndex: rootPaths[location],
         onSelectedIndexChanged: onSelectIndexChanged,
         child: child,
       ),
@@ -169,7 +169,7 @@ class RootApp extends HookConsumerWidget {
         children: [
           BottomPlayer(),
           SpotubeNavigationBar(
-            selectedIndex: rootPaths[location] ?? 0,
+            selectedIndex: rootPaths[location],
             onSelectedIndexChanged: onSelectIndexChanged,
           ),
         ],

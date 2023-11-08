@@ -16,7 +16,7 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 final navigationPanelHeight = StateProvider<double>((ref) => 50);
 
 class SpotubeNavigationBar extends HookConsumerWidget {
-  final int selectedIndex;
+  final int? selectedIndex;
   final void Function(int) onSelectedIndexChanged;
 
   const SpotubeNavigationBar({
@@ -33,7 +33,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
-    final insideSelectedIndex = useState<int>(selectedIndex);
+    final insideSelectedIndex = useState<int>(selectedIndex ?? 0);
 
     final buttonColor = useBrightnessValue(
       theme.colorScheme.inversePrimary,
@@ -46,7 +46,9 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final panelHeight = ref.watch(navigationPanelHeight);
 
     useEffect(() {
-      insideSelectedIndex.value = selectedIndex;
+      if (selectedIndex != null) {
+        insideSelectedIndex.value = selectedIndex!;
+      }
       return null;
     }, [selectedIndex]);
 
