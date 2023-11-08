@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -34,13 +33,6 @@ class AlbumCard extends HookConsumerWidget {
       [playlist, album.id],
     );
 
-    final marginH = useBreakpointValue<int>(
-      xs: 10,
-      sm: 10,
-      md: 15,
-      others: 20,
-    );
-
     final updating = useState(false);
     final spotify = ref.watch(spotifyProvider);
 
@@ -49,7 +41,7 @@ class AlbumCard extends HookConsumerWidget {
           album.images,
           placeholder: ImagePlaceholder.collection,
         ),
-        margin: EdgeInsets.symmetric(horizontal: marginH.toDouble()),
+        margin: const EdgeInsets.symmetric(horizontal: 10),
         isPlaying: isPlaylistPlaying,
         isLoading: (isPlaylistPlaying && playlist.isFetching == true) ||
             updating.value,

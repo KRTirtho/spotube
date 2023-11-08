@@ -1,110 +1,15 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/album/album_card.dart';
-import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/components/shared/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
-import 'package:spotube/components/shared/waypoint.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-
-class PersonalizedItemCard extends HookWidget {
-  final Iterable<PlaylistSimple>? playlists;
-  final Iterable<AlbumSimple>? albums;
-  final String title;
-  final bool hasNextPage;
-  final void Function() onFetchMore;
-
-  PersonalizedItemCard({
-    this.playlists,
-    this.albums,
-    required this.title,
-    required this.hasNextPage,
-    required this.onFetchMore,
-    Key? key,
-  })  : assert(playlists == null || albums == null),
-        super(key: key);
-
-  final logger = getLogger(PersonalizedItemCard);
-
-  @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
-    final mediaQuery = MediaQuery.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          SizedBox(
-            height: mediaQuery.smAndDown ? 226 : 266,
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                },
-              ),
-              child: Scrollbar(
-                controller: scrollController,
-                interactive: false,
-                child: ListView.builder(
-                  itemCount: (playlists?.length ?? albums?.length)! + 1,
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    if (index == (playlists?.length ?? albums?.length)!) {
-                      if (!hasNextPage) return const SizedBox.shrink();
-
-                      return Waypoint(
-                        controller: scrollController,
-                        onTouchEdge: onFetchMore,
-                        isGrid: true,
-                        child: const ShimmerPlaybuttonCard(count: 1),
-                      );
-                    }
-
-                    final item = playlists == null
-                        ? albums!.elementAt(index)
-                        : playlists!.elementAt(index);
-
-                    if (playlists == null) {
-                      return AlbumCard(
-                        TypeConversionUtils.simpleAlbum_X_Album(
-                          item as AlbumSimple,
-                        ),
-                      );
-                    }
-
-                    return PlaylistCard(item as PlaylistSimple);
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class PersonalizedPage extends HookConsumerWidget {
   const PersonalizedPage({Key? key}) : super(key: key);
@@ -133,10 +38,12 @@ class PersonalizedPage extends HookConsumerWidget {
           .whereType<Page<AlbumSimple>>()
           .expand((page) => page.items ?? const <AlbumSimple>[])
           .where((album) {
-        return album.artists
-                ?.any((artist) => userArtists.contains(artist.id!)) ==
-            true;
-      }),
+            return album.artists
+                    ?.any((artist) => userArtists.contains(artist.id!)) ==
+                true;
+          })
+          .map((album) => TypeConversionUtils.simpleAlbum_X_Album(album))
+          .toList(),
       [newReleases.pages],
     );
 
@@ -149,18 +56,18 @@ class PersonalizedPage extends HookConsumerWidget {
               !featuredPlaylistsQuery.isLoadingNextPage)
             const ShimmerCategories()
           else
-            PersonalizedItemCard(
-              playlists: playlists,
-              title: context.l10n.featured,
+            HorizontalPlaybuttonCardView<PlaylistSimple>(
+              items: playlists.toList(),
+              title: Text(context.l10n.featured),
               hasNextPage: featuredPlaylistsQuery.hasNextPage,
               onFetchMore: featuredPlaylistsQuery.fetchNext,
             ),
           if (auth != null &&
               newReleases.hasPageData &&
               userArtistsQuery.hasData)
-            PersonalizedItemCard(
-              albums: albums,
-              title: context.l10n.new_releases,
+            HorizontalPlaybuttonCardView<Album>(
+              items: albums,
+              title: Text(context.l10n.new_releases),
               hasNextPage: newReleases.hasNextPage,
               onFetchMore: newReleases.fetchNext,
             ),
@@ -172,9 +79,9 @@ class PersonalizedPage extends HookConsumerWidget {
                     .cast<PlaylistSimple>() ??
                 <PlaylistSimple>[];
             if (playlists.isEmpty) return const SizedBox.shrink();
-            return PersonalizedItemCard(
-              playlists: playlists,
-              title: item["name"] ?? "",
+            return HorizontalPlaybuttonCardView<PlaylistSimple>(
+              items: playlists,
+              title: Text(item["name"] ?? ""),
               hasNextPage: false,
               onFetchMore: () {},
             );

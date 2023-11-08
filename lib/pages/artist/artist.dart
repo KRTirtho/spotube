@@ -410,13 +410,6 @@ class ArtistPage extends HookConsumerWidget {
                         },
                       ),
                       const SizedBox(height: 50),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          context.l10n.albums,
-                          style: theme.textTheme.headlineSmall,
-                        ),
-                      ),
                       ArtistAlbumList(artistId),
                       const SizedBox(height: 20),
                       Padding(

@@ -85,15 +85,19 @@ class GenrePage extends HookConsumerWidget {
                     controller: scrollController,
                     itemCount: categories.length,
                     itemBuilder: (context, index) {
-                      return AnimatedCrossFade(
-                        crossFadeState: searchController.text.isEmpty &&
+                      return AnimatedSwitcher(
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        duration: const Duration(milliseconds: 300),
+                        child: searchController.text.isEmpty &&
                                 index == categories.length - 1 &&
                                 categoriesQuery.hasNextPage
-                            ? CrossFadeState.showFirst
-                            : CrossFadeState.showSecond,
-                        duration: const Duration(milliseconds: 300),
-                        firstChild: const ShimmerCategories(),
-                        secondChild: CategoryCard(categories[index]),
+                            ? const ShimmerCategories()
+                            : CategoryCard(categories[index]),
                       );
                     },
                   ),
