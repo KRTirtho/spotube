@@ -64,7 +64,8 @@ class PersonalizedPage extends HookConsumerWidget {
             ),
           if (auth != null &&
               newReleases.hasPageData &&
-              userArtistsQuery.hasData)
+              userArtistsQuery.hasData &&
+              !newReleases.isLoadingNextPage)
             HorizontalPlaybuttonCardView<Album>(
               items: albums,
               title: Text(context.l10n.new_releases),
