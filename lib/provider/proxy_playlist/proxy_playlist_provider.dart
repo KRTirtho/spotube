@@ -171,10 +171,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           return;
         }
         try {
-          final isYTMusicMode = preferences.audioSource == AudioSource.piped &&
-              preferences.searchMode == SearchMode.youtubeMusic;
+          final isNotYTMode = preferences.audioSource != AudioSource.youtube ||
+              (preferences.audioSource == AudioSource.piped &&
+                  preferences.searchMode == SearchMode.youtubeMusic);
 
-          if (isYTMusicMode || !preferences.skipNonMusic) return;
+          if (isNotYTMode || !preferences.skipNonMusic) return;
 
           final isNotSameSegmentId =
               currentSegments.value?.source != audioPlayer.currentSource;

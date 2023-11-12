@@ -55,28 +55,27 @@ class YoutubeSourcedTrack extends SourcedTrack {
         sourceInfo: siblings.first.info,
         track: track,
       );
-    } else {
-      final item = await youtubeClient.videos.get(cachedSource.sourceId);
-      final manifest = await youtubeClient.videos.streamsClient.getManifest(
-        cachedSource.sourceId,
-      );
-      return YoutubeSourcedTrack(
-        ref: ref,
-        siblings: [],
-        source: toSourceMap(manifest),
-        sourceInfo: SourceInfo(
-          id: item.id.value,
-          artist: item.author,
-          artistUrl: "https://www.youtube.com/channel/${item.channelId}",
-          pageUrl: item.url,
-          thumbnail: item.thumbnails.highResUrl,
-          title: item.title,
-          duration: item.duration ?? Duration.zero,
-          album: null,
-        ),
-        track: track,
-      );
     }
+    final item = await youtubeClient.videos.get(cachedSource.sourceId);
+    final manifest = await youtubeClient.videos.streamsClient.getManifest(
+      cachedSource.sourceId,
+    );
+    return YoutubeSourcedTrack(
+      ref: ref,
+      siblings: [],
+      source: toSourceMap(manifest),
+      sourceInfo: SourceInfo(
+        id: item.id.value,
+        artist: item.author,
+        artistUrl: "https://www.youtube.com/channel/${item.channelId}",
+        pageUrl: item.url,
+        thumbnail: item.thumbnails.highResUrl,
+        title: item.title,
+        duration: item.duration ?? Duration.zero,
+        album: null,
+      ),
+      track: track,
+    );
   }
 
   static SourceMap toSourceMap(StreamManifest manifest) {

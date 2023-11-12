@@ -34,12 +34,10 @@ class SourceQualityMap {
 
 @JsonSerializable()
 class SourceMap {
-  final SourceQualityMap? mp4;
   final SourceQualityMap? weba;
   final SourceQualityMap? m4a;
 
   const SourceMap({
-    this.mp4,
     this.weba,
     this.m4a,
   });
@@ -51,8 +49,6 @@ class SourceMap {
 
   operator [](SourceCodecs key) {
     switch (key) {
-      case SourceCodecs.mp4:
-        return mp4;
       case SourceCodecs.weba:
         return weba;
       case SourceCodecs.m4a:

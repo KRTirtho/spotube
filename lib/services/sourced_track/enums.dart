@@ -2,9 +2,11 @@ import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/source_map.dart';
 
 enum SourceCodecs {
-  mp4,
-  weba,
-  m4a,
+  m4a._("M4a (Best for downloaded music)"),
+  weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
+
+  final String label;
+  const SourceCodecs._(this.label);
 }
 
 enum SourceQualities {

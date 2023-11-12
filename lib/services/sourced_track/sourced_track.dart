@@ -5,6 +5,7 @@ import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/source_map.dart';
+import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -60,14 +61,22 @@ abstract class SourcedTrack extends Track {
           source: source,
           siblings: siblings,
           sourceInfo: sourceInfo,
-          track: track),
+          track: track,
+        ),
       AudioSource.piped => PipedSourcedTrack(
           ref: ref,
           source: source,
           siblings: siblings,
           sourceInfo: sourceInfo,
-          track: track),
-      AudioSource.jiosaavn => throw UnimplementedError(),
+          track: track,
+        ),
+      AudioSource.jiosaavn => JioSaavnSourcedTrack(
+          ref: ref,
+          source: source,
+          siblings: siblings,
+          sourceInfo: sourceInfo,
+          track: track,
+        ),
     };
   }
 
@@ -90,16 +99,22 @@ abstract class SourcedTrack extends Track {
   static Future<SourcedTrack> fetchFromTrack({
     required Track track,
     required Ref ref,
-  }) {
-    final preferences = ref.read(userPreferencesProvider);
+  }) async {
+    try {
+      final preferences = ref.read(userPreferencesProvider);
 
-    return switch (preferences.audioSource) {
-      AudioSource.piped =>
-        PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
-      AudioSource.youtube =>
-        YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
-      AudioSource.jiosaavn => throw UnimplementedError(),
-    };
+      return switch (preferences.audioSource) {
+        AudioSource.piped =>
+          await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
+        AudioSource.youtube =>
+          await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
+        AudioSource.jiosaavn =>
+          await JioSaavnSourcedTrack.fetchFromTrack(track: track, ref: ref),
+      };
+    } catch (e) {
+      print("Got error: $e");
+      return YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref);
+    }
   }
 
   static Future<List<SiblingType>> fetchSiblings({
@@ -113,7 +128,8 @@ abstract class SourcedTrack extends Track {
         PipedSourcedTrack.fetchSiblings(track: track, ref: ref),
       AudioSource.youtube =>
         YoutubeSourcedTrack.fetchSiblings(track: track, ref: ref),
-      AudioSource.jiosaavn => throw UnimplementedError(),
+      AudioSource.jiosaavn =>
+        JioSaavnSourcedTrack.fetchSiblings(track: track, ref: ref),
     };
   }
 
@@ -129,28 +145,26 @@ abstract class SourcedTrack extends Track {
     final preferences = ref.read(userPreferencesProvider);
 
     final codec = preferences.audioSource == AudioSource.jiosaavn
-        ? SourceCodecs.mp4
-        : switch (preferences.streamMusicCodec) {
-            MusicCodec.m4a => SourceCodecs.m4a,
-            MusicCodec.weba => SourceCodecs.weba,
-          };
+        ? SourceCodecs.m4a
+        : preferences.streamMusicCodec;
 
-    return source[codec]![preferences.audioQuality]!;
+    return getUrlOfCodec(codec);
   }
 
-  String getUrlOfCodec(MusicCodec codec) {
+  String getUrlOfCodec(SourceCodecs codec) {
     final preferences = ref.read(userPreferencesProvider);
 
-    return source[codec == MusicCodec.m4a
-        ? SourceCodecs.m4a
-        : SourceCodecs.weba]![preferences.audioQuality]!;
+    return source[codec]?[preferences.audioQuality] ??
+        // this will ensure playback doesn't break
+        source[codec == SourceCodecs.m4a ? SourceCodecs.weba : SourceCodecs.m4a]
+            [preferences.audioQuality];
   }
 
-  MusicCodec get codec {
+  SourceCodecs get codec {
     final preferences = ref.read(userPreferencesProvider);
 
     return preferences.audioSource == AudioSource.jiosaavn
-        ? MusicCodec.m4a
+        ? SourceCodecs.m4a
         : preferences.streamMusicCodec;
   }
 }

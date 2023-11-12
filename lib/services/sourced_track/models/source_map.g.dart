@@ -21,9 +21,6 @@ Map<String, dynamic> _$SourceQualityMapToJson(SourceQualityMap instance) =>
     };
 
 SourceMap _$SourceMapFromJson(Map<String, dynamic> json) => SourceMap(
-      mp4: json['mp4'] == null
-          ? null
-          : SourceQualityMap.fromJson(json['mp4'] as Map<String, dynamic>),
       weba: json['weba'] == null
           ? null
           : SourceQualityMap.fromJson(json['weba'] as Map<String, dynamic>),
@@ -33,7 +30,6 @@ SourceMap _$SourceMapFromJson(Map<String, dynamic> json) => SourceMap(
     );
 
 Map<String, dynamic> _$SourceMapToJson(SourceMap instance) => <String, dynamic>{
-      'mp4': instance.mp4,
       'weba': instance.weba,
       'm4a': instance.m4a,
     };

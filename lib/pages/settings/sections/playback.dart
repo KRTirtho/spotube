@@ -59,12 +59,12 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               .toList(),
           onChanged: (value) {
             if (value == null) return;
-            preferences.setYoutubeApiType(value);
+            preferences.setAudioSource(value);
           },
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: preferences.audioSource == AudioSource.youtube
+          child: preferences.audioSource != AudioSource.piped
               ? const SizedBox.shrink()
               : Consumer(builder: (context, ref, child) {
                   final instanceList = ref.watch(pipedInstancesFutureProvider);
@@ -131,7 +131,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: preferences.audioSource == AudioSource.youtube
+          child: preferences.audioSource != AudioSource.piped
               ? const SizedBox.shrink()
               : AdaptiveSelectTile<SearchMode>(
                   secondary: const Icon(SpotubeIcons.search),
@@ -151,17 +151,18 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: preferences.searchMode == SearchMode.youtubeMusic &&
-                  preferences.audioSource == AudioSource.piped
-              ? const SizedBox.shrink()
-              : SwitchListTile(
+          child: preferences.searchMode == SearchMode.youtube &&
+                  (preferences.audioSource == AudioSource.piped ||
+                      preferences.audioSource == AudioSource.youtube)
+              ? SwitchListTile(
                   secondary: const Icon(SpotubeIcons.skip),
                   title: Text(context.l10n.skip_non_music),
                   value: preferences.skipNonMusic,
                   onChanged: (state) {
                     preferences.setSkipNonMusic(state);
                   },
-                ),
+                )
+              : const SizedBox.shrink(),
         ),
         ListTile(
           leading: const Icon(SpotubeIcons.playlistRemove),
@@ -178,44 +179,46 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           value: preferences.normalizeAudio,
           onChanged: preferences.setNormalizeAudio,
         ),
-        AdaptiveSelectTile<MusicCodec>(
-          secondary: const Icon(SpotubeIcons.stream),
-          title: Text(context.l10n.streaming_music_codec),
-          value: preferences.streamMusicCodec,
-          showValueWhenUnfolded: false,
-          options: MusicCodec.values
-              .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(
-                      e.label,
-                      style: theme.textTheme.labelMedium,
-                    ),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            preferences.setStreamMusicCodec(value);
-          },
-        ),
-        AdaptiveSelectTile<MusicCodec>(
-          secondary: const Icon(SpotubeIcons.file),
-          title: Text(context.l10n.download_music_codec),
-          value: preferences.downloadMusicCodec,
-          showValueWhenUnfolded: false,
-          options: MusicCodec.values
-              .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(
-                      e.label,
-                      style: theme.textTheme.labelMedium,
-                    ),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            preferences.setDownloadMusicCodec(value);
-          },
-        ),
+        if (preferences.audioSource != AudioSource.jiosaavn)
+          AdaptiveSelectTile<SourceCodecs>(
+            secondary: const Icon(SpotubeIcons.stream),
+            title: Text(context.l10n.streaming_music_codec),
+            value: preferences.streamMusicCodec,
+            showValueWhenUnfolded: false,
+            options: SourceCodecs.values
+                .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(
+                        e.label,
+                        style: theme.textTheme.labelMedium,
+                      ),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value == null) return;
+              preferences.setStreamMusicCodec(value);
+            },
+          ),
+        if (preferences.audioSource != AudioSource.jiosaavn)
+          AdaptiveSelectTile<SourceCodecs>(
+            secondary: const Icon(SpotubeIcons.file),
+            title: Text(context.l10n.download_music_codec),
+            value: preferences.downloadMusicCodec,
+            showValueWhenUnfolded: false,
+            options: SourceCodecs.values
+                .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(
+                        e.label,
+                        style: theme.textTheme.labelMedium,
+                      ),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value == null) return;
+              preferences.setDownloadMusicCodec(value);
+            },
+          ),
       ],
     );
   }

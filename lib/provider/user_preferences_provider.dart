@@ -37,14 +37,6 @@ enum AudioSource {
   String get label => name[0].toUpperCase() + name.substring(1);
 }
 
-enum MusicCodec {
-  m4a._("M4a (Best for downloaded music)"),
-  weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
-
-  final String label;
-  const MusicCodec._(this.label);
-}
-
 enum SearchMode {
   youtube,
   youtubeMusic;
@@ -91,8 +83,8 @@ class UserPreferences extends PersistedChangeNotifier {
   String pipedInstance;
   ThemeMode themeMode;
   AudioSource audioSource;
-  MusicCodec streamMusicCodec;
-  MusicCodec downloadMusicCodec;
+  SourceCodecs streamMusicCodec;
+  SourceCodecs downloadMusicCodec;
 
   final Ref ref;
 
@@ -115,8 +107,8 @@ class UserPreferences extends PersistedChangeNotifier {
     this.systemTitleBar = false,
     this.amoledDarkTheme = false,
     this.normalizeAudio = true,
-    this.streamMusicCodec = MusicCodec.weba,
-    this.downloadMusicCodec = MusicCodec.m4a,
+    this.streamMusicCodec = SourceCodecs.weba,
+    this.downloadMusicCodec = SourceCodecs.m4a,
     SpotubeColor? accentColorScheme,
   }) : super() {
     this.accentColorScheme =
@@ -144,22 +136,22 @@ class UserPreferences extends PersistedChangeNotifier {
     setPipedInstance("https://pipedapi.kavin.rocks");
     setSearchMode(SearchMode.youtube);
     setSkipNonMusic(true);
-    setYoutubeApiType(AudioSource.youtube);
+    setAudioSource(AudioSource.youtube);
     setSystemTitleBar(false);
     setAmoledDarkTheme(false);
     setNormalizeAudio(true);
     setAccentColorScheme(SpotubeColor(Colors.blue.value, name: "Blue"));
-    setStreamMusicCodec(MusicCodec.weba);
-    setDownloadMusicCodec(MusicCodec.m4a);
+    setStreamMusicCodec(SourceCodecs.weba);
+    setDownloadMusicCodec(SourceCodecs.m4a);
   }
 
-  void setStreamMusicCodec(MusicCodec codec) {
+  void setStreamMusicCodec(SourceCodecs codec) {
     streamMusicCodec = codec;
     notifyListeners();
     updatePersistence();
   }
 
-  void setDownloadMusicCodec(MusicCodec codec) {
+  void setDownloadMusicCodec(SourceCodecs codec) {
     downloadMusicCodec = codec;
     notifyListeners();
     updatePersistence();
@@ -255,7 +247,7 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setYoutubeApiType(AudioSource type) {
+  void setAudioSource(AudioSource type) {
     audioSource = type;
     notifyListeners();
     updatePersistence();
@@ -358,14 +350,14 @@ class UserPreferences extends PersistedChangeNotifier {
     normalizeAudio = map["normalizeAudio"] ?? normalizeAudio;
     audioPlayer.setAudioNormalization(normalizeAudio);
 
-    streamMusicCodec = MusicCodec.values.firstWhere(
+    streamMusicCodec = SourceCodecs.values.firstWhere(
       (codec) => codec.name == map["streamMusicCodec"],
-      orElse: () => MusicCodec.weba,
+      orElse: () => SourceCodecs.weba,
     );
 
-    downloadMusicCodec = MusicCodec.values.firstWhere(
+    downloadMusicCodec = SourceCodecs.values.firstWhere(
       (codec) => codec.name == map["downloadMusicCodec"],
-      orElse: () => MusicCodec.m4a,
+      orElse: () => SourceCodecs.m4a,
     );
   }
 

@@ -11,6 +11,7 @@ import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
+import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -42,7 +43,7 @@ class DownloadManagerProvider extends ChangeNotifier {
           //? WebA audiotagging is not supported yet
           //? Although in future by converting weba to opus & then tagging it
           //? is possible using vorbis comments
-          downloadCodec == MusicCodec.weba) return;
+          downloadCodec == SourceCodecs.weba) return;
 
       final file = File(request.path);
 
@@ -90,7 +91,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   String get downloadDirectory =>
       ref.read(userPreferencesProvider.select((s) => s.downloadLocation));
-  MusicCodec get downloadCodec =>
+  SourceCodecs get downloadCodec =>
       ref.read(userPreferencesProvider.select((s) => s.downloadMusicCodec));
 
   int get $downloadCount => dl
