@@ -141,9 +141,9 @@ class DownloadManagerProvider extends ChangeNotifier {
   bool isActive(Track track) {
     if ($backHistory.contains(track)) return true;
 
-    final SourcedTrack = mapToSourcedTrack(track);
+    final sourcedTrack = mapToSourcedTrack(track);
 
-    if (SourcedTrack == null) return false;
+    if (sourcedTrack == null) return false;
 
     return dl
         .getAllDownloads()
@@ -154,7 +154,7 @@ class DownloadManagerProvider extends ChangeNotifier {
               download.status.value == DownloadStatus.queued,
         )
         .map((e) => e.request.url)
-        .contains(SourcedTrack.url);
+        .contains(sourcedTrack.getUrlOfCodec(downloadCodec));
   }
 
   /// For singular downloads
@@ -171,7 +171,8 @@ class DownloadManagerProvider extends ChangeNotifier {
     }
 
     if (track is SourcedTrack && track.codec == downloadCodec) {
-      final downloadTask = await dl.addDownload(track.url, savePath);
+      final downloadTask =
+          await dl.addDownload(track.getUrlOfCodec(downloadCodec), savePath);
       if (downloadTask != null) {
         $history.add(track);
       }
@@ -219,16 +220,16 @@ class DownloadManagerProvider extends ChangeNotifier {
   }
 
   Future<void> removeFromQueue(SourcedTrack track) async {
-    await dl.removeDownload(track.url);
+    await dl.removeDownload(track.getUrlOfCodec(downloadCodec));
     $history.remove(track);
   }
 
   Future<void> pause(SourcedTrack track) {
-    return dl.pauseDownload(track.url);
+    return dl.pauseDownload(track.getUrlOfCodec(downloadCodec));
   }
 
   Future<void> resume(SourcedTrack track) {
-    return dl.resumeDownload(track.url);
+    return dl.resumeDownload(track.getUrlOfCodec(downloadCodec));
   }
 
   Future<void> retry(SourcedTrack track) {
@@ -236,7 +237,7 @@ class DownloadManagerProvider extends ChangeNotifier {
   }
 
   void cancel(SourcedTrack track) {
-    dl.cancelDownload(track.url);
+    dl.cancelDownload(track.getUrlOfCodec(downloadCodec));
   }
 
   void cancelAll() {
@@ -255,11 +256,11 @@ class DownloadManagerProvider extends ChangeNotifier {
   }
 
   ValueNotifier<DownloadStatus>? getStatusNotifier(SourcedTrack track) {
-    return dl.getDownload(track.url)?.status;
+    return dl.getDownload(track.getUrlOfCodec(downloadCodec))?.status;
   }
 
   ValueNotifier<double>? getProgressNotifier(SourcedTrack track) {
-    return dl.getDownload(track.url)?.progress;
+    return dl.getDownload(track.getUrlOfCodec(downloadCodec))?.progress;
   }
 }
 

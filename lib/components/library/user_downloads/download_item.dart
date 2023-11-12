@@ -28,20 +28,20 @@ class DownloadItem extends HookConsumerWidget {
       final notifier = downloadManager.getStatusNotifier(track as SourcedTrack);
 
       taskStatus.value = notifier?.value;
-      listener() {
+
+      void listener() {
         taskStatus.value = notifier?.value;
       }
 
-      downloadManager
-          .getStatusNotifier(track as SourcedTrack)
-          ?.addListener(listener);
+      notifier?.addListener(listener);
 
       return () {
-        downloadManager
-            .getStatusNotifier(track as SourcedTrack)
-            ?.removeListener(listener);
+        notifier?.removeListener(listener);
       };
     }, [track]);
+
+    final isQueryingSourceInfo =
+        taskStatus.value == null || track is! SourcedTrack;
 
     return ListTile(
       leading: Padding(
@@ -63,7 +63,7 @@ class DownloadItem extends HookConsumerWidget {
         track.artists ?? <Artist>[],
         mainAxisAlignment: WrapAlignment.start,
       ),
-      trailing: taskStatus.value == null || track is! SourcedTrack
+      trailing: isQueryingSourceInfo
           ? Text(
               context.l10n.querying_info,
               style: Theme.of(context).textTheme.labelMedium,
