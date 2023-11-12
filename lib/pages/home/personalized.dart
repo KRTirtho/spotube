@@ -71,7 +71,9 @@ class PersonalizedPage extends HookConsumerWidget {
               title: Text(context.l10n.new_releases),
               hasNextPage: newReleases.hasNextPage,
               onFetchMore: newReleases.fetchNext,
-            ),
+            )
+          else
+            const ShimmerCategories(),
           ...?madeForUser.data?["content"]?["items"]?.map((item) {
             final playlists = item["content"]?["items"]
                     ?.where((itemL2) => itemL2["type"] == "playlist")
