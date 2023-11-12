@@ -385,6 +385,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  dart_des:
+    dependency: transitive
+    description:
+      name: dart_des
+      sha256: "0a66afb8883368c824497fd2a1fd67bdb1a785965a3956728382c03d40747c33"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   dart_style:
     dependency: transitive
     description:
@@ -1165,6 +1173,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  jiosaavn:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "8a7cda9b8b687cde28e0f7fcb10adb0d4fde1007"
+      url: "https://github.com/KRTirtho/jiosaavn.git"
+    source: git
+    version: "0.1.0"
   js:
     dependency: transitive
     description:
