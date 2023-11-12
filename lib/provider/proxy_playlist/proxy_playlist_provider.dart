@@ -12,26 +12,31 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/models/matched_track.dart';
+
 import 'package:spotube/models/skip_segment.dart';
-import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/models/source_match.dart';
+
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/next_fetcher_mixin.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/youtube_provider.dart';
+
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
-import 'package:spotube/services/youtube/youtube.dart';
+import 'package:spotube/services/sourced_track/exceptions.dart';
+import 'package:spotube/services/sourced_track/models/source_info.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/supabase.dart';
+
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 /// Things implemented:
 /// * [x] Sponsor-Block skip
-/// * [x] Prefetch next track as [SpotubeTrack] on 80% of current track
-/// * [x] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
+/// * [x] Prefetch next track as [SourcedTrack] on 80% of current track
+/// * [x] Mixed Queue containing both [SourcedTrack] and [LocalTrack]
 /// * [x] Modification of the Queue
 ///       * [x] Add track at the end
 ///       * [x] Add track at the beginning
@@ -55,7 +60,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
   UserPreferences get preferences => ref.read(userPreferencesProvider);
-  YoutubeEndpoints get youtube => ref.read(youtubeProvider);
   ProxyPlaylist get playlist => state;
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
@@ -167,9 +171,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           return;
         }
         try {
-          final isYTMusicMode =
-              preferences.youtubeApiType == YoutubeApiType.piped &&
-                  preferences.searchMode == SearchMode.youtubeMusic;
+          final isYTMusicMode = preferences.audioSource == AudioSource.piped &&
+              preferences.searchMode == SearchMode.youtubeMusic;
 
           if (isYTMusicMode || !preferences.skipNonMusic) return;
 
@@ -183,7 +186,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
               currentSegments.value = (
                 source: audioPlayer.currentSource!,
                 segments: await getAndCacheSkipSegments(
-                  (state.activeTrack as SpotubeTrack).ytTrack.id,
+                  (state.activeTrack as SourcedTrack).sourceInfo.id,
                 ),
               );
             } catch (e) {
@@ -216,7 +219,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }();
   }
 
-  Future<SpotubeTrack?> ensureSourcePlayable(String source) async {
+  Future<SourcedTrack?> ensureSourcePlayable(String source) async {
     if (isPlayable(source)) return null;
 
     final track = mapSourcesToTracks([source]).firstOrNull;
@@ -226,17 +229,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
 
     final nthFetchedTrack = switch (track.runtimeType) {
-      SpotubeTrack => track as SpotubeTrack,
-      _ => await SpotubeTrack.fetchFromTrack(
-          track,
-          youtube,
-          preferences.streamMusicCodec,
-        ),
+      SourcedTrack => track as SourcedTrack,
+      _ => await SourcedTrack.fetchFromTrack(ref: ref, track: track),
     };
 
     await audioPlayer.replaceSource(
       source,
-      nthFetchedTrack.ytUri,
+      nthFetchedTrack.url,
     );
 
     return nthFetchedTrack;
@@ -314,15 +313,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       );
       await notificationService.addTrack(indexTrack);
     } else {
-      final addableTrack = await SpotubeTrack.fetchFromTrack(
-        tracks.elementAtOrNull(initialIndex) ?? tracks.first,
-        youtube,
-        preferences.streamMusicCodec,
+      final addableTrack = await SourcedTrack.fetchFromTrack(
+        ref: ref,
+        track: tracks.elementAtOrNull(initialIndex) ?? tracks.first,
       ).catchError((e, stackTrace) {
-        return SpotubeTrack.fetchFromTrack(
-          tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
-          youtube,
-          preferences.streamMusicCodec,
+        return SourcedTrack.fetchFromTrack(
+          ref: ref,
+          track: tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
         );
       });
 
@@ -416,9 +413,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   }
 
   Future<void> populateSibling() async {
-    if (state.activeTrack is SpotubeTrack) {
+    if (state.activeTrack is SourcedTrack) {
       final activeTrackWithSiblingsForSure =
-          await (state.activeTrack as SpotubeTrack).populatedCopy(youtube);
+          await (state.activeTrack as SourcedTrack).copyWithSibling();
 
       state = state.copyWith(
         tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
@@ -428,11 +425,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
   }
 
-  Future<void> swapSibling(YoutubeVideoInfo video) async {
-    if (state.activeTrack is SpotubeTrack) {
+  Future<void> swapSibling(SourceInfo sibling) async {
+    if (state.activeTrack is SourcedTrack) {
       await populateSibling();
       final newTrack =
-          await (state.activeTrack as SpotubeTrack).swappedCopy(video, youtube);
+          await (state.activeTrack as SourcedTrack).swapWithSibling(sibling);
       if (newTrack == null) return;
       state = state.copyWith(
         tracks: mergeTracks([newTrack], state.tracks),
@@ -543,7 +540,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
     if (!preferences.skipNonMusic ||
-        (preferences.youtubeApiType == YoutubeApiType.piped &&
+        (preferences.audioSource == AudioSource.piped &&
             preferences.searchMode == SearchMode.youtubeMusic)) return [];
 
     try {
@@ -607,9 +604,33 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
   }
 
+  /// This method must be called after any playback operation as
+  /// it can increase the latency
+  Future<void> storeTrack(Track track, SourcedTrack sourcedTrack) async {
+    try {
+      if (track is! SourcedTrack) {
+        await supabase.insertTrack(
+          SourceMatch(
+            id: sourcedTrack.id!,
+            createdAt: DateTime.now(),
+            sourceId: sourcedTrack.sourceInfo.id,
+            sourceType: preferences.audioSource == AudioSource.jiosaavn
+                ? SourceType.jiosaavn
+                : preferences.searchMode == SearchMode.youtube
+                    ? SourceType.youtube
+                    : SourceType.youtubeMusic,
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      logger.e(e.toString());
+      logger.t(stackTrace);
+    }
+  }
+
   @override
   set state(state) {
-    final hasActiveTrackChanged = super.state.activeTrack is SpotubeTrack
+    final hasActiveTrackChanged = super.state.activeTrack is SourcedTrack
         ? state.activeTrack?.id != super.state.activeTrack?.id
         : super.state.activeTrack is LocalTrack &&
                 state.activeTrack is LocalTrack
@@ -649,7 +670,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   @override
   FutureOr<ProxyPlaylist> fromJson(Map<String, dynamic> json) {
-    return ProxyPlaylist.fromJson(json);
+    return ProxyPlaylist.fromJson(json, ref);
   }
 
   @override

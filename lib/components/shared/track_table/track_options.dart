@@ -110,7 +110,7 @@ class TrackOptions extends HookConsumerWidget {
     ]);
 
     final progressNotifier = useMemoized(() {
-      final spotubeTrack = downloadManager.mapToSpotubeTrack(track);
+      final spotubeTrack = downloadManager.mapToSourcedTrack(track);
       if (spotubeTrack == null) return null;
       return downloadManager.getProgressNotifier(spotubeTrack);
     });

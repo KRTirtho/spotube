@@ -59,7 +59,7 @@ class TracksTableView extends HookConsumerWidget {
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
     final apiType =
-        ref.watch(userPreferencesProvider.select((s) => s.youtubeApiType));
+        ref.watch(userPreferencesProvider.select((s) => s.audioSource));
     const tableHeadStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
     final selected = useState<List<String>>([]);
@@ -194,7 +194,7 @@ class TracksTableView extends HookConsumerWidget {
                       switch (action) {
                         case "download":
                           {
-                            final confirmed = apiType == YoutubeApiType.piped ||
+                            final confirmed = apiType == AudioSource.piped ||
                                 await showDialog(
                                   context: context,
                                   builder: (context) {

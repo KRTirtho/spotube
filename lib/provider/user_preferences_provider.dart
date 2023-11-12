@@ -8,10 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/models/matched_track.dart';
+import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/sourced_track/enums.dart';
 
 import 'package:spotube/utils/persisted_change_notifier.dart';
 import 'package:spotube/utils/platform.dart';
@@ -23,19 +24,15 @@ enum LayoutMode {
   adaptive,
 }
 
-enum AudioQuality {
-  high,
-  low,
-}
-
 enum CloseBehavior {
   minimizeToTray,
   close,
 }
 
-enum YoutubeApiType {
+enum AudioSource {
   youtube,
-  piped;
+  piped,
+  jiosaavn;
 
   String get label => name[0].toUpperCase() + name.substring(1);
 }
@@ -48,8 +45,35 @@ enum MusicCodec {
   const MusicCodec._(this.label);
 }
 
+enum SearchMode {
+  youtube,
+  youtubeMusic;
+
+  String get label => name[0].toUpperCase() + name.substring(1);
+
+  static SearchMode fromString(String? string) {
+    switch (string) {
+      case "youtube":
+        return SearchMode.youtube;
+      case "youtubeMusic":
+        return SearchMode.youtubeMusic;
+      default:
+        return SearchMode.youtube;
+    }
+  }
+
+  toSourceType() {
+    switch (this) {
+      case SearchMode.youtube:
+        return SourceType.youtube;
+      case SearchMode.youtubeMusic:
+        return SourceType.youtubeMusic;
+    }
+  }
+}
+
 class UserPreferences extends PersistedChangeNotifier {
-  AudioQuality audioQuality;
+  SourceQualities audioQuality;
   bool albumColorSync;
   bool amoledDarkTheme;
   bool checkUpdate;
@@ -66,7 +90,7 @@ class UserPreferences extends PersistedChangeNotifier {
   String downloadLocation;
   String pipedInstance;
   ThemeMode themeMode;
-  YoutubeApiType youtubeApiType;
+  AudioSource audioSource;
   MusicCodec streamMusicCodec;
   MusicCodec downloadMusicCodec;
 
@@ -79,7 +103,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.layoutMode = LayoutMode.adaptive,
     this.albumColorSync = true,
     this.checkUpdate = true,
-    this.audioQuality = AudioQuality.high,
+    this.audioQuality = SourceQualities.high,
     this.downloadLocation = "",
     this.closeBehavior = CloseBehavior.close,
     this.showSystemTrayIcon = true,
@@ -87,7 +111,7 @@ class UserPreferences extends PersistedChangeNotifier {
     this.pipedInstance = "https://pipedapi.kavin.rocks",
     this.searchMode = SearchMode.youtube,
     this.skipNonMusic = true,
-    this.youtubeApiType = YoutubeApiType.youtube,
+    this.audioSource = AudioSource.youtube,
     this.systemTitleBar = false,
     this.amoledDarkTheme = false,
     this.normalizeAudio = true,
@@ -112,7 +136,7 @@ class UserPreferences extends PersistedChangeNotifier {
     setLayoutMode(LayoutMode.adaptive);
     setAlbumColorSync(true);
     setCheckUpdate(true);
-    setAudioQuality(AudioQuality.high);
+    setAudioQuality(SourceQualities.high);
     setDownloadLocation("");
     setCloseBehavior(CloseBehavior.close);
     setShowSystemTrayIcon(true);
@@ -120,7 +144,7 @@ class UserPreferences extends PersistedChangeNotifier {
     setPipedInstance("https://pipedapi.kavin.rocks");
     setSearchMode(SearchMode.youtube);
     setSkipNonMusic(true);
-    setYoutubeApiType(YoutubeApiType.youtube);
+    setYoutubeApiType(AudioSource.youtube);
     setSystemTitleBar(false);
     setAmoledDarkTheme(false);
     setNormalizeAudio(true);
@@ -176,7 +200,7 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setAudioQuality(AudioQuality quality) {
+  void setAudioQuality(SourceQualities quality) {
     audioQuality = quality;
     notifyListeners();
     updatePersistence();
@@ -231,8 +255,8 @@ class UserPreferences extends PersistedChangeNotifier {
     updatePersistence();
   }
 
-  void setYoutubeApiType(YoutubeApiType type) {
-    youtubeApiType = type;
+  void setYoutubeApiType(AudioSource type) {
+    audioSource = type;
     notifyListeners();
     updatePersistence();
   }
@@ -288,7 +312,7 @@ class UserPreferences extends PersistedChangeNotifier {
         : accentColorScheme;
     albumColorSync = map["albumColorSync"] ?? albumColorSync;
     audioQuality = map["audioQuality"] != null
-        ? AudioQuality.values[map["audioQuality"]]
+        ? SourceQualities.values[map["audioQuality"]]
         : audioQuality;
 
     if (!kIsWeb) {
@@ -320,9 +344,9 @@ class UserPreferences extends PersistedChangeNotifier {
 
     skipNonMusic = map["skipNonMusic"] ?? skipNonMusic;
 
-    youtubeApiType = YoutubeApiType.values.firstWhere(
+    audioSource = AudioSource.values.firstWhere(
       (type) => type.name == map["youtubeApiType"],
-      orElse: () => YoutubeApiType.youtube,
+      orElse: () => AudioSource.youtube,
     );
 
     systemTitleBar = map["systemTitleBar"] ?? systemTitleBar;
@@ -363,7 +387,7 @@ class UserPreferences extends PersistedChangeNotifier {
       "pipedInstance": pipedInstance,
       "searchMode": searchMode.name,
       "skipNonMusic": skipNonMusic,
-      "youtubeApiType": youtubeApiType.name,
+      "youtubeApiType": audioSource.name,
       'systemTitleBar': systemTitleBar,
       "amoledDarkTheme": amoledDarkTheme,
       "normalizeAudio": normalizeAudio,
@@ -377,7 +401,7 @@ class UserPreferences extends PersistedChangeNotifier {
     SpotubeColor? accentColorScheme,
     bool? albumColorSync,
     bool? checkUpdate,
-    AudioQuality? audioQuality,
+    SourceQualities? audioQuality,
     String? downloadLocation,
     LayoutMode? layoutMode,
     CloseBehavior? closeBehavior,
@@ -386,7 +410,7 @@ class UserPreferences extends PersistedChangeNotifier {
     String? pipedInstance,
     SearchMode? searchMode,
     bool? skipNonMusic,
-    YoutubeApiType? youtubeApiType,
+    AudioSource? youtubeApiType,
     Market? recommendationMarket,
     bool? saveTrackLyrics,
   }) {
@@ -405,7 +429,7 @@ class UserPreferences extends PersistedChangeNotifier {
       pipedInstance: pipedInstance ?? this.pipedInstance,
       searchMode: searchMode ?? this.searchMode,
       skipNonMusic: skipNonMusic ?? this.skipNonMusic,
-      youtubeApiType: youtubeApiType ?? this.youtubeApiType,
+      audioSource: youtubeApiType ?? this.audioSource,
       recommendationMarket: recommendationMarket ?? this.recommendationMarket,
     );
   }

@@ -9,24 +9,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/youtube_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
-import 'package:spotube/services/youtube/youtube.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class DownloadManagerProvider extends ChangeNotifier {
   DownloadManagerProvider({required this.ref})
-      : $history = <SpotubeTrack>{},
+      : $history = <SourcedTrack>{},
         $backHistory = <Track>{},
         dl = DownloadManager() {
     dl.statusStream.listen((event) async {
       final (:request, :status) = event;
 
       final track = $history.firstWhereOrNull(
-        (element) => element.ytUri == request.url,
+        (element) => element.url == request.url,
       );
       if (track == null) return;
 
@@ -90,7 +88,6 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   final Ref<DownloadManagerProvider> ref;
 
-  YoutubeEndpoints get yt => ref.read(youtubeProvider);
   String get downloadDirectory =>
       ref.read(userPreferencesProvider.select((s) => s.downloadLocation));
   MusicCodec get downloadCodec =>
@@ -106,7 +103,7 @@ class DownloadManagerProvider extends ChangeNotifier {
       )
       .length;
 
-  final Set<SpotubeTrack> $history;
+  final Set<SourcedTrack> $history;
   // these are the tracks which metadata hasn't been fetched yet
   final Set<Track> $backHistory;
   final DownloadManager dl;
@@ -143,9 +140,9 @@ class DownloadManagerProvider extends ChangeNotifier {
   bool isActive(Track track) {
     if ($backHistory.contains(track)) return true;
 
-    final spotubeTrack = mapToSpotubeTrack(track);
+    final SourcedTrack = mapToSourcedTrack(track);
 
-    if (spotubeTrack == null) return false;
+    if (SourcedTrack == null) return false;
 
     return dl
         .getAllDownloads()
@@ -156,7 +153,7 @@ class DownloadManagerProvider extends ChangeNotifier {
               download.status.value == DownloadStatus.queued,
         )
         .map((e) => e.request.url)
-        .contains(spotubeTrack.ytUri);
+        .contains(SourcedTrack.url);
   }
 
   /// For singular downloads
@@ -172,21 +169,26 @@ class DownloadManagerProvider extends ChangeNotifier {
       await oldFile.rename("$savePath.old");
     }
 
-    if (track is SpotubeTrack && track.codec == downloadCodec) {
-      final downloadTask = await dl.addDownload(track.ytUri, savePath);
+    if (track is SourcedTrack && track.codec == downloadCodec) {
+      final downloadTask = await dl.addDownload(track.url, savePath);
       if (downloadTask != null) {
         $history.add(track);
       }
     } else {
       $backHistory.add(track);
-      final spotubeTrack =
-          await SpotubeTrack.fetchFromTrack(track, yt, downloadCodec).then((d) {
+      final sourcedTrack = await SourcedTrack.fetchFromTrack(
+        ref: ref,
+        track: track,
+      ).then((d) {
         $backHistory.remove(track);
         return d;
       });
-      final downloadTask = await dl.addDownload(spotubeTrack.ytUri, savePath);
+      final downloadTask = await dl.addDownload(
+        sourcedTrack.getUrlOfCodec(downloadCodec),
+        savePath,
+      );
       if (downloadTask != null) {
-        $history.add(spotubeTrack);
+        $history.add(sourcedTrack);
       }
     }
 
@@ -195,7 +197,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   Future<void> batchAddToQueue(List<Track> tracks) async {
     $backHistory.addAll(
-      tracks.where((element) => element is! SpotubeTrack),
+      tracks.where((element) => element is! SourcedTrack),
     );
     notifyListeners();
     for (final track in tracks) {
@@ -215,25 +217,25 @@ class DownloadManagerProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFromQueue(SpotubeTrack track) async {
-    await dl.removeDownload(track.ytUri);
+  Future<void> removeFromQueue(SourcedTrack track) async {
+    await dl.removeDownload(track.url);
     $history.remove(track);
   }
 
-  Future<void> pause(SpotubeTrack track) {
-    return dl.pauseDownload(track.ytUri);
+  Future<void> pause(SourcedTrack track) {
+    return dl.pauseDownload(track.url);
   }
 
-  Future<void> resume(SpotubeTrack track) {
-    return dl.resumeDownload(track.ytUri);
+  Future<void> resume(SourcedTrack track) {
+    return dl.resumeDownload(track.url);
   }
 
-  Future<void> retry(SpotubeTrack track) {
+  Future<void> retry(SourcedTrack track) {
     return addToQueue(track);
   }
 
-  void cancel(SpotubeTrack track) {
-    dl.cancelDownload(track.ytUri);
+  void cancel(SourcedTrack track) {
+    dl.cancelDownload(track.url);
   }
 
   void cancelAll() {
@@ -243,20 +245,20 @@ class DownloadManagerProvider extends ChangeNotifier {
     }
   }
 
-  SpotubeTrack? mapToSpotubeTrack(Track track) {
-    if (track is SpotubeTrack) {
+  SourcedTrack? mapToSourcedTrack(Track track) {
+    if (track is SourcedTrack) {
       return track;
     } else {
       return $history.firstWhereOrNull((element) => element.id == track.id);
     }
   }
 
-  ValueNotifier<DownloadStatus>? getStatusNotifier(SpotubeTrack track) {
-    return dl.getDownload(track.ytUri)?.status;
+  ValueNotifier<DownloadStatus>? getStatusNotifier(SourcedTrack track) {
+    return dl.getDownload(track.url)?.status;
   }
 
-  ValueNotifier<double>? getProgressNotifier(SpotubeTrack track) {
-    return dl.getDownload(track.ytUri)?.progress;
+  ValueNotifier<double>? getProgressNotifier(SourcedTrack track) {
+    return dl.getDownload(track.url)?.progress;
   }
 }
 

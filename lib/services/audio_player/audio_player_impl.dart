@@ -121,11 +121,13 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // }
   }
 
-  List<SpotubeTrack> resolveTracksForSource(List<SpotubeTrack> tracks) {
-    return tracks.where((e) => sources.contains(e.ytUri)).toList();
+  // TODO: Make sure audio player soruces are also
+  // TODO: changed when preferences sources are changed
+  List<SourcedTrack> resolveTracksForSource(List<SourcedTrack> tracks) {
+    return tracks.where((e) => sources.contains(e.url)).toList();
   }
 
-  bool tracksExistsInPlaylist(List<SpotubeTrack> tracks) {
+  bool tracksExistsInPlaylist(List<SourcedTrack> tracks) {
     return resolveTracksForSource(tracks).length == tracks.length;
   }
 

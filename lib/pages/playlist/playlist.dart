@@ -11,9 +11,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -59,7 +59,7 @@ class PlaylistView extends HookConsumerWidget {
           tracksSnapshot.data
                   ?.any((s) => s.id! == proxyPlaylist.activeTrack?.id!) ==
               true &&
-          proxyPlaylist.activeTrack is SpotubeTrack,
+          proxyPlaylist.activeTrack is SourcedTrack,
       [proxyPlaylist.activeTrack, tracksSnapshot.data],
     );
 

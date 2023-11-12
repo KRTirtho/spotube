@@ -2,10 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/source_match.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
+import 'package:spotube/services/sourced_track/exceptions.dart';
+import 'package:spotube/services/sourced_track/models/source_info.dart';
+import 'package:spotube/services/sourced_track/models/source_map.dart';
+import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -65,9 +67,11 @@ class YoutubeSourcedTrack extends SourcedTrack {
         sourceInfo: SourceInfo(
           id: item.id.value,
           artist: item.author,
+          artistUrl: "https://www.youtube.com/channel/${item.channelId}",
           pageUrl: item.url,
           thumbnail: item.thumbnails.highResUrl,
           title: item.title,
+          duration: item.duration ?? Duration.zero,
           album: null,
         ),
         track: track,
@@ -84,20 +88,19 @@ class YoutubeSourcedTrack extends SourcedTrack {
         .where((audio) => audio.codec.mimeType == "audio/webm")
         .sortByBitrate();
 
-    return {
-      SourceCodecs.mp4: {
-        SourceQualities.high: m4a.first.url.toString(),
-        SourceQualities.medium:
-            (m4a.elementAtOrNull(m4a.length ~/ 2) ?? m4a[1]).url.toString(),
-        SourceQualities.low: m4a.last.url.toString(),
-      },
-      SourceCodecs.weba: {
-        SourceQualities.high: weba.first.url.toString(),
-        SourceQualities.medium:
+    return SourceMap(
+      m4a: SourceQualityMap(
+        high: m4a.first.url.toString(),
+        medium: (m4a.elementAtOrNull(m4a.length ~/ 2) ?? m4a[1]).url.toString(),
+        low: m4a.last.url.toString(),
+      ),
+      weba: SourceQualityMap(
+        high: weba.first.url.toString(),
+        medium:
             (weba.elementAtOrNull(weba.length ~/ 2) ?? weba[1]).url.toString(),
-        SourceQualities.low: weba.last.url.toString(),
-      }
-    };
+        low: weba.last.url.toString(),
+      ),
+    );
   }
 
   static Future<SiblingType> toSiblingType(
@@ -115,9 +118,11 @@ class YoutubeSourcedTrack extends SourcedTrack {
       info: SourceInfo(
         id: item.id,
         artist: item.channelName,
+        artistUrl: "https://www.youtube.com/channel/${item.channelId}",
         pageUrl: "https://www.youtube.com/watch?v=${item.id}",
         thumbnail: item.thumbnailUrl,
         title: item.title,
+        duration: item.duration,
         album: null,
       ),
       source: sourceMap,
@@ -209,10 +214,10 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }
 
   @override
-  Future<YoutubeSourcedTrack> swapWithSibling(SourceInfo sibling) async {
+  Future<YoutubeSourcedTrack?> swapWithSibling(SourceInfo sibling) async {
     if (sibling.id == sourceInfo.id ||
         siblings.none((s) => s.id == sibling.id)) {
-      throw Exception("Invalid sibling");
+      return null;
     }
 
     final newSourceInfo = siblings.firstWhere((s) => s.id == sibling.id);

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,12 +13,12 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/hooks/use_debounce.dart';
-import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/youtube_provider.dart';
-import 'package:spotube/services/youtube/youtube.dart';
+import 'package:spotube/services/sourced_track/models/source_info.dart';
+import 'package:spotube/services/sourced_track/models/video_info.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -34,7 +35,6 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final preferences = ref.watch(userPreferencesProvider);
-    final youtube = ref.watch(youtubeProvider);
 
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
@@ -56,20 +56,33 @@ class SiblingTracksSheet extends HookConsumerWidget {
       useValueListenable(searchController).text,
     );
 
-    final searchRequest = useMemoized(() async {
+    final searchRequest = useMemoized<Future<List<SourceInfo>>>(() async {
       if (searchTerm.trim().isEmpty) {
-        return <YoutubeVideoInfo>[];
+        return <SourceInfo>[];
       }
 
-      return youtube.search(searchTerm.trim());
+      final results = await youtubeClient.search.search(searchTerm.trim());
+
+      return await Future.wait(
+        results.map(YoutubeVideoInfo.fromVideo).mapIndexed((i, video) async {
+          final siblingType = await YoutubeSourcedTrack.toSiblingType(i, video);
+          return siblingType.info;
+        }),
+      );
     }, [
       searchTerm,
       searchMode.value,
     ]);
 
-    final siblings = playlist.isFetching == false
-        ? (playlist.activeTrack as SpotubeTrack).siblings
-        : <YoutubeVideoInfo>[];
+    final siblings = useMemoized(
+      () => playlist.isFetching == false
+          ? [
+              (playlist.activeTrack as SourcedTrack).sourceInfo,
+              ...(playlist.activeTrack as SourcedTrack).siblings,
+            ]
+          : <SourceInfo>[],
+      [playlist.isFetching, playlist.activeTrack],
+    );
 
     final borderRadius = floating
         ? BorderRadius.circular(10)
@@ -79,21 +92,21 @@ class SiblingTracksSheet extends HookConsumerWidget {
           );
 
     useEffect(() {
-      if (playlist.activeTrack is SpotubeTrack &&
-          (playlist.activeTrack as SpotubeTrack).siblings.isEmpty) {
+      if (playlist.activeTrack is SourcedTrack &&
+          (playlist.activeTrack as SourcedTrack).siblings.isEmpty) {
         playlistNotifier.populateSibling();
       }
       return null;
     }, [playlist.activeTrack]);
 
     final itemBuilder = useCallback(
-      (YoutubeVideoInfo video) {
+      (SourceInfo sourceInfo) {
         return ListTile(
-          title: Text(video.title),
+          title: Text(sourceInfo.title),
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: UniversalImage(
-              path: video.thumbnailUrl,
+              path: sourceInfo.thumbnail,
               height: 60,
               width: 60,
             ),
@@ -101,16 +114,18 @@ class SiblingTracksSheet extends HookConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
-          trailing: Text(video.duration.toHumanReadableString()),
-          subtitle: Text(video.channelName),
+          trailing: Text(sourceInfo.duration.toHumanReadableString()),
+          subtitle: Text(sourceInfo.artist),
           enabled: playlist.isFetching != true,
           selected: playlist.isFetching != true &&
-              video.id == (playlist.activeTrack as SpotubeTrack).ytTrack.id,
+              sourceInfo.id ==
+                  (playlist.activeTrack as SourcedTrack).sourceInfo.id,
           selectedTileColor: theme.popupMenuTheme.color,
           onTap: () {
             if (playlist.isFetching == false &&
-                video.id != (playlist.activeTrack as SpotubeTrack).ytTrack.id) {
-              playlistNotifier.swapSibling(video);
+                sourceInfo.id !=
+                    (playlist.activeTrack as SourcedTrack).sourceInfo.id) {
+              playlistNotifier.swapSibling(sourceInfo);
               Navigator.of(context).pop();
             }
           },
@@ -172,7 +187,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
                         },
                       )
                     else ...[
-                      if (preferences.youtubeApiType == YoutubeApiType.piped)
+                      if (preferences.audioSource == AudioSource.piped)
                         PopupMenuButton(
                           icon: const Icon(SpotubeIcons.filter, size: 18),
                           onSelected: (SearchMode mode) {

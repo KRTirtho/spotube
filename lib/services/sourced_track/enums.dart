@@ -1,4 +1,5 @@
-import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/sourced_track/models/source_info.dart';
+import 'package:spotube/services/sourced_track/models/source_map.dart';
 
 enum SourceCodecs {
   mp4,
@@ -12,5 +13,4 @@ enum SourceQualities {
   low,
 }
 
-typedef SourceMap = Map<SourceCodecs, Map<SourceQualities, String>>;
 typedef SiblingType = ({SourceInfo info, SourceMap? source});
