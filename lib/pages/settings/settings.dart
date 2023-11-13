@@ -20,7 +20,7 @@ class SettingsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
 
     return SafeArea(
       bottom: false,
@@ -49,7 +49,7 @@ class SettingsPage extends HookConsumerWidget {
                       const SettingsAboutSection(),
                       Center(
                         child: FilledButton(
-                          onPressed: preferences.reset,
+                          onPressed: preferencesNotifier.reset,
                           child: Text(context.l10n.restore_defaults),
                         ),
                       ),

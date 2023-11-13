@@ -15,6 +15,7 @@ class SettingsAppearanceSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final pickColorScheme = useCallback(() {
       return () => showDialog(
           context: context,
@@ -33,7 +34,7 @@ class SettingsAppearanceSection extends HookConsumerWidget {
           value: preferences.layoutMode,
           onChanged: (value) {
             if (value != null) {
-              preferences.setLayoutMode(value);
+              preferencesNotifier.setLayoutMode(value);
             }
           },
           options: [
@@ -71,7 +72,7 @@ class SettingsAppearanceSection extends HookConsumerWidget {
           ],
           onChanged: (value) {
             if (value != null) {
-              preferences.setThemeMode(value);
+              preferencesNotifier.setThemeMode(value);
             }
           },
         ),
@@ -80,7 +81,7 @@ class SettingsAppearanceSection extends HookConsumerWidget {
           title: Text(context.l10n.use_amoled_mode),
           subtitle: Text(context.l10n.pitch_dark_theme),
           value: preferences.amoledDarkTheme,
-          onChanged: preferences.setAmoledDarkTheme,
+          onChanged: preferencesNotifier.setAmoledDarkTheme,
         ),
         ListTile(
           leading: const Icon(SpotubeIcons.palette),
@@ -101,7 +102,7 @@ class SettingsAppearanceSection extends HookConsumerWidget {
           title: Text(context.l10n.sync_album_color),
           subtitle: Text(context.l10n.sync_album_color_description),
           value: preferences.albumColorSync,
-          onChanged: preferences.setAlbumColorSync,
+          onChanged: preferencesNotifier.setAlbumColorSync,
         ),
       ],
     );

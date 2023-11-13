@@ -18,6 +18,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final theme = Theme.of(context);
 
     return SectionCardWithHeading(
@@ -39,7 +40,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           ],
           onChanged: (value) {
             if (value != null) {
-              preferences.setAudioQuality(value);
+              preferencesNotifier.setAudioQuality(value);
             }
           },
         ),
@@ -55,7 +56,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               .toList(),
           onChanged: (value) {
             if (value == null) return;
-            preferences.setYoutubeApiType(value);
+            preferencesNotifier.setYoutubeApiType(value);
           },
         ),
         AnimatedSwitcher(
@@ -113,7 +114,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                             .toList(),
                         onChanged: (value) {
                           if (value != null) {
-                            preferences.setPipedInstance(value);
+                            preferencesNotifier.setPipedInstance(value);
                           }
                         },
                       );
@@ -141,7 +142,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                       .toList(),
                   onChanged: (value) {
                     if (value == null) return;
-                    preferences.setSearchMode(value);
+                    preferencesNotifier.setSearchMode(value);
                   },
                 ),
         ),
@@ -155,7 +156,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                   title: Text(context.l10n.skip_non_music),
                   value: preferences.skipNonMusic,
                   onChanged: (state) {
-                    preferences.setSkipNonMusic(state);
+                    preferencesNotifier.setSkipNonMusic(state);
                   },
                 ),
         ),
@@ -172,7 +173,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           secondary: const Icon(SpotubeIcons.normalize),
           title: Text(context.l10n.normalize_audio),
           value: preferences.normalizeAudio,
-          onChanged: preferences.setNormalizeAudio,
+          onChanged: preferencesNotifier.setNormalizeAudio,
         ),
         AdaptiveSelectTile<MusicCodec>(
           secondary: const Icon(SpotubeIcons.stream),
@@ -190,7 +191,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               .toList(),
           onChanged: (value) {
             if (value == null) return;
-            preferences.setStreamMusicCodec(value);
+            preferencesNotifier.setStreamMusicCodec(value);
           },
         ),
         AdaptiveSelectTile<MusicCodec>(
@@ -209,7 +210,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               .toList(),
           onChanged: (value) {
             if (value == null) return;
-            preferences.setDownloadMusicCodec(value);
+            preferencesNotifier.setDownloadMusicCodec(value);
           },
         ),
       ],

@@ -49,6 +49,7 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final scheme = preferences.accentColorScheme;
     final active = useState<String>(colorsMap.firstWhere(
       (element) {
@@ -57,7 +58,7 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
     ).name);
 
     onOk() {
-      preferences.setAccentColorScheme(
+      preferencesNotifier.setAccentColorScheme(
         colorsMap.firstWhere(
           (element) {
             return element.name == active.value;

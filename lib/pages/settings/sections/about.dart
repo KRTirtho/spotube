@@ -16,6 +16,7 @@ class SettingsAboutSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
 
     return SectionCardWithHeading(
       heading: context.l10n.about,
@@ -68,7 +69,7 @@ class SettingsAboutSection extends HookConsumerWidget {
             secondary: const Icon(SpotubeIcons.update),
             title: Text(context.l10n.check_for_updates),
             value: preferences.checkUpdate,
-            onChanged: (checked) => preferences.setCheckUpdate(checked),
+            onChanged: (checked) => preferencesNotifier.setCheckUpdate(checked),
           ),
         ListTile(
           leading: const Icon(SpotubeIcons.info),

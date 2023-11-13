@@ -17,6 +17,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final mediaQuery = MediaQuery.of(context);
 
     return SectionCardWithHeading(
@@ -26,7 +27,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
           value: preferences.locale,
           onChanged: (locale) {
             if (locale == null) return;
-            preferences.setLocale(locale);
+            preferencesNotifier.setLocale(locale);
           },
           title: Text(context.l10n.language),
           secondary: const Icon(SpotubeIcons.language),
@@ -57,7 +58,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
           value: preferences.recommendationMarket,
           onChanged: (value) {
             if (value == null) return;
-            preferences.setRecommendationMarket(value);
+            preferencesNotifier.setRecommendationMarket(value);
           },
           options: spotifyMarkets
               .map(
