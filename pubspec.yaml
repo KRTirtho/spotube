@@ -106,6 +106,10 @@ dependencies:
   simple_icons: ^7.10.0
   audio_service_mpris: ^0.1.0
   file_picker: ^6.0.0
+  draggable_scrollbar:
+    git:
+      url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
+      ref: cfd570035bf393de541d32e9b28808b5d7e602df
 
 dev_dependencies:
   build_runner: ^2.3.2

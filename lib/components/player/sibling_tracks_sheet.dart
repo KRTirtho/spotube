@@ -56,6 +56,8 @@ class SiblingTracksSheet extends HookConsumerWidget {
       useValueListenable(searchController).text,
     );
 
+    final controller = useScrollController();
+
     final searchRequest = useMemoized(() async {
       if (searchTerm.trim().isEmpty) {
         return <YoutubeVideoInfo>[];
@@ -204,8 +206,10 @@ class SiblingTracksSheet extends HookConsumerWidget {
                     transitionBuilder: (child, animation) =>
                         FadeTransition(opacity: animation, child: child),
                     child: InterScrollbar(
+                      controller: controller,
                       child: switch (isSearching.value) {
                         false => ListView.builder(
+                            controller: controller,
                             itemCount: siblings.length,
                             itemBuilder: (context, index) =>
                                 itemBuilder(siblings[index]),
@@ -223,7 +227,9 @@ class SiblingTracksSheet extends HookConsumerWidget {
                               }
 
                               return InterScrollbar(
+                                controller: controller,
                                 child: ListView.builder(
+                                  controller: controller,
                                   itemCount: snapshot.data!.length,
                                   itemBuilder: (context, index) =>
                                       itemBuilder(snapshot.data![index]),

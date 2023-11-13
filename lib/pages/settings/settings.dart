@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -20,6 +21,7 @@ class SettingsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final controller = useScrollController();
     final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
 
     return SafeArea(
@@ -36,7 +38,9 @@ class SettingsPage extends HookConsumerWidget {
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1366),
                 child: InterScrollbar(
+                  controller: controller,
                   child: ListView(
+                    controller: controller,
                     children: [
                       const SettingsAccountSection(),
                       const SettingsLanguageRegionSection(),
