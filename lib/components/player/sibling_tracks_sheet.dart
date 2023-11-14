@@ -12,7 +12,7 @@ import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
-import 'package:spotube/hooks/use_debounce.dart';
+import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
@@ -150,7 +150,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
             duration: const Duration(milliseconds: 300),
             child: Container(
               height: isSearching.value && mediaQuery.smAndDown
-                  ? mediaQuery.size.height - mediaQuery.padding.top
+                  ? mediaQuery.size.height - 50
                   : mediaQuery.size.height * .6,
               decoration: BoxDecoration(
                 borderRadius: borderRadius,

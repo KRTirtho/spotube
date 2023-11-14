@@ -7,8 +7,8 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/extensions/map.dart';
 import 'package:spotube/extensions/track.dart';
-import 'package:spotube/hooks/use_spotify_infinite_query.dart';
-import 'package:spotube/hooks/use_spotify_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_query.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
@@ -139,6 +139,29 @@ class PlaylistQueries {
           (lastPageData.items?.length ?? 0) < 10 || lastPageData.isLast
               ? null
               : lastPage + 1,
+      ref: ref,
+    );
+  }
+
+  Query<List<PlaylistSimple>, dynamic> ofMineAll(WidgetRef ref) {
+    return useSpotifyQuery<List<PlaylistSimple>, dynamic>(
+      "current-user-all-playlists",
+      (spotify) async {
+        var page = await spotify.playlists.me.getPage(50);
+        final playlists = <PlaylistSimple>[];
+
+        if (page.isLast == true) {
+          return page.items?.toList() ?? [];
+        }
+
+        playlists.addAll(page.items ?? []);
+        while (!page.isLast) {
+          page = await spotify.playlists.me.getPage(50, page.nextOffset);
+          playlists.addAll(page.items ?? []);
+        }
+
+        return playlists;
+      },
       ref: ref,
     );
   }

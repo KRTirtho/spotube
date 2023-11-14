@@ -6,7 +6,7 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/map.dart';
-import 'package:spotube/hooks/use_spotify_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_query.dart';
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
