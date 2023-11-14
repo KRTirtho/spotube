@@ -28,6 +28,7 @@ class SearchArtistsSection extends HookConsumerWidget {
     );
 
     return HorizontalPlaybuttonCardView<Artist>(
+      isLoadingNextPage: query.isLoadingNextPage,
       hasNextPage: query.hasNextPage,
       items: artists,
       onFetchMore: query.fetchNext,

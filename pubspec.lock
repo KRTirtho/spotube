@@ -2197,6 +2197,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  very_good_infinite_list:
+    dependency: "direct main"
+    description:
+      name: very_good_infinite_list
+      sha256: "6f5ad429edbce6084e1c600e56b26b1de8c6b138e8e8fc2de41b686166029aa5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   visibility_detector:
     dependency: "direct main"
     description:
