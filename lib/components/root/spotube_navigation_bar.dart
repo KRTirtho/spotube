@@ -9,7 +9,7 @@ import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 

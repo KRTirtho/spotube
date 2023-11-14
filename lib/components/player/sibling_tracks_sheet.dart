@@ -11,7 +11,7 @@ import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
-import 'package:spotube/hooks/use_debounce.dart';
+import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';

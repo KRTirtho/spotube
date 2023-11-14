@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:spotube/collections/env.dart';
 
 import 'package:spotube/components/shared/links/anchor_button.dart';
-import 'package:spotube/hooks/use_package_info.dart';
+import 'package:spotube/hooks/controllers/use_package_info.dart';
 import 'package:spotube/provider/user_preferences_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:version/version.dart';

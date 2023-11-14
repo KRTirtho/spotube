@@ -8,7 +8,7 @@ import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
+import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 
 class HorizontalPlaybuttonCardView<T> extends HookWidget {
   final Widget title;

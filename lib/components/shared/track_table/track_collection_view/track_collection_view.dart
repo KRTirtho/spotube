@@ -13,8 +13,8 @@ import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_custom_status_bar_color.dart';
-import 'package:spotube/hooks/use_palette_color.dart';
+import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
+import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
@@ -237,7 +237,7 @@ class TrackCollectionView<T> extends HookConsumerWidget {
                         ),
                       );
                     }
-          
+
                     return TracksTableView(
                       (tracksSnapshot.data ?? []).map(
                         (track) {

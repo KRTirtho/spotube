@@ -9,7 +9,7 @@ import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
-import 'package:spotube/hooks/use_progress.dart';
+import 'package:spotube/components/player/use_progress.dart';
 import 'package:spotube/components/player/player.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';

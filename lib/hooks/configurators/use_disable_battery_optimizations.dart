@@ -1,7 +1,7 @@
 import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/hooks/use_async_effect.dart';
+import 'package:spotube/hooks/utils/use_async_effect.dart';
 
 bool _asked = false;
 void useDisableBatteryOptimizations() {

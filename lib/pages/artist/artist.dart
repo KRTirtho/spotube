@@ -16,7 +16,7 @@ import 'package:spotube/components/artist/artist_album_list.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
+import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';

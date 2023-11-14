@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/extensions/theme.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
+import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 
 class ShimmerCategories extends HookWidget {
   const ShimmerCategories({Key? key}) : super(key: key);
