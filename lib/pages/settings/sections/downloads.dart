@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/section_card_with_heading.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SettingsDownloadsSection extends HookConsumerWidget {
   const SettingsDownloadsSection({Key? key}) : super(key: key);

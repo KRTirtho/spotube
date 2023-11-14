@@ -4,7 +4,7 @@ import 'package:piped_client/piped_client.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/components/shared/dialogs/piped_down_dialog.dart';
 import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 

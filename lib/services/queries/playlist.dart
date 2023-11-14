@@ -11,7 +11,7 @@ import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/spotify/use_spotify_query.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 typedef RecommendationParameters = ({
   RecommendationAttribute acousticness,

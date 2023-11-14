@@ -10,7 +10,8 @@ import 'package:spotube/components/shared/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/piped_instances_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 
 class SettingsPlaybackSection extends HookConsumerWidget {
   const SettingsPlaybackSection({Key? key}) : super(key: key);

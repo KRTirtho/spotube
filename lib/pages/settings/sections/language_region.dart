@@ -9,7 +9,7 @@ import 'package:spotube/components/shared/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SettingsLanguageRegionSection extends HookConsumerWidget {
   const SettingsLanguageRegionSection({Key? key}) : super(key: key);

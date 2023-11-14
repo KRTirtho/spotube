@@ -6,7 +6,7 @@ import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/supabase.dart';
 import 'package:spotube/services/youtube/youtube.dart';
 

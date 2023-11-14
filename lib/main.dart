@@ -21,7 +21,7 @@ import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/provider/palette_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
 import 'package:spotube/services/connectivity_adapter.dart';

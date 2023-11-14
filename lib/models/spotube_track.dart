@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:collection/collection.dart';
