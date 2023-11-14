@@ -143,6 +143,29 @@ class PlaylistQueries {
     );
   }
 
+  Query<List<PlaylistSimple>, dynamic> ofMineAll(WidgetRef ref) {
+    return useSpotifyQuery<List<PlaylistSimple>, dynamic>(
+      "current-user-all-playlists",
+      (spotify) async {
+        var page = await spotify.playlists.me.getPage(50);
+        final playlists = <PlaylistSimple>[];
+
+        if (page.isLast == true) {
+          return page.items?.toList() ?? [];
+        }
+
+        playlists.addAll(page.items ?? []);
+        while (!page.isLast) {
+          page = await spotify.playlists.me.getPage(50, page.nextOffset);
+          playlists.addAll(page.items ?? []);
+        }
+
+        return playlists;
+      },
+      ref: ref,
+    );
+  }
+
   Future<List<Track>> likedTracks(
     SpotifyApi spotify,
     WidgetRef ref,
