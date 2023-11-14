@@ -135,7 +135,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
             duration: const Duration(milliseconds: 300),
             child: Container(
               height: isSearching.value && mediaQuery.smAndDown
-                  ? mediaQuery.size.height - mediaQuery.padding.top
+                  ? mediaQuery.size.height - 50
                   : mediaQuery.size.height * .6,
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
