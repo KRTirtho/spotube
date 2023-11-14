@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
@@ -81,68 +82,71 @@ class UserPlaylists extends HookConsumerWidget {
     return RefreshIndicator(
       onRefresh: playlistsQuery.refresh,
       child: SafeArea(
-        child: CustomScrollView(
+        child: InterScrollbar(
           controller: controller,
-          slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: SearchBar(
-                      onChanged: (value) => searchText.value = value,
-                      hintText: context.l10n.filter_playlists,
-                      leading: const Icon(SpotubeIcons.filter),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      const PlaylistCreateDialogButton(),
-                      const SizedBox(width: 10),
-                      ElevatedButton.icon(
-                        icon: const Icon(SpotubeIcons.magic),
-                        label: Text(context.l10n.generate_playlist),
-                        onPressed: () {
-                          GoRouter.of(context).push("/library/generate");
-                        },
+          child: CustomScrollView(
+            controller: controller,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: SearchBar(
+                        onChanged: (value) => searchText.value = value,
+                        hintText: context.l10n.filter_playlists,
+                        leading: const Icon(SpotubeIcons.filter),
                       ),
-                      const SizedBox(width: 10),
-                    ],
-                  ),
-                ],
+                    ),
+                    Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        const PlaylistCreateDialogButton(),
+                        const SizedBox(width: 10),
+                        ElevatedButton.icon(
+                          icon: const Icon(SpotubeIcons.magic),
+                          label: Text(context.l10n.generate_playlist),
+                          onPressed: () {
+                            GoRouter.of(context).push("/library/generate");
+                          },
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 10),
-            ),
-            SliverGrid.builder(
-              itemCount: playlists.length + 1,
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
-                mainAxisExtent: DesktopTools.platform.isMobile ? 225 : 250,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 10),
               ),
-              itemBuilder: (context, index) {
-                if (index == playlists.length) {
-                  if (!playlistsQuery.hasNextPage) {
-                    return const SizedBox.shrink();
+              SliverGrid.builder(
+                itemCount: playlists.length + 1,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  mainAxisExtent: DesktopTools.platform.isMobile ? 225 : 250,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemBuilder: (context, index) {
+                  if (index == playlists.length) {
+                    if (!playlistsQuery.hasNextPage) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return Waypoint(
+                      controller: controller,
+                      isGrid: true,
+                      onTouchEdge: playlistsQuery.fetchNext,
+                      child: const ShimmerPlaybuttonCard(count: 1),
+                    );
                   }
 
-                  return Waypoint(
-                    controller: controller,
-                    isGrid: true,
-                    onTouchEdge: playlistsQuery.fetchNext,
-                    child: const ShimmerPlaybuttonCard(count: 1),
-                  );
-                }
-
-                return PlaylistCard(playlists[index]);
-              },
-            )
-          ],
+                  return PlaylistCard(playlists[index]);
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

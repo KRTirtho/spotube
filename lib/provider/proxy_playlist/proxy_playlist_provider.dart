@@ -217,6 +217,26 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           Catcher2.reportCheckedError(e, stackTrace);
         }
       });
+
+      String? lastScrobbled;
+      audioPlayer.positionStream.listen((position) {
+        try {
+          final uid = state.activeTrack is LocalTrack
+              ? (state.activeTrack as LocalTrack).path
+              : state.activeTrack?.id;
+
+          if (state.activeTrack == null ||
+              lastScrobbled == uid ||
+              position.inSeconds < 30) {
+            return;
+          }
+
+          scrobbler.scrobble(state.activeTrack!);
+          lastScrobbled = uid;
+        } catch (e, stack) {
+          Catcher2.reportCheckedError(e, stack);
+        }
+      });
     }();
   }
 
@@ -631,30 +651,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   @override
   set state(state) {
-    final hasActiveTrackChanged = super.state.activeTrack is SourcedTrack
-        ? state.activeTrack?.id != super.state.activeTrack?.id
-        : super.state.activeTrack is LocalTrack &&
-                state.activeTrack is LocalTrack
-            ? (super.state.activeTrack as LocalTrack).path !=
-                (state.activeTrack as LocalTrack).path
-            : super.state.activeTrack?.id != state.activeTrack?.id;
-
-    final oldTrack = super.state.activeTrack;
-
     super.state = state;
     if (state.tracks.isEmpty && ref.read(paletteProvider) != null) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
       updatePalette();
     }
-    audioPlayer.position.then((position) {
-      final isMoreThan30secs = position != null &&
-          (position == Duration.zero || position.inSeconds > 30);
-
-      if (hasActiveTrackChanged && oldTrack != null && isMoreThan30secs) {
-        scrobbler.scrobble(oldTrack);
-      }
-    });
   }
 
   @override

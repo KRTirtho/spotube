@@ -14,6 +14,7 @@ class SettingsDownloadsSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final preferences = ref.watch(userPreferencesProvider);
 
     final pickDownloadLocation = useCallback(() async {
@@ -22,13 +23,13 @@ class SettingsDownloadsSection extends HookConsumerWidget {
           initialDirectory: preferences.downloadLocation,
         );
         if (dirStr == null) return;
-        preferences.setDownloadLocation(dirStr);
+        preferencesNotifier.setDownloadLocation(dirStr);
       } else {
         String? dirStr = await getDirectoryPath(
           initialDirectory: preferences.downloadLocation,
         );
         if (dirStr == null) return;
-        preferences.setDownloadLocation(dirStr);
+        preferencesNotifier.setDownloadLocation(dirStr);
       }
     }, [preferences.downloadLocation]);
 

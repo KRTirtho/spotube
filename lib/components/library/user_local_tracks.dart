@@ -163,6 +163,8 @@ class UserLocalTracks extends HookConsumerWidget {
     final searchFocus = useFocusNode();
     final isFiltering = useState(false);
 
+    final controller = useScrollController();
+
     return Column(
       children: [
         Padding(
@@ -256,7 +258,9 @@ class UserLocalTracks extends HookConsumerWidget {
                   ref.refresh(localTracksProvider);
                 },
                 child: InterScrollbar(
+                  controller: controller,
                   child: ListView.builder(
+                    controller: controller,
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: filteredTracks.length,
                     itemBuilder: (context, index) {

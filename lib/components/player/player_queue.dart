@@ -44,6 +44,7 @@ class PlayerQueue extends HookConsumerWidget {
             topRight: Radius.circular(10),
           );
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
     final headlineColor = theme.textTheme.headlineSmall?.color;
 
     final filteredTracks = useMemoized(
@@ -108,171 +109,166 @@ class PlayerQueue extends HookConsumerWidget {
                 searchText.value = '';
               }
             },
-            child: LayoutBuilder(builder: (context, constraints) {
-              return Column(
-                children: [
-                  if (!floating)
-                    Container(
-                      height: 5,
-                      width: 100,
-                      margin: const EdgeInsets.only(bottom: 5, top: 2),
-                      decoration: BoxDecoration(
-                        color: headlineColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+            child: Column(
+              children: [
+                if (!floating)
+                  Container(
+                    height: 5,
+                    width: 100,
+                    margin: const EdgeInsets.only(bottom: 5, top: 2),
+                    decoration: BoxDecoration(
+                      color: headlineColor,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (constraints.mdAndUp || !isSearching.value) ...[
-                        const SizedBox(width: 10),
-                        Text(
-                          context.l10n.tracks_in_queue(tracks.length),
-                          style: TextStyle(
-                            color: headlineColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (mediaQuery.mdAndUp || !isSearching.value) ...[
+                      const SizedBox(width: 10),
+                      Text(
+                        context.l10n.tracks_in_queue(tracks.length),
+                        style: TextStyle(
+                          color: headlineColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
+                    if (mediaQuery.mdAndUp || isSearching.value)
+                      TextField(
+                        onChanged: (value) {
+                          searchText.value = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: context.l10n.search,
+                          isDense: true,
+                          prefixIcon: mediaQuery.smAndDown
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new_outlined,
+                                  ),
+                                  onPressed: () {
+                                    isSearching.value = false;
+                                    searchText.value = '';
+                                  },
+                                  style: IconButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: const Size.square(20),
+                                  ),
+                                )
+                              : const Icon(SpotubeIcons.filter),
+                          constraints: BoxConstraints(
+                            maxHeight: 40,
+                            maxWidth: mediaQuery.smAndDown
+                                ? mediaQuery.size.width - 40
+                                : 300,
                           ),
                         ),
-                        const Spacer(),
-                      ],
-                      if (constraints.mdAndUp || isSearching.value)
-                        TextField(
-                          onChanged: (value) {
-                            searchText.value = value;
-                          },
-                          decoration: InputDecoration(
-                            hintText: context.l10n.search,
-                            isDense: true,
-                            prefixIcon: constraints.smAndDown
-                                ? IconButton(
-                                    icon: const Icon(
-                                      Icons.arrow_back_ios_new_outlined,
-                                    ),
-                                    onPressed: () {
-                                      isSearching.value = false;
-                                      searchText.value = '';
-                                    },
-                                    style: IconButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: const Size.square(20),
-                                    ),
-                                  )
-                                : const Icon(SpotubeIcons.filter),
-                            constraints: BoxConstraints(
-                              maxHeight: 40,
-                              maxWidth: constraints.smAndDown
-                                  ? constraints.maxWidth - 20
-                                  : 300,
+                      )
+                    else
+                      IconButton.filledTonal(
+                        icon: const Icon(SpotubeIcons.filter),
+                        onPressed: () {
+                          isSearching.value = !isSearching.value;
+                        },
+                      ),
+                    if (mediaQuery.mdAndUp || !isSearching.value) ...[
+                      const SizedBox(width: 10),
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor:
+                              theme.scaffoldBackgroundColor.withOpacity(0.5),
+                          foregroundColor: theme.textTheme.headlineSmall?.color,
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(SpotubeIcons.playlistRemove),
+                            const SizedBox(width: 5),
+                            Text(context.l10n.clear_all),
+                          ],
+                        ),
+                        onPressed: () {
+                          playlistNotifier.stop();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      const SizedBox(width: 10),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 10),
+                if (!isSearching.value && searchText.value.isEmpty)
+                  Flexible(
+                    child: ReorderableListView.builder(
+                      onReorder: (oldIndex, newIndex) {
+                        playlistNotifier.moveTrack(oldIndex, newIndex);
+                      },
+                      scrollController: controller,
+                      itemCount: tracks.length,
+                      shrinkWrap: true,
+                      buildDefaultDragHandles: false,
+                      itemBuilder: (context, i) {
+                        final track = tracks.elementAt(i);
+                        return AutoScrollTag(
+                          key: ValueKey(i),
+                          controller: controller,
+                          index: i,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TrackTile(
+                              index: i,
+                              track: track,
+                              onTap: () async {
+                                if (playlist.activeTrack?.id == track.id) {
+                                  return;
+                                }
+                                await playlistNotifier.jumpToTrack(track);
+                              },
+                              leadingActions: [
+                                ReorderableDragStartListener(
+                                  index: i,
+                                  child: const Icon(SpotubeIcons.dragHandle),
+                                ),
+                              ],
                             ),
                           ),
-                        )
-                      else
-                        IconButton.filledTonal(
-                          icon: const Icon(SpotubeIcons.filter),
-                          onPressed: () {
-                            isSearching.value = !isSearching.value;
-                          },
-                        ),
-                      if (constraints.mdAndUp || !isSearching.value) ...[
-                        const SizedBox(width: 10),
-                        FilledButton(
-                          style: FilledButton.styleFrom(
-                            backgroundColor:
-                                theme.scaffoldBackgroundColor.withOpacity(0.5),
-                            foregroundColor:
-                                theme.textTheme.headlineSmall?.color,
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(SpotubeIcons.playlistRemove),
-                              const SizedBox(width: 5),
-                              Text(context.l10n.clear_all),
-                            ],
-                          ),
-                          onPressed: () {
-                            playlistNotifier.stop();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  if (!isSearching.value && searchText.value.isEmpty)
-                    Flexible(
-                      child: InterScrollbar(
+                        );
+                      },
+                    ),
+                  )
+                else
+                  Flexible(
+                    child: InterScrollbar(
+                      controller: controller,
+                      child: ListView.builder(
                         controller: controller,
-                        child: ReorderableListView.builder(
-                          onReorder: (oldIndex, newIndex) {
-                            playlistNotifier.moveTrack(oldIndex, newIndex);
-                          },
-                          scrollController: controller,
-                          itemCount: tracks.length,
-                          shrinkWrap: true,
-                          buildDefaultDragHandles: false,
-                          itemBuilder: (context, i) {
-                            final track = tracks.elementAt(i);
-                            return AutoScrollTag(
-                              key: ValueKey(i),
-                              controller: controller,
+                        itemCount: filteredTracks.length,
+                        itemBuilder: (context, i) {
+                          final track = filteredTracks.elementAt(i);
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TrackTile(
                               index: i,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: TrackTile(
-                                  index: i,
-                                  track: track,
-                                  onTap: () async {
-                                    if (playlist.activeTrack?.id == track.id) {
-                                      return;
-                                    }
-                                    await playlistNotifier.jumpToTrack(track);
-                                  },
-                                  leadingActions: [
-                                    ReorderableDragStartListener(
-                                      index: i,
-                                      child:
-                                          const Icon(SpotubeIcons.dragHandle),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    )
-                  else
-                    Flexible(
-                      child: InterScrollbar(
-                        child: ListView.builder(
-                          itemCount: filteredTracks.length,
-                          itemBuilder: (context, i) {
-                            final track = filteredTracks.elementAt(i);
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: TrackTile(
-                                index: i,
-                                track: track,
-                                onTap: () async {
-                                  if (playlist.activeTrack?.id == track.id) {
-                                    return;
-                                  }
-                                  await playlistNotifier.jumpToTrack(track);
-                                },
-                              ),
-                            );
-                          },
-                        ),
+                              track: track,
+                              onTap: () async {
+                                if (playlist.activeTrack?.id == track.id) {
+                                  return;
+                                }
+                                await playlistNotifier.jumpToTrack(track);
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
-                ],
-              );
-            }),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

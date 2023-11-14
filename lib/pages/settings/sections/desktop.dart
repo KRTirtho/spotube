@@ -12,6 +12,7 @@ class SettingsDesktopSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
 
     return SectionCardWithHeading(
       heading: context.l10n.desktop,
@@ -32,7 +33,7 @@ class SettingsDesktopSection extends HookConsumerWidget {
           ],
           onChanged: (value) {
             if (value != null) {
-              preferences.setCloseBehavior(value);
+              preferencesNotifier.setCloseBehavior(value);
             }
           },
         ),
@@ -40,13 +41,13 @@ class SettingsDesktopSection extends HookConsumerWidget {
           secondary: const Icon(SpotubeIcons.tray),
           title: Text(context.l10n.show_tray_icon),
           value: preferences.showSystemTrayIcon,
-          onChanged: preferences.setShowSystemTrayIcon,
+          onChanged: preferencesNotifier.setShowSystemTrayIcon,
         ),
         SwitchListTile(
           secondary: const Icon(SpotubeIcons.window),
           title: Text(context.l10n.use_system_title_bar),
           value: preferences.systemTitleBar,
-          onChanged: preferences.setSystemTitleBar,
+          onChanged: preferencesNotifier.setSystemTitleBar,
         ),
       ],
     );

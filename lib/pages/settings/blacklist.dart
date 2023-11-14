@@ -15,6 +15,7 @@ class BlackListPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final controller = useScrollController();
     final blacklist = ref.watch(BlackListNotifier.provider);
     final searchText = useState("");
 
@@ -58,7 +59,9 @@ class BlackListPage extends HookConsumerWidget {
             ),
           ),
           InterScrollbar(
+            controller: controller,
             child: ListView.builder(
+              controller: controller,
               shrinkWrap: true,
               itemCount: filteredBlacklist.length,
               itemBuilder: (context, index) {

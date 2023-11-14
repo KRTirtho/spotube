@@ -79,28 +79,25 @@ class GenrePage extends HookConsumerWidget {
               const ShimmerCategories()
             else
               Expanded(
-                child: InterScrollbar(
+                child: ListView.builder(
                   controller: scrollController,
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      return AnimatedSwitcher(
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                        duration: const Duration(milliseconds: 300),
-                        child: searchController.text.isEmpty &&
-                                index == categories.length - 1 &&
-                                categoriesQuery.hasNextPage
-                            ? const ShimmerCategories()
-                            : CategoryCard(categories[index]),
-                      );
-                    },
-                  ),
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    return AnimatedSwitcher(
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                      duration: const Duration(milliseconds: 300),
+                      child: searchController.text.isEmpty &&
+                              index == categories.length - 1 &&
+                              categoriesQuery.hasNextPage
+                          ? const ShimmerCategories()
+                          : CategoryCard(categories[index]),
+                    );
+                  },
                 ),
               ),
           ],

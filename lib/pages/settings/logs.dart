@@ -52,6 +52,7 @@ class LogsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = useScrollController();
     final logs = useState<List<({DateTime? date, String body})>>([]);
     final rawLogs = useRef<String>("");
     final path = useRef<File?>(null);
@@ -93,7 +94,9 @@ class LogsPage extends HookWidget {
       ),
       body: SafeArea(
         child: InterScrollbar(
+          controller: controller,
           child: ListView.builder(
+            controller: controller,
             itemCount: logs.value.length,
             itemBuilder: (context, index) {
               final log = logs.value[index];

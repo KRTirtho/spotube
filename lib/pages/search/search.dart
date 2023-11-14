@@ -71,26 +71,32 @@ class SearchPage extends HookConsumerWidget {
         searchTerm.isNotEmpty;
 
     final resultWidget = HookBuilder(
-      builder: (context) => InterScrollbar(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SearchTracksSection(query: searchTrack),
-                  SearchPlaylistsSection(query: searchPlaylist),
-                  const SizedBox(height: 20),
-                  SearchArtistsSection(query: searchArtist),
-                  const SizedBox(height: 20),
-                  SearchAlbumsSection(query: searchAlbum),
-                ],
+      builder: (context) {
+        final controller = useScrollController();
+
+        return InterScrollbar(
+          controller: controller,
+          child: SingleChildScrollView(
+            controller: controller,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SearchTracksSection(query: searchTrack),
+                    SearchPlaylistsSection(query: searchPlaylist),
+                    const SizedBox(height: 20),
+                    SearchArtistsSection(query: searchArtist),
+                    const SizedBox(height: 20),
+                    SearchAlbumsSection(query: searchAlbum),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
 
     return SafeArea(

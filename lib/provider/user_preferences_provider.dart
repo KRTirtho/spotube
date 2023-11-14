@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +13,7 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 
-import 'package:spotube/utils/persisted_change_notifier.dart';
+import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:path/path.dart' as path;
 
@@ -64,220 +63,103 @@ enum SearchMode {
   }
 }
 
-class UserPreferences extends PersistedChangeNotifier {
-  SourceQualities audioQuality;
-  bool albumColorSync;
-  bool amoledDarkTheme;
-  bool checkUpdate;
-  bool normalizeAudio;
-  bool showSystemTrayIcon;
-  bool skipNonMusic;
-  bool systemTitleBar;
-  CloseBehavior closeBehavior;
-  late SpotubeColor accentColorScheme;
-  LayoutMode layoutMode;
-  Locale locale;
-  Market recommendationMarket;
-  SearchMode searchMode;
+class UserPreferences {
+  final SourceQualities audioQuality;
+  final bool albumColorSync;
+  final bool amoledDarkTheme;
+  final bool checkUpdate;
+  final bool normalizeAudio;
+  final bool showSystemTrayIcon;
+  final bool skipNonMusic;
+  final bool systemTitleBar;
+  final CloseBehavior closeBehavior;
+  final SpotubeColor accentColorScheme;
+  final LayoutMode layoutMode;
+  final Locale locale;
+  final Market recommendationMarket;
+  final SearchMode searchMode;
   String downloadLocation;
-  String pipedInstance;
-  ThemeMode themeMode;
-  AudioSource audioSource;
-  SourceCodecs streamMusicCodec;
-  SourceCodecs downloadMusicCodec;
+  final String pipedInstance;
+  final ThemeMode themeMode;
+  final AudioSource audioSource;
+  final SourceCodecs streamMusicCodec;
+  final SourceCodecs downloadMusicCodec;
 
-  final Ref ref;
-
-  UserPreferences(
-    this.ref, {
-    this.recommendationMarket = Market.US,
-    this.themeMode = ThemeMode.system,
-    this.layoutMode = LayoutMode.adaptive,
-    this.albumColorSync = true,
-    this.checkUpdate = true,
-    this.audioQuality = SourceQualities.high,
-    this.downloadLocation = "",
-    this.closeBehavior = CloseBehavior.close,
-    this.showSystemTrayIcon = true,
-    this.locale = const Locale("system", "system"),
-    this.pipedInstance = "https://pipedapi.kavin.rocks",
-    this.searchMode = SearchMode.youtube,
-    this.skipNonMusic = true,
-    this.audioSource = AudioSource.youtube,
-    this.systemTitleBar = false,
-    this.amoledDarkTheme = false,
-    this.normalizeAudio = true,
-    this.streamMusicCodec = SourceCodecs.weba,
-    this.downloadMusicCodec = SourceCodecs.m4a,
-    SpotubeColor? accentColorScheme,
-  }) : super() {
-    this.accentColorScheme =
-        accentColorScheme ?? SpotubeColor(Colors.blue.value, name: "Blue");
-    if (downloadLocation.isEmpty && !kIsWeb) {
+  UserPreferences({
+    required SourceQualities? audioQuality,
+    required bool? albumColorSync,
+    required bool? amoledDarkTheme,
+    required bool? checkUpdate,
+    required bool? normalizeAudio,
+    required bool? showSystemTrayIcon,
+    required bool? skipNonMusic,
+    required bool? systemTitleBar,
+    required CloseBehavior? closeBehavior,
+    required SpotubeColor? accentColorScheme,
+    required LayoutMode? layoutMode,
+    required Locale? locale,
+    required Market? recommendationMarket,
+    required SearchMode? searchMode,
+    required String? downloadLocation,
+    required String? pipedInstance,
+    required ThemeMode? themeMode,
+    required AudioSource? audioSource,
+    required SourceCodecs? streamMusicCodec,
+    required SourceCodecs? downloadMusicCodec,
+  })  : accentColorScheme =
+            accentColorScheme ?? const SpotubeColor(0xFF2196F3, name: "Blue"),
+        albumColorSync = albumColorSync ?? true,
+        amoledDarkTheme = amoledDarkTheme ?? false,
+        audioQuality = audioQuality ?? SourceQualities.high,
+        checkUpdate = checkUpdate ?? true,
+        closeBehavior = closeBehavior ?? CloseBehavior.close,
+        downloadLocation = downloadLocation ?? "",
+        downloadMusicCodec = downloadMusicCodec ?? SourceCodecs.m4a,
+        layoutMode = layoutMode ?? LayoutMode.adaptive,
+        locale = locale ?? const Locale("system", "system"),
+        normalizeAudio = normalizeAudio ?? true,
+        pipedInstance = pipedInstance ?? "https://pipedapi.kavin.rocks",
+        recommendationMarket = recommendationMarket ?? Market.US,
+        searchMode = searchMode ?? SearchMode.youtube,
+        showSystemTrayIcon = showSystemTrayIcon ?? true,
+        skipNonMusic = skipNonMusic ?? true,
+        streamMusicCodec = streamMusicCodec ?? SourceCodecs.weba,
+        systemTitleBar = systemTitleBar ?? false,
+        themeMode = themeMode ?? ThemeMode.system,
+        audioSource = audioSource ?? AudioSource.youtube {
+    if (downloadLocation == null) {
       _getDefaultDownloadDirectory().then(
-        (value) {
-          downloadLocation = value;
-        },
+        (value) => this.downloadLocation = value,
       );
     }
   }
 
-  void reset() {
-    setRecommendationMarket(Market.US);
-    setThemeMode(ThemeMode.system);
-    setLayoutMode(LayoutMode.adaptive);
-    setAlbumColorSync(true);
-    setCheckUpdate(true);
-    setAudioQuality(SourceQualities.high);
-    setDownloadLocation("");
-    setCloseBehavior(CloseBehavior.close);
-    setShowSystemTrayIcon(true);
-    setLocale(const Locale("system", "system"));
-    setPipedInstance("https://pipedapi.kavin.rocks");
-    setSearchMode(SearchMode.youtube);
-    setSkipNonMusic(true);
-    setAudioSource(AudioSource.youtube);
-    setSystemTitleBar(false);
-    setAmoledDarkTheme(false);
-    setNormalizeAudio(true);
-    setAccentColorScheme(SpotubeColor(Colors.blue.value, name: "Blue"));
-    setStreamMusicCodec(SourceCodecs.weba);
-    setDownloadMusicCodec(SourceCodecs.m4a);
+  factory UserPreferences.withDefaults() {
+    return UserPreferences(
+      audioQuality: null,
+      albumColorSync: null,
+      amoledDarkTheme: null,
+      checkUpdate: null,
+      normalizeAudio: null,
+      showSystemTrayIcon: null,
+      skipNonMusic: null,
+      systemTitleBar: null,
+      closeBehavior: null,
+      accentColorScheme: null,
+      layoutMode: null,
+      locale: null,
+      recommendationMarket: null,
+      searchMode: null,
+      downloadLocation: null,
+      pipedInstance: null,
+      themeMode: null,
+      audioSource: null,
+      streamMusicCodec: null,
+      downloadMusicCodec: null,
+    );
   }
 
-  void setStreamMusicCodec(SourceCodecs codec) {
-    streamMusicCodec = codec;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setDownloadMusicCodec(SourceCodecs codec) {
-    downloadMusicCodec = codec;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setThemeMode(ThemeMode mode) {
-    themeMode = mode;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setRecommendationMarket(Market country) {
-    recommendationMarket = country;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setAccentColorScheme(SpotubeColor color) {
-    accentColorScheme = color;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setAlbumColorSync(bool sync) {
-    albumColorSync = sync;
-    if (!sync) {
-      ref.read(paletteProvider.notifier).state = null;
-    } else {
-      ref.read(ProxyPlaylistNotifier.notifier).updatePalette();
-    }
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setCheckUpdate(bool check) {
-    checkUpdate = check;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setAudioQuality(SourceQualities quality) {
-    audioQuality = quality;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setDownloadLocation(String downloadDir) {
-    if (downloadDir.isEmpty) return;
-    downloadLocation = downloadDir;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setLayoutMode(LayoutMode mode) {
-    layoutMode = mode;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setCloseBehavior(CloseBehavior behavior) {
-    closeBehavior = behavior;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setShowSystemTrayIcon(bool show) {
-    showSystemTrayIcon = show;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setLocale(Locale locale) {
-    this.locale = locale;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setPipedInstance(String instance) {
-    pipedInstance = instance;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setSearchMode(SearchMode mode) {
-    searchMode = mode;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setSkipNonMusic(bool skip) {
-    skipNonMusic = skip;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setAudioSource(AudioSource type) {
-    audioSource = type;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setSystemTitleBar(bool isSystemTitleBar) {
-    systemTitleBar = isSystemTitleBar;
-    if (DesktopTools.platform.isDesktop) {
-      DesktopTools.window.setTitleBarStyle(
-        systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-      );
-    }
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setAmoledDarkTheme(bool isAmoled) {
-    amoledDarkTheme = isAmoled;
-    notifyListeners();
-    updatePersistence();
-  }
-
-  void setNormalizeAudio(bool normalize) {
-    normalizeAudio = normalize;
-    audioPlayer.setAudioNormalization(normalize);
-    notifyListeners();
-    updatePersistence();
-  }
-
-  Future<String> _getDefaultDownloadDirectory() async {
+  static Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
     if (kIsMacOS) {
@@ -289,102 +171,71 @@ class UserPreferences extends PersistedChangeNotifier {
     });
   }
 
-  @override
-  FutureOr<void> loadFromLocal(Map<String, dynamic> map) async {
-    recommendationMarket = Market.values.firstWhere(
-      (market) =>
-          market.name == (map["recommendationMarket"] ?? recommendationMarket),
-      orElse: () => Market.US,
-    );
-    checkUpdate = map["checkUpdate"] ?? checkUpdate;
-
-    themeMode = ThemeMode.values[map["themeMode"] ?? 0];
-    accentColorScheme = map["accentColorScheme"] != null
-        ? SpotubeColor.fromString(map["accentColorScheme"])
-        : accentColorScheme;
-    albumColorSync = map["albumColorSync"] ?? albumColorSync;
-    audioQuality = map["audioQuality"] != null
-        ? SourceQualities.values[map["audioQuality"]]
-        : audioQuality;
-
-    if (!kIsWeb) {
-      downloadLocation =
-          map["downloadLocation"] ?? await _getDefaultDownloadDirectory();
+  static Future<UserPreferences> fromJson(Map<String, dynamic> json) async {
+    final systemTitleBar = json["systemTitleBar"] ?? false;
+    if (DesktopTools.platform.isDesktop) {
+      await DesktopTools.window.setTitleBarStyle(
+        systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+      );
     }
 
-    layoutMode = LayoutMode.values.firstWhere(
-      (mode) => mode.name == map["layoutMode"],
-      orElse: () => kIsDesktop ? LayoutMode.extended : LayoutMode.compact,
-    );
-
-    closeBehavior = map["closeBehavior"] != null
-        ? CloseBehavior.values[map["closeBehavior"]]
-        : closeBehavior;
-
-    showSystemTrayIcon = map["showSystemTrayIcon"] ?? showSystemTrayIcon;
-
-    final localeMap = map["locale"] != null ? jsonDecode(map["locale"]) : null;
-    locale =
-        localeMap != null ? Locale(localeMap?["lc"], localeMap?["cc"]) : locale;
-
-    pipedInstance = map["pipedInstance"] ?? pipedInstance;
-
-    searchMode = SearchMode.values.firstWhere(
-      (mode) => mode.name == map["searchMode"],
-      orElse: () => SearchMode.youtube,
-    );
-
-    skipNonMusic = map["skipNonMusic"] ?? skipNonMusic;
-
-    audioSource = AudioSource.values.firstWhere(
-      (type) => type.name == map["youtubeApiType"],
-      orElse: () => AudioSource.youtube,
-    );
-
-    systemTitleBar = map["systemTitleBar"] ?? systemTitleBar;
-    // updates the title bar
-    setSystemTitleBar(systemTitleBar);
-
-    amoledDarkTheme = map["amoledDarkTheme"] ?? amoledDarkTheme;
-
-    normalizeAudio = map["normalizeAudio"] ?? normalizeAudio;
+    final normalizeAudio = json["normalizeAudio"] ?? true;
     audioPlayer.setAudioNormalization(normalizeAudio);
 
-    streamMusicCodec = SourceCodecs.values.firstWhere(
-      (codec) => codec.name == map["streamMusicCodec"],
-      orElse: () => SourceCodecs.weba,
-    );
+    final Map<String, dynamic>? localeMap =
+        json["locale"] == null ? null : jsonDecode(json["locale"]);
 
-    downloadMusicCodec = SourceCodecs.values.firstWhere(
-      (codec) => codec.name == map["downloadMusicCodec"],
-      orElse: () => SourceCodecs.m4a,
+    return UserPreferences(
+      accentColorScheme: json["accentColorScheme"] == null
+          ? null
+          : SpotubeColor.fromString(json["accentColorScheme"]),
+      albumColorSync: json["albumColorSync"],
+      amoledDarkTheme: json["amoledDarkTheme"],
+      audioQuality: SourceQualities.values[json["audioQuality"]],
+      checkUpdate: json["checkUpdate"],
+      closeBehavior: CloseBehavior.values[json["closeBehavior"]],
+      downloadLocation:
+          json["downloadLocation"] ?? await _getDefaultDownloadDirectory(),
+      downloadMusicCodec: SourceCodecs.values[json["downloadMusicCodec"]],
+      layoutMode: LayoutMode.values[json["layoutMode"]],
+      locale:
+          localeMap == null ? null : Locale(localeMap["lc"], localeMap["cc"]),
+      normalizeAudio: json["normalizeAudio"],
+      pipedInstance: json["pipedInstance"],
+      recommendationMarket: Market.values[json["recommendationMarket"]],
+      searchMode: SearchMode.values[json["searchMode"]],
+      showSystemTrayIcon: json["showSystemTrayIcon"],
+      skipNonMusic: json["skipNonMusic"],
+      streamMusicCodec: SourceCodecs.values[json["streamMusicCodec"]],
+      systemTitleBar: json["systemTitleBar"],
+      themeMode: ThemeMode.values[json["themeMode"]],
+      audioSource: AudioSource.values[json["audioSource"]],
     );
   }
 
-  @override
-  FutureOr<Map<String, dynamic>> toMap() {
+  Map<String, dynamic> toJson() {
     return {
-      "recommendationMarket": recommendationMarket.name,
+      "recommendationMarket": recommendationMarket.index,
       "themeMode": themeMode.index,
       "accentColorScheme": accentColorScheme.toString(),
       "albumColorSync": albumColorSync,
       "checkUpdate": checkUpdate,
       "audioQuality": audioQuality.index,
       "downloadLocation": downloadLocation,
-      "layoutMode": layoutMode.name,
+      "layoutMode": layoutMode.index,
       "closeBehavior": closeBehavior.index,
       "showSystemTrayIcon": showSystemTrayIcon,
       "locale":
           jsonEncode({"lc": locale.languageCode, "cc": locale.countryCode}),
       "pipedInstance": pipedInstance,
-      "searchMode": searchMode.name,
+      "searchMode": searchMode.index,
       "skipNonMusic": skipNonMusic,
-      "youtubeApiType": audioSource.name,
+      "audioSource": audioSource.index,
       'systemTitleBar': systemTitleBar,
       "amoledDarkTheme": amoledDarkTheme,
       "normalizeAudio": normalizeAudio,
-      "streamMusicCodec": streamMusicCodec.name,
-      "downloadMusicCodec": downloadMusicCodec.name,
+      "streamMusicCodec": streamMusicCodec.index,
+      "downloadMusicCodec": downloadMusicCodec.index,
     };
   }
 
@@ -402,12 +253,16 @@ class UserPreferences extends PersistedChangeNotifier {
     String? pipedInstance,
     SearchMode? searchMode,
     bool? skipNonMusic,
-    AudioSource? youtubeApiType,
+    AudioSource? audioSource,
     Market? recommendationMarket,
     bool? saveTrackLyrics,
+    bool? amoledDarkTheme,
+    bool? normalizeAudio,
+    SourceCodecs? downloadMusicCodec,
+    SourceCodecs? streamMusicCodec,
+    bool? systemTitleBar,
   }) {
     return UserPreferences(
-      ref,
       themeMode: themeMode ?? this.themeMode,
       accentColorScheme: accentColorScheme ?? this.accentColorScheme,
       albumColorSync: albumColorSync ?? this.albumColorSync,
@@ -421,12 +276,132 @@ class UserPreferences extends PersistedChangeNotifier {
       pipedInstance: pipedInstance ?? this.pipedInstance,
       searchMode: searchMode ?? this.searchMode,
       skipNonMusic: skipNonMusic ?? this.skipNonMusic,
-      audioSource: youtubeApiType ?? this.audioSource,
+      audioSource: audioSource ?? this.audioSource,
       recommendationMarket: recommendationMarket ?? this.recommendationMarket,
+      amoledDarkTheme: amoledDarkTheme ?? this.amoledDarkTheme,
+      downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
+      normalizeAudio: normalizeAudio ?? this.normalizeAudio,
+      streamMusicCodec: streamMusicCodec ?? this.streamMusicCodec,
+      systemTitleBar: systemTitleBar ?? this.systemTitleBar,
     );
   }
 }
 
-final userPreferencesProvider = ChangeNotifierProvider(
-  (ref) => UserPreferences(ref),
+class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
+  final Ref ref;
+
+  UserPreferencesNotifier(this.ref)
+      : super(UserPreferences.withDefaults(), "preferences");
+
+  void reset() {
+    state = UserPreferences.withDefaults();
+  }
+
+  void setStreamMusicCodec(SourceCodecs codec) {
+    state = state.copyWith(streamMusicCodec: codec);
+  }
+
+  void setDownloadMusicCodec(SourceCodecs codec) {
+    state = state.copyWith(downloadMusicCodec: codec);
+  }
+
+  void setThemeMode(ThemeMode mode) {
+    state = state.copyWith(themeMode: mode);
+  }
+
+  void setRecommendationMarket(Market country) {
+    state = state.copyWith(recommendationMarket: country);
+  }
+
+  void setAccentColorScheme(SpotubeColor color) {
+    state = state.copyWith(accentColorScheme: color);
+  }
+
+  void setAlbumColorSync(bool sync) {
+    state = state.copyWith(albumColorSync: sync);
+
+    if (!sync) {
+      ref.read(paletteProvider.notifier).state = null;
+    } else {
+      ref.read(ProxyPlaylistNotifier.notifier).updatePalette();
+    }
+  }
+
+  void setCheckUpdate(bool check) {
+    state = state.copyWith(checkUpdate: check);
+  }
+
+  void setAudioQuality(SourceQualities quality) {
+    state = state.copyWith(audioQuality: quality);
+  }
+
+  void setDownloadLocation(String downloadDir) {
+    if (downloadDir.isEmpty) return;
+    state = state.copyWith(downloadLocation: downloadDir);
+  }
+
+  void setLayoutMode(LayoutMode mode) {
+    state = state.copyWith(layoutMode: mode);
+  }
+
+  void setCloseBehavior(CloseBehavior behavior) {
+    state = state.copyWith(closeBehavior: behavior);
+  }
+
+  void setShowSystemTrayIcon(bool show) {
+    state = state.copyWith(showSystemTrayIcon: show);
+  }
+
+  void setLocale(Locale locale) {
+    state = state.copyWith(locale: locale);
+  }
+
+  void setPipedInstance(String instance) {
+    state = state.copyWith(pipedInstance: instance);
+  }
+
+  void setSearchMode(SearchMode mode) {
+    state = state.copyWith(searchMode: mode);
+  }
+
+  void setSkipNonMusic(bool skip) {
+    state = state.copyWith(skipNonMusic: skip);
+  }
+
+  void setAudioSource(AudioSource type) {
+    state = state.copyWith(audioSource: type);
+  }
+
+  void setSystemTitleBar(bool isSystemTitleBar) {
+    state = state.copyWith(systemTitleBar: isSystemTitleBar);
+    if (DesktopTools.platform.isDesktop) {
+      DesktopTools.window.setTitleBarStyle(
+        isSystemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+      );
+    }
+  }
+
+  void setAmoledDarkTheme(bool isAmoled) {
+    state = state.copyWith(amoledDarkTheme: isAmoled);
+  }
+
+  void setNormalizeAudio(bool normalize) {
+    state = state.copyWith(normalizeAudio: normalize);
+    audioPlayer.setAudioNormalization(normalize);
+  }
+
+  @override
+  FutureOr<UserPreferences> fromJson(Map<String, dynamic> json) {
+    return UserPreferences.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return state.toJson();
+  }
+}
+
+final userPreferencesProvider =
+    StateNotifierProvider<UserPreferencesNotifier, UserPreferences>(
+  (ref) => UserPreferencesNotifier(ref),
 );
