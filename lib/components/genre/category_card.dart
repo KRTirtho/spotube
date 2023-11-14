@@ -42,6 +42,7 @@ class CategoryCard extends HookConsumerWidget {
 
     return HorizontalPlaybuttonCardView<PlaylistSimple>(
       title: Text(category.name!),
+      isLoadingNextPage: playlistQuery.isLoadingNextPage,
       hasNextPage: playlistQuery.hasNextPage,
       items: playlists,
       onFetchMore: playlistQuery.fetchNext,

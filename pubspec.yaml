@@ -110,6 +110,7 @@ dependencies:
     git:
       url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
       ref: cfd570035bf393de541d32e9b28808b5d7e602df
+  very_good_infinite_list: ^0.7.1
 
 dev_dependencies:
   build_runner: ^2.3.2

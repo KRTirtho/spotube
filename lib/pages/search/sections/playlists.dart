@@ -26,6 +26,7 @@ class SearchPlaylistsSection extends HookConsumerWidget {
     );
 
     return HorizontalPlaybuttonCardView(
+      isLoadingNextPage: query.isLoadingNextPage,
       hasNextPage: query.hasNextPage,
       items: playlists,
       onFetchMore: query.fetchNext,

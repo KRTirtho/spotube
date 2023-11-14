@@ -29,6 +29,7 @@ class ArtistAlbumList extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     return HorizontalPlaybuttonCardView<Album>(
+      isLoadingNextPage: albumsQuery.isLoadingNextPage,
       hasNextPage: albumsQuery.hasNextPage,
       items: albums,
       onFetchMore: albumsQuery.fetchNext,

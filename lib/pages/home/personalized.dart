@@ -56,6 +56,7 @@ class PersonalizedPage extends HookConsumerWidget {
           HorizontalPlaybuttonCardView<PlaylistSimple>(
             items: playlists.toList(),
             title: Text(context.l10n.featured),
+            isLoadingNextPage: featuredPlaylistsQuery.isLoadingNextPage,
             hasNextPage: featuredPlaylistsQuery.hasNextPage,
             onFetchMore: featuredPlaylistsQuery.fetchNext,
           ),
@@ -66,6 +67,7 @@ class PersonalizedPage extends HookConsumerWidget {
           HorizontalPlaybuttonCardView<Album>(
             items: albums,
             title: Text(context.l10n.new_releases),
+            isLoadingNextPage: newReleases.isLoadingNextPage,
             hasNextPage: newReleases.hasNextPage,
             onFetchMore: newReleases.fetchNext,
           ),
@@ -81,6 +83,7 @@ class PersonalizedPage extends HookConsumerWidget {
             items: playlists,
             title: Text(item["name"] ?? ""),
             hasNextPage: false,
+            isLoadingNextPage: false,
             onFetchMore: () {},
           );
         })

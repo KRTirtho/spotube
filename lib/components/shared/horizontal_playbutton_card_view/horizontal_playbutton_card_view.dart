@@ -7,19 +7,22 @@ import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
-import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
+import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class HorizontalPlaybuttonCardView<T> extends HookWidget {
   final Widget title;
   final List<T> items;
   final VoidCallback onFetchMore;
+  final bool isLoadingNextPage;
   final bool hasNextPage;
+
   const HorizontalPlaybuttonCardView({
     required this.title,
     required this.items,
     required this.hasNextPage,
     required this.onFetchMore,
+    required this.isLoadingNextPage,
     Key? key,
   })  : assert(
           items is List<PlaylistSimple> ||
@@ -58,23 +61,18 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                   PointerDeviceKind.mouse,
                 },
               ),
-              child: ListView.builder(
-                  controller: scrollController,
+              child: InfiniteList(
+                  scrollController: scrollController,
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  itemCount: items.length + 1,
+                  itemCount: items.length,
+                  onFetchData: onFetchMore,
+                  loadingBuilder: (context) => const ShimmerPlaybuttonCard(),
+                  emptyBuilder: (context) =>
+                      const ShimmerPlaybuttonCard(count: 5),
+                  isLoading: isLoadingNextPage,
+                  hasReachedMax: !hasNextPage,
                   itemBuilder: (context, index) {
-                    if (index == items.length) {
-                      if (!hasNextPage) {
-                        return const SizedBox.shrink();
-                      }
-                      return Waypoint(
-                        controller: scrollController,
-                        onTouchEdge: onFetchMore,
-                        isGrid: true,
-                        child: const ShimmerPlaybuttonCard(),
-                      );
-                    }
                     final item = items[index];
 
                     return switch (item.runtimeType) {

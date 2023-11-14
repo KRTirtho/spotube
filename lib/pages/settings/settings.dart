@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/settings/sections/about.dart';
@@ -37,29 +36,26 @@ class SettingsPage extends HookConsumerWidget {
             Flexible(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1366),
-                child: InterScrollbar(
+                child: ListView(
                   controller: controller,
-                  child: ListView(
-                    controller: controller,
-                    children: [
-                      const SettingsAccountSection(),
-                      const SettingsLanguageRegionSection(),
-                      const SettingsAppearanceSection(),
-                      const SettingsPlaybackSection(),
-                      const SettingsDownloadsSection(),
-                      if (DesktopTools.platform.isDesktop)
-                        const SettingsDesktopSection(),
-                      if (!kIsWeb) const SettingsDevelopersSection(),
-                      const SettingsAboutSection(),
-                      Center(
-                        child: FilledButton(
-                          onPressed: preferencesNotifier.reset,
-                          child: Text(context.l10n.restore_defaults),
-                        ),
+                  children: [
+                    const SettingsAccountSection(),
+                    const SettingsLanguageRegionSection(),
+                    const SettingsAppearanceSection(),
+                    const SettingsPlaybackSection(),
+                    const SettingsDownloadsSection(),
+                    if (DesktopTools.platform.isDesktop)
+                      const SettingsDesktopSection(),
+                    if (!kIsWeb) const SettingsDevelopersSection(),
+                    const SettingsAboutSection(),
+                    Center(
+                      child: FilledButton(
+                        onPressed: preferencesNotifier.reset,
+                        child: Text(context.l10n.restore_defaults),
                       ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                 ),
               ),
             ),
