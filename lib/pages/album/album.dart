@@ -8,9 +8,9 @@ import 'package:spotube/components/shared/track_table/track_collection_view/trac
 import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
 import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
 import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -68,7 +68,7 @@ class AlbumPage extends HookConsumerWidget {
       () =>
           tracksSnapshot.data?.any((s) => s.id! == playlist.activeTrack?.id!) ==
               true &&
-          playlist.activeTrack is SpotubeTrack,
+          playlist.activeTrack is SourcedTrack,
       [playlist.activeTrack, tracksSnapshot.data],
     );
 

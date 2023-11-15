@@ -18,8 +18,8 @@ import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.da
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/skip_segment.dart';
+import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -71,16 +71,18 @@ Future<void> main(List<String> rawArgs) async {
     cacheDir: hiveCacheDir,
     connectivity: FlQueryInternetConnectionCheckerAdapter(),
   );
-  Hive.registerAdapter(MatchedTrackAdapter());
+
   Hive.registerAdapter(SkipSegmentAdapter());
-  Hive.registerAdapter(SearchModeAdapter());
+
+  Hive.registerAdapter(SourceMatchAdapter());
+  Hive.registerAdapter(SourceTypeAdapter());
 
   // Cache versioning entities with Adapter
-  MatchedTrack.version = 'v1';
+  SourceMatch.version = 'v1';
   SkipSegment.version = 'v1';
 
-  await Hive.openLazyBox<MatchedTrack>(
-    MatchedTrack.boxName,
+  await Hive.openLazyBox<SourceMatch>(
+    SourceMatch.boxName,
     path: hiveCacheDir,
   );
   await Hive.openLazyBox(

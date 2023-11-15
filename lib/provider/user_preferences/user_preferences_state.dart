@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/models/matched_track.dart';
+import 'package:spotube/services/sourced_track/enums.dart';
 
 part 'user_preferences_state.g.dart';
 
@@ -16,21 +16,16 @@ enum LayoutMode {
 }
 
 @JsonEnum()
-enum AudioQuality {
-  high,
-  low,
-}
-
-@JsonEnum()
 enum CloseBehavior {
   minimizeToTray,
   close,
 }
 
 @JsonEnum()
-enum YoutubeApiType {
+enum AudioSource {
   youtube,
-  piped;
+  piped,
+  jiosaavn;
 
   String get label => name[0].toUpperCase() + name.substring(1);
 }
@@ -44,13 +39,27 @@ enum MusicCodec {
   const MusicCodec._(this.label);
 }
 
+@JsonEnum()
+enum SearchMode {
+  youtube._("YouTube"),
+  youtubeMusic._("YouTube Music");
+
+  final String label;
+
+  const SearchMode._(this.label);
+
+  factory SearchMode.fromString(String key) {
+    return SearchMode.values.firstWhere((e) => e.name == key);
+  }
+}
+
 @JsonSerializable()
 final class UserPreferences {
   @JsonKey(
-    defaultValue: AudioQuality.high,
-    unknownEnumValue: AudioQuality.high,
+    defaultValue: SourceQualities.high,
+    unknownEnumValue: SourceQualities.high,
   )
-  final AudioQuality audioQuality;
+  final SourceQualities audioQuality;
 
   @JsonKey(defaultValue: true)
   final bool albumColorSync;
@@ -172,22 +181,22 @@ final class UserPreferences {
   final ThemeMode themeMode;
 
   @JsonKey(
-    defaultValue: YoutubeApiType.youtube,
-    unknownEnumValue: YoutubeApiType.youtube,
+    defaultValue: AudioSource.youtube,
+    unknownEnumValue: AudioSource.youtube,
   )
-  final YoutubeApiType youtubeApiType;
+  final AudioSource audioSource;
 
   @JsonKey(
-    defaultValue: MusicCodec.weba,
-    unknownEnumValue: MusicCodec.weba,
+    defaultValue: SourceCodecs.weba,
+    unknownEnumValue: SourceCodecs.weba,
   )
-  final MusicCodec streamMusicCodec;
+  final SourceCodecs streamMusicCodec;
 
   @JsonKey(
-    defaultValue: MusicCodec.m4a,
-    unknownEnumValue: MusicCodec.m4a,
+    defaultValue: SourceCodecs.m4a,
+    unknownEnumValue: SourceCodecs.m4a,
   )
-  final MusicCodec downloadMusicCodec;
+  final SourceCodecs downloadMusicCodec;
 
   UserPreferences({
     required this.audioQuality,
@@ -207,7 +216,7 @@ final class UserPreferences {
     required this.downloadLocation,
     required this.pipedInstance,
     required this.themeMode,
-    required this.youtubeApiType,
+    required this.audioSource,
     required this.streamMusicCodec,
     required this.downloadMusicCodec,
   });
@@ -229,7 +238,7 @@ final class UserPreferences {
     SpotubeColor? accentColorScheme,
     bool? albumColorSync,
     bool? checkUpdate,
-    AudioQuality? audioQuality,
+    SourceQualities? audioQuality,
     String? downloadLocation,
     LayoutMode? layoutMode,
     CloseBehavior? closeBehavior,
@@ -238,13 +247,13 @@ final class UserPreferences {
     String? pipedInstance,
     SearchMode? searchMode,
     bool? skipNonMusic,
-    YoutubeApiType? youtubeApiType,
+    AudioSource? audioSource,
     Market? recommendationMarket,
     bool? saveTrackLyrics,
     bool? amoledDarkTheme,
     bool? normalizeAudio,
-    MusicCodec? downloadMusicCodec,
-    MusicCodec? streamMusicCodec,
+    SourceCodecs? downloadMusicCodec,
+    SourceCodecs? streamMusicCodec,
     bool? systemTitleBar,
   }) {
     return UserPreferences(
@@ -261,7 +270,7 @@ final class UserPreferences {
       pipedInstance: pipedInstance ?? this.pipedInstance,
       searchMode: searchMode ?? this.searchMode,
       skipNonMusic: skipNonMusic ?? this.skipNonMusic,
-      youtubeApiType: youtubeApiType ?? this.youtubeApiType,
+      audioSource: audioSource ?? this.audioSource,
       recommendationMarket: recommendationMarket ?? this.recommendationMarket,
       amoledDarkTheme: amoledDarkTheme ?? this.amoledDarkTheme,
       downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,

@@ -6,8 +6,7 @@ import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/utils/primitive_utils.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/extensions/duration.dart';
 
@@ -37,8 +36,8 @@ class TrackDetailsDialog extends HookWidget {
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: Colors.blue),
       ),
-      context.l10n.duration: (track is SpotubeTrack
-              ? (track as SpotubeTrack).ytTrack.duration
+      context.l10n.duration: (track is SourcedTrack
+              ? (track as SourcedTrack).sourceInfo.duration
               : track.duration!)
           .toHumanReadableString(),
       if (track.album!.releaseDate != null)
@@ -46,33 +45,27 @@ class TrackDetailsDialog extends HookWidget {
       context.l10n.popularity: track.popularity?.toString() ?? "0",
     };
 
-    final ytTrack =
-        track is SpotubeTrack ? (track as SpotubeTrack).ytTrack : null;
+    final sourceInfo =
+        track is SourcedTrack ? (track as SourcedTrack).sourceInfo : null;
 
-    final ytTracksDetailsMap = ytTrack == null
+    final ytTracksDetailsMap = sourceInfo == null
         ? {}
         : {
             context.l10n.youtube: Hyperlink(
-              "https://piped.video/watch?v=${ytTrack.id}",
-              "https://piped.video/watch?v=${ytTrack.id}",
+              "https://piped.video/watch?v=${sourceInfo.id}",
+              "https://piped.video/watch?v=${sourceInfo.id}",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
             context.l10n.channel: Hyperlink(
-              ytTrack.channelName,
-              "https://youtube.com${ytTrack.channelName}",
+              sourceInfo.artist,
+              sourceInfo.artistUrl,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            context.l10n.likes:
-                PrimitiveUtils.toReadableNumber(ytTrack.likes.toDouble()),
-            context.l10n.dislikes:
-                PrimitiveUtils.toReadableNumber(ytTrack.dislikes.toDouble()),
-            context.l10n.views:
-                PrimitiveUtils.toReadableNumber(ytTrack.views.toDouble()),
             context.l10n.streamUrl: Hyperlink(
-              (track as SpotubeTrack).ytUri,
-              (track as SpotubeTrack).ytUri,
+              (track as SourcedTrack).url,
+              (track as SourcedTrack).url,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

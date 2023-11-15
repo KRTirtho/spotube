@@ -106,6 +106,9 @@ dependencies:
   simple_icons: ^7.10.0
   audio_service_mpris: ^0.1.0
   file_picker: ^6.0.0
+  jiosaavn:
+    git:
+      url: https://github.com/KRTirtho/jiosaavn.git
   draggable_scrollbar:
     git:
       url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
