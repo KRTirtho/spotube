@@ -10,7 +10,7 @@ import 'package:spotube/components/shared/expandable_search/expandable_search.da
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
