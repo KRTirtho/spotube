@@ -1,4 +1,5 @@
 import 'package:catcher_2/catcher_2.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
@@ -45,7 +46,12 @@ Future<void> main(List<String> rawArgs) async {
 
   // force High Refresh Rate on some Android devices (like One Plus)
   if (DesktopTools.platform.isAndroid) {
-    await FlutterDisplayMode.setHighRefreshRate();
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+    final buggyBrand = ['oppo', 'oplus', 'oneplus', 'realme'];
+    if (buggyBrand.any(androidDeviceInfo.brand.toLowerCase().contains)) {
+      await FlutterDisplayMode.setHighRefreshRate();
+    }
   }
 
   await DesktopTools.ensureInitialized(
