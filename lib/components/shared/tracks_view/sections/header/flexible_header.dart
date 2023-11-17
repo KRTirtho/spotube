@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -52,8 +53,8 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                   ],
             floating: false,
             pinned: true,
-            expandedHeight: 400,
-            automaticallyImplyLeading: false,
+            expandedHeight: 450,
+            automaticallyImplyLeading: DesktopTools.platform.isMobile,
             backgroundColor: palette.color,
             title: isExpanded ? null : Text(props.title, style: headingStyle),
             flexibleSpace: FlexibleSpaceBar(
@@ -79,56 +80,58 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                         tileMode: TileMode.clamp,
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Flex(
-                            direction: mediaQuery.mdAndDown
-                                ? Axis.vertical
-                                : Axis.horizontal,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: UniversalImage(
-                                  path: props.image,
-                                  width: 200,
-                                  height: 200,
-                                  placeholder: Assets.albumPlaceholder.path,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flex(
+                              direction: mediaQuery.mdAndDown
+                                  ? Axis.vertical
+                                  : Axis.horizontal,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: UniversalImage(
+                                    path: props.image,
+                                    width: 200,
+                                    height: 200,
+                                    placeholder: Assets.albumPlaceholder.path,
+                                  ),
                                 ),
-                              ),
-                              const Gap(20),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: mediaQuery.mdAndDown
-                                    ? CrossAxisAlignment.center
-                                    : CrossAxisAlignment.start,
-                                children: [
-                                  Text(props.title, style: headingStyle),
-                                  const SizedBox(height: 10),
-                                  if (description != null &&
-                                      description.isNotEmpty)
-                                    Text(
-                                      description,
-                                      style: defaultTextStyle.style.copyWith(
-                                        color: palette.bodyTextColor,
+                                const Gap(20),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: mediaQuery.mdAndDown
+                                      ? CrossAxisAlignment.center
+                                      : CrossAxisAlignment.start,
+                                  children: [
+                                    Text(props.title, style: headingStyle),
+                                    const SizedBox(height: 10),
+                                    if (description != null &&
+                                        description.isNotEmpty)
+                                      Text(
+                                        description,
+                                        style: defaultTextStyle.style.copyWith(
+                                          color: palette.bodyTextColor,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  const Gap(10),
-                                  const TrackViewHeaderActions(),
-                                  const Gap(10),
-                                  TrackViewHeaderButtons(color: palette),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                                    const Gap(10),
+                                    const TrackViewHeaderActions(),
+                                    const Gap(10),
+                                    TrackViewHeaderButtons(color: palette),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
