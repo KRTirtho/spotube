@@ -319,6 +319,7 @@ jobs:
 
       - name: Package Macos App
         run: |
+          python3 -m pip install setuptools
           npm install -g appdmg
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-universal.dmg
