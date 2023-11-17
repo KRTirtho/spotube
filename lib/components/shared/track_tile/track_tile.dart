@@ -9,7 +9,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
-import 'package:spotube/components/shared/track_table/track_options.dart';
+import 'package:spotube/components/shared/track_tile/track_options.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';

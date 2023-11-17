@@ -10,7 +10,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_artist_profile.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/shared/track_table/track_tile.dart';
+import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/artist/artist_album_list.dart';
 import 'package:spotube/components/artist/artist_card.dart';

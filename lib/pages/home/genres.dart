@@ -70,7 +70,8 @@ class GenrePage extends HookConsumerWidget {
         child: Column(
           children: [
             ExpandableSearchField(
-              isFiltering: isFiltering,
+              isFiltering: isFiltering.value,
+              onChangeFiltering: (value) => isFiltering.value = value,
               searchController: searchController,
               searchFocus: searchFocus,
             ),
@@ -103,10 +104,11 @@ class GenrePage extends HookConsumerWidget {
           top: 0,
           right: 10,
           child: ExpandableSearchButton(
-            isFiltering: isFiltering,
+            isFiltering: isFiltering.value,
             searchFocus: searchFocus,
             icon: const Icon(SpotubeIcons.search),
             onPressed: (value) {
+              isFiltering.value = value;
               if (isFiltering.value) {
                 scrollController.animateTo(
                   0,
