@@ -110,7 +110,8 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                                 children: [
                                   Text(props.title, style: headingStyle),
                                   const SizedBox(height: 10),
-                                  if (description != null)
+                                  if (description != null &&
+                                      description.isNotEmpty)
                                     Text(
                                       description,
                                       style: defaultTextStyle.style.copyWith(
