@@ -14,7 +14,6 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
 
 import 'package:spotube/models/skip_segment.dart';
-import 'package:spotube/models/source_match.dart';
 
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
@@ -28,7 +27,6 @@ import 'package:spotube/services/audio_services/audio_services.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:spotube/services/supabase.dart';
 
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -134,20 +132,10 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         try {
           isPreSearching.value = true;
 
-          final oldTrack =
-              mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
-
           final track = await ensureSourcePlayable(audioPlayer.nextSource!);
 
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
-          }
-
-          if (oldTrack != null && track != null) {
-            await storeTrack(
-              oldTrack,
-              track,
-            );
           }
         } catch (e, stackTrace) {
           // Removing tracks that were not found to avoid queue interruption
@@ -350,10 +338,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         collections: {},
       );
       await notificationService.addTrack(addableTrack);
-      await storeTrack(
-        tracks.elementAt(initialIndex),
-        addableTrack,
-      );
     }
 
     await audioPlayer.openPlaylist(
@@ -382,13 +366,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
-    }
-
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
     }
   }
 
@@ -492,12 +469,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
     }
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
-    }
   }
 
   Future<void> previous() async {
@@ -522,12 +493,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     await audioPlayer.skipToPrevious();
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
-    }
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
     }
   }
 
@@ -622,30 +587,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       await SkipSegment.box.put(id, []);
       Catcher2.reportCheckedError(e, stack);
       return List.castFrom<dynamic, SkipSegment>([]);
-    }
-  }
-
-  /// This method must be called after any playback operation as
-  /// it can increase the latency
-  Future<void> storeTrack(Track track, SourcedTrack sourcedTrack) async {
-    try {
-      if (track is! SourcedTrack) {
-        await supabase.insertTrack(
-          SourceMatch(
-            id: sourcedTrack.id!,
-            createdAt: DateTime.now(),
-            sourceId: sourcedTrack.sourceInfo.id,
-            sourceType: preferences.audioSource == AudioSource.jiosaavn
-                ? SourceType.jiosaavn
-                : preferences.searchMode == SearchMode.youtube
-                    ? SourceType.youtube
-                    : SourceType.youtubeMusic,
-          ),
-        );
-      }
-    } catch (e, stackTrace) {
-      logger.e(e.toString());
-      logger.t(stackTrace);
     }
   }
 
