@@ -111,7 +111,24 @@ class JioSaavnSourcedTrack extends SourcedTrack {
     final SongSearchResponse(:results) =
         await jiosaavnClient.search.songs(query, limit: 20);
 
-    return results.map(toSiblingType).toList();
+    final trackArtistNames = track.artists?.map((ar) => ar.name).toList();
+    return results
+        .where(
+          (s) {
+            final sameName = s.name?.replaceAll("&amp;", "&") == track.name;
+            final artistNames =
+                "${s.primaryArtists}${s.featuredArtists.isNotEmpty ? ", " : ""}${s.featuredArtists}"
+                    .replaceAll("&amp;", "&");
+            final sameArtists = artistNames.split(", ").any(
+                  (artist) =>
+                      trackArtistNames?.any((ar) => artist == ar) ?? false,
+                );
+
+            return sameName && sameArtists;
+          },
+        )
+        .map(toSiblingType)
+        .toList();
   }
 
   @override
