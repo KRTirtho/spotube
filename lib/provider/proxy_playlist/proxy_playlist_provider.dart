@@ -138,13 +138,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
           }
-
-          if (oldTrack != null && track != null) {
-            await storeTrack(
-              oldTrack,
-              track,
-            );
-          }
         } catch (e, stackTrace) {
           // Removing tracks that were not found to avoid queue interruption
           // TODO: Add a flag to enable/disable skip not found tracks
@@ -332,10 +325,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         collections: {},
       );
       await notificationService.addTrack(addableTrack);
-      await storeTrack(
-        tracks.elementAt(initialIndex),
-        addableTrack,
-      );
     }
 
     await audioPlayer.openPlaylist(
@@ -364,13 +353,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
-    }
-
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
     }
   }
 
@@ -474,12 +456,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
     }
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
-    }
   }
 
   Future<void> previous() async {
@@ -504,12 +480,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     await audioPlayer.skipToPrevious();
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
-    }
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
     }
   }
 
