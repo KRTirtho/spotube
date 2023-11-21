@@ -112,7 +112,7 @@ class SyncedLyrics extends HookConsumerWidget {
                     final lyricSlice = lyricValue.lyrics[index];
                     final isActive = lyricSlice.time.inSeconds == currentTime;
 
-                    if (isActive && isUnSyncLyric == true) {
+                    if (isActive) {
                       controller.scrollToIndex(
                         index,
                         preferPosition: AutoScrollPosition.middle,
