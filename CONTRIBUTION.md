@@ -119,7 +119,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/KRTirt
 
 Do the following:
 
-- Download the latest Flutter SDK (>=3.10.0) & enable desktop support
+- Download the latest Flutter SDK (>=3.16.0) & enable desktop support
 - Install Development dependencies in linux
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
