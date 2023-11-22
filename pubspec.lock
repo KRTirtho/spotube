@@ -1194,11 +1194,10 @@ packages:
   jiosaavn:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "8a7cda9b8b687cde28e0f7fcb10adb0d4fde1007"
-      url: "https://github.com/KRTirtho/jiosaavn.git"
-    source: git
+      name: jiosaavn
+      sha256: d32b4f43f26488f942f5d7d19d748a1f2664ae3d41ff9c7d50eeb81705174bd2
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   js:
     dependency: transitive
@@ -2225,11 +2224,10 @@ packages:
   wikipedia_api:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: cb7590a3d76b25f16ad3f7147ae6603350777a00
-      url: "https://github.com/KRTirtho/wikipedia_api.git"
-    source: git
+      name: wikipedia_api
+      sha256: "8bae02778c40e0c09ea237b7c1952c99a33a19ccbe31545e03c807fdc7c56ec6"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   win32:
     dependency: transitive

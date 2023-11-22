@@ -105,9 +105,7 @@ dependencies:
   simple_icons: ^7.10.0
   audio_service_mpris: ^0.1.0
   file_picker: ^6.0.0
-  jiosaavn:
-    git:
-      url: https://github.com/KRTirtho/jiosaavn.git
+  jiosaavn: ^0.1.0
   draggable_scrollbar:
     git:
       url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
@@ -119,9 +117,7 @@ dependencies:
     git:
       url: https://github.com/Tommypop2/dart_discord_rpc.git
   html_unescape: ^2.0.0
-  wikipedia_api:
-    git:
-      url: https://github.com/KRTirtho/wikipedia_api.git
+  wikipedia_api: ^0.1.0
 
 dev_dependencies:
   build_runner: ^2.3.2
