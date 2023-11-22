@@ -105,9 +105,9 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
               dimension: isActive || isLoading.value ? 0 : null,
               child: FilledButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                ),
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    minimumSize: const Size(150, 40)),
                 label: Text(context.l10n.shuffle),
                 icon: const Icon(SpotubeIcons.shuffle),
                 onPressed: props.tracks.isEmpty ? null : onShuffle,
@@ -118,9 +118,9 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
         const Gap(10),
         FilledButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: color.color,
-            foregroundColor: color.bodyTextColor,
-          ),
+              backgroundColor: color.color,
+              foregroundColor: color.bodyTextColor,
+              minimumSize: const Size(150, 40)),
           onPressed: isActive || props.tracks.isEmpty || isLoading.value
               ? null
               : onPlay,

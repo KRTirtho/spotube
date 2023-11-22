@@ -119,6 +119,9 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                                         style: defaultTextStyle.style.copyWith(
                                           color: palette.bodyTextColor,
                                         ),
+                                        textAlign: mediaQuery.mdAndDown
+                                            ? TextAlign.center
+                                            : TextAlign.start,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),

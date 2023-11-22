@@ -5,7 +5,7 @@ extension FetchAllTracks on InfiniteQuery<List<Track>, dynamic, int> {
   Future<List<Track>> fetchAllTracks({
     required Future<List<Track>> Function() getAllTracks,
   }) async {
-    if (!hasNextPage) {
+    if (pages.isNotEmpty && !hasNextPage) {
       return pages.expand((page) => page).toList();
     }
     final tracks = await getAllTracks();
