@@ -8,6 +8,7 @@ import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/source_map.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:jiosaavn/jiosaavn.dart';
+import 'package:spotube/extensions/string.dart';
 
 final jiosaavnClient = JioSaavnClient();
 
@@ -74,14 +75,14 @@ class JioSaavnSourcedTrack extends SourcedTrack {
           result.primaryArtists,
           if (result.featuredArtists.isNotEmpty) ", ",
           result.featuredArtists
-        ].join("").replaceAll("&amp;", "&"),
+        ].join("").unescapeHtml(),
         artistUrl:
             "https://www.jiosaavn.com/artist/${result.primaryArtistsId.split(",").firstOrNull ?? ""}",
         duration: Duration(seconds: int.parse(result.duration)),
         id: result.id,
         pageUrl: result.url,
         thumbnail: result.image?.last.link ?? "",
-        title: result.name!,
+        title: result.name!.unescapeHtml(),
         album: result.album.name,
       ),
       source: SourceMap(
@@ -115,10 +116,12 @@ class JioSaavnSourcedTrack extends SourcedTrack {
     return results
         .where(
           (s) {
-            final sameName = s.name?.replaceAll("&amp;", "&") == track.name;
-            final artistNames =
-                "${s.primaryArtists}${s.featuredArtists.isNotEmpty ? ", " : ""}${s.featuredArtists}"
-                    .replaceAll("&amp;", "&");
+            final sameName = s.name?.unescapeHtml() == track.name;
+            final artistNames = [
+              s.primaryArtists,
+              if (s.featuredArtists.isNotEmpty) ", ",
+              s.featuredArtists
+            ].join("").unescapeHtml();
             final sameArtists = artistNames.split(", ").any(
                   (artist) =>
                       trackArtistNames?.any((ar) => artist == ar) ?? false,

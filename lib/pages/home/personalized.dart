@@ -46,47 +46,64 @@ class PersonalizedPage extends HookConsumerWidget {
       [newReleases.pages],
     );
 
-    return ListView(
+    return CustomScrollView(
       controller: controller,
-      children: [
-        if (!featuredPlaylistsQuery.hasPageData &&
-            !featuredPlaylistsQuery.isLoadingNextPage)
-          const ShimmerCategories()
-        else
-          HorizontalPlaybuttonCardView<PlaylistSimple>(
-            items: playlists.toList(),
-            title: Text(context.l10n.featured),
-            isLoadingNextPage: featuredPlaylistsQuery.isLoadingNextPage,
-            hasNextPage: featuredPlaylistsQuery.hasNextPage,
-            onFetchMore: featuredPlaylistsQuery.fetchNext,
+      slivers: [
+        SliverList.list(
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: !featuredPlaylistsQuery.hasPageData &&
+                      !featuredPlaylistsQuery.isLoadingNextPage
+                  ? const ShimmerCategories()
+                  : HorizontalPlaybuttonCardView<PlaylistSimple>(
+                      items: playlists.toList(),
+                      title: Text(context.l10n.featured),
+                      isLoadingNextPage:
+                          featuredPlaylistsQuery.isLoadingNextPage,
+                      hasNextPage: featuredPlaylistsQuery.hasNextPage,
+                      onFetchMore: featuredPlaylistsQuery.fetchNext,
+                    ),
+            ),
+            if (auth != null)
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: newReleases.hasPageData &&
+                        userArtistsQuery.hasData &&
+                        !newReleases.isLoadingNextPage
+                    ? HorizontalPlaybuttonCardView<Album>(
+                        items: albums,
+                        title: Text(context.l10n.new_releases),
+                        isLoadingNextPage: newReleases.isLoadingNextPage,
+                        hasNextPage: newReleases.hasNextPage,
+                        onFetchMore: newReleases.fetchNext,
+                      )
+                    : const ShimmerCategories(),
+              ),
+          ],
+        ),
+        SliverSafeArea(
+          sliver: SliverList.builder(
+            itemCount: madeForUser.data?["content"]?["items"]?.length ?? 0,
+            itemBuilder: (context, index) {
+              final item = madeForUser.data?["content"]?["items"]?[index];
+              final playlists = item["content"]?["items"]
+                      ?.where((itemL2) => itemL2["type"] == "playlist")
+                      .map((itemL2) => PlaylistSimple.fromJson(itemL2))
+                      .toList()
+                      .cast<PlaylistSimple>() ??
+                  <PlaylistSimple>[];
+              if (playlists.isEmpty) return const SizedBox.shrink();
+              return HorizontalPlaybuttonCardView<PlaylistSimple>(
+                items: playlists,
+                title: Text(item["name"] ?? ""),
+                hasNextPage: false,
+                isLoadingNextPage: false,
+                onFetchMore: () {},
+              );
+            },
           ),
-        if (auth != null &&
-            newReleases.hasPageData &&
-            userArtistsQuery.hasData &&
-            !newReleases.isLoadingNextPage)
-          HorizontalPlaybuttonCardView<Album>(
-            items: albums,
-            title: Text(context.l10n.new_releases),
-            isLoadingNextPage: newReleases.isLoadingNextPage,
-            hasNextPage: newReleases.hasNextPage,
-            onFetchMore: newReleases.fetchNext,
-          ),
-        ...?madeForUser.data?["content"]?["items"]?.map((item) {
-          final playlists = item["content"]?["items"]
-                  ?.where((itemL2) => itemL2["type"] == "playlist")
-                  .map((itemL2) => PlaylistSimple.fromJson(itemL2))
-                  .toList()
-                  .cast<PlaylistSimple>() ??
-              <PlaylistSimple>[];
-          if (playlists.isEmpty) return const SizedBox.shrink();
-          return HorizontalPlaybuttonCardView<PlaylistSimple>(
-            items: playlists,
-            title: Text(item["name"] ?? ""),
-            hasNextPage: false,
-            isLoadingNextPage: false,
-            onFetchMore: () {},
-          );
-        })
+        ),
       ],
     );
   }
