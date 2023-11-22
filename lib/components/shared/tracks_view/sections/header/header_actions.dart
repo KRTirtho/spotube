@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_playlist.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
@@ -74,6 +75,21 @@ class TrackViewHeaderActions extends HookConsumerWidget {
               if (isUserPlaylist) {
                 context.pop();
               }
+            },
+          ),
+        if (isUserPlaylist)
+          IconButton(
+            icon: const Icon(SpotubeIcons.edit),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return PlaylistCreateDialog(
+                    playlistId: props.collectionId,
+                    trackIds: props.tracks.map((e) => e.id!).toList(),
+                  );
+                },
+              );
             },
           ),
       ],
