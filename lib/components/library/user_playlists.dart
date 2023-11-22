@@ -14,6 +14,7 @@ import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart'
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -120,31 +121,33 @@ class UserPlaylists extends HookConsumerWidget {
               const SliverToBoxAdapter(
                 child: SizedBox(height: 10),
               ),
-              SliverGrid.builder(
-                itemCount: playlists.length + 1,
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  mainAxisExtent: DesktopTools.platform.isMobile ? 225 : 250,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemBuilder: (context, index) {
-                  if (index == playlists.length) {
-                    if (!playlistsQuery.hasNextPage) {
-                      return const SizedBox.shrink();
+              SliverLayoutBuilder(builder: (context, constrains) {
+                return SliverGrid.builder(
+                  itemCount: playlists.length + 1,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                    mainAxisExtent: constrains.smAndDown ? 225 : 250,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  itemBuilder: (context, index) {
+                    if (index == playlists.length) {
+                      if (!playlistsQuery.hasNextPage) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Waypoint(
+                        controller: controller,
+                        isGrid: true,
+                        onTouchEdge: playlistsQuery.fetchNext,
+                        child: const ShimmerPlaybuttonCard(count: 1),
+                      );
                     }
 
-                    return Waypoint(
-                      controller: controller,
-                      isGrid: true,
-                      onTouchEdge: playlistsQuery.fetchNext,
-                      child: const ShimmerPlaybuttonCard(count: 1),
-                    );
-                  }
-
-                  return PlaylistCard(playlists[index]);
-                },
-              )
+                    return PlaylistCard(playlists[index]);
+                  },
+                );
+              })
             ],
           ),
         ),

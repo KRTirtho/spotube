@@ -107,4 +107,5 @@ abstract class SpotubeIcons {
   static const eye = FeatherIcons.eye;
   static const noEye = FeatherIcons.eyeOff;
   static const normalize = FeatherIcons.barChart2;
+  static const wikipedia = SimpleIcons.wikipedia;
 }

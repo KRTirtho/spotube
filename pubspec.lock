@@ -2222,6 +2222,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  wikipedia_api:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: cb7590a3d76b25f16ad3f7147ae6603350777a00
+      url: "https://github.com/KRTirtho/wikipedia_api.git"
+    source: git
+    version: "0.1.0"
   win32:
     dependency: transitive
     description:
@@ -2288,5 +2297,5 @@ packages:
     source: hosted
     version: "2.0.2"
 sdks:
-  dart: ">=3.2.0-194.0.dev <4.0.0"
+  dart: ">=3.2.0 <4.0.0"
   flutter: ">=3.13.0"
