@@ -393,6 +393,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  dart_discord_rpc:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4d05017838ebeadcdb832e1893fabad1506fddba"
+      url: "https://github.com/Tommypop2/dart_discord_rpc.git"
+    source: git
+    version: "0.0.3"
   dart_style:
     dependency: transitive
     description:

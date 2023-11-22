@@ -27,4 +27,6 @@ abstract class Env {
 
   static bool get enableUpdateChecker =>
       DesktopTools.platform.isFlatpak || _enableUpdateChecker == "1";
+
+  static String discordAppId = "1176718791388975124";
 }

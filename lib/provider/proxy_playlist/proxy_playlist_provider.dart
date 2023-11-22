@@ -24,6 +24,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
+import 'package:spotube/services/discord/discord.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
@@ -92,6 +93,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           }
 
           notificationService.addTrack(newActiveTrack);
+          discord.updatePresence(newActiveTrack);
           state = state.copyWith(
             active: state.tracks
                 .toList()
@@ -321,6 +323,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         collections: {},
       );
       await notificationService.addTrack(indexTrack);
+      discord.updatePresence(indexTrack);
     } else {
       final addableTrack = await SourcedTrack.fetchFromTrack(
         ref: ref,
@@ -338,6 +341,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         collections: {},
       );
       await notificationService.addTrack(addableTrack);
+      discord.updatePresence(addableTrack);
     }
 
     await audioPlayer.openPlaylist(
@@ -366,6 +370,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
+      discord.updatePresence(track ?? oldTrack!);
     }
   }
 
@@ -468,6 +473,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
+      discord.updatePresence(track ?? oldTrack!);
     }
   }
 
@@ -493,12 +499,14 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     await audioPlayer.skipToPrevious();
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
+      discord.updatePresence(track ?? oldTrack!);
     }
   }
 
   Future<void> stop() async {
     state = ProxyPlaylist({});
     await audioPlayer.stop();
+    discord.clear();
   }
 
   Future<void> updatePalette() async {
