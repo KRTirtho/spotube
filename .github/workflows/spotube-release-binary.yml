@@ -33,6 +33,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: KRTirtho/flutter_distributor
+          path: flutter_distributor
+          ref: fix-windows-build
       - uses: subosito/flutter-action@v2.10.0
         with:
           cache: true
@@ -74,9 +79,10 @@ jobs:
 
       - name: Build Windows Executable
         run: |
-          dart pub global activate flutter_distributor
+          dart pub global activate melos
+          cd flutter_distributor && melos bs && cd ..
           make innoinstall
-          flutter_distributor package --platform=windows --targets=exe --skip-clean
+          dart run ./flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=windows --targets=exe --skip-clean
           mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
 
       - name: Create Chocolatey Package and set hash
