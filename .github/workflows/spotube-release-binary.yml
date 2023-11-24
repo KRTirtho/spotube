@@ -38,7 +38,7 @@ jobs:
           repository: KRTirtho/flutter_distributor
           path: flutter_distributor
           ref: fix-windows-build
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
@@ -209,7 +209,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
@@ -285,7 +285,7 @@ jobs:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
