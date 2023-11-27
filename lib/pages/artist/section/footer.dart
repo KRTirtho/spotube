@@ -38,9 +38,9 @@ class ArtistPageFooter extends HookConsumerWidget {
             BlendMode.darken,
           ),
           image: UniversalImage.imageProvider(
-            summary.data!.originalimage?.source_ ?? artistImage,
-            height: summary.data!.originalimage?.height.toDouble(),
-            width: summary.data!.originalimage?.width.toDouble(),
+            summary.data!.thumbnail?.source_ ?? artistImage,
+            height: summary.data!.thumbnail?.height.toDouble(),
+            width: summary.data!.thumbnail?.width.toDouble(),
           ),
           fit: BoxFit.cover,
           alignment: Alignment.center,

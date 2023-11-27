@@ -25,8 +25,6 @@ class TrackViewBodySection extends HookConsumerWidget {
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final props = InheritedTrackView.of(context);
 
-    final trackViewState = ref.watch(trackViewProvider(props.tracks));
-
     final searchController = useTextEditingController();
     final searchFocus = useFocusNode();
 
@@ -35,12 +33,19 @@ class TrackViewBodySection extends HookConsumerWidget {
 
     final isFiltering = useState(false);
 
+    final uniqTracks = useMemoized(() {
+      final trackIds = props.tracks.map((e) => e.id).toSet();
+      return props.tracks.where((e) => trackIds.remove(e.id)).toList();
+    }, [props.tracks]);
+
+    final trackViewState = ref.watch(trackViewProvider(uniqTracks));
+
     final tracks = useMemoized(() {
       List<Track> filteredTracks;
       if (searchQuery.isEmpty) {
-        filteredTracks = props.tracks;
+        filteredTracks = uniqTracks;
       } else {
-        filteredTracks = props.tracks
+        filteredTracks = uniqTracks
             .map((e) => (weightedRatio(e.name!, searchQuery), e))
             .sorted((a, b) => b.$1.compareTo(a.$1))
             .where((e) => e.$1 > 50)
@@ -48,7 +53,7 @@ class TrackViewBodySection extends HookConsumerWidget {
             .toList();
       }
       return ServiceUtils.sortTracks(filteredTracks, trackViewState.sortBy);
-    }, [trackViewState.sortBy, searchQuery, props.tracks]);
+    }, [trackViewState.sortBy, searchQuery, uniqTracks]);
 
     final isUserPlaylist = useIsUserPlaylist(ref, props.collectionId);
 
@@ -106,8 +111,9 @@ class TrackViewBodySection extends HookConsumerWidget {
                   if (isActive || playlist.tracks.contains(track)) {
                     await playlistNotifier.jumpToTrack(track);
                   } else {
+                    final tracks = await props.pagination.onFetchAll();
                     await playlistNotifier.load(
-                      props.tracks,
+                      tracks,
                       initialIndex: index,
                       autoPlay: true,
                     );
