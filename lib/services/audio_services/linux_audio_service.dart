@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:dbus/dbus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
-import 'package:window_manager/window_manager.dart';
 
 final dbus = DBusClient.session();
 
@@ -86,8 +85,7 @@ class _MprisMediaPlayer2 extends DBusObject {
 
   /// Implementation of org.mpris.MediaPlayer2.Quit()
   Future<DBusMethodResponse> doQuit() async {
-    await windowManager.close();
-    return DBusMethodSuccessResponse();
+    exit(0);
   }
 
   @override
@@ -322,8 +320,8 @@ class _MprisMediaPlayer2Player extends DBusObject {
         ),
         "xesam:title": DBusString(playlist.activeTrack!.name!),
         "xesam:url": DBusString(
-          playlist.activeTrack is SpotubeTrack
-              ? (playlist.activeTrack as SpotubeTrack).ytUri
+          playlist.activeTrack is SourcedTrack
+              ? (playlist.activeTrack as SourcedTrack).url
               : playlist.activeTrack!.previewUrl ?? "",
         ),
         "xesam:genre": const DBusString("Unknown"),

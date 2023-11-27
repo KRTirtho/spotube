@@ -108,7 +108,7 @@ class LastFMLoginPage extends HookConsumerWidget {
                                   return;
                                 }
                                 await scrobblerNotifier.login(
-                                  username.text,
+                                  username.text.trim(),
                                   password.text,
                                 );
                                 router.pop();

@@ -385,6 +385,23 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  dart_des:
+    dependency: transitive
+    description:
+      name: dart_des
+      sha256: "0a66afb8883368c824497fd2a1fd67bdb1a785965a3956728382c03d40747c33"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+  dart_discord_rpc:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4d05017838ebeadcdb832e1893fabad1506fddba"
+      url: "https://github.com/Tommypop2/dart_discord_rpc.git"
+    source: git
+    version: "0.0.3"
   dart_style:
     dependency: transitive
     description:
@@ -465,6 +482,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  draggable_scrollbar:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: cfd570035bf393de541d32e9b28808b5d7e602df
+      resolved-ref: cfd570035bf393de541d32e9b28808b5d7e602df
+      url: "https://github.com/thielepaul/flutter-draggable-scrollbar.git"
+    source: git
+    version: "0.1.0"
   duration:
     dependency: "direct main"
     description:
@@ -513,6 +539,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  file_picker:
+    dependency: "direct main"
+    description:
+      name: file_picker
+      sha256: "4e42aacde3b993c5947467ab640882c56947d9d27342a5b6f2895b23956954a6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.1"
   file_selector:
     dependency: "direct main"
     description:
@@ -588,30 +622,27 @@ packages:
   fl_query:
     dependency: "direct main"
     description:
-      path: "packages/fl_query"
-      ref: HEAD
-      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
-      url: "https://github.com/KRTirtho/fl-query.git"
-    source: git
-    version: "1.0.0-alpha.5"
+      name: fl_query
+      sha256: daee5ab0ed8899baa201b89b5813107df5258144a9e2bcf192dbcf922c57d985
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   fl_query_devtools:
     dependency: "direct main"
     description:
-      path: "packages/fl_query_devtools"
-      ref: HEAD
-      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
-      url: "https://github.com/KRTirtho/fl-query.git"
-    source: git
-    version: "0.1.0-alpha.3"
+      name: fl_query_devtools
+      sha256: "2ae8905fd4a95f1d245a1b54057c31c8d27fc961223bcb7ce13088bcf6595059"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   fl_query_hooks:
     dependency: "direct main"
     description:
-      path: "packages/fl_query_hooks"
-      ref: HEAD
-      resolved-ref: a817713a0bb0c486e908e9ed74467c4f7f58bea7
-      url: "https://github.com/KRTirtho/fl-query.git"
-    source: git
-    version: "1.0.0-alpha.5"
+      name: fl_query_hooks
+      sha256: "6c88b3bfbdc3e1330931b927903929d7351f86fc63266ac93b3acb9f133a09a9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -939,6 +970,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.6"
+  gap:
+    dependency: "direct main"
+    description:
+      name: gap
+      sha256: f19387d4e32f849394758b91377f9153a1b41d79513ef7668c088c77dbc6955d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   glob:
     dependency: transitive
     description:
@@ -1019,6 +1058,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.4"
+  html_unescape:
+    dependency: "direct main"
+    description:
+      name: html_unescape
+      sha256: "15362d7a18f19d7b742ef8dcb811f5fd2a2df98db9f80ea393c075189e0b61e3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   http:
     dependency: "direct main"
     description:
@@ -1144,6 +1191,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  jiosaavn:
+    dependency: "direct main"
+    description:
+      name: jiosaavn
+      sha256: d32b4f43f26488f942f5d7d19d748a1f2664ae3d41ff9c7d50eeb81705174bd2
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   js:
     dependency: transitive
     description:
@@ -1782,6 +1837,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliver_tools:
+    dependency: "direct main"
+    description:
+      name: sliver_tools
+      sha256: eae28220badfb9d0559207badcbbc9ad5331aac829a88cb0964d330d2a4636a6
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.12"
   smtc_windows:
     dependency: "direct main"
     description:
@@ -2102,6 +2165,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  very_good_infinite_list:
+    dependency: "direct main"
+    description:
+      name: very_good_infinite_list
+      sha256: "6f5ad429edbce6084e1c600e56b26b1de8c6b138e8e8fc2de41b686166029aa5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   visibility_detector:
     dependency: "direct main"
     description:
@@ -2150,6 +2221,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  wikipedia_api:
+    dependency: "direct main"
+    description:
+      name: wikipedia_api
+      sha256: "8bae02778c40e0c09ea237b7c1952c99a33a19ccbe31545e03c807fdc7c56ec6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   win32:
     dependency: transitive
     description:
@@ -2216,5 +2295,5 @@ packages:
     source: hosted
     version: "2.0.2"
 sdks:
-  dart: ">=3.2.0-194.0.dev <4.0.0"
+  dart: ">=3.2.0 <4.0.0"
   flutter: ">=3.13.0"

@@ -1,8 +1,12 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/hooks/use_spotify_infinite_query.dart';
-import 'package:spotube/hooks/use_spotify_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_query.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/wikipedia/wikipedia.dart';
+import 'package:wikipedia_api/wikipedia_api.dart';
 
 class ArtistQueries {
   const ArtistQueries();
@@ -72,11 +76,11 @@ class ArtistQueries {
     return useSpotifyQuery<bool, dynamic>(
       "user-follows-artists-query/$artist",
       (spotify) async {
-        final result = await spotify.me.isFollowing(
+        final result = await spotify.me.checkFollowing(
           FollowingType.artist,
           [artist],
         );
-        return result.first;
+        return result[artist];
       },
       ref: ref,
     );
@@ -86,10 +90,12 @@ class ArtistQueries {
     WidgetRef ref,
     String artist,
   ) {
+    final preferences = ref.watch(userPreferencesProvider);
     return useSpotifyQuery<Iterable<Track>, dynamic>(
       "artist-top-track-query/$artist",
       (spotify) {
-        return spotify.artists.getTopTracks(artist, "US");
+        return spotify.artists
+            .topTracks(artist, preferences.recommendationMarket);
       },
       ref: ref,
     );
@@ -122,9 +128,24 @@ class ArtistQueries {
     return useSpotifyQuery<Iterable<Artist>, dynamic>(
       "artist-related-artist-query/$artist",
       (spotify) {
-        return spotify.artists.getRelatedArtists(artist);
+        return spotify.artists.relatedArtists(artist);
       },
       ref: ref,
+    );
+  }
+
+  Query<Summary?, dynamic> wikipediaSummary(ArtistSimple artist) {
+    return useQuery<Summary?, dynamic>(
+      "artist-wikipedia-query/${artist.id}",
+      () async {
+        final query = artist.name!.replaceAll(" ", "_");
+        final res = await wikipedia.pageContent.pageSummaryTitleGet(query);
+        if (res?.type != "standard") {
+          return await wikipedia.pageContent
+              .pageSummaryTitleGet("${query}_(singer)");
+        }
+        return res;
+      },
     );
   }
 }

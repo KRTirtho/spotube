@@ -7,11 +7,11 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/extensions/map.dart';
 import 'package:spotube/extensions/track.dart';
-import 'package:spotube/hooks/use_spotify_infinite_query.dart';
-import 'package:spotube/hooks/use_spotify_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_query.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 typedef RecommendationParameters = ({
   RecommendationAttribute acousticness,
@@ -143,17 +143,37 @@ class PlaylistQueries {
     );
   }
 
-  Future<List<Track>> likedTracks(
-    SpotifyApi spotify,
-    WidgetRef ref,
-  ) async {
+  Query<List<PlaylistSimple>, dynamic> ofMineAll(WidgetRef ref) {
+    return useSpotifyQuery<List<PlaylistSimple>, dynamic>(
+      "current-user-all-playlists",
+      (spotify) async {
+        var page = await spotify.playlists.me.getPage(50);
+        final playlists = <PlaylistSimple>[];
+
+        if (page.isLast == true) {
+          return page.items?.toList() ?? [];
+        }
+
+        playlists.addAll(page.items ?? []);
+        while (!page.isLast) {
+          page = await spotify.playlists.me.getPage(50, page.nextOffset);
+          playlists.addAll(page.items ?? []);
+        }
+
+        return playlists;
+      },
+      ref: ref,
+    );
+  }
+
+  Future<List<Track>> likedTracks(SpotifyApi spotify) async {
     final tracks = await spotify.tracks.me.saved.all();
 
     return tracks.map((e) => e.track!).toList();
   }
 
   Query<List<Track>, dynamic> likedTracksQuery(WidgetRef ref) {
-    final query = useCallback((spotify) => likedTracks(spotify, ref), []);
+    final query = useCallback((spotify) => likedTracks(spotify), []);
     final context = useContext();
 
     return useSpotifyQuery<List<Track>, dynamic>(
@@ -178,34 +198,48 @@ class PlaylistQueries {
     );
   }
 
-  Future<List<Track>> tracksOf(
-    String playlistId,
-    SpotifyApi spotify,
-    WidgetRef ref,
-  ) async {
-    if (playlistId == "user-liked-tracks") return <Track>[];
-    return spotify.playlists.getTracksByPlaylistId(playlistId).all().then(
-          (value) => value.where((track) => track.id != null).toList(),
-        );
-  }
-
-  Query<List<Track>, dynamic> tracksOfQuery(
-    WidgetRef ref,
-    String playlistId,
-  ) {
-    return useSpotifyQuery<List<Track>, dynamic>(
-      "playlist-tracks/$playlistId",
-      (spotify) => tracksOf(playlistId, spotify, ref),
-      ref: ref,
-    );
-  }
-
   Query<Playlist, dynamic> byId(WidgetRef ref, String id) {
     return useSpotifyQuery<Playlist, dynamic>(
       "playlist/$id",
       (spotify) async {
         return await spotify.playlists.get(id);
       },
+      ref: ref,
+    );
+  }
+
+  Future<List<Track>> tracksOf(
+    int pageParam,
+    SpotifyApi spotify,
+    String playlistId,
+  ) async {
+    try {
+      final playlists = await spotify.playlists
+          .getTracksByPlaylistId(playlistId)
+          .getPage(20, pageParam * 20);
+      return playlists.items?.toList() ?? <Track>[];
+    } catch (e, stack) {
+      Catcher2.reportCheckedError(e, stack);
+      rethrow;
+    }
+  }
+
+  int? tracksOfQueryNextPage(int lastPage, List<Track> lastPageData) {
+    if (lastPageData.length < 20) {
+      return null;
+    }
+    return lastPage + 1;
+  }
+
+  InfiniteQuery<List<Track>, dynamic, int> tracksOfQuery(
+    WidgetRef ref,
+    String playlistId,
+  ) {
+    return useSpotifyInfiniteQuery<List<Track>, dynamic, int>(
+      "playlist-tracks/$playlistId",
+      (page, spotify) => tracksOf(page, spotify, playlistId),
+      initialPage: 0,
+      nextPage: tracksOfQueryNextPage,
       ref: ref,
     );
   }

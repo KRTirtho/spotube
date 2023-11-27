@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/extensions/theme.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
+import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 
 class ShimmerArtistProfile extends HookWidget {
   const ShimmerArtistProfile({Key? key}) : super(key: key);
@@ -50,7 +50,7 @@ class ShimmerArtistProfile extends HookWidget {
           ),
         ),
         const SizedBox(width: 10),
-        const Flexible(child: ShimmerTrackTile(noSliver: true)),
+        const Flexible(child: ShimmerTrackTileGroup(noSliver: true)),
       ],
     );
   }

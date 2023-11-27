@@ -1,4 +1,5 @@
 import 'package:envied/envied.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 part 'env.g.dart';
 
@@ -24,5 +25,8 @@ abstract class Env {
   @EnviedField(varName: 'ENABLE_UPDATE_CHECK', defaultValue: "1")
   static final String _enableUpdateChecker = _Env._enableUpdateChecker;
 
-  static bool get enableUpdateChecker => _enableUpdateChecker == "1";
+  static bool get enableUpdateChecker =>
+      DesktopTools.platform.isFlatpak || _enableUpdateChecker == "1";
+
+  static String discordAppId = "1176718791388975124";
 }

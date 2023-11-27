@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'package:spotube/hooks/use_breakpoint_value.dart';
+import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 
 class ShimmerPlaybuttonCardPainter extends CustomPainter {
   final Color background;

@@ -59,32 +59,32 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
 
   static Future<String?> read(String key) async {
     final localStorage = await SharedPreferences.getInstance();
-    if (kIsMacOS || kIsIOS) {
+    if (kIsMacOS || kIsIOS || (kIsLinux && !kIsFlatpak)) {
       return localStorage.getString(key);
-    } else {
-      try {
-        await localStorage.setBool(kIsUsingEncryption, true);
-        return await secureStorage.read(key: key);
-      } catch (e) {
-        await localStorage.setBool(kIsUsingEncryption, false);
-        return localStorage.getString(key);
-      }
+    }
+
+    try {
+      await localStorage.setBool(kIsUsingEncryption, true);
+      return await secureStorage.read(key: key);
+    } catch (e) {
+      await localStorage.setBool(kIsUsingEncryption, false);
+      return localStorage.getString(key);
     }
   }
 
   static Future<void> write(String key, String value) async {
     final localStorage = await SharedPreferences.getInstance();
-    if (kIsMacOS || kIsIOS) {
+    if (kIsMacOS || kIsIOS || (kIsLinux && !kIsFlatpak)) {
       await localStorage.setString(key, value);
       return;
-    } else {
-      try {
-        await localStorage.setBool(kIsUsingEncryption, true);
-        await secureStorage.write(key: key, value: value);
-      } catch (e) {
-        await localStorage.setBool(kIsUsingEncryption, false);
-        await localStorage.setString(key, value);
-      }
+    }
+
+    try {
+      await localStorage.setBool(kIsUsingEncryption, true);
+      await secureStorage.write(key: key, value: value);
+    } catch (e) {
+      await localStorage.setBool(kIsUsingEncryption, false);
+      await localStorage.setString(key, value);
     }
   }
 

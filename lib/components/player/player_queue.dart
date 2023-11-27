@@ -11,10 +11,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/track_table/track_tile.dart';
+import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_auto_scroll_controller.dart';
+import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -36,12 +36,15 @@ class PlayerQueue extends HookConsumerWidget {
 
     final tracks = playlist.tracks;
     final borderRadius = floating
-        ? BorderRadius.circular(10)
+        ? const BorderRadius.only(
+            topLeft: Radius.circular(10),
+          )
         : const BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           );
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
     final headlineColor = theme.textTheme.headlineSmall?.color;
 
     final filteredTracks = useMemoized(
@@ -80,47 +83,49 @@ class PlayerQueue extends HookConsumerWidget {
       return const NotFound(vertical: true);
     }
 
-    return BackdropFilter(
-      filter: ImageFilter.blur(
-        sigmaX: 12.0,
-        sigmaY: 12.0,
-      ),
-      child: Container(
-        margin: EdgeInsets.all(floating ? 8.0 : 0),
-        padding: const EdgeInsets.only(
-          top: 5.0,
+    return ClipRRect(
+      borderRadius: borderRadius,
+      clipBehavior: Clip.hardEdge,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 15,
+          sigmaY: 15,
         ),
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor.withOpacity(0.5),
-          borderRadius: borderRadius,
-        ),
-        child: CallbackShortcuts(
-          bindings: {
-            LogicalKeySet(LogicalKeyboardKey.escape): () {
-              if (!isSearching.value) {
-                Navigator.of(context).pop();
+        child: Container(
+          padding: const EdgeInsets.only(
+            top: 5.0,
+          ),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+            borderRadius: borderRadius,
+          ),
+          child: CallbackShortcuts(
+            bindings: {
+              LogicalKeySet(LogicalKeyboardKey.escape): () {
+                if (!isSearching.value) {
+                  Navigator.of(context).pop();
+                }
+                isSearching.value = false;
+                searchText.value = '';
               }
-              isSearching.value = false;
-              searchText.value = '';
-            }
-          },
-          child: LayoutBuilder(builder: (context, constraints) {
-            return Column(
+            },
+            child: Column(
               children: [
-                Container(
-                  height: 5,
-                  width: 100,
-                  margin: const EdgeInsets.only(bottom: 5, top: 2),
-                  decoration: BoxDecoration(
-                    color: headlineColor,
-                    borderRadius: BorderRadius.circular(20),
+                if (!floating)
+                  Container(
+                    height: 5,
+                    width: 100,
+                    margin: const EdgeInsets.only(bottom: 5, top: 2),
+                    decoration: BoxDecoration(
+                      color: headlineColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (constraints.mdAndUp || !isSearching.value) ...[
+                    if (mediaQuery.mdAndUp || !isSearching.value) ...[
                       const SizedBox(width: 10),
                       Text(
                         context.l10n.tracks_in_queue(tracks.length),
@@ -132,7 +137,7 @@ class PlayerQueue extends HookConsumerWidget {
                       ),
                       const Spacer(),
                     ],
-                    if (constraints.mdAndUp || isSearching.value)
+                    if (mediaQuery.mdAndUp || isSearching.value)
                       TextField(
                         onChanged: (value) {
                           searchText.value = value;
@@ -140,7 +145,7 @@ class PlayerQueue extends HookConsumerWidget {
                         decoration: InputDecoration(
                           hintText: context.l10n.search,
                           isDense: true,
-                          prefixIcon: constraints.smAndDown
+                          prefixIcon: mediaQuery.smAndDown
                               ? IconButton(
                                   icon: const Icon(
                                     Icons.arrow_back_ios_new_outlined,
@@ -157,8 +162,8 @@ class PlayerQueue extends HookConsumerWidget {
                               : const Icon(SpotubeIcons.filter),
                           constraints: BoxConstraints(
                             maxHeight: 40,
-                            maxWidth: constraints.smAndDown
-                                ? constraints.maxWidth - 20
+                            maxWidth: mediaQuery.smAndDown
+                                ? mediaQuery.size.width - 40
                                 : 300,
                           ),
                         ),
@@ -170,7 +175,7 @@ class PlayerQueue extends HookConsumerWidget {
                           isSearching.value = !isSearching.value;
                         },
                       ),
-                    if (constraints.mdAndUp || !isSearching.value) ...[
+                    if (mediaQuery.mdAndUp || !isSearching.value) ...[
                       const SizedBox(width: 10),
                       FilledButton(
                         style: FilledButton.styleFrom(
@@ -197,51 +202,50 @@ class PlayerQueue extends HookConsumerWidget {
                 const SizedBox(height: 10),
                 if (!isSearching.value && searchText.value.isEmpty)
                   Flexible(
-                    child: InterScrollbar(
-                      controller: controller,
-                      child: ReorderableListView.builder(
-                        onReorder: (oldIndex, newIndex) {
-                          playlistNotifier.moveTrack(oldIndex, newIndex);
-                        },
-                        scrollController: controller,
-                        itemCount: tracks.length,
-                        shrinkWrap: true,
-                        buildDefaultDragHandles: false,
-                        itemBuilder: (context, i) {
-                          final track = tracks.elementAt(i);
-                          return AutoScrollTag(
-                            key: ValueKey(i),
-                            controller: controller,
-                            index: i,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: TrackTile(
-                                index: i,
-                                track: track,
-                                onTap: () async {
-                                  if (playlist.activeTrack?.id == track.id) {
-                                    return;
-                                  }
-                                  await playlistNotifier.jumpToTrack(track);
-                                },
-                                leadingActions: [
-                                  ReorderableDragStartListener(
-                                    index: i,
-                                    child: const Icon(SpotubeIcons.dragHandle),
-                                  ),
-                                ],
-                              ),
+                    child: ReorderableListView.builder(
+                      onReorder: (oldIndex, newIndex) {
+                        playlistNotifier.moveTrack(oldIndex, newIndex);
+                      },
+                      scrollController: controller,
+                      itemCount: tracks.length,
+                      shrinkWrap: true,
+                      buildDefaultDragHandles: false,
+                      itemBuilder: (context, i) {
+                        final track = tracks.elementAt(i);
+                        return AutoScrollTag(
+                          key: ValueKey(i),
+                          controller: controller,
+                          index: i,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TrackTile(
+                              index: i,
+                              track: track,
+                              onTap: () async {
+                                if (playlist.activeTrack?.id == track.id) {
+                                  return;
+                                }
+                                await playlistNotifier.jumpToTrack(track);
+                              },
+                              leadingActions: [
+                                ReorderableDragStartListener(
+                                  index: i,
+                                  child: const Icon(SpotubeIcons.dragHandle),
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   )
                 else
                   Flexible(
                     child: InterScrollbar(
+                      controller: controller,
                       child: ListView.builder(
+                        controller: controller,
                         itemCount: filteredTracks.length,
                         itemBuilder: (context, i) {
                           final track = filteredTracks.elementAt(i);
@@ -264,8 +268,8 @@ class PlayerQueue extends HookConsumerWidget {
                     ),
                   ),
               ],
-            );
-          }),
+            ),
+          ),
         ),
       ),
     );

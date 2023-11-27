@@ -5,10 +5,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/heart_button.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';
@@ -35,6 +35,7 @@ class PlayerActions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final mediaQuery = MediaQuery.of(context);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final isLocalTrack = playlist.activeTrack is LocalTrack;
     ref.watch(downloadManagerProvider);
@@ -86,23 +87,7 @@ class PlayerActions extends HookConsumerWidget {
             tooltip: context.l10n.queue,
             onPressed: playlist.activeTrack != null
                 ? () {
-                    showModalBottomSheet(
-                      context: context,
-                      isDismissible: true,
-                      enableDrag: true,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.black12,
-                      barrierColor: Colors.black12,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * .7,
-                      ),
-                      builder: (context) {
-                        return PlayerQueue(floating: floatingQueue);
-                      },
-                    );
+                    Scaffold.of(context).openEndDrawer();
                   }
                 : null,
           ),
@@ -119,6 +104,7 @@ class PlayerActions extends HookConsumerWidget {
                       isScrollControlled: true,
                       backgroundColor: Colors.black12,
                       barrierColor: Colors.black12,
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
