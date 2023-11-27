@@ -2,7 +2,7 @@
   <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
 An open source, cross-platform Spotify client compatible across multiple platforms<br />
-utilizing Spotify's data API and YouTube (or Piped.video) as an audio source,<br />
+utilizing Spotify's data API and YouTube (or Piped.video or JioSaavn) as an audio source,<br />
 eliminating the need for Spotify Premium
 
 Btw it's not another Electron app😉
@@ -184,19 +184,23 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 
 <details>
   <summary>
-    <h2><code>[Click to show]</code> 🙏 Library/Plugin/Framework Credits</h2>
+    <h2><code>[Click to show]</code> 🙏 Services/Package/Plugin Credits</h2>
   </summary>
 
+### Services
 1. [Flutter](https://flutter.dev) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
 1. [Spotify API](https://developer.spotify.com/documentation/web-api) - The Spotify Web API is a RESTful API that provides access to Spotify data
 1. [Piped](https://piped-docs.kavin.rocks/) - Piped is a privacy friendly alternative YouTube frontend, which is efficient and scalable by design.
 1. [YouTube](https://youtube.com/) - YouTube is an American online video-sharing platform headquartered in San Bruno, California. Three former PayPal employees—Chad Hurley, Steve Chen, and Jawed Karim—created the service in February 2005
+1. [JioSaavn](https://www.jiosaavn.com) - JioSaavn is an Indian online music streaming service and a digital distributor of Bollywood, English and other regional Indian music across the world. Since it was founded in 2007 as Saavn, the company has acquired rights to over 5 crore (50 million) music tracks in 15 languages
 1. [Linux](https://www.linux.org) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
 1. [AUR](https://aur.archlinux.org) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users
 1. [Flatpak](https://flatpak.org) - Flatpak is a utility for software deployment and package management for Linux
 1. [SponsorBlock](https://sponsor.ajay.app) - SponsorBlock is an open-source crowdsourced browser extension and open API for skipping sponsor segments in YouTube videos.
 1. [Inno Setup](https://jrsoftware.org/isinfo.php) - Inno Setup is a free installer for Windows programs by Jordan Russell and Martijn Laan
 1. [F-Droid](https://f-droid.org) - F-Droid is an installable catalogue of FOSS (Free and Open Source Software) applications for the Android platform. The client makes it easy to browse, install, and keep track of updates on your device
+
+### Dependencies
 1. [args](https://pub.dev/packages/args) - Library for defining parsers for parsing raw command-line arguments into a set of options and values using GNU and POSIX style options.
 1. [async](https://pub.dev/packages/async) - Utility functions and classes related to the 'dart:async' library.
 1. [audio_service](https://pub.dev/packages/audio_service) - Flutter plugin to play audio in the background while the screen is off.
@@ -216,7 +220,10 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [duration](https://github.com/desktop-dart/duration) - Utilities to make working with 'Duration's easier. Formats duration in human readable form and also parses duration in human readable form to Dart's Duration.
 1. [envied](https://github.com/petercinibulk/envied) - Explicitly reads environment variables into a dart file from a .env file for more security and faster start up times.
 1. [file_selector](https://pub.dev/packages/file_selector) - Flutter plugin for opening and saving files, or selecting directories, using native file selection UI.
-1. [fluentui_system_icons](https://github.com/microsoft/fluentui-system-icons/tree/main) - Fluent UI System Icons are a collection of familiar, friendly and modern icons from Microsoft.
+1. [fl_query](https://fl-query.krtirtho.dev) - Asynchronous data caching, refetching & invalidation library for Flutter
+1. [fl_query_hooks](https://fl-query.krtirtho.dev) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
+1. [fl_query_devtools](https://fl-query.krtirtho.dev) - Devtools support for Fl-Query
+1. [fluentui_system_icons](https://github.com/microsoft/fluentui-system-icons/tree/main) - Fluent UI System Icons are a collection of familiar, friendly and modern icons from Microsoft.      
 1. [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/develop/flutter_cache_manager) - Generic cache manager for flutter. Saves web files on the storages of the device and saves the cache info using sqflite.
 1. [flutter_displaymode](https://github.com/ajinasokan/flutter_displaymode) - A Flutter plugin to set display mode (resolution, refresh rate) on Android platform. Allows to enable high refresh rate on supported devices.
 1. [flutter_feather_icons](https://github.com/muj-programmer/flutter_feather_icons) - Feather is a collection of simply beautiful open source icons. Each icon is designed on a 24x24 grid with an emphasis on simplicity, consistency and usability.
@@ -227,7 +234,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) - Flutter Secure Storage provides API to store data in secure storage. Keychain is used in iOS, KeyStore based solution is used in Android.
 1. [flutter_svg](https://pub.dev/packages/flutter_svg) - An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
 1. [form_validator](https://github.com/TheMisir/form-validator) - Simplest form validation library for flutter's form field widgets
-1. [fuzzywuzzy](https://github.com/sphericalkat/dart-fuzzywuzzy) - An implementation of the popular fuzzywuzzy package in Dart, to suit all your fuzzy string matching/searching needs!
+1. [fuzzywuzzy](https://github.com/sphericalkat/dart-fuzzywuzzy) - An implementation of the popular fuzzywuzzy package in Dart, to suit all your fuzzy string matching/searching needs!        
 1. [google_fonts](https://pub.dev/packages/google_fonts) - A Flutter package to use fonts from fonts.google.com. Supports HTTP fetching, caching, and asset bundling.
 1. [go_router](https://pub.dev/packages/go_router) - A declarative router for Flutter based on Navigation 2 supporting deep linking, data-driven routes and more
 1. [hive](https://github.com/hivedb/hive/tree/master/hive) - Lightweight and blazing fast key-value database written in pure Dart. Strongly encrypted using AES-256.
@@ -244,10 +251,10 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [media_kit_libs_audio](https://github.com/media-kit/media-kit.git) - package:media_kit audio (only) playback native libraries for all platforms.
 1. [metadata_god](https://github.com/KRTirtho/metadata_god) - Plugin for retrieving and writing audio tags/metadata from audio files
 1. [mime](https://pub.dev/packages/mime) - Utilities for handling media (MIME) types, including determining a type from a file extension and file contents.
-1. [package_info_plus](https://plus.fluttercommunity.dev/) - Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.
+1. [package_info_plus](https://plus.fluttercommunity.dev/) - Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.  
 1. [palette_generator](https://pub.dev/packages/palette_generator) - Flutter package for generating palette colors from a source image.
 1. [path](https://pub.dev/packages/path) - A string-based path manipulation library. All of the path operations you know and love, with solid support for Windows, POSIX (Linux and Mac OS X), and the web.
-1. [path_provider](https://pub.dev/packages/path_provider) - Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.
+1. [path_provider](https://pub.dev/packages/path_provider) - Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.      
 1. [permission_handler](https://pub.dev/packages/permission_handler) - Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.
 1. [piped_client](https://github.com/KRTirtho/piped_client) - API Client for piped.video
 1. [popover](https://github.com/minikin/popover) - A popover is a transient view that appears above other content onscreen when you tap a control or in an area.
@@ -258,7 +265,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [smtc_windows](https://github.com/KRTirtho/smtc_windows) - Windows `SystemMediaTransportControls` implementation for Flutter giving access to Windows OS Media Control applet.
 1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.
 1. [stroke_text](https://github.com/MohamedAbd0/stroke_text) - A Simple Flutter plugin for applying stroke (border) style to a text widget
-1. [supabase](https://supabase.com) - A dart client for Supabase. This client makes it simple for developers to build secure and scalable products.
 1. [system_theme](https://pub.dev/packages/system_theme) - A plugin to get the current system theme info. Supports Android, Web, Windows, Linux and macOS
 1. [titlebar_buttons](https://github.com/gtk-flutter/titlebar_buttons) - A package which provides most of the titlebar buttons from windows, linux and macos.
 1. [url_launcher](https://pub.dev/packages/url_launcher) - Flutter plugin for launching a URL. Supports web, phone, SMS, and email schemes.
@@ -269,6 +275,13 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - A port in dart of the youtube explode library. Supports several API functions without the need of Youtube API Key.
 1. [simple_icons](https://jlnrrg.github.io/) - The Simple Icon pack available as Flutter Icons. Provides over 1500 Free SVG icons for popular brands.
 1. [audio_service_mpris](https://github.com/bdrazhzhov/audio-service-mpris) - audio_service platform interface supporting Media Player Remote Interfacing Specification.
+1. [file_picker](https://github.com/miguelpruivo/plugins_flutter_file_picker) - A package that allows you to use a native file explorer to pick single or multiple absolute file paths, with extension filtering support.
+1. [jiosaavn](https://github.com/KRTirtho/jiosaavn) - Unofficial API client for jiosaavn.com
+1. [very_good_infinite_list](https://github.com/VeryGoodOpenSource/very_good_infinite_list) - A library for easily displaying paginated data, created by Very Good Ventures. Great for activity feeds, news feeds, and more.
+1. [gap](https://github.com/letsar/gap) - Flutter widgets for easily adding gaps inside Flex widgets such as Columns and Rows or scrolling views.
+1. [sliver_tools](https://github.com/Kavantix) - A set of useful sliver tools that are missing from the flutter framework
+1. [html_unescape](https://github.com/filiph/html_unescape) - A small library for un-escaping HTML. Supports all Named Character References, Decimal Character References and Hexadecimal Character References.
+1. [wikipedia_api](https://github.com/KRTirtho/wikipedia_api) - Wikipedia API for dart and flutter
 1. [build_runner](https://pub.dev/packages/build_runner) - A build system for Dart code generation and modular compilation.
 1. [envied_generator](https://github.com/petercinibulk/envied) - Generator for the Envied package. See https://pub.dev/packages/envied.
 1. [flutter_distributor](https://distributor.leanflutter.org) - A complete tool for packaging and publishing your Flutter apps.
@@ -279,12 +292,11 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [json_serializable](https://pub.dev/packages/json_serializable) - Automatically generate code for converting to and from JSON by annotating Dart classes.
 1. [pub_api_client](https://github.com/leoafarias/pub_api_client) - An API Client for Pub to interact with public package information.
 1. [pubspec_parse](https://pub.dev/packages/pubspec_parse) - Simple package for parsing pubspec.yaml files with a type-safe API and rich error reporting.
-1. [fl_query](https://fl-query.vercel.app) - Asynchronous data caching, refetching & invalidation library for Flutter
-1. [fl_query_hooks](https://fl-query.vercel.app) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
-1. [fl_query_devtools](https://fl-query.vercel.app) - Devtools support for Fl-Query
 1. [flutter_desktop_tools](https://github.com/KRTirtho/flutter_desktop_tools) - Essential collection of tools for flutter desktop app development
 1. [scrobblenaut](https://github.com/Nebulino/Scrobblenaut) - A deadly simple LastFM API Wrapper for Dart. So deadly simple that it's gonna hit the mark.
 1. [window_size](https://github.com/google/flutter-desktop-embedding.git) - Allows resizing and repositioning the window containing Flutter.
+1. [draggable_scrollbar](https://github.com/fluttercommunity/flutter-draggable-scrollbar) - A scrollbar that can be dragged for quickly navigation through a vertical list. Additional option is showing label next to scrollthumb with information about current item.
+1. [dart_discord_rpc](https://github.com/alexmercerind/dart_discord_rpc) - Discord Rich Presence for Flutter & Dart apps & games.
 </details>
 
 <div align="center"><h4>© Copyright Spotube 2023</h4></div>
