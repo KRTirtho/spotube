@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
+* "Add () to Playlist" option not showing in favorited playlists [#904](https://github.com/KRTirtho/spotube/issues/904) ([96021e1](https://github.com/KRTirtho/spotube/commit/96021e1a49d22bd25fd052c122f49f439c2bea43))
 * 0:00 media duration in queue after application restart  [#782](https://github.com/KRTirtho/spotube/issues/782) ([83c0b49](https://github.com/KRTirtho/spotube/commit/83c0b49da962d9f3d40de9525f90f0b320e8f7b8))
 * Add to Playlist Dialog memory leak [#817](https://github.com/KRTirtho/spotube/issues/817) ([fed36ec](https://github.com/KRTirtho/spotube/commit/fed36ecdd81e8a0f8358693eff0a6233dea32e5d))
 * **album_card:** show loading state during adding track to queue/play ([5633367](https://github.com/KRTirtho/spotube/commit/5633367397812148f6d712d06e97a4f84033f968))
