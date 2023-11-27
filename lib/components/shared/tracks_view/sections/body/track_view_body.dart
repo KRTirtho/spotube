@@ -24,6 +24,7 @@ class TrackViewBodySection extends HookConsumerWidget {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final props = InheritedTrackView.of(context);
+    final trackViewState = ref.watch(trackViewProvider(props.tracks));
 
     final searchController = useTextEditingController();
     final searchFocus = useFocusNode();
@@ -37,8 +38,6 @@ class TrackViewBodySection extends HookConsumerWidget {
       final trackIds = props.tracks.map((e) => e.id).toSet();
       return props.tracks.where((e) => trackIds.remove(e.id)).toList();
     }, [props.tracks]);
-
-    final trackViewState = ref.watch(trackViewProvider(uniqTracks));
 
     final tracks = useMemoized(() {
       List<Track> filteredTracks;

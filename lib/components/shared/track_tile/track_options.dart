@@ -64,11 +64,15 @@ class TrackOptions extends HookConsumerWidget {
     });
   }
 
-  void actionAddToPlaylist(BuildContext context, Track track) {
+  void actionAddToPlaylist(
+    BuildContext context,
+    Track track,
+  ) {
     showDialog(
       context: context,
       builder: (context) => PlaylistAddTrackDialog(
         tracks: [track],
+        openFromPlaylist: playlistId,
       ),
     );
   }

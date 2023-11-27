@@ -11,9 +11,12 @@ import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
+  /// The id of the playlist this dialog was opened from
+  final String? openFromPlaylist;
   final List<Track> tracks;
   const PlaylistAddTrackDialog({
     required this.tracks,
+    required this.openFromPlaylist,
     Key? key,
   }) : super(key: key);
 
@@ -30,11 +33,12 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
               ?.where(
                 (playlist) =>
                     playlist.owner?.id != null &&
-                    playlist.owner!.id == me.data?.id,
+                    playlist.owner!.id == me.data?.id &&
+                    playlist.id != openFromPlaylist,
               )
               .toList() ??
           [],
-      [userPlaylists.data, me.data?.id],
+      [userPlaylists.data, me.data?.id, openFromPlaylist],
     );
 
     final playlistsCheck = useState(<String, bool>{});

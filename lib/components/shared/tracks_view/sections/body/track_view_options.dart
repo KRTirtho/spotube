@@ -11,7 +11,6 @@ import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
-import 'package:spotube/services/queries/queries.dart';
 
 class TrackViewBodyOptions extends HookConsumerWidget {
   const TrackViewBodyOptions({Key? key}) : super(key: key);
@@ -29,11 +28,6 @@ class TrackViewBodyOptions extends HookConsumerWidget {
 
     final trackViewState = ref.watch(trackViewProvider(props.tracks));
     final selectedTracks = trackViewState.selectedTracks;
-
-    final userPlaylists = useQueries.playlist.ofMineAll(ref);
-
-    final isUserPlaylist =
-        userPlaylists.data?.any((e) => e.id == props.collectionId) ?? false;
 
     return AdaptivePopSheetList(
       tooltip: context.l10n.more_actions,
@@ -66,6 +60,7 @@ class TrackViewBodyOptions extends HookConsumerWidget {
                   context: context,
                   builder: (context) {
                     return PlaylistAddTrackDialog(
+                      openFromPlaylist: props.collectionId,
                       tracks: selectedTracks.toList(),
                     );
                   },
@@ -100,15 +95,14 @@ class TrackViewBodyOptions extends HookConsumerWidget {
             context.l10n.download_count(selectedTracks.length),
           ),
         ),
-        if (!isUserPlaylist)
-          PopSheetEntry(
-            value: "add-to-playlist",
-            leading: const Icon(SpotubeIcons.playlistAdd),
-            enabled: selectedTracks.isNotEmpty,
-            title: Text(
-              context.l10n.add_count_to_playlist(selectedTracks.length),
-            ),
+        PopSheetEntry(
+          value: "add-to-playlist",
+          leading: const Icon(SpotubeIcons.playlistAdd),
+          enabled: selectedTracks.isNotEmpty,
+          title: Text(
+            context.l10n.add_count_to_playlist(selectedTracks.length),
           ),
+        ),
         PopSheetEntry(
           enabled: selectedTracks.isNotEmpty,
           value: "add-to-queue",

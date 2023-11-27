@@ -201,7 +201,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         Brightness.dark,
         isAmoledTheme,
       ),
-      [paletteColor, accentMaterialColor, isAmoledTheme],
+      
     );
 
     return MaterialApp.router(
