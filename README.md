@@ -2,10 +2,10 @@
   <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
 An open source, cross-platform Spotify client compatible across multiple platforms<br />
-utilizing Spotify's data API and YouTube (or Piped.video or JioSaavn) as an audio source,<br />
+utilizing Spotify's data API and YouTube, Piped.video or JioSaavn as an audio source,<br />
 eliminating the need for Spotify Premium
 
-Btw it's not another Electron app😉
+Btw it's not just another Electron app 😉
 
 <a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
 <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
@@ -25,8 +25,8 @@ Btw it's not another Electron app😉
 
 ## 🌃 Features
 
-- 🚫 No ads, thanks to the use of public & free Spotify and YT Music APIs¹
-- ⬇️ Downloadable tracks
+- 🚫 Advertisement free, thanks to the use of public & free Spotify and YT Music APIs¹
+- ⬇️ Freely downloadable tracks
 - 🖥️ 📱 Cross-platform support
 - 🪶 Small size & less data usage
 - 🕵️ Anonymous/guest login
@@ -45,8 +45,8 @@ Btw it's not another Electron app😉
 
 ## 📜 ⬇️ Installation guide
 
-New releases usually appear after 3-4 months.<br />
-This handy table lists all methods you can use to install Spotube:
+New versions usually release every 3-4 months.<br />
+This handy table lists all the methods you can use to install Spotube:
 
 <table>
   <tr>
