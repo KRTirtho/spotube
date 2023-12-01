@@ -49,7 +49,7 @@ const Footer = () => {
           color: "white",
         }}
       >
-        © 2022, Spotube. All rights reserved
+        © 2023, Spotube. All rights reserved
       </chakra.p>
 
       <Flex mx="-2">
