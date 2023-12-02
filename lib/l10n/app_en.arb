@@ -279,5 +279,6 @@
   "password": "Password",
   "login": "Login",
   "login_with_your_lastfm": "Login with your Last.fm account",
-  "scrobble_to_lastfm": "Scrobble to Last.fm"
+  "scrobble_to_lastfm": "Scrobble to Last.fm",
+  "go_to_album": "Go to Album"
 }
