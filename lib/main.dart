@@ -15,6 +15,7 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/l10n/l10n.dart';
@@ -47,6 +48,10 @@ Future<void> main(List<String> rawArgs) async {
   // force High Refresh Rate on some Android devices (like One Plus)
   if (DesktopTools.platform.isAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();
+  }
+
+  if (DesktopTools.platform.isDesktop) {
+    await DesktopTools.window.setPreventClose(true);
   }
 
   await DesktopTools.ensureInitialized(
@@ -177,6 +182,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
 
     useInitSysTray(ref);
+    useCloseBehavior(ref);
 
     useEffect(() {
       FlutterNativeSplash.remove();

@@ -11,16 +11,6 @@ import 'dart:io' show Platform, exit;
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:local_notifier/local_notifier.dart';
 
-final closeNotification = DesktopTools.createNotification(
-  title: 'Spotube',
-  message: 'Running in background. Minimized to System Tray',
-  actions: [
-    LocalNotificationAction(text: 'Close The App'),
-  ],
-)?..onClickAction = (value) {
-    exit(0);
-  };
-
 class PageWindowTitleBar extends StatefulHookConsumerWidget
     implements PreferredSizeWidget {
   final Widget? leading;
@@ -113,12 +103,7 @@ class WindowTitleBarButtons extends HookConsumerWidget {
     const type = ThemeType.auto;
 
     Future<void> onClose() async {
-      if (preferences.closeBehavior == CloseBehavior.close) {
-        exit(0);
-      } else {
-        await DesktopTools.window.hide();
-        await closeNotification?.show();
-      }
+      await DesktopTools.window.close();
     }
 
     useEffect(() {
