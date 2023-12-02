@@ -184,7 +184,6 @@ class SpotubeState extends ConsumerState<Spotube> {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;
         audioPlayer.dispose();
-        // youtube.close();
       };
     }, []);
 
@@ -201,7 +200,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         Brightness.dark,
         isAmoledTheme,
       ),
-      
+      [paletteColor, accentMaterialColor, isAmoledTheme],
     );
 
     return MaterialApp.router(
