@@ -251,7 +251,7 @@
   "developers": "Geliştiriciler",
   "not_logged_in": "Giriş yapmadınız",
   "search_mode": "Arama Modu",
-  "youtube_api_type": "API Türü",
+  "audio_source": "Ses Kaynağı",
   "ok": "Tamam",
   "failed_to_encrypt": "Şifreleme başarısız oldu",
   "encryption_failed_warning": "Spotube, verilerinizi güvenli bir şekilde depolamak için şifreleme kullanır. Ancak bunu başaramadı. Bu nedenle güvensiz bir depolamaya geri dönecektir. Linux kullanıyorsanız, lütfen gnome-keyring, kde-wallet, keepassxc vb. gibi bir güvenlik hizmetinizin kurulu olduğundan emin olun.",
