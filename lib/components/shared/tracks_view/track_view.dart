@@ -28,16 +28,19 @@ class TrackView extends HookConsumerWidget {
             )
           : null,
       extendBodyBehindAppBar: true,
-      body: CustomScrollView(
-        slivers: [
-          const TrackViewFlexHeader(),
-          SliverAnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: props.tracks.isEmpty
-                ? const ShimmerTrackTileGroup()
-                : const TrackViewBodySection(),
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: props.pagination.onRefresh,
+        child: CustomScrollView(
+          slivers: [
+            const TrackViewFlexHeader(),
+            SliverAnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: props.tracks.isEmpty
+                  ? const ShimmerTrackTileGroup()
+                  : const TrackViewBodySection(),
+            ),
+          ],
+        ),
       ),
     );
   }

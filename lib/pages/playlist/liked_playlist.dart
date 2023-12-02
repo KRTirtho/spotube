@@ -31,6 +31,9 @@ class LikedPlaylistPage extends HookConsumerWidget {
         onFetchAll: () async {
           return tracks.toList();
         },
+        onRefresh: () async {
+          await likedTracks.refresh();
+        },
       ),
       title: playlist.name!,
       description: playlist.description,
