@@ -163,7 +163,6 @@ jobs:
           dart pub global activate flutter_distributor
           alias dpkg-deb="dpkg-deb --Zxz"
           flutter_distributor package --platform=linux --targets=deb
-          flutter_distributor package --platform=linux --targets=appimage
           flutter_distributor package --platform=linux --targets=rpm
 
       - name: Create tar.xz (stable)
@@ -179,7 +178,6 @@ jobs:
           mv build/spotube-linux-*-x86_64.tar.xz dist/
           mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64.deb
           mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
-          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
 
 
       - uses: actions/upload-artifact@v3
@@ -187,7 +185,6 @@ jobs:
           if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
-            dist/Spotube-linux-x86_64.AppImage
             dist/Spotube-linux-x86_64.deb
             dist/Spotube-linux-x86_64.rpm
             dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
