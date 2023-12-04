@@ -5,12 +5,6 @@ part 'env.g.dart';
 
 @Envied(obfuscate: true, requireEnvFile: true, path: ".env")
 abstract class Env {
-  @EnviedField(varName: 'SUPABASE_URL')
-  static final String? supabaseUrl = _Env.supabaseUrl;
-
-  @EnviedField(varName: 'SUPABASE_API_KEY')
-  static final String? supabaseAnonKey = _Env.supabaseAnonKey;
-
   @EnviedField(varName: 'SPOTIFY_SECRETS')
   static final String rawSpotifySecrets = _Env.rawSpotifySecrets;
 
@@ -33,4 +27,6 @@ abstract class Env {
 
   static bool get enableUpdateChecker =>
       DesktopTools.platform.isFlatpak || _enableUpdateChecker == "1";
+
+  static String discordAppId = "1176718791388975124";
 }

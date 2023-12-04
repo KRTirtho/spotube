@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -12,6 +13,7 @@ import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -22,6 +24,7 @@ import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 enum TrackOptionValue {
+  album,
   share,
   addToPlaylist,
   addToQueue,
@@ -64,20 +67,27 @@ class TrackOptions extends HookConsumerWidget {
     });
   }
 
-  void actionAddToPlaylist(BuildContext context, Track track) {
+  void actionAddToPlaylist(
+    BuildContext context,
+    Track track,
+  ) {
     showDialog(
       context: context,
       builder: (context) => PlaylistAddTrackDialog(
         tracks: [track],
+        openFromPlaylist: playlistId,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context, ref) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    final router = GoRouter.of(context);
+
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
@@ -110,7 +120,7 @@ class TrackOptions extends HookConsumerWidget {
     ]);
 
     final progressNotifier = useMemoized(() {
-      final spotubeTrack = downloadManager.mapToSpotubeTrack(track);
+      final spotubeTrack = downloadManager.mapToSourcedTrack(track);
       if (spotubeTrack == null) return null;
       return downloadManager.getProgressNotifier(spotubeTrack);
     });
@@ -118,6 +128,12 @@ class TrackOptions extends HookConsumerWidget {
     final adaptivePopSheetList = AdaptivePopSheetList<TrackOptionValue>(
       onSelected: (value) async {
         switch (value) {
+          case TrackOptionValue.album:
+            await router.push(
+              '/album/${track.album!.id}',
+              extra: track.album!,
+            );
+            break;
           case TrackOptionValue.delete:
             await File((track as LocalTrack).path).delete();
             ref.refresh(localTracksProvider);
@@ -229,6 +245,13 @@ class TrackOptions extends HookConsumerWidget {
             )
           ],
         _ => [
+            if (mediaQuery.smAndDown)
+              PopSheetEntry(
+                value: TrackOptionValue.album,
+                leading: const Icon(SpotubeIcons.album),
+                title: Text(context.l10n.go_to_album),
+                subtitle: Text(track.album!.name!),
+              ),
             if (!playlist.containsTrack(track)) ...[
               PopSheetEntry(
                 value: TrackOptionValue.addToQueue,

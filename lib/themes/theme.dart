@@ -71,5 +71,8 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
     scrollbarTheme: const ScrollbarThemeData(
       thickness: MaterialStatePropertyAll(14),
     ),
+    checkboxTheme: CheckboxThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
   );
 }

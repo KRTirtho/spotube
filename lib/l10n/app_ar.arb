@@ -251,7 +251,7 @@
   "developers": "المطورون",
   "not_logged_in": "لم تقم بتسجيل الدخول",
   "search_mode": "وضع البحث",
-  "youtube_api_type": "نوع الـAPI",
+  "audio_source": "مصدر الصوت",
   "ok": "حسسناً",
   "failed_to_encrypt": "فشل في التشفير",
   "encryption_failed_warning": "يستخدم Spotube التشفير لتخزين بياناتك بشكل آمن. لكنها فشلت في القيام بذلك. لذلك سيعود الأمر إلى التخزين غير الآمن\nإذا كنت تستخدم Linux، فيرجى التأكد من تثبيت أي خدمة سرية (gnome-keyring، kde-wallet، keepassxc، إلخ)",

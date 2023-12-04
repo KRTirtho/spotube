@@ -63,25 +63,7 @@ class PlaybuttonCard extends HookWidget {
       others: 15,
     );
 
-    final textsHeight = useState(
-      (textsKey.currentContext?.findRenderObject() as RenderBox?)
-              ?.size
-              .height ??
-          110.00,
-    );
-
     final cleanDescription = useDescription(description);
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        textsHeight.value =
-            (textsKey.currentContext?.findRenderObject() as RenderBox?)
-                    ?.size
-                    .height ??
-                textsHeight.value;
-      });
-      return null;
-    }, [textsKey]);
 
     return Container(
       constraints: BoxConstraints(maxWidth: size),

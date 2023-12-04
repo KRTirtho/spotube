@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -32,6 +33,7 @@ class MiniLyricsPage extends HookConsumerWidget {
 
     final areaActive = useState(false);
     final hoverMode = useState(true);
+    final showLyrics = useState(true);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -82,17 +84,41 @@ class MiniLyricsPage extends HookConsumerWidget {
                       child: Sidebar.brandLogo(),
                     ),
                     const Spacer(),
-                    SizedBox(
-                      height: 30,
-                      child: TabBar(
-                        tabs: [
-                          Tab(text: context.l10n.synced),
-                          Tab(text: context.l10n.plain),
-                        ],
-                        isScrollable: true,
+                    if (showLyrics.value)
+                      SizedBox(
+                        height: 30,
+                        child: TabBar(
+                          tabs: [
+                            Tab(text: context.l10n.synced),
+                            Tab(text: context.l10n.plain),
+                          ],
+                          isScrollable: true,
+                        ),
                       ),
-                    ),
                     const Spacer(),
+                    IconButton(
+                      tooltip: context.l10n.lyrics,
+                      icon: showLyrics.value
+                          ? const Icon(SpotubeIcons.lyrics)
+                          : const Icon(SpotubeIcons.lyricsOff),
+                      style: ButtonStyle(
+                        foregroundColor: showLyrics.value
+                            ? MaterialStateProperty.all(
+                                theme.colorScheme.primary)
+                            : null,
+                      ),
+                      onPressed: () async {
+                        showLyrics.value = !showLyrics.value;
+                        areaActive.value = true;
+                        hoverMode.value = false;
+
+                        await DesktopTools.window.setSize(
+                          showLyrics.value
+                              ? const Size(400, 500)
+                              : const Size(400, 150),
+                        );
+                      },
+                    ),
                     IconButton(
                       tooltip: context.l10n.show_hide_ui_on_hover,
                       icon: hoverMode.value
@@ -105,9 +131,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                             : null,
                       ),
                       onPressed: () async {
-                        if (!hoverMode.value == true) {
-                          areaActive.value = true;
-                        }
+                        areaActive.value = true;
                         hoverMode.value = !hoverMode.value;
                       },
                     ),
@@ -150,22 +174,25 @@ class MiniLyricsPage extends HookConsumerWidget {
                   playlistQueue.activeTrack!.name!,
                   style: theme.textTheme.titleMedium,
                 ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    SyncedLyrics(
-                      palette: PaletteColor(theme.colorScheme.background, 0),
-                      isModal: true,
-                      defaultTextZoom: 65,
-                    ),
-                    PlainLyrics(
-                      palette: PaletteColor(theme.colorScheme.background, 0),
-                      isModal: true,
-                      defaultTextZoom: 65,
-                    ),
-                  ],
-                ),
-              ),
+              if (showLyrics.value)
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      SyncedLyrics(
+                        palette: PaletteColor(theme.colorScheme.background, 0),
+                        isModal: true,
+                        defaultTextZoom: 65,
+                      ),
+                      PlainLyrics(
+                        palette: PaletteColor(theme.colorScheme.background, 0),
+                        isModal: true,
+                        defaultTextZoom: 65,
+                      ),
+                    ],
+                  ),
+                )
+              else
+                const Gap(20),
               AnimatedCrossFade(
                 crossFadeState: areaActive.value
                     ? CrossFadeState.showFirst

@@ -249,7 +249,7 @@
   "developers": "Desenvolupadors",
   "not_logged_in": "No ha iniciat sesió",
   "search_mode": "Mode de cerca",
-  "youtube_api_type": "Tipus d'API de YouTube",
+  "audio_source": "Font d'àudio",
   "ok": "OK",
   "failed_to_encrypt": "Error al xifrar",
   "encryption_failed_warning": "Spotube utilitza el xifrado per emmagatzemar les seves dades de forma segura. Però ha fallat. Per tant, tornarà a un emmagatzament no segur\nSi estè utilizant Linux, asseguri's de tenir instal·lats els serveis secrets com gnome-keyring, kde-wallet i keepassxc",

@@ -114,8 +114,9 @@ class SearchPage extends HookConsumerWidget {
                     ),
                     color: theme.scaffoldBackgroundColor,
                     child: TextField(
-                      autofocus:
-                          queries.none((s) => s.hasPageData && !s.hasPageError),
+                      autofocus: queries
+                              .none((s) => s.hasPageData && !s.hasPageError) &&
+                          !kIsMobile,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(SpotubeIcons.search),
                         hintText: "${context.l10n.search}...",

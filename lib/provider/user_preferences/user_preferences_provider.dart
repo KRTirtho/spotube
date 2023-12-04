@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/sourced_track/enums.dart';
 
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
@@ -26,11 +26,11 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     state = UserPreferences.withDefaults();
   }
 
-  void setStreamMusicCodec(MusicCodec codec) {
+  void setStreamMusicCodec(SourceCodecs codec) {
     state = state.copyWith(streamMusicCodec: codec);
   }
 
-  void setDownloadMusicCodec(MusicCodec codec) {
+  void setDownloadMusicCodec(SourceCodecs codec) {
     state = state.copyWith(downloadMusicCodec: codec);
   }
 
@@ -60,7 +60,7 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     state = state.copyWith(checkUpdate: check);
   }
 
-  void setAudioQuality(AudioQuality quality) {
+  void setAudioQuality(SourceQualities quality) {
     state = state.copyWith(audioQuality: quality);
   }
 
@@ -97,8 +97,8 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     state = state.copyWith(skipNonMusic: skip);
   }
 
-  void setYoutubeApiType(YoutubeApiType type) {
-    state = state.copyWith(youtubeApiType: type);
+  void setAudioSource(AudioSource type) {
+    state = state.copyWith(audioSource: type);
   }
 
   void setSystemTitleBar(bool isSystemTitleBar) {

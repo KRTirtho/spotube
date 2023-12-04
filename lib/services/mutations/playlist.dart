@@ -131,10 +131,8 @@ class PlaylistMutations {
           );
         }
       },
-      refreshQueries: [
-        "playlist/$playlistId",
-      ],
       refreshInfiniteQueries: [
+        "playlist/$playlistId",
         "current-user-playlists",
       ],
       ref: ref,

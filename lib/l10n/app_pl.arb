@@ -249,7 +249,7 @@
   "developers": "Developerzy",
   "not_logged_in": "Nie jesteś zalogowany",
   "search_mode": "Tryb szukania",
-  "youtube_api_type": "Typ API",
+  "audio_source": "Źródło dźwięku",
   "ok": "Ok",
   "failed_to_encrypt": "Nie można zaszyfrować :(",
   "encryption_failed_warning": "Spotube używa szyfrowania do bezpiecznego przechowywania danych. Ale nie udało się tego zrobić. Więc powróci do niezabezpieczonego przechowywania\nJeśli używasz Linuksa, upewnij się, że masz zainstalowane jakieś usługi do szyfrowania (gnome-keyring, kde-wallet, keepassxc itp.)",

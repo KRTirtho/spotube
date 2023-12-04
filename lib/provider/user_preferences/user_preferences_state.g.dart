@@ -9,9 +9,9 @@ part of 'user_preferences_state.dart';
 UserPreferences _$UserPreferencesFromJson(Map<String, dynamic> json) =>
     UserPreferences(
       audioQuality: $enumDecodeNullable(
-              _$AudioQualityEnumMap, json['audioQuality'],
-              unknownValue: AudioQuality.high) ??
-          AudioQuality.high,
+              _$SourceQualitiesEnumMap, json['audioQuality'],
+              unknownValue: SourceQualities.high) ??
+          SourceQualities.high,
       albumColorSync: json['albumColorSync'] as bool? ?? true,
       amoledDarkTheme: json['amoledDarkTheme'] as bool? ?? false,
       checkUpdate: json['checkUpdate'] as bool? ?? true,
@@ -51,23 +51,23 @@ UserPreferences _$UserPreferencesFromJson(Map<String, dynamic> json) =>
       themeMode: $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode'],
               unknownValue: ThemeMode.system) ??
           ThemeMode.system,
-      youtubeApiType: $enumDecodeNullable(
-              _$YoutubeApiTypeEnumMap, json['youtubeApiType'],
-              unknownValue: YoutubeApiType.youtube) ??
-          YoutubeApiType.youtube,
+      audioSource: $enumDecodeNullable(
+              _$AudioSourceEnumMap, json['audioSource'],
+              unknownValue: AudioSource.youtube) ??
+          AudioSource.youtube,
       streamMusicCodec: $enumDecodeNullable(
-              _$MusicCodecEnumMap, json['streamMusicCodec'],
-              unknownValue: MusicCodec.weba) ??
-          MusicCodec.weba,
+              _$SourceCodecsEnumMap, json['streamMusicCodec'],
+              unknownValue: SourceCodecs.weba) ??
+          SourceCodecs.weba,
       downloadMusicCodec: $enumDecodeNullable(
-              _$MusicCodecEnumMap, json['downloadMusicCodec'],
-              unknownValue: MusicCodec.m4a) ??
-          MusicCodec.m4a,
+              _$SourceCodecsEnumMap, json['downloadMusicCodec'],
+              unknownValue: SourceCodecs.m4a) ??
+          SourceCodecs.m4a,
     );
 
 Map<String, dynamic> _$UserPreferencesToJson(UserPreferences instance) =>
     <String, dynamic>{
-      'audioQuality': _$AudioQualityEnumMap[instance.audioQuality]!,
+      'audioQuality': _$SourceQualitiesEnumMap[instance.audioQuality]!,
       'albumColorSync': instance.albumColorSync,
       'amoledDarkTheme': instance.amoledDarkTheme,
       'checkUpdate': instance.checkUpdate,
@@ -85,14 +85,15 @@ Map<String, dynamic> _$UserPreferencesToJson(UserPreferences instance) =>
       'downloadLocation': instance.downloadLocation,
       'pipedInstance': instance.pipedInstance,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
-      'youtubeApiType': _$YoutubeApiTypeEnumMap[instance.youtubeApiType]!,
-      'streamMusicCodec': _$MusicCodecEnumMap[instance.streamMusicCodec]!,
-      'downloadMusicCodec': _$MusicCodecEnumMap[instance.downloadMusicCodec]!,
+      'audioSource': _$AudioSourceEnumMap[instance.audioSource]!,
+      'streamMusicCodec': _$SourceCodecsEnumMap[instance.streamMusicCodec]!,
+      'downloadMusicCodec': _$SourceCodecsEnumMap[instance.downloadMusicCodec]!,
     };
 
-const _$AudioQualityEnumMap = {
-  AudioQuality.high: 'high',
-  AudioQuality.low: 'low',
+const _$SourceQualitiesEnumMap = {
+  SourceQualities.high: 'high',
+  SourceQualities.medium: 'medium',
+  SourceQualities.low: 'low',
 };
 
 const _$CloseBehaviorEnumMap = {
@@ -370,12 +371,13 @@ const _$ThemeModeEnumMap = {
   ThemeMode.dark: 'dark',
 };
 
-const _$YoutubeApiTypeEnumMap = {
-  YoutubeApiType.youtube: 'youtube',
-  YoutubeApiType.piped: 'piped',
+const _$AudioSourceEnumMap = {
+  AudioSource.youtube: 'youtube',
+  AudioSource.piped: 'piped',
+  AudioSource.jiosaavn: 'jiosaavn',
 };
 
-const _$MusicCodecEnumMap = {
-  MusicCodec.m4a: 'm4a',
-  MusicCodec.weba: 'weba',
+const _$SourceCodecsEnumMap = {
+  SourceCodecs.m4a: 'm4a',
+  SourceCodecs.weba: 'weba',
 };

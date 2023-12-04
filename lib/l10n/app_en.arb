@@ -251,7 +251,7 @@
   "developers": "Developers",
   "not_logged_in": "You're not logged in",
   "search_mode": "Search Mode",
-  "youtube_api_type": "API Type",
+  "audio_source": "Audio Source",
   "ok": "Ok",
   "failed_to_encrypt": "Failed to encrypt",
   "encryption_failed_warning": "Spotube uses encryption to securely store your data. But failed to do so. So it'll fallback to insecure storage\nIf you're using linux, please make sure you've any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed",
@@ -279,5 +279,6 @@
   "password": "Password",
   "login": "Login",
   "login_with_your_lastfm": "Login with your Last.fm account",
-  "scrobble_to_lastfm": "Scrobble to Last.fm"
+  "scrobble_to_lastfm": "Scrobble to Last.fm",
+  "go_to_album": "Go to Album"
 }

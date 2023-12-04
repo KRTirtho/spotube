@@ -8,7 +8,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/map.dart';
 import 'package:spotube/hooks/spotify/use_spotify_query.dart';
 import 'package:spotube/models/lyrics.dart';
-import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,7 +44,7 @@ class LyricsQueries {
     return useQuery<SubtitleSimple, dynamic>(
       "synced-lyrics/${track?.id}}",
       () async {
-        if (track == null || track is! SpotubeTrack) {
+        if (track == null || track is! SourcedTrack) {
           throw "No track currently";
         }
         final timedLyrics = await ServiceUtils.getTimedLyrics(track);

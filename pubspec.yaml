@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.2.0+25
+version: 3.3.0+26
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -89,7 +89,6 @@ dependencies:
   smtc_windows: ^0.1.1
   spotify: ^0.12.0
   stroke_text: ^0.0.2
-  supabase: ^1.9.9
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
   url_launcher: ^6.1.7
@@ -106,11 +105,19 @@ dependencies:
   simple_icons: ^7.10.0
   audio_service_mpris: ^0.1.0
   file_picker: ^6.0.0
+  jiosaavn: ^0.1.0
   draggable_scrollbar:
     git:
       url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
       ref: cfd570035bf393de541d32e9b28808b5d7e602df
   very_good_infinite_list: ^0.7.1
+  gap: ^3.0.1
+  sliver_tools: ^0.2.12
+  dart_discord_rpc:
+    git:
+      url: https://github.com/Tommypop2/dart_discord_rpc.git
+  html_unescape: ^2.0.0
+  wikipedia_api: ^0.1.0
 
 dev_dependencies:
   build_runner: ^2.3.2

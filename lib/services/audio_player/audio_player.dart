@@ -5,9 +5,9 @@ import 'dart:async';
 
 import 'package:media_kit/media_kit.dart' as mk;
 
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 part 'audio_players_streams_mixin.dart';
 part 'audio_player_impl.dart';

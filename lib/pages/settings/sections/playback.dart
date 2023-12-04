@@ -8,10 +8,10 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/section_card_with_heading.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/provider/piped_instances_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+import 'package:spotube/services/sourced_track/enums.dart';
 
 class SettingsPlaybackSection extends HookConsumerWidget {
   const SettingsPlaybackSection({Key? key}) : super(key: key);
@@ -25,17 +25,21 @@ class SettingsPlaybackSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.playback,
       children: [
-        AdaptiveSelectTile<AudioQuality>(
+        AdaptiveSelectTile<SourceQualities>(
           secondary: const Icon(SpotubeIcons.audioQuality),
           title: Text(context.l10n.audio_quality),
           value: preferences.audioQuality,
           options: [
             DropdownMenuItem(
-              value: AudioQuality.high,
+              value: SourceQualities.high,
               child: Text(context.l10n.high),
             ),
             DropdownMenuItem(
-              value: AudioQuality.low,
+              value: SourceQualities.medium,
+              child: Text(context.l10n.medium),
+            ),
+            DropdownMenuItem(
+              value: SourceQualities.low,
               child: Text(context.l10n.low),
             ),
           ],
@@ -45,11 +49,11 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             }
           },
         ),
-        AdaptiveSelectTile<YoutubeApiType>(
+        AdaptiveSelectTile<AudioSource>(
           secondary: const Icon(SpotubeIcons.api),
-          title: Text(context.l10n.youtube_api_type),
-          value: preferences.youtubeApiType,
-          options: YoutubeApiType.values
+          title: Text(context.l10n.audio_source),
+          value: preferences.audioSource,
+          options: AudioSource.values
               .map((e) => DropdownMenuItem(
                     value: e,
                     child: Text(e.label),
@@ -57,12 +61,12 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               .toList(),
           onChanged: (value) {
             if (value == null) return;
-            preferencesNotifier.setYoutubeApiType(value);
+            preferencesNotifier.setAudioSource(value);
           },
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: preferences.youtubeApiType == YoutubeApiType.youtube
+          child: preferences.audioSource != AudioSource.piped
               ? const SizedBox.shrink()
               : Consumer(builder: (context, ref, child) {
                   final instanceList = ref.watch(pipedInstancesFutureProvider);
@@ -129,7 +133,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: preferences.youtubeApiType == YoutubeApiType.youtube
+          child: preferences.audioSource != AudioSource.piped
               ? const SizedBox.shrink()
               : AdaptiveSelectTile<SearchMode>(
                   secondary: const Icon(SpotubeIcons.search),
@@ -149,17 +153,18 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: preferences.searchMode == SearchMode.youtubeMusic &&
-                  preferences.youtubeApiType == YoutubeApiType.piped
-              ? const SizedBox.shrink()
-              : SwitchListTile(
+          child: preferences.searchMode == SearchMode.youtube &&
+                  (preferences.audioSource == AudioSource.piped ||
+                      preferences.audioSource == AudioSource.youtube)
+              ? SwitchListTile(
                   secondary: const Icon(SpotubeIcons.skip),
                   title: Text(context.l10n.skip_non_music),
                   value: preferences.skipNonMusic,
                   onChanged: (state) {
                     preferencesNotifier.setSkipNonMusic(state);
                   },
-                ),
+                )
+              : const SizedBox.shrink(),
         ),
         ListTile(
           leading: const Icon(SpotubeIcons.playlistRemove),
@@ -176,44 +181,46 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           value: preferences.normalizeAudio,
           onChanged: preferencesNotifier.setNormalizeAudio,
         ),
-        AdaptiveSelectTile<MusicCodec>(
-          secondary: const Icon(SpotubeIcons.stream),
-          title: Text(context.l10n.streaming_music_codec),
-          value: preferences.streamMusicCodec,
-          showValueWhenUnfolded: false,
-          options: MusicCodec.values
-              .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(
-                      e.label,
-                      style: theme.textTheme.labelMedium,
-                    ),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            preferencesNotifier.setStreamMusicCodec(value);
-          },
-        ),
-        AdaptiveSelectTile<MusicCodec>(
-          secondary: const Icon(SpotubeIcons.file),
-          title: Text(context.l10n.download_music_codec),
-          value: preferences.downloadMusicCodec,
-          showValueWhenUnfolded: false,
-          options: MusicCodec.values
-              .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(
-                      e.label,
-                      style: theme.textTheme.labelMedium,
-                    ),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            preferencesNotifier.setDownloadMusicCodec(value);
-          },
-        ),
+        if (preferences.audioSource != AudioSource.jiosaavn)
+          AdaptiveSelectTile<SourceCodecs>(
+            secondary: const Icon(SpotubeIcons.stream),
+            title: Text(context.l10n.streaming_music_codec),
+            value: preferences.streamMusicCodec,
+            showValueWhenUnfolded: false,
+            options: SourceCodecs.values
+                .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(
+                        e.label,
+                        style: theme.textTheme.labelMedium,
+                      ),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value == null) return;
+              preferencesNotifier.setStreamMusicCodec(value);
+            },
+          ),
+        if (preferences.audioSource != AudioSource.jiosaavn)
+          AdaptiveSelectTile<SourceCodecs>(
+            secondary: const Icon(SpotubeIcons.file),
+            title: Text(context.l10n.download_music_codec),
+            value: preferences.downloadMusicCodec,
+            showValueWhenUnfolded: false,
+            options: SourceCodecs.values
+                .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(
+                        e.label,
+                        style: theme.textTheme.labelMedium,
+                      ),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value == null) return;
+              preferencesNotifier.setDownloadMusicCodec(value);
+            },
+          ),
       ],
     );
   }

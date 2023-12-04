@@ -18,7 +18,7 @@ import 'package:spotube/components/shared/expandable_search/expandable_search.da
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
-import 'package:spotube/components/shared/track_table/track_tile.dart';
+import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -199,7 +199,8 @@ class UserLocalTracks extends HookConsumerWidget {
               ),
               const Spacer(),
               ExpandableSearchButton(
-                isFiltering: isFiltering,
+                isFiltering: isFiltering.value,
+                onPressed: (value) => isFiltering.value = value,
                 searchFocus: searchFocus,
               ),
               const SizedBox(width: 10),
@@ -222,7 +223,8 @@ class UserLocalTracks extends HookConsumerWidget {
         ExpandableSearchField(
           searchController: searchController,
           searchFocus: searchFocus,
-          isFiltering: isFiltering,
+          isFiltering: isFiltering.value,
+          onChangeFiltering: (value) => isFiltering.value = value,
         ),
         trackSnapshot.when(
           data: (tracks) {
@@ -284,7 +286,7 @@ class UserLocalTracks extends HookConsumerWidget {
             );
           },
           loading: () =>
-              const Expanded(child: ShimmerTrackTile(noSliver: true)),
+              const Expanded(child: ShimmerTrackTileGroup(noSliver: true)),
           error: (error, stackTrace) =>
               Text(error.toString() + stackTrace.toString()),
         )

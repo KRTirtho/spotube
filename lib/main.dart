@@ -1,5 +1,6 @@
 import 'package:catcher_2/catcher_2.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
@@ -15,12 +16,13 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/skip_segment.dart';
+import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -49,6 +51,10 @@ Future<void> main(List<String> rawArgs) async {
       await AndroidUtils.setHighRefreshRate();
   }
 
+  if (DesktopTools.platform.isDesktop) {
+    await DesktopTools.window.setPreventClose(true);
+  }
+
   await DesktopTools.ensureInitialized(
     DesktopWindowOptions(
       hideTitleBar: true,
@@ -64,6 +70,10 @@ Future<void> main(List<String> rawArgs) async {
     MetadataGod.initialize();
   }
 
+  if (DesktopTools.platform.isWindows || DesktopTools.platform.isLinux) {
+    DiscordRPC.initialize();
+  }
+
   final hiveCacheDir =
       kIsWeb ? null : (await getApplicationSupportDirectory()).path;
 
@@ -72,16 +82,18 @@ Future<void> main(List<String> rawArgs) async {
     cacheDir: hiveCacheDir,
     connectivity: FlQueryInternetConnectionCheckerAdapter(),
   );
-  Hive.registerAdapter(MatchedTrackAdapter());
+
   Hive.registerAdapter(SkipSegmentAdapter());
-  Hive.registerAdapter(SearchModeAdapter());
+
+  Hive.registerAdapter(SourceMatchAdapter());
+  Hive.registerAdapter(SourceTypeAdapter());
 
   // Cache versioning entities with Adapter
-  MatchedTrack.version = 'v1';
+  SourceMatch.version = 'v1';
   SkipSegment.version = 'v1';
 
-  await Hive.openLazyBox<MatchedTrack>(
-    MatchedTrack.boxName,
+  await Hive.openLazyBox<SourceMatch>(
+    SourceMatch.boxName,
     path: hiveCacheDir,
   );
   await Hive.openLazyBox(
@@ -171,6 +183,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
 
     useInitSysTray(ref);
+    useCloseBehavior(ref);
 
     useEffect(() {
       FlutterNativeSplash.remove();
@@ -178,7 +191,6 @@ class SpotubeState extends ConsumerState<Spotube> {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;
         audioPlayer.dispose();
-        // youtube.close();
       };
     }, []);
 
