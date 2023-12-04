@@ -77,7 +77,7 @@ class SyncedLyrics extends HookConsumerWidget {
             : textTheme.headlineMedium?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
 
-    var bodyTextTheme = textTheme.bodyLarge?.copyWith(
+    final bodyTextTheme = textTheme.bodyLarge?.copyWith(
       color: palette.bodyTextColor,
     );
     return Stack(
@@ -184,7 +184,9 @@ class SyncedLyrics extends HookConsumerWidget {
               ),
             if (playlist.activeTrack != null &&
                 (timedLyricsQuery.isLoading || timedLyricsQuery.isRefreshing))
-              const Expanded(child: ShimmerLyrics())
+              const Expanded(
+                child: ShimmerLyrics(),
+              )
             else if (playlist.activeTrack != null &&
                 (timedLyricsQuery.hasError))
               Text(

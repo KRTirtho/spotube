@@ -118,6 +118,7 @@ dependencies:
       url: https://github.com/Tommypop2/dart_discord_rpc.git
   html_unescape: ^2.0.0
   wikipedia_api: ^0.1.0
+  skeletonizer: ^0.8.0
 
 dev_dependencies:
   build_runner: ^2.3.2

@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -25,7 +27,7 @@ class ArtistPageHeader extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final queryClient = useQueryClient();
     final artistQuery = useQueries.artist.get(ref, artistId);
-    final artist = artistQuery.data;
+    final artist = artistQuery.data ?? FakeData.artist;
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final mediaQuery = MediaQuery.of(context);
@@ -40,10 +42,6 @@ class ArtistPageHeader extends HookConsumerWidget {
       xl: textTheme.titleSmall,
       xxl: textTheme.titleMedium,
     );
-
-    if (artist == null) {
-      return const SizedBox.shrink();
-    }
 
     final spotify = ref.read(spotifyProvider);
     final auth = ref.watch(AuthenticationNotifier.provider);
@@ -96,10 +94,12 @@ class ArtistPageHeader extends HookConsumerWidget {
                         decoration: BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.circular(50)),
-                        child: Text(
-                          artist.type!.toUpperCase(),
-                          style: chipTextVariant.copyWith(
-                            color: Colors.white,
+                        child: Skeleton.keep(
+                          child: Text(
+                            artist.type!.toUpperCase(),
+                            style: chipTextVariant.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -138,113 +138,115 @@ class ArtistPageHeader extends HookConsumerWidget {
                     ),
                   ),
                   const Gap(20),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (auth != null)
-                        HookBuilder(
-                          builder: (context) {
-                            final isFollowingQuery =
-                                useQueries.artist.doIFollow(ref, artistId);
+                  Skeleton.keep(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (auth != null)
+                          HookBuilder(
+                            builder: (context) {
+                              final isFollowingQuery =
+                                  useQueries.artist.doIFollow(ref, artistId);
 
-                            final followUnfollow = useCallback(() async {
-                              try {
-                                isFollowingQuery.data!
-                                    ? await spotify.me.unfollow(
-                                        FollowingType.artist,
-                                        [artistId],
-                                      )
-                                    : await spotify.me.follow(
-                                        FollowingType.artist,
-                                        [artistId],
-                                      );
-                                await isFollowingQuery.refresh();
+                              final followUnfollow = useCallback(() async {
+                                try {
+                                  isFollowingQuery.data!
+                                      ? await spotify.me.unfollow(
+                                          FollowingType.artist,
+                                          [artistId],
+                                        )
+                                      : await spotify.me.follow(
+                                          FollowingType.artist,
+                                          [artistId],
+                                        );
+                                  await isFollowingQuery.refresh();
 
-                                queryClient.refreshInfiniteQueryAllPages(
-                                    "user-following-artists");
-                              } finally {
-                                queryClient.refreshQuery(
-                                  "user-follows-artists-query/$artistId",
+                                  queryClient.refreshInfiniteQueryAllPages(
+                                      "user-following-artists");
+                                } finally {
+                                  queryClient.refreshQuery(
+                                    "user-follows-artists-query/$artistId",
+                                  );
+                                }
+                              }, [isFollowingQuery]);
+
+                              if (isFollowingQuery.isLoading ||
+                                  !isFollowingQuery.hasData) {
+                                return const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(),
                                 );
                               }
-                            }, [isFollowingQuery]);
 
-                            if (isFollowingQuery.isLoading ||
-                                !isFollowingQuery.hasData) {
-                              return const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(),
-                              );
-                            }
+                              if (isFollowingQuery.data!) {
+                                return OutlinedButton(
+                                  onPressed: followUnfollow,
+                                  child: Text(context.l10n.following),
+                                );
+                              }
 
-                            if (isFollowingQuery.data!) {
-                              return OutlinedButton(
+                              return FilledButton(
                                 onPressed: followUnfollow,
-                                child: Text(context.l10n.following),
+                                child: Text(context.l10n.follow),
                               );
+                            },
+                          ),
+                        const SizedBox(width: 5),
+                        IconButton(
+                          tooltip: context.l10n.add_artist_to_blacklist,
+                          icon: Icon(
+                            SpotubeIcons.userRemove,
+                            color:
+                                !isBlackListed ? Colors.red[400] : Colors.white,
+                          ),
+                          style: IconButton.styleFrom(
+                            backgroundColor:
+                                isBlackListed ? Colors.red[400] : null,
+                          ),
+                          onPressed: () async {
+                            if (isBlackListed) {
+                              ref
+                                  .read(BlackListNotifier.provider.notifier)
+                                  .remove(
+                                    BlacklistedElement.artist(
+                                        artist.id!, artist.name!),
+                                  );
+                            } else {
+                              ref.read(BlackListNotifier.provider.notifier).add(
+                                    BlacklistedElement.artist(
+                                        artist.id!, artist.name!),
+                                  );
                             }
-
-                            return FilledButton(
-                              onPressed: followUnfollow,
-                              child: Text(context.l10n.follow),
-                            );
                           },
                         ),
-                      const SizedBox(width: 5),
-                      IconButton(
-                        tooltip: context.l10n.add_artist_to_blacklist,
-                        icon: Icon(
-                          SpotubeIcons.userRemove,
-                          color:
-                              !isBlackListed ? Colors.red[400] : Colors.white,
-                        ),
-                        style: IconButton.styleFrom(
-                          backgroundColor:
-                              isBlackListed ? Colors.red[400] : null,
-                        ),
-                        onPressed: () async {
-                          if (isBlackListed) {
-                            ref
-                                .read(BlackListNotifier.provider.notifier)
-                                .remove(
-                                  BlacklistedElement.artist(
-                                      artist.id!, artist.name!),
-                                );
-                          } else {
-                            ref.read(BlackListNotifier.provider.notifier).add(
-                                  BlacklistedElement.artist(
-                                      artist.id!, artist.name!),
-                                );
-                          }
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(SpotubeIcons.share),
-                        onPressed: () async {
-                          if (artist.externalUrls?.spotify != null) {
-                            await Clipboard.setData(
-                              ClipboardData(
-                                text: artist.externalUrls!.spotify!,
+                        IconButton(
+                          icon: const Icon(SpotubeIcons.share),
+                          onPressed: () async {
+                            if (artist.externalUrls?.spotify != null) {
+                              await Clipboard.setData(
+                                ClipboardData(
+                                  text: artist.externalUrls!.spotify!,
+                                ),
+                              );
+                            }
+
+                            if (!context.mounted) return;
+
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(
+                                width: 300,
+                                behavior: SnackBarBehavior.floating,
+                                content: Text(
+                                  context.l10n.artist_url_copied,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             );
-                          }
-
-                          if (!context.mounted) return;
-
-                          scaffoldMessenger.showSnackBar(
-                            SnackBar(
-                              width: 300,
-                              behavior: SnackBarBehavior.floating,
-                              content: Text(
-                                context.l10n.artist_url_copied,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    ],
+                          },
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -146,14 +147,16 @@ class PlaybuttonCard extends HookWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (!isPlaying)
-                          IconButton(
-                            style: IconButton.styleFrom(
-                              backgroundColor: theme.colorScheme.background,
-                              foregroundColor: theme.colorScheme.primary,
-                              minimumSize: const Size.square(10),
+                          Skeleton.keep(
+                            child: IconButton(
+                              style: IconButton.styleFrom(
+                                backgroundColor: theme.colorScheme.background,
+                                foregroundColor: theme.colorScheme.primary,
+                                minimumSize: const Size.square(10),
+                              ),
+                              icon: const Icon(SpotubeIcons.queueAdd),
+                              onPressed: isLoading ? null : onAddToQueuePressed,
                             ),
-                            icon: const Icon(SpotubeIcons.queueAdd),
-                            onPressed: isLoading ? null : onAddToQueuePressed,
                           ),
                         const SizedBox(height: 5),
                         IconButton(
@@ -162,15 +165,17 @@ class PlaybuttonCard extends HookWidget {
                             foregroundColor: theme.colorScheme.primary,
                             minimumSize: const Size.square(10),
                           ),
-                          icon: isLoading
-                              ? SizedBox.fromSize(
-                                  size: const Size.square(15),
-                                  child: const CircularProgressIndicator(
-                                      strokeWidth: 2),
-                                )
-                              : isPlaying
-                                  ? const Icon(SpotubeIcons.pause)
-                                  : const Icon(SpotubeIcons.play),
+                          icon: Skeleton.keep(
+                            child: isLoading
+                                ? SizedBox.fromSize(
+                                    size: const Size.square(15),
+                                    child: const CircularProgressIndicator(
+                                        strokeWidth: 2),
+                                  )
+                                : isPlaying
+                                    ? const Icon(SpotubeIcons.pause)
+                                    : const Icon(SpotubeIcons.play),
+                          ),
                           onPressed: isLoading ? null : onPlaybuttonPressed,
                         ),
                       ],

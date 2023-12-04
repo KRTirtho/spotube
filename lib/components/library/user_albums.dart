@@ -3,12 +3,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/context.dart';
@@ -82,30 +83,32 @@ class UserAlbums extends HookConsumerWidget {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(8.0),
                 controller: controller,
-                child: Wrap(
-                  runSpacing: 20,
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    if (albums.isEmpty)
-                      Container(
-                        alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.all(16.0),
-                        child: const ShimmerPlaybuttonCard(count: 4),
-                      ),
-                    for (final album in albums)
-                      AlbumCard(
-                        TypeConversionUtils.simpleAlbum_X_Album(album),
-                      ),
-                    if (albumsQuery.hasNextPage)
-                      Waypoint(
-                        controller: controller,
-                        isGrid: true,
-                        onTouchEdge: albumsQuery.fetchNext,
-                        child: const ShimmerPlaybuttonCard(count: 1),
-                      )
-                  ],
+                child: Skeletonizer(
+                  enabled: albums.isEmpty,
+                  child: Wrap(
+                    runSpacing: 20,
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      if (albums.isEmpty)
+                        ...List.generate(
+                          10,
+                          (index) => AlbumCard(FakeData.album),
+                        ),
+                      for (final album in albums)
+                        AlbumCard(
+                          TypeConversionUtils.simpleAlbum_X_Album(album),
+                        ),
+                      if (albums.isNotEmpty && albumsQuery.hasNextPage)
+                        Waypoint(
+                          controller: controller,
+                          isGrid: true,
+                          onTouchEdge: albumsQuery.fetchNext,
+                          child: AlbumCard(FakeData.album),
+                        )
+                    ],
+                  ),
                 ),
               ),
             ),

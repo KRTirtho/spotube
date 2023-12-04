@@ -3,11 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
+import 'package:spotube/components/shared/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -77,7 +78,23 @@ class GenrePage extends HookConsumerWidget {
             ),
             if (!categoriesQuery.hasPageData &&
                 !categoriesQuery.isLoadingNextPage)
-              const ShimmerCategories()
+              Expanded(
+                child: Skeletonizer(
+                  enabled: true,
+                  child: ListView.builder(
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return HorizontalPlaybuttonCardView<PlaylistSimple>(
+                        title: const Text("Loading"),
+                        items: const [],
+                        hasNextPage: true,
+                        isLoadingNextPage: false,
+                        onFetchMore: () {},
+                      );
+                    },
+                  ),
+                ),
+              )
             else
               Expanded(
                 child: InfiniteList(
@@ -86,7 +103,16 @@ class GenrePage extends HookConsumerWidget {
                   onFetchData: categoriesQuery.fetchNext,
                   isLoading: categoriesQuery.isLoadingNextPage,
                   hasReachedMax: !categoriesQuery.hasNextPage,
-                  loadingBuilder: (context) => const ShimmerCategories(),
+                  loadingBuilder: (context) => Skeletonizer(
+                    enabled: true,
+                    child: HorizontalPlaybuttonCardView<PlaylistSimple>(
+                      title: const Text("Loading"),
+                      items: const [],
+                      hasNextPage: true,
+                      isLoadingNextPage: false,
+                      onFetchMore: () {},
+                    ),
+                  ),
                   itemBuilder: (context, index) {
                     return CategoryCard(categories[index]);
                   },

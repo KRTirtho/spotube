@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -91,12 +92,14 @@ class ArtistCard extends HookConsumerWidget {
                           decoration: BoxDecoration(
                               color: Colors.blue,
                               borderRadius: BorderRadius.circular(50)),
-                          child: Text(
-                            context.l10n.artist,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                          child: Skeleton.ignore(
+                            child: Text(
+                              context.l10n.artist,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),

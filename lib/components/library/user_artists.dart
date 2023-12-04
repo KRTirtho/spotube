@@ -3,6 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:spotube/collections/fake.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
@@ -87,12 +89,19 @@ class UserArtists extends HookConsumerWidget {
                     width: double.infinity,
                     child: SafeArea(
                       child: Center(
-                        child: Wrap(
-                          spacing: 15,
-                          runSpacing: 5,
-                          children: filteredArtists
-                              .mapIndexed((index, artist) => ArtistCard(artist))
-                              .toList(),
+                        child: Skeletonizer(
+                          enabled: artistQuery.isLoading,
+                          child: Wrap(
+                            spacing: 15,
+                            runSpacing: 5,
+                            children: artistQuery.isLoading
+                                ? List.generate(
+                                    10, (index) => ArtistCard(FakeData.artist))
+                                : filteredArtists
+                                    .mapIndexed(
+                                        (index, artist) => ArtistCard(artist))
+                                    .toList(),
+                          ),
                         ),
                       ),
                     ),

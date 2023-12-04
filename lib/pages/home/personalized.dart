@@ -4,11 +4,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class PersonalizedPage extends HookConsumerWidget {
   const PersonalizedPage({Key? key}) : super(key: key);
@@ -46,39 +46,35 @@ class PersonalizedPage extends HookConsumerWidget {
       [newReleases.pages],
     );
 
+    final hasNewReleases = newReleases.hasPageData &&
+        userArtistsQuery.hasData &&
+        !newReleases.isLoadingNextPage;
+
+    final isLoadingFeaturedPlaylists = !featuredPlaylistsQuery.hasPageData &&
+        !featuredPlaylistsQuery.isLoadingNextPage;
+
     return CustomScrollView(
       controller: controller,
       slivers: [
         SliverList.list(
           children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: !featuredPlaylistsQuery.hasPageData &&
-                      !featuredPlaylistsQuery.isLoadingNextPage
-                  ? const ShimmerCategories()
-                  : HorizontalPlaybuttonCardView<PlaylistSimple>(
-                      items: playlists.toList(),
-                      title: Text(context.l10n.featured),
-                      isLoadingNextPage:
-                          featuredPlaylistsQuery.isLoadingNextPage,
-                      hasNextPage: featuredPlaylistsQuery.hasNextPage,
-                      onFetchMore: featuredPlaylistsQuery.fetchNext,
-                    ),
+            Skeletonizer(
+              enabled: isLoadingFeaturedPlaylists,
+              child: HorizontalPlaybuttonCardView<PlaylistSimple>(
+                items: playlists.toList(),
+                title: Text(context.l10n.featured),
+                isLoadingNextPage: featuredPlaylistsQuery.isLoadingNextPage,
+                hasNextPage: featuredPlaylistsQuery.hasNextPage,
+                onFetchMore: featuredPlaylistsQuery.fetchNext,
+              ),
             ),
-            if (auth != null)
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: newReleases.hasPageData &&
-                        userArtistsQuery.hasData &&
-                        !newReleases.isLoadingNextPage
-                    ? HorizontalPlaybuttonCardView<Album>(
-                        items: albums,
-                        title: Text(context.l10n.new_releases),
-                        isLoadingNextPage: newReleases.isLoadingNextPage,
-                        hasNextPage: newReleases.hasNextPage,
-                        onFetchMore: newReleases.fetchNext,
-                      )
-                    : const ShimmerCategories(),
+            if (auth != null || hasNewReleases)
+              HorizontalPlaybuttonCardView<Album>(
+                items: albums,
+                title: Text(context.l10n.new_releases),
+                isLoadingNextPage: newReleases.isLoadingNextPage,
+                hasNextPage: newReleases.hasNextPage,
+                onFetchMore: newReleases.fetchNext,
               ),
           ],
         ),
