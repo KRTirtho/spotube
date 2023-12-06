@@ -7,12 +7,12 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/genre/category_card.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_categories.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
+import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class GenrePage extends HookConsumerWidget {
   const GenrePage({Key? key}) : super(key: key);
@@ -70,32 +70,26 @@ class GenrePage extends HookConsumerWidget {
         child: Column(
           children: [
             ExpandableSearchField(
-              isFiltering: isFiltering,
+              isFiltering: isFiltering.value,
+              onChangeFiltering: (value) => isFiltering.value = value,
               searchController: searchController,
               searchFocus: searchFocus,
             ),
-            if (!categoriesQuery.hasPageData)
+            if (!categoriesQuery.hasPageData &&
+                !categoriesQuery.isLoadingNextPage)
               const ShimmerCategories()
             else
               Expanded(
-                child: InterScrollbar(
-                  controller: scrollController,
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      return AnimatedCrossFade(
-                        crossFadeState: searchController.text.isEmpty &&
-                                index == categories.length - 1 &&
-                                categoriesQuery.hasNextPage
-                            ? CrossFadeState.showFirst
-                            : CrossFadeState.showSecond,
-                        duration: const Duration(milliseconds: 300),
-                        firstChild: const ShimmerCategories(),
-                        secondChild: CategoryCard(categories[index]),
-                      );
-                    },
-                  ),
+                child: InfiniteList(
+                  scrollController: scrollController,
+                  itemCount: categories.length,
+                  onFetchData: categoriesQuery.fetchNext,
+                  isLoading: categoriesQuery.isLoadingNextPage,
+                  hasReachedMax: !categoriesQuery.hasNextPage,
+                  loadingBuilder: (context) => const ShimmerCategories(),
+                  itemBuilder: (context, index) {
+                    return CategoryCard(categories[index]);
+                  },
                 ),
               ),
           ],
@@ -110,10 +104,11 @@ class GenrePage extends HookConsumerWidget {
           top: 0,
           right: 10,
           child: ExpandableSearchButton(
-            isFiltering: isFiltering,
+            isFiltering: isFiltering.value,
             searchFocus: searchFocus,
             icon: const Icon(SpotubeIcons.search),
             onPressed: (value) {
+              isFiltering.value = value;
               if (isFiltering.value) {
                 scrollController.animateTo(
                   0,

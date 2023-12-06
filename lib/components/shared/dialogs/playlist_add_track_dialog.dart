@@ -1,4 +1,3 @@
-import 'package:async/async.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,41 +11,34 @@ import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
+  /// The id of the playlist this dialog was opened from
+  final String? openFromPlaylist;
   final List<Track> tracks;
   const PlaylistAddTrackDialog({
     required this.tracks,
+    required this.openFromPlaylist,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
-    final userPlaylists = useQueries.playlist.ofMine(ref);
-
-    useEffect(() {
-      final op = CancelableOperation.fromFuture(
-        () async {
-          while (userPlaylists.hasNextPage) {
-            await userPlaylists.fetchNext();
-          }
-        }(),
-      );
-
-      return () {
-        op.cancel();
-      };
-    }, [userPlaylists.hasNextPage]);
+    final userPlaylists = useQueries.playlist.ofMineAll(ref);
 
     final me = useQueries.user.me(ref);
 
     final filteredPlaylists = useMemoized(
-      () => userPlaylists.pages
-          .expand((page) => page.items?.toList() ?? <PlaylistSimple>[])
-          .where(
-            (playlist) =>
-                playlist.owner?.id != null && playlist.owner!.id == me.data?.id,
-          ),
-      [userPlaylists.pages, me.data?.id],
+      () =>
+          userPlaylists.data
+              ?.where(
+                (playlist) =>
+                    playlist.owner?.id != null &&
+                    playlist.owner!.id == me.data?.id &&
+                    playlist.id != openFromPlaylist,
+              )
+              .toList() ??
+          [],
+      [userPlaylists.data, me.data?.id, openFromPlaylist],
     );
 
     final playlistsCheck = useState(<String, bool>{});
@@ -93,7 +85,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
       content: SizedBox(
         height: 300,
         width: 300,
-        child: userPlaylists.hasNextPage
+        child: userPlaylists.isLoading
             ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 shrinkWrap: true,

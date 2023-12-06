@@ -4,9 +4,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class CategoryQueries {
   const CategoryQueries();

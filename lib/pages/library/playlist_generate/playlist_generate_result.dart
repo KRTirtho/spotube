@@ -163,6 +163,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                     context: context,
                                     builder: (context) =>
                                         PlaylistAddTrackDialog(
+                                      openFromPlaylist: null,
                                       tracks: selectedTracks.value
                                           .map(
                                             (e) => generatedPlaylist.data!

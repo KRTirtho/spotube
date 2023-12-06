@@ -6,6 +6,7 @@
 
 #include "generated_plugin_registrant.h"
 
+#include <dart_discord_rpc/dart_discord_rpc_plugin.h>
 #include <file_selector_windows/file_selector_windows.h>
 #include <flutter_secure_storage_windows/flutter_secure_storage_windows_plugin.h>
 #include <local_notifier/local_notifier_plugin.h>
@@ -19,6 +20,8 @@
 #include <window_size/window_size_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
+  DartDiscordRpcPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("DartDiscordRpcPlugin"));
   FileSelectorWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FileSelectorWindows"));
   FlutterSecureStorageWindowsPluginRegisterWithRegistrar(

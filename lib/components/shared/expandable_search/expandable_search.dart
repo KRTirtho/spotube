@@ -4,13 +4,15 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/context.dart';
 
 class ExpandableSearchField extends StatelessWidget {
-  final ValueNotifier<bool> isFiltering;
+  final bool isFiltering;
+  final ValueChanged<bool> onChangeFiltering;
   final TextEditingController searchController;
   final FocusNode searchFocus;
 
   const ExpandableSearchField({
     Key? key,
     required this.isFiltering,
+    required this.onChangeFiltering,
     required this.searchController,
     required this.searchFocus,
   }) : super(key: key);
@@ -19,17 +21,17 @@ class ExpandableSearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
-      opacity: isFiltering.value ? 1 : 0,
+      opacity: isFiltering ? 1 : 0,
       child: AnimatedSize(
         duration: const Duration(milliseconds: 200),
         child: SizedBox(
-          height: isFiltering.value ? 50 : 0,
+          height: isFiltering ? 50 : 0,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: CallbackShortcuts(
               bindings: {
                 LogicalKeySet(LogicalKeyboardKey.escape): () {
-                  isFiltering.value = false;
+                  onChangeFiltering(false);
                   searchController.clear();
                   searchFocus.unfocus();
                 }
@@ -52,7 +54,7 @@ class ExpandableSearchField extends StatelessWidget {
 }
 
 class ExpandableSearchButton extends StatelessWidget {
-  final ValueNotifier<bool> isFiltering;
+  final bool isFiltering;
   final FocusNode searchFocus;
   final Widget icon;
   final ValueChanged<bool>? onPressed;
@@ -73,18 +75,17 @@ class ExpandableSearchButton extends StatelessWidget {
       icon: icon,
       style: IconButton.styleFrom(
         backgroundColor:
-            isFiltering.value ? theme.colorScheme.secondaryContainer : null,
-        foregroundColor: isFiltering.value ? theme.colorScheme.secondary : null,
+            isFiltering ? theme.colorScheme.secondaryContainer : null,
+        foregroundColor: isFiltering ? theme.colorScheme.secondary : null,
         minimumSize: const Size(25, 25),
       ),
       onPressed: () {
-        isFiltering.value = !isFiltering.value;
-        if (isFiltering.value) {
+        if (isFiltering) {
           searchFocus.requestFocus();
         } else {
           searchFocus.unfocus();
         }
-        onPressed?.call(isFiltering.value);
+        onPressed?.call(!isFiltering);
       },
     );
   }

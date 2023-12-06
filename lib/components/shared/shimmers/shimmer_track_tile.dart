@@ -70,8 +70,7 @@ class ShimmerTrackTilePainter extends CustomPainter {
 }
 
 class ShimmerTrackTile extends StatelessWidget {
-  final bool noSliver;
-  const ShimmerTrackTile({super.key, this.noSliver = false});
+  const ShimmerTrackTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -82,39 +81,42 @@ class ShimmerTrackTile extends StatelessWidget {
       shimmerColor: isDark ? Colors.grey[800] : Colors.grey[300],
     );
 
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+      child: CustomPaint(
+        size: const Size(double.infinity, 60),
+        painter: ShimmerTrackTilePainter(
+          background: shimmerTheme.shimmerBackgroundColor ??
+              theme.scaffoldBackgroundColor,
+          foreground: shimmerTheme.shimmerColor ?? theme.cardColor,
+        ),
+      ),
+    );
+  }
+}
+
+class ShimmerTrackTileGroup extends StatelessWidget {
+  final bool noSliver;
+  final int count;
+  const ShimmerTrackTileGroup({
+    super.key,
+    this.noSliver = false,
+    this.count = 5,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     if (noSliver) {
       return ListView.builder(
         itemCount: 5,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
-            child: CustomPaint(
-              size: const Size(double.infinity, 60),
-              painter: ShimmerTrackTilePainter(
-                background: shimmerTheme.shimmerBackgroundColor ??
-                    theme.scaffoldBackgroundColor,
-                foreground: shimmerTheme.shimmerColor ?? theme.cardColor,
-              ),
-            ),
-          );
-        },
+        itemBuilder: (context, index) => const ShimmerTrackTile(),
       );
     }
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) => Padding(
-          padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
-          child: CustomPaint(
-            size: const Size(double.infinity, 60),
-            painter: ShimmerTrackTilePainter(
-              background: shimmerTheme.shimmerBackgroundColor ??
-                  theme.scaffoldBackgroundColor,
-              foreground: shimmerTheme.shimmerColor ?? theme.cardColor,
-            ),
-          ),
-        ),
-        childCount: 5,
+        (BuildContext context, int index) => const ShimmerTrackTile(),
+        childCount: count,
       ),
     );
   }

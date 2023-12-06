@@ -660,10 +660,10 @@ abstract class LanguageLocals {
     //   name: "Tonga (Tonga Islands)",
     //   nativeName: "faka Tonga",
     // ),
-    // "tr": const ISOLanguageName(
-    //   name: "Turkish",
-    //   nativeName: "Türkçe",
-    // ),
+    "tr": const ISOLanguageName(
+      name: "Turkish",
+      nativeName: "Türkçe",
+    ),
     // "ts": const ISOLanguageName(
     //   name: "Tsonga",
     //   nativeName: "Xitsonga",

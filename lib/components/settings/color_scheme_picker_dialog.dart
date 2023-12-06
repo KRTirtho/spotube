@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:system_theme/system_theme.dart';
 
 class SpotubeColor extends Color {
@@ -49,6 +49,7 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
+    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final scheme = preferences.accentColorScheme;
     final active = useState<String>(colorsMap.firstWhere(
       (element) {
@@ -57,7 +58,7 @@ class ColorSchemePickerDialog extends HookConsumerWidget {
     ).name);
 
     onOk() {
-      preferences.setAccentColorScheme(
+      preferencesNotifier.setAccentColorScheme(
         colorsMap.firstWhere(
           (element) {
             return element.name == active.value;

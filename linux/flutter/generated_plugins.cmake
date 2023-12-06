@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  dart_discord_rpc
   file_selector_linux
   flutter_secure_storage_linux
   local_notifier

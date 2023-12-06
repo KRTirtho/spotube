@@ -63,7 +63,7 @@ class TokenLoginForm extends HookConsumerWidget {
                         return;
                       }
                       final cookieHeader =
-                          "sp_dc=${directCodeController.text}; sp_key=${keyCodeController.text}";
+                          "sp_dc=${directCodeController.text.trim()}; sp_key=${keyCodeController.text.trim()}";
 
                       authenticationNotifier.setCredentials(
                         await AuthenticationCredentials.fromCookie(

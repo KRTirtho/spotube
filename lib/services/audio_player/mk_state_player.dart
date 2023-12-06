@@ -96,7 +96,10 @@ class MkPlayerWithState extends Player {
     if (shuffle) {
       _tempMedias = _playlist!.medias;
       final active = _playlist!.medias[_playlist!.index];
-      final newMedias = _playlist!.medias.toList()..shuffle();
+      final newMedias = _playlist!.medias.toList()
+        ..shuffle()
+        ..remove(active)
+        ..insert(0, active);
       playlist = _playlist!.copyWith(
         medias: newMedias,
         index: newMedias.indexOf(active),
@@ -174,9 +177,6 @@ class MkPlayerWithState extends Player {
         case PlaylistMode.none:
           // Fixes auto-repeating the last track
           await super.stop();
-          await Future.delayed(const Duration(seconds: 2), () {
-            super.open(_playlist!.medias[_playlist!.index], play: false);
-          });
           break;
         default:
       }
