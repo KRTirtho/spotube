@@ -1,9 +1,11 @@
 import 'package:catcher_2/catcher_2.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/pages/home/genres/genre_playlists.dart';
+import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
@@ -38,6 +40,21 @@ final router = GoRouter(
         GoRoute(
           path: "/",
           pageBuilder: (context, state) => const SpotubePage(child: HomePage()),
+          routes: [
+            GoRoute(
+              path: "genres",
+              pageBuilder: (context, state) =>
+                  const SpotubePage(child: GenrePage()),
+            ),
+            GoRoute(
+              path: "genre/:categoryId",
+              pageBuilder: (context, state) => SpotubePage(
+                child: GenrePlaylistsPage(
+                  category: state.extra as Category,
+                ),
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: "/search",

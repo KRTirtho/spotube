@@ -158,4 +158,10 @@ abstract class FakeData {
     ..type = "type"
     ..description = "A very good playlist description"
     ..uri = "uri";
+
+  static final Category category = Category()
+    ..href = "text"
+    ..icons = [image]
+    ..id = "1"
+    ..name = "category";
 }

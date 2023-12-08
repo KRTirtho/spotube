@@ -4,10 +4,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 
@@ -50,6 +50,7 @@ class PlaybuttonCard extends HookWidget {
   Widget build(BuildContext context) {
     final textsKey = useMemoized(() => GlobalKey(), []);
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
     final radius = BorderRadius.circular(15);
 
     final double size = useBreakpointValue<double>(
@@ -86,23 +87,27 @@ class PlaybuttonCard extends HookWidget {
           splashFactory: theme.splashFactory,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
+                    margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                     padding: const EdgeInsets.only(
                       left: 8,
                       right: 8,
                       top: 8,
                     ),
-                    constraints: BoxConstraints(maxHeight: size),
-                    child: ClipRRect(
+                    height: mediaQuery.smAndDown
+                        ? 120
+                        : mediaQuery.mdAndDown
+                            ? 130
+                            : 150,
+                    decoration: BoxDecoration(
                       borderRadius: radius,
-                      child: UniversalImage(
-                        path: imageUrl,
-                        placeholder: Assets.albumPlaceholder.path,
+                      image: DecorationImage(
+                        image: UniversalImage.imageProvider(imageUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
