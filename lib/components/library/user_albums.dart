@@ -85,7 +85,7 @@ class UserAlbums extends HookConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 controller: controller,
                 child: Skeletonizer(
-                  enabled: albums.isEmpty && albumsQuery.isLoadingNextPage,
+                  enabled: albumsQuery.pages.isEmpty,
                   child: Center(
                     child: Wrap(
                       runSpacing: 20,
@@ -93,7 +93,7 @@ class UserAlbums extends HookConsumerWidget {
                       runAlignment: WrapAlignment.center,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        if (albums.isEmpty && albumsQuery.isLoadingNextPage)
+                        if (albumsQuery.pages.isEmpty)
                           ...List.generate(
                             10,
                             (index) => AlbumCard(FakeData.album),

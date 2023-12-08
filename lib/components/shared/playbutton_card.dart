@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
@@ -59,8 +60,8 @@ class PlaybuttonCard extends HookWidget {
     );
 
     final end = useBreakpointValue<double>(
-      xs: 10,
-      sm: 10,
+      xs: 7,
+      sm: 7,
       others: 15,
     );
 
@@ -160,7 +161,7 @@ class PlaybuttonCard extends HookWidget {
                               onPressed: isLoading ? null : onAddToQueuePressed,
                             ),
                           ),
-                        const SizedBox(height: 5),
+                        const Gap(5),
                         IconButton(
                           style: IconButton.styleFrom(
                             backgroundColor: theme.colorScheme.primaryContainer,
