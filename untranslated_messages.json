@@ -1,61 +1,76 @@
 {
   "ar": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "bn": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "ca": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "de": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "es": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "fa": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "fr": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "hi": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "ja": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "pl": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "pt": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "ru": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "tr": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "uk": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ],
 
   "zh": [
-    "go_to_album"
+    "go_to_album",
+    "discord_rich_presence"
   ]
 }
