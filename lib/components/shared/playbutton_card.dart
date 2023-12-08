@@ -90,17 +90,19 @@ class PlaybuttonCard extends HookWidget {
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(
                       left: 8,
                       right: 8,
                       top: 8,
                     ),
+                    constraints: BoxConstraints(maxHeight: size),
                     child: ClipRRect(
                       borderRadius: radius,
                       child: UniversalImage(
                         path: imageUrl,
                         placeholder: Assets.albumPlaceholder.path,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

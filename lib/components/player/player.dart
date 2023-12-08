@@ -28,9 +28,11 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerView extends HookConsumerWidget {
   final PanelController panelController;
+  final ScrollController scrollController;
   const PlayerView({
     Key? key,
     required this.panelController,
+    required this.scrollController,
   }) : super(key: key);
 
   @override
@@ -119,40 +121,43 @@ class PlayerView extends HookConsumerWidget {
               preferredSize: Size.fromHeight(
                 kToolbarHeight + topPadding,
               ),
-              child: Padding(
-                padding: EdgeInsets.only(top: topPadding),
-                child: PageWindowTitleBar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: titleTextColor,
-                  toolbarOpacity: 1,
-                  leading: IconButton(
-                    icon: const Icon(SpotubeIcons.angleDown, size: 18),
-                    onPressed: panelController.close,
+              child: ForceDraggableWidget(
+                child: Padding(
+                  padding: EdgeInsets.only(top: topPadding),
+                  child: PageWindowTitleBar(
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: titleTextColor,
+                    toolbarOpacity: 1,
+                    leading: IconButton(
+                      icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                      onPressed: panelController.close,
+                    ),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(SpotubeIcons.info, size: 18),
+                        tooltip: context.l10n.details,
+                        style: IconButton.styleFrom(
+                            foregroundColor: bodyTextColor),
+                        onPressed: currentTrack == null
+                            ? null
+                            : () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return TrackDetailsDialog(
+                                        track: currentTrack,
+                                      );
+                                    });
+                              },
+                      )
+                    ],
                   ),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(SpotubeIcons.info, size: 18),
-                      tooltip: context.l10n.details,
-                      style:
-                          IconButton.styleFrom(foregroundColor: bodyTextColor),
-                      onPressed: currentTrack == null
-                          ? null
-                          : () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return TrackDetailsDialog(
-                                      track: currentTrack,
-                                    );
-                                  });
-                            },
-                    )
-                  ],
                 ),
               ),
             ),
             extendBodyBehindAppBar: true,
             body: SingleChildScrollView(
+              controller: scrollController,
               child: Container(
                 alignment: Alignment.center,
                 width: double.infinity,
@@ -163,27 +168,29 @@ class PlayerView extends HookConsumerWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            constraints: const BoxConstraints(
-                                maxHeight: 300, maxWidth: 300),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 0),
+                          ForceDraggableWidget(
+                            child: Container(
+                              margin: const EdgeInsets.all(8),
+                              constraints: const BoxConstraints(
+                                  maxHeight: 300, maxWidth: 300),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: UniversalImage(
+                                  path: albumArt,
+                                  placeholder: Assets.albumPlaceholder.path,
+                                  fit: BoxFit.cover,
                                 ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: UniversalImage(
-                                path: albumArt,
-                                placeholder: Assets.albumPlaceholder.path,
-                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

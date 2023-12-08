@@ -93,9 +93,14 @@ class TrackViewBodySection extends HookConsumerWidget {
                 index: 0,
               ),
             ),
-            emptyBuilder: (context) => const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [NotFound()],
+            emptyBuilder: (context) => Skeletonizer(
+              enabled: true,
+              child: Column(
+                children: List.generate(
+                  10,
+                  (index) => TrackTile(track: FakeData.track, index: index),
+                ),
+              ),
             ),
             itemBuilder: (context, index) {
               final track = tracks[index];
