@@ -15,22 +15,25 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final controller = useScrollController();
 
-    return Scaffold(
-      appBar:
-          DesktopTools.platform.isMobile ? null : const PageWindowTitleBar(),
-      body: CustomScrollView(
-        controller: controller,
-        slivers: [
-          const HomeGenresSection(),
-          SliverList.list(
-            children: const [
-              HomeFeaturedSection(),
-              HomeNewReleasesSection(),
+    return SafeArea(
+        bottom: false,
+        child: Scaffold(
+          appBar: DesktopTools.platform.isMobile
+              ? null
+              : const PageWindowTitleBar(),
+          body: CustomScrollView(
+            controller: controller,
+            slivers: [
+              const HomeGenresSection(),
+              SliverList.list(
+                children: const [
+                  HomeFeaturedSection(),
+                  HomeNewReleasesSection(),
+                ],
+              ),
+              const SliverSafeArea(sliver: HomeMadeForUserSection()),
             ],
           ),
-          const SliverSafeArea(sliver: HomeMadeForUserSection()),
-        ],
-      ),
-    );
+        ));
   }
 }
