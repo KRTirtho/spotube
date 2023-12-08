@@ -17,6 +17,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
+import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
@@ -254,6 +255,15 @@ class UserLocalTracks extends HookConsumerWidget {
                   .toList()
                   .toList();
             }, [searchController.text, sortedTracks]);
+
+            if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
+              return const Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [NotFound()],
+                ),
+              );
+            }
 
             return Expanded(
               child: RefreshIndicator(

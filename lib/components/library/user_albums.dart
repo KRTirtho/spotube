@@ -9,6 +9,7 @@ import 'package:spotube/collections/fake.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/album/album_card.dart';
+import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
@@ -84,30 +85,37 @@ class UserAlbums extends HookConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 controller: controller,
                 child: Skeletonizer(
-                  enabled: albums.isEmpty,
-                  child: Wrap(
-                    runSpacing: 20,
-                    alignment: WrapAlignment.center,
-                    runAlignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      if (albums.isEmpty)
-                        ...List.generate(
-                          10,
-                          (index) => AlbumCard(FakeData.album),
-                        ),
-                      for (final album in albums)
-                        AlbumCard(
-                          TypeConversionUtils.simpleAlbum_X_Album(album),
-                        ),
-                      if (albums.isNotEmpty && albumsQuery.hasNextPage)
-                        Waypoint(
-                          controller: controller,
-                          isGrid: true,
-                          onTouchEdge: albumsQuery.fetchNext,
-                          child: AlbumCard(FakeData.album),
-                        )
-                    ],
+                  enabled: albums.isEmpty && albumsQuery.isLoadingNextPage,
+                  child: Center(
+                    child: Wrap(
+                      runSpacing: 20,
+                      alignment: WrapAlignment.center,
+                      runAlignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        if (albums.isEmpty && albumsQuery.isLoadingNextPage)
+                          ...List.generate(
+                            10,
+                            (index) => AlbumCard(FakeData.album),
+                          )
+                        else if (albums.isEmpty)
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [NotFound()],
+                          ),
+                        for (final album in albums)
+                          AlbumCard(
+                            TypeConversionUtils.simpleAlbum_X_Album(album),
+                          ),
+                        if (albums.isNotEmpty && albumsQuery.hasNextPage)
+                          Waypoint(
+                            controller: controller,
+                            isGrid: true,
+                            onTouchEdge: albumsQuery.fetchNext,
+                            child: AlbumCard(FakeData.album),
+                          )
+                      ],
+                    ),
                   ),
                 ),
               ),

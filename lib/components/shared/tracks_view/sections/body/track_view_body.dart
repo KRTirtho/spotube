@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
+import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/track_view_body_headers.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_playlist.dart';
@@ -92,14 +93,9 @@ class TrackViewBodySection extends HookConsumerWidget {
                 index: 0,
               ),
             ),
-            emptyBuilder: (context) => Skeletonizer(
-              enabled: true,
-              child: Column(
-                children: List.generate(
-                  10,
-                  (index) => TrackTile(track: FakeData.track, index: index),
-                ),
-              ),
+            emptyBuilder: (context) => const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [NotFound()],
             ),
             itemBuilder: (context, index) {
               final track = tracks[index];
