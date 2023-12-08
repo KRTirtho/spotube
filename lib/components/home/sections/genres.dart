@@ -45,7 +45,7 @@ class HomeGenresSection extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  context.l10n.genre,
+                  context.l10n.genres,
                   style: textTheme.headlineSmall,
                 ),
                 Directionality(

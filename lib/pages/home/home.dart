@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/home/sections/featured.dart';
@@ -15,7 +16,8 @@ class HomePage extends HookConsumerWidget {
     final controller = useScrollController();
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(),
+      appBar:
+          DesktopTools.platform.isMobile ? null : const PageWindowTitleBar(),
       body: CustomScrollView(
         controller: controller,
         slivers: [
