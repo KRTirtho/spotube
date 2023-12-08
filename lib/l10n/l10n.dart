@@ -6,6 +6,7 @@
 /// iceyear@github => Simplified Chinese
 /// TexturedPolak@github => Polish
 /// yuri-val@github => Ukrainian
+/// energywave@github, ncvescera@github, OpenCode@github => Italian
 /// mdksec@github => Turkish
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class L10n {
     const Locale("fa", "IR"),
     const Locale('fr', 'FR'),
     const Locale('hi', 'IN'),
+    const Locale('it', 'IT'),
     const Locale('ja', 'JP'),
     const Locale('pl', 'PL'),
     const Locale('pt', 'PT'),
