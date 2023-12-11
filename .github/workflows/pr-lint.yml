@@ -10,14 +10,19 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
 
-      - name: Lint Dart files
+      - name: Configure repo
         run: |
           flutter pub get
+          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Lint Dart files
+        run: |
           flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Lint translations & config files
