@@ -27,5 +27,6 @@ jobs:
 
       - name: Lint translations & config files
         run: |
+          npm install -g @prantlf/jsonlint
           jsonlint -q -D --enforce-double-quotes ./lib/l10n/*.arb
           jsonlint -q -D --enforce-double-quotes -T .vscode/*.json
