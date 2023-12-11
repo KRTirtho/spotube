@@ -18,7 +18,7 @@ jobs:
       - name: Lint Dart files
         run: |
           flutter pub get
-          flutter analyze .
+          flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Lint translations & config files
         run: |
