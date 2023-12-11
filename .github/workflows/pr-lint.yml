@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  pull_request:
+
+env:
+  FLUTTER_VERSION: '3.16.0'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Lint Dart files
+        run: |
+          flutter pub get
+          flutter analyze .
+
+      - name: Lint translations & config files
+        run: |
+          jsonlint -q -D --enforce-double-quotes ./lib/l10n/*.arb
+          jsonlint -q -D --enforce-double-quotes -T .vscode/*.json
