@@ -23,7 +23,7 @@ jobs:
 
       - name: Lint Dart files
         run: |
-          flutter analyze --no-fatal-infos --no-fatal-warnings
+          dart analyze --no-fatal-warnings
 
       - name: Lint translations & config files
         run: |
