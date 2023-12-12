@@ -203,7 +203,7 @@ class SyncedLyrics extends HookConsumerWidget {
                       children: [
                         const TextSpan(
                           text:
-                              "Synced lyrics is not available for this song. Please use the",
+                              "Synced lyrics are not available for this song. Please use the",
                         ),
                         TextSpan(
                           text: " Plain Lyrics ",
