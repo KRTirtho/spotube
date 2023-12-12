@@ -1,12 +1,15 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart' hide Offset;
+import 'package:spotube/collections/gradients.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
@@ -29,7 +32,10 @@ class GenrePage extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(automaticallyImplyLeading: true),
+      appBar: PageWindowTitleBar(
+        title: Text(context.l10n.explore_genres),
+        automaticallyImplyLeading: true,
+      ),
       body: SafeArea(
         top: false,
         child: GridView.builder(
@@ -45,6 +51,7 @@ class GenrePage extends HookConsumerWidget {
           itemCount: categories.length,
           itemBuilder: (context, index) {
             final category = categories[index];
+            final gradient = gradients[Random().nextInt(gradients.length)];
             return InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () {
@@ -58,12 +65,14 @@ class GenrePage extends HookConsumerWidget {
                     image: NetworkImage(category.icons!.first.url!),
                     fit: BoxFit.cover,
                   ),
+                  gradient: gradient,
                 ),
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: AutoSizeText(
                     category.name!,
                     style: textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
                       shadows: [
                         // stroke shadow
                         const Shadow(

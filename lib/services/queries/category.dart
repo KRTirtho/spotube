@@ -13,7 +13,9 @@ class CategoryQueries {
   const CategoryQueries();
 
   Query<List<Category>, dynamic> listAll(
-      WidgetRef ref, Market recommendationMarket) {
+    WidgetRef ref,
+    Market recommendationMarket,
+  ) {
     ref.watch(userPreferencesProvider.select((s) => s.locale));
     final locale = useContext().l10n.localeName;
     final query = useSpotifyQuery<List<Category>, dynamic>(
@@ -26,7 +28,7 @@ class CategoryQueries {
             )
             .all();
 
-        return categories.toList();
+        return categories.toList()..shuffle();
       },
       ref: ref,
     );

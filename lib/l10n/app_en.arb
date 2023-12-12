@@ -283,5 +283,6 @@
   "go_to_album": "Go to Album",
   "discord_rich_presence": "Discord Rich Presence",
   "browse_all": "Browse All",
-  "genres": "Genres"
+  "genres": "Genres",
+  "explore_genres": "Explore Genres"
 }

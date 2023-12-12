@@ -43,8 +43,9 @@ class GenrePlaylistsPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
-        automaticallyImplyLeading: true,
+        leading: BackButton(color: Colors.white),
         backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
       ),
       extendBodyBehindAppBar: true,
       body: CustomScrollView(
@@ -52,7 +53,11 @@ class GenrePlaylistsPage extends HookConsumerWidget {
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            expandedHeight: mediaQuery.mdAndDown ? 200 : 250,
+            expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
+            pinned: true,
+            floating: false,
+            title: const Text(""),
+            backgroundColor: Colors.brown.withOpacity(0.7),
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: const [
                 StretchMode.zoomBackground,
@@ -76,6 +81,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
               title: Text(
                 category.name!,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Colors.white,
                   letterSpacing: 3,
                   shadows: [
                     const Shadow(

@@ -117,7 +117,7 @@ class HomeGenresSection extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: Ink(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(8),
                         image: DecorationImage(
                           image: UniversalImage.imageProvider(
                             category.icons!.first.url!,
@@ -127,7 +127,7 @@ class HomeGenresSection extends HookConsumerWidget {
                       ),
                       child: Ink(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(5),
                           color: colorScheme.surfaceVariant,
                           gradient: categoriesQuery.isLoading ? null : gradient,
                         ),
