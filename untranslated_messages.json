@@ -39,6 +39,12 @@
     "discord_rich_presence"
   ],
 
+  "it": [
+    "audio_source",
+    "go_to_album",
+    "discord_rich_presence"
+  ],
+
   "ja": [
     "go_to_album",
     "discord_rich_presence"
