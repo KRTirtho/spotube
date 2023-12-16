@@ -915,6 +915,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  flutter_sharing_intent:
+    dependency: "direct main"
+    description:
+      name: flutter_sharing_intent
+      sha256: "6eb896e6523b735e8230eeb206fd3b9f220f11ce879c2400a90b443147036ff9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter_svg:
     dependency: "direct main"
     description:

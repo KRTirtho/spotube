@@ -5,6 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/provider/spotify_provider.dart';
+import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
+import 'package:flutter_sharing_intent/model/sharing_file.dart';
 
 void useDeepLinking(WidgetRef ref) {
   // single instance no worries
@@ -13,6 +15,45 @@ void useDeepLinking(WidgetRef ref) {
   final queryClient = useQueryClient();
 
   useEffect(() {
+    void uriListener(List<SharedFile> files) async {
+      for (final file in files) {
+        if (file.type != SharedMediaType.URL) continue;
+        final url = Uri.parse(file.value!);
+        if (url.pathSegments.length != 2) continue;
+
+        switch (url.pathSegments.first) {
+          case "album":
+            router.push(
+              "/album/${url.pathSegments.last}",
+              extra: await queryClient.fetchQuery<Album, dynamic>(
+                "album/${url.pathSegments.last}",
+                () => spotify.albums.get(url.pathSegments.last),
+              ),
+            );
+            break;
+          case "artist":
+            router.push("/artist/${url.pathSegments.last}");
+            break;
+          case "playlist":
+            router.push(
+              "/playlist/${url.pathSegments.last}",
+              extra: await queryClient.fetchQuery<Playlist, dynamic>(
+                "playlist/${url.pathSegments.last}",
+                () => spotify.playlists.get(url.pathSegments.last),
+              ),
+            );
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    FlutterSharingIntent.instance.getInitialSharing().then(uriListener);
+
+    final mediaStream =
+        FlutterSharingIntent.instance.getMediaStream().listen(uriListener);
+
     final subscription = appLinks.allStringLinkStream.listen((uri) async {
       final startSegment = uri.split(":").take(2).join(":");
       final endSegment = uri.split(":").last;
@@ -44,6 +85,9 @@ void useDeepLinking(WidgetRef ref) {
       }
     });
 
-    return subscription.cancel;
+    return () {
+      mediaStream.cancel();
+      subscription.cancel();
+    };
   }, [spotify, queryClient]);
 }
