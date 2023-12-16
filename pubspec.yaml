@@ -119,6 +119,8 @@ dependencies:
   html_unescape: ^2.0.0
   wikipedia_api: ^0.1.0
   skeletonizer: ^0.8.0
+  app_links: ^3.5.0
+  win32_registry: ^1.1.2
 
 dev_dependencies:
   build_runner: ^2.3.2
