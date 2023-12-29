@@ -43,7 +43,7 @@ class ScrobblerNotifier extends PersistedStateNotifier<ScrobblerState?> {
     _scrobbleController.stream.listen((track) async {
       try {
         await state?.scrobblenaut.track.scrobble(
-          artist: track.artists.first.name!,
+          artist: track.artists!.first.name!,
           track: track.name!,
           album: track.album!.name!,
           chosenByUser: true,

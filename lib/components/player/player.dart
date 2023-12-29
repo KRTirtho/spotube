@@ -74,10 +74,14 @@ class PlayerView extends HookConsumerWidget {
         useMemoized(() => GlobalKey(), []);
 
     useEffect(() {
-      WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
+      for (final renderView in WidgetsBinding.instance.renderViews) {
+        renderView.automaticSystemUiAdjustment = false;
+      }
 
       return () {
-        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = true;
+        for (final renderView in WidgetsBinding.instance.renderViews) {
+          renderView.automaticSystemUiAdjustment = true;
+        }
       };
     }, [panelController.isPanelOpen]);
 
@@ -90,10 +94,11 @@ class PlayerView extends HookConsumerWidget {
 
     final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: panelController.isPanelOpen,
+      onPopInvoked: (canPop) async {
+        if (!canPop) return;
         panelController.close();
-        return false;
       },
       child: IconTheme(
         data: theme.iconTheme.copyWith(color: bodyTextColor),
