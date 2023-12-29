@@ -166,7 +166,7 @@ abstract class LanguageLocals {
     // ),
     "nl": const ISOLanguageName(
       name: "Dutch",
-      nativeName: "Nederland",
+      nativeName: "Nederlands",
     ),
     "en": const ISOLanguageName(
       name: "English",
