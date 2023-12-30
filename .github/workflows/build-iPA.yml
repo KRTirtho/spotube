@@ -1,0 +1,28 @@
+name: Build iPA
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - uses: actions/checkout@v4
+      - name: submodules-init
+        uses: snickerbockers/submodules-init@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Build
+        run: |
+          cp .env.example .env
+          flutter pub get && dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          flutter build ios --release --no-codesign
+          ln -sf ./build/ios/iphoneos Payload
+          zip -r9 spotube.ipa Payload/Runner.app
+      - name: Upload spotube.ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: "spotube.ipa"
+          path: "spotube.ipa"
