@@ -4,7 +4,7 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 part 'env.g.dart';
 
 @Envied(obfuscate: true, requireEnvFile: true, path: ".env")
-abstract class Env {
+abstract class Env{
   @EnviedField(varName: 'SPOTIFY_SECRETS')
   static final String rawSpotifySecrets = _Env.rawSpotifySecrets;
 

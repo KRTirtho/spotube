@@ -24,6 +24,8 @@ class MobileAudioService extends BaseAudioHandler {
               await audioPlayer.setVolume(0.5);
               break;
             case AudioInterruptionType.pause:
+              await audioPlayer.pause();
+              break;
             case AudioInterruptionType.unknown:
               await audioPlayer.pause();
               break;
@@ -34,6 +36,8 @@ class MobileAudioService extends BaseAudioHandler {
               await audioPlayer.setVolume(1.0);
               break;
             case AudioInterruptionType.pause:
+              await audioPlayer.pause();
+              break;
             case AudioInterruptionType.unknown:
               await audioPlayer.resume();
               break;

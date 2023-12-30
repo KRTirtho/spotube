@@ -69,7 +69,8 @@ android {
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            //TODO : set release
+            signingConfig signingConfigs.debug
         }
     }
 
