@@ -251,7 +251,7 @@
   "developers": "توسعه دهنده ها",
   "not_logged_in": "شما وارد نشده اید ",
   "search_mode": "حالت جستجو",
-  "youtube_api_type": "API نوع",
+  "audio_source": "منبع صدا",
   "ok": "باشد",
   "failed_to_encrypt": "رمز گذاری نشده",
   "encryption_failed_warning": "Spotube از رمزگذاری برای ذخیره ایمن داده های شما استفاده می کند. اما موفق به انجام این کار نشد. بنابراین به فضای ذخیره‌سازی ناامن تبدیل می‌شود\nاگر از لینوکس استفاده می‌کنید، لطفاً مطمئن شوید که سرویس مخفی (gnome-keyring، kde-wallet، keepassxc و غیره) را نصب کرده‌اید.",
@@ -279,5 +279,10 @@
   "password": "رمز عبور",
   "login": "ورود",
   "login_with_your_lastfm": "ورود با حساب کاربری Last.fm خود",
-  "scrobble_to_lastfm": "Scrobble به Last.fm"
+  "scrobble_to_lastfm": "Scrobble به Last.fm",
+  "go_to_album": "رفتن به آلبوم",
+  "discord_rich_presence": "حضور غنی دیسکورد",
+  "browse_all": "مرور همه",
+  "genres": "ژانرها",
+  "explore_genres": "استکشاف ژانرها"
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/section_card_with_heading.dart';
@@ -50,6 +51,13 @@ class SettingsDesktopSection extends HookConsumerWidget {
           value: preferences.systemTitleBar,
           onChanged: preferencesNotifier.setSystemTitleBar,
         ),
+        if (!DesktopTools.platform.isMacOS)
+          SwitchListTile(
+            secondary: const Icon(SpotubeIcons.discord),
+            title: Text(context.l10n.discord_rich_presence),
+            value: preferences.discordPresence,
+            onChanged: preferencesNotifier.setDiscordPresence,
+          ),
       ],
     );
   }

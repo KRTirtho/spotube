@@ -249,7 +249,7 @@
   "developers": "Desenvolvedores",
   "not_logged_in": "Você não está logado",
   "search_mode": "Modo de Busca",
-  "youtube_api_type": "Tipo de API",
+  "audio_source": "Fonte de Áudio",
   "ok": "Ok",
   "failed_to_encrypt": "Falha ao criptografar",
   "encryption_failed_warning": "O Spotube usa criptografia para armazenar seus dados com segurança, mas falhou em fazê-lo. Portanto, ele voltará para o armazenamento não seguro.\nSe você estiver usando o Linux, certifique-se de ter algum serviço secreto (gnome-keyring, kde-wallet, keepassxc, etc.) instalado",
@@ -279,5 +279,10 @@
   "password": "Palavra-passe",
   "login": "Iniciar sessão",
   "login_with_your_lastfm": "Inicie sessão na sua conta Last.fm",
-  "scrobble_to_lastfm": "Scrobble para o Last.fm"
+  "scrobble_to_lastfm": "Scrobble para o Last.fm",
+  "go_to_album": "Ir para o álbum",
+  "discord_rich_presence": "Presença rica no Discord",
+  "browse_all": "Navegar por tudo",
+  "genres": "Gêneros",
+  "explore_genres": "Explorar gêneros"
 }

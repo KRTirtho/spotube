@@ -4,9 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
+import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/track_view_body_headers.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_playlist.dart';
@@ -84,7 +86,22 @@ class TrackViewBodySection extends HookConsumerWidget {
             onFetchData: props.pagination.onFetchMore,
             isLoading: props.pagination.isLoading,
             hasReachedMax: !props.pagination.hasNextPage,
-            loadingBuilder: (context) => const ShimmerTrackTile(),
+            loadingBuilder: (context) => Skeletonizer(
+              enabled: true,
+              child: TrackTile(
+                track: FakeData.track,
+                index: 0,
+              ),
+            ),
+            emptyBuilder: (context) => Skeletonizer(
+              enabled: true,
+              child: Column(
+                children: List.generate(
+                  10,
+                  (index) => TrackTile(track: FakeData.track, index: index),
+                ),
+              ),
+            ),
             itemBuilder: (context, index) {
               final track = tracks[index];
               return TrackTile(

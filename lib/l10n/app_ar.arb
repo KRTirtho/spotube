@@ -251,7 +251,7 @@
   "developers": "المطورون",
   "not_logged_in": "لم تقم بتسجيل الدخول",
   "search_mode": "وضع البحث",
-  "youtube_api_type": "نوع الـAPI",
+  "audio_source": "مصدر الصوت",
   "ok": "حسسناً",
   "failed_to_encrypt": "فشل في التشفير",
   "encryption_failed_warning": "يستخدم Spotube التشفير لتخزين بياناتك بشكل آمن. لكنها فشلت في القيام بذلك. لذلك سيعود الأمر إلى التخزين غير الآمن\nإذا كنت تستخدم Linux، فيرجى التأكد من تثبيت أي خدمة سرية (gnome-keyring، kde-wallet، keepassxc، إلخ)",
@@ -279,5 +279,10 @@
   "password": "كلمة المرور",
   "login": "تسجيل الدخول",
   "login_with_your_lastfm": "تسجيل الدخول باستخدام حساب Last.fm الخاص بك",
-  "scrobble_to_lastfm": "تسجيل الاستماع على Last.fm"
+  "scrobble_to_lastfm": "تسجيل الاستماع على Last.fm",
+  "go_to_album": "الانتقال إلى الألبوم",
+  "discord_rich_presence": "وجود ديسكورد الغني",
+  "browse_all": "تصفح الكل",
+  "genres": "الأنواع الموسيقية",
+  "explore_genres": "استكشاف الأنواع"
 }

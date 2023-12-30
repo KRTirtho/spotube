@@ -63,6 +63,7 @@ UserPreferences _$UserPreferencesFromJson(Map<String, dynamic> json) =>
               _$SourceCodecsEnumMap, json['downloadMusicCodec'],
               unknownValue: SourceCodecs.m4a) ??
           SourceCodecs.m4a,
+      discordPresence: json['discordPresence'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$UserPreferencesToJson(UserPreferences instance) =>
@@ -88,6 +89,7 @@ Map<String, dynamic> _$UserPreferencesToJson(UserPreferences instance) =>
       'audioSource': _$AudioSourceEnumMap[instance.audioSource]!,
       'streamMusicCodec': _$SourceCodecsEnumMap[instance.streamMusicCodec]!,
       'downloadMusicCodec': _$SourceCodecsEnumMap[instance.downloadMusicCodec]!,
+      'discordPresence': instance.discordPresence,
     };
 
 const _$SourceQualitiesEnumMap = {

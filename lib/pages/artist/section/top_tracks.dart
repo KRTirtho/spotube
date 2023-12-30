@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
@@ -28,11 +30,7 @@ class ArtistPageTopTracks extends HookConsumerWidget {
       topTracksQuery.data ?? <Track>[],
     );
 
-    if (topTracksQuery.isLoading || !topTracksQuery.hasData) {
-      return const SliverToBoxAdapter(
-        child: Center(child: CircularProgressIndicator()),
-      );
-    } else if (topTracksQuery.hasError) {
+    if (topTracksQuery.hasError) {
       return SliverToBoxAdapter(
         child: Center(
           child: Text(topTracksQuery.error.toString()),
@@ -40,7 +38,8 @@ class ArtistPageTopTracks extends HookConsumerWidget {
       );
     }
 
-    final topTracks = topTracksQuery.data!;
+    final topTracks =
+        topTracksQuery.data ?? List.generate(10, (index) => FakeData.track);
 
     void playPlaylist(List<Track> tracks, {Track? currentTrack}) async {
       currentTrack ??= tracks.first;
@@ -92,9 +91,11 @@ class ArtistPageTopTracks extends HookConsumerWidget {
                 ),
               const SizedBox(width: 5),
               IconButton(
-                icon: Icon(
-                  isPlaylistPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
-                  color: Colors.white,
+                icon: Skeleton.keep(
+                  child: Icon(
+                    isPlaylistPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
+                    color: Colors.white,
+                  ),
                 ),
                 style: IconButton.styleFrom(
                   backgroundColor: theme.colorScheme.primary,

@@ -51,7 +51,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         AdaptiveSelectTile<AudioSource>(
           secondary: const Icon(SpotubeIcons.api),
-          title: Text(context.l10n.youtube_api_type),
+          title: Text(context.l10n.audio_source),
           value: preferences.audioSource,
           options: AudioSource.values
               .map((e) => DropdownMenuItem(

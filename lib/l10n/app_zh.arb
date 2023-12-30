@@ -249,7 +249,7 @@
   "developers": "开发者",
   "not_logged_in": "你尚未登录",
   "search_mode": "搜索模式",
-  "youtube_api_type": "API 类型",
+  "audio_source": "音频源",
   "ok": "确定",
   "failed_to_encrypt": "加密失败",
   "encryption_failed_warning": "Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务",
@@ -279,5 +279,10 @@
   "password": "密码",
   "login": "登录",
   "login_with_your_lastfm": "使用您的 Last.fm 帐户登录",
-  "scrobble_to_lastfm": "在 Last.fm 上记录播放"
+  "scrobble_to_lastfm": "在 Last.fm 上记录播放",
+  "go_to_album": "前往专辑",
+  "discord_rich_presence": "Discord 丰富展现",
+  "browse_all": "浏览全部",
+  "genres": "音乐类型",
+  "explore_genres": "探索音乐类型"
 }

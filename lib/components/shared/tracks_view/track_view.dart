@@ -3,7 +3,6 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/tracks_view/sections/header/flexible_header.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/track_view_body.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
@@ -28,16 +27,17 @@ class TrackView extends HookConsumerWidget {
             )
           : null,
       extendBodyBehindAppBar: true,
-      body: CustomScrollView(
-        slivers: [
-          const TrackViewFlexHeader(),
-          SliverAnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: props.tracks.isEmpty
-                ? const ShimmerTrackTileGroup()
-                : const TrackViewBodySection(),
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: props.pagination.onRefresh,
+        child: const CustomScrollView(
+          slivers: [
+            TrackViewFlexHeader(),
+            SliverAnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: TrackViewBodySection(),
+            ),
+          ],
+        ),
       ),
     );
   }

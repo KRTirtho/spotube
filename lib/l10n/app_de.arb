@@ -249,7 +249,7 @@
   "developers": "Entwickler",
   "not_logged_in": "Sie sind nicht angemeldet",
   "search_mode": "Suchmodus",
-  "youtube_api_type": "API-Typ",
+  "audio_source": "Audioquelle",
   "ok": "OK",
   "failed_to_encrypt": "Verschlüsselung fehlgeschlagen",
   "encryption_failed_warning": "Spotube verwendet Verschlüsselung, um Ihre Daten sicher zu speichern. Dies ist jedoch fehlgeschlagen. Daher wird es auf unsichere Speicherung zurückgreifen\nWenn Sie Linux verwenden, stellen Sie bitte sicher, dass Sie Secret-Services wie gnome-keyring, kde-wallet und keepassxc installiert haben",
@@ -279,5 +279,10 @@
   "password": "Passwort",
   "login": "Anmelden",
   "login_with_your_lastfm": "Mit Ihrem Last.fm-Konto anmelden",
-  "scrobble_to_lastfm": "Auf Last.fm scrobbeln"
+  "scrobble_to_lastfm": "Auf Last.fm scrobbeln",
+  "go_to_album": "Zum Album gehen",
+  "discord_rich_presence": "Discord Rich Presence",
+  "browse_all": "Alles durchsuchen",
+  "genres": "Genres",
+  "explore_genres": "Genres erkunden"
 }
