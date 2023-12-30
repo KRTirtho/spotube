@@ -279,5 +279,10 @@
   "password": "كلمة المرور",
   "login": "تسجيل الدخول",
   "login_with_your_lastfm": "تسجيل الدخول باستخدام حساب Last.fm الخاص بك",
-  "scrobble_to_lastfm": "تسجيل الاستماع على Last.fm"
+  "scrobble_to_lastfm": "تسجيل الاستماع على Last.fm",
+  "go_to_album": "الانتقال إلى الألبوم",
+  "discord_rich_presence": "وجود ديسكورد الغني",
+  "browse_all": "تصفح الكل",
+  "genres": "الأنواع الموسيقية",
+  "explore_genres": "استكشاف الأنواع"
 }

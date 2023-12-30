@@ -279,5 +279,10 @@
   "password": "পাসওয়ার্ড",
   "login": "লগইন",
   "login_with_your_lastfm": "আপনার Last.fm অ্যাকাউন্ট দিয়ে লগইন করুন",
-  "scrobble_to_lastfm": "Last.fm এ স্ক্রবল করুন"
+  "scrobble_to_lastfm": "Last.fm এ স্ক্রবল করুন",
+  "go_to_album": "الانتقال إلى الألبوم",
+  "discord_rich_presence": "وجود ديسكورد الغني",
+  "browse_all": "تصفح الكل",
+  "genres": "الأنواع الموسيقية",
+  "explore_genres": "استكشاف الأنواع"
 }

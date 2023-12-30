@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/KRTirtho/spotube/compare/v3.3.0...v3.4.0) (2023-12-30)
+
+
+### Features
+
+* Add Go to Album option in track option [#917](https://github.com/KRTirtho/spotube/issues/917) ([b0beeca](https://github.com/KRTirtho/spotube/commit/b0beeca0cbaf810fae27832cff98cfda95715050))
+* **translations:** add Italian language translations ([#818](https://github.com/KRTirtho/spotube/issues/818)) ([e4eb0e2](https://github.com/KRTirtho/spotube/commit/e4eb0e2596ade2bb5195e183f03af42742fc8486)), closes [#676](https://github.com/KRTirtho/spotube/issues/676) [#676](https://github.com/KRTirtho/spotube/issues/676)
+* compact genre view in home page ([82ed5e9](https://github.com/KRTirtho/spotube/commit/82ed5e90576b57ef32e61a65015e04862ab15461))
+* Deep link support ([#950](https://github.com/KRTirtho/spotube/issues/950)) ([4050f55](https://github.com/KRTirtho/spotube/commit/4050f556400aaec5515231578512cf1a6b990110))
+* improve loading animations ([b92583d](https://github.com/KRTirtho/spotube/commit/b92583d0df7b8dee0d121cd2bb666b14c77d8c86))
+* toggle for discord rpc ([24a2294](https://github.com/KRTirtho/spotube/commit/24a2294512bb0c4aff77bc8dcad9b4de3e8b45c6))
+* **translations:** add Dutch Language ([#969](https://github.com/KRTirtho/spotube/issues/969)) ([3ad7ba6](https://github.com/KRTirtho/spotube/commit/3ad7ba66b56e93e69d2181d47029b7549ed225fc))
+
+
+### Bug Fixes
+
+* add safe area in home ([9ee6067](https://github.com/KRTirtho/spotube/commit/9ee60677f6d50df7468e12dc6653ecedefa2494f))
+* amoled mode and color scheme can't be changed ([840e014](https://github.com/KRTirtho/spotube/commit/840e014f2b18f193d040baef0e0cd595088a4a84))
+* doesn't minimize to tray when system title bar close button is used [#866](https://github.com/KRTirtho/spotube/issues/866) ([bb8f250](https://github.com/KRTirtho/spotube/commit/bb8f250f5f351c1a353791b77b25b9de7586191f))
+* genre border issues ([2fb16e6](https://github.com/KRTirtho/spotube/commit/2fb16e64e9cdfca54d633cdf287b0544ecdda3b6))
+* Incorrect "Artist" label/heading on Search Results Page [#920](https://github.com/KRTirtho/spotube/issues/920) ([f86d544](https://github.com/KRTirtho/spotube/commit/f86d5449168068e338f769d7f504d2146b86dc79))
+* metadata not getting added for YouTube tracks [#916](https://github.com/KRTirtho/spotube/issues/916) and Wrong duration of downloaded tracks  [#912](https://github.com/KRTirtho/spotube/issues/912) ([a7b9398](https://github.com/KRTirtho/spotube/commit/a7b9398708ede865dc2c25fb791c8e98eeff7a38))
+* Playlist refresh not working [#915](https://github.com/KRTirtho/spotube/issues/915) ([5f1df5a](https://github.com/KRTirtho/spotube/commit/5f1df5a87d8fb7980b52cf57b7b6bedea57a1269))
+* track view header title overflow and player view drag glitch ([b04d884](https://github.com/KRTirtho/spotube/commit/b04d8849e7169824ec5b980236b5d61b2629f56e))
+* wrong artist name sent while scrobbling [#958](https://github.com/KRTirtho/spotube/issues/958) ([dcbe729](https://github.com/KRTirtho/spotube/commit/dcbe7294b742d43fbff4e89ab4c4825e94421dd9))
+
 ## [3.3.0](https://github.com/KRTirtho/spotube/compare/v3.2.0...v3.3.0) (2023-11-27)
 
 

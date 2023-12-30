@@ -279,5 +279,10 @@
   "password": "Şifre",
   "login": "Giriş Yap",
   "login_with_your_lastfm": "Last.fm hesabınız ile giriş yapın",
-  "scrobble_to_lastfm": "Last.fm için Scrobble"
+  "scrobble_to_lastfm": "Last.fm için Scrobble",
+  "go_to_album": "Albüme Git",
+  "discord_rich_presence": "Discord Zengin Varlık",
+  "browse_all": "Tümünü Gözat",
+  "genres": "Müzik Türleri",
+  "explore_genres": "Türleri Keşfet"
 }

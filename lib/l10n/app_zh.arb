@@ -279,5 +279,10 @@
   "password": "密码",
   "login": "登录",
   "login_with_your_lastfm": "使用您的 Last.fm 帐户登录",
-  "scrobble_to_lastfm": "在 Last.fm 上记录播放"
+  "scrobble_to_lastfm": "在 Last.fm 上记录播放",
+  "go_to_album": "前往专辑",
+  "discord_rich_presence": "Discord 丰富展现",
+  "browse_all": "浏览全部",
+  "genres": "音乐类型",
+  "explore_genres": "探索音乐类型"
 }

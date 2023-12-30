@@ -279,5 +279,10 @@
   "password": "Mot de passe",
   "login": "Se connecter",
   "login_with_your_lastfm": "Se connecter avec votre compte Last.fm",
-  "scrobble_to_lastfm": "Scrobble à Last.fm"
+  "scrobble_to_lastfm": "Scrobble à Last.fm",
+  "go_to_album": "Aller à l'album",
+  "discord_rich_presence": "Présence riche de Discord",
+  "browse_all": "Parcourir tout",
+  "genres": "Genres",
+  "explore_genres": "Explorer les genres"
 }

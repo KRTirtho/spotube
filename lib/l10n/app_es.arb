@@ -279,5 +279,10 @@
   "password": "Contraseña",
   "login": "Iniciar sesión",
   "login_with_your_lastfm": "Iniciar sesión con tu cuenta de Last.fm",
-  "scrobble_to_lastfm": "Scrobble a Last.fm"
+  "scrobble_to_lastfm": "Scrobble a Last.fm",
+  "go_to_album": "Ir al álbum",
+  "discord_rich_presence": "Presencia rica en Discord",
+  "browse_all": "Explorar todo",
+  "genres": "Géneros",
+  "explore_genres": "Explorar géneros"
 }

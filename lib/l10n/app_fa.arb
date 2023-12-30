@@ -279,5 +279,10 @@
   "password": "رمز عبور",
   "login": "ورود",
   "login_with_your_lastfm": "ورود با حساب کاربری Last.fm خود",
-  "scrobble_to_lastfm": "Scrobble به Last.fm"
+  "scrobble_to_lastfm": "Scrobble به Last.fm",
+  "go_to_album": "رفتن به آلبوم",
+  "discord_rich_presence": "حضور غنی دیسکورد",
+  "browse_all": "مرور همه",
+  "genres": "ژانرها",
+  "explore_genres": "استکشاف ژانرها"
 }

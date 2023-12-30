@@ -280,5 +280,10 @@
   "login": "Inloggen",
   "login_with_your_lastfm": "Inloggen met uw Last.fm account",
   "scrobble_to_lastfm": "Scrobbel naar Last.fm",
-  "@@locale": "nl"
+  "audio_source": "Audiobron",
+  "go_to_album": "Ga naar album",
+  "discord_rich_presence": "Discord Rich Presence",
+  "browse_all": "Alles bekijken",
+  "genres": "Genres",
+  "explore_genres": "Verken genres"
 }

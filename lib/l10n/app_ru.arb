@@ -279,5 +279,10 @@
   "password": "Пароль",
   "login": "Войти",
   "login_with_your_lastfm": "Войти в свою учетную запись Last.fm",
-  "scrobble_to_lastfm": "Скробблинг на Last.fm"
+  "scrobble_to_lastfm": "Скробблинг на Last.fm",
+  "go_to_album": "Перейти к альбому",
+  "discord_rich_presence": "Богатое присутствие в Discord",
+  "browse_all": "Просмотреть все",
+  "genres": "Жанры",
+  "explore_genres": "Исследовать жанры"
 }
