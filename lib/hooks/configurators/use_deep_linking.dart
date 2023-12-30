@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_links/app_links.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,6 +9,7 @@ import 'package:spotube/collections/routes.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 void useDeepLinking(WidgetRef ref) {
   // single instance no worries
@@ -49,10 +52,14 @@ void useDeepLinking(WidgetRef ref) {
       }
     }
 
-    FlutterSharingIntent.instance.getInitialSharing().then(uriListener);
+    StreamSubscription? mediaStream;
 
-    final mediaStream =
-        FlutterSharingIntent.instance.getMediaStream().listen(uriListener);
+    if (DesktopTools.platform.isMobile) {
+      FlutterSharingIntent.instance.getInitialSharing().then(uriListener);
+
+      mediaStream =
+          FlutterSharingIntent.instance.getMediaStream().listen(uriListener);
+    }
 
     final subscription = appLinks.allStringLinkStream.listen((uri) async {
       final startSegment = uri.split(":").take(2).join(":");
@@ -86,7 +93,7 @@ void useDeepLinking(WidgetRef ref) {
     });
 
     return () {
-      mediaStream.cancel();
+      mediaStream?.cancel();
       subscription.cancel();
     };
   }, [spotify, queryClient]);
