@@ -1,5 +1,5 @@
 name: Build iPA
-on: [push, pull_request, workflow_dispatch]
+on: workflow_dispatch
 
 jobs:
   build:
