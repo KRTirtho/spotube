@@ -43,6 +43,7 @@ class PlayerOverlay extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     final panelController = useMemoized(() => PanelController(), []);
+    final scrollController = useScrollController();
 
     useEffect(() {
       return () {
@@ -174,6 +175,7 @@ class PlayerOverlay extends HookConsumerWidget {
           ),
         ),
       ),
+      scrollController: scrollController,
       panelBuilder: (position) {
         // this is the reason we're getting an update
         final navigationHeight = ref.watch(navigationPanelHeight);
@@ -188,8 +190,11 @@ class PlayerOverlay extends HookConsumerWidget {
             decoration: navigationHeight == 0
                 ? const BoxDecoration(borderRadius: BorderRadius.zero)
                 : const BoxDecoration(borderRadius: radius),
-            child: HorizontalScrollableWidget(
-              child: PlayerView(panelController: panelController),
+            child: IgnoreDraggableWidget(
+              child: PlayerView(
+                panelController: panelController,
+                scrollController: scrollController,
+              ),
             ),
           ),
         );

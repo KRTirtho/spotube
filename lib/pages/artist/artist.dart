@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/artist/artist_album_list.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_artist_profile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/pages/artist/section/footer.dart';
@@ -35,45 +35,46 @@ class ArtistPage extends HookConsumerWidget {
         ),
         extendBodyBehindAppBar: true,
         body: Builder(builder: (context) {
-          if (artistQuery.isLoading || !artistQuery.hasData) {
-            const ShimmerArtistProfile();
-          } else if (artistQuery.hasError) {
+          if (artistQuery.hasError) {
             return Center(child: Text(artistQuery.error.toString()));
           }
-          return CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                child: SafeArea(
-                  bottom: false,
-                  child: ArtistPageHeader(artistId: artistId),
-                ),
-              ),
-              const SliverGap(50),
-              ArtistPageTopTracks(artistId: artistId),
-              const SliverGap(50),
-              SliverToBoxAdapter(child: ArtistAlbumList(artistId)),
-              const SliverGap(20),
-              SliverPadding(
-                padding: const EdgeInsets.all(8.0),
-                sliver: SliverToBoxAdapter(
-                  child: Text(
-                    context.l10n.fans_also_like,
-                    style: theme.textTheme.headlineSmall,
+          return Skeletonizer(
+            enabled: artistQuery.isLoading,
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SafeArea(
+                    bottom: false,
+                    child: ArtistPageHeader(artistId: artistId),
                   ),
                 ),
-              ),
-              SliverSafeArea(
-                sliver: ArtistPageRelatedArtists(artistId: artistId),
-              ),
-              if (artistQuery.data != null)
-                SliverSafeArea(
-                  top: false,
+                const SliverGap(50),
+                ArtistPageTopTracks(artistId: artistId),
+                const SliverGap(50),
+                SliverToBoxAdapter(child: ArtistAlbumList(artistId)),
+                const SliverGap(20),
+                SliverPadding(
+                  padding: const EdgeInsets.all(8.0),
                   sliver: SliverToBoxAdapter(
-                    child: ArtistPageFooter(artist: artistQuery.data!),
+                    child: Text(
+                      context.l10n.fans_also_like,
+                      style: theme.textTheme.headlineSmall,
+                    ),
                   ),
                 ),
-            ],
+                SliverSafeArea(
+                  sliver: ArtistPageRelatedArtists(artistId: artistId),
+                ),
+                if (artistQuery.data != null)
+                  SliverSafeArea(
+                    top: false,
+                    sliver: SliverToBoxAdapter(
+                      child: ArtistPageFooter(artist: artistQuery.data!),
+                    ),
+                  ),
+              ],
+            ),
           );
         }),
       ),

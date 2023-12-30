@@ -198,6 +198,9 @@ final class UserPreferences {
   )
   final SourceCodecs downloadMusicCodec;
 
+  @JsonKey(defaultValue: true)
+  final bool discordPresence;
+
   UserPreferences({
     required this.audioQuality,
     required this.albumColorSync,
@@ -219,6 +222,7 @@ final class UserPreferences {
     required this.audioSource,
     required this.streamMusicCodec,
     required this.downloadMusicCodec,
+    required this.discordPresence,
   });
 
   factory UserPreferences.withDefaults() {
@@ -255,6 +259,7 @@ final class UserPreferences {
     SourceCodecs? downloadMusicCodec,
     SourceCodecs? streamMusicCodec,
     bool? systemTitleBar,
+    bool? discordPresence,
   }) {
     return UserPreferences(
       themeMode: themeMode ?? this.themeMode,
@@ -277,6 +282,7 @@ final class UserPreferences {
       normalizeAudio: normalizeAudio ?? this.normalizeAudio,
       streamMusicCodec: streamMusicCodec ?? this.streamMusicCodec,
       systemTitleBar: systemTitleBar ?? this.systemTitleBar,
+      discordPresence: discordPresence ?? this.discordPresence,
     );
   }
 }

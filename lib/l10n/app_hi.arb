@@ -249,7 +249,7 @@
   "developers": "डेवलपर्स",
   "not_logged_in": "आप लॉग इन नहीं हैं",
   "search_mode": "खोज मोड",
-  "youtube_api_type": "API प्रकार",
+  "audio_source": "ऑडियो स्रोत",
   "ok": "ठीक है",
   "failed_to_encrypt": "एन्क्रिप्ट करने में विफल रहा",
   "encryption_failed_warning": "Spotube आपके डेटा को सुरक्षित रूप से स्टोर करने के लिए एन्क्रिप्शन का उपयोग करता है। लेकिन इसमें विफल रहा। इसलिए, यह असुरक्षित स्टोरेज पर फॉलबैक करेगा\nयदि आप Linux का उपयोग कर रहे हैं, तो कृपया सुनिश्चित करें कि आपके पास gnome-keyring, kde-wallet, keepassxc आदि जैसी कोई सीक्रेट-सर्विस इंस्टॉल की गई है",
@@ -279,5 +279,10 @@
   "password": "पासवर्ड",
   "login": "लॉग इन करें",
   "login_with_your_lastfm": "अपने Last.fm अकाउंट से लॉगिन करें",
-  "scrobble_to_lastfm": "Last.fm पर स्क्रॉबल करें"
+  "scrobble_to_lastfm": "Last.fm पर स्क्रॉबल करें",
+  "go_to_album": "एल्बम पर जाएं",
+  "discord_rich_presence": "डिस्कॉर्ड रिच प्रेजेंस",
+  "browse_all": "सभी को ब्राउज़ करें",
+  "genres": "शैलियाँ",
+  "explore_genres": "शैलियों का अन्वेषण करें"
 }

@@ -88,50 +88,68 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Flex(
-                              direction: mediaQuery.mdAndDown
-                                  ? Axis.vertical
-                                  : Axis.horizontal,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: UniversalImage(
-                                    path: props.image,
-                                    width: 200,
-                                    height: 200,
-                                    placeholder: Assets.albumPlaceholder.path,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: mediaQuery.mdAndDown
+                                    ? mediaQuery.size.width
+                                    : 800,
+                              ),
+                              child: Flex(
+                                direction: mediaQuery.mdAndDown
+                                    ? Axis.vertical
+                                    : Axis.horizontal,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: UniversalImage(
+                                      path: props.image,
+                                      width: 200,
+                                      height: 200,
+                                      placeholder: Assets.albumPlaceholder.path,
+                                    ),
                                   ),
-                                ),
-                                const Gap(20),
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: mediaQuery.mdAndDown
-                                      ? CrossAxisAlignment.center
-                                      : CrossAxisAlignment.start,
-                                  children: [
-                                    Text(props.title, style: headingStyle),
-                                    const SizedBox(height: 10),
-                                    if (description != null &&
-                                        description.isNotEmpty)
-                                      Text(
-                                        description,
-                                        style: defaultTextStyle.style.copyWith(
-                                          color: palette.bodyTextColor,
+                                  const Gap(20),
+                                  Flexible(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: mediaQuery.mdAndDown
+                                          ? CrossAxisAlignment.center
+                                          : CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          props.title,
+                                          style: headingStyle,
+                                          textAlign: mediaQuery.mdAndDown
+                                              ? TextAlign.center
+                                              : TextAlign.start,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        textAlign: mediaQuery.mdAndDown
-                                            ? TextAlign.center
-                                            : TextAlign.start,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    const Gap(10),
-                                    const TrackViewHeaderActions(),
-                                    const Gap(10),
-                                    TrackViewHeaderButtons(color: palette),
-                                  ],
-                                ),
-                              ],
+                                        const SizedBox(height: 10),
+                                        if (description != null &&
+                                            description.isNotEmpty)
+                                          Text(
+                                            description,
+                                            style:
+                                                defaultTextStyle.style.copyWith(
+                                              color: palette.bodyTextColor,
+                                            ),
+                                            textAlign: mediaQuery.mdAndDown
+                                                ? TextAlign.center
+                                                : TextAlign.start,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        const Gap(10),
+                                        const TrackViewHeaderActions(),
+                                        const Gap(10),
+                                        TrackViewHeaderButtons(color: palette),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

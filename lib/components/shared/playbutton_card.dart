@@ -1,11 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 
@@ -48,6 +50,7 @@ class PlaybuttonCard extends HookWidget {
   Widget build(BuildContext context) {
     final textsKey = useMemoized(() => GlobalKey(), []);
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
     final radius = BorderRadius.circular(15);
 
     final double size = useBreakpointValue<double>(
@@ -58,8 +61,8 @@ class PlaybuttonCard extends HookWidget {
     );
 
     final end = useBreakpointValue<double>(
-      xs: 10,
-      sm: 10,
+      xs: 7,
+      sm: 7,
       others: 15,
     );
 
@@ -84,22 +87,28 @@ class PlaybuttonCard extends HookWidget {
           splashFactory: theme.splashFactory,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Padding(
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                     padding: const EdgeInsets.only(
                       left: 8,
                       right: 8,
                       top: 8,
                     ),
-                    child: ClipRRect(
+                    height: mediaQuery.smAndDown
+                        ? 120
+                        : mediaQuery.mdAndDown
+                            ? 130
+                            : 150,
+                    decoration: BoxDecoration(
                       borderRadius: radius,
-                      child: UniversalImage(
-                        path: imageUrl,
-                        placeholder: Assets.albumPlaceholder.path,
+                      image: DecorationImage(
+                        image: UniversalImage.imageProvider(imageUrl),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -146,31 +155,35 @@ class PlaybuttonCard extends HookWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (!isPlaying)
-                          IconButton(
-                            style: IconButton.styleFrom(
-                              backgroundColor: theme.colorScheme.background,
-                              foregroundColor: theme.colorScheme.primary,
-                              minimumSize: const Size.square(10),
+                          Skeleton.keep(
+                            child: IconButton(
+                              style: IconButton.styleFrom(
+                                backgroundColor: theme.colorScheme.background,
+                                foregroundColor: theme.colorScheme.primary,
+                                minimumSize: const Size.square(10),
+                              ),
+                              icon: const Icon(SpotubeIcons.queueAdd),
+                              onPressed: isLoading ? null : onAddToQueuePressed,
                             ),
-                            icon: const Icon(SpotubeIcons.queueAdd),
-                            onPressed: isLoading ? null : onAddToQueuePressed,
                           ),
-                        const SizedBox(height: 5),
+                        const Gap(5),
                         IconButton(
                           style: IconButton.styleFrom(
                             backgroundColor: theme.colorScheme.primaryContainer,
                             foregroundColor: theme.colorScheme.primary,
                             minimumSize: const Size.square(10),
                           ),
-                          icon: isLoading
-                              ? SizedBox.fromSize(
-                                  size: const Size.square(15),
-                                  child: const CircularProgressIndicator(
-                                      strokeWidth: 2),
-                                )
-                              : isPlaying
-                                  ? const Icon(SpotubeIcons.pause)
-                                  : const Icon(SpotubeIcons.play),
+                          icon: Skeleton.keep(
+                            child: isLoading
+                                ? SizedBox.fromSize(
+                                    size: const Size.square(15),
+                                    child: const CircularProgressIndicator(
+                                        strokeWidth: 2),
+                                  )
+                                : isPlaying
+                                    ? const Icon(SpotubeIcons.pause)
+                                    : const Icon(SpotubeIcons.play),
+                          ),
                           onPressed: isLoading ? null : onPlaybuttonPressed,
                         ),
                       ],

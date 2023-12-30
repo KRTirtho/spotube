@@ -279,5 +279,11 @@
   "password": "Password",
   "login": "Accesso",
   "login_with_your_lastfm": "Accedi con il tuo account Last.fm",
-  "scrobble_to_lastfm": "Invia a Last.fm"
+  "scrobble_to_lastfm": "Invia a Last.fm",
+  "audio_source": "Fonte audio",
+  "go_to_album": "Vai all'album",
+  "discord_rich_presence": "Presenza ricca di Discord",
+  "browse_all": "Esplora tutto",
+  "genres": "Generi",
+  "explore_genres": "Esplora generi"
 }

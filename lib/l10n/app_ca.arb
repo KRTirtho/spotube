@@ -249,7 +249,7 @@
   "developers": "Desenvolupadors",
   "not_logged_in": "No ha iniciat sesió",
   "search_mode": "Mode de cerca",
-  "youtube_api_type": "Tipus d'API de YouTube",
+  "audio_source": "Font d'àudio",
   "ok": "OK",
   "failed_to_encrypt": "Error al xifrar",
   "encryption_failed_warning": "Spotube utilitza el xifrado per emmagatzemar les seves dades de forma segura. Però ha fallat. Per tant, tornarà a un emmagatzament no segur\nSi estè utilizant Linux, asseguri's de tenir instal·lats els serveis secrets com gnome-keyring, kde-wallet i keepassxc",
@@ -279,5 +279,10 @@
   "password": "Contrasenya",
   "login": "Inicia la sessió",
   "login_with_your_lastfm": "Inicia la sessió amb el teu compte de Last.fm",
-  "scrobble_to_lastfm": "Scrobble a Last.fm"
+  "scrobble_to_lastfm": "Scrobble a Last.fm",
+  "go_to_album": "Anar a l'àlbum",
+  "discord_rich_presence": "Presència rica de Discord",
+  "browse_all": "Navega per tot",
+  "genres": "Gèneres",
+  "explore_genres": "Explora els gèneres"
 }
