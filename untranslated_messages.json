@@ -80,6 +80,15 @@
     "explore_genres"
   ],
 
+  "nl": [
+    "audio_source",
+    "go_to_album",
+    "discord_rich_presence",
+    "browse_all",
+    "genres",
+    "explore_genres"
+  ],
+
   "pl": [
     "go_to_album",
     "discord_rich_presence",
