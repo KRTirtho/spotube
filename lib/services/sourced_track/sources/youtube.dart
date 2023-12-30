@@ -79,13 +79,16 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }
 
   static SourceMap toSourceMap(StreamManifest manifest) {
-    final m4a = manifest.audioOnly
+    var m4a = manifest.audioOnly
         .where((audio) => audio.codec.mimeType == "audio/mp4")
         .sortByBitrate();
 
-    final weba = manifest.audioOnly
+    var weba = manifest.audioOnly
         .where((audio) => audio.codec.mimeType == "audio/webm")
         .sortByBitrate();
+
+    m4a = m4a.isEmpty ? weba : m4a;
+    weba = weba.isEmpty ? m4a : weba;
 
     return SourceMap(
       m4a: SourceQualityMap(
