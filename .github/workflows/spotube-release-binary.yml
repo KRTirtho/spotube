@@ -361,14 +361,14 @@ jobs:
         run: |
           flutter build ios --release --no-codesign --flavor ${{ inputs.channel }}  
           ln -sf ./build/ios/iphoneos Payload
-          zip -r9 spotube-${{ inputs.channel }}.ipa Payload/${{ inputs.channel }}.app
+          zip -r9 Spotube-iOS.ipa Payload/${{ inputs.channel }}.app
 
       - uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
-            spotube-${{ inputs.channel }}.ipa
+            Spotube-iOS.ipa
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
