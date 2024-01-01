@@ -11,9 +11,11 @@ import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
+final appLinks = AppLinks();
+final linkStream = appLinks.allStringLinkStream.asBroadcastStream();
+
 void useDeepLinking(WidgetRef ref) {
   // single instance no worries
-  final appLinks = AppLinks();
   final spotify = ref.watch(spotifyProvider);
   final queryClient = useQueryClient();
 
@@ -61,7 +63,7 @@ void useDeepLinking(WidgetRef ref) {
           FlutterSharingIntent.instance.getMediaStream().listen(uriListener);
     }
 
-    final subscription = appLinks.allStringLinkStream.listen((uri) async {
+    final subscription = linkStream.listen((uri) async {
       final startSegment = uri.split(":").take(2).join(":");
       final endSegment = uri.split(":").last;
 
