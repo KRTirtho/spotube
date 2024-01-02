@@ -321,13 +321,54 @@ jobs:
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-universal.dmg
 
+  iOS:
+
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2.10.0
+        with:
+          cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
+
+      - name: Replace pubspec version and BUILD_VERSION Env (nightly)
+        if: ${{ inputs.channel == 'nightly' }}
+        run: |
+          brew install yq
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: BUILD_VERSION Env (stable)
+        if: ${{ inputs.channel == 'stable' }}
+        run: |
+          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Create Stable .env
+        if: ${{ inputs.channel == 'stable' }}
+        run: echo '${{ secrets.DOTENV_RELEASE }}' > .env
+
+      - name: Create Nightly .env
+        if: ${{ inputs.channel == 'nightly' }}
+        run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+
+      - name: Generate Secrets
+        run: |
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+
+      - name: Build iOS iPA
+        run: |
+          flutter build ios --release --no-codesign --flavor ${{ inputs.channel }}  
+          ln -sf ./build/ios/iphoneos Payload
+          zip -r9 Spotube-iOS.ipa Payload/${{ inputs.channel }}.app
 
       - uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
-            build/Spotube-macos-universal.dmg
+            Spotube-iOS.ipa
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
@@ -343,6 +384,7 @@ jobs:
       - linux
       - android
       - macos
+      - iOS
     steps:
       - uses: actions/download-artifact@v3
         with:
