@@ -58,15 +58,6 @@ Future<void> main(List<String> rawArgs) async {
     await DesktopTools.window.setPreventClose(true);
   }
 
-  await DesktopTools.ensureInitialized(
-    DesktopWindowOptions(
-      hideTitleBar: true,
-      title: "Spotube",
-      backgroundColor: Colors.transparent,
-      minimumSize: const Size(300, 700),
-    ),
-  );
-
   await SystemTheme.accentColor.load();
 
   if (!kIsWeb) {
@@ -105,6 +96,15 @@ Future<void> main(List<String> rawArgs) async {
   );
   await PersistedStateNotifier.initializeBoxes(
     path: hiveCacheDir,
+  );
+
+  await DesktopTools.ensureInitialized(
+    DesktopWindowOptions(
+      hideTitleBar: true,
+      title: "Spotube",
+      backgroundColor: Colors.transparent,
+      minimumSize: const Size(300, 700),
+    ),
   );
 
   Catcher2(
