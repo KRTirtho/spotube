@@ -87,8 +87,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
         .where((audio) => audio.codec.mimeType == "audio/webm")
         .sortByBitrate();
 
-    m4a = m4a.isEmpty ? weba : m4a;
-    weba = weba.isEmpty ? m4a : weba;
+    m4a = m4a.isEmpty ? weba.toList() : m4a;
+    weba = weba.isEmpty ? m4a.toList() : weba;
 
     return SourceMap(
       m4a: SourceQualityMap(
