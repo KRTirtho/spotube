@@ -89,7 +89,7 @@ jobs:
 
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
@@ -180,7 +180,7 @@ jobs:
           mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
 
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
@@ -257,7 +257,7 @@ jobs:
           mv build/app/outputs/bundle/${{ inputs.channel }}Release/app-${{ inputs.channel }}-release.aab build/Spotube-playstore-all-arch.aab
 
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
@@ -363,7 +363,7 @@ jobs:
           ln -sf ./build/ios/iphoneos Payload
           zip -r9 Spotube-iOS.ipa Payload/${{ inputs.channel }}.app
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
@@ -401,7 +401,7 @@ jobs:
           sha256sum Spotube-Release-Binaries/* >> RELEASE.sha256sum
           sed -i 's|Spotube-Release-Binaries/||' RELEASE.sha256sum RELEASE.md5sum
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
