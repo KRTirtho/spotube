@@ -152,6 +152,7 @@ flutter:
     - LICENSE
 
 flutter_launcher_icons:
+  ios: true
   android: true
   image_path: "assets/spotube-logo.png"
   adaptive_icon_foreground: "assets/spotube-logo-foreground.jpg"
