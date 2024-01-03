@@ -386,7 +386,7 @@ jobs:
       - macos
       - iOS
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: Spotube-Release-Binaries
           path: ./Spotube-Release-Binaries
