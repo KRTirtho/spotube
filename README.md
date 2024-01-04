@@ -66,6 +66,7 @@ This handy table lists all methods you can use to install Spotube:
       <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-universal.dmg">
         <img width="220" alt="MacOS Download" src="https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png">
       </a>
+      <p>With homebrew: <code>brew install homebrew-x/x/spotube</code></p>
     </td>
   </tr>
   <tr>
