@@ -1,1 +1,86 @@
-{}
+{
+  "ar": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "bn": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "ca": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "de": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "es": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "fa": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "fr": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "hi": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "it": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "ja": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "nl": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "pl": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "pt": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "ru": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "tr": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "uk": [
+    "step_3_steps",
+    "step_4_steps"
+  ],
+
+  "zh": [
+    "step_3_steps",
+    "step_4_steps"
+  ]
+}
