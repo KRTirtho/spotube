@@ -37,21 +37,21 @@ class UserPlaylists extends HookConsumerWidget {
     );
 
     final likedTracksPlaylist = useMemoized(
-        () => PlaylistSimple()
-          ..name = context.l10n.liked_tracks
-          ..description = context.l10n.liked_tracks_description
-          ..type = "playlist"
-          ..collaborative = false
-          ..public = false
-          ..id = "user-liked-tracks"
-          ..images = [
-            Image()
-              ..height = 300
-              ..width = 300
-              ..url =
-                  "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"
-          ],
-        [context.l10n]);
+      () => PlaylistSimple()
+        ..name = context.l10n.liked_tracks
+        ..description = context.l10n.liked_tracks_description
+        ..type = "playlist"
+        ..collaborative = false
+        ..public = false
+        ..id = "user-liked-tracks"
+        ..images = [
+          Image()
+            ..height = 300
+            ..width = 300
+            ..url = "assets/liked-tracks.jpg"
+        ],
+      [context.l10n],
+    );
 
     final playlists = useMemoized(
       () {
