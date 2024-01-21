@@ -36,7 +36,7 @@ Btw it's not another Electron app😉
 - 📖 Open source/libre software
 - 🔉 Playback control is done locally, not on the server
 
-**¹** It is still **recommended** to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify (or purchasing a Spotify Premium subscription too).
+**¹** It is still **recommended** to support creators by engaging with their YouTube channels/Spotify tracks (or preferably by buying their merch/concert tickets/physical media).
 
 ### ❌ Unsupported features
 
