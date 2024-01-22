@@ -36,3 +36,10 @@ body:
       description: Anything else you'd like to include?
     validations:
       required: false
+  - type: checkboxes
+    attributes:
+      label: Self grab
+      description: If you are a developer and want to work on this issue yourself, you can check this box and wait for maintainer response. We welcome contributions!
+      options:
+        - label: I'm ready to work on this issue!
+          required: false
