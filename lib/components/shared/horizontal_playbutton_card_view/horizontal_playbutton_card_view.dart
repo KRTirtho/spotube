@@ -60,10 +60,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
               onNotification: (notification) => true,
               child: ScrollConfiguration(
                 behavior: ScrollConfiguration.of(context).copyWith(
-                  dragDevices: {
-                    PointerDeviceKind.touch,
-                    PointerDeviceKind.mouse,
-                  },
+                  dragDevices: PointerDeviceKind.values.toSet(),
                 ),
                 child: items.isEmpty
                     ? ListView.builder(
