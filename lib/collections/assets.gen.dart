@@ -34,6 +34,7 @@ class Assets {
       AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
+  static const AssetGenImage jiosaavn = AssetGenImage('assets/jiosaavn.png');
   static const AssetGenImage likedTracks =
       AssetGenImage('assets/liked-tracks.jpg');
   static const AssetGenImage placeholder =
@@ -76,6 +77,7 @@ class Assets {
         bengaliPatternsBg,
         branding,
         emptyBox,
+        jiosaavn,
         likedTracks,
         placeholder,
         spotubeHeroBanner,
