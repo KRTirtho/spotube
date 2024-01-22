@@ -109,4 +109,5 @@ abstract class SpotubeIcons {
   static const normalize = FeatherIcons.barChart2;
   static const wikipedia = SimpleIcons.wikipedia;
   static const discord = SimpleIcons.discord;
+  static const youtube = SimpleIcons.youtube;
 }
