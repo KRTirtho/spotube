@@ -48,7 +48,9 @@ class LyricsQueries {
           throw "No track currently";
         }
         final timedLyrics = await ServiceUtils.getTimedLyrics(track);
-        if (timedLyrics == null) throw Exception("Unable to find lyrics");
+        if (timedLyrics == null) {
+          return SubtitleSimple(errorMessage: "Unable to find lyrics");
+        }
 
         return timedLyrics;
       },
@@ -83,8 +85,8 @@ class LyricsQueries {
             });
 
         if (res.statusCode != 200) {
-          throw Exception("Unable to find lyrics");
-        }
+            return SubtitleSimple(errorMessage: "Unable to find lyrics");
+          }
         final linesRaw = Map.castFrom<dynamic, dynamic, String, dynamic>(
           jsonDecode(res.body),
         )["lyrics"]?["lines"] as List?;
