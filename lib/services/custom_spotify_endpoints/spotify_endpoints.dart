@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/spotify_friends.dart';
 
 class CustomSpotifyEndpoints {
   static const _baseUrl = 'https://api.spotify.com/v1';
@@ -163,6 +164,18 @@ class CustomSpotifyEndpoints {
     );
   }
 
+  Future<SpotifyFriends> getFriendActivity() async {
+    final res = await _client.get(
+      Uri.parse("https://guc-spclient.spotify.com/presence-view/v1/buddylist"),
+      headers: {
+        "content-type": "application/json",
+        "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
+    );
+    return SpotifyFriends.fromJson(jsonDecode(res.body));
+  }
+
   Future<Artist> artist({required String id}) async {
     final pathQuery = "$_baseUrl/artists/$id";
 
@@ -174,7 +187,6 @@ class CustomSpotifyEndpoints {
         "accept": "application/json",
       },
     );
-
     final data = jsonDecode(res.body);
 
     return Artist.fromJson(_purifyArtistResponse(data));

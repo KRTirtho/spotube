@@ -1,5 +1,6 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
+import 'package:spotube/models/spotify_friends.dart';
 
 abstract class FakeData {
   static final Image image = Image()
@@ -164,4 +165,35 @@ abstract class FakeData {
     ..icons = [image]
     ..id = "1"
     ..name = "category";
+
+  static final friends = SpotifyFriends(
+    friends: [
+      for (var i = 0; i < 3; i++)
+        SpotifyFriendActivity(
+          user: const SpotifyFriend(
+            name: "name",
+            imageUrl: "imageUrl",
+            uri: "uri",
+          ),
+          track: SpotifyActivityTrack(
+            name: "name",
+            artist: const SpotifyActivityArtist(
+              name: "name",
+              uri: "uri",
+            ),
+            album: const SpotifyActivityAlbum(
+              name: "name",
+              uri: "uri",
+            ),
+            context: SpotifyActivityContext(
+              name: "name",
+              index: i,
+              uri: "uri",
+            ),
+            imageUrl: "imageUrl",
+            uri: "uri",
+          ),
+        ),
+    ],
+  );
 }
