@@ -16,6 +16,8 @@ class SpotifyFriend {
 
   factory SpotifyFriend.fromJson(Map<String, dynamic> json) =>
       _$SpotifyFriendFromJson(json);
+
+  String get id => uri.split(":").last;
 }
 
 @JsonSerializable(createToJson: false)
@@ -27,6 +29,8 @@ class SpotifyActivityArtist {
 
   factory SpotifyActivityArtist.fromJson(Map<String, dynamic> json) =>
       _$SpotifyActivityArtistFromJson(json);
+
+  String get id => uri.split(":").last;
 }
 
 @JsonSerializable(createToJson: false)
@@ -38,6 +42,8 @@ class SpotifyActivityAlbum {
 
   factory SpotifyActivityAlbum.fromJson(Map<String, dynamic> json) =>
       _$SpotifyActivityAlbumFromJson(json);
+
+  String get id => uri.split(":").last;
 }
 
 @JsonSerializable(createToJson: false)
@@ -54,6 +60,9 @@ class SpotifyActivityContext {
 
   factory SpotifyActivityContext.fromJson(Map<String, dynamic> json) =>
       _$SpotifyActivityContextFromJson(json);
+
+  String get id => uri.split(":").last;
+  String get path => uri.split(":").skip(1).join("/");
 }
 
 @JsonSerializable(createToJson: false)
@@ -76,6 +85,8 @@ class SpotifyActivityTrack {
 
   factory SpotifyActivityTrack.fromJson(Map<String, dynamic> json) =>
       _$SpotifyActivityTrackFromJson(json);
+
+  String get id => uri.split(":").last;
 }
 
 @JsonSerializable(createToJson: false)
