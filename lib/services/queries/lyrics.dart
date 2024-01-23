@@ -63,8 +63,8 @@ class LyricsQueries {
   /// Special thanks to [raptag](https://github.com/raptag) for discovering this
   /// jem
 
-  Query<SubtitleSimple, dynamic> spotifySynced(WidgetRef ref, Track? track) {
-    return useSpotifyQuery<SubtitleSimple, dynamic>(
+  Query<SubtitleSimple, Exception> spotifySynced(WidgetRef ref, Track? track) {
+    return useSpotifyQuery<SubtitleSimple, Exception>(
       "spotify-synced-lyrics/${track?.id}}",
       (spotify) async {
         if (track == null) {

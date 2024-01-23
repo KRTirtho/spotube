@@ -73,7 +73,7 @@ class PlainLyrics extends HookConsumerWidget {
                           return const ShimmerLyrics();
                         } else if (lyricsQuery.hasError) {
                           return Text(
-                            "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${lyricsQuery.error.toString()}",
+                            "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${lyricsQuery.error.toString().replaceAll("Exception: ", "")}",
                             style: textTheme.bodyLarge?.copyWith(
                               color: palette.bodyTextColor,
                             ),

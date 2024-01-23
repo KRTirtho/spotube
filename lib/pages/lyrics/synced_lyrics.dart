@@ -190,7 +190,7 @@ class SyncedLyrics extends HookConsumerWidget {
             else if (playlist.activeTrack != null &&
                 (timedLyricsQuery.hasError))
               Text(
-                "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${timedLyricsQuery.error.toString()}",
+                "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${timedLyricsQuery.error.toString().replaceAll("Exception: ", "")}",
                 style: bodyTextTheme,
               )
             else if (isUnSyncLyric == true)
