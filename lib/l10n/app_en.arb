@@ -285,5 +285,6 @@
   "browse_all": "Browse All",
   "genres": "Genres",
   "explore_genres": "Explore Genres",
-  "friends": "Friends"
+  "friends": "Friends",
+  "no_lyrics_available": "Sorry, unable find lyrics for this track"
 }
