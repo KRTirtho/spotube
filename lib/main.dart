@@ -228,7 +228,9 @@ class SpotubeState extends ConsumerState<Spotube> {
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,
-          DragToResizeArea(child: child!),
+          DesktopTools.platform.isDesktop
+              ? DragToResizeArea(child: child!)
+              : child,
         );
       },
       themeMode: themeMode,

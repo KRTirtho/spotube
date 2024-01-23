@@ -48,9 +48,8 @@ class HomePageFriendsSection extends HookConsumerWidget {
       },
     );
 
-    if (friendsQuery.hasData &&
-        friendsQuery.data?.friends.isEmpty == true &&
-        !friendsQuery.isLoading) {
+    if (!friendsQuery.isLoading &&
+        (!friendsQuery.hasData || friendsQuery.data!.friends.isEmpty)) {
       return const SliverToBoxAdapter(
         child: SizedBox.shrink(),
       );
