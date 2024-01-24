@@ -78,19 +78,19 @@ android {
     productFlavors {
         nightly {
             dimension "default"
-            resValue "string", "app_name", "Spotube Nightly"
+            resValue "string", "app_name_en", "Spotube Nightly"
             applicationIdSuffix ".nightly"
             versionNameSuffix "-nightly"
         }
         dev {
             dimension "default"
-            resValue "string", "app_name", "Spotube Dev"
+            resValue "string", "app_name_en", "Spotube Dev"
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
         }
         stable {
             dimension "default"
-            resValue "string", "app_name", "Spotube"
+            resValue "string", "app_name_en", "Spotube"
         }
     }
 

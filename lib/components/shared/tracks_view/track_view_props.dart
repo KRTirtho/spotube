@@ -6,6 +6,7 @@ class PaginationProps {
   final bool hasNextPage;
   final bool isLoading;
   final VoidCallback onFetchMore;
+  final Future<void> Function() onRefresh;
   final Future<List<Track>> Function() onFetchAll;
 
   const PaginationProps({
@@ -13,6 +14,7 @@ class PaginationProps {
     required this.isLoading,
     required this.onFetchMore,
     required this.onFetchAll,
+    required this.onRefresh,
   });
 
   factory PaginationProps.fromQuery(
@@ -24,6 +26,7 @@ class PaginationProps {
       isLoading: query.isLoadingNextPage,
       onFetchMore: query.fetchNext,
       onFetchAll: onFetchAll,
+      onRefresh: query.refreshAll,
     );
   }
 
@@ -33,7 +36,8 @@ class PaginationProps {
         other.hasNextPage == hasNextPage &&
         other.isLoading == isLoading &&
         other.onFetchMore == onFetchMore &&
-        other.onFetchAll == onFetchAll;
+        other.onFetchAll == onFetchAll &&
+        other.onRefresh == onRefresh;
   }
 
   @override
@@ -42,7 +46,8 @@ class PaginationProps {
       hasNextPage.hashCode ^
       isLoading.hashCode ^
       onFetchMore.hashCode ^
-      onFetchAll.hashCode;
+      onFetchAll.hashCode ^
+      onRefresh.hashCode;
 }
 
 class InheritedTrackView extends InheritedWidget {

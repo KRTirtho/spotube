@@ -24,10 +24,12 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
-import 'package:spotube/services/discord/discord.dart';
+import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/sourced_track/sources/piped.dart';
+import 'package:spotube/services/sourced_track/sources/youtube.dart';
 
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
@@ -62,6 +64,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   ProxyPlaylist get playlist => state;
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
+  Discord get discord => ref.read(discordProvider);
 
   static final provider =
       StateNotifierProvider<ProxyPlaylistNotifier, ProxyPlaylist>(
@@ -161,8 +164,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           return;
         }
         try {
-          final isNotYTMode = preferences.audioSource != AudioSource.youtube ||
-              (preferences.audioSource == AudioSource.piped &&
+          final isNotYTMode = state.activeTrack is! YoutubeSourcedTrack &&
+              (state.activeTrack is PipedSourcedTrack &&
                   preferences.searchMode == SearchMode.youtubeMusic);
 
           if (isNotYTMode || !preferences.skipNonMusic) return;

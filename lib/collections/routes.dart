@@ -1,9 +1,11 @@
 import 'package:catcher_2/catcher_2.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/pages/home/genres/genre_playlists.dart';
+import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
@@ -15,6 +17,7 @@ import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/pages/settings/logs.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/artist/artist.dart';
@@ -38,6 +41,21 @@ final router = GoRouter(
         GoRoute(
           path: "/",
           pageBuilder: (context, state) => const SpotubePage(child: HomePage()),
+          routes: [
+            GoRoute(
+              path: "genres",
+              pageBuilder: (context, state) =>
+                  const SpotubePage(child: GenrePage()),
+            ),
+            GoRoute(
+              path: "genre/:categoryId",
+              pageBuilder: (context, state) => SpotubePage(
+                child: GenrePlaylistsPage(
+                  category: state.extra as Category,
+                ),
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: "/search",
@@ -124,6 +142,15 @@ final router = GoRouter(
               child: state.pathParameters["id"] == "user-liked-tracks"
                   ? LikedPlaylistPage(playlist: state.extra as PlaylistSimple)
                   : PlaylistPage(playlist: state.extra as PlaylistSimple),
+            );
+          },
+        ),
+        GoRoute(
+          path: "/track/:id",
+          pageBuilder: (context, state) {
+            final id = state.pathParameters["id"]!;
+            return SpotubePage(
+              child: TrackPage(trackId: id),
             );
           },
         ),

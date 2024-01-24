@@ -1,12 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
@@ -72,10 +75,22 @@ class PlainLyrics extends HookConsumerWidget {
                         if (lyricsQuery.isLoading || lyricsQuery.isRefreshing) {
                           return const ShimmerLyrics();
                         } else if (lyricsQuery.hasError) {
-                          return Text(
-                            "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${lyricsQuery.error.toString()}",
-                            style: textTheme.bodyLarge?.copyWith(
-                              color: palette.bodyTextColor,
+                          return Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  context.l10n.no_lyrics_available,
+                                  style: textTheme.bodyLarge?.copyWith(
+                                    color: palette.bodyTextColor,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const Gap(26),
+                                const Icon(SpotubeIcons.noLyrics, size: 60),
+                              ],
                             ),
                           );
                         }

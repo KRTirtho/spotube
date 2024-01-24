@@ -164,10 +164,10 @@ abstract class LanguageLocals {
     //   name: "Maldivian;",
     //   nativeName: "ދިވެހި",
     // ),
-    // "nl": const ISOLanguageName(
-    //   name: "Dutch",
-    //   nativeName: "Vlaams",
-    // ),
+    "nl": const ISOLanguageName(
+      name: "Dutch",
+      nativeName: "Nederlands",
+    ),
     "en": const ISOLanguageName(
       name: "English",
       nativeName: "English",
@@ -288,10 +288,10 @@ abstract class LanguageLocals {
     //   name: "Icelandic",
     //   nativeName: "Íslenska",
     // ),
-    // "it": const ISOLanguageName(
-    //   name: "Italian",
-    //   nativeName: "Italiano",
-    // ),
+    "it": const ISOLanguageName(
+      name: "Italian",
+      nativeName: "Italiano",
+    ),
     // "iu": const ISOLanguageName(
     //   name: "Inuktitut",
     //   nativeName: "ᐃᓄᒃᑎᑐᑦ",
@@ -452,10 +452,10 @@ abstract class LanguageLocals {
     //   name: "North Ndebele",
     //   nativeName: "isiNdebele",
     // ),
-    // "ne": const ISOLanguageName(
-    //   name: "Nepali",
-    //   nativeName: "नेपाली",
-    // ),
+    "ne": const ISOLanguageName(
+      name: "Nepali",
+      nativeName: "नेपाली",
+    ),
     // "ng": const ISOLanguageName(
     //   name: "Ndonga",
     //   nativeName: "Owambo",

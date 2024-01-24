@@ -13,8 +13,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/collections/initializers.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/hooks/configurators/use_close_behavior.dart';
+import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/l10n/l10n.dart';
@@ -40,6 +43,8 @@ Future<void> main(List<String> rawArgs) async {
 
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
+  await registerWindowsScheme("spotify");
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   MediaKit.ensureInitialized();
@@ -49,14 +54,9 @@ Future<void> main(List<String> rawArgs) async {
     await FlutterDisplayMode.setHighRefreshRate();
   }
 
-  await DesktopTools.ensureInitialized(
-    DesktopWindowOptions(
-      hideTitleBar: true,
-      title: "Spotube",
-      backgroundColor: Colors.transparent,
-      minimumSize: const Size(300, 700),
-    ),
-  );
+  if (DesktopTools.platform.isDesktop) {
+    await DesktopTools.window.setPreventClose(true);
+  }
 
   await SystemTheme.accentColor.load();
 
@@ -96,6 +96,15 @@ Future<void> main(List<String> rawArgs) async {
   );
   await PersistedStateNotifier.initializeBoxes(
     path: hiveCacheDir,
+  );
+
+  await DesktopTools.ensureInitialized(
+    DesktopWindowOptions(
+      hideTitleBar: true,
+      title: "Spotube",
+      backgroundColor: Colors.transparent,
+      minimumSize: const Size(300, 700),
+    ),
   );
 
   Catcher2(
@@ -176,7 +185,11 @@ class SpotubeState extends ConsumerState<Spotube> {
     final paletteColor =
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
 
+    useDisableBatteryOptimizations();
     useInitSysTray(ref);
+    useDeepLinking(ref);
+    useCloseBehavior(ref);
+    useGetStoragePermissions(ref);
 
     useEffect(() {
       FlutterNativeSplash.remove();
@@ -184,12 +197,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;
         audioPlayer.dispose();
-        // youtube.close();
       };
     }, []);
-
-    useDisableBatteryOptimizations();
-    useGetStoragePermissions(ref);
 
     final lightTheme = useMemoized(
       () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
@@ -219,7 +228,9 @@ class SpotubeState extends ConsumerState<Spotube> {
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,
-          DragToResizeArea(child: child!),
+          DesktopTools.platform.isDesktop
+              ? DragToResizeArea(child: child!)
+              : child,
         );
       },
       themeMode: themeMode,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart' hide Offset;
@@ -7,6 +8,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
 import 'package:spotube/components/lyrics/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -77,7 +79,7 @@ class SyncedLyrics extends HookConsumerWidget {
             : textTheme.headlineMedium?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
 
-    var bodyTextTheme = textTheme.bodyLarge?.copyWith(
+    final bodyTextTheme = textTheme.bodyLarge?.copyWith(
       color: palette.bodyTextColor,
     );
     return Stack(
@@ -184,14 +186,23 @@ class SyncedLyrics extends HookConsumerWidget {
               ),
             if (playlist.activeTrack != null &&
                 (timedLyricsQuery.isLoading || timedLyricsQuery.isRefreshing))
-              const Expanded(child: ShimmerLyrics())
-            else if (playlist.activeTrack != null &&
-                (timedLyricsQuery.hasError))
-              Text(
-                "Sorry, no Lyrics were found for `${playlist.activeTrack?.name}` :'(\n${timedLyricsQuery.error.toString()}",
-                style: bodyTextTheme,
+              const Expanded(
+                child: ShimmerLyrics(),
               )
-            else if (isUnSyncLyric == true)
+            else if (playlist.activeTrack != null &&
+                (timedLyricsQuery.hasError)) ...[
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  context.l10n.no_lyrics_available,
+                  style: bodyTextTheme,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const Gap(26),
+              const Icon(SpotubeIcons.noLyrics, size: 60),
+            ] else if (isUnSyncLyric == true)
               Expanded(
                 child: Center(
                   child: RichText(
@@ -201,7 +212,7 @@ class SyncedLyrics extends HookConsumerWidget {
                       children: [
                         const TextSpan(
                           text:
-                              "Synced lyrics is not available for this song. Please use the",
+                              "Synced lyrics are not available for this song. Please use the",
                         ),
                         TextSpan(
                           text: " Plain Lyrics ",

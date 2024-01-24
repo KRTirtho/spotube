@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/spotify_friends.dart';
 
 class CustomSpotifyEndpoints {
   static const _baseUrl = 'https://api.spotify.com/v1';
@@ -161,5 +162,72 @@ class CustomSpotifyEndpoints {
     return List.castFrom<dynamic, Track>(
       result["tracks"].map((track) => Track.fromJson(track)).toList(),
     );
+  }
+
+  Future<SpotifyFriends> getFriendActivity() async {
+    final res = await _client.get(
+      Uri.parse("https://guc-spclient.spotify.com/presence-view/v1/buddylist"),
+      headers: {
+        "content-type": "application/json",
+        "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
+    );
+    return SpotifyFriends.fromJson(jsonDecode(res.body));
+  }
+
+  Future<Artist> artist({required String id}) async {
+    final pathQuery = "$_baseUrl/artists/$id";
+
+    final res = await _client.get(
+      Uri.parse(pathQuery),
+      headers: {
+        "content-type": "application/json",
+        if (accessToken.isNotEmpty) "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
+    );
+    final data = jsonDecode(res.body);
+
+    return Artist.fromJson(_purifyArtistResponse(data));
+  }
+
+  Future<List<Artist>> relatedArtists({required String id}) async {
+    final pathQuery = "$_baseUrl/artists/$id/related-artists";
+
+    final res = await _client.get(
+      Uri.parse(pathQuery),
+      headers: {
+        "content-type": "application/json",
+        if (accessToken.isNotEmpty) "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
+    );
+
+    final data = jsonDecode(res.body);
+
+    return List.castFrom<dynamic, Artist>(
+      data["artists"]
+          .map((artist) => Artist.fromJson(_purifyArtistResponse(artist)))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> _purifyArtistResponse(Map<String, dynamic> data) {
+    if (data["popularity"] != null) {
+      data["popularity"] = data["popularity"].toInt();
+    }
+    if (data["followers"]?["total"] != null) {
+      data["followers"]["total"] = data["followers"]["total"].toInt();
+    }
+    if (data["images"] != null) {
+      data["images"] = data["images"].map((e) {
+        e["height"] = e["height"].toInt();
+        e["width"] = e["width"].toInt();
+        return e;
+      }).toList();
+    }
+
+    return data;
   }
 }

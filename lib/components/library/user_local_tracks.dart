@@ -11,12 +11,14 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
+import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
@@ -254,6 +256,15 @@ class UserLocalTracks extends HookConsumerWidget {
                   .toList();
             }, [searchController.text, sortedTracks]);
 
+            if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
+              return const Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [NotFound()],
+                ),
+              );
+            }
+
             return Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
@@ -261,32 +272,48 @@ class UserLocalTracks extends HookConsumerWidget {
                 },
                 child: InterScrollbar(
                   controller: controller,
-                  child: ListView.builder(
-                    controller: controller,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: filteredTracks.length,
-                    itemBuilder: (context, index) {
-                      final track = filteredTracks[index];
-                      return TrackTile(
-                        index: index,
-                        track: track,
-                        userPlaylist: false,
-                        onTap: () async {
-                          await playLocalTracks(
-                            ref,
-                            sortedTracks,
-                            currentTrack: track,
-                          );
-                        },
-                      );
-                    },
+                  child: Skeletonizer(
+                    enabled: trackSnapshot.isLoading,
+                    child: ListView.builder(
+                      controller: controller,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount:
+                          trackSnapshot.isLoading ? 5 : filteredTracks.length,
+                      itemBuilder: (context, index) {
+                        if (trackSnapshot.isLoading) {
+                          return TrackTile(track: FakeData.track, index: index);
+                        }
+
+                        final track = filteredTracks[index];
+                        return TrackTile(
+                          index: index,
+                          track: track,
+                          userPlaylist: false,
+                          onTap: () async {
+                            await playLocalTracks(
+                              ref,
+                              sortedTracks,
+                              currentTrack: track,
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
             );
           },
-          loading: () =>
-              const Expanded(child: ShimmerTrackTileGroup(noSliver: true)),
+          loading: () => Expanded(
+            child: Skeletonizer(
+              enabled: true,
+              child: ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) =>
+                    TrackTile(track: FakeData.track, index: index),
+              ),
+            ),
+          ),
           error: (error, stackTrace) =>
               Text(error.toString() + stackTrace.toString()),
         )

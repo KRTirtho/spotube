@@ -41,6 +41,7 @@ abstract class SpotubeIcons {
   static const clock = FeatherIcons.clock;
   static const lyrics = Icons.lyrics_rounded;
   static const lyricsOff = Icons.lyrics_outlined;
+  static const noLyrics = Icons.music_off_outlined;
   static const logout = FeatherIcons.logOut;
   static const login = FeatherIcons.logIn;
   static const dashboard = FeatherIcons.grid;
@@ -108,4 +109,6 @@ abstract class SpotubeIcons {
   static const noEye = FeatherIcons.eyeOff;
   static const normalize = FeatherIcons.barChart2;
   static const wikipedia = SimpleIcons.wikipedia;
+  static const discord = SimpleIcons.discord;
+  static const youtube = SimpleIcons.youtube;
 }
