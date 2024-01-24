@@ -82,35 +82,50 @@ class SiblingTracksSheet extends HookConsumerWidget {
       if (searchTerm.trim().isEmpty) {
         return <SourceInfo>[];
       }
-
-      final resultsYt = await youtubeClient.search.search(searchTerm.trim());
-      final resultsJioSaavn =
-          await jiosaavnClient.search.songs(searchTerm.trim());
-
-      final searchResults = await Future.wait([
-        ...resultsJioSaavn.results.mapIndexed((i, song) async {
+      if (preferences.audioSource == AudioSource.jiosaavn) {
+        final resultsJioSaavn =
+            await jiosaavnClient.search.songs(searchTerm.trim());
+        final results = await Future.wait(
+            resultsJioSaavn.results.mapIndexed((i, song) async {
           final siblingType = JioSaavnSourcedTrack.toSiblingType(song);
           return siblingType.info;
-        }),
-        ...resultsYt
-            .map(YoutubeVideoInfo.fromVideo)
-            .mapIndexed((i, video) async {
-          final siblingType = await YoutubeSourcedTrack.toSiblingType(i, video);
-          return siblingType.info;
-        }),
-      ]);
-      final activeSourceInfo =
-          (playlist.activeTrack! as SourcedTrack).sourceInfo;
-      return searchResults
-        ..removeWhere((element) => element.id == activeSourceInfo.id)
-        ..insert(
-          0,
-          activeSourceInfo,
+        }));
+
+        final activeSourceInfo =
+            (playlist.activeTrack! as SourcedTrack).sourceInfo;
+
+        return results
+          ..removeWhere((element) => element.id == activeSourceInfo.id)
+          ..insert(
+            0,
+            activeSourceInfo,
+          );
+      } else {
+        final resultsYt = await youtubeClient.search.search(searchTerm.trim());
+
+        final searchResults = await Future.wait(
+          resultsYt
+              .map(YoutubeVideoInfo.fromVideo)
+              .mapIndexed((i, video) async {
+            final siblingType =
+                await YoutubeSourcedTrack.toSiblingType(i, video);
+            return siblingType.info;
+          }),
         );
+        final activeSourceInfo =
+            (playlist.activeTrack! as SourcedTrack).sourceInfo;
+        return searchResults
+          ..removeWhere((element) => element.id == activeSourceInfo.id)
+          ..insert(
+            0,
+            activeSourceInfo,
+          );
+      }
     }, [
       searchTerm,
       searchMode.value,
       playlist.activeTrack,
+      preferences.audioSource,
     ]);
 
     final siblings = useMemoized(
