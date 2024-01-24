@@ -174,7 +174,6 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 - [Owen Connor](https://github.com/owencz1998) - The Cool Discord Moderator
 - [Meenbeese](https://github.com/meenbeese) - The Android Developer
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
-- [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
 ## 💼 License
 
