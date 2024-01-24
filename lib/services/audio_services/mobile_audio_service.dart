@@ -17,6 +17,9 @@ class MobileAudioService extends BaseAudioHandler {
     AudioSession.instance.then((s) {
       session = s;
       session?.configure(const AudioSessionConfiguration.music());
+
+      bool wasPausedByBeginEvent = false;
+
       s.interruptionEventStream.listen((event) async {
         if (event.begin) {
           switch (event.type) {
@@ -25,17 +28,23 @@ class MobileAudioService extends BaseAudioHandler {
               break;
             case AudioInterruptionType.pause:
             case AudioInterruptionType.unknown:
-              await audioPlayer.pause();
-              break;
+              {
+                wasPausedByBeginEvent = audioPlayer.isPlaying;
+                await audioPlayer.pause();
+                break;
+              }
           }
         } else {
           switch (event.type) {
             case AudioInterruptionType.duck:
               await audioPlayer.setVolume(1.0);
               break;
-            case AudioInterruptionType.pause:
-            case AudioInterruptionType.unknown:
+            case AudioInterruptionType.pause when wasPausedByBeginEvent:
+            case AudioInterruptionType.unknown when wasPausedByBeginEvent:
               await audioPlayer.resume();
+              wasPausedByBeginEvent = false;
+              break;
+            default:
               break;
           }
         }
