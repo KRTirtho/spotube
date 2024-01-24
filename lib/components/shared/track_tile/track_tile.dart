@@ -110,7 +110,7 @@ class TrackTile extends HookConsumerWidget {
                   ...?leadingActions,
                   if (index != null && onChanged == null && constrains.mdAndUp)
                     SizedBox(
-                      width: 34,
+                      width: 50,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Text(
