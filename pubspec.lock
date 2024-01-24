@@ -1852,10 +1852,10 @@ packages:
     dependency: "direct main"
     description:
       name: sidebarx
-      sha256: "26a8392ceddb659c8f2c688beba6c04bcbf520b4d5decb143c5fd7253653081f"
+      sha256: "7042d64844b8e64ca5c17e70d89b49df35b54a26c015b90000da9741eab70bc0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.15.0"
+    version: "0.16.3"
   simple_icons:
     dependency: "direct main"
     description:
