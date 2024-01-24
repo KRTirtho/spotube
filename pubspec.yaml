@@ -94,7 +94,7 @@ dependencies:
   url_launcher: ^6.1.7
   uuid: ^3.0.7
   version: ^3.0.2
-  visibility_detector: ^0.3.3
+  visibility_detector: ^0.4.0+2
   window_manager: ^0.3.1
   window_size:
     git:
