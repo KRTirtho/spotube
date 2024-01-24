@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/home/sections/featured.dart';
 import 'package:spotube/components/home/sections/friends.dart';
@@ -19,12 +20,15 @@ class HomePage extends HookConsumerWidget {
     return SafeArea(
         bottom: false,
         child: Scaffold(
-          appBar: DesktopTools.platform.isMobile
-              ? null
-              : const PageWindowTitleBar(),
+          appBar:
+              DesktopTools.platform.isLinux || DesktopTools.platform.isWindows
+                  ? const PageWindowTitleBar()
+                  : null,
           body: CustomScrollView(
             controller: controller,
             slivers: [
+              if (DesktopTools.platform.isMacOS || DesktopTools.platform.isWeb)
+                const SliverGap(20),
               const HomeGenresSection(),
               SliverList.list(
                 children: const [

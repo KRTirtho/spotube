@@ -62,28 +62,45 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragStart: onDrag,
-      onVerticalDragStart: onDrag,
-      child: AppBar(
-        leading: widget.leading,
-        automaticallyImplyLeading: widget.automaticallyImplyLeading,
-        actions: [
-          ...?widget.actions,
-          WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
-        ],
-        backgroundColor: widget.backgroundColor,
-        foregroundColor: widget.foregroundColor,
-        actionsIconTheme: widget.actionsIconTheme,
-        centerTitle: widget.centerTitle,
-        titleSpacing: widget.titleSpacing,
-        toolbarOpacity: widget.toolbarOpacity,
-        leadingWidth: widget.leadingWidth,
-        toolbarTextStyle: widget.toolbarTextStyle,
-        titleTextStyle: widget.titleTextStyle,
-        title: widget.title,
-      ),
-    );
+    final mediaQuery = MediaQuery.of(context);
+
+    return LayoutBuilder(builder: (context, constrains) {
+      final hasFullscreen = mediaQuery.size.width == constrains.maxWidth;
+      final hasLeadingOrCanPop =
+          widget.leading != null || Navigator.canPop(context);
+
+      return GestureDetector(
+        onHorizontalDragStart: onDrag,
+        onVerticalDragStart: onDrag,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: DesktopTools.platform.isMacOS &&
+                    hasFullscreen &&
+                    hasLeadingOrCanPop
+                ? 65
+                : 0,
+          ),
+          child: AppBar(
+            leading: widget.leading,
+            automaticallyImplyLeading: widget.automaticallyImplyLeading,
+            actions: [
+              ...?widget.actions,
+              WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
+            ],
+            backgroundColor: widget.backgroundColor,
+            foregroundColor: widget.foregroundColor,
+            actionsIconTheme: widget.actionsIconTheme,
+            centerTitle: widget.centerTitle,
+            titleSpacing: widget.titleSpacing,
+            toolbarOpacity: widget.toolbarOpacity,
+            leadingWidth: widget.leadingWidth,
+            toolbarTextStyle: widget.toolbarTextStyle,
+            titleTextStyle: widget.titleTextStyle,
+            title: widget.title,
+          ),
+        ),
+      );
+    });
   }
 }
 
