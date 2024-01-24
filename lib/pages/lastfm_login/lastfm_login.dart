@@ -59,29 +59,42 @@ class LastFMLoginPage extends HookConsumerWidget {
                     const SizedBox(height: 10),
                     Text(context.l10n.login_with_your_lastfm),
                     const SizedBox(height: 10),
-                    TextFormField(
-                      controller: username,
-                      validator: ValidationBuilder().required().build(),
-                      decoration: InputDecoration(
-                        labelText: context.l10n.username,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: password,
-                      validator: ValidationBuilder().required().build(),
-                      obscureText: !passwordVisible.value,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.password,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            passwordVisible.value
-                                ? SpotubeIcons.eye
-                                : SpotubeIcons.noEye,
+                    AutofillGroup(
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            autofillHints: const [
+                              AutofillHints.username,
+                              AutofillHints.email,
+                            ],
+                            controller: username,
+                            validator: ValidationBuilder().required().build(),
+                            decoration: InputDecoration(
+                              labelText: context.l10n.username,
+                            ),
                           ),
-                          onPressed: () =>
-                              passwordVisible.value = !passwordVisible.value,
-                        ),
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            autofillHints: const [
+                              AutofillHints.password,
+                            ],
+                            controller: password,
+                            validator: ValidationBuilder().required().build(),
+                            obscureText: !passwordVisible.value,
+                            decoration: InputDecoration(
+                              labelText: context.l10n.password,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  passwordVisible.value
+                                      ? SpotubeIcons.eye
+                                      : SpotubeIcons.noEye,
+                                ),
+                                onPressed: () => passwordVisible.value =
+                                    !passwordVisible.value,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -95,7 +108,7 @@ class LastFMLoginPage extends HookConsumerWidget {
                                   return;
                                 }
                                 await scrobblerNotifier.login(
-                                  username.text,
+                                  username.text.trim(),
                                   password.text,
                                 );
                                 router.pop();

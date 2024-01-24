@@ -93,6 +93,10 @@ class Win32Window {
 
   // window handle for hosted content.
   HWND child_content_ = nullptr;
+  // Dispatches link if any.
+  // This method enables our app to be with a single instance too.
+  // This is mandatory if you want to catch further links in same app.
+  bool SendAppLinkToInstance(const std::wstring& title);
 };
 
 #endif  // RUNNER_WIN32_WINDOW_H_

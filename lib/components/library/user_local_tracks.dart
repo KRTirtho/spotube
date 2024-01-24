@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:catcher_2/catcher_2.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,21 +11,20 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
+import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_track_tile.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
-import 'package:spotube/components/shared/track_table/track_tile.dart';
+import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_async_effect.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/utils/platform.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
@@ -77,14 +75,14 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
         final mimetype = lookupMimeType(file.path);
         return mimetype != null && supportedAudioTypes.contains(mimetype);
       }).map(
-        (f) async {
+        (file) async {
           try {
-            final metadata = await MetadataGod.readMetadata(file: f.path);
+            final metadata = await MetadataGod.readMetadata(file: file.path);
 
             final imageFile = File(join(
               (await getTemporaryDirectory()).path,
               "spotube",
-              basenameWithoutExtension(f.path) +
+              basenameWithoutExtension(file.path) +
                   imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
             ));
             if (!await imageFile.exists() && metadata.picture != null) {
@@ -95,10 +93,10 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
               );
             }
 
-            return {"metadata": metadata, "file": f, "art": imageFile.path};
+            return {"metadata": metadata, "file": file, "art": imageFile.path};
           } catch (e, stack) {
             if (e is FfiException) {
-              return {"file": f};
+              return {"file": file};
             }
             Catcher2.reportCheckedError(e, stack);
             return {};
@@ -161,39 +159,13 @@ class UserLocalTracks extends HookConsumerWidget {
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying =
         playlist.containsTracks(trackSnapshot.value ?? []);
-    final isMounted = useIsMounted();
 
     final searchController = useTextEditingController();
     useValueListenable(searchController);
     final searchFocus = useFocusNode();
     final isFiltering = useState(false);
 
-    useAsyncEffect(
-      () async {
-        if (!kIsMobile) return;
-
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
-
-        final hasNoStoragePerm = androidInfo.version.sdkInt < 33 &&
-            !await Permission.storage.isGranted &&
-            !await Permission.storage.isLimited;
-
-        final hasNoAudioPerm = androidInfo.version.sdkInt >= 33 &&
-            !await Permission.audio.isGranted &&
-            !await Permission.audio.isLimited;
-
-        if (hasNoStoragePerm) {
-          await Permission.storage.request();
-          if (isMounted()) ref.refresh(localTracksProvider);
-        }
-        if (hasNoAudioPerm) {
-          await Permission.audio.request();
-          if (isMounted()) ref.refresh(localTracksProvider);
-        }
-      },
-      null,
-      [],
-    );
+    final controller = useScrollController();
 
     return Column(
       children: [
@@ -229,7 +201,8 @@ class UserLocalTracks extends HookConsumerWidget {
               ),
               const Spacer(),
               ExpandableSearchButton(
-                isFiltering: isFiltering,
+                isFiltering: isFiltering.value,
+                onPressed: (value) => isFiltering.value = value,
                 searchFocus: searchFocus,
               ),
               const SizedBox(width: 10),
@@ -252,7 +225,8 @@ class UserLocalTracks extends HookConsumerWidget {
         ExpandableSearchField(
           searchController: searchController,
           searchFocus: searchFocus,
-          isFiltering: isFiltering,
+          isFiltering: isFiltering.value,
+          onChangeFiltering: (value) => isFiltering.value = value,
         ),
         trackSnapshot.when(
           data: (tracks) {
@@ -282,37 +256,64 @@ class UserLocalTracks extends HookConsumerWidget {
                   .toList();
             }, [searchController.text, sortedTracks]);
 
+            if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
+              return const Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [NotFound()],
+                ),
+              );
+            }
+
             return Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
                   ref.refresh(localTracksProvider);
                 },
                 child: InterScrollbar(
-                  child: ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: filteredTracks.length,
-                    itemBuilder: (context, index) {
-                      final track = filteredTracks[index];
-                      return TrackTile(
-                        index: index,
-                        track: track,
-                        userPlaylist: false,
-                        onTap: () async {
-                          await playLocalTracks(
-                            ref,
-                            sortedTracks,
-                            currentTrack: track,
-                          );
-                        },
-                      );
-                    },
+                  controller: controller,
+                  child: Skeletonizer(
+                    enabled: trackSnapshot.isLoading,
+                    child: ListView.builder(
+                      controller: controller,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount:
+                          trackSnapshot.isLoading ? 5 : filteredTracks.length,
+                      itemBuilder: (context, index) {
+                        if (trackSnapshot.isLoading) {
+                          return TrackTile(track: FakeData.track, index: index);
+                        }
+
+                        final track = filteredTracks[index];
+                        return TrackTile(
+                          index: index,
+                          track: track,
+                          userPlaylist: false,
+                          onTap: () async {
+                            await playLocalTracks(
+                              ref,
+                              sortedTracks,
+                              currentTrack: track,
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
             );
           },
-          loading: () =>
-              const Expanded(child: ShimmerTrackTile(noSliver: true)),
+          loading: () => Expanded(
+            child: Skeletonizer(
+              enabled: true,
+              child: ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) =>
+                    TrackTile(track: FakeData.track, index: index),
+              ),
+            ),
+          ),
           error: (error, stackTrace) =>
               Text(error.toString() + stackTrace.toString()),
         )

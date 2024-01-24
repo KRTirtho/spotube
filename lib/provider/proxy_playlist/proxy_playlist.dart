@@ -1,8 +1,9 @@
 import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class ProxyPlaylist {
   final Set<Track> tracks;
@@ -11,11 +12,14 @@ class ProxyPlaylist {
 
   ProxyPlaylist(this.tracks, [this.active, this.collections = const {}]);
 
-  factory ProxyPlaylist.fromJson(Map<String, dynamic> json) {
+  factory ProxyPlaylist.fromJson(
+    Map<String, dynamic> json,
+    Ref ref,
+  ) {
     return ProxyPlaylist(
       List.castFrom<dynamic, Map<String, dynamic>>(
         json['tracks'] ?? <Map<String, dynamic>>[],
-      ).map(_makeAppropriateTrack).toSet(),
+      ).map((t) => _makeAppropriateTrack(t, ref)).toSet(),
       json['active'] as int?,
       json['collections'] == null
           ? {}
@@ -28,7 +32,7 @@ class ProxyPlaylist {
 
   bool get isFetching =>
       activeTrack != null &&
-      activeTrack is! SpotubeTrack &&
+      activeTrack is! SourcedTrack &&
       activeTrack is! LocalTrack;
 
   bool containsCollection(String collection) {
@@ -44,9 +48,9 @@ class ProxyPlaylist {
     return tracks.every(containsTrack);
   }
 
-  static Track _makeAppropriateTrack(Map<String, dynamic> track) {
+  static Track _makeAppropriateTrack(Map<String, dynamic> track, Ref ref) {
     if (track.containsKey("ytUri")) {
-      return SpotubeTrack.fromJson(track);
+      return SourcedTrack.fromJson(track, ref: ref);
     } else if (track.containsKey("path")) {
       return LocalTrack.fromJson(track);
     } else {
@@ -54,12 +58,14 @@ class ProxyPlaylist {
     }
   }
 
+  /// To make sure proper instance method is used for JSON serialization
+  /// Otherwise default super.toJson() is used
   static Map<String, dynamic> _makeAppropriateTrackJson(Track track) {
-    if (track is LocalTrack) {
-      return track.toJson();
-    } else {
-      return track.toJson();
-    }
+    return switch (track.runtimeType) {
+      LocalTrack => track.toJson(),
+      SourcedTrack => track.toJson(),
+      _ => track.toJson(),
+    };
   }
 
   Map<String, dynamic> toJson() {

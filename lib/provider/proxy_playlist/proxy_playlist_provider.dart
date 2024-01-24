@@ -12,26 +12,32 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/models/matched_track.dart';
+
 import 'package:spotube/models/skip_segment.dart';
-import 'package:spotube/models/spotube_track.dart';
+
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/next_fetcher_mixin.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/provider/youtube_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
-import 'package:spotube/services/youtube/youtube.dart';
+import 'package:spotube/provider/discord_provider.dart';
+import 'package:spotube/services/sourced_track/exceptions.dart';
+import 'package:spotube/services/sourced_track/models/source_info.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/sourced_track/sources/piped.dart';
+import 'package:spotube/services/sourced_track/sources/youtube.dart';
+
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 /// Things implemented:
 /// * [x] Sponsor-Block skip
-/// * [x] Prefetch next track as [SpotubeTrack] on 80% of current track
-/// * [x] Mixed Queue containing both [SpotubeTrack] and [LocalTrack]
+/// * [x] Prefetch next track as [SourcedTrack] on 80% of current track
+/// * [x] Mixed Queue containing both [SourcedTrack] and [LocalTrack]
 /// * [x] Modification of the Queue
 ///       * [x] Add track at the end
 ///       * [x] Add track at the beginning
@@ -55,10 +61,10 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
   UserPreferences get preferences => ref.read(userPreferencesProvider);
-  YoutubeEndpoints get youtube => ref.read(youtubeProvider);
   ProxyPlaylist get playlist => state;
   BlackListNotifier get blacklist =>
       ref.read(BlackListNotifier.provider.notifier);
+  Discord get discord => ref.read(discordProvider);
 
   static final provider =
       StateNotifierProvider<ProxyPlaylistNotifier, ProxyPlaylist>(
@@ -90,6 +96,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           }
 
           notificationService.addTrack(newActiveTrack);
+          discord.updatePresence(newActiveTrack);
           state = state.copyWith(
             active: state.tracks
                 .toList()
@@ -130,20 +137,10 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         try {
           isPreSearching.value = true;
 
-          final oldTrack =
-              mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
-
           final track = await ensureSourcePlayable(audioPlayer.nextSource!);
 
           if (track != null) {
             state = state.copyWith(tracks: mergeTracks([track], state.tracks));
-          }
-
-          if (oldTrack != null && track != null) {
-            await storeTrack(
-              oldTrack,
-              track,
-            );
           }
         } catch (e, stackTrace) {
           // Removing tracks that were not found to avoid queue interruption
@@ -167,11 +164,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           return;
         }
         try {
-          final isYTMusicMode =
-              preferences.youtubeApiType == YoutubeApiType.piped &&
-                  preferences.searchMode == SearchMode.youtubeMusic;
+          final isNotYTMode = state.activeTrack is! YoutubeSourcedTrack &&
+              (state.activeTrack is PipedSourcedTrack &&
+                  preferences.searchMode == SearchMode.youtubeMusic);
 
-          if (isYTMusicMode || !preferences.skipNonMusic) return;
+          if (isNotYTMode || !preferences.skipNonMusic) return;
 
           final isNotSameSegmentId =
               currentSegments.value?.source != audioPlayer.currentSource;
@@ -183,7 +180,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
               currentSegments.value = (
                 source: audioPlayer.currentSource!,
                 segments: await getAndCacheSkipSegments(
-                  (state.activeTrack as SpotubeTrack).ytTrack.id,
+                  (state.activeTrack as SourcedTrack).sourceInfo.id,
                 ),
               );
             } catch (e) {
@@ -213,10 +210,30 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           Catcher2.reportCheckedError(e, stackTrace);
         }
       });
+
+      String? lastScrobbled;
+      audioPlayer.positionStream.listen((position) {
+        try {
+          final uid = state.activeTrack is LocalTrack
+              ? (state.activeTrack as LocalTrack).path
+              : state.activeTrack?.id;
+
+          if (state.activeTrack == null ||
+              lastScrobbled == uid ||
+              position.inSeconds < 30) {
+            return;
+          }
+
+          scrobbler.scrobble(state.activeTrack!);
+          lastScrobbled = uid;
+        } catch (e, stack) {
+          Catcher2.reportCheckedError(e, stack);
+        }
+      });
     }();
   }
 
-  Future<SpotubeTrack?> ensureSourcePlayable(String source) async {
+  Future<SourcedTrack?> ensureSourcePlayable(String source) async {
     if (isPlayable(source)) return null;
 
     final track = mapSourcesToTracks([source]).firstOrNull;
@@ -226,17 +243,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
 
     final nthFetchedTrack = switch (track.runtimeType) {
-      SpotubeTrack => track as SpotubeTrack,
-      _ => await SpotubeTrack.fetchFromTrack(
-          track,
-          youtube,
-          preferences.streamMusicCodec,
-        ),
+      SourcedTrack => track as SourcedTrack,
+      _ => await SourcedTrack.fetchFromTrack(ref: ref, track: track),
     };
 
     await audioPlayer.replaceSource(
       source,
-      nthFetchedTrack.ytUri,
+      nthFetchedTrack.url,
     );
 
     return nthFetchedTrack;
@@ -313,16 +326,15 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         collections: {},
       );
       await notificationService.addTrack(indexTrack);
+      discord.updatePresence(indexTrack);
     } else {
-      final addableTrack = await SpotubeTrack.fetchFromTrack(
-        tracks.elementAtOrNull(initialIndex) ?? tracks.first,
-        youtube,
-        preferences.streamMusicCodec,
+      final addableTrack = await SourcedTrack.fetchFromTrack(
+        ref: ref,
+        track: tracks.elementAtOrNull(initialIndex) ?? tracks.first,
       ).catchError((e, stackTrace) {
-        return SpotubeTrack.fetchFromTrack(
-          tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
-          youtube,
-          preferences.streamMusicCodec,
+        return SourcedTrack.fetchFromTrack(
+          ref: ref,
+          track: tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
         );
       });
 
@@ -332,10 +344,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         collections: {},
       );
       await notificationService.addTrack(addableTrack);
-      await storeTrack(
-        tracks.elementAt(initialIndex),
-        addableTrack,
-      );
+      discord.updatePresence(addableTrack);
     }
 
     await audioPlayer.openPlaylist(
@@ -364,13 +373,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
-    }
-
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
+      discord.updatePresence(track ?? oldTrack!);
     }
   }
 
@@ -416,9 +419,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   }
 
   Future<void> populateSibling() async {
-    if (state.activeTrack is SpotubeTrack) {
+    if (state.activeTrack is SourcedTrack) {
       final activeTrackWithSiblingsForSure =
-          await (state.activeTrack as SpotubeTrack).populatedCopy(youtube);
+          await (state.activeTrack as SourcedTrack).copyWithSibling();
 
       state = state.copyWith(
         tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
@@ -428,11 +431,11 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
   }
 
-  Future<void> swapSibling(YoutubeVideoInfo video) async {
-    if (state.activeTrack is SpotubeTrack) {
+  Future<void> swapSibling(SourceInfo sibling) async {
+    if (state.activeTrack is SourcedTrack) {
       await populateSibling();
       final newTrack =
-          await (state.activeTrack as SpotubeTrack).swappedCopy(video, youtube);
+          await (state.activeTrack as SourcedTrack).swapWithSibling(sibling);
       if (newTrack == null) return;
       state = state.copyWith(
         tracks: mergeTracks([newTrack], state.tracks),
@@ -473,12 +476,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
-    }
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
+      discord.updatePresence(track ?? oldTrack!);
     }
   }
 
@@ -504,18 +502,14 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     await audioPlayer.skipToPrevious();
     if (oldTrack != null || track != null) {
       await notificationService.addTrack(track ?? oldTrack!);
-    }
-    if (oldTrack != null && track != null) {
-      await storeTrack(
-        oldTrack,
-        track,
-      );
+      discord.updatePresence(track ?? oldTrack!);
     }
   }
 
   Future<void> stop() async {
     state = ProxyPlaylist({});
     await audioPlayer.stop();
+    discord.clear();
   }
 
   Future<void> updatePalette() async {
@@ -543,7 +537,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
     if (!preferences.skipNonMusic ||
-        (preferences.youtubeApiType == YoutubeApiType.piped &&
+        (preferences.audioSource == AudioSource.piped &&
             preferences.searchMode == SearchMode.youtubeMusic)) return [];
 
     try {
@@ -609,30 +603,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   @override
   set state(state) {
-    final hasActiveTrackChanged = super.state.activeTrack is SpotubeTrack
-        ? state.activeTrack?.id != super.state.activeTrack?.id
-        : super.state.activeTrack is LocalTrack &&
-                state.activeTrack is LocalTrack
-            ? (super.state.activeTrack as LocalTrack).path !=
-                (state.activeTrack as LocalTrack).path
-            : super.state.activeTrack?.id != state.activeTrack?.id;
-
-    final oldTrack = super.state.activeTrack;
-
     super.state = state;
     if (state.tracks.isEmpty && ref.read(paletteProvider) != null) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
       updatePalette();
     }
-    audioPlayer.position.then((position) {
-      final isMoreThan30secs = position != null &&
-          (position == Duration.zero || position.inSeconds > 30);
-
-      if (hasActiveTrackChanged && oldTrack != null && isMoreThan30secs) {
-        scrobbler.scrobble(oldTrack);
-      }
-    });
   }
 
   @override
@@ -649,7 +625,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   @override
   FutureOr<ProxyPlaylist> fromJson(Map<String, dynamic> json) {
-    return ProxyPlaylist.fromJson(json);
+    return ProxyPlaylist.fromJson(json, ref);
   }
 
   @override

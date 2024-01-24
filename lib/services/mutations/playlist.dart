@@ -2,7 +2,7 @@ import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/hooks/use_spotify_mutation.dart';
+import 'package:spotube/hooks/spotify/use_spotify_mutation.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 typedef PlaylistCRUDVariables = ({
@@ -131,10 +131,8 @@ class PlaylistMutations {
           );
         }
       },
-      refreshQueries: [
-        "playlist/$playlistId",
-      ],
       refreshInfiniteQueries: [
+        "playlist/$playlistId",
         "current-user-playlists",
       ],
       ref: ref,

@@ -1,20 +1,21 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
+import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_update_checker.dart';
+import 'package:spotube/hooks/configurators/use_update_checker.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
@@ -52,44 +53,43 @@ class RootApp extends HookConsumerWidget {
       });
 
       final subscription =
-          InternetConnectionChecker().onStatusChange.listen((status) {
-        switch (status) {
-          case InternetConnectionStatus.connected:
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      SpotubeIcons.wifi,
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(context.l10n.connection_restored),
-                  ],
-                ),
-                backgroundColor: theme.colorScheme.primary,
-                showCloseIcon: true,
-                width: 350,
+          QueryClient.connectivity.onConnectivityChanged.listen((status) {
+        if (status) {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(
+                    SpotubeIcons.wifi,
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.connection_restored),
+                ],
               ),
-            );
-          case InternetConnectionStatus.disconnected:
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      SpotubeIcons.noWifi,
-                      color: theme.colorScheme.onError,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(context.l10n.you_are_offline),
-                  ],
-                ),
-                backgroundColor: theme.colorScheme.error,
-                showCloseIcon: true,
-                width: 300,
+              backgroundColor: theme.colorScheme.primary,
+              showCloseIcon: true,
+              width: 350,
+            ),
+          );
+        } else {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(
+                    SpotubeIcons.noWifi,
+                    color: theme.colorScheme.onError,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.you_are_offline),
+                ],
               ),
-            );
+              backgroundColor: theme.colorScheme.error,
+              showCloseIcon: true,
+              width: 300,
+            ),
+          );
         }
       });
 
@@ -161,17 +161,33 @@ class RootApp extends HookConsumerWidget {
 
     return Scaffold(
       body: Sidebar(
-        selectedIndex: rootPaths[location] ?? 0,
+        selectedIndex: rootPaths[location],
         onSelectedIndexChanged: onSelectIndexChanged,
         child: child,
       ),
       extendBody: true,
+      drawerScrimColor: Colors.transparent,
+      endDrawer: DesktopTools.platform.isDesktop
+          ? Container(
+              constraints: const BoxConstraints(maxWidth: 800),
+              decoration: BoxDecoration(
+                boxShadow: theme.brightness == Brightness.light
+                    ? null
+                    : kElevationToShadow[8],
+              ),
+              margin: const EdgeInsets.only(
+                top: 40,
+                bottom: 100,
+              ),
+              child: const PlayerQueue(floating: true),
+            )
+          : null,
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           BottomPlayer(),
           SpotubeNavigationBar(
-            selectedIndex: rootPaths[location] ?? 0,
+            selectedIndex: rootPaths[location],
             onSelectedIndexChanged: onSelectIndexChanged,
           ),
         ],

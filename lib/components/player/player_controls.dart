@@ -8,7 +8,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
-import 'package:spotube/hooks/use_progress.dart';
+import 'package:spotube/components/player/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';

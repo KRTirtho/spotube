@@ -17,6 +17,7 @@ dependencies:
   - libnotify-bin
   - libjsoncpp25
   - libmpv1 | libmpv2
+  - xdg-user-dirs
 
 essential: false
 icon: assets/spotube-logo.png
@@ -31,3 +32,6 @@ keywords:
 generic_name: Music Streaming Application
 categories:
   - Music
+
+supported_mime_type:
+  - x-scheme-handler/spotify

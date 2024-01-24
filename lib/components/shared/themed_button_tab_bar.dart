@@ -1,8 +1,8 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:spotube/hooks/use_breakpoint_value.dart';
-import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
+import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/utils/platform.dart';
 
 class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {

@@ -51,11 +51,9 @@ class WindowsAudioService {
           break;
         case AudioPlaybackState.stopped:
           await smtc.setPlaybackStatus(PlaybackStatus.Stopped);
-          await smtc.disableSmtc();
           break;
         case AudioPlaybackState.completed:
           await smtc.setPlaybackStatus(PlaybackStatus.Changing);
-          await smtc.disableSmtc();
           break;
         default:
           break;

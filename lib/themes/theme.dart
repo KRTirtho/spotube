@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
   final scheme = ColorScheme.fromSeed(
@@ -53,6 +52,7 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
     ),
     sliderTheme: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
     searchBarTheme: SearchBarThemeData(
+      textStyle: const MaterialStatePropertyAll(TextStyle(fontSize: 15)),
       constraints: const BoxConstraints(maxWidth: double.infinity),
       padding: const MaterialStatePropertyAll(EdgeInsets.all(8)),
       backgroundColor: MaterialStatePropertyAll(
@@ -71,6 +71,9 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
     ),
     scrollbarTheme: const ScrollbarThemeData(
       thickness: MaterialStatePropertyAll(14),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
   );
 }

@@ -1,4 +1,5 @@
 import 'package:catcher_2/catcher_2.dart';
+import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
@@ -12,15 +13,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/collections/initializers.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
-import 'package:spotube/hooks/use_disable_battery_optimizations.dart';
+import 'package:spotube/hooks/configurators/use_close_behavior.dart';
+import 'package:spotube/hooks/configurators/use_deep_linking.dart';
+import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
+import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/models/matched_track.dart';
 import 'package:spotube/models/skip_segment.dart';
+import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/palette_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
@@ -28,7 +33,7 @@ import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:spotube/hooks/use_init_sys_tray.dart';
+import 'package:spotube/hooks/configurators/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
@@ -37,6 +42,8 @@ Future<void> main(List<String> rawArgs) async {
   final arguments = await startCLI(rawArgs);
 
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  await registerWindowsScheme("spotify");
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
@@ -47,19 +54,18 @@ Future<void> main(List<String> rawArgs) async {
     await FlutterDisplayMode.setHighRefreshRate();
   }
 
-  await DesktopTools.ensureInitialized(
-    DesktopWindowOptions(
-      hideTitleBar: true,
-      title: "Spotube",
-      backgroundColor: Colors.transparent,
-      minimumSize: const Size(300, 700),
-    ),
-  );
+  if (DesktopTools.platform.isDesktop) {
+    await DesktopTools.window.setPreventClose(true);
+  }
 
   await SystemTheme.accentColor.load();
 
   if (!kIsWeb) {
     MetadataGod.initialize();
+  }
+
+  if (DesktopTools.platform.isWindows || DesktopTools.platform.isLinux) {
+    DiscordRPC.initialize();
   }
 
   final hiveCacheDir =
@@ -70,16 +76,18 @@ Future<void> main(List<String> rawArgs) async {
     cacheDir: hiveCacheDir,
     connectivity: FlQueryInternetConnectionCheckerAdapter(),
   );
-  Hive.registerAdapter(MatchedTrackAdapter());
+
   Hive.registerAdapter(SkipSegmentAdapter());
-  Hive.registerAdapter(SearchModeAdapter());
+
+  Hive.registerAdapter(SourceMatchAdapter());
+  Hive.registerAdapter(SourceTypeAdapter());
 
   // Cache versioning entities with Adapter
-  MatchedTrack.version = 'v1';
+  SourceMatch.version = 'v1';
   SkipSegment.version = 'v1';
 
-  await Hive.openLazyBox<MatchedTrack>(
-    MatchedTrack.boxName,
+  await Hive.openLazyBox<SourceMatch>(
+    SourceMatch.boxName,
     path: hiveCacheDir,
   );
   await Hive.openLazyBox(
@@ -88,6 +96,15 @@ Future<void> main(List<String> rawArgs) async {
   );
   await PersistedStateNotifier.initializeBoxes(
     path: hiveCacheDir,
+  );
+
+  await DesktopTools.ensureInitialized(
+    DesktopWindowOptions(
+      hideTitleBar: true,
+      title: "Spotube",
+      backgroundColor: Colors.transparent,
+      minimumSize: const Size(300, 700),
+    ),
   );
 
   Catcher2(
@@ -168,7 +185,11 @@ class SpotubeState extends ConsumerState<Spotube> {
     final paletteColor =
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
 
+    useDisableBatteryOptimizations();
     useInitSysTray(ref);
+    useDeepLinking(ref);
+    useCloseBehavior(ref);
+    useGetStoragePermissions(ref);
 
     useEffect(() {
       FlutterNativeSplash.remove();
@@ -176,11 +197,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;
         audioPlayer.dispose();
-        // youtube.close();
       };
     }, []);
-
-    useDisableBatteryOptimizations();
 
     final lightTheme = useMemoized(
       () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
@@ -210,7 +228,9 @@ class SpotubeState extends ConsumerState<Spotube> {
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,
-          DragToResizeArea(child: child!),
+          DesktopTools.platform.isDesktop
+              ? DragToResizeArea(child: child!)
+              : child,
         );
       },
       themeMode: themeMode,

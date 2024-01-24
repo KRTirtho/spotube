@@ -14,12 +14,13 @@ import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 

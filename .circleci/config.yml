@@ -82,8 +82,6 @@ jobs:
           name: Generate .env file
           command: |
             echo "SPOTIFY_SECRETS=${SPOTIFY_SECRETS}" >> .env
-            echo "SUPABASE_URL=${SUPABASE_URL}" >> .env
-            echo "SUPABASE_API_KEY=${SUPABASE_API_KEY}" >> .env
 
       - run:
           name: Replace Version in files

@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:titlebar_buttons/titlebar_buttons.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
-import 'package:local_notifier/local_notifier.dart';
-
-final closeNotification = DesktopTools.createNotification(
-  title: 'Spotube',
-  message: 'Running in background. Minimized to System Tray',
-  actions: [
-    LocalNotificationAction(text: 'Close The App'),
-  ],
-)?..onClickAction = (value) {
-    DesktopTools.window.close();
-  };
 
 class PageWindowTitleBar extends StatefulHookConsumerWidget
     implements PreferredSizeWidget {
@@ -112,12 +101,7 @@ class WindowTitleBarButtons extends HookConsumerWidget {
     const type = ThemeType.auto;
 
     Future<void> onClose() async {
-      if (preferences.closeBehavior == CloseBehavior.close) {
-        await DesktopTools.window.close();
-      } else {
-        await DesktopTools.window.hide();
-        await closeNotification?.show();
-      }
+      await DesktopTools.window.close();
     }
 
     useEffect(() {
