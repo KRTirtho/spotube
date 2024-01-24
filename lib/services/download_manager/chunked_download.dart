@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:spotube/models/logger.dart';
 
 final logger = getLogger("ChunkedDownload");

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart' hide Image;
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
@@ -37,21 +37,21 @@ class UserPlaylists extends HookConsumerWidget {
     );
 
     final likedTracksPlaylist = useMemoized(
-        () => PlaylistSimple()
-          ..name = context.l10n.liked_tracks
-          ..description = context.l10n.liked_tracks_description
-          ..type = "playlist"
-          ..collaborative = false
-          ..public = false
-          ..id = "user-liked-tracks"
-          ..images = [
-            Image()
-              ..height = 300
-              ..width = 300
-              ..url =
-                  "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"
-          ],
-        [context.l10n]);
+      () => PlaylistSimple()
+        ..name = context.l10n.liked_tracks
+        ..description = context.l10n.liked_tracks_description
+        ..type = "playlist"
+        ..collaborative = false
+        ..public = false
+        ..id = "user-liked-tracks"
+        ..images = [
+          Image()
+            ..height = 300
+            ..width = 300
+            ..url = "assets/liked-tracks.jpg"
+        ],
+      [context.l10n],
+    );
 
     final playlists = useMemoized(
       () {
@@ -123,7 +123,7 @@ class UserPlaylists extends HookConsumerWidget {
               ),
               SliverLayoutBuilder(builder: (context, constrains) {
                 return SliverGrid.builder(
-                  itemCount: playlists.length + 1,
+                  itemCount: playlists.isEmpty ? 6 : playlists.length + 1,
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
                     mainAxisExtent: constrains.smAndDown ? 225 : 250,
@@ -131,7 +131,7 @@ class UserPlaylists extends HookConsumerWidget {
                     mainAxisSpacing: 8,
                   ),
                   itemBuilder: (context, index) {
-                    if (index == playlists.length) {
+                    if (playlists.isNotEmpty && index == playlists.length) {
                       if (!playlistsQuery.hasNextPage) {
                         return const SizedBox.shrink();
                       }
@@ -140,11 +140,17 @@ class UserPlaylists extends HookConsumerWidget {
                         controller: controller,
                         isGrid: true,
                         onTouchEdge: playlistsQuery.fetchNext,
-                        child: const ShimmerPlaybuttonCard(count: 1),
+                        child: Skeletonizer(
+                          enabled: true,
+                          child: PlaylistCard(FakeData.playlistSimple),
+                        ),
                       );
                     }
 
-                    return PlaylistCard(playlists[index]);
+                    return PlaylistCard(
+                      playlists.elementAtOrNull(index) ??
+                          FakeData.playlistSimple,
+                    );
                   },
                 );
               })

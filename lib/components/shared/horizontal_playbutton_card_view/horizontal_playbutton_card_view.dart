@@ -2,11 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/album/album_card.dart';
 import 'package:spotube/components/artist/artist_card.dart';
 import 'package:spotube/components/playlist/playlist_card.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_playbutton_card.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
@@ -54,37 +55,49 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
           ),
           SizedBox(
             height: height,
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                },
-              ),
-              child: InfiniteList(
-                  scrollController: scrollController,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  itemCount: items.length,
-                  onFetchData: onFetchMore,
-                  loadingBuilder: (context) => const ShimmerPlaybuttonCard(),
-                  emptyBuilder: (context) =>
-                      const ShimmerPlaybuttonCard(count: 5),
-                  isLoading: isLoadingNextPage,
-                  hasReachedMax: !hasNextPage,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
+            child: NotificationListener(
+              // disable multiple scrollbar to use this
+              onNotification: (notification) => true,
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  dragDevices: PointerDeviceKind.values.toSet(),
+                ),
+                child: items.isEmpty
+                    ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return AlbumCard(FakeData.albumSimple);
+                        },
+                      )
+                    : InfiniteList(
+                        scrollController: scrollController,
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        itemCount: items.length,
+                        onFetchData: onFetchMore,
+                        loadingBuilder: (context) => Skeletonizer(
+                              enabled: true,
+                              child: AlbumCard(FakeData.albumSimple),
+                            ),
+                        isLoading: isLoadingNextPage,
+                        hasReachedMax: !hasNextPage,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
 
-                    return switch (item.runtimeType) {
-                      PlaylistSimple => PlaylistCard(item as PlaylistSimple),
-                      Album => AlbumCard(item as Album),
-                      Artist => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: ArtistCard(item as Artist),
-                        ),
-                      _ => const SizedBox.shrink(),
-                    };
-                  }),
+                          return switch (item.runtimeType) {
+                            PlaylistSimple =>
+                              PlaylistCard(item as PlaylistSimple),
+                            Album => AlbumCard(item as Album),
+                            Artist => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: ArtistCard(item as Artist),
+                              ),
+                            _ => const SizedBox.shrink(),
+                          };
+                        }),
+              ),
             ),
           ),
         ],

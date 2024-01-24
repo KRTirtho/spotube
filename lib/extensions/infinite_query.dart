@@ -9,17 +9,21 @@ extension FetchAllTracks on InfiniteQuery<List<Track>, dynamic, int> {
       return pages.expand((page) => page).toList();
     }
     final tracks = await getAllTracks();
-    final pagedTracks = tracks.fold(
-      <int, List<Track>>{},
-      (acc, element) {
-        final index = acc.length;
-        final groupIndex = index ~/ 20;
-        final group = acc[groupIndex] ?? [];
-        group.add(element);
-        acc[groupIndex] = group;
-        return acc;
-      },
-    );
+
+    final numOfPages = (tracks.length / 20).round();
+
+    final Map<int, List<Track>> pagedTracks = {};
+
+    for (var i = 0; i < numOfPages; i++) {
+      if (i == numOfPages - 1) {
+        final pageTracks = tracks.sublist(i * 20);
+        pagedTracks[i] = pageTracks;
+        break;
+      }
+
+      final pageTracks = tracks.sublist(i * 20, (i + 1) * 20);
+      pagedTracks[i] = pageTracks;
+    }
 
     for (final group in pagedTracks.entries) {
       setPageData(group.key, group.value);

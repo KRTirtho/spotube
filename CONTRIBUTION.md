@@ -145,7 +145,7 @@ Do the following:
   flutter run -d <window|macos|linux|(<android-device-id>)>
   ```
 
-Do debugging/testing/build etc then submit to us with PR against the development branch (master) & we'll review your code
+Do debugging/testing/build etc then submit to us with PR against the development branch (dev) & we'll review your code
 
 
 ### Submit Translations

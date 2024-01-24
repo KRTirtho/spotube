@@ -30,12 +30,13 @@ class SettingsPage extends HookConsumerWidget {
           title: Text(context.l10n.settings),
           centerTitle: true,
         ),
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 1366),
+        body: Scrollbar(
+          controller: controller,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1366),
+              child: ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(scrollbars: false),
                 child: ListView(
                   controller: controller,
                   children: [
@@ -59,7 +60,7 @@ class SettingsPage extends HookConsumerWidget {
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

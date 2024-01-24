@@ -38,20 +38,16 @@ class TrackViewBodyHeaders extends HookConsumerWidget {
                   ),
                 );
               },
-              child: trackViewState.isSelecting
-                  ? Checkbox(
-                      value: trackViewState.hasSelectedAll,
-                      onChanged: (checked) {
-                        if (checked == true) {
-                          trackViewState.selectAll();
-                        } else {
-                          trackViewState.deselectAll();
-                        }
-                      },
-                    )
-                  : constrains.mdAndUp
-                      ? const SizedBox(width: 32)
-                      : const SizedBox(width: 16),
+              child: Checkbox(
+                value: trackViewState.hasSelectedAll,
+                onChanged: (checked) {
+                  if (checked == true) {
+                    trackViewState.selectAll();
+                  } else {
+                    trackViewState.deselectAll();
+                  }
+                },
+              ),
             ),
             Expanded(
               flex: 7,

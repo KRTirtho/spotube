@@ -32,7 +32,7 @@ class SearchArtistsSection extends HookConsumerWidget {
       hasNextPage: query.hasNextPage,
       items: artists,
       onFetchMore: query.fetchNext,
-      title: Text(context.l10n.albums),
+      title: Text(context.l10n.artists),
     );
   }
 }

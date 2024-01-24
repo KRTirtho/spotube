@@ -25,7 +25,7 @@ class DownloadManagerProvider extends ChangeNotifier {
       final (:request, :status) = event;
 
       final track = $history.firstWhereOrNull(
-        (element) => element.url == request.url,
+        (element) => element.getUrlOfCodec(downloadCodec) == request.url,
       );
       if (track == null) return;
 

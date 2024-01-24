@@ -8,6 +8,7 @@ class LinkText<T> extends StatelessWidget {
   final TextAlign? textAlign;
   final TextOverflow? overflow;
   final String route;
+  final int? maxLines;
   final T? extra;
 
   final bool push;
@@ -19,6 +20,7 @@ class LinkText<T> extends StatelessWidget {
     this.extra,
     this.overflow,
     this.style = const TextStyle(),
+    this.maxLines,
     this.push = false,
   }) : super(key: key);
 
@@ -37,6 +39,7 @@ class LinkText<T> extends StatelessWidget {
       overflow: overflow,
       style: style,
       textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 }

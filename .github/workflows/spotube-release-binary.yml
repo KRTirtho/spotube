@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 3.2.0
+        default: 3.4.0
         required: true
       channel:
         type: choice
@@ -26,18 +26,13 @@ on:
         default: true
 
 env:
-  FLUTTER_VERSION: '3.16.0'
+  FLUTTER_VERSION: '3.16.3'
 
 jobs:
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: KRTirtho/flutter_distributor
-          path: flutter_distributor
-          ref: fix-windows-build
       - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
@@ -79,10 +74,9 @@ jobs:
 
       - name: Build Windows Executable
         run: |
-          dart pub global activate melos
-          cd flutter_distributor && melos bs && cd ..
+          dart pub global activate flutter_distributor
           make innoinstall
-          dart run ./flutter_distributor/packages/flutter_distributor/bin/main.dart package --platform=windows --targets=exe --skip-clean
+          flutter_distributor package --platform=windows --targets=exe --skip-clean
           mv dist/**/spotube-*-windows-setup.exe dist/Spotube-windows-x86_64-setup.exe
 
       - name: Create Chocolatey Package and set hash
@@ -169,7 +163,6 @@ jobs:
           dart pub global activate flutter_distributor
           alias dpkg-deb="dpkg-deb --Zxz"
           flutter_distributor package --platform=linux --targets=deb
-          flutter_distributor package --platform=linux --targets=appimage
           flutter_distributor package --platform=linux --targets=rpm
 
       - name: Create tar.xz (stable)
@@ -185,7 +178,6 @@ jobs:
           mv build/spotube-linux-*-x86_64.tar.xz dist/
           mv dist/**/spotube-*-linux.deb dist/Spotube-linux-x86_64.deb
           mv dist/**/spotube-*-linux.rpm dist/Spotube-linux-x86_64.rpm
-          mv dist/**/spotube-*-linux.AppImage dist/Spotube-linux-x86_64.AppImage
 
 
       - uses: actions/upload-artifact@v3
@@ -193,7 +185,6 @@ jobs:
           if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
-            dist/Spotube-linux-x86_64.AppImage
             dist/Spotube-linux-x86_64.deb
             dist/Spotube-linux-x86_64.rpm
             dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
@@ -330,13 +321,54 @@ jobs:
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-universal.dmg
 
+  iOS:
+
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2.10.0
+        with:
+          cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
+
+      - name: Replace pubspec version and BUILD_VERSION Env (nightly)
+        if: ${{ inputs.channel == 'nightly' }}
+        run: |
+          brew install yq
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: BUILD_VERSION Env (stable)
+        if: ${{ inputs.channel == 'stable' }}
+        run: |
+          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Create Stable .env
+        if: ${{ inputs.channel == 'stable' }}
+        run: echo '${{ secrets.DOTENV_RELEASE }}' > .env
+
+      - name: Create Nightly .env
+        if: ${{ inputs.channel == 'nightly' }}
+        run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+
+      - name: Generate Secrets
+        run: |
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+
+      - name: Build iOS iPA
+        run: |
+          flutter build ios --release --no-codesign --flavor ${{ inputs.channel }}  
+          ln -sf ./build/ios/iphoneos Payload
+          zip -r9 Spotube-iOS.ipa Payload/${{ inputs.channel }}.app
 
       - uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
-            build/Spotube-macos-universal.dmg
+            Spotube-iOS.ipa
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
@@ -352,6 +384,7 @@ jobs:
       - linux
       - android
       - macos
+      - iOS
     steps:
       - uses: actions/download-artifact@v3
         with:

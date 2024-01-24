@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/hover_builder.dart';
@@ -158,26 +159,28 @@ class TrackTile extends HookConsumerWidget {
                           child: IconTheme(
                             data: theme.iconTheme
                                 .copyWith(size: 26, color: Colors.white),
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: (isPlaying && playlist.isFetching) ||
-                                      isLoading.value
-                                  ? const SizedBox(
-                                      width: 26,
-                                      height: 26,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1.5,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : isPlaying
-                                      ? Icon(
-                                          SpotubeIcons.pause,
-                                          color: theme.colorScheme.primary,
-                                        )
-                                      : !isHovering
-                                          ? const SizedBox.shrink()
-                                          : const Icon(SpotubeIcons.play),
+                            child: Skeleton.ignore(
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                child: (isPlaying && playlist.isFetching) ||
+                                        isLoading.value
+                                    ? const SizedBox(
+                                        width: 26,
+                                        height: 26,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 1.5,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : isPlaying
+                                        ? Icon(
+                                            SpotubeIcons.pause,
+                                            color: theme.colorScheme.primary,
+                                          )
+                                        : !isHovering
+                                            ? const SizedBox.shrink()
+                                            : const Icon(SpotubeIcons.play),
+                              ),
                             ),
                           ),
                         ),
@@ -190,8 +193,10 @@ class TrackTile extends HookConsumerWidget {
                 children: [
                   Expanded(
                     flex: 6,
-                    child: Text(
+                    child: LinkText(
                       track.name!,
+                      "/track/${track.id}",
+                      push: true,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

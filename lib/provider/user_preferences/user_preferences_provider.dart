@@ -110,6 +110,10 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     }
   }
 
+  void setDiscordPresence(bool discordPresence) {
+    state = state.copyWith(discordPresence: discordPresence);
+  }
+
   void setAmoledDarkTheme(bool isAmoled) {
     state = state.copyWith(amoledDarkTheme: isAmoled);
   }

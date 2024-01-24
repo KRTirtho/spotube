@@ -159,7 +159,7 @@ class Sidebar extends HookConsumerWidget {
               margin: EdgeInsets.only(
                 bottom: 10,
                 left: 0,
-                top: kIsMacOS ? 35 : 5,
+                top: kIsMacOS ? 0 : 5,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(

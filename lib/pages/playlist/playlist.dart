@@ -53,7 +53,7 @@ class PlaylistPage extends HookConsumerWidget {
       ),
       pagination: PaginationProps.fromQuery(
         tracksQuery,
-        onFetchAll: () async {
+        onFetchAll: () {
           return tracksQuery.fetchAllTracks(
             getAllTracks: () async {
               final res = await spotify.playlists

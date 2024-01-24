@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
 import 'package:spotube/hooks/spotify/use_spotify_query.dart';
+import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/wikipedia/wikipedia.dart';
 import 'package:wikipedia_api/wikipedia_api.dart';
@@ -15,9 +16,10 @@ class ArtistQueries {
     WidgetRef ref,
     String artist,
   ) {
+    final customSpotify = ref.watch(customSpotifyEndpointProvider);
     return useSpotifyQuery<Artist, dynamic>(
       "artist-profile/$artist",
-      (spotify) => spotify.artists.get(artist),
+      (spotify) => customSpotify.artist(id: artist),
       ref: ref,
     );
   }
@@ -125,10 +127,11 @@ class ArtistQueries {
     WidgetRef ref,
     String artist,
   ) {
+    final customSpotify = ref.watch(customSpotifyEndpointProvider);
     return useSpotifyQuery<Iterable<Artist>, dynamic>(
       "artist-related-artist-query/$artist",
       (spotify) {
-        return spotify.artists.relatedArtists(artist);
+        return customSpotify.relatedArtists(id: artist);
       },
       ref: ref,
     );
