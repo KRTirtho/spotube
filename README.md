@@ -304,4 +304,4 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [dart_discord_rpc](https://github.com/alexmercerind/dart_discord_rpc) - Discord Rich Presence for Flutter & Dart apps & games.
 </details>
 
-<div align="center"><h4>© Copyright Spotube 2023</h4></div>
+<div align="center"><h4>© Copyright Spotube 2024</h4></div>
