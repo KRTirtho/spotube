@@ -177,11 +177,11 @@
   "step_2": "Step 2",
   "step_2_steps": "1. Once you're logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection",
   "step_3": "Step 3",
-  "step_3_steps": "Copy the values of \"sp_dc\" and \"sp_key\" (or sp_gaid) Cookies",
+  "step_3_steps": "Copy the value of \"sp_dc\" Cookie",
   "success_emoji": "Success🥳",
-  "success_message": "Now you're successfully Logged In with your Spotify account. Good Job, mate!",
+  "success_message": "Now you've successfully Logged in with your Spotify account. Good Job, mate!",
   "step_4": "Step 4",
-  "step_4_steps": "Paste the copied \"sp_dc\" and \"sp_key\" (or sp_gaid) values in the respective fields",
+  "step_4_steps": "Paste the copied \"sp_dc\" value",
   "something_went_wrong": "Something went wrong",
   "piped_instance": "Piped Server Instance",
   "piped_description": "The Piped server instance to use for track matching",
@@ -284,5 +284,7 @@
   "discord_rich_presence": "Discord Rich Presence",
   "browse_all": "Browse All",
   "genres": "Genres",
-  "explore_genres": "Explore Genres"
+  "explore_genres": "Explore Genres",
+  "friends": "Friends",
+  "no_lyrics_available": "Sorry, unable find lyrics for this track"
 }

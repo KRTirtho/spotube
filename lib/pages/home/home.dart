@@ -3,6 +3,7 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/home/sections/featured.dart';
+import 'package:spotube/components/home/sections/friends.dart';
 import 'package:spotube/components/home/sections/genres.dart';
 import 'package:spotube/components/home/sections/made_for_user.dart';
 import 'package:spotube/components/home/sections/new_releases.dart';
@@ -31,6 +32,7 @@ class HomePage extends HookConsumerWidget {
                   HomeNewReleasesSection(),
                 ],
               ),
+              const HomePageFriendsSection(),
               const SliverSafeArea(sliver: HomeMadeForUserSection()),
             ],
           ),

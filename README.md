@@ -2,10 +2,10 @@
   <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
 An open source, cross-platform Spotify client compatible across multiple platforms<br />
-utilizing Spotify's data API and YouTube (or Piped.video or JioSaavn) as an audio source,<br />
+utilizing Spotify's data API and YouTube, Piped.video or JioSaavn as an audio source,<br />
 eliminating the need for Spotify Premium
 
-Btw it's not another Electron app😉
+Btw it's not just another Electron app 😉
 
 <a href="https://spotube.netlify.app"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
 <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
@@ -26,7 +26,7 @@ Btw it's not another Electron app😉
 ## 🌃 Features
 
 - 🚫 No ads, thanks to the use of public & free Spotify and YT Music APIs¹
-- ⬇️ Downloadable tracks
+- ⬇️ Freely downloadable tracks
 - 🖥️ 📱 Cross-platform support
 - 🪶 Small size & less data usage
 - 🕵️ Anonymous/guest login
@@ -36,17 +36,17 @@ Btw it's not another Electron app😉
 - 📖 Open source/libre software
 - 🔉 Playback control is done locally, not on the server
 
-**¹** It is still **recommended** to support the creators by watching/liking/subscribing to the artists' YouTube channels or liking their tracks on Spotify (or purchasing a Spotify Premium subscription too).
+**¹** It is still **recommended** to support creators by engaging with their YouTube channels/Spotify tracks (or preferably by buying their merch/concert tickets/physical media).
 
 ### ❌ Unsupported features
 
-- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts can <ins>**never be supported**</ins> because the audio tracks are _only_ available on Spotify and accessing them would require Spotify Premium.
+- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts will <ins>**never be supported**</ins> because the audio tracks are <ins>_only_</ins> available on Spotify and accessing them would require Spotify Premium.
 - 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
 
 ## 📜 ⬇️ Installation guide
 
-New releases usually appear after 3-4 months.<br />
-This handy table lists all methods you can use to install Spotube:
+New versions usually release every 3-4 months.<br />
+This handy table lists all the methods you can use to install Spotube:
 
 <table>
   <tr>
@@ -304,4 +304,4 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [dart_discord_rpc](https://github.com/alexmercerind/dart_discord_rpc) - Discord Rich Presence for Flutter & Dart apps & games.
 </details>
 
-<div align="center"><h4>© Copyright Spotube 2023</h4></div>
+<div align="center"><h4>© Copyright Spotube 2024</h4></div>

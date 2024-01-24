@@ -193,8 +193,10 @@ class TrackTile extends HookConsumerWidget {
                 children: [
                   Expanded(
                     flex: 6,
-                    child: Text(
+                    child: LinkText(
                       track.name!,
+                      "/track/${track.id}",
+                      push: true,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

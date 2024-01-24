@@ -17,7 +17,6 @@ class TokenLoginForm extends HookConsumerWidget {
     final authenticationNotifier =
         ref.watch(AuthenticationNotifier.provider.notifier);
     final directCodeController = useTextEditingController();
-    final keyCodeController = useTextEditingController();
     final mounted = useIsMounted();
 
     final isLoading = useState(false);
@@ -37,23 +36,13 @@ class TokenLoginForm extends HookConsumerWidget {
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 10),
-          TextField(
-            controller: keyCodeController,
-            decoration: InputDecoration(
-              hintText: context.l10n.spotify_cookie("\"sp_key (or sp_gaid)\""),
-              labelText: context.l10n.cookie_name_cookie("sp_key (or sp_gaid)"),
-            ),
-            keyboardType: TextInputType.visiblePassword,
-          ),
-          const SizedBox(height: 20),
           FilledButton(
             onPressed: isLoading.value
                 ? null
                 : () async {
                     try {
                       isLoading.value = true;
-                      if (keyCodeController.text.isEmpty ||
-                          directCodeController.text.isEmpty) {
+                      if (directCodeController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(context.l10n.fill_in_all_fields),
@@ -63,7 +52,7 @@ class TokenLoginForm extends HookConsumerWidget {
                         return;
                       }
                       final cookieHeader =
-                          "sp_dc=${directCodeController.text.trim()}; sp_key=${keyCodeController.text.trim()}";
+                          "sp_dc=${directCodeController.text.trim()}";
 
                       authenticationNotifier.setCredentials(
                         await AuthenticationCredentials.fromCookie(

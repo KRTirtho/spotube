@@ -17,6 +17,7 @@ import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/pages/settings/logs.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
 import 'package:spotube/pages/artist/artist.dart';
@@ -141,6 +142,15 @@ final router = GoRouter(
               child: state.pathParameters["id"] == "user-liked-tracks"
                   ? LikedPlaylistPage(playlist: state.extra as PlaylistSimple)
                   : PlaylistPage(playlist: state.extra as PlaylistSimple),
+            );
+          },
+        ),
+        GoRoute(
+          path: "/track/:id",
+          pageBuilder: (context, state) {
+            final id = state.pathParameters["id"]!;
+            return SpotubePage(
+              child: TrackPage(trackId: id),
             );
           },
         ),

@@ -15,4 +15,4 @@ enum SourceQualities {
   low,
 }
 
-typedef SiblingType = ({SourceInfo info, SourceMap? source});
+typedef SiblingType<T extends SourceInfo> = ({T info, SourceMap? source});

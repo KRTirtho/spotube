@@ -4,6 +4,7 @@ import 'package:spotify/spotify.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -44,10 +45,12 @@ class PlayerTrackDetails extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
-                Text(
+                LinkText(
                   playback.activeTrack?.name ?? "",
+                  "/track/${playback.activeTrack?.id}",
+                  push: true,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.bodyMedium!.copyWith(
                     color: color,
                   ),
                 ),
@@ -66,8 +69,10 @@ class PlayerTrackDetails extends HookConsumerWidget {
             flex: 1,
             child: Column(
               children: [
-                Text(
+                LinkText(
                   playback.activeTrack?.name ?? "",
+                  "/track/${playback.activeTrack?.id}",
+                  push: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, color: color),
                 ),

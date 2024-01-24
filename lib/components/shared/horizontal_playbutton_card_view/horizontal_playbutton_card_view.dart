@@ -55,48 +55,49 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
           ),
           SizedBox(
             height: height,
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                },
-              ),
-              child: items.isEmpty
-                  ? ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return AlbumCard(FakeData.albumSimple);
-                      },
-                    )
-                  : InfiniteList(
-                      scrollController: scrollController,
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      itemCount: items.length,
-                      onFetchData: onFetchMore,
-                      loadingBuilder: (context) => Skeletonizer(
-                            enabled: true,
-                            child: AlbumCard(FakeData.albumSimple),
-                          ),
-                      isLoading: isLoadingNextPage,
-                      hasReachedMax: !hasNextPage,
-                      itemBuilder: (context, index) {
-                        final item = items[index];
-
-                        return switch (item.runtimeType) {
-                          PlaylistSimple =>
-                            PlaylistCard(item as PlaylistSimple),
-                          Album => AlbumCard(item as Album),
-                          Artist => Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: ArtistCard(item as Artist),
+            child: NotificationListener(
+              // disable multiple scrollbar to use this
+              onNotification: (notification) => true,
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  dragDevices: PointerDeviceKind.values.toSet(),
+                ),
+                child: items.isEmpty
+                    ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return AlbumCard(FakeData.albumSimple);
+                        },
+                      )
+                    : InfiniteList(
+                        scrollController: scrollController,
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        itemCount: items.length,
+                        onFetchData: onFetchMore,
+                        loadingBuilder: (context) => Skeletonizer(
+                              enabled: true,
+                              child: AlbumCard(FakeData.albumSimple),
                             ),
-                          _ => const SizedBox.shrink(),
-                        };
-                      }),
+                        isLoading: isLoadingNextPage,
+                        hasReachedMax: !hasNextPage,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+
+                          return switch (item.runtimeType) {
+                            PlaylistSimple =>
+                              PlaylistCard(item as PlaylistSimple),
+                            Album => AlbumCard(item as Album),
+                            Artist => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: ArtistCard(item as Artist),
+                              ),
+                            _ => const SizedBox.shrink(),
+                          };
+                        }),
+              ),
             ),
           ),
         ],

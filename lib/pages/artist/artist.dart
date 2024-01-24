@@ -35,7 +35,7 @@ class ArtistPage extends HookConsumerWidget {
         ),
         extendBodyBehindAppBar: true,
         body: Builder(builder: (context) {
-          if (artistQuery.hasError) {
+          if (artistQuery.hasError && artistQuery.data == null) {
             return Center(child: Text(artistQuery.error.toString()));
           }
           return Skeletonizer(

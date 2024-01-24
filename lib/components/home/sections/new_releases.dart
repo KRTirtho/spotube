@@ -21,16 +21,21 @@ class HomeNewReleasesSection extends HookConsumerWidget {
         userArtistsQuery.data?.map((s) => s.id!).toList() ?? const [];
 
     final albums = useMemoized(
-      () => newReleases.pages
-          .whereType<Page<AlbumSimple>>()
-          .expand((page) => page.items ?? const <AlbumSimple>[])
-          .where((album) {
-            return album.artists
-                    ?.any((artist) => userArtists.contains(artist.id!)) ==
-                true;
-          })
-          .map((album) => TypeConversionUtils.simpleAlbum_X_Album(album))
-          .toList(),
+      () {
+        final allReleases = newReleases.pages
+            .whereType<Page<AlbumSimple>>()
+            .expand((page) => page.items ?? const <AlbumSimple>[])
+            .map((album) => TypeConversionUtils.simpleAlbum_X_Album(album));
+
+        final userArtistReleases = allReleases.where((album) {
+          return album.artists
+                  ?.any((artist) => userArtists.contains(artist.id!)) ==
+              true;
+        }).toList();
+
+        if (userArtistReleases.isEmpty) return allReleases.toList();
+        return userArtistReleases;
+      },
       [newReleases.pages],
     );
 

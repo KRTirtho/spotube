@@ -48,6 +48,11 @@ void useDeepLinking(WidgetRef ref) {
               ),
             );
             break;
+          case "track":
+            router.push(
+              "/track/${url.pathSegments.last}",
+            );
+            break;
           default:
             break;
         }
@@ -79,6 +84,9 @@ void useDeepLinking(WidgetRef ref) {
           break;
         case "spotify:artist":
           await router.push("/artist/$endSegment");
+          break;
+        case "spotify:track":
+          await router.push("/track/$endSegment");
           break;
         case "spotify:playlist":
           await router.push(

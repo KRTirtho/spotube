@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -62,7 +61,7 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider(props.image),
+                    image: UniversalImage.imageProvider(props.image),
                     fit: BoxFit.cover,
                   ),
                 ),
