@@ -129,7 +129,7 @@ dev_dependencies:
   flutter_distributor: ^0.0.2
   flutter_gen_runner: ^5.1.0+1
   flutter_launcher_icons: ^0.13.1
-  flutter_lints: ^2.0.1
+  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
   integration_test:
