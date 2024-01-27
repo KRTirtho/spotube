@@ -1,9 +1,11 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/spotify_provider.dart';
@@ -22,6 +24,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final ThemeData(:textTheme) = Theme.of(context);
     final spotify = ref.watch(spotifyProvider);
     final userPlaylists = useQueries.playlist.ofMineAll(ref);
 
@@ -69,7 +72,18 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
     }
 
     return AlertDialog(
-      title: Text(context.l10n.add_to_playlist),
+      insetPadding: EdgeInsets.zero,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            context.l10n.add_to_playlist,
+            style: textTheme.titleMedium,
+          ),
+          const Gap(20),
+          const PlaylistCreateDialogButton(),
+        ],
+      ),
       actions: [
         OutlinedButton(
           child: Text(context.l10n.cancel),

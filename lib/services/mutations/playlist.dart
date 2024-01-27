@@ -94,9 +94,8 @@ class PlaylistMutations {
 
         return playlist;
       },
-      refreshInfiniteQueries: [
-        "current-user-playlists",
-      ],
+      refreshInfiniteQueries: ["current-user-playlists"],
+      refreshQueries: ["current-user-all-playlists"],
       ref: ref,
       onError: (error, recoveryData) {
         onError?.call(error);
@@ -135,6 +134,7 @@ class PlaylistMutations {
         "playlist/$playlistId",
         "current-user-playlists",
       ],
+      refreshQueries: ["current-user-all-playlists"],
       ref: ref,
       onError: (error, recoveryData) {
         onError?.call(error);
