@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -30,13 +32,9 @@ class HomePage extends HookConsumerWidget {
               if (DesktopTools.platform.isMacOS || DesktopTools.platform.isWeb)
                 const SliverGap(20),
               const HomeGenresSection(),
-              SliverList.list(
-                children: const [
-                  HomeFeaturedSection(),
-                  HomeNewReleasesSection(),
-                ],
-              ),
+              const SliverToBoxAdapter(child: HomeFeaturedSection()),
               const HomePageFriendsSection(),
+              const SliverToBoxAdapter(child: HomeNewReleasesSection()),
               const SliverSafeArea(sliver: HomeMadeForUserSection()),
             ],
           ),
