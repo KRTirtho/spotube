@@ -182,6 +182,9 @@ class Sidebar extends HookConsumerWidget {
               ),
               itemTextPadding: const EdgeInsets.only(left: 10),
               selectedItemTextPadding: const EdgeInsets.only(left: 10),
+              hoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+              ),
             ),
           ),
         ),

@@ -185,6 +185,16 @@ class JioSaavnSourcedTrack extends SourcedTrack {
 
     final (:info, :source) = toSiblingType(item);
 
+    await SourceMatch.box.put(
+      id!,
+      SourceMatch(
+        id: id!,
+        sourceType: SourceType.jiosaavn,
+        createdAt: DateTime.now(),
+        sourceId: info.id,
+      ),
+    );
+
     return JioSaavnSourcedTrack(
       ref: ref,
       siblings: newSiblings,

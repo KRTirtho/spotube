@@ -263,6 +263,16 @@ class PipedSourcedTrack extends SourcedTrack {
 
     final manifest = await pipedClient.streams(newSourceInfo.id);
 
+    await SourceMatch.box.put(
+      id!,
+      SourceMatch(
+        id: id!,
+        sourceType: SourceType.jiosaavn,
+        createdAt: DateTime.now(),
+        sourceId: newSourceInfo.id,
+      ),
+    );
+
     return PipedSourcedTrack(
       ref: ref,
       siblings: newSiblings,

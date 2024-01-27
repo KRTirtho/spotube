@@ -246,6 +246,16 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final manifest =
         await youtubeClient.videos.streamsClient.getManifest(newSourceInfo.id);
 
+    await SourceMatch.box.put(
+      id!,
+      SourceMatch(
+        id: id!,
+        sourceType: SourceType.jiosaavn,
+        createdAt: DateTime.now(),
+        sourceId: newSourceInfo.id,
+      ),
+    );
+
     return YoutubeSourcedTrack(
       ref: ref,
       siblings: newSiblings,
