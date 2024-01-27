@@ -282,5 +282,9 @@
   "discord_rich_presence": "وجود ديسكورد الغني",
   "browse_all": "تصفح الكل",
   "genres": "الأنواع الموسيقية",
-  "explore_genres": "استكشاف الأنواع"
+  "explore_genres": "استكشاف الأنواع",
+  "step_3_steps": "انسخ قيمة الكوكي \"sp_dc\"",
+  "step_4_steps": "الصق قيمة \"sp_dc\" المنسوخة",
+  "friends": "أصدقاء",
+  "no_lyrics_available": "عذرًا، تعذر العثور على كلمات الأغنية لهذه العنصر"
 }

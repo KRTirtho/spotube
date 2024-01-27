@@ -282,5 +282,9 @@
   "discord_rich_presence": "Obecność na Discordzie",
   "browse_all": "Przeglądaj wszystko",
   "genres": "Gatunki muzyczne",
-  "explore_genres": "Eksploruj gatunki"
+  "explore_genres": "Eksploruj gatunki",
+  "step_3_steps": "Skopiuj wartość ciasteczka \"sp_dc\"",
+  "step_4_steps": "Wklej skopiowaną wartość \"sp_dc\"",
+  "friends": "Przyjaciele",
+  "no_lyrics_available": "Przepraszamy, nie można znaleźć tekstu dla tego utworu"
 }

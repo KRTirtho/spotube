@@ -283,5 +283,9 @@
   "discord_rich_presence": "Presenza ricca di Discord",
   "browse_all": "Esplora tutto",
   "genres": "Generi",
-  "explore_genres": "Esplora generi"
+  "explore_genres": "Esplora generi",
+  "step_3_steps": "Copia il valore del cookie \"sp_dc\"",
+  "step_4_steps": "Incolla il valore copiato di \"sp_dc\"",
+  "friends": "Amici",
+  "no_lyrics_available": "Spiacente, impossibile trovare il testo di questa traccia"
 }

@@ -282,5 +282,9 @@
   "discord_rich_presence": "Discord Zengin Varlık",
   "browse_all": "Tümünü Gözat",
   "genres": "Müzik Türleri",
-  "explore_genres": "Türleri Keşfet"
+  "explore_genres": "Türleri Keşfet",
+  "step_3_steps": "\"sp_dc\" Çerezinin değerini kopyala",
+  "step_4_steps": "Kopyalanan \"sp_dc\" değerini yapıştır",
+  "friends": "Arkadaşlar",
+  "no_lyrics_available": "Üzgünüz, bu parça için şarkı sözleri bulunamıyor"
 }

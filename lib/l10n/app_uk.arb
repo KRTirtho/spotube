@@ -282,5 +282,9 @@
   "discord_rich_presence": "Багата присутність у Discord",
   "browse_all": "Переглянути все",
   "genres": "Жанри",
-  "explore_genres": "Досліджувати жанри"
+  "explore_genres": "Досліджувати жанри",
+  "step_3_steps": "Скопіюйте значення cookie \"sp_dc\"",
+  "step_4_steps": "Вставте скопійоване значення \"sp_dc\"",
+  "friends": "Друзі",
+  "no_lyrics_available": "Вибачте, не вдалося знайти текст для цього треку"
 }

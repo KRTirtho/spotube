@@ -283,5 +283,9 @@
   "discord_rich_presence": "Discord Rich Presence",
   "browse_all": "Alles bekijken",
   "genres": "Genres",
-  "explore_genres": "Verken genres"
+  "explore_genres": "Verken genres",
+  "step_3_steps": "Kopieer de waarde van de \"sp_dc\"-cookie",
+  "step_4_steps": "Plak de gekopieerde waarde van \"sp_dc\"",
+  "friends": "Vrienden",
+  "no_lyrics_available": "Sorry, kan geen teksten vinden voor deze track"
 }

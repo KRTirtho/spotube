@@ -282,5 +282,9 @@
   "discord_rich_presence": "Discord 丰富展现",
   "browse_all": "浏览全部",
   "genres": "音乐类型",
-  "explore_genres": "探索音乐类型"
+  "explore_genres": "探索音乐类型",
+  "step_3_steps": "复制\"sp_dc\" Cookie的值",
+  "step_4_steps": "粘贴复制的\"sp_dc\"值",
+  "friends": "朋友",
+  "no_lyrics_available": "抱歉，无法找到此曲的歌词"
 }

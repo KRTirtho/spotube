@@ -209,7 +209,7 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [auto_size_text](https://github.com/leisim/auto_size_text) - Flutter widget that automatically resizes text to fit perfectly within its bounds.
 1. [buttons_tabbar](https://afonsoraposo.com) - A Flutter package that implements a TabBar where each label is a toggle button.
 1. [cached_network_image](https://github.com/Baseflow/flutter_cached_network_image) - Flutter library to load and cache network images. Can also be used with placeholder and error widgets.
-1. [catcher_2](https://github.com/ThexXTURBOXx/catcher_2) - Plugin for error catching which provides multiple handlers for dealing with errors when they are not caught by the developer.   
+1. [catcher_2](https://github.com/ThexXTURBOXx/catcher_2) - Plugin for error catching which provides multiple handlers for dealing with errors when they are not caught by the developer.
 1. [collection](https://pub.dev/packages/collection) - Collections and utilities functions and classes related to collections.
 1. [cupertino_icons](https://pub.dev/packages/cupertino_icons) - Default icons asset for Cupertino widgets based on Apple styled icons
 1. [curved_navigation_bar](https://github.com/rafalbednarczuk/curved_navigation_bar) - Stunning Animating Curved Shape Navigation Bar. Adjustable color, background color, animation curve, animation duration.
@@ -222,9 +222,9 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [envied](https://github.com/petercinibulk/envied) - Explicitly reads environment variables into a dart file from a .env file for more security and faster start up times.
 1. [file_selector](https://pub.dev/packages/file_selector) - Flutter plugin for opening and saving files, or selecting directories, using native file selection UI.
 1. [fl_query](https://fl-query.krtirtho.dev) - Asynchronous data caching, refetching & invalidation library for Flutter
-1. [fl_query_hooks](https://fl-query.krtirtho.dev) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter      
+1. [fl_query_hooks](https://fl-query.krtirtho.dev) - Elite flutter_hooks compatible library for fl_query, the Asynchronous data caching, refetching & invalidation library for Flutter
 1. [fl_query_devtools](https://fl-query.krtirtho.dev) - Devtools support for Fl-Query
-1. [fluentui_system_icons](https://github.com/microsoft/fluentui-system-icons/tree/main) - Fluent UI System Icons are a collection of familiar, friendly and modern icons from Microsoft.   
+1. [fluentui_system_icons](https://github.com/microsoft/fluentui-system-icons/tree/main) - Fluent UI System Icons are a collection of familiar, friendly and modern icons from Microsoft.
 1. [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/develop/flutter_cache_manager) - Generic cache manager for flutter. Saves web files on the storages of the device and saves the cache info using sqflite.
 1. [flutter_displaymode](https://github.com/ajinasokan/flutter_displaymode) - A Flutter plugin to set display mode (resolution, refresh rate) on Android platform. Allows to enable high refresh rate on supported devices.
 1. [flutter_feather_icons](https://github.com/muj-programmer/flutter_feather_icons) - Feather is a collection of simply beautiful open source icons. Each icon is designed on a 24x24 grid with an emphasis on simplicity, consistency and usability.
@@ -235,9 +235,9 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) - Flutter Secure Storage provides API to store data in secure storage. Keychain is used in iOS, KeyStore based solution is used in Android.
 1. [flutter_svg](https://pub.dev/packages/flutter_svg) - An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
 1. [form_validator](https://github.com/TheMisir/form-validator) - Simplest form validation library for flutter's form field widgets
-1. [fuzzywuzzy](https://github.com/sphericalkat/dart-fuzzywuzzy) - An implementation of the popular fuzzywuzzy package in Dart, to suit all your fuzzy string matching/searching needs!     
-1. [google_fonts](https://pub.dev/packages/google_fonts) - A Flutter package to use fonts from fonts.google.com. Supports HTTP fetching, caching, and asset bundling.
+1. [fuzzywuzzy](https://github.com/sphericalkat/dart-fuzzywuzzy) - An implementation of the popular fuzzywuzzy package in Dart, to suit all your fuzzy string matching/searching needs!
 1. [go_router](https://pub.dev/packages/go_router) - A declarative router for Flutter based on Navigation 2 supporting deep linking, data-driven routes and more
+1. [google_fonts](https://pub.dev/packages/google_fonts) - A Flutter package to use fonts from fonts.google.com. Supports HTTP fetching, caching, and asset bundling.
 1. [hive](https://github.com/hivedb/hive/tree/master/hive) - Lightweight and blazing fast key-value database written in pure Dart. Strongly encrypted using AES-256.
 1. [hive_flutter](https://github.com/hivedb/hive/tree/master/hive_flutter) - Extension for Hive. Makes it easier to use Hive in Flutter apps.
 1. [hooks_riverpod](https://riverpod.dev) - A simple way to access state from anywhere in your application while robust and testable.
@@ -255,13 +255,13 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [package_info_plus](https://plus.fluttercommunity.dev/) - Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.
 1. [palette_generator](https://pub.dev/packages/palette_generator) - Flutter package for generating palette colors from a source image.
 1. [path](https://pub.dev/packages/path) - A string-based path manipulation library. All of the path operations you know and love, with solid support for Windows, POSIX (Linux and Mac OS X), and the web.
-1. [path_provider](https://pub.dev/packages/path_provider) - Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.   
+1. [path_provider](https://pub.dev/packages/path_provider) - Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.
 1. [permission_handler](https://pub.dev/packages/permission_handler) - Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.
 1. [piped_client](https://github.com/KRTirtho/piped_client) - API Client for piped.video
 1. [popover](https://github.com/minikin/popover) - A popover is a transient view that appears above other content onscreen when you tap a control or in an area.
 1. [scroll_to_index](https://github.com/quire-io/scroll-to-index) - Scroll to a specific child of any scrollable widget in Flutter
-1. [shared_preferences](https://pub.dev/packages/shared_preferences) - Flutter plugin for reading and writing simple key-value pairs. Wraps NSUserDefaults on iOS and SharedPreferences on Android.
 1. [sidebarx](https://github.com/Frezyx/sidebarx) - flutter multiplatform navigation sidebar / side navigationbar / drawer widget
+1. [shared_preferences](https://pub.dev/packages/shared_preferences) - Flutter plugin for reading and writing simple key-value pairs. Wraps NSUserDefaults on iOS and SharedPreferences on Android.
 1. [skeleton_text](https://github.com/101Loop/Skeleton-Text) - A package that provides an easy way to add skeleton text loading animation in Flutter project. This project is a part of 101Loop community.
 1. [smtc_windows](https://github.com/KRTirtho/smtc_windows) - Windows `SystemMediaTransportControls` implementation for Flutter giving access to Windows OS Media Control applet.
 1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.

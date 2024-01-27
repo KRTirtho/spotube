@@ -282,5 +282,9 @@
   "discord_rich_presence": "Discord Rich Presence",
   "browse_all": "Alles durchsuchen",
   "genres": "Genres",
-  "explore_genres": "Genres erkunden"
+  "explore_genres": "Genres erkunden",
+  "step_3_steps": "Kopiere den Wert des Cookies \"sp_dc\"",
+  "step_4_steps": "Füge den kopierten Wert von \"sp_dc\" ein",
+  "friends": "Freunde",
+  "no_lyrics_available": "Entschuldigung, Texte für diesen Track konnten nicht gefunden werden"
 }

@@ -282,5 +282,9 @@
   "discord_rich_presence": "حضور غنی دیسکورد",
   "browse_all": "مرور همه",
   "genres": "ژانرها",
-  "explore_genres": "استکشاف ژانرها"
+  "explore_genres": "استکشاف ژانرها",
+  "step_3_steps": "مقدار کوکی \"sp_dc\" را کپی کنید",
+  "step_4_steps": "مقدار کپی شده \"sp_dc\" را الصاق کنید",
+  "friends": "دوستان",
+  "no_lyrics_available": "متاسفیم، قادر به یافتن متن این قطعه نیستیم"
 }

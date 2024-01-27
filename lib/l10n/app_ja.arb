@@ -282,5 +282,9 @@
   "discord_rich_presence": "ディスコードリッチプレゼンス",
   "browse_all": "すべてを閲覧",
   "genres": "ジャンル",
-  "explore_genres": "ジャンルを探索"
+  "explore_genres": "ジャンルを探索",
+  "step_3_steps": "\"sp_dc\" Cookieの値をコピー",
+  "step_4_steps": "コピーした\"sp_dc\"の値を貼り付け",
+  "friends": "友達",
+  "no_lyrics_available": "申し訳ありませんが、このトラックの歌詞を見つけることができません"
 }

@@ -282,5 +282,9 @@
   "discord_rich_presence": "وجود ديسكورد الغني",
   "browse_all": "تصفح الكل",
   "genres": "الأنواع الموسيقية",
-  "explore_genres": "استكشاف الأنواع"
+  "explore_genres": "استكشاف الأنواع",
+  "step_3_steps": "কুকি \"sp_dc\" এর মানটি কপি করুন",
+  "step_4_steps": "কপি করা \"sp_dc\" মানটি পেস্ট করুন",
+  "friends": "বন্ধু",
+  "no_lyrics_available": "দুঃখিত, এই ট্র্যাকের জন্য কথা খুঁজে পাওয়া গেলনা"
 }

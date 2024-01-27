@@ -282,5 +282,9 @@
   "discord_rich_presence": "Presència rica de Discord",
   "browse_all": "Navega per tot",
   "genres": "Gèneres",
-  "explore_genres": "Explora els gèneres"
+  "explore_genres": "Explora els gèneres",
+  "step_3_steps": "Copia el valor de la cookie \"sp_dc\"",
+  "step_4_steps": "Pega el valor copiado de \"sp_dc\"",
+  "friends": "Amics",
+  "no_lyrics_available": "Ho sentim, no es poden trobar les lletres d'aquesta pista"
 }

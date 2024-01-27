@@ -115,7 +115,7 @@
   "language": "भाषा",
   "system_default": "सिस्टम पूर्वनिर्धारित",
   "market_place_region": "बजार स्थान",
-  "recommendation_country":"सिफारिस गरिएको देश",
+  "recommendation_country": "सिफारिस गरिएको देश",
   "appearance": "दृष्टिकोण",
   "layout_mode": "लेआउट मोड",
   "override_layout_settings": "अनुकूलित प्रतिकृयात्मक लेआउट मोड सेटिङ्गहरू",
@@ -284,5 +284,7 @@
   "discord_rich_presence": "डिस्कर्ड धनी उपस्थिति",
   "browse_all": "सबै हेर्नुहोस्",
   "genres": "शैलीहरू",
-  "explore_genres": "शैलीहरू अन्वेषण गर्नुहोस्"
+  "explore_genres": "शैलीहरू अन्वेषण गर्नुहोस्",
+  "friends": "साथीहरू",
+  "no_lyrics_available": "क्षमा गर्दैछौं, यस ट्र्याकका लागि गीतका शब्दहरू फेला परेन"
 }

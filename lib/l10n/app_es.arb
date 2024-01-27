@@ -282,5 +282,9 @@
   "discord_rich_presence": "Presencia rica en Discord",
   "browse_all": "Explorar todo",
   "genres": "Géneros",
-  "explore_genres": "Explorar géneros"
+  "explore_genres": "Explorar géneros",
+  "step_3_steps": "Copia el valor de la cookie \"sp_dc\"",
+  "step_4_steps": "Pega el valor copiado de \"sp_dc\"",
+  "friends": "Amigos",
+  "no_lyrics_available": "Lo siento, no se pueden encontrar las letras de esta pista"
 }
