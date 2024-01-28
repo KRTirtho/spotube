@@ -55,12 +55,7 @@ class WebViewLogin extends HookConsumerWidget {
               final cookies =
                   await CookieManager.instance().getCookies(url: action);
               final cookieHeader =
-                  cookies.fold<String>("", (previousValue, element) {
-                if (element.name == "sp_dc" || element.name == "sp_key") {
-                  return "$previousValue; ${element.name}=${element.value}";
-                }
-                return previousValue;
-              });
+                  "sp_dc=${cookies.firstWhere((element) => element.name == "sp_dc").value}";
 
               authenticationNotifier.setCredentials(
                 await AuthenticationCredentials.fromCookie(cookieHeader),

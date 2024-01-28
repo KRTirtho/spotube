@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 3.4.0
+        default: 3.4.1
         required: true
       channel:
         type: choice
@@ -33,7 +33,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
@@ -107,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
@@ -200,7 +200,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
@@ -276,7 +276,7 @@ jobs:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.10.0
+      - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
@@ -304,8 +304,8 @@ jobs:
 
       - name: Generate Secrets
         run: |
+          dart pub global activate flutter_distributor
           flutter pub get
-          flutter pub remove media_kit_native_event_loop
           dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
 
       - name: Build Macos App
@@ -320,9 +320,24 @@ jobs:
           npm install -g appdmg
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-universal.dmg
+          flutter_distributor package --platform=macos --targets pkg --skip-clean
+          mv dist/**/spotube-*-macos.pkg build/Spotube-macos-universal.pkg
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            build/Spotube-macos-universal.dmg
+            build/Spotube-macos-universal.pkg
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
   iOS:
-
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4

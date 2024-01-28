@@ -17,6 +17,19 @@ final officialMusicRegex = RegExp(
   caseSensitive: false,
 );
 
+class YoutubeSourceInfo extends SourceInfo {
+  YoutubeSourceInfo({
+    required super.id,
+    required super.title,
+    required super.artist,
+    required super.thumbnail,
+    required super.pageUrl,
+    required super.duration,
+    required super.artistUrl,
+    required super.album,
+  });
+}
+
 class YoutubeSourcedTrack extends SourcedTrack {
   YoutubeSourcedTrack({
     required super.source,
@@ -64,7 +77,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
       ref: ref,
       siblings: [],
       source: toSourceMap(manifest),
-      sourceInfo: SourceInfo(
+      sourceInfo: YoutubeSourceInfo(
         id: item.id.value,
         artist: item.author,
         artistUrl: "https://www.youtube.com/channel/${item.channelId}",
@@ -79,13 +92,16 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }
 
   static SourceMap toSourceMap(StreamManifest manifest) {
-    final m4a = manifest.audioOnly
+    var m4a = manifest.audioOnly
         .where((audio) => audio.codec.mimeType == "audio/mp4")
         .sortByBitrate();
 
-    final weba = manifest.audioOnly
+    var weba = manifest.audioOnly
         .where((audio) => audio.codec.mimeType == "audio/webm")
         .sortByBitrate();
+
+    m4a = m4a.isEmpty ? weba.toList() : m4a;
+    weba = weba.isEmpty ? m4a.toList() : weba;
 
     return SourceMap(
       m4a: SourceQualityMap(
@@ -114,7 +130,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     }
 
     final SiblingType sibling = (
-      info: SourceInfo(
+      info: YoutubeSourceInfo(
         id: item.id,
         artist: item.channelName,
         artistUrl: "https://www.youtube.com/channel/${item.channelId}",
@@ -194,7 +210,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final query = SourcedTrack.getSearchTerm(track);
 
     final searchResults = await youtubeClient.search.search(
-      query,
+      "$query - Topic",
       filter: TypeFilters.video,
     );
 
@@ -214,17 +230,31 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
   @override
   Future<YoutubeSourcedTrack?> swapWithSibling(SourceInfo sibling) async {
-    if (sibling.id == sourceInfo.id ||
-        siblings.none((s) => s.id == sibling.id)) {
+    if (sibling.id == sourceInfo.id) {
       return null;
     }
 
-    final newSourceInfo = siblings.firstWhere((s) => s.id == sibling.id);
+    // a sibling source that was fetched from the search results
+    final isStepSibling = siblings.none((s) => s.id == sibling.id);
+
+    final newSourceInfo = isStepSibling
+        ? sibling
+        : siblings.firstWhere((s) => s.id == sibling.id);
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, sourceInfo);
 
     final manifest =
         await youtubeClient.videos.streamsClient.getManifest(newSourceInfo.id);
+
+    await SourceMatch.box.put(
+      id!,
+      SourceMatch(
+        id: id!,
+        sourceType: SourceType.jiosaavn,
+        createdAt: DateTime.now(),
+        sourceId: newSourceInfo.id,
+      ),
+    );
 
     return YoutubeSourcedTrack(
       ref: ref,

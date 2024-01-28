@@ -110,7 +110,7 @@ class TrackTile extends HookConsumerWidget {
                   ...?leadingActions,
                   if (index != null && onChanged == null && constrains.mdAndUp)
                     SizedBox(
-                      width: 34,
+                      width: 50,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Text(
@@ -193,8 +193,10 @@ class TrackTile extends HookConsumerWidget {
                 children: [
                   Expanded(
                     flex: 6,
-                    child: Text(
+                    child: LinkText(
                       track.name!,
+                      "/track/${track.id}",
+                      push: true,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

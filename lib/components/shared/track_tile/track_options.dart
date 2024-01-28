@@ -43,12 +43,14 @@ class TrackOptions extends HookConsumerWidget {
   final bool userPlaylist;
   final String? playlistId;
   final ObjectRef<ValueChanged<RelativeRect>?>? showMenuCbRef;
+  final Widget? icon;
   const TrackOptions({
     Key? key,
     required this.track,
     this.showMenuCbRef,
     this.userPlaylist = false,
     this.playlistId,
+    this.icon,
   }) : super(key: key);
 
   void actionShare(BuildContext context, Track track) {
@@ -207,7 +209,7 @@ class TrackOptions extends HookConsumerWidget {
             break;
         }
       },
-      icon: const Icon(SpotubeIcons.moreHorizontal),
+      icon: icon ?? const Icon(SpotubeIcons.moreHorizontal),
       headings: [
         ListTile(
           dense: true,

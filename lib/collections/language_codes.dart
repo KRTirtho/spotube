@@ -452,10 +452,10 @@ abstract class LanguageLocals {
     //   name: "North Ndebele",
     //   nativeName: "isiNdebele",
     // ),
-    // "ne": const ISOLanguageName(
-    //   name: "Nepali",
-    //   nativeName: "नेपाली",
-    // ),
+    "ne": const ISOLanguageName(
+      name: "Nepali",
+      nativeName: "नेपाली",
+    ),
     // "ng": const ISOLanguageName(
     //   name: "Ndonga",
     //   nativeName: "Owambo",

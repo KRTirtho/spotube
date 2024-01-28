@@ -4,7 +4,6 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/tracks_view/track_view.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 import 'package:spotube/services/queries/queries.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class LikedPlaylistPage extends HookConsumerWidget {
   final PlaylistSimple playlist;
@@ -20,10 +19,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
 
     return InheritedTrackView(
       collectionId: playlist.id!,
-      image: TypeConversionUtils.image_X_UrlString(
-        playlist.images,
-        placeholder: ImagePlaceholder.collection,
-      ),
+      image: "assets/liked-tracks.jpg",
       pagination: PaginationProps(
         hasNextPage: false,
         isLoading: false,

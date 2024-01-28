@@ -175,11 +175,9 @@
   "step_2": "步骤 2",
   "step_2_steps": "1. 一旦你已经完成登录, 按 F12 键或者鼠标右击网页空白区域 > 选择“检查”以打开浏览器开发者工具（DevTools）\n2. 然后选择 \"应用（Application）\" 标签页（Chrome, Edge, Brave 等基于 Chromium 的浏览器） 或 \"存储（Storage）\" 标签页 （Firefox, Palemoon 等基于 Firefox 的浏览器））\n3. 选择 \"Cookies\" 栏目然后选择 \"https://accounts.spotify.com\" 子栏目",
   "step_3": "步骤 3",
-  "step_3_steps": "复制名称为 \"sp_dc\" 和 \"sp_key\" (或 sp_gaid) 的值（Cookie Value）",
   "success_emoji": "成功🥳",
   "success_message": "你已经成功使用 Spotify 登录。干得漂亮！",
   "step_4": "步骤 4",
-  "step_4_steps": "将 \"sp_dc\" 与 \"sp_key\" (或 sp_gaid) 的值分别复制后粘贴到对应的区域",
   "something_went_wrong": "某些地方出现了问题",
   "piped_instance": "管道服务器实例",
   "piped_description": "管道服务器实例用于匹配歌曲",
@@ -284,5 +282,9 @@
   "discord_rich_presence": "Discord 丰富展现",
   "browse_all": "浏览全部",
   "genres": "音乐类型",
-  "explore_genres": "探索音乐类型"
+  "explore_genres": "探索音乐类型",
+  "step_3_steps": "复制\"sp_dc\" Cookie的值",
+  "step_4_steps": "粘贴复制的\"sp_dc\"值",
+  "friends": "朋友",
+  "no_lyrics_available": "抱歉，无法找到此曲的歌词"
 }

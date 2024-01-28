@@ -210,6 +210,12 @@ class PlayerQueue extends HookConsumerWidget {
                       itemCount: tracks.length,
                       shrinkWrap: true,
                       buildDefaultDragHandles: false,
+                      onReorderStart: (index) {
+                        HapticFeedback.selectionClick();
+                      },
+                      onReorderEnd: (index) {
+                        HapticFeedback.selectionClick();
+                      },
                       itemBuilder: (context, i) {
                         final track = tracks.elementAt(i);
                         return AutoScrollTag(

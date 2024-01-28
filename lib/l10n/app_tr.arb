@@ -177,11 +177,9 @@
   "step_2": "2. Adım",
   "step_2_steps": "1. Giriş yaptıktan sonra, Tarayıcı devtools.\n2'yi açmak için F12'ye basın veya Fare Sağ Tıklaması > İncele'ye basın. Ardından \"Uygulama\" Sekmesine (Chrome, Edge, Brave vb.) veya \"Depolama\" Sekmesine (Firefox, Palemoon vb.) gidin\n3. \"Çerezler\" bölümüne ve ardından \"https://accounts.spotify.com\" alt bölümüne gidin",
   "step_3": "3. Adım",
-  "step_3_steps": "\"sp_dc\" ve \"sp_key\" (veya sp_gaid) Çerezlerinin değerlerini kopyalayın",
   "success_emoji": "Başarılı🥳",
   "success_message": "Şimdi Spotify hesabınızla başarılı bir şekilde oturum açtınız. İyi iş, dostum!",
   "step_4": "4. Adım",
-  "step_4_steps": "Kopyalanan \"sp_dc\" ve \"sp_key\" (veya sp_gaid) değerlerini ilgili alanlara yapıştırın",
   "something_went_wrong": "Bir şeyler ters gitti",
   "piped_instance": "Piped Sunucu Örneği",
   "piped_description": "Parça eşleştirme için kullanılacak Piped sunucu örneği",
@@ -284,5 +282,9 @@
   "discord_rich_presence": "Discord Zengin Varlık",
   "browse_all": "Tümünü Gözat",
   "genres": "Müzik Türleri",
-  "explore_genres": "Türleri Keşfet"
+  "explore_genres": "Türleri Keşfet",
+  "step_3_steps": "\"sp_dc\" Çerezinin değerini kopyala",
+  "step_4_steps": "Kopyalanan \"sp_dc\" değerini yapıştır",
+  "friends": "Arkadaşlar",
+  "no_lyrics_available": "Üzgünüz, bu parça için şarkı sözleri bulunamıyor"
 }

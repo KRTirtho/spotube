@@ -159,7 +159,7 @@ class Sidebar extends HookConsumerWidget {
               margin: EdgeInsets.only(
                 bottom: 10,
                 left: 0,
-                top: kIsMacOS ? 35 : 5,
+                top: kIsMacOS ? 0 : 5,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(
@@ -182,6 +182,9 @@ class Sidebar extends HookConsumerWidget {
               ),
               itemTextPadding: const EdgeInsets.only(left: 10),
               selectedItemTextPadding: const EdgeInsets.only(left: 10),
+              hoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+              ),
             ),
           ),
         ),

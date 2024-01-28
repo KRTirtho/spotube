@@ -175,11 +175,9 @@
   "step_2": "ステップ 2",
   "step_2_steps": "1. ログインしたら、F12を押すか、マウス右クリック ＞ 調査（検証）でブラウザの開発者ツール (devtools) を開きます。\n2. アプリケーション (Application) タブ (Chrome, Edge, Brave など) またはストレージタブ (Firefox, Palemoon など)\n3. Cookies 欄を選択し、https://accounts.spotify.com の枝を選びます",
   "step_3": "ステップ 3",
-  "step_3_steps": "sp_dc と sp_key (または or sp_gaid)  の値 (Value) をコピーします",
   "success_emoji": "成功🥳",
   "success_message": "アカウントへのログインに成功しました。よくできました！",
   "step_4": "ステップ 4",
-  "step_4_steps": "コピーした sp_dc と sp_key (または or sp_gaid) の値をそれぞれの入力欄に貼り付けます",
   "something_went_wrong": "何か誤りがあります",
   "piped_instance": "Piped サーバーのインスタンス",
   "piped_description": "曲の一致に使う Piped サーバーのインスタンス",
@@ -284,5 +282,9 @@
   "discord_rich_presence": "ディスコードリッチプレゼンス",
   "browse_all": "すべてを閲覧",
   "genres": "ジャンル",
-  "explore_genres": "ジャンルを探索"
+  "explore_genres": "ジャンルを探索",
+  "step_3_steps": "\"sp_dc\" Cookieの値をコピー",
+  "step_4_steps": "コピーした\"sp_dc\"の値を貼り付け",
+  "friends": "友達",
+  "no_lyrics_available": "申し訳ありませんが、このトラックの歌詞を見つけることができません"
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Offset;
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -19,9 +20,27 @@ import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
+import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+
+final sourceInfoToIconMap = {
+  YoutubeSourceInfo: const Icon(SpotubeIcons.youtube, color: Color(0xFFFF0000)),
+  JioSaavnSourceInfo: Container(
+    height: 30,
+    width: 30,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(90),
+      image: DecorationImage(
+        image: Assets.jiosaavn.provider(),
+        fit: BoxFit.cover,
+      ),
+    ),
+  ),
+  PipedSourceInfo: const Icon(SpotubeIcons.piped),
+};
 
 class SiblingTracksSheet extends HookConsumerWidget {
   final bool floating;
@@ -63,18 +82,50 @@ class SiblingTracksSheet extends HookConsumerWidget {
       if (searchTerm.trim().isEmpty) {
         return <SourceInfo>[];
       }
-
-      final results = await youtubeClient.search.search(searchTerm.trim());
-
-      return await Future.wait(
-        results.map(YoutubeVideoInfo.fromVideo).mapIndexed((i, video) async {
-          final siblingType = await YoutubeSourcedTrack.toSiblingType(i, video);
+      if (preferences.audioSource == AudioSource.jiosaavn) {
+        final resultsJioSaavn =
+            await jiosaavnClient.search.songs(searchTerm.trim());
+        final results = await Future.wait(
+            resultsJioSaavn.results.mapIndexed((i, song) async {
+          final siblingType = JioSaavnSourcedTrack.toSiblingType(song);
           return siblingType.info;
-        }),
-      );
+        }));
+
+        final activeSourceInfo =
+            (playlist.activeTrack! as SourcedTrack).sourceInfo;
+
+        return results
+          ..removeWhere((element) => element.id == activeSourceInfo.id)
+          ..insert(
+            0,
+            activeSourceInfo,
+          );
+      } else {
+        final resultsYt = await youtubeClient.search.search(searchTerm.trim());
+
+        final searchResults = await Future.wait(
+          resultsYt
+              .map(YoutubeVideoInfo.fromVideo)
+              .mapIndexed((i, video) async {
+            final siblingType =
+                await YoutubeSourcedTrack.toSiblingType(i, video);
+            return siblingType.info;
+          }),
+        );
+        final activeSourceInfo =
+            (playlist.activeTrack! as SourcedTrack).sourceInfo;
+        return searchResults
+          ..removeWhere((element) => element.id == activeSourceInfo.id)
+          ..insert(
+            0,
+            activeSourceInfo,
+          );
+      }
     }, [
       searchTerm,
       searchMode.value,
+      playlist.activeTrack,
+      preferences.audioSource,
     ]);
 
     final siblings = useMemoized(
@@ -104,6 +155,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
     final itemBuilder = useCallback(
       (SourceInfo sourceInfo) {
+        final icon = sourceInfoToIconMap[sourceInfo.runtimeType];
         return ListTile(
           title: Text(sourceInfo.title),
           leading: Padding(
@@ -118,7 +170,12 @@ class SiblingTracksSheet extends HookConsumerWidget {
             borderRadius: BorderRadius.circular(5),
           ),
           trailing: Text(sourceInfo.duration.toHumanReadableString()),
-          subtitle: Text(sourceInfo.artist),
+          subtitle: Row(
+            children: [
+              if (icon != null) icon,
+              Text(" • ${sourceInfo.artist}"),
+            ],
+          ),
           enabled: playlist.isFetching != true,
           selected: playlist.isFetching != true &&
               sourceInfo.id ==
@@ -137,7 +194,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
       [playlist.isFetching, playlist.activeTrack, siblings],
     );
 
-    var mediaQuery = MediaQuery.of(context);
+    final mediaQuery = MediaQuery.of(context);
     return SafeArea(
       child: ClipRRect(
         borderRadius: borderRadius,

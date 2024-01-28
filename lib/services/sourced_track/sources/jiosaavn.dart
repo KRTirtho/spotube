@@ -12,6 +12,19 @@ import 'package:spotube/extensions/string.dart';
 
 final jiosaavnClient = JioSaavnClient();
 
+class JioSaavnSourceInfo extends SourceInfo {
+  JioSaavnSourceInfo({
+    required super.id,
+    required super.title,
+    required super.artist,
+    required super.thumbnail,
+    required super.pageUrl,
+    required super.duration,
+    required super.artistUrl,
+    required super.album,
+  });
+}
+
 class JioSaavnSourcedTrack extends SourcedTrack {
   JioSaavnSourcedTrack({
     required super.ref,
@@ -70,7 +83,7 @@ class JioSaavnSourcedTrack extends SourcedTrack {
 
   static SiblingType toSiblingType(SongResponse result) {
     final SiblingType sibling = (
-      info: SourceInfo(
+      info: JioSaavnSourceInfo(
         artist: [
           result.primaryArtists,
           if (result.featuredArtists.isNotEmpty) ", ",
@@ -155,18 +168,32 @@ class JioSaavnSourcedTrack extends SourcedTrack {
 
   @override
   Future<JioSaavnSourcedTrack?> swapWithSibling(SourceInfo sibling) async {
-    if (sibling.id == sourceInfo.id ||
-        siblings.none((s) => s.id == sibling.id)) {
+    if (sibling.id == sourceInfo.id) {
       return null;
     }
 
-    final newSourceInfo = siblings.firstWhere((s) => s.id == sibling.id);
+    // a sibling source that was fetched from the search results
+    final isStepSibling = siblings.none((s) => s.id == sibling.id);
+
+    final newSourceInfo = isStepSibling
+        ? sibling
+        : siblings.firstWhere((s) => s.id == sibling.id);
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, sourceInfo);
 
     final [item] = await jiosaavnClient.songs.detailsById([newSourceInfo.id]);
 
     final (:info, :source) = toSiblingType(item);
+
+    await SourceMatch.box.put(
+      id!,
+      SourceMatch(
+        id: id!,
+        sourceType: SourceType.jiosaavn,
+        createdAt: DateTime.now(),
+        sourceId: info.id,
+      ),
+    );
 
     return JioSaavnSourcedTrack(
       ref: ref,

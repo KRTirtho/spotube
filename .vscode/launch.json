@@ -6,6 +6,12 @@
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
+    },
+    {
+      "name": "spotube (mobile)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
       "args": [
         "--flavor",
         "dev"

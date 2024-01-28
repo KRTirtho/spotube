@@ -177,11 +177,9 @@
   "step_2": "Stap 2",
   "step_2_steps": "1. Zodra je bent aangemeld, druk je op F12 of klik je met de rechtermuisknop > Inspect om de Browser devtools te openen.\n2. Ga vervolgens naar het tabblad \"Toepassing\" (Chrome, Edge, Brave enz..) of naar het tabblad \"Opslag\" (Firefox, Palemoon enz..).\n3. Ga naar de sectie \"Cookies\" en vervolgens naar de subsectie \"https://accounts.spotify.com\".",
   "step_3": "Stap 3",
-  "step_3_steps": "Kopieer de waarden van \"sp_dc\" en \"sp_key\" (of sp_gaid) Cookies",
   "success_emoji": "Succes🥳",
   "success_message": "Je bent nu succesvol ingelogd met je Spotify account. Goed gedaan, maat!",
   "step_4": "Stap 4",
-  "step_4_steps": "Plak de gekopieerde \"sp_dc\" en \"sp_key\" (of sp_gaid) waarden in de respectievelijke velden",
   "something_went_wrong": "Er ging iets mis",
   "piped_instance": "Piped-serverinstantie",
   "piped_description": "De Piped-serverinstantie die moet worden gebruikt voor het matchen van sporen",
@@ -285,5 +283,9 @@
   "discord_rich_presence": "Discord Rich Presence",
   "browse_all": "Alles bekijken",
   "genres": "Genres",
-  "explore_genres": "Verken genres"
+  "explore_genres": "Verken genres",
+  "step_3_steps": "Kopieer de waarde van de \"sp_dc\"-cookie",
+  "step_4_steps": "Plak de gekopieerde waarde van \"sp_dc\"",
+  "friends": "Vrienden",
+  "no_lyrics_available": "Sorry, kan geen teksten vinden voor deze track"
 }

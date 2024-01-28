@@ -18,7 +18,7 @@ class SettingsDownloadsSection extends HookConsumerWidget {
     final preferences = ref.watch(userPreferencesProvider);
 
     final pickDownloadLocation = useCallback(() async {
-      if (DesktopTools.platform.isMobile) {
+      if (DesktopTools.platform.isMobile || DesktopTools.platform.isMacOS) {
         final dirStr = await FilePicker.platform.getDirectoryPath(
           initialDirectory: preferences.downloadLocation,
         );

@@ -175,11 +175,9 @@
   "step_2": "Schritt 2",
   "step_2_steps": "1. Wenn du angemeldet bist, drücke F12 oder klicke mit der rechten Maustaste > Inspektion, um die Browser-Entwicklertools zu öffnen.\n2. Gehe dann zum \"Anwendungs\"-Tab (Chrome, Edge, Brave usw.) oder zum \"Storage\"-Tab (Firefox, Palemoon usw.)\n3. Gehe zum Abschnitt \"Cookies\" und dann zum Unterabschnitt \"https://accounts.spotify.com\"",
   "step_3": "Schritt 3",
-  "step_3_steps": "Kopiere die Werte der Cookies \"sp_dc\" und \"sp_key\" (oder sp_gaid)",
   "success_emoji": "Erfolg🥳",
   "success_message": "Jetzt bist du erfolgreich mit deinem Spotify-Konto angemeldet. Gut gemacht, Kumpel!",
   "step_4": "Schritt 4",
-  "step_4_steps": "Füge die kopierten Werte von \"sp_dc\" und \"sp_key\" (oder sp_gaid) in die entsprechenden Felder ein",
   "something_went_wrong": "Etwas ist schiefgelaufen",
   "piped_instance": "Piped-Serverinstanz",
   "piped_description": "Die Piped-Serverinstanz, die zur Titelzuordnung verwendet werden soll",
@@ -284,5 +282,9 @@
   "discord_rich_presence": "Discord Rich Presence",
   "browse_all": "Alles durchsuchen",
   "genres": "Genres",
-  "explore_genres": "Genres erkunden"
+  "explore_genres": "Genres erkunden",
+  "step_3_steps": "Kopiere den Wert des Cookies \"sp_dc\"",
+  "step_4_steps": "Füge den kopierten Wert von \"sp_dc\" ein",
+  "friends": "Freunde",
+  "no_lyrics_available": "Entschuldigung, Texte für diesen Track konnten nicht gefunden werden"
 }

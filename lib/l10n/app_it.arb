@@ -177,11 +177,9 @@
   "step_2": "Passo 2",
   "step_2_steps": "1. Quando sei acceduto premi F12 o premi il tasto destro del Mouse > Ispeziona per aprire gli strumenti di sviluppo del browser.\n2. Vai quindi nel tab \"Applicazione\" (Chrome, Edge, Brave etc..) o tab \"Archiviazione\" (Firefox, Palemoon etc..)\n3. Vai nella sezione \"Cookies\" quindi nella sezione \"https://accounts.spotify.com\"",
   "step_3": "Passo 3",
-  "step_3_steps": "Copia il valore dei cookie \"sp_dc\" e \"sp_key\" (o sp_gaid)",
   "success_emoji": "Successo🥳",
   "success_message": "Ora hai correttamente effettuato il login al tuo account Spotify. Bel lavoro, amico!",
   "step_4": "Passo 4",
-  "step_4_steps": "Incolla i valori copiati di \"sp_dc\" e \"sp_key\" (o sp_gaid) nei campi rispettivi",
   "something_went_wrong": "Qualcosa è andato storto",
   "piped_instance": "Istanza Server Piped",
   "piped_description": "L'istanza server Piped da usare per il match della tracccia",
@@ -285,5 +283,9 @@
   "discord_rich_presence": "Presenza ricca di Discord",
   "browse_all": "Esplora tutto",
   "genres": "Generi",
-  "explore_genres": "Esplora generi"
+  "explore_genres": "Esplora generi",
+  "step_3_steps": "Copia il valore del cookie \"sp_dc\"",
+  "step_4_steps": "Incolla il valore copiato di \"sp_dc\"",
+  "friends": "Amici",
+  "no_lyrics_available": "Spiacente, impossibile trovare il testo di questa traccia"
 }

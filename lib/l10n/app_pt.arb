@@ -175,11 +175,9 @@
   "step_2": "Passo 2",
   "step_2_steps": "1. Uma vez logado, pressione F12 ou clique com o botão direito do mouse > Inspecionar para abrir as ferramentas de desenvolvimento do navegador.\n2. Em seguida, vá para a guia \"Aplicativo\" (Chrome, Edge, Brave, etc.) ou \"Armazenamento\" (Firefox, Palemoon, etc.)\n3. Acesse a seção \"Cookies\" e depois a subseção \"https://accounts.spotify.com\"",
   "step_3": "Passo 3",
-  "step_3_steps": "Copie os valores dos Cookies \"sp_dc\" e \"sp_key\" (ou sp_gaid)",
   "success_emoji": "Sucesso🥳",
   "success_message": "Agora você está logado com sucesso em sua conta do Spotify. Bom trabalho!",
   "step_4": "Passo 4",
-  "step_4_steps": "Cole os valores copiados \"sp_dc\" e \"sp_key\" (ou sp_gaid) nos campos correspondentes",
   "something_went_wrong": "Algo deu errado",
   "piped_instance": "Instância do Servidor Piped",
   "piped_description": "A instância do servidor Piped a ser usada para correspondência de faixas",
@@ -284,5 +282,9 @@
   "discord_rich_presence": "Presença rica no Discord",
   "browse_all": "Navegar por tudo",
   "genres": "Gêneros",
-  "explore_genres": "Explorar gêneros"
+  "explore_genres": "Explorar gêneros",
+  "step_3_steps": "Copie o valor do cookie \"sp_dc\"",
+  "step_4_steps": "Cole o valor copiado de \"sp_dc\"",
+  "friends": "Amigos",
+  "no_lyrics_available": "Desculpe, não foi possível encontrar a letra desta faixa"
 }

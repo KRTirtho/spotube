@@ -1,9 +1,7 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
-import 'package:spotube/utils/platform.dart';
 
 class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
   final List<Widget> tabs;
@@ -17,16 +15,8 @@ class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
       Color.lerp(theme.colorScheme.primary, Colors.black, 0.7)!,
     );
 
-    final breakpoint = useBreakpointValue(
-      xs: 85.0,
-      sm: 85.0,
-      md: 35.0,
-      others: 0.0,
-    );
-
     return Padding(
-      padding: EdgeInsets.only(
-        left: kIsMacOS ? breakpoint : 0,
+      padding: const EdgeInsets.only(
         top: 8,
         bottom: 8,
       ),

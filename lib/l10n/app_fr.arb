@@ -175,11 +175,9 @@
   "step_2": "Étape 2",
   "step_2_steps": "1. Une fois connecté, appuyez sur F12 ou clic droit de la souris > Inspecter pour ouvrir les outils de développement du navigateur.\n2. Ensuite, allez dans l'onglet \"Application\" (Chrome, Edge, Brave, etc.) ou l'onglet \"Stockage\" (Firefox, Palemoon, etc.)\n3. Allez dans la section \"Cookies\", puis dans la sous-section \"https://accounts.spotify.com\"",
   "step_3": "Étape 3",
-  "step_3_steps": "Copiez les valeurs des cookies \"sp_dc\" et \"sp_key\" (ou sp_gaid)",
   "success_emoji": "Succès🥳",
   "success_message": "Vous êtes maintenant connecté avec succès à votre compte Spotify. Bon travail, mon ami!",
   "step_4": "Étape 4",
-  "step_4_steps": "Collez les valeurs copiées de \"sp_dc\" et \"sp_key\" (ou sp_gaid) dans les champs respectifs",
   "something_went_wrong": "Quelque chose s'est mal passé",
   "piped_instance": "Instance pipée",
   "piped_description": "L'instance de serveur Piped à utiliser pour la correspondance des pistes",
@@ -284,5 +282,9 @@
   "discord_rich_presence": "Présence riche de Discord",
   "browse_all": "Parcourir tout",
   "genres": "Genres",
-  "explore_genres": "Explorer les genres"
+  "explore_genres": "Explorer les genres",
+  "step_3_steps": "Copiez la valeur du cookie \"sp_dc\"",
+  "step_4_steps": "Collez la valeur copiée de \"sp_dc\"",
+  "friends": "Amis",
+  "no_lyrics_available": "Désolé, impossible de trouver les paroles de cette piste"
 }

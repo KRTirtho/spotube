@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.1](https://personal.github.com/krtirtho/spotube/compare/v3.4.0...v3.4.1) (2024-01-27)
+
+
+### Features
+
+*  add create playlist button in add playlist dialog ([2168a64](https://personal.github.com/krtirtho/spotube/commit/2168a640af3104a43139c303d78e2c2326a1bda7))
+* add spotify friends activity ([#1130](https://personal.github.com/krtirtho/spotube/issues/1130)) ([7983932](https://personal.github.com/krtirtho/spotube/commit/79839329b0970acccb0c566a31eee508adbc8557))
+* **deep-link:** add track opening page ([988a975](https://personal.github.com/krtirtho/spotube/commit/988a975bf1a675df0cfc7b17776bcec74c67f1f2))
+* haptic feedback on long press and reordering actions ([6242200](https://personal.github.com/krtirtho/spotube/commit/624220090572eb643dce37ca8ffd85d2b3f5c9df))
+* improve youtube/piped matching by suffixing "- Topic" ([8184555](https://personal.github.com/krtirtho/spotube/commit/8184555ee89fd30aaf886af9fc1d52c142fdebb0))
+* **translations:** add Nepali (नेपाली) translations ([#1111](https://personal.github.com/krtirtho/spotube/issues/1111)) ([c3ebf56](https://personal.github.com/krtirtho/spotube/commit/c3ebf56ac149b0af8815a5533fe6c386df743440)), closes [#1074](https://personal.github.com/krtirtho/spotube/issues/1074) [#1100](https://personal.github.com/krtirtho/spotube/issues/1100)
+
+
+### Bug Fixes
+
+* alternative searched sources doesn't play [#1059](https://personal.github.com/krtirtho/spotube/issues/1059) ([a8e9b82](https://personal.github.com/krtirtho/spotube/commit/a8e9b824f33add8f6a83f0d147e889eb6beeb442))
+* alternative source doesn't persist on next restart [#840](https://personal.github.com/krtirtho/spotube/issues/840) ([62fde50](https://personal.github.com/krtirtho/spotube/commit/62fde50442f04f93255b5b1b1dcca23d116a13ec))
+* **android:** download failing for permission issues [#1015](https://personal.github.com/krtirtho/spotube/issues/1015) ([5509cae](https://personal.github.com/krtirtho/spotube/commit/5509cae91c8b1f5cb9fac179060f477397a4a27f))
+* artist page error [#1018](https://personal.github.com/krtirtho/spotube/issues/1018) ([8cd650b](https://personal.github.com/krtirtho/spotube/commit/8cd650b07e5f4c4c2f296bf4374e5ee67fb3eb50))
+* audio resumes after a phone call even if it was paused before  [#926](https://personal.github.com/krtirtho/spotube/issues/926) ([fd1899f](https://personal.github.com/krtirtho/spotube/commit/fd1899f162395752142d7aa7320d1c39b0995070))
+* better error message for failing to find lyrics [#1085](https://personal.github.com/krtirtho/spotube/issues/1085) ([e58e18d](https://personal.github.com/krtirtho/spotube/commit/e58e18de33d7bc6fb0e4ddd7ccf6ea14472642b1))
+* Black window flash when starting the app ([#1003](https://personal.github.com/krtirtho/spotube/issues/1003)) ([02e44fc](https://personal.github.com/krtirtho/spotube/commit/02e44fc6b849a873adad382f5d46ed8caf32359f))
+* **linux:** crash after login ([0dfd401](https://personal.github.com/krtirtho/spotube/commit/0dfd40153714b7a4b83ac30f0c56830bc0c05ffd))
+* **macos:** backbutton and window button overlap and unused empty space on home ([b9417ca](https://personal.github.com/krtirtho/spotube/commit/b9417ca3575992673357230dab49e0124dd576b1))
+* **macos:** download folder unchangeable ([9d74cf5](https://personal.github.com/krtirtho/spotube/commit/9d74cf5fc250a6a143321d49b8e045519b4c2872))
+* **macos:** Respect Minimize to tray option ([#1001](https://personal.github.com/krtirtho/spotube/issues/1001)) ([69559ba](https://personal.github.com/krtirtho/spotube/commit/69559ba24285636e42b2f2231f956c31388c5cf3))
+* **macos:** system tray shows name and sidebar weird gap [#1083](https://personal.github.com/krtirtho/spotube/issues/1083) ([27057ea](https://personal.github.com/krtirtho/spotube/commit/27057ea0c8d83c9701057c18b473f1af4e4e82be))
+* releases section is empty when user doesn't follow any artists [#1104](https://personal.github.com/krtirtho/spotube/issues/1104) ([682e88e](https://personal.github.com/krtirtho/spotube/commit/682e88e0c55bc0f4708bc0b4681b129e5c61c999))
+* search page vertical scrollbar moves on horizontal scroll [#1017](https://personal.github.com/krtirtho/spotube/issues/1017) ([c203ac6](https://personal.github.com/krtirtho/spotube/commit/c203ac69ee74ba8722dae3da4b47761cd8d59c34))
+* songs doesn't play when sources with preferred audio codec is empty ([#976](https://personal.github.com/krtirtho/spotube/issues/976)) ([ba4e11a](https://personal.github.com/krtirtho/spotube/commit/ba4e11a40ab18308437a05333a46eace6f8eeb5a))
+* track index not showing after 200 ([a752cf4](https://personal.github.com/krtirtho/spotube/commit/a752cf4c978d1b05851aabb6c84c7862de551320))
+* track pad horizontal scrolling not working ([59e0e6b](https://personal.github.com/krtirtho/spotube/commit/59e0e6bb659b70831f6e0ae064100381c57f149c))
+
 ## [3.4.0](https://github.com/KRTirtho/spotube/compare/v3.3.0...v3.4.0) (2023-12-30)
 
 

@@ -175,11 +175,9 @@
   "step_2": "Pas 2",
   "step_2_steps": "1. Una vegada que hagi iniciat sessió, premi F12 o faci clic dret amb el ratolí > Inspeccionar per obrir les eines de desenvolulpador del navegador.\n2. Després vagi a la pestanya \"Application\" (Chrome, Edge, Brave, etc.) o \"Storage\" (Firefox, Palemoon, etc.)\n3. Vagi a la secció \"Cookies\" i després a la subsecció \"https://accounts.spotify.com\"",
   "step_3": "Pas 3",
-  "step_3_steps": "Copiï els valors de les Cookies \"sp_dc\" i \"sp_key\" (o sp_gaid)",
   "success_emoji": "Èxit! 🥳",
   "success_message": "Ara has iniciat sessió amb èxit al teu compte de Spotify. Bona feina!",
   "step_4": "Pas 4",
-  "step_4_steps": "Enganxi els valors coppiats de \"sp_dc\" i \"sp_key\" (o sp_gaid) en els camps respectius",
   "something_went_wrong": "Quelcom ha sortit malament",
   "piped_instance": "Instància del servidor Piped",
   "piped_description": "La instància del servidor Piped a utilitzar per la coincidència de cançons",
@@ -284,5 +282,9 @@
   "discord_rich_presence": "Presència rica de Discord",
   "browse_all": "Navega per tot",
   "genres": "Gèneres",
-  "explore_genres": "Explora els gèneres"
+  "explore_genres": "Explora els gèneres",
+  "step_3_steps": "Copia el valor de la cookie \"sp_dc\"",
+  "step_4_steps": "Pega el valor copiado de \"sp_dc\"",
+  "friends": "Amics",
+  "no_lyrics_available": "Ho sentim, no es poden trobar les lletres d'aquesta pista"
 }

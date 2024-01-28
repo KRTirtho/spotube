@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.4.0+27
+version: 3.4.1+28
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -55,8 +55,8 @@ dependencies:
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
   fuzzywuzzy: ^1.1.6
-  google_fonts: ^5.1.0
-  go_router: ^11.1.2
+  go_router: ^13.0.1
+  google_fonts: ^6.1.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hooks_riverpod: ^2.4.3
@@ -83,8 +83,8 @@ dependencies:
       url: https://github.com/KRTirtho/scrobblenaut.git
       ref: dart-3-support
   scroll_to_index: ^3.0.1
-  shared_preferences: ^2.0.11
-  sidebarx: ^0.15.0
+  sidebarx: ^0.16.3
+  shared_preferences: ^2.2.2
   skeleton_text: ^3.0.1
   smtc_windows: ^0.1.1
   spotify: ^0.12.0
@@ -94,7 +94,7 @@ dependencies:
   url_launcher: ^6.1.7
   uuid: ^3.0.7
   version: ^3.0.2
-  visibility_detector: ^0.3.3
+  visibility_detector: ^0.4.0+2
   window_manager: ^0.3.1
   window_size:
     git:

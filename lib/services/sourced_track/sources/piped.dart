@@ -22,6 +22,19 @@ final pipedProvider = Provider<PipedClient>(
   },
 );
 
+class PipedSourceInfo extends SourceInfo {
+  PipedSourceInfo({
+    required super.id,
+    required super.title,
+    required super.artist,
+    required super.thumbnail,
+    required super.pageUrl,
+    required super.duration,
+    required super.artistUrl,
+    required super.album,
+  });
+}
+
 class PipedSourcedTrack extends SourcedTrack {
   PipedSourcedTrack({
     required super.ref,
@@ -71,7 +84,7 @@ class PipedSourcedTrack extends SourcedTrack {
         ref: ref,
         siblings: [],
         source: toSourceMap(manifest),
-        sourceInfo: SourceInfo(
+        sourceInfo: PipedSourceInfo(
           id: manifest.id,
           artist: manifest.uploader,
           artistUrl: manifest.uploaderUrl,
@@ -122,7 +135,7 @@ class PipedSourcedTrack extends SourcedTrack {
     }
 
     final SiblingType sibling = (
-      info: SourceInfo(
+      info: PipedSourceInfo(
         id: item.id,
         artist: item.channelName,
         artistUrl: "https://www.youtube.com/${item.channelId}",
@@ -147,7 +160,7 @@ class PipedSourcedTrack extends SourcedTrack {
     final query = SourcedTrack.getSearchTerm(track);
 
     final PipedSearchResult(items: searchResults) = await pipedClient.search(
-      query,
+      "$query - Topic",
       preference.searchMode == SearchMode.youtube
           ? PipedFilter.video
           : PipedFilter.musicSongs,
@@ -233,18 +246,32 @@ class PipedSourcedTrack extends SourcedTrack {
 
   @override
   Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
-    if (sibling.id == sourceInfo.id ||
-        siblings.none((s) => s.id == sibling.id)) {
+    if (sibling.id == sourceInfo.id) {
       return null;
     }
 
-    final newSourceInfo = siblings.firstWhere((s) => s.id == sibling.id);
+    // a sibling source that was fetched from the search results
+    final isStepSibling = siblings.none((s) => s.id == sibling.id);
+
+    final newSourceInfo = isStepSibling
+        ? sibling
+        : siblings.firstWhere((s) => s.id == sibling.id);
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, sourceInfo);
 
     final pipedClient = ref.read(pipedProvider);
 
     final manifest = await pipedClient.streams(newSourceInfo.id);
+
+    await SourceMatch.box.put(
+      id!,
+      SourceMatch(
+        id: id!,
+        sourceType: SourceType.jiosaavn,
+        createdAt: DateTime.now(),
+        sourceId: newSourceInfo.id,
+      ),
+    );
 
     return PipedSourcedTrack(
       ref: ref,
