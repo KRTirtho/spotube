@@ -106,14 +106,22 @@ class TrackOptions extends HookConsumerWidget {
         ) ??
         [];
 
-    final radios = pages.expand((e) => e.items ?? <PlaylistSimple>[]).toList();
+    final radios = pages
+        .expand((e) => e.items?.toList() ?? <PlaylistSimple>[])
+        .toList()
+        .cast<PlaylistSimple>();
 
     final artists = track.artists!.map((e) => e.name);
 
     final radio = radios.firstWhere(
-      (e) =>
-          e.name == "${track.name} Radio" &&
-          artists.where((a) => e.name!.contains(a!)).length >= 2,
+      (e) {
+        final validPlaylists =
+            artists.where((a) => e.description!.contains(a!));
+        return e.name == "${track.name} Radio" &&
+            (validPlaylists.length >= 2 ||
+                validPlaylists.length == artists.length) &&
+            e.owner?.displayName == "Spotify";
+      },
       orElse: () => radios.first,
     );
 
@@ -129,9 +137,12 @@ class TrackOptions extends HookConsumerWidget {
       );
     }
 
-    if (replaceQueue) {
+    if (replaceQueue || playlist.tracks.isEmpty) {
       await playback.stop();
       await playback.load([track], autoPlay: true);
+
+      // we don't have to add those tracks as useEndlessPlayback will do it for us
+      return;
     } else {
       await playback.addTrack(track);
     }

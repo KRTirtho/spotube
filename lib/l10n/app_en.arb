@@ -289,5 +289,6 @@
   "no_lyrics_available": "Sorry, unable find lyrics for this track",
   "start_a_radio": "Start a Radio",
   "how_to_start_radio": "How do you want to start the radio?",
-  "replace_queue_question": "Do you want to replace the current queue or append to it?"
+  "replace_queue_question": "Do you want to replace the current queue or append to it?",
+  "endless_playback": "Endless Playback"
 }

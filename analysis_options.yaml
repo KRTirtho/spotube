@@ -32,3 +32,5 @@ analyzer:
   enable-experiment:
     - records
     - patterns
+  errors:
+    invalid_annotation_target: ignore

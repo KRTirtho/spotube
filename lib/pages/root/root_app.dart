@@ -15,6 +15,7 @@ import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/hooks/configurators/use_update_checker.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -133,6 +134,8 @@ class RootApp extends HookConsumerWidget {
 
     // checks for latest version of the application
     useUpdateChecker(ref);
+
+    useEndlessPlayback(ref);
 
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
