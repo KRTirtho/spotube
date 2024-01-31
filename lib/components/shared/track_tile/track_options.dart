@@ -95,13 +95,14 @@ class TrackOptions extends HookConsumerWidget {
     final playback = ref.read(ProxyPlaylistNotifier.notifier);
     final playlist = ref.read(ProxyPlaylistNotifier.provider);
     final spotify = ref.read(spotifyProvider);
+    final query = "${track.name} Radio";
     final pages = await QueryClient.of(context)
             .fetchInfiniteQueryJob<List<Page>, dynamic, int, SearchParams>(
-          job: SearchQueries.queryJob(SearchType.playlist.name),
+          job: SearchQueries.queryJob(query),
           args: (
             spotify: spotify,
             searchType: SearchType.playlist,
-            query: "${track.name} Radio"
+            query: query,
           ),
         ) ??
         [];

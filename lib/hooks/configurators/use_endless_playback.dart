@@ -31,13 +31,14 @@ void useEndlessPlayback(WidgetRef ref) {
 
           final track = playlist.tracks.last;
 
+          final query = "${track.name} Radio";
           final pages = await queryClient.fetchInfiniteQueryJob<List<Page>,
                   dynamic, int, SearchParams>(
-                job: SearchQueries.queryJob(SearchType.playlist.name),
+                job: SearchQueries.queryJob(query),
                 args: (
                   spotify: spotify,
                   searchType: SearchType.playlist,
-                  query: "${track.name} Radio"
+                  query: query
                 ),
               ) ??
               [];
