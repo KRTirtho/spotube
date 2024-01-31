@@ -95,7 +95,7 @@ This handy table lists all the methods you can use to install Spotube:
   </tr>
   <tr>
     <td>AppImage</td>
-    <td>Currently not available see https://github.com/KRTirtho/spotube/issues/1082</td>
+    <td>AppImage's lacking stability led to it's temporal removal. More information at https://github.com/KRTirtho/spotube/issues/1082</td>
   </tr>
   <tr>
     <td>Debian/Ubuntu</td>
