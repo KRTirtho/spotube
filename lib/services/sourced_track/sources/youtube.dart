@@ -178,13 +178,23 @@ class YoutubeSourcedTrack extends SourcedTrack {
             }
           }
 
+          final titleSameAsTrackName =
+              sibling.title.toLowerCase() == track.name?.toLowerCase();
+
           final titleContainsTrackName =
               sibling.title.toLowerCase().contains(track.name!.toLowerCase());
+
+          final trackNameContainsTitle =
+              track.name!.toLowerCase().contains(sibling.title.toLowerCase());
 
           final hasOfficialFlag =
               officialMusicRegex.hasMatch(sibling.title.toLowerCase());
 
-          if (titleContainsTrackName) {
+          if (titleSameAsTrackName) {
+            score += 1;
+          }
+
+          if (titleContainsTrackName || trackNameContainsTitle) {
             score += 3;
           }
 
