@@ -14,6 +14,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
 
 import 'package:spotube/models/skip_segment.dart';
+import 'package:spotube/models/source_match.dart';
 
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
@@ -447,6 +448,18 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
       await audioPlayer.replaceSource(
         audioPlayer.currentSource!,
         makeAppropriateSource(newTrack),
+      );
+
+      // update cache: first remove track, then add the new source
+      await SourceMatch.box.delete(state.activeTrack?.id);
+      await SourceMatch.box.put(
+        newTrack.id,
+        SourceMatch(
+          id: newTrack.id!,
+          sourceType: SourceType.youtube,
+          createdAt: DateTime.now(),
+          sourceId: sibling.id,
+        ),
       );
     }
   }
