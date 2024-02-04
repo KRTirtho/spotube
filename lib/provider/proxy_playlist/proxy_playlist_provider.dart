@@ -448,6 +448,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         audioPlayer.currentSource!,
         makeAppropriateSource(newTrack),
       );
+    }
+  }
 
   Future<void> next() async {
     if (audioPlayer.nextSource == null) return;
