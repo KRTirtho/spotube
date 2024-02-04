@@ -32,7 +32,7 @@ const Root = () => {
                 md: "transparent",
               }}
             >
-              <Heading color={textColor} size="2xl">
+              <Heading mb={4} color={textColor} size="2xl">
                 Spotube
               </Heading>
               <Heading color={textColor} size="lg" maxW="500px">
@@ -44,7 +44,7 @@ const Root = () => {
           </VStack>
         </chakra.section>
         {/* <DisplayAd slot="9501208974" /> */}
-        <chakra.div bgGradient="linear-gradient(180deg, rgba(249,207,143,1) 0%, rgba(250,250,250,1) 45%)">
+        <chakra.div bgGradient="linear-gradient(180deg, rgba(249,207,143,1) 0%, rgba(250,250,250,1) 65%)">
           <VStack
             p="5"
             mt="10"
@@ -82,6 +82,7 @@ const Root = () => {
               />
             </chakra.div>
             <chakra.div
+              margin="auto"
               maxW="500px"
               bgGradient={{
                 base: "radial-gradient(circle, #ffffff 23%, rgba(0,0,0,0) 82%)",
@@ -89,7 +90,7 @@ const Root = () => {
               }}
               color="gray.800"
             >
-              <Heading>Access all your Spotify Music & Playlists</Heading>
+              <Heading mb={2}>Access all your Spotify Music & Playlists</Heading>
               <Text>
                 You can use all your Spotify tracks & playlists here. Everything
                 will be in Sync & some action taken from Spotube will also
@@ -111,7 +112,7 @@ const Root = () => {
             display: "block",
             height: "100%",
             width: "100%",
-            background: "url('/headline-2b.png') rgba(0, 0, 0, 0.9)",
+            background: "url('/headline-2b.png') rgba(0, 0, 0, 0)",
             bgSize: "contain",
             bgRepeat: "no-repeat",
             bgPos: "center",
@@ -130,7 +131,7 @@ const Root = () => {
           <chakra.div
             maxW="600px"
             color="gray.50"
-            bgColor="blackAlpha.500"
+            bgColor="blackAlpha.600"
             p="3"
             borderRadius="3xl"
           >
