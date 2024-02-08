@@ -9,6 +9,14 @@ import {
 	faRedhat
 } from '@fortawesome/free-brands-svg-icons';
 import { type IconDefinition } from '@fortawesome/free-brands-svg-icons/index';
+import { Home, Newspaper, Download } from 'lucide-svelte';
+
+export const routes: Record<string, [string, any]> = {
+	'/': ['Home', Home],
+	'/blog': ['Blog', Newspaper],
+	'/downloads': ['Downloads', Download],
+	'/about': ['About', null]
+};
 
 const releasesUrl = 'https://github.com/KRTirtho/Spotube/releases/latest/download';
 
