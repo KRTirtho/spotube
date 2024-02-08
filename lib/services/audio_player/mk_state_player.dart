@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart';
@@ -64,6 +64,12 @@ class MkPlayerWithState extends Player {
         Catcher2.reportCheckedError('[MediaKitError] \n$event', null);
       }),
     ];
+    if (super.platform is NativePlayer) {
+      NativePlayer playerNative = super.platform as NativePlayer;
+      if (DesktopTools.platform.isAndroid) {
+        playerNative.setProperty("ao", "audiotrack,opensles");
+      }
+    }
   }
 
   bool get shuffled => _shuffled;
