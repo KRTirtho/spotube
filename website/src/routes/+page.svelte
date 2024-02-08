@@ -4,17 +4,12 @@
 		faAndroid,
 		faWindows,
 		faApple,
-		faUbuntu,
-		faFedora,
-		faRedhat,
-		faOpensuse,
-		faLinux,
-		faDebian,
-		type IconDefinition
+		faLinux
 	} from '@fortawesome/free-brands-svg-icons/index';
 	import Fa from 'svelte-fa';
 	import { ChevronDown } from 'lucide-svelte';
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
+	import { downloadLinks } from '$lib';
 
 	const popupFeatured: PopupSettings = {
 		// Represents the type of event that opens/closed the popup
@@ -23,20 +18,6 @@
 		target: 'popupFeatured',
 		// Defines which side of your trigger the popup will appear
 		placement: 'bottom'
-	};
-
-	const releasesUrl = 'https://github.com/KRTirtho/Spotube/releases/latest/download';
-
-	const downloadLinks: Record<string, [string, IconDefinition[]]> = {
-		'Android Apk': [`${releasesUrl}/Spotube-android-all-arch.apk`, [faAndroid]],
-		'Windows Executable': [`${releasesUrl}/Spotube-windows-x86_64-setup.exe`, [faWindows]],
-		'Apple Dmg': [`${releasesUrl}/Spotube-macos-universal.dmg`, [faApple]],
-		'Linux Ubuntu/Debian': [`${releasesUrl}/Spotube-linux-x86_64.deb`, [faUbuntu, faDebian]],
-		'Linux Fedora/Redhat/Opensuse': [
-			`${releasesUrl}/Spotube-linux-x86_64.rpm`,
-			[faFedora, faRedhat, faOpensuse]
-		],
-		'iPhone Ipa': [`${releasesUrl}/Spotube-iOS.ipa`, [faApple]]
 	};
 </script>
 
