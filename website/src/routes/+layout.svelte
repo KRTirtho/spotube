@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
+	import Navbar from '../components/navbar/navbar.svelte';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -22,4 +23,7 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
 
-<slot />
+<main class="p-2 md:p-4 flex flex-col">
+	<Navbar />
+	<slot />
+</main>
