@@ -29,7 +29,7 @@
 			<div class="inline-flex gap-3 items-center">
 				<Fa class="inline text-[#A4C639]" icon={faAndroid} />
 				<Fa class="inline text-[#00A2F0]" icon={faWindows} />
-				<Fa class="inline text-[#FCC624]" icon={faLinux} />
+				<Fa class="inline" icon={faLinux} />
 				<Fa class="inline" icon={faApple} />
 			</div>
 		</h3>
