@@ -41,7 +41,7 @@
 	<slot />
 	<br /><br />
 </main>
-<footer class="w-full bg-surface-200/40 p-4 flex justify-between">
+<footer class="w-full bg-tertiary-backdrop-token p-4 flex justify-between">
 	<div>
 		<h3 class="h3">Spotube</h3>
 		<p>

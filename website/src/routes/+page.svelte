@@ -14,6 +14,16 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>Spotube</title>
+	<meta name="description" content="An Open Source Spotify Client for every platform" />
+	<meta name="keywords" content="spotify, client, open source, music, streaming" />
+	<meta name="author" content="KRTirtho" />
+	<meta name="robots" content="index, follow" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="theme-color" content="#1DB954" />
+</svelte:head>
+
 <section class="flex flex-col gap-4 ps-4 pt-16 md:ps-24 md:pt-24">
 	<div>
 		<h1 class="h1">Spotube</h1>

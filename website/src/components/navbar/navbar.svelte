@@ -2,9 +2,10 @@
 	import { page } from '$app/stores';
 	import { routes } from '$lib';
 	import { faGithub } from '@fortawesome/free-brands-svg-icons';
-	import { getDrawerStore } from '@skeletonlabs/skeleton';
+	import { SlideToggle, getDrawerStore } from '@skeletonlabs/skeleton';
 	import { Menu } from 'lucide-svelte';
 	import Fa from 'svelte-fa';
+	import DarkmodeToggle from './darkmode-toggle.svelte';
 
 	const drawerStore = getDrawerStore();
 </script>
@@ -35,7 +36,7 @@
 			</button>
 		</a>
 	</div>
-	<nav class="hidden md:flex gap-3">
+	<nav class="hidden md:flex gap-3 items-center">
 		{#each Object.entries(routes) as route}
 			<a href={route[0]}>
 				<button
@@ -48,5 +49,6 @@
 				</button>
 			</a>
 		{/each}
+		<DarkmodeToggle />
 	</nav>
 </header>

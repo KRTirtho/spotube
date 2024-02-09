@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "svelte-media-queries": "^1.6.2",
+    "svelte-persisted-store": "^0.9.1"
+  }
+}

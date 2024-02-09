@@ -4,6 +4,7 @@
 	import { routes } from '$lib';
 	import { ListBox, ListBoxItem, getDrawerStore } from '@skeletonlabs/skeleton';
 	import { X } from 'lucide-svelte';
+	import DarkmodeToggle from '../navbar/darkmode-toggle.svelte';
 
 	let currentRoute: string = $page.url.pathname;
 	const drawerStore = getDrawerStore();
@@ -31,5 +32,6 @@
 				</div>
 			</ListBoxItem>
 		{/each}
+		<DarkmodeToggle label="Theme" />
 	</ListBox>
 </nav>
