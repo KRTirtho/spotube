@@ -20,7 +20,9 @@
 			>
 				<Menu />
 			</button>
-			<h2 class="text-3xl">Spotube</h2>
+			<h2 class="text-3xl">
+				<a href="/"> Spotube </a>
+			</h2>
 		</div>
 		<a
 			class="mw-2 md:me-4"

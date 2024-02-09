@@ -44,11 +44,14 @@
   "dependencies": {
     "@floating-ui/dom": "1.6.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@octokit/openapi-types": "^19.1.0",
     "@octokit/rest": "^20.0.2",
+    "date-fns": "^3.3.1",
     "highlight.js": "11.9.0",
     "lucide-svelte": "^0.323.0",
     "remark-container": "^0.1.2",
     "remark-github": "^12.0.0",
-    "svelte-fa": "^4.0.2"
+    "svelte-fa": "^4.0.2",
+    "svelte-markdown": "^0.4.1"
   }
 }

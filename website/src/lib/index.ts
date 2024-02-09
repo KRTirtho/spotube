@@ -44,3 +44,18 @@ export const extendedDownloadLinks: Record<string, [string, IconDefinition[], st
 	],
 	iPhone: [`${releasesUrl}/Spotube-iOS.ipa`, [faApple], 'ipa']
 };
+
+const nightlyReleaseUrl = 'https://github.com/KRTirtho/Spotube/releases/download/nightly';
+
+export const extendedNightlyDownloadLinks: Record<string, [string, IconDefinition[], string]> = {
+	Android: [`${nightlyReleaseUrl}/Spotube-android-all-arch.apk`, [faAndroid], 'apk'],
+	Windows: [`${nightlyReleaseUrl}/Spotube-windows-x86_64-setup.exe`, [faWindows], 'exe'],
+	macOS: [`${nightlyReleaseUrl}/Spotube-macos-universal.dmg`, [faApple], 'dmg'],
+	'Ubuntu, Debian': [`${nightlyReleaseUrl}/Spotube-linux-x86_64.deb`, [faUbuntu, faDebian], 'deb'],
+	'Fedora, Redhat, Opensuse': [
+		`${nightlyReleaseUrl}/Spotube-linux-x86_64.rpm`,
+		[faFedora, faRedhat, faOpensuse],
+		'rpm'
+	],
+	iPhone: [`${nightlyReleaseUrl}/Spotube-iOS.ipa`, [faApple], 'ipa']
+};

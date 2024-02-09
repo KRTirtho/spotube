@@ -1,20 +1,18 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
-import containers from 'remark-container';
-import github from 'remark-github';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	extensions: ['.svelte'],
+	extensions: ['.svelte', '.svx', '.md'],
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess: [
 		vitePreprocess(),
 		mdsvex({
-			extensions: ['.svx'],
+			extensions: ['.svx', '.md'],
 			highlight: {},
-			remarkPlugins: [containers, github]
+			layout: './src/components/markdown/layout.svelte'
 		})
 	],
 	vitePlugin: {
