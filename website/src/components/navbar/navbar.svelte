@@ -9,7 +9,7 @@
 	const drawerStore = getDrawerStore();
 </script>
 
-<section class="flex justify-between">
+<header class="flex justify-between">
 	<div class="flex items-center justify-between w-full">
 		<div class="flex items-center gap-2">
 			<button
@@ -49,4 +49,4 @@
 			</a>
 		{/each}
 	</nav>
-</section>
+</header>

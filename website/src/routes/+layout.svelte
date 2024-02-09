@@ -24,6 +24,8 @@
 
 	import { initializeStores } from '@skeletonlabs/skeleton';
 	import NavDrawer from '../components/navdrawer/navdrawer.svelte';
+	import Fa from 'svelte-fa';
+	import { faGithub } from '@fortawesome/free-brands-svg-icons';
 	initializeStores();
 
 	const drawerStore = getDrawerStore();
@@ -37,4 +39,32 @@
 	</Drawer>
 	<Navbar />
 	<slot />
+	<br /><br />
 </main>
+<footer class="w-full bg-surface-200/40 p-4 flex justify-between">
+	<div>
+		<h3 class="h3">Spotube</h3>
+		<p>
+			Copyright © {new Date().getFullYear()} Spotube
+		</p>
+	</div>
+	<ul>
+		<li>
+			<a href="https://github.com/KRTirtho/spotube">
+				<Fa class="inline mr-1" icon={faGithub} size="lg" />
+				Github
+			</a>
+		</li>
+		<li>
+			<a href="https://opencollective.org/spotube">
+				<img
+					src="https://avatars0.githubusercontent.com/u/13403593?v=4"
+					height="20"
+					width="20"
+					class="inline mr-1"
+				/>
+				OpenCollective
+			</a>
+		</li>
+	</ul>
+</footer>
