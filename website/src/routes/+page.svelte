@@ -56,7 +56,7 @@
 				<div
 					class="flex flex-col items-center gap-2 overflow-ellipsis w-40 btn variant-ghost-secondary rounded-lg"
 				>
-					<Avatar src={member.image} alt={member.name} title={member.name} class="w-12 h-12" />
+					<Avatar src={member.image} initials={member.name} class="w-12 h-12" />
 					<p>{member.name}</p>
 					<p class="capitalize text-sm underline decoration-dotted">
 						({member.role.toLowerCase()})

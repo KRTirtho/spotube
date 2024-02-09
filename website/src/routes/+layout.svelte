@@ -31,7 +31,7 @@
 	const drawerStore = getDrawerStore();
 </script>
 
-<main class="p-2 md:p-4 flex flex-col">
+<main class="p-2 md:p-4 flex flex-col min-h-[90vh]">
 	<Drawer>
 		{#if $drawerStore.id === 'navdrawer'}
 			<NavDrawer />
@@ -59,6 +59,7 @@
 			<a href="https://opencollective.org/spotube">
 				<img
 					src="https://avatars0.githubusercontent.com/u/13403593?v=4"
+					alt="OpenCollective"
 					height="20"
 					width="20"
 					class="inline mr-1"
