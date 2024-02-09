@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-	import Navbar from '../components/navbar/navbar.svelte';
+	import Navbar from '$lib/components/navbar/navbar.svelte';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -23,7 +23,7 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	import { initializeStores } from '@skeletonlabs/skeleton';
-	import NavDrawer from '../components/navdrawer/navdrawer.svelte';
+	import NavDrawer from '../lib/components/navdrawer/navdrawer.svelte';
 	import Fa from 'svelte-fa';
 	import { faGithub } from '@fortawesome/free-brands-svg-icons';
 	initializeStores();

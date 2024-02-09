@@ -1,6 +1,12 @@
 import adapter from '@sveltejs/adapter-netlify';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
+import readingTime from 'remark-reading-time';
+import remarkExternalLinks from 'remark-external-links';
+import slugPlugin from 'rehype-slug';
+import autolinkHeadings from 'rehype-autolink-headings';
+import relativeImages from 'mdsvex-relative-images';
+import remarkGfm from 'remark-gfm';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -12,7 +18,28 @@ const config = {
 		mdsvex({
 			extensions: ['.svx', '.md'],
 			highlight: {},
-			layout: './src/components/markdown/layout.svelte'
+			layout: './src/lib/components/markdown/layout.svelte',
+			smartypants: {
+				dashes: 'oldschool'
+			},
+
+			remarkPlugins: [
+				remarkGfm,
+				// adds a `readingTime` frontmatter attribute
+				readingTime(),
+				relativeImages,
+				// external links open in a new tab
+				[remarkExternalLinks, { target: '_blank', rel: 'noopener' }]
+			],
+			rehypePlugins: [
+				slugPlugin,
+				[
+					autolinkHeadings,
+					{
+						behavior: 'wrap'
+					}
+				]
+			]
 		})
 	],
 	vitePlugin: {

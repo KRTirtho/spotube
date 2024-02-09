@@ -2,7 +2,7 @@
 	import { extendedDownloadLinks } from '$lib';
 	import { Download } from 'lucide-svelte';
 	import { History, Sparkles, Package } from 'lucide-svelte';
-	import DownloadItems from '../../components/downloads/download-items.svelte';
+	import DownloadItems from '$lib/components/downloads/download-items.svelte';
 
 	const otherDownloads: [string, string, any][] = [
 		['/downloads/packages', 'CLI Packages Managers', Package],

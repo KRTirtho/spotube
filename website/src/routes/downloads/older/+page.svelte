@@ -2,7 +2,7 @@
 	import SvelteMarkdown from 'svelte-markdown';
 	import type { PageData } from './$types';
 	import { formatDistanceToNow, formatRelative } from 'date-fns';
-	import Layout from '../../../components/markdown/layout.svelte';
+	import Layout from '$lib/components/markdown/layout.svelte';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import { Book, History } from 'lucide-svelte';
 	import {

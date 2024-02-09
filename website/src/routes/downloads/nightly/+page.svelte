@@ -1,6 +1,6 @@
 <script>
 	import { AlertTriangle, Bug, Sparkles } from 'lucide-svelte';
-	import DownloadItems from '../../../components/downloads/download-items.svelte';
+	import DownloadItems from '$lib/components/downloads/download-items.svelte';
 	import { extendedNightlyDownloadLinks } from '$lib';
 </script>
 

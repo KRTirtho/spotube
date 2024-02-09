@@ -49,8 +49,14 @@
     "date-fns": "^3.3.1",
     "highlight.js": "11.9.0",
     "lucide-svelte": "^0.323.0",
+    "mdsvex-relative-images": "^1.0.3",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
     "remark-container": "^0.1.2",
+    "remark-external-links": "^9.0.1",
+    "remark-gfm": "^4.0.0",
     "remark-github": "^12.0.0",
+    "remark-reading-time": "^2.0.1",
     "svelte-fa": "^4.0.2",
     "svelte-markdown": "^0.4.1"
   }
