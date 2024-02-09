@@ -12,6 +12,13 @@
 	import { Avatar } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
+
+	const formatter = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		compactDisplay: 'short',
+		maximumFractionDigits: 0
+	});
 </script>
 
 <svelte:head>
@@ -41,6 +48,20 @@
 			And it's <span class="text-error-500 underline decoration-dashed">not</span>
 			built with Electron (web technologies)
 		</p>
+		<br />
+		<div class="flex items-center">
+			<a href="https://play.google.com/store/apps/details?id=oss.krtirtho.spotube" target="_blank">
+				<img
+					class="-m-2"
+					src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+					alt="Google PlayStore"
+					width="200"
+				/>
+			</a>
+			<a href="https://flathub.org/apps/com.github.KRTirtho.Spotube" target="_blank">
+				<img width="160" alt="Download on Flathub" src="https://flathub.org/api/badge?locale=en" />
+			</a>
+		</div>
 	</div>
 	<br /><br class="hidden md:block" /><br class="hidden md:block" />
 	<div class="flex justify-center">
@@ -60,6 +81,12 @@
 		We are grateful for the support of individuals and organizations who have made Spotube possible.
 	</p>
 
+	<div class="flex justify-center">
+		<a href="https://opencollective.com/spotube/donate" target="_blank">
+			<img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width="300" />
+		</a>
+	</div>
+
 	<div class="flex flex-wrap gap-4">
 		{#each data.props.members as member}
 			<a href={member.profile} target="_blank">
@@ -69,6 +96,7 @@
 					<Avatar src={member.image} initials={member.name} class="w-12 h-12" />
 					<p>{member.name}</p>
 					<p class="capitalize text-sm underline decoration-dotted">
+						{formatter.format(member.totalAmountDonated)}
 						({member.role.toLowerCase()})
 					</p>
 				</div>
