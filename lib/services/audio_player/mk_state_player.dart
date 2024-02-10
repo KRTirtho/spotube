@@ -3,6 +3,9 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:flutter_broadcasts/flutter_broadcasts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:audio_session/audio_session.dart';
 // ignore: implementation_imports
 import 'package:spotube/services/audio_player/playback_state.dart';
 
@@ -14,6 +17,13 @@ class MkPlayerWithState extends Player {
   final StreamController<bool> _shuffleStream;
   final StreamController<PlaylistMode> _loopModeStream;
 
+  static const String EXTRA_PACKAGE_NAME = "android.media.extra.PACKAGE_NAME";
+  static const String EXTRA_AUDIO_SESSION = "android.media.extra.AUDIO_SESSION";
+  static const String ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION =
+      "android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION";
+  static const String ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION =
+      "android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION";
+
   late final List<StreamSubscription> _subscriptions;
 
   bool _shuffled;
@@ -21,6 +31,9 @@ class MkPlayerWithState extends Player {
 
   Playlist? _playlist;
   List<Media>? _tempMedias;
+  int _androidAudioSessionId = 0;
+  String _packageName = "";
+  AndroidAudioManager? _androidAudioManager;
 
   MkPlayerWithState({super.configuration})
       : _playerStateStream = StreamController.broadcast(),
@@ -64,11 +77,33 @@ class MkPlayerWithState extends Player {
         Catcher2.reportCheckedError('[MediaKitError] \n$event', null);
       }),
     ];
-    if (super.platform is NativePlayer) {
-      NativePlayer playerNative = super.platform as NativePlayer;
-      if (DesktopTools.platform.isAndroid) {
-        playerNative.setProperty("ao", "audiotrack,opensles");
-      }
+    PackageInfo.fromPlatform().then((packageInfo) {
+      _packageName = packageInfo.packageName;
+    });
+    if (DesktopTools.platform.isAndroid) {
+      _androidAudioManager = AndroidAudioManager();
+      AudioSession.instance.then((s) async {
+        _androidAudioSessionId =
+            await _androidAudioManager!.generateAudioSessionId();
+        notifyAudioSessionUpdate(true);
+
+        nativePlayer.setProperty(
+            "audiotrack-session-id", _androidAudioSessionId.toString());
+        nativePlayer.setProperty("ao", "audiotrack,opensles,");
+      });
+    }
+  }
+
+  Future<void> notifyAudioSessionUpdate(bool active) async {
+    if (DesktopTools.platform.isAndroid) {
+      sendBroadcast(BroadcastMessage(
+          name: active
+              ? ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION
+              : ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION,
+          data: {
+            EXTRA_AUDIO_SESSION: _androidAudioSessionId,
+            EXTRA_PACKAGE_NAME: _packageName
+          }));
     }
   }
 
@@ -146,10 +181,11 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  Future<void> dispose() {
+  Future<void> dispose() async {
     for (var element in _subscriptions) {
       element.cancel();
     }
+    await notifyAudioSessionUpdate(false);
     return super.dispose();
   }
 
