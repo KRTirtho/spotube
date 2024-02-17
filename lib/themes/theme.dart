@@ -8,6 +8,10 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
     surface: isAmoled ? Colors.black : null,
     brightness: brightness,
   );
+
+  const borderRadius = BorderRadius.all(Radius.circular(15));
+  const roundedRectangleBorder = RoundedRectangleBorder(borderRadius: borderRadius);
+
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
@@ -16,9 +20,9 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
       iconColor: scheme.onSurface,
     ),
     appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
-    inputDecorationTheme: InputDecorationTheme(
+    inputDecorationTheme: const InputDecorationTheme(
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: borderRadius,
       ),
     ),
     iconTheme: IconThemeData(size: 16, color: scheme.onSurface),
@@ -36,17 +40,17 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
       dividerColor: Colors.transparent,
       indicator: BoxDecoration(
         color: scheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: borderRadius,
       ),
     ),
     popupMenuTheme: PopupMenuThemeData(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      shape: roundedRectangleBorder,
       color: scheme.surface,
       elevation: 4,
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      shape: roundedRectangleBorder,
       backgroundColor: scheme.onSurface,
       contentTextStyle: TextStyle(color: scheme.surface),
     ),
@@ -63,11 +67,7 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
         ),
       ),
       elevation: const MaterialStatePropertyAll(0),
-      shape: MaterialStatePropertyAll(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
+      shape: MaterialStatePropertyAll(roundedRectangleBorder),
     ),
     scrollbarTheme: const ScrollbarThemeData(
       thickness: MaterialStatePropertyAll(14),

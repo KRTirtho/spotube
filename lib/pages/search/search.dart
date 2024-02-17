@@ -121,7 +121,7 @@ class SearchPage extends HookConsumerWidget {
                         prefixIcon: const Icon(SpotubeIcons.search),
                         hintText: "${context.l10n.search}...",
                       ),
-                      onSubmitted: (value) async {
+                      onChanged: (value) async {
                         ref.read(searchTermStateProvider.notifier).state =
                             value;
                         // Fl-Query is too fast, so we need to delay the search
