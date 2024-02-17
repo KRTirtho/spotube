@@ -1,4 +1,4 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 
 /// Parses duration string formatted by Duration.toString() to [Duration].
 /// The string should be of form hours:minutes:seconds.microseconds
@@ -53,7 +53,7 @@ Duration? tryParseDuration(String input) {
   try {
     return parseDuration(input);
   } catch (e, stack) {
-    Catcher.reportCheckedError(e, stack);
+    Catcher2.reportCheckedError(e, stack);
     return null;
   }
 }

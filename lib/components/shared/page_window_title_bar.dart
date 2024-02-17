@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:titlebar_buttons/titlebar_buttons.dart';
-import 'package:window_manager/window_manager.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
-import 'package:local_notifier/local_notifier.dart';
 
-final closeNotification = DesktopTools.createNotification(
-  title: 'Spotube',
-  message: 'Running in background. Minimized to System Tray',
-  actions: [
-    LocalNotificationAction(text: 'Close The App'),
-  ],
-)?..onClickAction = (value) {
-    windowManager.close();
-  };
-
-class PageWindowTitleBar extends StatefulHookWidget
+class PageWindowTitleBar extends StatefulHookConsumerWidget
     implements PreferredSizeWidget {
   final Widget? leading;
   final bool automaticallyImplyLeading;
@@ -60,42 +48,59 @@ class PageWindowTitleBar extends StatefulHookWidget
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
-  State<PageWindowTitleBar> createState() => _PageWindowTitleBarState();
+  ConsumerState<PageWindowTitleBar> createState() => _PageWindowTitleBarState();
 }
 
-class _PageWindowTitleBarState extends State<PageWindowTitleBar> {
+class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
+  void onDrag(details) {
+    final systemTitleBar =
+        ref.read(userPreferencesProvider.select((s) => s.systemTitleBar));
+    if (kIsDesktop && !systemTitleBar) {
+      DesktopTools.window.startDragging();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragStart: (details) {
-        if (kIsDesktop) {
-          windowManager.startDragging();
-        }
-      },
-      onVerticalDragStart: (details) {
-        if (kIsDesktop) {
-          windowManager.startDragging();
-        }
-      },
-      child: AppBar(
-        leading: widget.leading,
-        automaticallyImplyLeading: widget.automaticallyImplyLeading,
-        actions: [
-          ...?widget.actions,
-          WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
-        ],
-        backgroundColor: widget.backgroundColor,
-        foregroundColor: widget.foregroundColor,
-        actionsIconTheme: widget.actionsIconTheme,
-        centerTitle: widget.centerTitle,
-        titleSpacing: widget.titleSpacing,
-        toolbarOpacity: widget.toolbarOpacity,
-        leadingWidth: widget.leadingWidth,
-        toolbarTextStyle: widget.toolbarTextStyle,
-        titleTextStyle: widget.titleTextStyle,
-        title: widget.title,
-      ),
-    );
+    final mediaQuery = MediaQuery.of(context);
+
+    return LayoutBuilder(builder: (context, constrains) {
+      final hasFullscreen = mediaQuery.size.width == constrains.maxWidth;
+      final hasLeadingOrCanPop =
+          widget.leading != null || Navigator.canPop(context);
+
+      return GestureDetector(
+        onHorizontalDragStart: onDrag,
+        onVerticalDragStart: onDrag,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: DesktopTools.platform.isMacOS &&
+                    hasFullscreen &&
+                    hasLeadingOrCanPop
+                ? 65
+                : 0,
+          ),
+          child: AppBar(
+            leading: widget.leading,
+            automaticallyImplyLeading: widget.automaticallyImplyLeading,
+            actions: [
+              ...?widget.actions,
+              WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
+            ],
+            backgroundColor: widget.backgroundColor,
+            foregroundColor: widget.foregroundColor,
+            actionsIconTheme: widget.actionsIconTheme,
+            centerTitle: widget.centerTitle,
+            titleSpacing: widget.titleSpacing,
+            toolbarOpacity: widget.toolbarOpacity,
+            leadingWidth: widget.leadingWidth,
+            toolbarTextStyle: widget.toolbarTextStyle,
+            titleTextStyle: widget.titleTextStyle,
+            title: widget.title,
+          ),
+        ),
+      );
+    });
   }
 }
 
@@ -108,30 +113,24 @@ class WindowTitleBarButtons extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final closeBehavior =
-        ref.watch(userPreferencesProvider.select((s) => s.closeBehavior));
+    final preferences = ref.watch(userPreferencesProvider);
     final isMaximized = useState<bool?>(null);
     const type = ThemeType.auto;
 
     Future<void> onClose() async {
-      if (closeBehavior == CloseBehavior.close) {
-        await windowManager.close();
-      } else {
-        await windowManager.hide();
-        await closeNotification?.show();
-      }
+      await DesktopTools.window.close();
     }
 
     useEffect(() {
       if (kIsDesktop) {
-        windowManager.isMaximized().then((value) {
+        DesktopTools.window.isMaximized().then((value) {
           isMaximized.value = value;
         });
       }
       return null;
     }, []);
 
-    if (!kIsDesktop || kIsMacOS) {
+    if (!kIsDesktop || kIsMacOS || preferences.systemTitleBar) {
       return const SizedBox.shrink();
     }
 
@@ -161,14 +160,14 @@ class WindowTitleBarButtons extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MinimizeWindowButton(
-              onPressed: windowManager.minimize,
+              onPressed: DesktopTools.window.minimize,
               colors: colors,
             ),
             if (isMaximized.value != true)
               MaximizeWindowButton(
                 colors: colors,
                 onPressed: () {
-                  windowManager.maximize();
+                  DesktopTools.window.maximize();
                   isMaximized.value = true;
                 },
               )
@@ -176,7 +175,7 @@ class WindowTitleBarButtons extends HookConsumerWidget {
               RestoreWindowButton(
                 colors: colors,
                 onPressed: () {
-                  windowManager.unmaximize();
+                  DesktopTools.window.unmaximize();
                   isMaximized.value = false;
                 },
               ),
@@ -196,16 +195,16 @@ class WindowTitleBarButtons extends HookConsumerWidget {
         children: [
           DecoratedMinimizeButton(
             type: type,
-            onPressed: windowManager.minimize,
+            onPressed: DesktopTools.window.minimize,
           ),
           DecoratedMaximizeButton(
             type: type,
             onPressed: () async {
-              if (await windowManager.isMaximized()) {
-                await windowManager.unmaximize();
+              if (await DesktopTools.window.isMaximized()) {
+                await DesktopTools.window.unmaximize();
                 isMaximized.value = false;
               } else {
-                await windowManager.maximize();
+                await DesktopTools.window.maximize();
                 isMaximized.value = true;
               }
             },

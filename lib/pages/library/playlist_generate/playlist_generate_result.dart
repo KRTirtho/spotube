@@ -18,7 +18,7 @@ typedef PlaylistGenerateResultRouteState = ({
   ({List<String> tracks, List<String> artists, List<String> genres})? seeds,
   RecommendationParameters? parameters,
   int limit,
-  String? market,
+  Market? market,
 });
 
 class PlaylistGenerateResultPage extends HookConsumerWidget {
@@ -163,6 +163,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                     context: context,
                                     builder: (context) =>
                                         PlaylistAddTrackDialog(
+                                      openFromPlaylist: null,
                                       tracks: selectedTracks.value
                                           .map(
                                             (e) => generatedPlaylist.data!

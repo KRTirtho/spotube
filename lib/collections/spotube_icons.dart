@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:simple_icons/simple_icons.dart';
 
 abstract class SpotubeIcons {
   static const home = FluentIcons.home_12_regular;
@@ -39,6 +40,8 @@ abstract class SpotubeIcons {
   static const trash = FeatherIcons.trash2;
   static const clock = FeatherIcons.clock;
   static const lyrics = Icons.lyrics_rounded;
+  static const lyricsOff = Icons.lyrics_outlined;
+  static const noLyrics = Icons.music_off_outlined;
   static const logout = FeatherIcons.logOut;
   static const login = FeatherIcons.logIn;
   static const dashboard = FeatherIcons.grid;
@@ -91,4 +94,22 @@ abstract class SpotubeIcons {
   static const clipboard = FeatherIcons.clipboard;
   static const api = FeatherIcons.database;
   static const skip = FeatherIcons.fastForward;
+  static const noWifi = FeatherIcons.wifiOff;
+  static const wifi = FeatherIcons.wifi;
+  static const window = Icons.window_rounded;
+  static const user = FeatherIcons.user;
+  static const edit = FeatherIcons.edit;
+  static const web = FeatherIcons.globe;
+  static const amoled = FeatherIcons.sunset;
+  static const file = FeatherIcons.file;
+  static const stream = Icons.stream_rounded;
+  static const lastFm = SimpleIcons.lastdotfm;
+  static const spotify = SimpleIcons.spotify;
+  static const eye = FeatherIcons.eye;
+  static const noEye = FeatherIcons.eyeOff;
+  static const normalize = FeatherIcons.barChart2;
+  static const wikipedia = SimpleIcons.wikipedia;
+  static const discord = SimpleIcons.discord;
+  static const youtube = SimpleIcons.youtube;
+  static const radio = FeatherIcons.radio;
 }

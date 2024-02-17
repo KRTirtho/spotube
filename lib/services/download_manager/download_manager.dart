@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
-import 'package:catcher/core/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+import 'package:spotube/models/logger.dart';
 import 'package:spotube/services/download_manager/chunked_download.dart';
 import 'package:spotube/services/download_manager/download_request.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/download_manager/download_task.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 
 export './download_request.dart';
 export './download_status.dart';
@@ -21,6 +25,7 @@ typedef DownloadStatusEvent = ({
 });
 
 class DownloadManager {
+  final logger = getLogger("DownloadManager");
   final Map<String, DownloadTask> _cache = <String, DownloadTask>{};
   final Queue<DownloadRequest> _queue = Queue();
   var dio = Dio();
@@ -72,19 +77,30 @@ class DownloadManager {
       }
       setStatus(task, DownloadStatus.downloading);
 
-      debugPrint("[DownloadManager] $url");
+      logger.d("[DownloadManager] $url");
       final file = File(savePath.toString());
-      partialFilePath = savePath + partialExtension;
+
+      final tmpDirPath = await Directory(
+        path.join(
+          (await getTemporaryDirectory()).path,
+          "spotube-downloads",
+        ),
+      ).create(recursive: true);
+
+      partialFilePath = path.join(
+        tmpDirPath.path,
+        path.basename(savePath) + partialExtension,
+      );
       partialFile = File(partialFilePath);
 
       final fileExist = await file.exists();
       final partialFileExist = await partialFile.exists();
 
       if (fileExist) {
-        debugPrint("[DownloadManager] File Exists");
+        logger.d("[DownloadManager] File Exists");
         setStatus(task, DownloadStatus.completed);
       } else if (partialFileExist) {
-        debugPrint("[DownloadManager] Partial File Exists");
+        logger.d("[DownloadManager] Partial File Exists");
 
         final partialFileLength = await partialFile.length();
 
@@ -108,7 +124,9 @@ class DownloadManager {
           await ioSink.addStream(partialChunkFile.openRead());
           await partialChunkFile.delete();
           await ioSink.close();
-          await partialFile.rename(savePath);
+
+          await partialFile.copy(savePath);
+          await partialFile.delete();
 
           setStatus(task, DownloadStatus.completed);
         }
@@ -122,12 +140,13 @@ class DownloadManager {
         );
 
         if (response.statusCode == HttpStatus.ok) {
-          await partialFile.rename(savePath);
+          await partialFile.copy(savePath);
+          await partialFile.delete();
           setStatus(task, DownloadStatus.completed);
         }
       }
     } catch (e, stackTrace) {
-      Catcher.reportCheckedError(e, stackTrace);
+      Catcher2.reportCheckedError(e, stackTrace);
 
       var task = getDownload(url)!;
       if (task.status.value != DownloadStatus.canceled &&
@@ -204,7 +223,7 @@ class DownloadManager {
   }
 
   Future<void> pauseDownload(String url) async {
-    debugPrint("[DownloadManager] Pause Download");
+    logger.d("[DownloadManager] Pause Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.paused);
     task.request.cancelToken.cancel();
@@ -213,7 +232,7 @@ class DownloadManager {
   }
 
   Future<void> cancelDownload(String url) async {
-    debugPrint("[DownloadManager] Cancel Download");
+    logger.d("[DownloadManager] Cancel Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.canceled);
     _queue.remove(task.request);
@@ -221,7 +240,7 @@ class DownloadManager {
   }
 
   Future<void> resumeDownload(String url) async {
-    debugPrint("[DownloadManager] Resume Download");
+    logger.d("[DownloadManager] Resume Download");
     var task = getDownload(url)!;
     setStatus(task, DownloadStatus.downloading);
     task.request.cancelToken = CancelToken();
@@ -387,7 +406,7 @@ class DownloadManager {
 
     while (_queue.isNotEmpty && runningTasks < maxConcurrentTasks) {
       runningTasks++;
-      debugPrint('Concurrent workers: $runningTasks');
+      logger.d('Concurrent workers: $runningTasks');
       var currentRequest = _queue.removeFirst();
 
       await download(
@@ -402,6 +421,6 @@ class DownloadManager {
 
   /// This function is used for get file name with extension from url
   String getFileNameFromUrl(String url) {
-    return url.split('/').last;
+    return PrimitiveUtils.toSafeFileName(url.split('/').last);
   }
 }

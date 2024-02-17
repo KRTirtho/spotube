@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart';
 // ignore: implementation_imports
-import 'package:media_kit/src/models/playable.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
 
 /// MediaKit [Player] by default doesn't have a state stream.
@@ -46,7 +45,6 @@ class MkPlayerWithState extends Player {
           if (!isCompleted) return;
 
           _playerStateStream.add(AudioPlaybackState.completed);
-
           if (loopMode == PlaylistMode.single) {
             await super.open(_playlist!.medias[_playlist!.index], play: true);
           } else {
@@ -54,7 +52,7 @@ class MkPlayerWithState extends Player {
             await Future.delayed(const Duration(milliseconds: 250), play);
           }
         } catch (e, stackTrace) {
-          Catcher.reportCheckedError(e, stackTrace);
+          Catcher2.reportCheckedError(e, stackTrace);
         }
       }),
       stream.playlist.listen((event) {
@@ -63,7 +61,7 @@ class MkPlayerWithState extends Player {
         }
       }),
       stream.error.listen((event) {
-        Catcher.reportCheckedError('[MediaKitError] \n$event', null);
+        Catcher2.reportCheckedError('[MediaKitError] \n$event', null);
       }),
     ];
   }
@@ -98,7 +96,10 @@ class MkPlayerWithState extends Player {
     if (shuffle) {
       _tempMedias = _playlist!.medias;
       final active = _playlist!.medias[_playlist!.index];
-      final newMedias = _playlist!.medias.toList()..shuffle();
+      final newMedias = _playlist!.medias.toList()
+        ..shuffle()
+        ..remove(active)
+        ..insert(0, active);
       playlist = _playlist!.copyWith(
         medias: newMedias,
         index: newMedias.indexOf(active),
@@ -124,7 +125,9 @@ class MkPlayerWithState extends Player {
     _loopModeStream.add(playlistMode);
   }
 
+  @override
   Future<void> stop() async {
+    await super.stop();
     await pause();
     await seek(Duration.zero);
 
@@ -159,17 +162,27 @@ class MkPlayerWithState extends Player {
 
   @override
   Future<void> next() async {
-    if (_playlist == null || _playlist!.index + 1 >= _playlist!.medias.length) {
+    if (_playlist == null) {
       return;
     }
 
     final isLast = _playlist!.index == _playlist!.medias.length - 1;
 
-    if (loopMode == PlaylistMode.loop && isLast) {
-      playlist = _playlist!.copyWith(index: 0);
-      return super.open(_playlist!.medias[_playlist!.index], play: true);
-    } else if (!isLast) {
+    if (isLast) {
+      switch (loopMode) {
+        case PlaylistMode.loop:
+          playlist = _playlist!.copyWith(index: 0);
+          super.open(_playlist!.medias[_playlist!.index], play: true);
+          break;
+        case PlaylistMode.none:
+          // Fixes auto-repeating the last track
+          await super.stop();
+          break;
+        default:
+      }
+    } else {
       playlist = _playlist!.copyWith(index: _playlist!.index + 1);
+
       return super.open(_playlist!.medias[_playlist!.index], play: true);
     }
   }
@@ -190,7 +203,7 @@ class MkPlayerWithState extends Player {
   @override
   Future<void> jump(int index) async {
     if (_playlist == null || index < 0 || index >= _playlist!.medias.length) {
-      return null;
+      return;
     }
 
     playlist = _playlist!.copyWith(index: index);
@@ -233,30 +246,30 @@ class MkPlayerWithState extends Player {
 
     final isOldUrlPlaying = _playlist!.medias[_playlist!.index].uri == oldUrl;
 
-    for (var i = 0; i < _playlist!.medias.length - 1; i++) {
-      final media = _playlist!.medias[i];
-      if (media.uri == oldUrl) {
-        if (isOldUrlPlaying) {
-          pause();
-        }
-        final newMedias = _playlist!.medias.toList();
-        newMedias[i] = Media(newUrl, extras: media.extras);
-        playlist = _playlist!.copyWith(medias: newMedias);
-        if (isOldUrlPlaying) {
-          super.open(
-            newMedias[i],
-            play: true,
-          );
-        }
-
-        // replace in the _tempMedias if it's not null
-        if (shuffled && _tempMedias != null) {
-          final tempIndex = _tempMedias!.indexOf(media);
-          _tempMedias![tempIndex] = Media(newUrl, extras: media.extras);
-        }
-        break;
+    // ends the loop where match is found
+    // tends to be a bit more efficient than forEach
+    _playlist!.medias.firstWhereIndexedOrNull((i, media) {
+      if (media.uri != oldUrl) return false;
+      if (isOldUrlPlaying) {
+        pause();
       }
-    }
+      final copyMedias = [..._playlist!.medias];
+      copyMedias[i] = Media(newUrl, extras: media.extras);
+      playlist = _playlist!.copyWith(medias: copyMedias);
+      if (isOldUrlPlaying) {
+        super.open(
+          copyMedias[i],
+          play: true,
+        );
+      }
+
+      // replace in the _tempMedias if it's not null
+      if (shuffled && _tempMedias != null) {
+        final tempIndex = _tempMedias!.indexOf(media);
+        _tempMedias![tempIndex] = Media(newUrl, extras: media.extras);
+      }
+      return true;
+    });
   }
 
   @override
@@ -315,5 +328,15 @@ class MkPlayerWithState extends Player {
       medias: newMedias,
       index: newMedias.indexOf(_playlist!.medias[_playlist!.index]),
     );
+  }
+
+  NativePlayer get nativePlayer => platform as NativePlayer;
+
+  Future<void> setAudioNormalization(bool normalize) async {
+    if (normalize) {
+      await nativePlayer.setProperty('af', 'dynaudnorm=g=5:f=250:r=0.9:p=0.5');
+    } else {
+      await nativePlayer.setProperty('af', '');
+    }
   }
 }

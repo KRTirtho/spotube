@@ -4,16 +4,41 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_query.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class CategoryQueries {
   const CategoryQueries();
 
+  Query<List<Category>, dynamic> listAll(
+    WidgetRef ref,
+    Market recommendationMarket,
+  ) {
+    ref.watch(userPreferencesProvider.select((s) => s.locale));
+    final locale = useContext().l10n.localeName;
+    final query = useSpotifyQuery<List<Category>, dynamic>(
+      "category-playlists",
+      (spotify) async {
+        final categories = await spotify.categories
+            .list(
+              country: recommendationMarket,
+              locale: locale,
+            )
+            .all();
+
+        return categories.toList()..shuffle();
+      },
+      ref: ref,
+    );
+
+    return query;
+  }
+
   InfiniteQuery<Page<Category>, dynamic, int> list(
     WidgetRef ref,
-    String recommendationMarket,
+    Market recommendationMarket,
   ) {
     ref.watch(userPreferencesProvider.select((s) => s.locale));
     final locale = useContext().l10n.localeName;
@@ -53,7 +78,7 @@ class CategoryQueries {
       (pageParam, spotify) async {
         final playlists = await Pages<PlaylistSimple?>(
           spotify,
-          "v1/browse/categories/$category/playlists?country=$market&locale=$locale",
+          "v1/browse/categories/$category/playlists?country=${market.name}&locale=$locale",
           (json) => json == null ? null : PlaylistSimple.fromJson(json),
           'playlists',
           (json) => PlaylistsFeatured.fromJson(json),

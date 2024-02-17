@@ -1,6 +1,5 @@
 import 'package:spotify/spotify.dart';
-import 'package:spotube/extensions/album_simple.dart';
-import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/track.dart';
 
 class LocalTrack extends Track {
   final String path;
@@ -38,22 +37,7 @@ class LocalTrack extends Track {
 
   Map<String, dynamic> toJson() {
     return {
-      "album": album?.toJson(),
-      "artists": artists?.map((artist) => artist.toJson()).toList(),
-      "availableMarkets": availableMarkets,
-      "discNumber": discNumber,
-      "duration": duration.toString(),
-      "durationMs": durationMs,
-      "explicit": explicit,
-      "href": href,
-      "id": id,
-      "isPlayable": isPlayable,
-      "name": name,
-      "popularity": popularity,
-      "previewUrl": previewUrl,
-      "trackNumber": trackNumber,
-      "type": type,
-      "uri": uri,
+      ...TrackJson.trackToJson(this),
       'path': path,
     };
   }

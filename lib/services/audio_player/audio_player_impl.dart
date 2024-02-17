@@ -121,11 +121,13 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // }
   }
 
-  List<SpotubeTrack> resolveTracksForSource(List<SpotubeTrack> tracks) {
-    return tracks.where((e) => sources.contains(e.ytUri)).toList();
+  // TODO: Make sure audio player soruces are also
+  // TODO: changed when preferences sources are changed
+  List<SourcedTrack> resolveTracksForSource(List<SourcedTrack> tracks) {
+    return tracks.where((e) => sources.contains(e.url)).toList();
   }
 
-  bool tracksExistsInPlaylist(List<SpotubeTrack> tracks) {
+  bool tracksExistsInPlaylist(List<SourcedTrack> tracks) {
     return resolveTracksForSource(tracks).length == tracks.length;
   }
 
@@ -142,6 +144,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   String? get currentSource {
     // if (mkSupportedPlatform) {
+    if (_mkPlayer.playlist.index == -1) return null;
     return _mkPlayer.playlist.medias
         .elementAtOrNull(_mkPlayer.playlist.index)
         ?.uri;
@@ -156,6 +159,12 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   String? get nextSource {
     // if (mkSupportedPlatform) {
+
+    if (loopMode == PlaybackLoopMode.all &&
+        _mkPlayer.playlist.index == _mkPlayer.playlist.medias.length - 1) {
+      return sources.first;
+    }
+
     return _mkPlayer.playlist.medias
         .elementAtOrNull(_mkPlayer.playlist.index + 1)
         ?.uri;
@@ -169,6 +178,10 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   }
 
   String? get previousSource {
+    if (loopMode == PlaybackLoopMode.all && _mkPlayer.playlist.index == 0) {
+      return sources.last;
+    }
+
     // if (mkSupportedPlatform) {
     return _mkPlayer.playlist.medias
         .elementAtOrNull(_mkPlayer.playlist.index - 1)
@@ -301,5 +314,9 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // } else {
     //   await _justAudio!.setLoopMode(loop.toLoopMode());
     // }
+  }
+
+  Future<void> setAudioNormalization(bool normalize) async {
+    await _mkPlayer.setAudioNormalization(normalize);
   }
 }

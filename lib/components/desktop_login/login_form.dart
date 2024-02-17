@@ -17,8 +17,9 @@ class TokenLoginForm extends HookConsumerWidget {
     final authenticationNotifier =
         ref.watch(AuthenticationNotifier.provider.notifier);
     final directCodeController = useTextEditingController();
-    final keyCodeController = useTextEditingController();
     final mounted = useIsMounted();
+
+    final isLoading = useState(false);
 
     return ConstrainedBox(
       constraints: const BoxConstraints(
@@ -35,37 +36,35 @@ class TokenLoginForm extends HookConsumerWidget {
             keyboardType: TextInputType.visiblePassword,
           ),
           const SizedBox(height: 10),
-          TextField(
-            controller: keyCodeController,
-            decoration: InputDecoration(
-              hintText: context.l10n.spotify_cookie("\"sp_key (or sp_gaid)\""),
-              labelText: context.l10n.cookie_name_cookie("sp_key (or sp_gaid)"),
-            ),
-            keyboardType: TextInputType.visiblePassword,
-          ),
-          const SizedBox(height: 20),
           FilledButton(
-            onPressed: () async {
-              if (keyCodeController.text.isEmpty ||
-                  directCodeController.text.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(context.l10n.fill_in_all_fields),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-                return;
-              }
-              final cookieHeader =
-                  "sp_dc=${directCodeController.text}; sp_key=${keyCodeController.text}";
+            onPressed: isLoading.value
+                ? null
+                : () async {
+                    try {
+                      isLoading.value = true;
+                      if (directCodeController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(context.l10n.fill_in_all_fields),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                        return;
+                      }
+                      final cookieHeader =
+                          "sp_dc=${directCodeController.text.trim()}";
 
-              authenticationNotifier.setCredentials(
-                await AuthenticationCredentials.fromCookie(cookieHeader),
-              );
-              if (mounted()) {
-                onDone?.call();
-              }
-            },
+                      authenticationNotifier.setCredentials(
+                        await AuthenticationCredentials.fromCookie(
+                            cookieHeader),
+                      );
+                      if (mounted()) {
+                        onDone?.call();
+                      }
+                    } finally {
+                      isLoading.value = false;
+                    }
+                  },
             child: Text(context.l10n.submit),
           )
         ],

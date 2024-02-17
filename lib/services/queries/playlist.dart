@@ -1,4 +1,4 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,11 +7,11 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/extensions/map.dart';
 import 'package:spotube/extensions/track.dart';
-import 'package:spotube/hooks/use_spotify_infinite_query.dart';
-import 'package:spotube/hooks/use_spotify_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_query.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 typedef RecommendationParameters = ({
   RecommendationAttribute acousticness,
@@ -119,8 +119,9 @@ class PlaylistQueries {
     return useSpotifyQuery<bool, dynamic>(
       "playlist-is-followed/$playlistId/$userId",
       (spotify) async {
-        final result = await spotify.playlists.followedBy(playlistId, [userId]);
-        return result.first;
+        final result =
+            await spotify.playlists.followedByUsers(playlistId, [userId]);
+        return result[userId] ?? false;
       },
       ref: ref,
     );
@@ -142,36 +143,103 @@ class PlaylistQueries {
     );
   }
 
-  Future<List<Track>> tracksOf(String playlistId, SpotifyApi spotify) {
-    if (playlistId == "user-liked-tracks") {
-      return spotify.tracks.me.saved.all().then(
-            (tracks) => tracks.map((e) => e.track!).toList(),
-          );
-    }
-    return spotify.playlists.getTracksByPlaylistId(playlistId).all().then(
-          (value) => value.toList(),
-        );
+  Query<List<PlaylistSimple>, dynamic> ofMineAll(WidgetRef ref) {
+    return useSpotifyQuery<List<PlaylistSimple>, dynamic>(
+      "current-user-all-playlists",
+      (spotify) async {
+        var page = await spotify.playlists.me.getPage(50);
+        final playlists = <PlaylistSimple>[];
+
+        if (page.isLast == true) {
+          return page.items?.toList() ?? [];
+        }
+
+        playlists.addAll(page.items ?? []);
+        while (!page.isLast) {
+          page = await spotify.playlists.me.getPage(50, page.nextOffset);
+          playlists.addAll(page.items ?? []);
+        }
+
+        return playlists;
+      },
+      ref: ref,
+    );
   }
 
-  Query<List<Track>, dynamic> tracksOfQuery(
+  Future<List<Track>> likedTracks(SpotifyApi spotify) async {
+    final tracks = await spotify.tracks.me.saved.all();
+
+    return tracks.map((e) => e.track!).toList();
+  }
+
+  Query<List<Track>, dynamic> likedTracksQuery(WidgetRef ref) {
+    final query = useCallback((spotify) => likedTracks(spotify), []);
+    final context = useContext();
+
+    return useSpotifyQuery<List<Track>, dynamic>(
+      "user-liked-tracks",
+      query,
+      jsonConfig: JsonConfig(
+        toJson: (tracks) => <String, dynamic>{
+          'tracks': tracks.map((e) => e.toJson()).toList(),
+        },
+        fromJson: (json) => (json['tracks'] as List)
+            .map(
+              (e) => Track.fromJson((e as Map).castKeyDeep<String>()),
+            )
+            .toList(),
+      ),
+      refreshConfig: RefreshConfig.withDefaults(
+        context,
+        // will never make it stale
+        staleDuration: const Duration(days: 60),
+      ),
+      ref: ref,
+    );
+  }
+
+  Query<Playlist, dynamic> byId(WidgetRef ref, String id) {
+    return useSpotifyQuery<Playlist, dynamic>(
+      "playlist/$id",
+      (spotify) async {
+        return await spotify.playlists.get(id);
+      },
+      ref: ref,
+    );
+  }
+
+  Future<List<Track>> tracksOf(
+    int pageParam,
+    SpotifyApi spotify,
+    String playlistId,
+  ) async {
+    try {
+      final playlists = await spotify.playlists
+          .getTracksByPlaylistId(playlistId)
+          .getPage(20, pageParam * 20);
+      return playlists.items?.toList() ?? <Track>[];
+    } catch (e, stack) {
+      Catcher2.reportCheckedError(e, stack);
+      rethrow;
+    }
+  }
+
+  int? tracksOfQueryNextPage(int lastPage, List<Track> lastPageData) {
+    if (lastPageData.length < 20) {
+      return null;
+    }
+    return lastPage + 1;
+  }
+
+  InfiniteQuery<List<Track>, dynamic, int> tracksOfQuery(
     WidgetRef ref,
     String playlistId,
   ) {
-    return useSpotifyQuery<List<Track>, dynamic>(
+    return useSpotifyInfiniteQuery<List<Track>, dynamic, int>(
       "playlist-tracks/$playlistId",
-      (spotify) => tracksOf(playlistId, spotify),
-      jsonConfig: playlistId == "user-liked-tracks"
-          ? JsonConfig(
-              toJson: (tracks) => <String, dynamic>{
-                'tracks': tracks.map((e) => e.toJson()).toList()
-              },
-              fromJson: (json) => (json['tracks'] as List)
-                  .map((e) => Track.fromJson(
-                        (e as Map).castKeyDeep<String>(),
-                      ))
-                  .toList(),
-            )
-          : null,
+      (page, spotify) => tracksOf(page, spotify, playlistId),
+      initialPage: 0,
+      nextPage: tracksOfQueryNextPage,
       ref: ref,
     );
   }
@@ -187,7 +255,7 @@ class PlaylistQueries {
               await spotify.playlists.featured.getPage(5, pageParam);
           return playlists;
         } catch (e, stack) {
-          Catcher.reportCheckedError(e, stack);
+          Catcher2.reportCheckedError(e, stack);
           rethrow;
         }
       },
@@ -207,7 +275,7 @@ class PlaylistQueries {
     ({List<String> tracks, List<String> artists, List<String> genres})? seeds,
     RecommendationParameters? parameters,
     int limit = 20,
-    String? market,
+    Market? market,
   }) {
     final marketOfPreference = ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),

@@ -1,165 +1,82 @@
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_heading.dart';
-import 'package:spotube/components/shared/track_table/track_collection_view/track_collection_view.dart';
-import 'package:spotube/components/shared/track_table/tracks_table_view.dart';
-import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/models/logger.dart';
-import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/components/shared/tracks_view/track_view.dart';
+import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
+import 'package:spotube/extensions/infinite_query.dart';
+import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/queries.dart';
-
-import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
-class PlaylistView extends HookConsumerWidget {
-  final logger = getLogger(PlaylistView);
+class PlaylistPage extends HookConsumerWidget {
   final PlaylistSimple playlist;
-  PlaylistView(this.playlist, {Key? key}) : super(key: key);
-
-  Future<void> playPlaylist(
-    List<Track> tracks,
-    WidgetRef ref, {
-    Track? currentTrack,
-  }) async {
-    final proxyPlaylist = ref.read(ProxyPlaylistNotifier.provider);
-    final playback = ref.read(ProxyPlaylistNotifier.notifier);
-    final sortBy = ref.read(trackCollectionSortState(playlist.id!));
-    final sortedTracks = ServiceUtils.sortTracks(tracks, sortBy);
-    currentTrack ??= sortedTracks.first;
-    final isPlaylistPlaying = proxyPlaylist.containsTracks(tracks);
-    if (!isPlaylistPlaying) {
-      playback.addCollection(playlist.id!); // for enabling loading indicator
-      await playback.load(
-        sortedTracks,
-        initialIndex: sortedTracks.indexWhere((s) => s.id == currentTrack?.id),
-        autoPlay: true,
-      );
-      playback.addCollection(playlist.id!);
-    } else if (isPlaylistPlaying &&
-        currentTrack.id != null &&
-        currentTrack.id != proxyPlaylist.activeTrack?.id) {
-      await playback.jumpToTrack(currentTrack);
-    }
-  }
+  const PlaylistPage({
+    Key? key,
+    required this.playlist,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
-    final proxyPlaylist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final spotify = ref.watch(spotifyProvider);
+    final tracksQuery = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
 
-    final mediaQuery = MediaQuery.of(context);
-
-    final meSnapshot = useQueries.user.me(ref);
-    final tracksSnapshot = useQueries.playlist.tracksOfQuery(ref, playlist.id!);
-
-    final isPlaylistPlaying = useMemoized(
-      () => proxyPlaylist.collections.contains(playlist.id!),
-      [proxyPlaylist, playlist],
+    final tracks = useMemoized(
+      () {
+        return tracksQuery.pages.expand((page) => page).toList();
+      },
+      [tracksQuery.pages],
     );
 
-    final titleImage = useMemoized(
-        () => TypeConversionUtils.image_X_UrlString(
-              playlist.images,
-              placeholder: ImagePlaceholder.collection,
-            ),
-        [playlist.images]);
+    final me = useQueries.user.me(ref);
 
-    final playlistTrackPlaying = useMemoized(
-      () =>
-          tracksSnapshot.data
-                  ?.any((s) => s.id! == proxyPlaylist.activeTrack?.id!) ==
-              true &&
-          proxyPlaylist.activeTrack is SpotubeTrack,
-      [proxyPlaylist.activeTrack, tracksSnapshot.data],
+    final isLikedQuery = useQueries.playlist.doesUserFollow(
+      ref,
+      playlist.id!,
+      me.data?.id ?? '',
     );
 
-    return TrackCollectionView(
-      id: playlist.id!,
-      playingState: isPlaylistPlaying && playlistTrackPlaying
-          ? PlayButtonState.playing
-          : isPlaylistPlaying && !playlistTrackPlaying
-              ? PlayButtonState.loading
-              : PlayButtonState.notPlaying,
-      title: playlist.name!,
-      titleImage: titleImage,
-      tracksSnapshot: tracksSnapshot,
-      description: playlist.description,
-      isOwned: playlist.owner?.id != null &&
-          playlist.owner!.id == meSnapshot.data?.id,
-      onPlay: ([track]) {
-        if (tracksSnapshot.hasData) {
-          if (!isPlaylistPlaying) {
-            playPlaylist(
-              tracksSnapshot.data!,
-              ref,
-              currentTrack: track,
-            );
-          } else if (isPlaylistPlaying && track != null) {
-            playPlaylist(
-              tracksSnapshot.data!,
-              ref,
-              currentTrack: track,
-            );
-          } else {
-            playlistNotifier
-                .removeTracks(tracksSnapshot.data!.map((e) => e.id!));
-          }
-        }
-      },
-      onAddToQueue: () {
-        if (tracksSnapshot.hasData && !isPlaylistPlaying) {
-          playlistNotifier.addTracks(tracksSnapshot.data!);
-          playlistNotifier.addCollection(playlist.id!);
-        }
-      },
-      bottomSpace: mediaQuery.mdAndDown,
-      showShare: playlist.id != "user-liked-tracks",
-      routePath: "/playlist/${playlist.id}",
-      onShare: () {
-        final data = "https://open.spotify.com/playlist/${playlist.id}";
-        Clipboard.setData(
-          ClipboardData(text: data),
-        ).then((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              width: 300,
-              behavior: SnackBarBehavior.floating,
-              content: Text(
-                "Copied $data to clipboard",
-                textAlign: TextAlign.center,
-              ),
-            ),
+    final togglePlaylistLike = useMutations.playlist.toggleFavorite(
+      ref,
+      playlist.id!,
+      refreshQueries: [
+        isLikedQuery.key,
+      ],
+    );
+
+    return InheritedTrackView(
+      collectionId: playlist.id!,
+      image: TypeConversionUtils.image_X_UrlString(
+        playlist.images,
+        placeholder: ImagePlaceholder.collection,
+      ),
+      pagination: PaginationProps.fromQuery(
+        tracksQuery,
+        onFetchAll: () {
+          return tracksQuery.fetchAllTracks(
+            getAllTracks: () async {
+              final res = await spotify.playlists
+                  .getTracksByPlaylistId(playlist.id!)
+                  .all();
+              return res.toList();
+            },
           );
-        });
-      },
-      heartBtn: PlaylistHeartButton(playlist: playlist),
-      onShuffledPlay: ([track]) {
-        final tracks = [...?tracksSnapshot.data]..shuffle();
-
-        if (tracksSnapshot.hasData) {
-          if (!isPlaylistPlaying) {
-            playPlaylist(
-              tracks,
-              ref,
-              currentTrack: track,
-            );
-          } else if (isPlaylistPlaying && track != null) {
-            playPlaylist(
-              tracks,
-              ref,
-              currentTrack: track,
-            );
-          } else {
-            // TODO: Remove the ability to stop the playlist
-            // playlistNotifier.stop();
-          }
+        },
+      ),
+      title: playlist.name!,
+      description: playlist.description,
+      tracks: tracks,
+      routePath: '/playlist/${playlist.id}',
+      isLiked: isLikedQuery.data ?? false,
+      shareUrl: playlist.externalUrls?.spotify ?? "",
+      onHeart: () async {
+        if (!isLikedQuery.hasData || togglePlaylistLike.isMutating) {
+          return;
         }
+        await togglePlaylistLike.mutate(isLikedQuery.data!);
       },
+      child: const TrackView(),
     );
   }
 }

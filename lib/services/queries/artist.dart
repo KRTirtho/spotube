@@ -1,8 +1,13 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/hooks/use_spotify_infinite_query.dart';
-import 'package:spotube/hooks/use_spotify_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_infinite_query.dart';
+import 'package:spotube/hooks/spotify/use_spotify_query.dart';
+import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/wikipedia/wikipedia.dart';
+import 'package:wikipedia_api/wikipedia_api.dart';
 
 class ArtistQueries {
   const ArtistQueries();
@@ -11,9 +16,10 @@ class ArtistQueries {
     WidgetRef ref,
     String artist,
   ) {
+    final customSpotify = ref.watch(customSpotifyEndpointProvider);
     return useSpotifyQuery<Artist, dynamic>(
       "artist-profile/$artist",
-      (spotify) => spotify.artists.get(artist),
+      (spotify) => customSpotify.artist(id: artist),
       ref: ref,
     );
   }
@@ -51,11 +57,12 @@ class ArtistQueries {
           return page.items?.toList() ?? [];
         }
 
+        following.addAll(page.items ?? []);
         while (page?.isLast != true) {
-          following.addAll(page?.items ?? []);
           page = await spotify.me
               .following(FollowingType.artist)
               .getPage(50, page?.after ?? '');
+          following.addAll(page.items ?? []);
         }
 
         return following;
@@ -71,11 +78,11 @@ class ArtistQueries {
     return useSpotifyQuery<bool, dynamic>(
       "user-follows-artists-query/$artist",
       (spotify) async {
-        final result = await spotify.me.isFollowing(
+        final result = await spotify.me.checkFollowing(
           FollowingType.artist,
           [artist],
         );
-        return result.first;
+        return result[artist];
       },
       ref: ref,
     );
@@ -85,10 +92,12 @@ class ArtistQueries {
     WidgetRef ref,
     String artist,
   ) {
+    final preferences = ref.watch(userPreferencesProvider);
     return useSpotifyQuery<Iterable<Track>, dynamic>(
       "artist-top-track-query/$artist",
       (spotify) {
-        return spotify.artists.getTopTracks(artist, "US");
+        return spotify.artists
+            .topTracks(artist, preferences.recommendationMarket);
       },
       ref: ref,
     );
@@ -118,12 +127,28 @@ class ArtistQueries {
     WidgetRef ref,
     String artist,
   ) {
+    final customSpotify = ref.watch(customSpotifyEndpointProvider);
     return useSpotifyQuery<Iterable<Artist>, dynamic>(
       "artist-related-artist-query/$artist",
       (spotify) {
-        return spotify.artists.getRelatedArtists(artist);
+        return customSpotify.relatedArtists(id: artist);
       },
       ref: ref,
+    );
+  }
+
+  Query<Summary?, dynamic> wikipediaSummary(ArtistSimple artist) {
+    return useQuery<Summary?, dynamic>(
+      "artist-wikipedia-query/${artist.id}",
+      () async {
+        final query = artist.name!.replaceAll(" ", "_");
+        final res = await wikipedia.pageContent.pageSummaryTitleGet(query);
+        if (res?.type != "standard") {
+          return await wikipedia.pageContent
+              .pageSummaryTitleGet("${query}_(singer)");
+        }
+        return res;
+      },
     );
   }
 }

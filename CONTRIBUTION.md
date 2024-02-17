@@ -25,6 +25,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
       - [Before Submitting an Enhancement](#before-submitting-an-enhancement)
       - [How Do I Submit a Good Enhancement Suggestion?](#how-do-i-submit-a-good-enhancement-suggestion)
     - [Your First Code Contribution](#your-first-code-contribution)
+    - [Submit translations](#submit-translations)
 
 ## Code of Conduct
 
@@ -118,20 +119,20 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/KRTirt
 
 Do the following:
 
-- Download the latest Flutter SDK (>=3.10.0) & enable desktop support
+- Download the latest Flutter SDK (>=3.16.0) & enable desktop support
 - Install Development dependencies in linux
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
-    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev network-manager
+    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev
     ```
     - Use `libjsoncpp1` instead of `libjsoncpp25` (for Ubuntu < 22.04)
   - Arch/Manjaro
     ```bash
-    yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify networkmanager
+    yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify
     ```
   - Fedora
     ```bash
-    dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel NetworkManager
+    dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel
     ```
 - Clone the Repo
 - Create a `.env` in root of the project following the `.env.example` template
@@ -144,4 +145,22 @@ Do the following:
   flutter run -d <window|macos|linux|(<android-device-id>)>
   ```
 
-Do debugging/testing/build etc then submit to us with PR against the development branch (master) & we'll review your code
+Do debugging/testing/build etc then submit to us with PR against the development branch (dev) & we'll review your code
+
+
+### Submit Translations
+
+Make sure you're familiar with [Flutter localization](https://docs.flutter.dev/ui/accessibility-and-localization/internationalization). Then, you can start translating the app by following these steps:
+
+- Do all the steps in [Your First Code Contribution](#your-first-code-contribution)
+- Make sure application starts in debug mode
+- Now, in `lib/l10n/app_<2-letter code of your language>.arb` (create if not exists) add necessary translations  
+  > (You can follow the `lib/l10n/app_en.arb` for reference)
+- If you're adding missing translations, you can check the `/untranslated_messages.json` file to see which messages are missing in your native locale
+- If you added entirely new translations:
+  - Add `const Locale('<2-letter language code>', '<2-letter ISO country code>')` in `lib/l10n/l10n.dart`'s `static final all = [...]` variable
+  - Uncomment the Map entry of your locale from `lib/collections/language_codes.dart`'s `static final Map isoLangs = {` variable
+- Now restart (hot restart if running already) the app in debug mode & go to "Settings" > "Language" & see if your locale shows up
+- If it does, select it & see if the app is translated properly
+- Now git commit the changes & push
+- Finally, submit a PR against the development branch (dev) & we'll review your code

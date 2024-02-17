@@ -1,13 +1,13 @@
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:spotube/services/audio_player/mk_state_player.dart';
 // import 'package:just_audio/just_audio.dart' as ja;
 import 'dart:async';
 
 import 'package:media_kit/media_kit.dart' as mk;
 
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 part 'audio_players_streams_mixin.dart';
 part 'audio_player_impl.dart';
@@ -16,12 +16,16 @@ abstract class AudioPlayerInterface {
   final MkPlayerWithState _mkPlayer;
   // final ja.AudioPlayer? _justAudio;
 
-  AudioPlayerInterface() : _mkPlayer = MkPlayerWithState()
-  // _mkPlayer = _mkSupportedPlatform ? MkPlayerWithState() : null,
+  AudioPlayerInterface()
+      : _mkPlayer = MkPlayerWithState(
+          configuration: const mk.PlayerConfiguration(
+            title: "Spotube",
+          ),
+        )
   // _justAudio = !_mkSupportedPlatform ? ja.AudioPlayer() : null
   {
     _mkPlayer.stream.error.listen((event) {
-      Catcher.reportCheckedError(event, StackTrace.current);
+      Catcher2.reportCheckedError(event, StackTrace.current);
     });
   }
 
@@ -111,7 +115,7 @@ abstract class AudioPlayerInterface {
     // }
   }
 
-  Future<PlaybackLoopMode> get loopMode async {
+  PlaybackLoopMode get loopMode {
     return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.loopMode);
     // if (mkSupportedPlatform) {
     //   return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.loopMode);

@@ -7,12 +7,12 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_progress.dart';
+import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/components/player/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final PaletteGenerator? palette;
@@ -113,19 +113,6 @@ class PlayerControls extends HookConsumerWidget {
                       :progressStatic
                     ) = useProgress(ref);
 
-                    final totalMinutes = PrimitiveUtils.zeroPadNumStr(
-                      duration.inMinutes.remainder(60),
-                    );
-                    final totalSeconds = PrimitiveUtils.zeroPadNumStr(
-                      duration.inSeconds.remainder(60),
-                    );
-                    final currentMinutes = PrimitiveUtils.zeroPadNumStr(
-                      position.inMinutes.remainder(60),
-                    );
-                    final currentSeconds = PrimitiveUtils.zeroPadNumStr(
-                      position.inSeconds.remainder(60),
-                    );
-
                     final progress = useState<num>(
                       useMemoized(() => progressStatic, []),
                     );
@@ -173,8 +160,8 @@ class PlayerControls extends HookConsumerWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("$currentMinutes:$currentSeconds"),
-                                Text("$totalMinutes:$totalSeconds"),
+                                Text(position.toHumanReadableString()),
+                                Text(duration.toHumanReadableString()),
                               ],
                             ),
                           ),

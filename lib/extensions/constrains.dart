@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 // ignore: constant_identifier_names
@@ -8,6 +9,29 @@ const Breakpoints = (
   lg: 1024.0,
   xl: 1280.0,
 );
+
+extension SliverBreakpoints on SliverConstraints {
+  bool get isXs => crossAxisExtent <= Breakpoints.xs;
+  bool get isSm =>
+      crossAxisExtent > Breakpoints.xs && crossAxisExtent <= Breakpoints.sm;
+  bool get isMd =>
+      crossAxisExtent > Breakpoints.sm && crossAxisExtent <= Breakpoints.md;
+  bool get isLg =>
+      crossAxisExtent > Breakpoints.md && crossAxisExtent <= Breakpoints.lg;
+  bool get isXl =>
+      crossAxisExtent > Breakpoints.lg && crossAxisExtent <= Breakpoints.xl;
+  bool get is2Xl => crossAxisExtent > Breakpoints.xl;
+
+  bool get smAndUp => isSm || isMd || isLg || isXl || is2Xl;
+  bool get mdAndUp => isMd || isLg || isXl || is2Xl;
+  bool get lgAndUp => isLg || isXl || is2Xl;
+  bool get xlAndUp => isXl || is2Xl;
+
+  bool get smAndDown => isXs || isSm;
+  bool get mdAndDown => isXs || isSm || isMd;
+  bool get lgAndDown => isXs || isSm || isMd || isLg;
+  bool get xlAndDown => isXs || isSm || isMd || isLg || isXl;
+}
 
 extension ContainerBreakpoints on BoxConstraints {
   bool get isXs => biggest.width <= Breakpoints.xs;

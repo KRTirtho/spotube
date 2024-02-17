@@ -34,8 +34,13 @@ class Assets {
       AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
+  static const AssetGenImage jiosaavn = AssetGenImage('assets/jiosaavn.png');
+  static const AssetGenImage likedTracks =
+      AssetGenImage('assets/liked-tracks.jpg');
   static const AssetGenImage placeholder =
       AssetGenImage('assets/placeholder.png');
+  static const AssetGenImage spotubeHeroBanner =
+      AssetGenImage('assets/spotube-hero-banner.png');
   static const AssetGenImage spotubeLogoForeground =
       AssetGenImage('assets/spotube-logo-foreground.jpg');
   static const String spotubeLogoIco = 'assets/spotube-logo.ico';
@@ -44,8 +49,21 @@ class Assets {
   static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
   static const AssetGenImage spotubeLogoAndroid12 =
       AssetGenImage('assets/spotube-logo_android12.png');
+  static const AssetGenImage spotubeNightlyLogoForeground =
+      AssetGenImage('assets/spotube-nightly-logo-foreground.jpg');
+  static const AssetGenImage spotubeNightlyLogoPng =
+      AssetGenImage('assets/spotube-nightly-logo.png');
+  static const String spotubeNightlyLogoSvg = 'assets/spotube-nightly-logo.svg';
+  static const AssetGenImage spotubeNightlyLogoAndroid12 =
+      AssetGenImage('assets/spotube-nightly-logo_android12.png');
   static const AssetGenImage spotubeScreenshot =
       AssetGenImage('assets/spotube-screenshot.png');
+  static const AssetGenImage spotubeTallCapsule =
+      AssetGenImage('assets/spotube-tall-capsule.png');
+  static const AssetGenImage spotubeWideCapsuleLarge =
+      AssetGenImage('assets/spotube-wide-capsule-large.png');
+  static const AssetGenImage spotubeWideCapsuleSmall =
+      AssetGenImage('assets/spotube-wide-capsule-small.png');
   static const AssetGenImage spotubeBanner =
       AssetGenImage('assets/spotube_banner.png');
   static const AssetGenImage success = AssetGenImage('assets/success.png');
@@ -59,13 +77,23 @@ class Assets {
         bengaliPatternsBg,
         branding,
         emptyBox,
+        jiosaavn,
+        likedTracks,
         placeholder,
+        spotubeHeroBanner,
         spotubeLogoForeground,
         spotubeLogoIco,
         spotubeLogoPng,
         spotubeLogoSvg,
         spotubeLogoAndroid12,
+        spotubeNightlyLogoForeground,
+        spotubeNightlyLogoPng,
+        spotubeNightlyLogoSvg,
+        spotubeNightlyLogoAndroid12,
         spotubeScreenshot,
+        spotubeTallCapsule,
+        spotubeWideCapsuleLarge,
+        spotubeWideCapsuleSmall,
         spotubeBanner,
         success,
         userPlaceholder
@@ -130,7 +158,16 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider() => AssetImage(_assetName);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package,
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
+  }
 
   String get path => _assetName;
 

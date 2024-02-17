@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     ndkVersion "21.4.7075529"
 
@@ -72,6 +72,28 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        nightly {
+            dimension "default"
+            resValue "string", "app_name_en", "Spotube Nightly"
+            applicationIdSuffix ".nightly"
+            versionNameSuffix "-nightly"
+        }
+        dev {
+            dimension "default"
+            resValue "string", "app_name_en", "Spotube Dev"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+        stable {
+            dimension "default"
+            resValue "string", "app_name_en", "Spotube"
+        }
+    }
+
 }
 
 flutter {

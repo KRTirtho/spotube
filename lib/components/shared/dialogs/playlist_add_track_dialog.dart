@@ -1,10 +1,11 @@
-import 'package:async/async.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/spotify_provider.dart';
@@ -12,41 +13,35 @@ import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
+  /// The id of the playlist this dialog was opened from
+  final String? openFromPlaylist;
   final List<Track> tracks;
   const PlaylistAddTrackDialog({
     required this.tracks,
+    required this.openFromPlaylist,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
+    final ThemeData(:textTheme) = Theme.of(context);
     final spotify = ref.watch(spotifyProvider);
-    final userPlaylists = useQueries.playlist.ofMine(ref);
-
-    useEffect(() {
-      final op = CancelableOperation.fromFuture(
-        () async {
-          while (userPlaylists.hasNextPage) {
-            await userPlaylists.fetchNext();
-          }
-        }(),
-      );
-
-      return () {
-        op.cancel();
-      };
-    }, [userPlaylists.hasNextPage]);
+    final userPlaylists = useQueries.playlist.ofMineAll(ref);
 
     final me = useQueries.user.me(ref);
 
     final filteredPlaylists = useMemoized(
-      () => userPlaylists.pages
-          .expand((page) => page.items?.toList() ?? <PlaylistSimple>[])
-          .where(
-            (playlist) =>
-                playlist.owner?.id != null && playlist.owner!.id == me.data?.id,
-          ),
-      [userPlaylists.pages, me.data?.id],
+      () =>
+          userPlaylists.data
+              ?.where(
+                (playlist) =>
+                    playlist.owner?.id != null &&
+                    playlist.owner!.id == me.data?.id &&
+                    playlist.id != openFromPlaylist,
+              )
+              .toList() ??
+          [],
+      [userPlaylists.data, me.data?.id, openFromPlaylist],
     );
 
     final playlistsCheck = useState(<String, bool>{});
@@ -77,7 +72,18 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
     }
 
     return AlertDialog(
-      title: Text(context.l10n.add_to_playlist),
+      insetPadding: EdgeInsets.zero,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            context.l10n.add_to_playlist,
+            style: textTheme.titleMedium,
+          ),
+          const Gap(20),
+          const PlaylistCreateDialogButton(),
+        ],
+      ),
       actions: [
         OutlinedButton(
           child: Text(context.l10n.cancel),
@@ -93,7 +99,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
       content: SizedBox(
         height: 300,
         width: 300,
-        child: userPlaylists.hasNextPage
+        child: userPlaylists.isLoading
             ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 shrinkWrap: true,

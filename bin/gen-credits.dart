@@ -1,7 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:path/path.dart';
 import 'package:http/http.dart';
 import 'package:html/parser.dart';
 import 'package:pub_api_client/pub_api_client.dart';
@@ -33,15 +33,20 @@ void main() async {
 
   final gitDeps = gitDepsList.map(
     (d) {
+      final uri = Uri.parse(
+        d.value.url.toString().replaceAll('.git', ''),
+      );
       return MapEntry(
         d.key,
-        join(
-          d.value.url.toString().replaceAll('.git', ''),
-          'raw',
-          d.value.ref ?? 'main',
-          d.value.path ?? '',
-          'pubspec.yaml',
-        ),
+        uri.replace(
+          pathSegments: [
+            ...uri.pathSegments,
+            'raw',
+            d.value.ref ?? 'main',
+            d.value.path ?? '',
+            'pubspec.yaml',
+          ],
+        ).toString(),
       );
     },
   ).toList();
@@ -55,7 +60,10 @@ void main() async {
           } catch (e) {
             final document = parse(res.body);
             final pre = document.querySelector('pre');
-            if (pre == null) rethrow;
+            if (pre == null) {
+              log(d.toString());
+              rethrow;
+            }
             return Pubspec.parse(pre.text);
           }
         }
@@ -68,6 +76,7 @@ void main() async {
     ),
   );
 
+  // ignore: avoid_print
   print(
     packageInfo
         .map(
@@ -76,6 +85,7 @@ void main() async {
         )
         .join('\n'),
   );
+  // ignore: avoid_print
   print(
     gitPubspecs.map(
       (package) {

@@ -1,32 +1,35 @@
-import 'package:catcher/catcher.dart';
-import 'package:flutter/foundation.dart';
+import 'package:catcher_2/catcher_2.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotify/spotify.dart' hide Search;
+import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/pages/home/genres/genre_playlists.dart';
+import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
+import 'package:spotube/pages/library/playlist_generate/playlist_generate_result.dart';
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
+import 'package:spotube/pages/playlist/liked_playlist.dart';
+import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/pages/settings/logs.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/shared/spotube_page_route.dart';
-import 'package:spotube/pages/album/album.dart';
 import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/desktop_login/login_tutorial.dart';
 import 'package:spotube/pages/desktop_login/desktop_login.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/pages/player/player.dart';
-import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
-import '../pages/library/playlist_generate/playlist_generate_result.dart';
-
-final rootNavigatorKey = Catcher.navigatorKey;
+final rootNavigatorKey = Catcher2.navigatorKey;
 final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -38,6 +41,21 @@ final router = GoRouter(
         GoRoute(
           path: "/",
           pageBuilder: (context, state) => const SpotubePage(child: HomePage()),
+          routes: [
+            GoRoute(
+              path: "genres",
+              pageBuilder: (context, state) =>
+                  const SpotubePage(child: GenrePage()),
+            ),
+            GoRoute(
+              path: "genre/:categoryId",
+              pageBuilder: (context, state) => SpotubePage(
+                child: GenrePlaylistsPage(
+                  category: state.extra as Category,
+                ),
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: "/search",
@@ -104,7 +122,9 @@ final router = GoRouter(
           path: "/album/:id",
           pageBuilder: (context, state) {
             assert(state.extra is AlbumSimple);
-            return SpotubePage(child: AlbumPage(state.extra as AlbumSimple));
+            return SpotubePage(
+              child: AlbumPage(album: state.extra as AlbumSimple),
+            );
           },
         ),
         GoRoute(
@@ -119,7 +139,18 @@ final router = GoRouter(
           pageBuilder: (context, state) {
             assert(state.extra is PlaylistSimple);
             return SpotubePage(
-              child: PlaylistView(state.extra as PlaylistSimple),
+              child: state.pathParameters["id"] == "user-liked-tracks"
+                  ? LikedPlaylistPage(playlist: state.extra as PlaylistSimple)
+                  : PlaylistPage(playlist: state.extra as PlaylistSimple),
+            );
+          },
+        ),
+        GoRoute(
+          path: "/track/:id",
+          pageBuilder: (context, state) {
+            final id = state.pathParameters["id"]!;
+            return SpotubePage(
+              child: TrackPage(trackId: id),
             );
           },
         ),
@@ -128,8 +159,8 @@ final router = GoRouter(
     GoRoute(
       path: "/mini-player",
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) => const SpotubePage(
-        child: MiniLyricsPage(),
+      pageBuilder: (context, state) => SpotubePage(
+        child: MiniLyricsPage(prevSize: state.extra as Size),
       ),
     ),
     GoRoute(
@@ -147,13 +178,10 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: "/player",
+      path: "/lastfm-login",
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) {
-        return const SpotubePage(
-          child: PlayerView(),
-        );
-      },
+      pageBuilder: (context, state) =>
+          const SpotubePage(child: LastFMLoginPage()),
     ),
   ],
 );

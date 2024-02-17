@@ -11,18 +11,19 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_brightness_value.dart';
-import 'package:spotube/hooks/use_sidebarx_controller.dart';
+import 'package:spotube/hooks/utils/use_brightness_value.dart';
+import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
-  final int selectedIndex;
+  final int? selectedIndex;
   final void Function(int) onSelectedIndexChanged;
   final Widget child;
 
@@ -57,7 +58,7 @@ class Sidebar extends HookConsumerWidget {
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
     final controller = useSidebarXController(
-      selectedIndex: selectedIndex,
+      selectedIndex: selectedIndex ?? 0,
       extended: mediaQuery.lgAndUp,
     );
 
@@ -69,14 +70,27 @@ class Sidebar extends HookConsumerWidget {
       Color.lerp(bg, Colors.black, 0.45)!,
     );
 
-    final sidebarTileList =
-        useMemoized(() => getSidebarTileList(context.l10n), [context.l10n]);
+    final sidebarTileList = useMemoized(
+      () => getSidebarTileList(context.l10n),
+      [context.l10n],
+    );
 
     useEffect(() {
-      controller.addListener(() {
-        onSelectedIndexChanged(controller.selectedIndex);
-      });
+      if (controller.selectedIndex != selectedIndex && selectedIndex != null) {
+        controller.selectIndex(selectedIndex!);
+      }
       return null;
+    }, [selectedIndex]);
+
+    useEffect(() {
+      void listener() {
+        onSelectedIndexChanged(controller.selectedIndex);
+      }
+
+      controller.addListener(listener);
+      return () {
+        controller.removeListener(listener);
+      };
     }, [controller]);
 
     useEffect(() {
@@ -145,7 +159,7 @@ class Sidebar extends HookConsumerWidget {
               margin: EdgeInsets.only(
                 bottom: 10,
                 left: 0,
-                top: kIsMacOS ? 35 : 5,
+                top: kIsMacOS ? 0 : 5,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(
@@ -168,6 +182,9 @@ class Sidebar extends HookConsumerWidget {
               ),
               itemTextPadding: const EdgeInsets.only(left: 10),
               selectedItemTextPadding: const EdgeInsets.only(left: 10),
+              hoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+              ),
             ),
           ),
         ),

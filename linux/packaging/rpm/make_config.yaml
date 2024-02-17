@@ -12,7 +12,7 @@ requires:
   - jsoncpp
   - libsecret
   - libnotify
-  - NetworkManager
+  - xdg-user-dirs
 
 display_name: Spotube
 
@@ -27,5 +27,7 @@ generic_name: Music Streaming Application
 categories:
   - Music
 
-
 startup_notify: true
+
+supported_mime_type:
+  - x-scheme-handler/spotify

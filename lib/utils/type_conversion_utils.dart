@@ -8,9 +8,6 @@ import 'package:path/path.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/models/spotube_track.dart';
-import 'package:spotube/services/youtube/youtube.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -67,7 +64,7 @@ abstract class TypeConversionUtils {
                   if (onRouteChange != null) {
                     onRouteChange("/artist/${artist.value.id}");
                   } else {
-                    ServiceUtils.navigate(
+                    ServiceUtils.push(
                       context,
                       "/artist/${artist.value.id}",
                     );
@@ -122,52 +119,35 @@ abstract class TypeConversionUtils {
     return track;
   }
 
-  static SpotubeTrack localTrack_X_Track(
+  static Track localTrack_X_Track(
     File file, {
     Metadata? metadata,
     String? art,
   }) {
-    final track = SpotubeTrack(
-      YoutubeVideoInfo(
-        searchMode: SearchMode.youtube,
-        id: "dQw4w9WgXcQ",
-        title: basenameWithoutExtension(file.path),
-        duration: Duration(milliseconds: metadata?.durationMs?.toInt() ?? 0),
-        dislikes: 0,
-        likes: 0,
-        thumbnailUrl: art ?? "",
-        views: 0,
-        channelName: metadata?.albumArtist ?? "Spotube",
-        channelId: metadata?.albumArtist ?? "Spotube",
-        publishedAt:
-            metadata?.year != null ? DateTime(metadata!.year!) : DateTime(2003),
-      ),
-      file.path,
-      [],
-    );
+    final track = Track();
     track.album = Album()
-      ..name = metadata?.album ?? "Spotube"
+      ..name = metadata?.album ?? "Unknown"
       ..images = [if (art != null) Image()..url = art]
       ..genres = [if (metadata?.genre != null) metadata!.genre!]
       ..artists = [
         Artist()
-          ..name = metadata?.albumArtist ?? "Spotube"
-          ..id = metadata?.albumArtist ?? "Spotube"
+          ..name = metadata?.albumArtist ?? "Unknown"
+          ..id = metadata?.albumArtist ?? "Unknown"
           ..type = "artist",
       ]
       ..id = metadata?.album
       ..releaseDate = metadata?.year?.toString();
     track.artists = [
       Artist()
-        ..name = metadata?.artist ?? "Spotube"
-        ..id = metadata?.artist ?? "Spotube"
+        ..name = metadata?.artist ?? "Unknown"
+        ..id = metadata?.artist ?? "Unknown"
     ];
 
     track.id = metadata?.title ?? basenameWithoutExtension(file.path);
     track.name = metadata?.title ?? basenameWithoutExtension(file.path);
     track.type = "track";
     track.uri = file.path;
-    track.durationMs = (metadata?.durationMs?.toInt() ?? 0) * 1000;
+    track.durationMs = (metadata?.durationMs?.toInt() ?? 0);
 
     return track;
   }

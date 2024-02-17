@@ -10,7 +10,7 @@ pkgbase = spotube-bin
   depends = libsecret
   depends = jsoncpp
   depends = libnotify
-  depends = networkmanager
+  depends = xdg-user-dirs
 	source = https://github.com/KRTirtho/spotube/releases/download/v2.3.0/Spotube-linux-x86_64.tar.xz
 	md5sums = 8cd6a7385c5c75d203dccd762f1d63ec
 

@@ -14,12 +14,13 @@ import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -92,6 +93,8 @@ class BottomPlayer extends HookConsumerWidget {
                             tooltip: context.l10n.mini_player,
                             icon: const Icon(SpotubeIcons.miniPlayer),
                             onPressed: () async {
+                              final prevSize =
+                                  await DesktopTools.window.getSize();
                               await DesktopTools.window.setMinimumSize(
                                 const Size(300, 300),
                               );
@@ -106,7 +109,10 @@ class BottomPlayer extends HookConsumerWidget {
                               await Future.delayed(
                                 const Duration(milliseconds: 100),
                                 () async {
-                                  GoRouter.of(context).go('/mini-player');
+                                  GoRouter.of(context).go(
+                                    '/mini-player',
+                                    extra: prevSize,
+                                  );
                                 },
                               );
                             },

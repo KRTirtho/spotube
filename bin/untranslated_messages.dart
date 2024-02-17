@@ -36,6 +36,12 @@ void main(List<String> args) {
   }
 
   print(
+    "Prompt:\n"
+    "Translate following to their appropriate locale for flutter arb translations files."
+    " Put the respective new translations in a map of their corresponding locale.",
+  );
+  // ignore: avoid_print
+  print(
     const JsonEncoder.withIndent('  ').convert(
       args.isNotEmpty ? messagesWithValues[args.first] : messagesWithValues,
     ),

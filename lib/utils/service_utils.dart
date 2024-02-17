@@ -8,7 +8,7 @@ import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/models/lyrics.dart';
-import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
@@ -171,7 +171,7 @@ abstract class ServiceUtils {
   static const baseUri = "https://www.rentanadviser.com/subtitles";
 
   @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
-  static Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
+  static Future<SubtitleSimple?> getTimedLyrics(SourcedTrack track) async {
     final artistNames =
         track.artists?.map((artist) => artist.name!).toList() ?? [];
     final query = getTitle(
@@ -199,7 +199,7 @@ abstract class ServiceUtils {
           false;
       final hasTrackName = title.contains(track.name!.toLowerCase());
       final isNotLive = !PrimitiveUtils.containsTextInBracket(title, "live");
-      final exactYtMatch = title == track.ytTrack.title.toLowerCase();
+      final exactYtMatch = title == track.sourceInfo.title.toLowerCase();
       if (exactYtMatch) points = 7;
       for (final criteria in [hasTrackName, hasAllArtists, isNotLive]) {
         if (criteria) points++;
@@ -257,11 +257,34 @@ abstract class ServiceUtils {
   }
 
   static void navigate(BuildContext context, String location, {Object? extra}) {
+    if (GoRouterState.of(context).matchedLocation == location) return;
     GoRouter.of(context).go(location, extra: extra);
   }
 
   static void push(BuildContext context, String location, {Object? extra}) {
-    GoRouter.of(context).push(location, extra: extra);
+    final router = GoRouter.of(context);
+    final routerState = GoRouterState.of(context);
+    final routerStack = router.routerDelegate.currentConfiguration.matches
+        .map((e) => e.matchedLocation);
+
+    if (routerState.matchedLocation == location ||
+        routerStack.contains(location)) return;
+    router.push(location, extra: extra);
+  }
+
+  static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
+    if (album == null || album.releaseDate == null) {
+      return DateTime.parse("1975-01-01");
+    }
+
+    switch (album.releaseDatePrecision ?? DatePrecision.year) {
+      case DatePrecision.day:
+        return DateTime.parse(album.releaseDate!);
+      case DatePrecision.month:
+        return DateTime.parse("${album.releaseDate}-01");
+      case DatePrecision.year:
+        return DateTime.parse("${album.releaseDate}-01-01");
+    }
   }
 
   static List<T> sortTracks<T extends Track>(List<T> tracks, SortBy sortBy) {
@@ -278,12 +301,12 @@ abstract class ServiceUtils {
           case SortBy.ascending:
             return a.name?.compareTo(b.name ?? "") ?? 0;
           case SortBy.oldest:
-            final aDate = DateTime.parse(a.album?.releaseDate ?? "2069-01-01");
-            final bDate = DateTime.parse(b.album?.releaseDate ?? "2069-01-01");
+            final aDate = parseSpotifyAlbumDate(a.album);
+            final bDate = parseSpotifyAlbumDate(b.album);
             return aDate.compareTo(bDate);
           case SortBy.newest:
-            final aDate = DateTime.parse(a.album?.releaseDate ?? "2069-01-01");
-            final bDate = DateTime.parse(b.album?.releaseDate ?? "2069-01-01");
+            final aDate = parseSpotifyAlbumDate(a.album);
+            final bDate = parseSpotifyAlbumDate(b.album);
             return bDate.compareTo(aDate);
           case SortBy.descending:
             return b.name?.compareTo(a.name ?? "") ?? 0;

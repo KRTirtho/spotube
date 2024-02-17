@@ -1,42 +1,127 @@
 {
+  "ar": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
   "bn": [
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ],
 
   "ca": [
-    "querying_info",
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ],
 
   "de": [
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ],
 
   "es": [
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "fa": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ],
 
   "fr": [
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ],
 
   "hi": [
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "it": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ],
 
   "ja": [
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "ne": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "nl": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "pl": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "pt": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "ru": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "tr": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
+  ],
+
+  "uk": [
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ],
 
   "zh": [
-    "piped_api_down",
-    "piped_down_error_instructions"
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback"
   ]
 }
