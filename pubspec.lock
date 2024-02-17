@@ -1619,10 +1619,10 @@ packages:
     dependency: "direct main"
     description:
       name: piped_client
-      sha256: "8b96e1f9d8533c1da7eff7fbbd4bf188256fc76a20900d378b52be09418ea771"
+      sha256: "87b04b2ebf4e008cfbb0ac85e9920ab3741f5aa697be2dd44919658a3297a4bc"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   platform:
     dependency: transitive
     description:

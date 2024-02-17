@@ -76,7 +76,7 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
-  piped_client: ^0.1.0
+  piped_client: ^0.1.1
   popover: ^0.2.6+3
   scrobblenaut:
     git:

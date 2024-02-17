@@ -48,7 +48,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     if (cachedSource == null || cachedSource.sourceType != SourceType.youtube) {
       final siblings = await fetchSiblings(ref: ref, track: track);
       if (siblings.isEmpty) {
-        throw TrackNotFoundException(track);
+        throw TrackNotFoundError(track);
       }
 
       await SourceMatch.box.put(
