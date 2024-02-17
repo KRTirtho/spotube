@@ -83,7 +83,11 @@
 
 	<div class="flex justify-center">
 		<a href="https://opencollective.com/spotube/donate" target="_blank">
-			<img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width="300" />
+			<img
+				src="https://opencollective.com/webpack/donate/button@2x.png?color=blue"
+				width="300"
+				alt="Open Collective"
+			/>
 		</a>
 	</div>
 

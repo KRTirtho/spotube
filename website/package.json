@@ -17,7 +17,7 @@
     "@playwright/test": "^1.28.1",
     "@skeletonlabs/skeleton": "2.8.0",
     "@skeletonlabs/tw-plugin": "0.3.1",
-    "@sveltejs/adapter-netlify": "^4.1.0",
+    "@sveltejs/adapter-cloudflare": "^4.1.0",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tailwindcss/typography": "0.5.10",
