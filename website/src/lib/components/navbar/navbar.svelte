@@ -22,7 +22,10 @@
 				<Menu />
 			</button>
 			<h2 class="text-3xl">
-				<a href="/"> Spotube </a>
+				<a href="/" class="flex gap-1 items-center">
+					<img src="/images/spotube-logo.png" width="40px" alt="Spotube Logo" />
+					Spotube
+				</a>
 			</h2>
 		</div>
 		<a
@@ -32,7 +35,7 @@
 		>
 			<button class="btn variant-filled flex items-center gap-2">
 				<Fa icon={faGithub} />
-				Star us on GitHub
+				Star us
 			</button>
 		</a>
 	</div>

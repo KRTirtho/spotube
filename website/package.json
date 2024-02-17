@@ -56,7 +56,7 @@
     "remark-external-links": "^9.0.1",
     "remark-gfm": "^4.0.0",
     "remark-github": "^12.0.0",
-    "remark-reading-time": "^2.0.1",
+    "remark-reading-time": "^1.0.1",
     "svelte-fa": "^4.0.2",
     "svelte-markdown": "^0.4.1"
   }

@@ -1,9 +1,7 @@
-<script context="module">
-	export let metadata = {
-		title: 'CLI Packages Managers',
-		author: 'Kingkor Roy Tirtho'
-	};
-</script>
+---
+title: CLI Packages Managers
+author: Kingkor Roy Tirtho
+---
 
 <script lang="ts">
 	import { faLinux, faWindows } from '@fortawesome/free-brands-svg-icons';
@@ -13,58 +11,60 @@
 <div class="p-4 md:ps-24">
 	<h2 class="h2">Package Managers</h2>
 
-	Spotube is available in various Package Managers supported by Platform
+    Spotube is available in various Package Managers supported by Platform
 
-	## <Fa class="inline" icon={faLinux} /> Linux
-  ### Flatpak
-  
-  Make sure [Flatpak](https://flatpak.org) is installed in your Linux device & Run the following command in the terminal:
+    ## <Fa class="inline" icon={faLinux} /> Linux
 
-  ```bash
-  $ flatpak install com.github.KRTirtho.Spotube
-  ````
+### Flatpak
 
-  ### Arch User Repository (AUR)
+Make sure [Flatpak](https://flatpak.org) is installed in your Linux device & Run the following command in the terminal:
 
-  If you're an Arch Linux user, you can also install Spotube from AUR.
-  Make sure you have `yay`/`pamac`/`paru` installed in your system. And Run the Following command in the Terminal:
+```bash
+$ flatpak install com.github.KRTirtho.Spotube
+```
 
-  ```bash
-  $ yay -Sy spotube-bin
-  ```
+### Arch User Repository (AUR)
 
-  ```bash
-  $ pamac install spotube-bin
-  ```
+If you're an Arch Linux user, you can also install Spotube from AUR.
+Make sure you have `yay`/`pamac`/`paru` installed in your system. And Run the Following command in the Terminal:
 
-  ```bash
-  $ paru -Sy spotube-bin
-  ```
+```bash
+$ yay -Sy spotube-bin
+```
 
-  ## <Fa class="inline" icon={faWindows} color="#00A2F0" /> Windows
+```bash
+$ pamac install spotube-bin
+```
 
-  ### Chocolatey
+```bash
+$ paru -Sy spotube-bin
+```
 
-  Spotube is available in [community.chocolatey.org](https://community.chocolatey.org) repo. If you have chocolatey install in your system just run following command in an Elevated Command Prompt or PowerShell:
+## <Fa class="inline" icon={faWindows} color="#00A2F0" /> Windows
 
-  ```powershell
-  $ choco install spotube
-  ```
+### Chocolatey
 
-  ### WinGet
+Spotube is available in [community.chocolatey.org](https://community.chocolatey.org) repo. If you have chocolatey install in your system just run following command in an Elevated Command Prompt or PowerShell:
 
-  Spotube is also available in the Official Windows PackageManager WinGet. Make sure you have WinGet installed in your Windows machine and run following in a Terminal:
+```powershell
+$ choco install spotube
+```
 
-  ```powershell
-  $ winget install --id KRTirtho.Spotube
-  ```
+### WinGet
 
-  ### Scoop
+Spotube is also available in the Official Windows PackageManager WinGet. Make sure you have WinGet installed in your Windows machine and run following in a Terminal:
 
-  Spotube is also available in [Scoop](https://scoop.sh) bucket. Make sure you have Scoop installed in your Windows machine and run following in a Terminal:
+```powershell
+$ winget install --id KRTirtho.Spotube
+```
 
-  ```powershell
-  $ scoop bucket add extras
-  $ scoop install spotube
-  ```
+### Scoop
+
+Spotube is also available in [Scoop](https://scoop.sh) bucket. Make sure you have Scoop installed in your Windows machine and run following in a Terminal:
+
+```powershell
+$ scoop bucket add extras
+$ scoop install spotube
+```
+
 </div>
