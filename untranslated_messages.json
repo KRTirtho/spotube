@@ -3,77 +3,99 @@
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "bn": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "ca": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "de": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "es": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "fa": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "fr": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "hi": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "it": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "ja": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "ne": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "nl": [
@@ -81,48 +103,62 @@
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "pl": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "pt": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "ru": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "tr": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "uk": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ],
 
   "zh": [
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
-    "endless_playback"
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation"
   ]
 }

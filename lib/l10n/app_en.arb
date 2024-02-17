@@ -290,5 +290,7 @@
   "start_a_radio": "Start a Radio",
   "how_to_start_radio": "How do you want to start the radio?",
   "replace_queue_question": "Do you want to replace the current queue or append to it?",
-  "endless_playback": "Endless Playback"
+  "endless_playback": "Endless Playback",
+  "delete_playlist": "Delete Playlist",
+  "delete_playlist_confirmation": "Are you sure you want to delete this playlist?"
 }
