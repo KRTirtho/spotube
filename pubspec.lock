@@ -1618,10 +1618,11 @@ packages:
   piped_client:
     dependency: "direct main"
     description:
-      name: piped_client
-      sha256: "87b04b2ebf4e008cfbb0ac85e9920ab3741f5aa697be2dd44919658a3297a4bc"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "64631732eefe3d93889756dc2e4ff5c8523ed763"
+      url: "https://github.com/KRTirtho/piped_client.git"
+    source: git
     version: "0.1.1"
   platform:
     dependency: transitive

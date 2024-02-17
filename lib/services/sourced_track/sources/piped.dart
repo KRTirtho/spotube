@@ -157,12 +157,13 @@ class PipedSourcedTrack extends SourcedTrack {
   }) async {
     final pipedClient = ref.read(pipedProvider);
     final preference = ref.read(userPreferencesProvider);
+
     final query = SourcedTrack.getSearchTerm(track);
 
     final PipedSearchResult(items: searchResults) = await pipedClient.search(
       query,
       preference.searchMode == SearchMode.youtube
-          ? PipedFilter.video
+          ? PipedFilter.videos
           : PipedFilter.musicSongs,
     );
 
