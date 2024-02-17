@@ -22,7 +22,7 @@
 				<Menu />
 			</button>
 			<h2 class="text-3xl">
-				<a href="/" class="flex gap-1 items-center">
+				<a href="/" class="flex gap-2 items-center">
 					<img src="/images/spotube-logo.png" width="40px" alt="Spotube Logo" />
 					Spotube
 				</a>
