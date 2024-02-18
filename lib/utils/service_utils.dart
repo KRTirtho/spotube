@@ -53,9 +53,9 @@ abstract class ServiceUtils {
 
     return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
         .toLowerCase()
-        .replaceAll(RegExp(" *\\[[^\\]]*]"), '')
-        .replaceAll(RegExp("feat.|ft."), '')
-        .replaceAll(RegExp("\\s+"), ' ')
+        .replaceAll(RegExp(r"\s*\[[^\]]*]"), ' ')
+        .replaceAll(RegExp(r"\sfeat\.|\sft\."), ' ')
+        .replaceAll(RegExp(r"\s+"), ' ')
         .trim();
   }
 
