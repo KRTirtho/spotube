@@ -55,7 +55,7 @@ dependencies:
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
   fuzzywuzzy: ^1.1.6
-  go_router: ^13.0.1
+  go_router: 12.1.3 # Stuck on this https://github.com/flutter/flutter/issues/140869
   google_fonts: ^6.1.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
