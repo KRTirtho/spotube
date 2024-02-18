@@ -41,6 +41,7 @@
   "sort_z_a": "Sort by Z-A",
   "sort_artist": "Sort by Artist",
   "sort_album": "Sort by Album",
+  "sort_duration": "Sort by Duration",
   "sort_tracks": "Sort Tracks",
   "currently_downloading": "Currently Downloading ({tracks_length})",
   "cancel_all": "Cancel All",
