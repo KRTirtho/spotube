@@ -27,7 +27,7 @@ dependencies:
   dbus: ^0.7.8
   device_info_plus: ^9.0.3
   device_preview: ^1.1.0
-  dio: ^5.3.2
+  dio: ^5.4.1
   disable_battery_optimization: ^1.1.0+1
   duration: ^3.0.12
   envied: ^0.3.0
