@@ -119,6 +119,51 @@ abstract class ServiceUtils {
     return results;
   }
 
+  static Future<String?> getAZLyrics(
+      {required String title, required List<String> artists}) async {
+    //Couldn't figure out a way to generate value for x. Also, it remains the same across different IP addresses.
+    final suggestionUrl = Uri.parse(
+        "https://search.azlyrics.com/suggest.php?q=$title ${artists[0]}&x=884911ec808d4712b839f06754f62ef23cddd06a36e86bf8d44fbd2bac3e6a56");
+
+    const Map<String, String> headers = {
+      HttpHeaders.userAgentHeader:
+          "Mozilla/5.0 (Linux i656 ; en-US) AppleWebKit/601.49 (KHTML, like Gecko) Chrome/51.0.1145.334 Safari/600"
+    };
+    final searchResponse = await http.get(suggestionUrl, headers: headers);
+
+    if (searchResponse.statusCode != 200) {
+      throw "searchResponse = ${searchResponse.statusCode}";
+    }
+
+    final Map searchResult = jsonDecode(searchResponse.body);
+
+    String bestLyricsURL;
+
+    try {
+      bestLyricsURL = searchResult["songs"][0]["url"];
+      debugPrint("getAZLyrics -> bestLyricsURL: $bestLyricsURL");
+    } catch (e) {
+      throw "No best Lyrics URL";
+    }
+
+    final lyricsResponse =
+        await http.get(Uri.parse(bestLyricsURL), headers: headers);
+
+    if (lyricsResponse.statusCode != 200) {
+      throw "lyricsResponse = ${lyricsResponse.statusCode}";
+    }
+
+    var document = parser.parse(lyricsResponse.body);
+    var lyricsDiv = document.querySelectorAll(
+        "body > div.container.main-page > div.row > div.col-xs-12.col-lg-8.text-center > div");
+
+    if (lyricsDiv.isEmpty) throw "lyricsDiv is empty";
+
+    final String lyrics = lyricsDiv[4].text;
+
+    return lyrics;
+  }
+
   @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static Future<String?> getLyrics(
     String title,
