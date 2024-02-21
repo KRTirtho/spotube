@@ -32,10 +32,12 @@ class PlainLyrics extends HookConsumerWidget {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final lyricsQuery =
         useQueries.lyrics.spotifySynced(ref, playlist.activeTrack);
+    final azLyricsQuery = useQueries.lyrics.azLyrics(playlist.activeTrack);
     final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     final textZoomLevel = useState<int>(defaultTextZoom);
+    bool useAZLyrics = false;
 
     return Stack(
       children: [
@@ -75,38 +77,46 @@ class PlainLyrics extends HookConsumerWidget {
                         if (lyricsQuery.isLoading || lyricsQuery.isRefreshing) {
                           return const ShimmerLyrics();
                         } else if (lyricsQuery.hasError) {
-                          return Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  context.l10n.no_lyrics_available,
-                                  style: textTheme.bodyLarge?.copyWith(
-                                    color: palette.bodyTextColor,
+                          if (azLyricsQuery.isLoading ||
+                              azLyricsQuery.isRefreshing) {
+                            return const ShimmerLyrics();
+                          } else if (azLyricsQuery.hasError) {
+                            return Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    context.l10n.no_lyrics_available,
+                                    style: textTheme.bodyLarge?.copyWith(
+                                      color: palette.bodyTextColor,
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const Gap(26),
-                                const Icon(SpotubeIcons.noLyrics, size: 60),
-                              ],
-                            ),
-                          );
+                                  const Gap(26),
+                                  const Icon(SpotubeIcons.noLyrics, size: 60),
+                                ],
+                              ),
+                            );
+                          } else {
+                            useAZLyrics = true;
+                          }
                         }
 
-                        final lyrics =
-                            lyricsQuery.data?.lyrics.mapIndexed((i, e) {
-                          final next =
-                              lyricsQuery.data?.lyrics.elementAtOrNull(i + 1);
-                          if (next != null &&
-                              e.time - next.time >
-                                  const Duration(milliseconds: 700)) {
-                            return "${e.text}\n";
-                          }
+                        final lyrics = !useAZLyrics
+                            ? lyricsQuery.data?.lyrics.mapIndexed((i, e) {
+                                final next = lyricsQuery.data?.lyrics
+                                    .elementAtOrNull(i + 1);
+                                if (next != null &&
+                                    e.time - next.time >
+                                        const Duration(milliseconds: 700)) {
+                                  return "${e.text}\n";
+                                }
 
-                          return e.text;
-                        }).join("\n");
+                                return e.text;
+                              }).join("\n")
+                            : azLyricsQuery.data;
 
                         return AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 200),
