@@ -15,6 +15,20 @@ import 'package:http/http.dart' as http;
 class LyricsQueries {
   const LyricsQueries();
 
+  Query<String, dynamic> azLyrics(Track? track) {
+    return useQuery<String, dynamic>("azlyrics-query/${track?.id}", () async {
+      if (track == null) {
+        throw "No Track Currently";
+      }
+      final lyrics = await ServiceUtils.getAZLyrics(
+          title: track.name!,
+          artists:
+              track.artists?.map((s) => s.name).whereNotNull().toList() ?? []);
+      return lyrics;
+    });
+  }
+
+
   Query<String, dynamic> static(
     Track? track,
     String geniusAccessToken,
