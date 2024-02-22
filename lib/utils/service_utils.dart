@@ -121,16 +121,35 @@ abstract class ServiceUtils {
 
   static Future<String?> getAZLyrics(
       {required String title, required List<String> artists}) async {
-    //Couldn't figure out a way to generate value for x. Also, it remains the same across different IP addresses.
-    final suggestionUrl = Uri.parse(
-        "https://search.azlyrics.com/suggest.php?q=$title ${artists[0]}&x=884911ec808d4712b839f06754f62ef23cddd06a36e86bf8d44fbd2bac3e6a56");
-
     const Map<String, String> headers = {
       HttpHeaders.userAgentHeader:
-          "Mozilla/5.0 (Linux i656 ; en-US) AppleWebKit/601.49 (KHTML, like Gecko) Chrome/51.0.1145.334 Safari/600"
+          "Mozilla/5.0 (Linux i656 ; en-US) AppleWebKit/601.49 (KHTML, like Gecko) Chrome/51.0.1145.334 Safari/600",
     };
-    final searchResponse = await http.get(suggestionUrl, headers: headers);
 
+    //Will throw error 400 when you request the script with the host header
+    const Map<String, String> headersForScript = {
+      HttpHeaders.userAgentHeader:
+          "Mozilla/5.0 (Linux i656 ; en-US) AppleWebKit/601.49 (KHTML, like Gecko) Chrome/51.0.1145.334 Safari/600",
+      HttpHeaders.hostHeader: "www.azlyrics.com",
+    };
+
+    final azLyricsGeoScript = await http.get(
+        Uri.parse("https://www.azlyrics.com/geo.js"),
+        headers: headersForScript);
+
+    RegExp scriptValueRegex = RegExp(r'ep\.setAttribute\("value", "(.*)"\);');
+    RegExp scriptNameRegex = RegExp(r'ep\.setAttribute\("name", "(.*)"\);');
+    final String? v =
+        scriptValueRegex.firstMatch(azLyricsGeoScript.body)?.group(1);
+    final String? x =
+        scriptNameRegex.firstMatch(azLyricsGeoScript.body)?.group(1);
+
+    debugPrint("getAZLyrics -> Additional URL params: $x=$v");
+
+    final suggestionUrl = Uri.parse(
+        "https://search.azlyrics.com/suggest.php?q=$title ${artists[0]}&${x.toString()}=${v.toString()}");
+
+    final searchResponse = await http.get(suggestionUrl, headers: headers);
     if (searchResponse.statusCode != 200) {
       throw "searchResponse = ${searchResponse.statusCode}";
     }
@@ -161,7 +180,7 @@ abstract class ServiceUtils {
 
     final String lyrics = lyricsDiv[4].text;
 
-    return lyrics;
+    return lyrics.trim();
   }
 
   @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
