@@ -123,10 +123,10 @@ abstract class ServiceUtils {
       {required String title, required List<String> artists}) async {
     const Map<String, String> headers = {
       HttpHeaders.userAgentHeader:
-          "Mozilla/5.0 (Linux i656 ; en-US) AppleWebKit/601.49 (KHTML, like Gecko) Chrome/51.0.1145.334 Safari/600",
+          "Mozilla/5.0 (Linux i656 ; en-US) AppleWebKit/601.49 (KHTML, like Gecko) Chrome/51.0.1145.334 Safari/600"
     };
 
-    //Will throw error 400 when you request the script with the host header
+    //Will throw error 400 when you request the script without the host header
     const Map<String, String> headersForScript = {
       HttpHeaders.userAgentHeader:
           "Mozilla/5.0 (Linux i656 ; en-US) AppleWebKit/601.49 (KHTML, like Gecko) Chrome/51.0.1145.334 Safari/600",
@@ -137,8 +137,8 @@ abstract class ServiceUtils {
         Uri.parse("https://www.azlyrics.com/geo.js"),
         headers: headersForScript);
 
-    RegExp scriptValueRegex = RegExp(r'ep\.setAttribute\("value", "(.*)"\);');
-    RegExp scriptNameRegex = RegExp(r'ep\.setAttribute\("name", "(.*)"\);');
+    RegExp scriptValueRegex = RegExp(r'\.setAttribute\("value", "(.*)"\);');
+    RegExp scriptNameRegex = RegExp(r'\.setAttribute\("name", "(.*)"\);');
     final String? v =
         scriptValueRegex.firstMatch(azLyricsGeoScript.body)?.group(1);
     final String? x =
@@ -147,7 +147,7 @@ abstract class ServiceUtils {
     debugPrint("getAZLyrics -> Additional URL params: $x=$v");
 
     final suggestionUrl = Uri.parse(
-        "https://search.azlyrics.com/suggest.php?q=$title ${artists[0]}&${x.toString()}=${v.toString()}");
+        "https://search.azlyrics.com/suggest.php?q=${title.replaceAll(RegExp(r"(\(.*\))"), "")} ${artists[0]}&${x.toString()}=${v.toString()}");
 
     final searchResponse = await http.get(suggestionUrl, headers: headers);
     if (searchResponse.statusCode != 200) {
