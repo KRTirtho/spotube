@@ -1,5 +1,6 @@
 {
   "ar": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -9,6 +10,7 @@
   ],
 
   "bn": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -18,6 +20,7 @@
   ],
 
   "ca": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -27,6 +30,7 @@
   ],
 
   "de": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -36,6 +40,7 @@
   ],
 
   "es": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -45,6 +50,7 @@
   ],
 
   "fa": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -54,6 +60,7 @@
   ],
 
   "fr": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -63,6 +70,7 @@
   ],
 
   "hi": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -72,6 +80,7 @@
   ],
 
   "it": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -81,6 +90,7 @@
   ],
 
   "ja": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -90,6 +100,7 @@
   ],
 
   "ne": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -99,6 +110,7 @@
   ],
 
   "nl": [
+    "sort_duration",
     "audio_source",
     "start_a_radio",
     "how_to_start_radio",
@@ -109,6 +121,7 @@
   ],
 
   "pl": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -118,6 +131,7 @@
   ],
 
   "pt": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -127,6 +141,7 @@
   ],
 
   "ru": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -136,6 +151,7 @@
   ],
 
   "tr": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -145,6 +161,7 @@
   ],
 
   "uk": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
@@ -154,6 +171,7 @@
   ],
 
   "zh": [
+    "sort_duration",
     "start_a_radio",
     "how_to_start_radio",
     "replace_queue_question",
