@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_hooks/fl_query_hooks.dart';
@@ -21,6 +20,20 @@ class LyricsQueries {
         throw "No Track Currently";
       }
       final lyrics = await ServiceUtils.getAZLyrics(
+          title: track.name!,
+          artists:
+              track.artists?.map((s) => s.name).whereNotNull().toList() ?? []);
+      return lyrics;
+    });
+  }
+
+  Query<String, dynamic> geniusLyrics(Track? track) {
+    return useQuery<String, dynamic>("geniusLyrics-query/${track?.id}",
+        () async {
+      if (track == null) {
+        throw "No Track Currently";
+      }
+      final lyrics = await ServiceUtils.getGeniusLyrics(
           title: track.name!,
           artists:
               track.artists?.map((s) => s.name).whereNotNull().toList() ?? []);
