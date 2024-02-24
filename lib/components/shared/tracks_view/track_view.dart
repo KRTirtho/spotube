@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/tracks_view/sections/header/flexible_header.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/track_view_body.dart';
@@ -13,6 +15,7 @@ class TrackView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final props = InheritedTrackView.of(context);
+    final controller = useScrollController();
 
     return Scaffold(
       appBar: DesktopTools.platform.isDesktop
@@ -29,14 +32,18 @@ class TrackView extends HookConsumerWidget {
       extendBodyBehindAppBar: true,
       body: RefreshIndicator(
         onRefresh: props.pagination.onRefresh,
-        child: const CustomScrollView(
-          slivers: [
-            TrackViewFlexHeader(),
-            SliverAnimatedSwitcher(
-              duration: Duration(milliseconds: 500),
-              child: TrackViewBodySection(),
-            ),
-          ],
+        child: InterScrollbar(
+          controller: controller,
+          child: CustomScrollView(
+            controller: controller,
+            slivers: const [
+              TrackViewFlexHeader(),
+              SliverAnimatedSwitcher(
+                duration: Duration(milliseconds: 500),
+                child: TrackViewBodySection(),
+              ),
+            ],
+          ),
         ),
       ),
     );
