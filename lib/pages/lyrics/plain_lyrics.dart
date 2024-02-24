@@ -33,11 +33,13 @@ class PlainLyrics extends HookConsumerWidget {
     final lyricsQuery =
         useQueries.lyrics.spotifySynced(ref, playlist.activeTrack);
     final azLyricsQuery = useQueries.lyrics.azLyrics(playlist.activeTrack);
+    final geniusLyricsQuery =
+        useQueries.lyrics.geniusLyrics(playlist.activeTrack);
     final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     final textZoomLevel = useState<int>(defaultTextZoom);
-    bool useAZLyrics = false;
+    bool useAZLyrics = false, useGenius = false;
 
     return Stack(
       children: [
@@ -78,9 +80,13 @@ class PlainLyrics extends HookConsumerWidget {
                           return const ShimmerLyrics();
                         } else if (lyricsQuery.hasError) {
                           if (azLyricsQuery.isLoading ||
-                              azLyricsQuery.isRefreshing) {
+                              azLyricsQuery.isRefreshing ||
+                              geniusLyricsQuery.isLoading ||
+                              geniusLyricsQuery.isRefreshing) {
                             return const ShimmerLyrics();
-                          } else if (azLyricsQuery.hasError) {
+                          }
+                          if (azLyricsQuery.hasError &&
+                              geniusLyricsQuery.hasError) {
                             return Container(
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(16),
@@ -99,24 +105,33 @@ class PlainLyrics extends HookConsumerWidget {
                                 ],
                               ),
                             );
+                          } else if (azLyricsQuery.hasError) {
+                            useGenius = true;
+                          } else if (geniusLyricsQuery.hasError) {
+                            useAZLyrics = true;
                           } else {
                             useAZLyrics = true;
                           }
                         }
 
-                        final lyrics = !useAZLyrics
-                            ? lyricsQuery.data?.lyrics.mapIndexed((i, e) {
-                                final next = lyricsQuery.data?.lyrics
-                                    .elementAtOrNull(i + 1);
-                                if (next != null &&
-                                    e.time - next.time >
-                                        const Duration(milliseconds: 700)) {
-                                  return "${e.text}\n";
-                                }
+                        String? lyrics;
+                        if (useAZLyrics) {
+                          lyrics = azLyricsQuery.data;
+                        } else if (useGenius) {
+                          lyrics = geniusLyricsQuery.data;
+                        } else {
+                          lyrics = lyricsQuery.data?.lyrics.mapIndexed((i, e) {
+                            final next =
+                                lyricsQuery.data?.lyrics.elementAtOrNull(i + 1);
+                            if (next != null &&
+                                e.time - next.time >
+                                    const Duration(milliseconds: 700)) {
+                              return "${e.text}\n";
+                            }
 
-                                return e.text;
-                              }).join("\n")
-                            : azLyricsQuery.data;
+                            return e.text;
+                          }).join("\n");
+                        }
 
                         return AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 200),
