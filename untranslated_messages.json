@@ -6,7 +6,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "bn": [
@@ -16,7 +17,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "ca": [
@@ -26,7 +28,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "de": [
@@ -36,7 +39,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "es": [
@@ -46,7 +50,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "fa": [
@@ -56,7 +61,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "fr": [
@@ -66,7 +72,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "hi": [
@@ -76,7 +83,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "it": [
@@ -86,7 +94,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "ja": [
@@ -96,7 +105,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "ne": [
@@ -106,7 +116,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "nl": [
@@ -117,7 +128,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "pl": [
@@ -127,7 +139,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "pt": [
@@ -137,7 +150,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "ru": [
@@ -147,7 +161,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "tr": [
@@ -157,7 +172,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "uk": [
@@ -167,7 +183,8 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ],
 
   "zh": [
@@ -177,6 +194,7 @@
     "replace_queue_question",
     "endless_playback",
     "delete_playlist",
-    "delete_playlist_confirmation"
+    "delete_playlist_confirmation",
+    "local_tracks"
   ]
 }

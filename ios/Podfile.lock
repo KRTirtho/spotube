@@ -196,7 +196,7 @@ SPEC CHECKSUMS:
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 15fd9539e4eb735dc54bae8c0534a7a9511a03de
   file_selector_ios: 8c25d700d625e1dcdd6599f2d927072f2254647b
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_inappwebview: acd4fc0f012cefd09015000c241137d82f01ba62
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
@@ -221,6 +221,6 @@ SPEC CHECKSUMS:
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
-PODFILE CHECKSUM: e36c7ad9836dfd8d22934c7680185432a658e28f
+PODFILE CHECKSUM: 5129d2e80ab0dfc533f262cedf032011b1dfe4fd
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

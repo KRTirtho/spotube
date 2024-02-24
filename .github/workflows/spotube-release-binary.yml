@@ -190,7 +190,7 @@ jobs:
             dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
 
       - name: Debug With SSH When fails
-        if: ${{ inputs.debug && inputs.channel == 'nightly' }}
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
