@@ -120,6 +120,34 @@ abstract class ServiceUtils {
     return results;
   }
 
+  static Future<String?> getGeniusLyrics(
+      {required String title, required List<String> artists}) async {
+    //Requires a non-blacklisted, valid User Agent. Or else, cloudflare might throw a 403.
+    Map<String, String> headers = {
+      HttpHeaders.userAgentHeader:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.4",
+    };
+
+    final searchResultResponse = await http.get(
+        Uri.parse(
+            "https://genius.com/api/search/multi?q=${title.replaceAll(RegExp(r"(\(.*\))"), "")} ${artists[0]}"),
+        headers: headers);
+    final searchResultObj = jsonDecode(searchResultResponse.body);
+    String topResultPath;
+    try {
+      topResultPath = searchResultObj["response"]["sections"][0]["hits"][0]
+          ["result"]["path"] as String;
+      logger.t("topResultPath: $topResultPath");
+    } catch (e) {
+      logger.e(e);
+      throw "topResultPath not found!";
+    }
+    final lyrics =
+        await extractLyrics(Uri.parse("https://genius.com$topResultPath"));
+
+    return lyrics?.trim();
+  }
+
   static Future<String?> getAZLyrics(
       {required String title, required List<String> artists}) async {
     const Map<String, String> headers = {
