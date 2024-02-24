@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/widgets.dart' hide Element;
 import 'package:go_router/go_router.dart';
@@ -144,7 +145,7 @@ abstract class ServiceUtils {
     final String? x =
         scriptNameRegex.firstMatch(azLyricsGeoScript.body)?.group(1);
 
-    debugPrint("getAZLyrics -> Additional URL params: $x=$v");
+    logger.t("Additional URL params: $x=$v");
 
     final suggestionUrl = Uri.parse(
         "https://search.azlyrics.com/suggest.php?q=${title.replaceAll(RegExp(r"(\(.*\))"), "")} ${artists[0]}&${x.toString()}=${v.toString()}");
@@ -160,7 +161,7 @@ abstract class ServiceUtils {
 
     try {
       bestLyricsURL = searchResult["songs"][0]["url"];
-      debugPrint("getAZLyrics -> bestLyricsURL: $bestLyricsURL");
+      logger.t("bestLyricsURL: $bestLyricsURL");
     } catch (e) {
       throw "No best Lyrics URL";
     }
