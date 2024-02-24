@@ -6,67 +6,63 @@ part of 'user_preferences_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserPreferences _$UserPreferencesFromJson(Map<String, dynamic> json) =>
-    UserPreferences(
-      audioQuality: $enumDecodeNullable(
-              _$SourceQualitiesEnumMap, json['audioQuality'],
-              unknownValue: SourceQualities.high) ??
-          SourceQualities.high,
+_$UserPreferencesImpl _$$UserPreferencesImplFromJson(
+        Map<String, dynamic> json) =>
+    _$UserPreferencesImpl(
+      audioQuality:
+          $enumDecodeNullable(_$SourceQualitiesEnumMap, json['audioQuality']) ??
+              SourceQualities.high,
       albumColorSync: json['albumColorSync'] as bool? ?? true,
       amoledDarkTheme: json['amoledDarkTheme'] as bool? ?? false,
       checkUpdate: json['checkUpdate'] as bool? ?? true,
       normalizeAudio: json['normalizeAudio'] as bool? ?? false,
       showSystemTrayIcon: json['showSystemTrayIcon'] as bool? ?? true,
-      skipNonMusic: json['skipNonMusic'] as bool? ?? true,
+      skipNonMusic: json['skipNonMusic'] as bool? ?? false,
       systemTitleBar: json['systemTitleBar'] as bool? ?? false,
-      closeBehavior: $enumDecodeNullable(
-              _$CloseBehaviorEnumMap, json['closeBehavior'],
-              unknownValue: CloseBehavior.minimizeToTray) ??
-          CloseBehavior.minimizeToTray,
+      closeBehavior:
+          $enumDecodeNullable(_$CloseBehaviorEnumMap, json['closeBehavior']) ??
+              CloseBehavior.minimizeToTray,
       accentColorScheme: UserPreferences._accentColorSchemeReadValue(
                   json, 'accentColorScheme') ==
               null
-          ? UserPreferences._defaultAccentColorScheme()
+          ? const SpotubeColor(0xFF2196F3, name: "Blue")
           : UserPreferences._accentColorSchemeFromJson(
               UserPreferences._accentColorSchemeReadValue(
                   json, 'accentColorScheme') as Map<String, dynamic>),
-      layoutMode: $enumDecodeNullable(_$LayoutModeEnumMap, json['layoutMode'],
-              unknownValue: LayoutMode.adaptive) ??
-          LayoutMode.adaptive,
+      layoutMode:
+          $enumDecodeNullable(_$LayoutModeEnumMap, json['layoutMode']) ??
+              LayoutMode.adaptive,
       locale: UserPreferences._localeReadValue(json, 'locale') == null
-          ? UserPreferences._defaultLocaleValue()
+          ? const Locale("system", "system")
           : UserPreferences._localeFromJson(
               UserPreferences._localeReadValue(json, 'locale')
                   as Map<String, dynamic>),
-      recommendationMarket: $enumDecodeNullable(
-              _$MarketEnumMap, json['recommendationMarket'],
-              unknownValue: Market.US) ??
-          Market.US,
-      searchMode: $enumDecodeNullable(_$SearchModeEnumMap, json['searchMode'],
-              unknownValue: SearchMode.youtube) ??
-          SearchMode.youtube,
-      downloadLocation: json['downloadLocation'] as String? ?? '',
+      recommendationMarket:
+          $enumDecodeNullable(_$MarketEnumMap, json['recommendationMarket']) ??
+              Market.US,
+      searchMode:
+          $enumDecodeNullable(_$SearchModeEnumMap, json['searchMode']) ??
+              SearchMode.youtube,
+      downloadLocation: json['downloadLocation'] as String? ?? "",
       pipedInstance:
-          json['pipedInstance'] as String? ?? 'https://pipedapi.kavin.rocks',
-      themeMode: $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode'],
-              unknownValue: ThemeMode.system) ??
+          json['pipedInstance'] as String? ?? "https://pipedapi.kavin.rocks",
+      themeMode: $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode']) ??
           ThemeMode.system,
-      audioSource: $enumDecodeNullable(
-              _$AudioSourceEnumMap, json['audioSource'],
-              unknownValue: AudioSource.youtube) ??
-          AudioSource.youtube,
+      audioSource:
+          $enumDecodeNullable(_$AudioSourceEnumMap, json['audioSource']) ??
+              AudioSource.youtube,
       streamMusicCodec: $enumDecodeNullable(
-              _$SourceCodecsEnumMap, json['streamMusicCodec'],
-              unknownValue: SourceCodecs.weba) ??
+              _$SourceCodecsEnumMap, json['streamMusicCodec']) ??
           SourceCodecs.weba,
       downloadMusicCodec: $enumDecodeNullable(
-              _$SourceCodecsEnumMap, json['downloadMusicCodec'],
-              unknownValue: SourceCodecs.m4a) ??
+              _$SourceCodecsEnumMap, json['downloadMusicCodec']) ??
           SourceCodecs.m4a,
       discordPresence: json['discordPresence'] as bool? ?? true,
+      endlessPlayback: json['endlessPlayback'] as bool? ?? true,
     );
 
-Map<String, dynamic> _$UserPreferencesToJson(UserPreferences instance) =>
+Map<String, dynamic> _$$UserPreferencesImplToJson(
+        _$UserPreferencesImpl instance) =>
     <String, dynamic>{
       'audioQuality': _$SourceQualitiesEnumMap[instance.audioQuality]!,
       'albumColorSync': instance.albumColorSync,
@@ -90,6 +86,7 @@ Map<String, dynamic> _$UserPreferencesToJson(UserPreferences instance) =>
       'streamMusicCodec': _$SourceCodecsEnumMap[instance.streamMusicCodec]!,
       'downloadMusicCodec': _$SourceCodecsEnumMap[instance.downloadMusicCodec]!,
       'discordPresence': instance.discordPresence,
+      'endlessPlayback': instance.endlessPlayback,
     };
 
 const _$SourceQualitiesEnumMap = {

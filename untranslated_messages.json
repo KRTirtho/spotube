@@ -1,1 +1,200 @@
-{}
+{
+  "ar": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "bn": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "ca": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "de": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "es": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "fa": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "fr": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "hi": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "it": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "ja": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "ne": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "nl": [
+    "sort_duration",
+    "audio_source",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "pl": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "pt": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "ru": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "tr": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "uk": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ],
+
+  "zh": [
+    "sort_duration",
+    "start_a_radio",
+    "how_to_start_radio",
+    "replace_queue_question",
+    "endless_playback",
+    "delete_playlist",
+    "delete_playlist_confirmation",
+    "local_tracks"
+  ]
+}

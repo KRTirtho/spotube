@@ -111,4 +111,5 @@ abstract class SpotubeIcons {
   static const wikipedia = SimpleIcons.wikipedia;
   static const discord = SimpleIcons.discord;
   static const youtube = SimpleIcons.youtube;
+  static const radio = FeatherIcons.radio;
 }

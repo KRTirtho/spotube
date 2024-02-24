@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/source_match.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -48,7 +49,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     if (cachedSource == null || cachedSource.sourceType != SourceType.youtube) {
       final siblings = await fetchSiblings(ref: ref, track: track);
       if (siblings.isEmpty) {
-        throw TrackNotFoundException(track);
+        throw TrackNotFoundError(track);
       }
 
       await SourceMatch.box.put(
@@ -70,9 +71,14 @@ class YoutubeSourcedTrack extends SourcedTrack {
       );
     }
     final item = await youtubeClient.videos.get(cachedSource.sourceId);
-    final manifest = await youtubeClient.videos.streamsClient.getManifest(
-      cachedSource.sourceId,
-    );
+    final manifest = await youtubeClient.videos.streamsClient
+        .getManifest(
+          cachedSource.sourceId,
+        )
+        .timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => throw ClientException("Timeout"),
+        );
     return YoutubeSourcedTrack(
       ref: ref,
       siblings: [],
@@ -125,7 +131,10 @@ class YoutubeSourcedTrack extends SourcedTrack {
     SourceMap? sourceMap;
     if (index == 0) {
       final manifest =
-          await youtubeClient.videos.streamsClient.getManifest(item.id);
+          await youtubeClient.videos.streamsClient.getManifest(item.id).timeout(
+                const Duration(seconds: 5),
+                onTimeout: () => throw ClientException("Timeout"),
+              );
       sourceMap = toSourceMap(manifest);
     }
 
@@ -243,8 +252,12 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, sourceInfo);
 
-    final manifest =
-        await youtubeClient.videos.streamsClient.getManifest(newSourceInfo.id);
+    final manifest = await youtubeClient.videos.streamsClient
+        .getManifest(newSourceInfo.id)
+        .timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => throw ClientException("Timeout"),
+        );
 
     await SourceMatch.box.put(
       id!,

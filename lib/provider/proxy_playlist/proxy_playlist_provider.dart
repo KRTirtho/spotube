@@ -144,8 +144,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
           }
         } catch (e, stackTrace) {
           // Removing tracks that were not found to avoid queue interruption
-          // TODO: Add a flag to enable/disable skip not found tracks
-          if (e is TrackNotFoundException) {
+          if (e is TrackNotFoundError) {
             final oldTrack =
                 mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
             await removeTrack(oldTrack!.id!);

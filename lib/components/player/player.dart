@@ -94,10 +94,10 @@ class PlayerView extends HookConsumerWidget {
 
     final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
 
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) async {
-        panelController.close();
+    return WillPopScope(
+      onWillPop: () async {
+        await panelController.close();
+        return false;
       },
       child: IconTheme(
         data: theme.iconTheme.copyWith(color: bodyTextColor),
