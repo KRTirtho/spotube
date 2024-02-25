@@ -2,8 +2,11 @@ import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
+import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_playlist.dart';
 import 'package:spotube/components/shared/tracks_view/track_view.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/infinite_query.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
@@ -45,6 +48,8 @@ class PlaylistPage extends HookConsumerWidget {
       ],
     );
 
+    final isUserPlaylist = useIsUserPlaylist(ref, playlist.id!);
+
     return InheritedTrackView(
       collectionId: playlist.id!,
       image: TypeConversionUtils.image_X_UrlString(
@@ -72,9 +77,20 @@ class PlaylistPage extends HookConsumerWidget {
       shareUrl: playlist.externalUrls?.spotify ?? "",
       onHeart: () async {
         if (!isLikedQuery.hasData || togglePlaylistLike.isMutating) {
-          return;
+          return false;
         }
-        await togglePlaylistLike.mutate(isLikedQuery.data!);
+        final confirmed = isUserPlaylist
+            ? await showPromptDialog(
+                context: context,
+                title: context.l10n.delete_playlist,
+                message: context.l10n.delete_playlist_confirmation,
+              )
+            : true;
+        if (confirmed) {
+          await togglePlaylistLike.mutate(isLikedQuery.data!);
+          return isUserPlaylist;
+        }
+        return null;
       },
       child: const TrackView(),
     );

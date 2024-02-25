@@ -8,7 +8,7 @@
 /// yuri-val@github => Ukrainian
 /// energywave@github, ncvescera@github, OpenCode@github => Italian
 /// mdksec@github => Turkish
-/// SecularSteve@github => Dutch
+/// Stephan-P@github, SecularSteve@github => Dutch
 import 'package:flutter/material.dart';
 
 class L10n {

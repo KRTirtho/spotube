@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [3.5.0](https://personal.github.com/krtirtho/spotube/compare/v3.4.0...v3.5.0) (2024-01-27)
+## [3.4.1](https://personal.github.com/krtirtho/spotube/compare/v3.4.0...v3.4.1) (2024-01-27)
 
 
 ### Features

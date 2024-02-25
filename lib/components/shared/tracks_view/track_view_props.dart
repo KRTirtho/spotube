@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:spotify/spotify.dart';
@@ -62,7 +64,7 @@ class InheritedTrackView extends InheritedWidget {
   final String shareUrl;
 
   // events
-  final VoidCallback? onHeart; // if null heart button will hidden
+  final FutureOr<bool?> Function()? onHeart; // if null heart button will hidden
 
   const InheritedTrackView({
     super.key,

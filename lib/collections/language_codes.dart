@@ -6,6 +6,11 @@ class ISOLanguageName {
     required this.name,
     required this.nativeName,
   });
+
+  @override
+  String toString() {
+    return "$name ($nativeName)";
+  }
 }
 
 // Uncomment the languages as we add support for them

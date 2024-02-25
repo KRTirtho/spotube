@@ -53,9 +53,9 @@ abstract class ServiceUtils {
 
     return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
         .toLowerCase()
-        .replaceAll(RegExp(" *\\[[^\\]]*]"), '')
-        .replaceAll(RegExp("feat.|ft."), '')
-        .replaceAll(RegExp("\\s+"), ' ')
+        .replaceAll(RegExp(r"\s*\[[^\]]*]"), ' ')
+        .replaceAll(RegExp(r"\sfeat\.|\sft\."), ' ')
+        .replaceAll(RegExp(r"\s+"), ' ')
         .trim();
   }
 
@@ -292,24 +292,24 @@ abstract class ServiceUtils {
     return List<T>.from(tracks)
       ..sort((a, b) {
         switch (sortBy) {
-          case SortBy.album:
-            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
-          case SortBy.artist:
-            return a.artists?.first.name
-                    ?.compareTo(b.artists?.first.name ?? "") ??
-                0;
           case SortBy.ascending:
             return a.name?.compareTo(b.name ?? "") ?? 0;
-          case SortBy.oldest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return aDate.compareTo(bDate);
+          case SortBy.descending:
+            return b.name?.compareTo(a.name ?? "") ?? 0;
           case SortBy.newest:
             final aDate = parseSpotifyAlbumDate(a.album);
             final bDate = parseSpotifyAlbumDate(b.album);
             return bDate.compareTo(aDate);
-          case SortBy.descending:
-            return b.name?.compareTo(a.name ?? "") ?? 0;
+          case SortBy.oldest:
+            final aDate = parseSpotifyAlbumDate(a.album);
+            final bDate = parseSpotifyAlbumDate(b.album);
+            return aDate.compareTo(bDate);
+          case SortBy.duration:
+            return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
+          case SortBy.artist:
+            return a.artists?.first.name?.compareTo(b.artists?.first.name ?? "") ?? 0;
+          case SortBy.album:
+            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
           default:
             return 0;
         }

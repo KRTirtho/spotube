@@ -15,6 +15,7 @@ import 'package:spotube/components/root/bottom_player.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/hooks/configurators/use_update_checker.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -134,6 +135,8 @@ class RootApp extends HookConsumerWidget {
     // checks for latest version of the application
     useUpdateChecker(ref);
 
+    useEndlessPlayback(ref);
+
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     useEffect(() {
@@ -159,38 +162,47 @@ class RootApp extends HookConsumerWidget {
       }
     }
 
-    return Scaffold(
-      body: Sidebar(
-        selectedIndex: rootPaths[location],
-        onSelectedIndexChanged: onSelectIndexChanged,
-        child: child,
-      ),
-      extendBody: true,
-      drawerScrimColor: Colors.transparent,
-      endDrawer: DesktopTools.platform.isDesktop
-          ? Container(
-              constraints: const BoxConstraints(maxWidth: 800),
-              decoration: BoxDecoration(
-                boxShadow: theme.brightness == Brightness.light
-                    ? null
-                    : kElevationToShadow[8],
-              ),
-              margin: const EdgeInsets.only(
-                top: 40,
-                bottom: 100,
-              ),
-              child: const PlayerQueue(floating: true),
-            )
-          : null,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomPlayer(),
-          SpotubeNavigationBar(
-            selectedIndex: rootPaths[location],
-            onSelectedIndexChanged: onSelectIndexChanged,
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (rootPaths[location] != 0) {
+          onSelectIndexChanged(0);
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: Sidebar(
+          selectedIndex: rootPaths[location],
+          onSelectedIndexChanged: onSelectIndexChanged,
+          child: child,
+        ),
+        extendBody: true,
+        drawerScrimColor: Colors.transparent,
+        endDrawer: DesktopTools.platform.isDesktop
+            ? Container(
+                constraints: const BoxConstraints(maxWidth: 800),
+                decoration: BoxDecoration(
+                  boxShadow: theme.brightness == Brightness.light
+                      ? null
+                      : kElevationToShadow[8],
+                ),
+                margin: const EdgeInsets.only(
+                  top: 40,
+                  bottom: 100,
+                ),
+                child: const PlayerQueue(floating: true),
+              )
+            : null,
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BottomPlayer(),
+            SpotubeNavigationBar(
+              selectedIndex: rootPaths[location],
+              onSelectedIndexChanged: onSelectIndexChanged,
+            ),
+          ],
+        ),
       ),
     );
   }

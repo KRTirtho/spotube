@@ -70,9 +70,9 @@ class TrackViewHeaderActions extends HookConsumerWidget {
             tooltip: props.isLiked
                 ? context.l10n.remove_from_favorites
                 : context.l10n.save_as_favorite,
-            onPressed: () {
-              props.onHeart?.call();
-              if (isUserPlaylist) {
+            onPressed: () async {
+              final shouldPop = await props.onHeart?.call();
+              if (isUserPlaylist && shouldPop == true && context.mounted) {
                 context.pop();
               }
             },

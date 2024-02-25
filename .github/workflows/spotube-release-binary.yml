@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 3.4.0
+        default: 3.4.1
         required: true
       channel:
         type: choice
@@ -26,7 +26,7 @@ on:
         default: true
 
 env:
-  FLUTTER_VERSION: '3.16.3'
+  FLUTTER_VERSION: '3.19.1'
 
 jobs:
   windows:
