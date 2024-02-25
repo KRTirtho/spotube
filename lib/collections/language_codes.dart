@@ -700,10 +700,10 @@ abstract class LanguageLocals {
     //   name: "Venda",
     //   nativeName: "Tshivenḓa",
     // ),
-    // "vi": const ISOLanguageName(
-    //   name: "Vietnamese",
-    //   nativeName: "Tiếng Việt",
-    // ),
+    "vi": const ISOLanguageName(
+      name: "Vietnamese",
+      nativeName: "Tiếng Việt",
+    ),
     // "vo": const ISOLanguageName(
     //   name: "Volapük",
     //   nativeName: "Volapük",

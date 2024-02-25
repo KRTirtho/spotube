@@ -9,6 +9,7 @@
 /// energywave@github, ncvescera@github, OpenCode@github => Italian
 /// mdksec@github => Turkish
 /// SecularSteve@github => Dutch
+/// doannc2212@github => Vietnamese
 import 'package:flutter/material.dart';
 
 class L10n {
@@ -32,5 +33,6 @@ class L10n {
     const Locale('uk', 'UA'),
     const Locale('tr', 'TR'),
     const Locale('zh', 'CN'),
+    const Locale('vi', 'VN'),
   ];
 }
