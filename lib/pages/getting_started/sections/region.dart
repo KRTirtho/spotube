@@ -33,7 +33,7 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "Language and Region",
+                    context.l10n.language_region,
                     style: textTheme.titleMedium,
                   ),
                 ],
@@ -44,11 +44,11 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Choose your region",
+                    context.l10n.choose_your_region,
                     style: textTheme.titleSmall,
                   ),
                   Text(
-                    "This will help us show you the right content\nfor your location.",
+                    context.l10n.choose_your_region_description,
                     style: textTheme.bodySmall?.copyWith(
                       color: dividerColor,
                     ),
@@ -76,7 +76,7 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                   ),
                   const Gap(36),
                   Text(
-                    "Choose your language",
+                    context.l10n.choose_your_language,
                     style: textTheme.titleSmall,
                   ),
                   const Gap(16),

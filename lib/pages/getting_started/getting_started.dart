@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/getting_started/sections/greeting.dart';
 import 'package:spotube/pages/getting_started/sections/playback.dart';
 import 'package:spotube/pages/getting_started/sections/region.dart';
@@ -51,7 +52,7 @@ class GettingStarting extends HookConsumerWidget {
                           );
                         },
                         child: Text(
-                          "Skip this nonsense",
+                          context.l10n.skip_this_nonsense,
                           style: TextStyle(
                             decoration: TextDecoration.underline,
                             decorationColor: colorScheme.primary,

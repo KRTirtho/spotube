@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/getting_started/blur_card.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -28,16 +29,14 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     const Icon(SpotubeIcons.heartFilled, color: Colors.pink),
                     const SizedBox(width: 8),
                     Text(
-                      "Help this project grow",
+                      context.l10n.help_project_grow,
                       style:
                           textTheme.titleMedium?.copyWith(color: Colors.pink),
                     ),
                   ],
                 ),
                 const Gap(16),
-                const Text(
-                  "Spotube is an open-source project. You can help this project grow by contributing to the project, reporting bugs, or suggesting new features.",
-                ),
+                Text(context.l10n.help_project_grow_description),
                 const Gap(16),
                 Column(
                   mainAxisSize: MainAxisSize.min,
@@ -45,7 +44,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                   children: [
                     FilledButton.icon(
                       icon: const Icon(SpotubeIcons.github),
-                      label: const Text("Contribute on GitHub"),
+                      label: Text(context.l10n.contribute_on_github),
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
@@ -63,7 +62,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     const Gap(16),
                     FilledButton.icon(
                       icon: const Icon(SpotubeIcons.openCollective),
-                      label: const Text("Donate on Open Collective"),
+                      label: Text(context.l10n.donate_on_open_collective),
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xff4cb7f6),
                         foregroundColor: Colors.white,
@@ -98,7 +97,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                   ),
                   child: TextButton.icon(
                     icon: const Icon(SpotubeIcons.anonymous),
-                    label: const Text("Browse anonymously"),
+                    label: Text(context.l10n.browse_anonymously),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
                     ),
@@ -111,7 +110,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                 const Gap(16),
                 FilledButton.icon(
                   icon: const Icon(SpotubeIcons.spotify),
-                  label: const Text("Connect Spotify Account"),
+                  label: Text(context.l10n.connect_with_spotify),
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xff1db954),
                     foregroundColor: Colors.white,

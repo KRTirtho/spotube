@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
@@ -18,14 +19,6 @@ final audioSourceToIconMap = {
   AudioSource.jiosaavn: Assets.jiosaavn.image(width: 48, height: 48),
 };
 
-final audioSourceToDescription = {
-  AudioSource.youtube:
-      "Recommended and works best.\nHighest quality: 148kbps mp4, 128kbps opus",
-  AudioSource.piped: "Feeling free? Same as YouTube but a lot free",
-  AudioSource.jiosaavn:
-      "Best for South Asian region.\nHighest quality: 320kbps mp4",
-};
-
 class GettingStartedPagePlaybackSection extends HookConsumerWidget {
   final VoidCallback onNext;
   final VoidCallback onPrevious;
@@ -43,6 +36,17 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
     final preferences = ref.watch(userPreferencesProvider);
     final preferencesNotifier = ref.read(userPreferencesProvider.notifier);
 
+    final audioSourceToDescription = useMemoized(
+        () => {
+              AudioSource.youtube: "${context.l10n.youtube_source_description}\n"
+                  "${context.l10n.highest_quality("148kbps mp4, 128kbps opus")}",
+              AudioSource.piped: context.l10n.piped_source_description,
+              AudioSource.jiosaavn:
+                  "${context.l10n.jiosaavn_source_description}\n"
+                      "${context.l10n.highest_quality("320kbps mp")}",
+            },
+        []);
+
     return Center(
       child: BlurCard(
         child: Column(
@@ -57,7 +61,10 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
             ),
             const Gap(16),
             ListTile(
-              title: Text("Select Audio Source", style: textTheme.titleMedium),
+              title: Text(
+                context.l10n.select_audio_source,
+                style: textTheme.titleMedium,
+              ),
             ),
             const Gap(16),
             ToggleButtons(
@@ -111,7 +118,7 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
             ListTile(
               title: Text(context.l10n.endless_playback),
               subtitle: Text(
-                "Automatically append new songs\nto the end of the queue",
+                context.l10n.endless_playback_description,
                 style: textTheme.bodySmall?.copyWith(
                   color: dividerColor,
                 ),
