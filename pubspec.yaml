@@ -124,6 +124,7 @@ dependencies:
   app_links: ^3.5.0
   win32_registry: ^1.1.2
   flutter_sharing_intent: ^1.1.0
+  flutter_broadcasts: ^0.4.0
   freezed_annotation: ^2.4.1
 
 dev_dependencies:
