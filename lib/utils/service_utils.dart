@@ -137,9 +137,9 @@ abstract class ServiceUtils {
     try {
       topResultPath = searchResultObj["response"]["sections"][0]["hits"][0]
           ["result"]["path"] as String;
-      logger.t("topResultPath: $topResultPath");
+      logger.t("topResultUrl: https://genius.com$topResultPath");
     } catch (e) {
-      logger.e(e);
+      //logger.e(e);
       throw "topResultPath not found!";
     }
     final lyrics =
