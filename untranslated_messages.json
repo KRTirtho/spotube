@@ -7,7 +7,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "bn": [
@@ -18,7 +19,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "ca": [
@@ -29,7 +31,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "de": [
@@ -40,7 +43,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "es": [
@@ -51,7 +55,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "fa": [
@@ -62,7 +67,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "fr": [
@@ -73,7 +79,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "hi": [
@@ -84,7 +91,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "it": [
@@ -95,7 +103,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "ja": [
@@ -106,7 +115,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "ne": [
@@ -117,7 +127,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "nl": [
@@ -129,7 +140,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "pl": [
@@ -140,7 +152,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "pt": [
@@ -151,7 +164,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "ru": [
@@ -162,7 +176,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "tr": [
@@ -173,7 +188,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "uk": [
@@ -184,7 +200,8 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ],
 
   "zh": [
@@ -195,6 +212,7 @@
     "endless_playback",
     "delete_playlist",
     "delete_playlist_confirmation",
-    "local_tracks"
+    "local_tracks",
+    "song_link"
   ]
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/source_match.dart';
+import 'package:spotube/services/song_link/song_link.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
@@ -216,6 +217,20 @@ class YoutubeSourcedTrack extends SourcedTrack {
     required Track track,
     required Ref ref,
   }) async {
+    final links = await SongLinkService.links(track.id!);
+    final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
+
+    if (ytLink?.url != null) {
+      return [
+        await toSiblingType(
+          0,
+          YoutubeVideoInfo.fromVideo(
+            await youtubeClient.videos.get(ytLink!.url!),
+          ),
+        )
+      ];
+    }
+
     final query = SourcedTrack.getSearchTerm(track);
 
     final searchResults = await youtubeClient.search.search(

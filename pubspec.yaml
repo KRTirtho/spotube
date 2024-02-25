@@ -153,6 +153,7 @@ flutter:
   assets:
     - assets/
     - assets/tutorial/
+    - assets/logos/
     - LICENSE
 
 flutter_launcher_icons:

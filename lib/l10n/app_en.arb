@@ -294,5 +294,6 @@
   "endless_playback": "Endless Playback",
   "delete_playlist": "Delete Playlist",
   "delete_playlist_confirmation": "Are you sure you want to delete this playlist?",
-  "local_tracks": "Local Tracks"
+  "local_tracks": "Local Tracks",
+  "song_link": "Song Link"
 }
