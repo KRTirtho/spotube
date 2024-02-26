@@ -79,7 +79,7 @@ dependencies:
   piped_client:
     git:
       url: https://github.com/KRTirtho/piped_client.git
-  popover: ^0.2.6+3
+  popover: ^0.3.0
   scrobblenaut:
     git:
       url: https://github.com/KRTirtho/scrobblenaut.git
