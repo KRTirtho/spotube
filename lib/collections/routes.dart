@@ -50,7 +50,7 @@ final routerProvider = Provider((ref) {
                   ref.read(AuthenticationNotifier.provider.notifier);
               final json = await authNotifier.box.get(authNotifier.cacheKey);
 
-              if (json["cookie"] == null &&
+              if (json?["cookie"] == null &&
                   !KVStoreService.doneGettingStarted) {
                 return "/getting-started";
               }
