@@ -10,6 +10,7 @@
 /// mdksec@github => Turkish
 /// SecularSteve@github => Dutch
 /// doannc2212@github => Vietnamese
+/// sappho192@github => Korean
 import 'package:flutter/material.dart';
 
 class L10n {
