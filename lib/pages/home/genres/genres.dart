@@ -15,7 +15,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/queries/queries.dart';
 
 class GenrePage extends HookConsumerWidget {
-  const GenrePage({Key? key}) : super(key: key);
+  const GenrePage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

@@ -47,6 +47,7 @@ class AlbumPage extends HookConsumerWidget {
       image: TypeConversionUtils.image_X_UrlString(
         album.images,
         placeholder: ImagePlaceholder.albumArt,
+        index: 0,
       ),
       title: album.name!,
       description:

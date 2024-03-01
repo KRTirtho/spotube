@@ -138,12 +138,17 @@ class PlayerView extends HookConsumerWidget {
                       onPressed: panelController.close,
                     ),
                     actions: [
-                      IconButton(
-                        icon: Assets.logos.songlink.image(
+                      TextButton.icon(
+                        icon: Assets.logos.songlinkTransparent.image(
                           width: 20,
                           height: 20,
+                          color: bodyTextColor,
                         ),
-                        tooltip: context.l10n.song_link,
+                        label: Text(context.l10n.song_link),
+                        style: TextButton.styleFrom(
+                          foregroundColor: bodyTextColor,
+                          padding: EdgeInsets.zero,
+                        ),
                         onPressed: currentTrack == null
                             ? null
                             : () {
@@ -157,7 +162,8 @@ class PlayerView extends HookConsumerWidget {
                         icon: const Icon(SpotubeIcons.info, size: 18),
                         tooltip: context.l10n.details,
                         style: IconButton.styleFrom(
-                            foregroundColor: bodyTextColor),
+                          foregroundColor: bodyTextColor,
+                        ),
                         onPressed: currentTrack == null
                             ? null
                             : () {
