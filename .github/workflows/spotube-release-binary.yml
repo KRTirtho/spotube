@@ -181,7 +181,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v3
-        if: ${{ inputs.channel = 'release' }}
+        if: ${{ inputs.channel == 'release' }}
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
@@ -191,7 +191,7 @@ jobs:
             dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
             
       - uses: actions/upload-artifact@v3
-        if: ${{ inputs.channel = 'nightly' }}
+        if: ${{ inputs.channel == 'nightly' }}
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
