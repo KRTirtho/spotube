@@ -37,15 +37,17 @@ class JioSaavnSourcedTrack extends SourcedTrack {
   static Future<SourcedTrack> fetchFromTrack({
     required Track track,
     required Ref ref,
+    bool weakMatch = false,
   }) async {
     final cachedSource = await SourceMatch.box.get(track.id);
 
     if (cachedSource == null ||
         cachedSource.sourceType != SourceType.jiosaavn) {
-      final siblings = await fetchSiblings(ref: ref, track: track);
+      final siblings =
+          await fetchSiblings(ref: ref, track: track, weakMatch: weakMatch);
 
       if (siblings.isEmpty) {
-        throw TrackNotFoundException(track);
+        throw TrackNotFoundError(track);
       }
 
       await SourceMatch.box.put(
@@ -119,6 +121,7 @@ class JioSaavnSourcedTrack extends SourcedTrack {
   static Future<List<SiblingType>> fetchSiblings({
     required Track track,
     required Ref ref,
+    bool weakMatch = false,
   }) async {
     final query = SourcedTrack.getSearchTerm(track);
 
@@ -126,9 +129,12 @@ class JioSaavnSourcedTrack extends SourcedTrack {
         await jiosaavnClient.search.songs(query, limit: 20);
 
     final trackArtistNames = track.artists?.map((ar) => ar.name).toList();
-    return results
+
+    final matchedResults = results
         .where(
           (s) {
+            s.name?.unescapeHtml().contains(track.name!) ?? false;
+
             final sameName = s.name?.unescapeHtml() == track.name;
             final artistNames = [
               s.primaryArtists,
@@ -139,12 +145,27 @@ class JioSaavnSourcedTrack extends SourcedTrack {
                   (artist) =>
                       trackArtistNames?.any((ar) => artist == ar) ?? false,
                 );
+            if (weakMatch) {
+              final containsName =
+                  s.name?.unescapeHtml().contains(track.name!) ?? false;
+              final containsPrimaryArtist = s.primaryArtists
+                  .unescapeHtml()
+                  .contains(trackArtistNames?.first ?? "");
+
+              return containsName && containsPrimaryArtist;
+            }
 
             return sameName && sameArtists;
           },
         )
         .map(toSiblingType)
         .toList();
+
+    if (weakMatch && matchedResults.isEmpty) {
+      return results.map(toSiblingType).toList();
+    }
+
+    return matchedResults;
   }
 
   @override

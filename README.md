@@ -13,6 +13,8 @@ Btw it's not just another Electron app 😉
 <a href="https://patreon.com/krtirtho"><img alt="Support me on Patron" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_vector.svg"></a>
 <a href="https://www.buymeacoffee.com/krtirtho"><img alt="Buy me a Coffee" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/buymeacoffee-singular_vector.svg"></a>
 
+[![HackerNews](https://hackerbadge.vercel.app/api?id=39066136&type=dark)](https://news.ycombinator.com/item?id=39066136)
+
 <a href="https://opencollective.com/spotube"><img src="https://opencollective.com/spotube/donate/button.png?color=blue" alt="Donate to our Open Collective" height="45"></a>
 
 ---
@@ -134,6 +136,15 @@ This handy table lists all the methods you can use to install Spotube:
       <a href="https://github.com/KRTirtho/spotube/releases/latest">
         <img width="220" alt="Tarball Download" src="https://user-images.githubusercontent.com/61944859/169456985-e0ba1fd4-10e8-4cc0-ab94-337acc6e0295.png">
       </a>
+    </td>
+  </tr>
+  <tr>
+    <td>Macos - <a href="https://brew.sh">Homebrew</a></td>
+    <td>
+<pre lang="bash">
+brew tap krtirtho/apps
+brew install --cask spotube
+</pre>   
     </td>
   </tr>
   <tr>

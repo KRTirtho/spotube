@@ -4,7 +4,7 @@ author: Kingkor Roy Tirtho
 ---
 
 <script lang="ts">
-	import { faLinux, faWindows } from '@fortawesome/free-brands-svg-icons';
+	import { faLinux, faWindows, faApple } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
 </script>
 
@@ -15,7 +15,7 @@ author: Kingkor Roy Tirtho
 
     ## <Fa class="inline" icon={faLinux} /> Linux
 
-### Flatpak
+### Flatpak📦
 
 Make sure [Flatpak](https://flatpak.org) is installed in your Linux device & Run the following command in the terminal:
 
@@ -23,7 +23,7 @@ Make sure [Flatpak](https://flatpak.org) is installed in your Linux device & Run
 $ flatpak install com.github.KRTirtho.Spotube
 ```
 
-### Arch User Repository (AUR)
+### Arch User Repository (AUR)♾️
 
 If you're an Arch Linux user, you can also install Spotube from AUR.
 Make sure you have `yay`/`pamac`/`paru` installed in your system. And Run the Following command in the Terminal:
@@ -40,9 +40,20 @@ $ pamac install spotube-bin
 $ paru -Sy spotube-bin
 ```
 
+## <Fa class="inline" icon={faApple} /> MacOS
+
+### Homebrew🍻
+
+Spotube can be installed through Homebrew. We host our own cask definition thus you'll need to add our tap first:
+
+```bash
+$ brew tap krtirtho/apps
+$ brew install --cask spotube
+```
+
 ## <Fa class="inline" icon={faWindows} color="#00A2F0" /> Windows
 
-### Chocolatey
+### Chocolatey🍫
 
 Spotube is available in [community.chocolatey.org](https://community.chocolatey.org) repo. If you have chocolatey install in your system just run following command in an Elevated Command Prompt or PowerShell:
 
@@ -50,7 +61,7 @@ Spotube is available in [community.chocolatey.org](https://community.chocolatey.
 $ choco install spotube
 ```
 
-### WinGet
+### WinGet💫
 
 Spotube is also available in the Official Windows PackageManager WinGet. Make sure you have WinGet installed in your Windows machine and run following in a Terminal:
 
@@ -58,7 +69,7 @@ Spotube is also available in the Official Windows PackageManager WinGet. Make su
 $ winget install --id KRTirtho.Spotube
 ```
 
-### Scoop
+### Scoop🥄
 
 Spotube is also available in [Scoop](https://scoop.sh) bucket. Make sure you have Scoop installed in your Windows machine and run following in a Terminal:
 

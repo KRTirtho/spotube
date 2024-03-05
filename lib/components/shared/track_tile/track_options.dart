@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
@@ -26,10 +27,12 @@ import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/search.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {
   album,
   share,
+  songlink,
   addToPlaylist,
   addToQueue,
   removeFromPlaylist,
@@ -165,6 +168,7 @@ class TrackOptions extends HookConsumerWidget {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final mediaQuery = MediaQuery.of(context);
     final router = GoRouter.of(context);
+    final ThemeData(:colorScheme) = Theme.of(context);
 
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playback = ref.watch(ProxyPlaylistNotifier.notifier);
@@ -275,6 +279,10 @@ class TrackOptions extends HookConsumerWidget {
             break;
           case TrackOptionValue.share:
             actionShare(context, track);
+            break;
+          case TrackOptionValue.songlink:
+            final url = "https://song.link/s/${track.id}";
+            await launchUrlString(url);
             break;
           case TrackOptionValue.details:
             showDialog(
@@ -417,6 +425,15 @@ class TrackOptions extends HookConsumerWidget {
               value: TrackOptionValue.share,
               leading: const Icon(SpotubeIcons.share),
               title: Text(context.l10n.share),
+            ),
+            PopSheetEntry(
+              value: TrackOptionValue.songlink,
+              leading: Assets.logos.songlinkTransparent.image(
+                width: 22,
+                height: 22,
+                color: colorScheme.onSurface.withOpacity(0.5),
+              ),
+              title: Text(context.l10n.song_link),
             ),
             PopSheetEntry(
               value: TrackOptionValue.details,

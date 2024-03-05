@@ -162,38 +162,47 @@ class RootApp extends HookConsumerWidget {
       }
     }
 
-    return Scaffold(
-      body: Sidebar(
-        selectedIndex: rootPaths[location],
-        onSelectedIndexChanged: onSelectIndexChanged,
-        child: child,
-      ),
-      extendBody: true,
-      drawerScrimColor: Colors.transparent,
-      endDrawer: DesktopTools.platform.isDesktop
-          ? Container(
-              constraints: const BoxConstraints(maxWidth: 800),
-              decoration: BoxDecoration(
-                boxShadow: theme.brightness == Brightness.light
-                    ? null
-                    : kElevationToShadow[8],
-              ),
-              margin: const EdgeInsets.only(
-                top: 40,
-                bottom: 100,
-              ),
-              child: const PlayerQueue(floating: true),
-            )
-          : null,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomPlayer(),
-          SpotubeNavigationBar(
-            selectedIndex: rootPaths[location],
-            onSelectedIndexChanged: onSelectIndexChanged,
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (rootPaths[location] != 0) {
+          onSelectIndexChanged(0);
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: Sidebar(
+          selectedIndex: rootPaths[location],
+          onSelectedIndexChanged: onSelectIndexChanged,
+          child: child,
+        ),
+        extendBody: true,
+        drawerScrimColor: Colors.transparent,
+        endDrawer: DesktopTools.platform.isDesktop
+            ? Container(
+                constraints: const BoxConstraints(maxWidth: 800),
+                decoration: BoxDecoration(
+                  boxShadow: theme.brightness == Brightness.light
+                      ? null
+                      : kElevationToShadow[8],
+                ),
+                margin: const EdgeInsets.only(
+                  top: 40,
+                  bottom: 100,
+                ),
+                child: const PlayerQueue(floating: true),
+              )
+            : null,
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BottomPlayer(),
+            SpotubeNavigationBar(
+              selectedIndex: rootPaths[location],
+              onSelectedIndexChanged: onSelectIndexChanged,
+            ),
+          ],
+        ),
       ),
     );
   }
