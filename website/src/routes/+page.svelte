@@ -62,8 +62,12 @@
 				<img width="160" alt="Download on Flathub" src="https://flathub.org/api/badge?locale=en" />
 			</a>
 		</div>
+		<br />
+		<a href="https://news.ycombinator.com/item?id=39066136" target="_blank">
+			<img src="https://hackerbadge.vercel.app/api?id=39066136" alt="HackerNews" />
+		</a>
 	</div>
-	<br /><br class="hidden md:block" /><br class="hidden md:block" />
+	<br class="hidden md:block" />
 	<div class="flex justify-center">
 		<a href="/downloads" class="flex gap-2 btn variant-filled-primary">
 			Download
