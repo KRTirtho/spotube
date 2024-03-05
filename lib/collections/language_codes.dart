@@ -353,10 +353,10 @@ abstract class LanguageLocals {
     //   name: "Kongo",
     //   nativeName: "KiKongo",
     // ),
-    // "ko": const ISOLanguageName(
-    //   name: "Korean",
-    //   nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
-    // ),
+    "ko": const ISOLanguageName(
+     name: "Korean",
+     nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
+    ),
     // "ku": const ISOLanguageName(
     //   name: "Kurdish",
     //   nativeName: "Kurdî, كوردی‎",
