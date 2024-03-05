@@ -1961,12 +1961,11 @@ packages:
   spotify:
     dependency: "direct main"
     description:
-      path: "."
-      ref: fix-spotify-precision
-      resolved-ref: "1ddea720130203021a815253e37ebe5c06845dd2"
-      url: "https://github.com/KRTirtho/spotify-dart.git"
-    source: git
-    version: "0.13.1"
+      name: spotify
+      sha256: "2308a84511c18ec1e72515a57e28abb1467389549d571c460732b4538c2e34de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.3"
   sqflite:
     dependency: transitive
     description:

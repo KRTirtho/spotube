@@ -89,10 +89,6 @@ dependencies:
   shared_preferences: ^2.2.2
   skeleton_text: ^3.0.1
   smtc_windows: ^0.1.1
-  spotify:
-    git:
-      url: https://github.com/KRTirtho/spotify-dart.git
-      ref: fix-spotify-precision
   stroke_text: ^0.0.2
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
@@ -129,6 +125,7 @@ dependencies:
   flutter_sharing_intent: ^1.1.0
   flutter_broadcasts: ^0.4.0
   freezed_annotation: ^2.4.1
+  spotify: ^0.13.3
 
 dev_dependencies:
   build_runner: ^2.3.2
