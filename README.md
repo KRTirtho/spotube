@@ -137,6 +137,15 @@ This handy table lists all the methods you can use to install Spotube:
     </td>
   </tr>
   <tr>
+    <td>Macos - <a href="https://brew.sh">Homebrew</a></td>
+    <td>
+<pre lang="bash">
+brew tap krtirtho/apps
+brew install --cask spotube
+</pre>   
+    </td>
+  </tr>
+  <tr>
     <td>Windows - <a href="https://chocolatey.org">Chocolatey</a></td>
     <td>
       <p><code>choco install spotube</code></p>
