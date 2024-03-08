@@ -163,7 +163,7 @@
   "add_spotify_credentials": "Başlamak için spotify kimlik bilgilerinizi ekleyin",
   "credentials_will_not_be_shared_disclaimer": "Endişelenmeyin, kimlik bilgilerinizden hiçbiri toplanmayacak veya kimseyle paylaşılmayacak",
   "know_how_to_login": "Bunu nasıl yapacağınızı bilmiyor musunuz?",
-  "follow_step_by_step_guide": "Adım Adım kılavuzunu takip edin",
+  "follow_step_by_step_guide": "Adım Adım kılavuzu takip edin",
   "spotify_cookie": "Spotify {name} Çerezi",
   "cookie_name_cookie": "{name} Çerezi",
   "fill_in_all_fields": "Lütfen tüm alanları doldurun",
