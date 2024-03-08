@@ -19,6 +19,8 @@ void useDeepLinking(WidgetRef ref) {
   final spotify = ref.watch(spotifyProvider);
   final queryClient = useQueryClient();
 
+  final router = ref.watch(routerProvider);
+
   useEffect(() {
     void uriListener(List<SharedFile> files) async {
       for (final file in files) {

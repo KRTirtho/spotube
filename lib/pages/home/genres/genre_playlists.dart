@@ -18,8 +18,7 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 class GenrePlaylistsPage extends HookConsumerWidget {
   final Category category;
-  const GenrePlaylistsPage({Key? key, required this.category})
-      : super(key: key);
+  const GenrePlaylistsPage({super.key, required this.category});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -51,123 +50,118 @@ class GenrePlaylistsPage extends HookConsumerWidget {
             )
           : null,
       extendBodyBehindAppBar: true,
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          SliverAppBar(
-            automaticallyImplyLeading: DesktopTools.platform.isMobile,
-            expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
-            pinned: true,
-            floating: false,
-            title: const Text(""),
-            backgroundColor: Colors.brown.withOpacity(0.7),
-            flexibleSpace: FlexibleSpaceBar(
-              stretchModes: const [
-                StretchMode.zoomBackground,
-                StretchMode.blurBackground,
-              ],
-              background: DecoratedBox(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: UniversalImage.imageProvider(
-                      category.icons!.first.url!,
-                    ),
-                    fit: BoxFit.cover,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: UniversalImage.imageProvider(category.icons!.first.url!),
+            alignment: Alignment.topCenter,
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.5),
+              BlendMode.darken,
+            ),
+            repeat: ImageRepeat.noRepeat,
+            matchTextDirection: true,
+          ),
+        ),
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverAppBar(
+              automaticallyImplyLeading: DesktopTools.platform.isMobile,
+              expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
+              title: const Text(""),
+              backgroundColor: Colors.transparent,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: DesktopTools.platform.isDesktop,
+                title: Text(
+                  category.name!,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    letterSpacing: 3,
+                    shadows: [
+                      const Shadow(
+                        offset: Offset(-1.5, -1.5),
+                        color: Colors.black54,
+                      ),
+                      const Shadow(
+                        offset: Offset(1.5, -1.5),
+                        color: Colors.black54,
+                      ),
+                      const Shadow(
+                        offset: Offset(1.5, 1.5),
+                        color: Colors.black54,
+                      ),
+                      const Shadow(
+                        offset: Offset(-1.5, 1.5),
+                        color: Colors.black54,
+                      ),
+                    ],
                   ),
                 ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: const ColoredBox(color: Colors.transparent),
-                ),
+                collapseMode: CollapseMode.parallax,
               ),
-              centerTitle: DesktopTools.platform.isDesktop,
-              title: Text(
-                category.name!,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
-                  letterSpacing: 3,
-                  shadows: [
-                    const Shadow(
-                      offset: Offset(-1.5, -1.5),
-                      color: Colors.black54,
-                    ),
-                    const Shadow(
-                      offset: Offset(1.5, -1.5),
-                      color: Colors.black54,
-                    ),
-                    const Shadow(
-                      offset: Offset(1.5, 1.5),
-                      color: Colors.black54,
-                    ),
-                    const Shadow(
-                      offset: Offset(-1.5, 1.5),
-                      color: Colors.black54,
-                    ),
-                  ],
-                ),
-              ),
-              collapseMode: CollapseMode.parallax,
             ),
-          ),
-          const SliverGap(20),
-          SliverSafeArea(
-            top: false,
-            sliver: SliverPadding(
-              padding: EdgeInsets.symmetric(
-                horizontal: mediaQuery.mdAndDown ? 12 : 24,
-              ),
-              sliver: playlists.isEmpty
-                  ? Skeletonizer.sliver(
-                      child: SliverToBoxAdapter(
-                        child: Wrap(
-                          spacing: 12,
-                          runSpacing: 12,
-                          children: List.generate(
-                            6,
-                            (index) => PlaylistCard(FakeData.playlist),
+            const SliverGap(20),
+            SliverSafeArea(
+              top: false,
+              sliver: SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: mediaQuery.mdAndDown ? 12 : 24,
+                ),
+                sliver: playlists.isEmpty
+                    ? Skeletonizer.sliver(
+                        child: SliverToBoxAdapter(
+                          child: Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: List.generate(
+                              6,
+                              (index) => PlaylistCard(FakeData.playlist),
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  : SliverGrid.builder(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 190,
-                        mainAxisExtent: mediaQuery.mdAndDown ? 225 : 250,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      itemCount: playlists.length + 1,
-                      itemBuilder: (context, index) {
-                        final playlist = playlists.elementAtOrNull(index);
+                      )
+                    : SliverGrid.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 190,
+                          mainAxisExtent: mediaQuery.mdAndDown ? 225 : 250,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
+                        itemCount: playlists.length + 1,
+                        itemBuilder: (context, index) {
+                          final playlist = playlists.elementAtOrNull(index);
 
-                        if (playlist == null) {
-                          if (!playlistsQuery.hasNextPage) {
-                            return const SizedBox.shrink();
+                          if (playlist == null) {
+                            if (!playlistsQuery.hasNextPage) {
+                              return const SizedBox.shrink();
+                            }
+                            return Skeletonizer(
+                              enabled: true,
+                              child: Waypoint(
+                                controller: scrollController,
+                                isGrid: true,
+                                onTouchEdge: () async {
+                                  if (playlistsQuery.hasNextPage) {
+                                    await playlistsQuery.fetchNext();
+                                  }
+                                },
+                                child: PlaylistCard(FakeData.playlist),
+                              ),
+                            );
                           }
-                          return Skeletonizer(
-                            enabled: true,
-                            child: Waypoint(
-                              controller: scrollController,
-                              isGrid: true,
-                              onTouchEdge: () async {
-                                if (playlistsQuery.hasNextPage) {
-                                  await playlistsQuery.fetchNext();
-                                }
-                              },
-                              child: PlaylistCard(FakeData.playlist),
-                            ),
-                          );
-                        }
 
-                        return Skeleton.keep(
-                          child: PlaylistCard(playlist),
-                        );
-                      },
-                    ),
+                          return Skeleton.keep(
+                            child: PlaylistCard(playlist),
+                          );
+                        },
+                      ),
+              ),
             ),
-          ),
-          const SliverGap(20),
-        ],
+            const SliverGap(20),
+          ],
+        ),
       ),
     );
   }

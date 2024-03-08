@@ -27,7 +27,7 @@ class LibraryPage extends HookConsumerWidget {
             leading: ThemedButtonsTabBar(
               tabs: [
                 Tab(text: "  ${context.l10n.playlists}  "),
-                Tab(text: "  ${context.l10n.tracks}  "),
+                Tab(text: "  ${context.l10n.local_tracks}  "),
                 Tab(
                   child: Badge(
                     isLabelVisible: downloadingCount > 0,

@@ -123,6 +123,10 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     audioPlayer.setAudioNormalization(normalize);
   }
 
+  void setEndlessPlayback(bool endless) {
+    state = state.copyWith(endlessPlayback: endless);
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 

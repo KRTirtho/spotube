@@ -1,15 +1,21 @@
+import 'dart:io';
+
+import 'package:http/http.dart';
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
+import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/source_map.dart';
 import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 abstract class SourcedTrack extends Track {
   final SourceMap source;
@@ -101,9 +107,8 @@ abstract class SourcedTrack extends Track {
     required Track track,
     required Ref ref,
   }) async {
+    final preferences = ref.read(userPreferencesProvider);
     try {
-      final preferences = ref.read(userPreferencesProvider);
-
       return switch (preferences.audioSource) {
         AudioSource.piped =>
           await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
@@ -112,8 +117,35 @@ abstract class SourcedTrack extends Track {
         AudioSource.jiosaavn =>
           await JioSaavnSourcedTrack.fetchFromTrack(track: track, ref: ref),
       };
+    } on TrackNotFoundError catch (_) {
+      return switch (preferences.audioSource) {
+        AudioSource.piped ||
+        AudioSource.youtube =>
+          await JioSaavnSourcedTrack.fetchFromTrack(
+            track: track,
+            ref: ref,
+            weakMatch: true,
+          ),
+        AudioSource.jiosaavn =>
+          await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
+      };
+    } on HttpClientClosedException catch (_) {
+      return await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref);
     } catch (e) {
-      return YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref);
+      if (e is DioException || e is ClientException || e is SocketException) {
+        if (preferences.audioSource == AudioSource.jiosaavn) {
+          return await JioSaavnSourcedTrack.fetchFromTrack(
+            track: track,
+            ref: ref,
+            weakMatch: true,
+          );
+        }
+        return await JioSaavnSourcedTrack.fetchFromTrack(
+          track: track,
+          ref: ref,
+        );
+      }
+      rethrow;
     }
   }
 

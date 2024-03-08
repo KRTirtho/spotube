@@ -49,6 +49,11 @@ class SortTracksDropdown extends StatelessWidget {
             title: Text(context.l10n.sort_oldest),
           ),
           PopSheetEntry(
+            value: SortBy.duration,
+            enabled: value != SortBy.duration,
+            title: Text(context.l10n.sort_duration),
+          ),
+          PopSheetEntry(
             value: SortBy.artist,
             enabled: value != SortBy.artist,
             title: Text(context.l10n.sort_artist),

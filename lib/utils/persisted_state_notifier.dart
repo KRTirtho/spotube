@@ -119,7 +119,9 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   Future<void> _load() async {
     final json = await box.get(cacheKey);
 
-    if (json != null) {
+    if (json != null ||
+        (json is Map && json.entries.isNotEmpty) ||
+        (json is List && json.isNotEmpty)) {
       state = await fromJson(castNestedJson(json));
     }
   }

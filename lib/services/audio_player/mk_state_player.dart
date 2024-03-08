@@ -1,8 +1,11 @@
 import 'dart:async';
-
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:flutter_broadcasts/flutter_broadcasts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:audio_session/audio_session.dart';
 // ignore: implementation_imports
 import 'package:spotube/services/audio_player/playback_state.dart';
 
@@ -21,6 +24,9 @@ class MkPlayerWithState extends Player {
 
   Playlist? _playlist;
   List<Media>? _tempMedias;
+  int _androidAudioSessionId = 0;
+  String _packageName = "";
+  AndroidAudioManager? _androidAudioManager;
 
   MkPlayerWithState({super.configuration})
       : _playerStateStream = StreamController.broadcast(),
@@ -64,6 +70,39 @@ class MkPlayerWithState extends Player {
         Catcher2.reportCheckedError('[MediaKitError] \n$event', null);
       }),
     ];
+    PackageInfo.fromPlatform().then((packageInfo) {
+      _packageName = packageInfo.packageName;
+    });
+    if (DesktopTools.platform.isAndroid) {
+      _androidAudioManager = AndroidAudioManager();
+      AudioSession.instance.then((s) async {
+        _androidAudioSessionId =
+            await _androidAudioManager!.generateAudioSessionId();
+        notifyAudioSessionUpdate(true);
+
+        await nativePlayer.setProperty(
+          "audiotrack-session-id",
+          _androidAudioSessionId.toString(),
+        );
+        await nativePlayer.setProperty("ao", "audiotrack,opensles,");
+      });
+    }
+  }
+
+  Future<void> notifyAudioSessionUpdate(bool active) async {
+    if (DesktopTools.platform.isAndroid) {
+      sendBroadcast(
+        BroadcastMessage(
+          name: active
+              ? "android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION"
+              : "android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION",
+          data: {
+            "android.media.extra.AUDIO_SESSION": _androidAudioSessionId,
+            "android.media.extra.PACKAGE_NAME": _packageName
+          },
+        ),
+      );
+    }
   }
 
   bool get shuffled => _shuffled;
@@ -140,10 +179,11 @@ class MkPlayerWithState extends Player {
   }
 
   @override
-  Future<void> dispose() {
+  Future<void> dispose() async {
     for (var element in _subscriptions) {
       element.cancel();
     }
+    await notifyAudioSessionUpdate(false);
     return super.dispose();
   }
 

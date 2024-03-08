@@ -254,7 +254,7 @@
   "audio_source": "Ses Kaynağı",
   "ok": "Tamam",
   "failed_to_encrypt": "Şifrelenemedi",
-  "encryption_failed_warning": "Spotube, verilerinizi güvenli bir şekilde saklamak için şifreleme kullanır. Ama başaramadı. Bu yüzden güvensiz depolamaya geri dönecek\nLinux kullanıyorsanız, lütfen herhangi bir gizli servisin (gnome - anahtarlık, kde - cüzdan, keepassxc vb.) yüklü olduğundan emin olun",
+  "encryption_failed_warning": "Spotube, verilerinizi güvenli bir şekilde saklamak için şifreleme kullanır. Ama başarısız oldu. Bu yüzden güvensiz depolamaya geri dönecek\nLinux kullanıyorsanız, lütfen herhangi bir gizli servisin (gnome - anahtarlık, kde - cüzdan, keepassxc vb.) yüklü olduğundan emin olun",
   "querying_info": "Bilgi sorgulanıyor...",
   "piped_api_down": "Borulu API kapalı",
   "piped_down_error_instructions": "Borulu örnek {pipedInstance} şu anda kapalı\n\nÖrneği değiştirin veya 'API türünü' resmi YouTube API'si olarak değiştirin\n\nDeğişiklikten sonra uygulamayı yeniden başlattığınızdan emin olun",
@@ -286,5 +286,5 @@
   "genres": "Türler",
   "explore_genres": "Türleri Keşfet",
   "friends": "Arkadaşlar",
-  "no_lyrics_available": "Üzgünüz, bu parçanın sözleri bulunamıyor"
+  "no_lyrics_available": "Üzgünüz, bu parça için şarkı sözleri bulunamıyor",
 }

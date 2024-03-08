@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 
 part 'user_preferences_state.g.dart';
+part 'user_preferences_state.freezed.dart';
 
 @JsonEnum()
 enum LayoutMode {
@@ -53,40 +54,48 @@ enum SearchMode {
   }
 }
 
-@JsonSerializable()
-final class UserPreferences {
-  @JsonKey(
-    defaultValue: SourceQualities.high,
-    unknownEnumValue: SourceQualities.high,
-  )
-  final SourceQualities audioQuality;
+@freezed
+class UserPreferences with _$UserPreferences {
+  const factory UserPreferences({
+    @Default(SourceQualities.high) SourceQualities audioQuality,
+    @Default(true) bool albumColorSync,
+    @Default(false) bool amoledDarkTheme,
+    @Default(true) bool checkUpdate,
+    @Default(false) bool normalizeAudio,
+    @Default(true) bool showSystemTrayIcon,
+    @Default(false) bool skipNonMusic,
+    @Default(false) bool systemTitleBar,
+    @Default(CloseBehavior.minimizeToTray) CloseBehavior closeBehavior,
+    @Default(SpotubeColor(0xFF2196F3, name: "Blue"))
+    @JsonKey(
+      fromJson: UserPreferences._accentColorSchemeFromJson,
+      toJson: UserPreferences._accentColorSchemeToJson,
+      readValue: UserPreferences._accentColorSchemeReadValue,
+    )
+    SpotubeColor accentColorScheme,
+    @Default(LayoutMode.adaptive) LayoutMode layoutMode,
+    @Default(Locale("system", "system"))
+    @JsonKey(
+      fromJson: UserPreferences._localeFromJson,
+      toJson: UserPreferences._localeToJson,
+      readValue: UserPreferences._localeReadValue,
+    )
+    Locale locale,
+    @Default(Market.US) Market recommendationMarket,
+    @Default(SearchMode.youtube) SearchMode searchMode,
+    @Default("") String downloadLocation,
+    @Default("https://pipedapi.kavin.rocks") String pipedInstance,
+    @Default(ThemeMode.system) ThemeMode themeMode,
+    @Default(AudioSource.youtube) AudioSource audioSource,
+    @Default(SourceCodecs.weba) SourceCodecs streamMusicCodec,
+    @Default(SourceCodecs.m4a) SourceCodecs downloadMusicCodec,
+    @Default(true) bool discordPresence,
+    @Default(true) bool endlessPlayback,
+  }) = _UserPreferences;
+  factory UserPreferences.fromJson(Map<String, dynamic> json) =>
+      _$UserPreferencesFromJson(json);
 
-  @JsonKey(defaultValue: true)
-  final bool albumColorSync;
-
-  @JsonKey(defaultValue: false)
-  final bool amoledDarkTheme;
-
-  @JsonKey(defaultValue: true)
-  final bool checkUpdate;
-
-  @JsonKey(defaultValue: false)
-  final bool normalizeAudio;
-
-  @JsonKey(defaultValue: true)
-  final bool showSystemTrayIcon;
-
-  @JsonKey(defaultValue: true)
-  final bool skipNonMusic;
-
-  @JsonKey(defaultValue: false)
-  final bool systemTitleBar;
-
-  @JsonKey(
-    defaultValue: CloseBehavior.minimizeToTray,
-    unknownEnumValue: CloseBehavior.minimizeToTray,
-  )
-  final CloseBehavior closeBehavior;
+  factory UserPreferences.withDefaults() => UserPreferences.fromJson({});
 
   static SpotubeColor _accentColorSchemeFromJson(Map<String, dynamic> json) {
     return SpotubeColor.fromString(json["color"]);
@@ -104,23 +113,6 @@ final class UserPreferences {
   static Map<String, dynamic> _accentColorSchemeToJson(SpotubeColor color) {
     return {"color": color.toString()};
   }
-
-  static SpotubeColor _defaultAccentColorScheme() =>
-      const SpotubeColor(0xFF2196F3, name: "Blue");
-
-  @JsonKey(
-    defaultValue: UserPreferences._defaultAccentColorScheme,
-    fromJson: UserPreferences._accentColorSchemeFromJson,
-    toJson: UserPreferences._accentColorSchemeToJson,
-    readValue: UserPreferences._accentColorSchemeReadValue,
-  )
-  final SpotubeColor accentColorScheme;
-
-  @JsonKey(
-    defaultValue: LayoutMode.adaptive,
-    unknownEnumValue: LayoutMode.adaptive,
-  )
-  final LayoutMode layoutMode;
 
   static Locale _localeFromJson(Map<String, dynamic> json) {
     return Locale(json["languageCode"], json["countryCode"]);
@@ -144,145 +136,5 @@ final class UserPreferences {
     }
 
     return json[key] as Map<String, dynamic>?;
-  }
-
-  static Locale _defaultLocaleValue() => const Locale("system", "system");
-
-  @JsonKey(
-    defaultValue: UserPreferences._defaultLocaleValue,
-    toJson: UserPreferences._localeToJson,
-    fromJson: UserPreferences._localeFromJson,
-    readValue: UserPreferences._localeReadValue,
-  )
-  final Locale locale;
-
-  @JsonKey(
-    defaultValue: Market.US,
-    unknownEnumValue: Market.US,
-  )
-  final Market recommendationMarket;
-
-  @JsonKey(
-    defaultValue: SearchMode.youtube,
-    unknownEnumValue: SearchMode.youtube,
-  )
-  final SearchMode searchMode;
-
-  @JsonKey(defaultValue: "")
-  final String downloadLocation;
-
-  @JsonKey(defaultValue: "https://pipedapi.kavin.rocks")
-  final String pipedInstance;
-
-  @JsonKey(
-    defaultValue: ThemeMode.system,
-    unknownEnumValue: ThemeMode.system,
-  )
-  final ThemeMode themeMode;
-
-  @JsonKey(
-    defaultValue: AudioSource.youtube,
-    unknownEnumValue: AudioSource.youtube,
-  )
-  final AudioSource audioSource;
-
-  @JsonKey(
-    defaultValue: SourceCodecs.weba,
-    unknownEnumValue: SourceCodecs.weba,
-  )
-  final SourceCodecs streamMusicCodec;
-
-  @JsonKey(
-    defaultValue: SourceCodecs.m4a,
-    unknownEnumValue: SourceCodecs.m4a,
-  )
-  final SourceCodecs downloadMusicCodec;
-
-  @JsonKey(defaultValue: true)
-  final bool discordPresence;
-
-  UserPreferences({
-    required this.audioQuality,
-    required this.albumColorSync,
-    required this.amoledDarkTheme,
-    required this.checkUpdate,
-    required this.normalizeAudio,
-    required this.showSystemTrayIcon,
-    required this.skipNonMusic,
-    required this.systemTitleBar,
-    required this.closeBehavior,
-    required this.accentColorScheme,
-    required this.layoutMode,
-    required this.locale,
-    required this.recommendationMarket,
-    required this.searchMode,
-    required this.downloadLocation,
-    required this.pipedInstance,
-    required this.themeMode,
-    required this.audioSource,
-    required this.streamMusicCodec,
-    required this.downloadMusicCodec,
-    required this.discordPresence,
-  });
-
-  factory UserPreferences.withDefaults() {
-    return UserPreferences.fromJson({});
-  }
-
-  factory UserPreferences.fromJson(Map<String, dynamic> json) {
-    return _$UserPreferencesFromJson(json);
-  }
-
-  Map<String, dynamic> toJson() {
-    return _$UserPreferencesToJson(this);
-  }
-
-  UserPreferences copyWith({
-    ThemeMode? themeMode,
-    SpotubeColor? accentColorScheme,
-    bool? albumColorSync,
-    bool? checkUpdate,
-    SourceQualities? audioQuality,
-    String? downloadLocation,
-    LayoutMode? layoutMode,
-    CloseBehavior? closeBehavior,
-    bool? showSystemTrayIcon,
-    Locale? locale,
-    String? pipedInstance,
-    SearchMode? searchMode,
-    bool? skipNonMusic,
-    AudioSource? audioSource,
-    Market? recommendationMarket,
-    bool? saveTrackLyrics,
-    bool? amoledDarkTheme,
-    bool? normalizeAudio,
-    SourceCodecs? downloadMusicCodec,
-    SourceCodecs? streamMusicCodec,
-    bool? systemTitleBar,
-    bool? discordPresence,
-  }) {
-    return UserPreferences(
-      themeMode: themeMode ?? this.themeMode,
-      accentColorScheme: accentColorScheme ?? this.accentColorScheme,
-      albumColorSync: albumColorSync ?? this.albumColorSync,
-      checkUpdate: checkUpdate ?? this.checkUpdate,
-      audioQuality: audioQuality ?? this.audioQuality,
-      downloadLocation: downloadLocation ?? this.downloadLocation,
-      layoutMode: layoutMode ?? this.layoutMode,
-      closeBehavior: closeBehavior ?? this.closeBehavior,
-      showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
-      locale: locale ?? this.locale,
-      pipedInstance: pipedInstance ?? this.pipedInstance,
-      searchMode: searchMode ?? this.searchMode,
-      skipNonMusic: skipNonMusic ?? this.skipNonMusic,
-      audioSource: audioSource ?? this.audioSource,
-      recommendationMarket: recommendationMarket ?? this.recommendationMarket,
-      amoledDarkTheme: amoledDarkTheme ?? this.amoledDarkTheme,
-      downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
-      normalizeAudio: normalizeAudio ?? this.normalizeAudio,
-      streamMusicCodec: streamMusicCodec ?? this.streamMusicCodec,
-      systemTitleBar: systemTitleBar ?? this.systemTitleBar,
-      discordPresence: discordPresence ?? this.discordPresence,
-    );
   }
 }

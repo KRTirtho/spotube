@@ -15,8 +15,6 @@ class InterScrollbar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     if (DesktopTools.platform.isDesktop) return child;
 
     return DraggableScrollbar.semicircle(

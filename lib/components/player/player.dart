@@ -24,7 +24,9 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PlayerView extends HookConsumerWidget {
   final PanelController panelController;
@@ -94,10 +96,10 @@ class PlayerView extends HookConsumerWidget {
 
     final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
 
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) async {
-        panelController.close();
+    return WillPopScope(
+      onWillPop: () async {
+        await panelController.close();
+        return false;
       },
       child: IconTheme(
         data: theme.iconTheme.copyWith(color: bodyTextColor),
@@ -137,11 +139,31 @@ class PlayerView extends HookConsumerWidget {
                       onPressed: panelController.close,
                     ),
                     actions: [
+                      if (currentTrack is YoutubeSourcedTrack)
+                        TextButton.icon(
+                          icon: Assets.logos.songlinkTransparent.image(
+                            width: 20,
+                            height: 20,
+                            color: bodyTextColor,
+                          ),
+                          label: Text(context.l10n.song_link),
+                          style: TextButton.styleFrom(
+                            foregroundColor: bodyTextColor,
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            final url =
+                                "https://song.link/s/${currentTrack.id}";
+
+                            launchUrlString(url);
+                          },
+                        ),
                       IconButton(
                         icon: const Icon(SpotubeIcons.info, size: 18),
                         tooltip: context.l10n.details,
                         style: IconButton.styleFrom(
-                            foregroundColor: bodyTextColor),
+                          foregroundColor: bodyTextColor,
+                        ),
                         onPressed: currentTrack == null
                             ? null
                             : () {
