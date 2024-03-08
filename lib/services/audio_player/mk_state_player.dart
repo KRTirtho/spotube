@@ -17,13 +17,6 @@ class MkPlayerWithState extends Player {
   final StreamController<bool> _shuffleStream;
   final StreamController<PlaylistMode> _loopModeStream;
 
-  static const String EXTRA_PACKAGE_NAME = "android.media.extra.PACKAGE_NAME";
-  static const String EXTRA_AUDIO_SESSION = "android.media.extra.AUDIO_SESSION";
-  static const String ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION =
-      "android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION";
-  static const String ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION =
-      "android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION";
-
   late final List<StreamSubscription> _subscriptions;
 
   bool _shuffled;
@@ -87,23 +80,28 @@ class MkPlayerWithState extends Player {
             await _androidAudioManager!.generateAudioSessionId();
         notifyAudioSessionUpdate(true);
 
-        nativePlayer.setProperty(
-            "audiotrack-session-id", _androidAudioSessionId.toString());
-        nativePlayer.setProperty("ao", "audiotrack,opensles,");
+        await nativePlayer.setProperty(
+          "audiotrack-session-id",
+          _androidAudioSessionId.toString(),
+        );
+        await nativePlayer.setProperty("ao", "audiotrack,opensles,");
       });
     }
   }
 
   Future<void> notifyAudioSessionUpdate(bool active) async {
     if (DesktopTools.platform.isAndroid) {
-      sendBroadcast(BroadcastMessage(
+      sendBroadcast(
+        BroadcastMessage(
           name: active
-              ? ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION
-              : ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION,
+              ? "android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION"
+              : "android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION",
           data: {
-            EXTRA_AUDIO_SESSION: _androidAudioSessionId,
-            EXTRA_PACKAGE_NAME: _packageName
-          }));
+            "android.media.extra.AUDIO_SESSION": _androidAudioSessionId,
+            "android.media.extra.PACKAGE_NAME": _packageName
+          },
+        ),
+      );
     }
   }
 

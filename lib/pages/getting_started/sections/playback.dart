@@ -6,6 +6,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/string.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 
@@ -87,7 +88,7 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
                         audioSourceToIconMap[source]!,
                         const Gap(8),
                         Text(
-                          source.name,
+                          source.name.capitalize(),
                           style: textTheme.bodySmall!.copyWith(
                             color: preferences.audioSource == source
                                 ? colorScheme.primary
