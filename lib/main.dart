@@ -70,7 +70,6 @@ Future<void> main(List<String> rawArgs) async {
   }
 
   await KVStoreService.initialize();
-  KVStoreService.doneGettingStarted = false;
 
   final hiveCacheDir =
       kIsWeb ? null : (await getApplicationSupportDirectory()).path;

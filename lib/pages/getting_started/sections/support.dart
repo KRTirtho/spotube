@@ -101,9 +101,11 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: () {
-                      KVStoreService.doneGettingStarted = true;
-                      context.go("/");
+                    onPressed: () async {
+                      await KVStoreService.setDoneGettingStarted(true);
+                      if (context.mounted) {
+                        context.go("/");
+                      }
                     },
                   ),
                 ),
@@ -115,9 +117,11 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     backgroundColor: const Color(0xff1db954),
                     foregroundColor: Colors.white,
                   ),
-                  onPressed: () {
-                    KVStoreService.doneGettingStarted = true;
-                    context.push("/login");
+                  onPressed: () async {
+                    await KVStoreService.setDoneGettingStarted(true);
+                    if (context.mounted) {
+                      context.push("/login");
+                    }
                   },
                 ),
               ],

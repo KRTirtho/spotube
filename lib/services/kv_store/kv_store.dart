@@ -10,6 +10,6 @@ abstract class KVStoreService {
 
   static bool get doneGettingStarted =>
       sharedPreferences.getBool('doneGettingStarted') ?? false;
-  static set doneGettingStarted(bool value) =>
-      sharedPreferences.setBool('doneGettingStarted', value);
+  static Future<void> setDoneGettingStarted(bool value) async =>
+      await sharedPreferences.setBool('doneGettingStarted', value);
 }
