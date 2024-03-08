@@ -21,8 +21,8 @@ class AlbumCard extends HookConsumerWidget {
   final AlbumSimple album;
   const AlbumCard(
     this.album, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
