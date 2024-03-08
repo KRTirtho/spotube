@@ -435,11 +435,6 @@ jobs:
             RELEASE.md5sum
             RELEASE.sha256sum
 
-      - name: Debug With SSH
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-
       - name: Upload Release Binaries (stable)
         if: ${{ !inputs.dry_run && inputs.channel == 'stable' }}
         uses: ncipollo/release-action@v1
