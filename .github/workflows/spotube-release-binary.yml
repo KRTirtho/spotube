@@ -181,7 +181,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v3
-        if: ${{ inputs.channel == 'release' }}
+        if: ${{ inputs.channel == 'stable' }}
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
