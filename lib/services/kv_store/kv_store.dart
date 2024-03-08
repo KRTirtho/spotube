@@ -12,4 +12,9 @@ abstract class KVStoreService {
       sharedPreferences.getBool('doneGettingStarted') ?? false;
   static Future<void> setDoneGettingStarted(bool value) async =>
       await sharedPreferences.setBool('doneGettingStarted', value);
+
+  static bool get askedForBatteryOptimization =>
+      sharedPreferences.getBool('askedForBatteryOptimization') ?? false;
+  static Future<void> setAskedForBatteryOptimization(bool value) async =>
+      await sharedPreferences.setBool('askedForBatteryOptimization', value);
 }
