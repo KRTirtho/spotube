@@ -143,6 +143,8 @@ dev_dependencies:
   pub_api_client: ^2.4.0
   pubspec_parse: ^1.2.2
   freezed: ^2.4.6
+  custom_lint: ^0.5.11
+  riverpod_lint: ^2.1.1
 
 dependency_overrides:
   system_tray: 2.0.2

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
@@ -135,21 +136,21 @@ Future<void> main(List<String> rawArgs) async {
     ),
     runAppFunction: () {
       runApp(
-        DevicePreview(
-          availableLocales: L10n.all,
-          enabled: false,
-          data: const DevicePreviewData(
-            isEnabled: false,
-            orientation: Orientation.portrait,
-          ),
-          builder: (context) {
-            return ProviderScope(
-              child: QueryClientProvider(
+        ProviderScope(
+          child: DevicePreview(
+            availableLocales: L10n.all,
+            enabled: false,
+            data: const DevicePreviewData(
+              isEnabled: false,
+              orientation: Orientation.portrait,
+            ),
+            builder: (context) {
+              return QueryClientProvider(
                 staleDuration: const Duration(minutes: 30),
                 child: const Spotube(),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       );
     },
@@ -157,7 +158,7 @@ Future<void> main(List<String> rawArgs) async {
 }
 
 class Spotube extends StatefulHookConsumerWidget {
-  const Spotube({Key? key}) : super(key: key);
+  const Spotube({super.key});
 
   @override
   SpotubeState createState() => SpotubeState();
