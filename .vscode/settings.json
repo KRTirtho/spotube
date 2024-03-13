@@ -2,6 +2,7 @@
   "cmake.configureOnOpen": false,
   "cSpell.words": [
     "acousticness",
+    "Buildless",
     "danceability",
     "instrumentalness",
     "Mpris",
