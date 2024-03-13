@@ -22,8 +22,7 @@ class FavoriteAlbumState extends PaginatedState<AlbumSimple> {
 }
 
 class FavoriteAlbumNotifier
-    extends PaginatedAsyncNotifier<AlbumSimple, FavoriteAlbumState>
-    with SpotifyMixin<FavoriteAlbumState> {
+    extends PaginatedAsyncNotifier<AlbumSimple, FavoriteAlbumState> {
   @override
   Future<List<AlbumSimple>> fetch(int offset, int limit) {
     return spotify.me
@@ -59,3 +58,8 @@ class FavoriteAlbumNotifier
     });
   }
 }
+
+final favoriteAlbumsProvider =
+    AsyncNotifierProvider<FavoriteAlbumNotifier, FavoriteAlbumState>(
+  () => FavoriteAlbumNotifier(),
+);
