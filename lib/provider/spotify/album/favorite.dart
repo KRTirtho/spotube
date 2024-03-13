@@ -5,18 +5,16 @@ class FavoriteAlbumState extends PaginatedState<AlbumSimple> {
     required super.items,
     required super.offset,
     required super.limit,
+    required super.hasMore,
   });
 
   @override
-  FavoriteAlbumState copyWith({
-    items,
-    offset,
-    limit,
-  }) {
+  FavoriteAlbumState copyWith({items, offset, limit, hasMore}) {
     return FavoriteAlbumState(
       items: items ?? this.items,
       offset: offset ?? this.offset,
       limit: limit ?? this.limit,
+      hasMore: hasMore ?? this.hasMore,
     );
   }
 }
@@ -34,10 +32,12 @@ class FavoriteAlbumNotifier
   @override
   build() async {
     ref.watch(spotifyProvider);
+    final items = await fetch(0, 20);
     return FavoriteAlbumState(
-      items: await fetch(0, 20),
+      items: items,
       offset: 0,
       limit: 20,
+      hasMore: items.length == 20,
     );
   }
 

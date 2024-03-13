@@ -1,7 +1,7 @@
 part of '../spotify.dart';
 
-class AlbumReleasesState extends PaginatedState<AlbumSimple> {
-  AlbumReleasesState({
+class ArtistAlbumsState extends PaginatedState<AlbumSimple> {
+  ArtistAlbumsState({
     required super.items,
     required super.offset,
     required super.limit,
@@ -9,13 +9,13 @@ class AlbumReleasesState extends PaginatedState<AlbumSimple> {
   });
 
   @override
-  AlbumReleasesState copyWith({
+  ArtistAlbumsState copyWith({
     List<AlbumSimple>? items,
     int? offset,
     int? limit,
     bool? hasMore,
   }) {
-    return AlbumReleasesState(
+    return ArtistAlbumsState(
       items: items ?? this.items,
       offset: offset ?? this.offset,
       limit: limit ?? this.limit,
@@ -24,27 +24,28 @@ class AlbumReleasesState extends PaginatedState<AlbumSimple> {
   }
 }
 
-class AlbumReleasesNotifier
-    extends PaginatedAsyncNotifier<AlbumSimple, AlbumReleasesState> {
-  AlbumReleasesNotifier() : super();
+class ArtistAlbumsNotifier extends FamilyPaginatedAsyncNotifier<AlbumSimple,
+    ArtistAlbumsState, String> {
+  ArtistAlbumsNotifier() : super();
 
   @override
-  fetch(int offset, int limit) async {
+  fetch(arg, offset, limit) async {
     final market = ref.read(userPreferencesProvider).recommendationMarket;
-    final albums = await spotify.browse
-        .newReleases(country: market)
+    final albums = await spotify.artists
+        .albums(arg, country: market)
         .getPage(offset, limit);
+
     return albums.items?.toList() ?? [];
   }
 
   @override
-  build() async {
+  build(arg) async {
     ref.watch(spotifyProvider);
     ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),
     );
-    final albums = await fetch(0, 20);
-    return AlbumReleasesState(
+    final albums = await fetch(arg, 0, 20);
+    return ArtistAlbumsState(
       items: albums,
       offset: 0,
       limit: 20,
@@ -53,7 +54,7 @@ class AlbumReleasesNotifier
   }
 }
 
-final albumReleasesProvider =
-    AsyncNotifierProvider<AlbumReleasesNotifier, AlbumReleasesState>(
-  () => AlbumReleasesNotifier(),
+final artistAlbumsProvider = AsyncNotifierProviderFamily<ArtistAlbumsNotifier,
+    ArtistAlbumsState, String>(
+  () => ArtistAlbumsNotifier(),
 );

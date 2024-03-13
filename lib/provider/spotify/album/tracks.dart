@@ -5,6 +5,7 @@ class AlbumTracksState extends PaginatedState<TrackSimple> {
     required super.items,
     required super.offset,
     required super.limit,
+    required super.hasMore,
   });
 
   @override
@@ -12,11 +13,13 @@ class AlbumTracksState extends PaginatedState<TrackSimple> {
     List<TrackSimple>? items,
     int? offset,
     int? limit,
+    bool? hasMore,
   }) {
     return AlbumTracksState(
       items: items ?? this.items,
       offset: offset ?? this.offset,
       limit: limit ?? this.limit,
+      hasMore: hasMore ?? this.hasMore,
     );
   }
 }
@@ -39,6 +42,7 @@ class AlbumTracksNotifier extends FamilyPaginatedAsyncNotifier<TrackSimple,
       items: tracks,
       offset: 0,
       limit: 20,
+      hasMore: tracks.length == 20,
     );
   }
 }

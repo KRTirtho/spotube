@@ -10,6 +10,13 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 part 'album/favorite.dart';
 part 'album/tracks.dart';
 part 'album/releases.dart';
+part 'album/is_saved.dart';
+
+part 'artist/artist.dart';
+part 'artist/is_following.dart';
+part 'artist/following.dart';
+part 'artist/top_tracks.dart';
+part 'artist/albums.dart';
 
 part 'utils/mixin.dart';
 part 'utils/state.dart';
