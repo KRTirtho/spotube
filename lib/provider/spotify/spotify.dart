@@ -43,6 +43,8 @@ part 'playlist/tracks.dart';
 part 'playlist/featured.dart';
 part 'playlist/generate.dart';
 
+part 'search/search.dart';
+
 part 'user/me.dart';
 
 part 'utils/mixin.dart';
