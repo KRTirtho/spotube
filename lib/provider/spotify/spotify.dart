@@ -13,6 +13,7 @@ import 'package:riverpod/src/async_notifier.dart';
 import 'package:spotube/extensions/map.dart';
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
+import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -46,6 +47,11 @@ part 'playlist/generate.dart';
 part 'search/search.dart';
 
 part 'user/me.dart';
+part 'user/friends.dart';
+
+part 'tracks/track.dart';
+
+part 'views/view.dart';
 
 part 'utils/mixin.dart';
 part 'utils/state.dart';
