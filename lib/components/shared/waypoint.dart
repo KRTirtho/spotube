@@ -11,12 +11,12 @@ class Waypoint extends HookWidget {
   final bool isGrid;
 
   const Waypoint({
-    Key? key,
+    super.key,
     required this.controller,
     this.isGrid = false,
     this.onTouchEdge,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

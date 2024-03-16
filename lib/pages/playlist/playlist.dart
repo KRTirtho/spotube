@@ -16,9 +16,9 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class PlaylistPage extends HookConsumerWidget {
   final PlaylistSimple playlist;
   const PlaylistPage({
-    Key? key,
+    super.key,
     required this.playlist,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

@@ -20,7 +20,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 class UserPlaylists extends HookConsumerWidget {
-  const UserPlaylists({Key? key}) : super(key: key);
+  const UserPlaylists({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

@@ -23,8 +23,8 @@ class HeartButton extends HookConsumerWidget {
     this.color,
     this.tooltip,
     this.icon,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -134,9 +134,9 @@ UseTrackToggleLike useTrackToggleLike(Track track, WidgetRef ref) {
 class TrackHeartButton extends HookConsumerWidget {
   final Track track;
   const TrackHeartButton({
-    Key? key,
+    super.key,
     required this.track,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -168,10 +168,10 @@ class PlaylistHeartButton extends HookConsumerWidget {
 
   const PlaylistHeartButton({
     required this.playlist,
-    Key? key,
+    super.key,
     this.icon,
     this.onData,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -217,8 +217,8 @@ class AlbumHeartButton extends HookConsumerWidget {
 
   const AlbumHeartButton({
     required this.album,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

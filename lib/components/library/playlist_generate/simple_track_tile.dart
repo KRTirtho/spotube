@@ -10,10 +10,10 @@ class SimpleTrackTile extends HookWidget {
   final Track track;
   final VoidCallback? onDelete;
   const SimpleTrackTile({
-    Key? key,
+    super.key,
     required this.track,
     this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

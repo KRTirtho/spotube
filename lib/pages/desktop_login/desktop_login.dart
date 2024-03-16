@@ -9,7 +9,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
 class DesktopLoginPage extends HookConsumerWidget {
-  const DesktopLoginPage({Key? key}) : super(key: key);
+  const DesktopLoginPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

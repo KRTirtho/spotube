@@ -53,13 +53,13 @@ class TrackOptions extends HookConsumerWidget {
   final ObjectRef<ValueChanged<RelativeRect>?>? showMenuCbRef;
   final Widget? icon;
   const TrackOptions({
-    Key? key,
+    super.key,
     required this.track,
     this.showMenuCbRef,
     this.userPlaylist = false,
     this.playlistId,
     this.icon,
-  }) : super(key: key);
+  });
 
   void actionShare(BuildContext context, Track track) {
     final data = "https://open.spotify.com/track/${track.id}";

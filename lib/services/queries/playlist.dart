@@ -16,6 +16,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 typedef RecommendationParameters = ({
   RecommendationAttribute acousticness,
   RecommendationAttribute danceability,
+  // ignore: non_constant_identifier_names
   RecommendationAttribute duration_ms,
   RecommendationAttribute energy,
   RecommendationAttribute instrumentalness,
@@ -26,6 +27,7 @@ typedef RecommendationParameters = ({
   RecommendationAttribute popularity,
   RecommendationAttribute speechiness,
   RecommendationAttribute tempo,
+  // ignore: non_constant_identifier_names
   RecommendationAttribute time_signature,
   RecommendationAttribute valence,
 });

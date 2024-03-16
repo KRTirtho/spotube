@@ -6,9 +6,9 @@ import 'package:spotube/services/queries/queries.dart';
 class ArtistPageRelatedArtists extends HookConsumerWidget {
   final String artistId;
   const ArtistPageRelatedArtists({
-    Key? key,
+    super.key,
     required this.artistId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

@@ -8,9 +8,9 @@ import 'package:spotube/services/queries/queries.dart';
 class LikedPlaylistPage extends HookConsumerWidget {
   final PlaylistSimple playlist;
   const LikedPlaylistPage({
-    Key? key,
+    super.key,
     required this.playlist,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

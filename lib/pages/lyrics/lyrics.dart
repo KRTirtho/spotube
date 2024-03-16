@@ -22,7 +22,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class LyricsPage extends HookConsumerWidget {
   final bool isModal;
-  const LyricsPage({Key? key, this.isModal = false}) : super(key: key);
+  const LyricsPage({super.key, this.isModal = false});
 
   @override
   Widget build(BuildContext context, ref) {

@@ -21,8 +21,8 @@ class PlayerControls extends HookConsumerWidget {
   PlayerControls({
     this.palette,
     this.compact = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final logger = getLogger(PlayerControls);
 
@@ -256,7 +256,7 @@ class PlayerControls extends HookConsumerWidget {
                           onPressed: playlist.isFetching == true
                               ? null
                               : () async {
-                                  switch (await audioPlayer.loopMode) {
+                                  switch (audioPlayer.loopMode) {
                                     case PlaybackLoopMode.all:
                                       audioPlayer
                                           .setLoopMode(PlaybackLoopMode.one);

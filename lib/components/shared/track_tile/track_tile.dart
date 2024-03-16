@@ -32,7 +32,7 @@ class TrackTile extends HookConsumerWidget {
   final List<Widget>? leadingActions;
 
   const TrackTile({
-    Key? key,
+    super.key,
     this.index,
     required this.track,
     this.selected = false,
@@ -42,7 +42,7 @@ class TrackTile extends HookConsumerWidget {
     this.userPlaylist = false,
     this.playlistId,
     this.leadingActions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

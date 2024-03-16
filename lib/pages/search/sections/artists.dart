@@ -11,9 +11,9 @@ class SearchArtistsSection extends HookConsumerWidget {
   final InfiniteQuery<List<Page<dynamic>>, dynamic, int> query;
 
   const SearchArtistsSection({
-    Key? key,
+    super.key,
     required this.query,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

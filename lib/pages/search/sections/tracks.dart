@@ -12,9 +12,9 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 class SearchTracksSection extends HookConsumerWidget {
   final InfiniteQuery<List<Page<dynamic>>, dynamic, int> query;
   const SearchTracksSection({
-    Key? key,
+    super.key,
     required this.query,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

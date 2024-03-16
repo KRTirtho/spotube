@@ -16,8 +16,8 @@ class PlaylistCard extends HookConsumerWidget {
   final PlaylistSimple playlist;
   const PlaylistCard(
     this.playlist, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   @override
   Widget build(BuildContext context, ref) {
     final playlistQueue = ref.watch(ProxyPlaylistNotifier.provider);

@@ -19,8 +19,8 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
   const PlaylistAddTrackDialog({
     required this.tracks,
     required this.openFromPlaylist,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

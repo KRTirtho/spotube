@@ -20,7 +20,7 @@ import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class UserAlbums extends HookConsumerWidget {
-  const UserAlbums({Key? key}) : super(key: key);
+  const UserAlbums({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

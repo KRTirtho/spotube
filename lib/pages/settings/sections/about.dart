@@ -11,7 +11,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsAboutSection extends HookConsumerWidget {
-  const SettingsAboutSection({Key? key}) : super(key: key);
+  const SettingsAboutSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

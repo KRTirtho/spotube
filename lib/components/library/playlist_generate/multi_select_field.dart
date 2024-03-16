@@ -25,7 +25,7 @@ class MultiSelectField<T> extends HookWidget {
   final bool enabled;
 
   const MultiSelectField({
-    Key? key,
+    super.key,
     required this.options,
     required this.selectedOptions,
     required this.getValueForOption,
@@ -36,7 +36,7 @@ class MultiSelectField<T> extends HookWidget {
     this.dialogTitle,
     this.helperText,
     this.enabled = true,
-  }) : super(key: key);
+  });
 
   Widget defaultSelectedOptionBuilder(T option) {
     return Chip(
@@ -134,14 +134,14 @@ class _MultiSelectDialog<T> extends HookWidget {
   final String? helperText;
 
   const _MultiSelectDialog({
-    Key? key,
+    super.key,
     required this.dialogTitle,
     required this.options,
     required this.getValueForOption,
     this.optionBuilder,
     this.initialSelection = const [],
     this.helperText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

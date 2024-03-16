@@ -18,13 +18,14 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate_result.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/queries/playlist.dart';
 import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 
 class PlaylistGeneratorPage extends HookConsumerWidget {
-  const PlaylistGeneratorPage({Key? key}) : super(key: key);
+  const PlaylistGeneratorPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -507,7 +508,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                                       tempo: tempo.value,
                                       mode: mode.value,
                                       time_signature: timeSignature.value,
-                                    )
+                                    ),
                                   );
                                   GoRouter.of(context).push(
                                     "/library/generate/result",

@@ -11,8 +11,7 @@ import 'package:spotube/services/queries/queries.dart';
 
 class ArtistPageTopTracks extends HookConsumerWidget {
   final String artistId;
-  const ArtistPageTopTracks({Key? key, required this.artistId})
-      : super(key: key);
+  const ArtistPageTopTracks({super.key, required this.artistId});
 
   @override
   Widget build(BuildContext context, ref) {

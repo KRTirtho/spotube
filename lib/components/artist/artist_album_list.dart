@@ -11,8 +11,8 @@ class ArtistAlbumList extends HookConsumerWidget {
   final String artistId;
   ArtistAlbumList(
     this.artistId, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final logger = getLogger(ArtistAlbumList);
 

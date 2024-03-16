@@ -19,8 +19,8 @@ class PlayerOverlay extends HookConsumerWidget {
 
   const PlayerOverlay({
     required this.albumArt,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

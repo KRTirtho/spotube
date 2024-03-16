@@ -24,7 +24,7 @@ import 'package:collection/collection.dart';
 final searchTermStateProvider = StateProvider<String>((ref) => "");
 
 class SearchPage extends HookConsumerWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  const SearchPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

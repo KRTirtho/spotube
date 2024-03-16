@@ -10,8 +10,8 @@ class SearchPlaylistsSection extends HookConsumerWidget {
   final InfiniteQuery<List<Page<dynamic>>, dynamic, int> query;
   const SearchPlaylistsSection({
     required this.query,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

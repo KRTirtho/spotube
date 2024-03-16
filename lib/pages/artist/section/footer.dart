@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class ArtistPageFooter extends HookConsumerWidget {
   final Artist artist;
-  const ArtistPageFooter({Key? key, required this.artist}) : super(key: key);
+  const ArtistPageFooter({super.key, required this.artist});
 
   @override
   Widget build(BuildContext context, ref) {

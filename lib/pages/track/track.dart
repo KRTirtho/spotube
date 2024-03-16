@@ -21,9 +21,9 @@ import 'package:spotube/extensions/constrains.dart';
 class TrackPage extends HookConsumerWidget {
   final String trackId;
   const TrackPage({
-    Key? key,
+    super.key,
     required this.trackId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

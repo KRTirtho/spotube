@@ -45,9 +45,9 @@ final sourceInfoToIconMap = {
 class SiblingTracksSheet extends HookConsumerWidget {
   final bool floating;
   const SiblingTracksSheet({
-    Key? key,
+    super.key,
     this.floating = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

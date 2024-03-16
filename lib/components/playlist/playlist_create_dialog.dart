@@ -24,10 +24,10 @@ class PlaylistCreateDialog extends HookConsumerWidget {
   final List<String> trackIds;
   final String? playlistId;
   PlaylistCreateDialog({
-    Key? key,
+    super.key,
     this.trackIds = const [],
     this.playlistId,
-  }) : super(key: key);
+  });
 
   final formKey = GlobalKey<FormState>();
 
@@ -275,7 +275,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
 }
 
 class PlaylistCreateDialogButton extends HookConsumerWidget {
-  const PlaylistCreateDialogButton({Key? key}) : super(key: key);
+  const PlaylistCreateDialogButton({super.key});
 
   showPlaylistDialog(BuildContext context, SpotifyApi spotify) {
     showDialog(

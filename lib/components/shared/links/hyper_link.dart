@@ -13,12 +13,12 @@ class Hyperlink extends StatelessWidget {
   const Hyperlink(
     this.text,
     this.url, {
-    Key? key,
+    super.key,
     this.textAlign,
     this.overflow,
     this.style = const TextStyle(),
     this.maxLines,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

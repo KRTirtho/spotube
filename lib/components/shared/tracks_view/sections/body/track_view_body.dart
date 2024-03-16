@@ -19,7 +19,7 @@ import 'package:spotube/utils/service_utils.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class TrackViewBodySection extends HookConsumerWidget {
-  const TrackViewBodySection({Key? key}) : super(key: key);
+  const TrackViewBodySection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

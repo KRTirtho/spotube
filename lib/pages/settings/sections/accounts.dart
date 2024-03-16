@@ -10,7 +10,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
 
 class SettingsAccountSection extends HookConsumerWidget {
-  const SettingsAccountSection({Key? key}) : super(key: key);
+  const SettingsAccountSection({super.key});
 
   @override
   Widget build(context, ref) {

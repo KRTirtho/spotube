@@ -207,7 +207,7 @@ class DownloadManager {
         // Do nothing
         return _cache[downloadRequest.url]!;
       } else {
-        _queue.remove(_cache[downloadRequest.url]);
+        _queue.remove(_cache[downloadRequest.url]?.request);
       }
     }
 
@@ -286,21 +286,21 @@ class DownloadManager {
   }
 
   Future<void> pauseBatchDownloads(List<String> urls) async {
-    urls.forEach((element) {
+    for (var element in urls) {
       pauseDownload(element);
-    });
+    }
   }
 
   Future<void> cancelBatchDownloads(List<String> urls) async {
-    urls.forEach((element) {
+    for (var element in urls) {
       cancelDownload(element);
-    });
+    }
   }
 
   Future<void> resumeBatchDownloads(List<String> urls) async {
-    urls.forEach((element) {
+    for (var element in urls) {
       resumeDownload(element);
-    });
+    }
   }
 
   ValueNotifier<double> getBatchDownloadProgress(List<String> urls) {
@@ -315,9 +315,9 @@ class DownloadManager {
       return getDownload(urls.first)?.progress ?? progress;
     }
 
-    var progressMap = Map<String, double>();
+    var progressMap = <String, double>{};
 
-    urls.forEach((url) {
+    for (var url in urls) {
       DownloadTask? task = getDownload(url);
 
       if (task != null) {
@@ -328,29 +328,27 @@ class DownloadManager {
           progress.value = progressMap.values.sum / total;
         }
 
-        var progressListener;
-        progressListener = () {
+        void progressListener() {
           progressMap[url] = task.progress.value;
           progress.value = progressMap.values.sum / total;
-        };
+        }
 
         task.progress.addListener(progressListener);
 
-        var listener;
-        listener = () {
+        void listener() {
           if (task.status.value.isCompleted) {
             progressMap[url] = 1.0;
             progress.value = progressMap.values.sum / total;
             task.status.removeListener(listener);
             task.progress.removeListener(progressListener);
           }
-        };
+        }
 
         task.status.addListener(listener);
       } else {
         total--;
       }
-    });
+    }
 
     return progress;
   }
@@ -374,8 +372,7 @@ class DownloadManager {
           }
         }
 
-        var listener;
-        listener = () {
+        void listener() {
           if (task.status.value.isCompleted) {
             completed++;
 
@@ -384,7 +381,7 @@ class DownloadManager {
               task.status.removeListener(listener);
             }
           }
-        };
+        }
 
         task.status.addListener(listener);
       } else {

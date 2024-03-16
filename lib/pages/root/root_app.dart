@@ -31,8 +31,8 @@ class RootApp extends HookConsumerWidget {
   final Widget child;
   const RootApp({
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

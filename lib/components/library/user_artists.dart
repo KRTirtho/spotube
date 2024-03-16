@@ -16,7 +16,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/queries/queries.dart';
 
 class UserArtists extends HookConsumerWidget {
-  const UserArtists({Key? key}) : super(key: key);
+  const UserArtists({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

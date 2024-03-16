@@ -129,7 +129,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
 });
 
 class UserLocalTracks extends HookConsumerWidget {
-  const UserLocalTracks({Key? key}) : super(key: key);
+  const UserLocalTracks({super.key});
 
   Future<void> playLocalTracks(
     WidgetRef ref,

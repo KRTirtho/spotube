@@ -25,9 +25,9 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
   final PlaylistGenerateResultRouteState state;
 
   const PlaylistGenerateResultPage({
-    Key? key,
+    super.key,
     required this.state,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

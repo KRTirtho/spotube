@@ -30,8 +30,8 @@ class SyncedLyrics extends HookConsumerWidget {
     required this.palette,
     this.isModal,
     this.defaultTextZoom = 100,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

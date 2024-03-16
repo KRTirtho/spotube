@@ -21,7 +21,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistPageHeader extends HookConsumerWidget {
   final String artistId;
-  const ArtistPageHeader({Key? key, required this.artistId}) : super(key: key);
+  const ArtistPageHeader({super.key, required this.artistId});
 
   @override
   Widget build(BuildContext context, ref) {

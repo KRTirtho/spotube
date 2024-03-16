@@ -31,8 +31,8 @@ class Sidebar extends HookConsumerWidget {
     required this.selectedIndex,
     required this.onSelectedIndexChanged,
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static Widget brandLogo() {
     return Container(
@@ -195,7 +195,7 @@ class Sidebar extends HookConsumerWidget {
 }
 
 class SidebarHeader extends HookWidget {
-  const SidebarHeader({Key? key}) : super(key: key);
+  const SidebarHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -234,8 +234,8 @@ class SidebarHeader extends HookWidget {
 
 class SidebarFooter extends HookConsumerWidget {
   const SidebarFooter({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

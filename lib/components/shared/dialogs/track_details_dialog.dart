@@ -13,9 +13,9 @@ import 'package:spotube/extensions/duration.dart';
 class TrackDetailsDialog extends HookWidget {
   final Track track;
   const TrackDetailsDialog({
-    Key? key,
+    super.key,
     required this.track,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
