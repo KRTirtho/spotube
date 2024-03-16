@@ -1,8 +1,49 @@
 part of '../spotify.dart';
 
-final likedTracksProvider = FutureProvider<List<Track>>((ref) async {
-  final spotify = ref.watch(spotifyProvider);
-  final savedTracked = await spotify.tracks.me.saved.all();
+class LikedTracksNotifier extends AsyncNotifier<List<Track>> with Persistence {
+  LikedTracksNotifier() {
+    load();
+  }
 
-  return savedTracked.map((e) => e.track!).toList();
-});
+  @override
+  FutureOr<List<Track>> build() async {
+    final spotify = ref.watch(spotifyProvider);
+    final savedTracked = await spotify.tracks.me.saved.all();
+
+    return savedTracked.map((e) => e.track!).toList();
+  }
+
+  Future<void> toggleFavorite(Track track) async {
+    if (state.value == null) return;
+    final spotify = ref.read(spotifyProvider);
+
+    await update((tracks) async {
+      final isLiked = tracks.map((e) => e.id).contains(track.id);
+
+      if (isLiked) {
+        await spotify.tracks.me.removeOne(track.id!);
+        return tracks.where((e) => e.id != track.id).toList();
+      } else {
+        await spotify.tracks.me.saveOne(track.id!);
+        return [...tracks, track];
+      }
+    });
+  }
+
+  @override
+  FutureOr<List<Track>> fromJson(Map<String, dynamic> json) {
+    return (json['tracks'] as List).map((e) => Track.fromJson(e)).toList();
+  }
+
+  @override
+  Map<String, dynamic> toJson(List<Track> data) {
+    return {
+      'tracks': data.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+final likedTracksProvider =
+    AsyncNotifierProvider<LikedTracksNotifier, List<Track>>(
+  () => LikedTracksNotifier(),
+);

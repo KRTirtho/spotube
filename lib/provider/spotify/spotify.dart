@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:riverpod/src/async_notifier.dart';
 import 'package:spotube/extensions/map.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/models/spotify_friends.dart';
