@@ -84,6 +84,6 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
 }
 
 final playlistProvider =
-    AsyncNotifierProvider.family<PlaylistNotifier, String, PlaylistNotifier>(
+    AsyncNotifierProviderFamily<PlaylistNotifier, Playlist, String>(
   () => PlaylistNotifier(),
 );

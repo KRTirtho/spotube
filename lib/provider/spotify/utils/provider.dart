@@ -6,17 +6,19 @@ abstract class PaginatedAsyncNotifier<K, T extends BasePaginatedState<K, int>>
 
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
+    state = const AsyncValue.loading();
 
-    await update(
-      (state) async {
-        final items = await fetch(state.offset + state.limit, state.limit);
-        return state.copyWith(
-          hasMore: items.length == state.limit,
+    state = await AsyncValue.guard(
+      () async {
+        final items = await fetch(
+            state.value!.offset + state.value!.limit, state.value!.limit);
+        return state.value!.copyWith(
+          hasMore: items.length == state.value!.limit,
           items: [
-            ...state.items,
+            ...state.value!.items,
             ...items,
           ],
-          offset: state.offset + state.limit,
+          offset: state.value!.offset + state.value!.limit,
         ) as T;
       },
     );
@@ -31,13 +33,15 @@ abstract class CursorPaginatedAsyncNotifier<K,
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    await update(
-      (state) async {
-        final items = await fetch(state.offset, state.limit);
-        return state.copyWith(
-          hasMore: items.$1.length == state.limit,
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(
+      () async {
+        final items = await fetch(state.value!.offset, state.value!.limit);
+        return state.value!.copyWith(
+          hasMore: items.$1.length == state.value!.limit,
           items: [
-            ...state.items,
+            ...state.value!.items,
             ...items.$1,
           ],
           offset: items.$2,
@@ -56,20 +60,22 @@ abstract class FamilyPaginatedAsyncNotifier<
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    await update(
-      (state) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () async {
         final items = await fetch(
           arg,
-          state.offset + state.limit,
-          state.limit,
+          state.value!.offset + state.value!.limit,
+          state.value!.limit,
         );
-        return state.copyWith(
-          hasMore: items.length == state.limit,
+        return state.value!.copyWith(
+          hasMore: items.length == state.value!.limit,
           items: [
-            ...state.items,
+            ...state.value!.items,
             ...items,
           ],
-          offset: state.offset + state.limit,
+          offset: state.value!.offset + state.value!.limit,
         ) as T;
       },
     );
@@ -89,17 +95,15 @@ abstract class FamilyCursorPaginatedAsyncNotifier<
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    await update(
-      (state) async {
-        final items = await fetch(
-          arg,
-          state.offset,
-          state.limit,
-        );
-        return state.copyWith(
-          hasMore: items.$1.length == state.limit,
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () async {
+        final items = await fetch(arg, state.value!.offset, state.value!.limit);
+        return state.value!.copyWith(
+          hasMore: items.$1.length == state.value!.limit,
           items: [
-            ...state.items,
+            ...state.value!.items,
             ...items.$1,
           ],
           offset: items.$2,

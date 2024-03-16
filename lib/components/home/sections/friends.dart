@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -8,15 +7,15 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/home/sections/friends/friend_item.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/models/spotify_friends.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomePageFriendsSection extends HookConsumerWidget {
-  const HomePageFriendsSection({Key? key}) : super(key: key);
+  const HomePageFriendsSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    final friendsQuery = useQueries.user.friendActivity(ref);
-    final friends = friendsQuery.data?.friends ?? FakeData.friends.friends;
+    final friendsQuery = ref.watch(friendsProvider);
+    final friends = friendsQuery.value?.friends ?? FakeData.friends.friends;
 
     final groupCount = useBreakpointValue(
       sm: 3,
@@ -51,8 +50,7 @@ class HomePageFriendsSection extends HookConsumerWidget {
       },
     );
 
-    if (!friendsQuery.isLoading &&
-        (!friendsQuery.hasData || friendsQuery.data!.friends.isEmpty)) {
+    if (friendsQuery.isLoading || friendsQuery.value?.friends.isEmpty == true) {
       return const SliverToBoxAdapter(
         child: SizedBox.shrink(),
       );

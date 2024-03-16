@@ -30,7 +30,7 @@ class AlbumTracksNotifier extends FamilyPaginatedAsyncNotifier<TrackSimple,
 
   @override
   fetch(arg, offset, limit) async {
-    final tracks = await spotify.albums.tracks(arg).getPage(offset, limit);
+    final tracks = await spotify.albums.tracks(arg).getPage(limit, offset);
     return tracks.items?.toList() ?? [];
   }
 

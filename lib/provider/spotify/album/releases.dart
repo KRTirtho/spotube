@@ -1,6 +1,6 @@
 part of '../spotify.dart';
 
-class AlbumReleasesState extends PaginatedState<AlbumSimple> {
+class AlbumReleasesState extends PaginatedState<Album> {
   AlbumReleasesState({
     required super.items,
     required super.offset,
@@ -10,7 +10,7 @@ class AlbumReleasesState extends PaginatedState<AlbumSimple> {
 
   @override
   AlbumReleasesState copyWith({
-    List<AlbumSimple>? items,
+    List<Album>? items,
     int? offset,
     int? limit,
     bool? hasMore,
@@ -25,16 +25,21 @@ class AlbumReleasesState extends PaginatedState<AlbumSimple> {
 }
 
 class AlbumReleasesNotifier
-    extends PaginatedAsyncNotifier<AlbumSimple, AlbumReleasesState> {
+    extends PaginatedAsyncNotifier<Album, AlbumReleasesState> {
   AlbumReleasesNotifier() : super();
 
   @override
   fetch(int offset, int limit) async {
     final market = ref.read(userPreferencesProvider).recommendationMarket;
+
     final albums = await spotify.browse
         .newReleases(country: market)
-        .getPage(offset, limit);
-    return albums.items?.toList() ?? [];
+        .getPage(limit, offset);
+
+    return albums.items
+            ?.map(TypeConversionUtils.simpleAlbum_X_Album)
+            .toList() ??
+        [];
   }
 
   @override
@@ -43,7 +48,10 @@ class AlbumReleasesNotifier
     ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),
     );
+    ref.watch(allFollowedArtistsProvider);
+
     final albums = await fetch(0, 20);
+
     return AlbumReleasesState(
       items: albums,
       offset: 0,
@@ -57,3 +65,26 @@ final albumReleasesProvider =
     AsyncNotifierProvider<AlbumReleasesNotifier, AlbumReleasesState>(
   () => AlbumReleasesNotifier(),
 );
+
+final userArtistAlbumReleasesProvider = Provider<List<Album>>((ref) {
+  final newReleases = ref.watch(albumReleasesProvider);
+  final userArtistsQuery = ref.watch(allFollowedArtistsProvider);
+
+  if (newReleases.isLoading || userArtistsQuery.isLoading) {
+    return const [];
+  }
+
+  final userArtists =
+      userArtistsQuery.value?.map((s) => s.id!).toList() ?? const [];
+
+  final allReleases = newReleases.value?.items;
+  final userArtistReleases = allReleases?.where((album) {
+    return album.artists?.any((artist) => userArtists.contains(artist.id!)) ==
+        true;
+  }).toList();
+
+  if (userArtistReleases?.isEmpty == true) {
+    return allReleases?.toList() ?? [];
+  }
+  return userArtistReleases ?? [];
+});

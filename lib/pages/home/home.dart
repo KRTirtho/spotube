@@ -11,7 +11,7 @@ import 'package:spotube/components/home/sections/new_releases.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 
 class HomePage extends HookConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

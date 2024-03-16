@@ -24,13 +24,12 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
     required this.hasNextPage,
     required this.onFetchMore,
     required this.isLoadingNextPage,
-    Key? key,
-  })  : assert(
+    super.key,
+  }) : assert(
           items is List<PlaylistSimple> ||
               items is List<Album> ||
               items is List<Artist>,
-        ),
-        super(key: key);
+        );
 
   @override
   Widget build(BuildContext context) {

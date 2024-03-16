@@ -37,7 +37,7 @@ class CategoryPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
       (json) => json == null ? null : PlaylistSimple.fromJson(json),
       'playlists',
       (json) => PlaylistsFeatured.fromJson(json),
-    ).getPage(offset, limit);
+    ).getPage(limit, offset);
 
     return playlists.items?.whereNotNull().toList() ?? [];
   }

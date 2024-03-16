@@ -13,9 +13,9 @@ import 'package:spotube/provider/spotify_provider.dart';
 class FriendItem extends HookConsumerWidget {
   final SpotifyFriendActivity friend;
   const FriendItem({
-    Key? key,
+    super.key,
     required this.friend,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

@@ -20,6 +20,7 @@ import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:http/http.dart' as http;
+import 'package:spotube/utils/type_conversion_utils.dart';
 
 part 'album/favorite.dart';
 part 'album/tracks.dart';
@@ -58,3 +59,4 @@ part 'utils/mixin.dart';
 part 'utils/state.dart';
 part 'utils/provider.dart';
 part 'utils/persistence.dart';
+part 'utils/async.dart';

@@ -33,7 +33,7 @@ class ArtistAlbumsNotifier extends FamilyPaginatedAsyncNotifier<AlbumSimple,
     final market = ref.read(userPreferencesProvider).recommendationMarket;
     final albums = await spotify.artists
         .albums(arg, country: market)
-        .getPage(offset, limit);
+        .getPage(limit, offset);
 
     return albums.items?.toList() ?? [];
   }
