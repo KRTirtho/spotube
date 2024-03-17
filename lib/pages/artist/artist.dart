@@ -12,7 +12,7 @@ import 'package:spotube/pages/artist/section/footer.dart';
 import 'package:spotube/pages/artist/section/header.dart';
 import 'package:spotube/pages/artist/section/related_artists.dart';
 import 'package:spotube/pages/artist/section/top_tracks.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPage extends HookConsumerWidget {
   final String artistId;
@@ -24,7 +24,7 @@ class ArtistPage extends HookConsumerWidget {
     final scrollController = useScrollController();
     final theme = Theme.of(context);
 
-    final artistQuery = useQueries.artist.get(ref, artistId);
+    final artistQuery = ref.watch(artistProvider(artistId));
 
     return SafeArea(
       bottom: false,
@@ -35,11 +35,11 @@ class ArtistPage extends HookConsumerWidget {
         ),
         extendBodyBehindAppBar: true,
         body: Builder(builder: (context) {
-          if (artistQuery.hasError && artistQuery.data == null) {
+          if (artistQuery.hasError && artistQuery.value == null) {
             return Center(child: Text(artistQuery.error.toString()));
           }
           return Skeletonizer(
-            enabled: artistQuery.isLoading,
+            enabled: artistQuery.isLoadingAndEmpty,
             child: CustomScrollView(
               controller: scrollController,
               slivers: [
@@ -66,11 +66,11 @@ class ArtistPage extends HookConsumerWidget {
                 SliverSafeArea(
                   sliver: ArtistPageRelatedArtists(artistId: artistId),
                 ),
-                if (artistQuery.data != null)
+                if (artistQuery.value != null)
                   SliverSafeArea(
                     top: false,
                     sliver: SliverToBoxAdapter(
-                      child: ArtistPageFooter(artist: artistQuery.data!),
+                      child: ArtistPageFooter(artist: artistQuery.value!),
                     ),
                   ),
               ],

@@ -64,6 +64,29 @@ class FollowedArtistsNotifier
         ],
       );
     });
+
+    for (final id in artistIds) {
+      ref.invalidate(artistIsFollowingProvider(id));
+    }
+  }
+
+  Future<void> removeArtists(List<String> artistIds) async {
+    if (state.value == null) return;
+    await spotify.me.unfollow(FollowingType.artist, artistIds);
+
+    state = await AsyncValue.guard(() async {
+      final artists = state.value!.items.where((artist) {
+        return !artistIds.contains(artist.id);
+      }).toList();
+
+      return state.value!.copyWith(
+        items: artists,
+      );
+    });
+
+    for (final id in artistIds) {
+      ref.invalidate(artistIsFollowingProvider(id));
+    }
   }
 }
 

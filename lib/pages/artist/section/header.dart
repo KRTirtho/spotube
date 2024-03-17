@@ -1,11 +1,8 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -14,8 +11,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -25,9 +21,8 @@ class ArtistPageHeader extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final queryClient = useQueryClient();
-    final artistQuery = useQueries.artist.get(ref, artistId);
-    final artist = artistQuery.data ?? FakeData.artist;
+    final artistQuery = ref.watch(artistProvider(artistId));
+    final artist = artistQuery.value ?? FakeData.artist;
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final mediaQuery = MediaQuery.of(context);
@@ -43,7 +38,6 @@ class ArtistPageHeader extends HookConsumerWidget {
       xxl: textTheme.titleMedium,
     );
 
-    final spotify = ref.read(spotifyProvider);
     final auth = ref.watch(AuthenticationNotifier.provider);
     final blacklist = ref.watch(BlackListNotifier.provider);
     final isBlackListed = blacklist.contains(
@@ -143,53 +137,41 @@ class ArtistPageHeader extends HookConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (auth != null)
-                          HookBuilder(
-                            builder: (context) {
-                              final isFollowingQuery =
-                                  useQueries.artist.doIFollow(ref, artistId);
+                          Consumer(
+                            builder: (context, ref, _) {
+                              final isFollowingQuery = ref
+                                  .watch(artistIsFollowingProvider(artist.id!));
+                              final followingArtistNotifier =
+                                  ref.watch(followedArtistsProvider.notifier);
 
-                              final followUnfollow = useCallback(() async {
-                                try {
-                                  isFollowingQuery.data!
-                                      ? await spotify.me.unfollow(
-                                          FollowingType.artist,
-                                          [artistId],
-                                        )
-                                      : await spotify.me.follow(
-                                          FollowingType.artist,
-                                          [artistId],
+                              return switch (isFollowingQuery) {
+                                AsyncData(value: final following) => Builder(
+                                    builder: (context) {
+                                      if (following) {
+                                        return OutlinedButton(
+                                          onPressed: () async {
+                                            await followingArtistNotifier
+                                                .removeArtists([artist.id!]);
+                                          },
+                                          child: Text(context.l10n.following),
                                         );
-                                  await isFollowingQuery.refresh();
+                                      }
 
-                                  queryClient.refreshInfiniteQueryAllPages(
-                                      "user-following-artists");
-                                } finally {
-                                  queryClient.refreshQuery(
-                                    "user-follows-artists-query/$artistId",
-                                  );
-                                }
-                              }, [isFollowingQuery]);
-
-                              if (isFollowingQuery.isLoading ||
-                                  !isFollowingQuery.hasData) {
-                                return const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-
-                              if (isFollowingQuery.data!) {
-                                return OutlinedButton(
-                                  onPressed: followUnfollow,
-                                  child: Text(context.l10n.following),
-                                );
-                              }
-
-                              return FilledButton(
-                                onPressed: followUnfollow,
-                                child: Text(context.l10n.follow),
-                              );
+                                      return FilledButton(
+                                        onPressed: () async {
+                                          await followingArtistNotifier
+                                              .saveArtists([artist.id!]);
+                                        },
+                                        child: Text(context.l10n.follow),
+                                      );
+                                    },
+                                  ),
+                                AsyncError() => const SizedBox(),
+                                _ => const SizedBox.square(
+                                    dimension: 20,
+                                    child: CircularProgressIndicator(),
+                                  )
+                              };
                             },
                           ),
                         const SizedBox(width: 5),

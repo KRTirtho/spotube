@@ -18,9 +18,11 @@ import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/wikipedia/wikipedia.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:wikipedia_api/wikipedia_api.dart';
 
 part 'album/favorite.dart';
 part 'album/tracks.dart';
@@ -32,6 +34,8 @@ part 'artist/is_following.dart';
 part 'artist/following.dart';
 part 'artist/top_tracks.dart';
 part 'artist/albums.dart';
+part 'artist/wikipedia.dart';
+part 'artist/related.dart';
 
 part 'category/genres.dart';
 part 'category/categories.dart';

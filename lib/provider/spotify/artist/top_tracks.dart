@@ -1,6 +1,6 @@
 part of '../spotify.dart';
 
-final artistTopTracksProvider = FutureProviderFamily<List<TrackSimple>, String>(
+final artistTopTracksProvider = FutureProviderFamily<List<Track>, String>(
   (ref, artistId) async {
     final spotify = ref.watch(spotifyProvider);
     final market = ref
