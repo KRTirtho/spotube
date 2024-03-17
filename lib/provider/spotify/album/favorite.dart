@@ -55,6 +55,10 @@ class FavoriteAlbumNotifier
         ],
       );
     });
+
+    for (final id in ids) {
+      ref.invalidate(albumsIsSavedProvider(id));
+    }
   }
 
   Future<void> removeFavorites(List<String> ids) async {
@@ -69,6 +73,10 @@ class FavoriteAlbumNotifier
             .toList(),
       );
     });
+
+    for (final id in ids) {
+      ref.invalidate(albumsIsSavedProvider(id));
+    }
   }
 }
 

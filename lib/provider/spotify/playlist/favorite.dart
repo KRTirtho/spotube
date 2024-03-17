@@ -52,21 +52,25 @@ class FavoritePlaylistsNotifier
   }
 
   Future<void> addFavorite(PlaylistSimple playlist) async {
-    update((state) async {
+    await update((state) async {
       await spotify.playlists.followPlaylist(playlist.id!);
       return state.copyWith(
         items: [...state.items, playlist],
       );
     });
+
+    ref.invalidate(isFavoritePlaylistProvider(playlist.id!));
   }
 
   Future<void> removeFavorite(PlaylistSimple playlist) async {
-    update((state) async {
+    await update((state) async {
       await spotify.playlists.unfollowPlaylist(playlist.id!);
       return state.copyWith(
         items: state.items.where((e) => e.id != playlist.id).toList(),
       );
     });
+
+    ref.invalidate(isFavoritePlaylistProvider(playlist.id!));
   }
 }
 

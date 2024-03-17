@@ -54,7 +54,7 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
       state.value!.id!,
     );
 
-    ref.refresh(playlistTracksProvider(state.value!.id!));
+    ref.invalidate(playlistTracksProvider(state.value!.id!));
   }
 
   Future<void> modify(PlaylistInput input) async {

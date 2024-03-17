@@ -1,6 +1,6 @@
 part of '../spotify.dart';
 
-class AlbumTracksState extends PaginatedState<TrackSimple> {
+class AlbumTracksState extends PaginatedState<Track> {
   AlbumTracksState({
     required super.items,
     required super.offset,
@@ -10,7 +10,7 @@ class AlbumTracksState extends PaginatedState<TrackSimple> {
 
   @override
   AlbumTracksState copyWith({
-    List<TrackSimple>? items,
+    List<Track>? items,
     int? offset,
     int? limit,
     bool? hasMore,
@@ -24,14 +24,17 @@ class AlbumTracksState extends PaginatedState<TrackSimple> {
   }
 }
 
-class AlbumTracksNotifier extends FamilyPaginatedAsyncNotifier<TrackSimple,
-    AlbumTracksState, String> {
+class AlbumTracksNotifier
+    extends FamilyPaginatedAsyncNotifier<Track, AlbumTracksState, AlbumSimple> {
   AlbumTracksNotifier() : super();
 
   @override
   fetch(arg, offset, limit) async {
-    final tracks = await spotify.albums.tracks(arg).getPage(limit, offset);
-    return tracks.items?.toList() ?? [];
+    final tracks = await spotify.albums.tracks(arg.id!).getPage(limit, offset);
+    return tracks.items
+            ?.map((e) => TypeConversionUtils.simpleTrack_X_Track(e, arg))
+            .toList() ??
+        [];
   }
 
   @override
@@ -47,7 +50,7 @@ class AlbumTracksNotifier extends FamilyPaginatedAsyncNotifier<TrackSimple,
   }
 }
 
-final albumTracksProvider =
-    AsyncNotifierProviderFamily<AlbumTracksNotifier, AlbumTracksState, String>(
+final albumTracksProvider = AsyncNotifierProviderFamily<AlbumTracksNotifier,
+    AlbumTracksState, AlbumSimple>(
   () => AlbumTracksNotifier(),
 );
