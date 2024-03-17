@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
@@ -18,6 +17,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/hooks/configurators/use_update_checker.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
 const rootPaths = {
@@ -53,8 +53,9 @@ class RootApp extends HookConsumerWidget {
         }
       });
 
-      final subscription =
-          QueryClient.connectivity.onConnectivityChanged.listen((status) {
+      final subscription = ConnectionCheckerService
+          .instance.onConnectivityChanged
+          .listen((status) {
         if (status) {
           scaffoldMessenger.showSnackBar(
             SnackBar(

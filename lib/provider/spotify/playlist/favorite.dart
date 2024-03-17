@@ -85,6 +85,19 @@ class FavoritePlaylistsNotifier
 
     ref.invalidate(playlistTracksProvider(playlistId));
   }
+
+  Future<void> removeTracks(String playlistId, List<String> trackIds) async {
+    if (state.value == null) return;
+
+    final spotify = ref.read(spotifyProvider);
+
+    await spotify.playlists.removeTracks(
+      trackIds.map((id) => 'spotify:track:$id').toList(),
+      playlistId,
+    );
+
+    ref.invalidate(playlistTracksProvider(playlistId));
+  }
 }
 
 final favoritePlaylistsProvider =

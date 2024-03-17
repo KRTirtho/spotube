@@ -16,7 +16,6 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/mutations/playlist.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistCreateDialog extends HookConsumerWidget {
@@ -90,7 +89,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
           Future<void> onCreate() async {
             if (!formKey.currentState!.validate()) return;
 
-            final PlaylistCRUDVariables payload = (
+            final PlaylistInput payload = (
               playlistName: playlistName.text,
               collaborative: collaborative.value,
               public: public.value,

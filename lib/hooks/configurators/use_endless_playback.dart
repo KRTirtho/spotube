@@ -1,5 +1,4 @@
 import 'package:catcher_2/catcher_2.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -8,7 +7,6 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/queries/search.dart';
 
 void useEndlessPlayback(WidgetRef ref) {
   final auth = ref.watch(AuthenticationNotifier.provider);
@@ -18,7 +16,6 @@ void useEndlessPlayback(WidgetRef ref) {
   final endlessPlayback =
       ref.watch(userPreferencesProvider.select((s) => s.endlessPlayback));
 
-  final queryClient = useQueryClient();
 
   useEffect(
     () {
@@ -32,16 +29,8 @@ void useEndlessPlayback(WidgetRef ref) {
           final track = playlist.tracks.last;
 
           final query = "${track.name} Radio";
-          final pages = await queryClient.fetchInfiniteQueryJob<List<Page>,
-                  dynamic, int, SearchParams>(
-                job: SearchQueries.queryJob(query),
-                args: (
-                  spotify: spotify,
-                  searchType: SearchType.playlist,
-                  query: query
-                ),
-              ) ??
-              [];
+          final pages = await spotify.search
+              .get(query, types: [SearchType.playlist]).first();
 
           final radios = pages
               .expand((e) => e.items?.toList() ?? <PlaylistSimple>[])
@@ -94,7 +83,6 @@ void useEndlessPlayback(WidgetRef ref) {
     [
       spotify,
       playback,
-      queryClient,
       playlist.tracks,
       endlessPlayback,
       auth,

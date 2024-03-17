@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -25,8 +24,6 @@ import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/mutations/mutations.dart';
-import 'package:spotube/services/queries/search.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -100,21 +97,10 @@ class TrackOptions extends HookConsumerWidget {
     final playlist = ref.read(ProxyPlaylistNotifier.provider);
     final spotify = ref.read(spotifyProvider);
     final query = "${track.name} Radio";
-    final pages = await QueryClient.of(context)
-            .fetchInfiniteQueryJob<List<Page>, dynamic, int, SearchParams>(
-          job: SearchQueries.queryJob(query),
-          args: (
-            spotify: spotify,
-            searchType: SearchType.playlist,
-            query: query,
-          ),
-        ) ??
-        [];
+    final pages =
+        await spotify.search.get(query, types: [SearchType.playlist]).first();
 
-    final radios = pages
-        .expand((e) => e.items?.toList() ?? <PlaylistSimple>[])
-        .toList()
-        .cast<PlaylistSimple>();
+    final radios = pages.map((e) => e.items).toList().cast<PlaylistSimple>();
 
     final artists = track.artists!.map((e) => e.name);
 
@@ -192,10 +178,8 @@ class TrackOptions extends HookConsumerWidget {
     );
 
     final removingTrack = useState<String?>(null);
-    final removeTrack = useMutations.playlist.removeTrackOf(
-      ref,
-      playlistId ?? "",
-    );
+    final favoritePlaylistsNotifier =
+        ref.watch(favoritePlaylistsProvider.notifier);
 
     final isInQueue = useMemoized(() {
       if (playlist.activeTrack == null) return false;
@@ -266,7 +250,8 @@ class TrackOptions extends HookConsumerWidget {
             break;
           case TrackOptionValue.removeFromPlaylist:
             removingTrack.value = track.uri;
-            removeTrack.mutate(track.uri!);
+            favoritePlaylistsNotifier
+                .removeTracks(playlistId ?? "", [track.id!]);
             break;
           case TrackOptionValue.blacklist:
             if (isBlackListed) {
@@ -330,7 +315,7 @@ class TrackOptions extends HookConsumerWidget {
         ),
       ],
       children: switch (track.runtimeType) {
-        LocalTrack => [
+        LocalTrack() => [
             PopSheetEntry(
               value: TrackOptionValue.delete,
               leading: const Icon(SpotubeIcons.trash),
@@ -393,10 +378,7 @@ class TrackOptions extends HookConsumerWidget {
             if (userPlaylist && auth != null)
               PopSheetEntry(
                 value: TrackOptionValue.removeFromPlaylist,
-                leading: (removeTrack.isMutating || !removeTrack.hasData) &&
-                        removingTrack.value == track.uri
-                    ? const CircularProgressIndicator()
-                    : const Icon(SpotubeIcons.removeFilled),
+                leading: const Icon(SpotubeIcons.removeFilled),
                 title: Text(context.l10n.remove_from_playlist),
               ),
             PopSheetEntry(

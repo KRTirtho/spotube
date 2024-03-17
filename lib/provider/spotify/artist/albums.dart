@@ -1,6 +1,6 @@
 part of '../spotify.dart';
 
-class ArtistAlbumsState extends PaginatedState<AlbumSimple> {
+class ArtistAlbumsState extends PaginatedState<Album> {
   ArtistAlbumsState({
     required super.items,
     required super.offset,
@@ -10,7 +10,7 @@ class ArtistAlbumsState extends PaginatedState<AlbumSimple> {
 
   @override
   ArtistAlbumsState copyWith({
-    List<AlbumSimple>? items,
+    List<Album>? items,
     int? offset,
     int? limit,
     bool? hasMore,
@@ -24,8 +24,8 @@ class ArtistAlbumsState extends PaginatedState<AlbumSimple> {
   }
 }
 
-class ArtistAlbumsNotifier extends FamilyPaginatedAsyncNotifier<AlbumSimple,
-    ArtistAlbumsState, String> {
+class ArtistAlbumsNotifier
+    extends FamilyPaginatedAsyncNotifier<Album, ArtistAlbumsState, String> {
   ArtistAlbumsNotifier() : super();
 
   @override

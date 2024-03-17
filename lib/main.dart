@@ -1,7 +1,6 @@
 import 'package:catcher_2/catcher_2.dart';
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +27,6 @@ import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
-import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -74,11 +72,7 @@ Future<void> main(List<String> rawArgs) async {
   final hiveCacheDir =
       kIsWeb ? null : (await getApplicationSupportDirectory()).path;
 
-  await QueryClient.initialize(
-    cachePrefix: "oss.krtirtho.spotube",
-    cacheDir: hiveCacheDir,
-    connectivity: FlQueryInternetConnectionCheckerAdapter(),
-  );
+  Hive.init(hiveCacheDir);
 
   Hive.registerAdapter(SkipSegmentAdapter());
 
@@ -144,10 +138,7 @@ Future<void> main(List<String> rawArgs) async {
               orientation: Orientation.portrait,
             ),
             builder: (context) {
-              return QueryClientProvider(
-                staleDuration: const Duration(minutes: 30),
-                child: const Spotube(),
-              );
+              return const Spotube();
             },
           ),
         ),

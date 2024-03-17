@@ -675,30 +675,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  fl_query:
-    dependency: "direct main"
-    description:
-      name: fl_query
-      sha256: daee5ab0ed8899baa201b89b5813107df5258144a9e2bcf192dbcf922c57d985
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
-  fl_query_devtools:
-    dependency: "direct main"
-    description:
-      name: fl_query_devtools
-      sha256: "2ae8905fd4a95f1d245a1b54057c31c8d27fc961223bcb7ce13088bcf6595059"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  fl_query_hooks:
-    dependency: "direct main"
-    description:
-      name: fl_query_hooks
-      sha256: "6c88b3bfbdc3e1330931b927903929d7351f86fc63266ac93b3acb9f133a09a9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -1319,14 +1295,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.7.1"
-  json_view:
-    dependency: transitive
-    description:
-      name: json_view
-      sha256: "905c69f9e69d1eab5406b87ab6c10c3706c04c70c6a4959621bd2b43c2d27374"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -1495,14 +1463,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  mutex:
-    dependency: transitive
-    description:
-      name: mutex
-      sha256: "03116a4e46282a671b46c12de649d72c0ed18188ffe12a8d0fc63e83f4ad88f4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
   nested:
     dependency: transitive
     description:

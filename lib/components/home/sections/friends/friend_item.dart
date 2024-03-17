@@ -1,10 +1,8 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/spotify_friends.dart';
@@ -24,7 +22,6 @@ class FriendItem extends HookConsumerWidget {
       colorScheme: colorScheme,
     ) = Theme.of(context);
 
-    final queryClient = useQueryClient();
     final spotify = ref.watch(spotifyProvider);
 
     return Container(
@@ -86,15 +83,11 @@ class FriendItem extends HookConsumerWidget {
                         ..onTap = () async {
                           context.push(
                             "/${friend.track.context.path}",
-                            extra: !friend.track.context.path
-                                    .startsWith("album")
-                                ? null
-                                : await queryClient.fetchQuery<Album, dynamic>(
-                                    "album/${friend.track.album.id}",
-                                    () => spotify.albums.get(
-                                      friend.track.album.id,
-                                    ),
-                                  ),
+                            extra:
+                                !friend.track.context.path.startsWith("album")
+                                    ? null
+                                    : await spotify.albums
+                                        .get(friend.track.context.id),
                           );
                         },
                     ),
@@ -110,12 +103,7 @@ class FriendItem extends HookConsumerWidget {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
                           final album =
-                              await queryClient.fetchQuery<Album, dynamic>(
-                            "album/${friend.track.album.id}",
-                            () => spotify.albums.get(
-                              friend.track.album.id,
-                            ),
-                          );
+                              await spotify.albums.get(friend.track.album.id);
                           if (context.mounted) {
                             context.push(
                               "/album/${friend.track.album.id}",

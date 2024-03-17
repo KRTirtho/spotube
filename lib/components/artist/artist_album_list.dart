@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistAlbumList extends HookConsumerWidget {
   final String artistId;
@@ -18,21 +17,19 @@ class ArtistAlbumList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final albumsQuery = useQueries.artist.albumsOf(ref, artistId);
+    final albumsQuery = ref.watch(artistAlbumsProvider(artistId));
+    final albumsQueryNotifier =
+        ref.watch(artistAlbumsProvider(artistId).notifier);
 
-    final albums = useMemoized(() {
-      return albumsQuery.pages
-          .expand<Album>((page) => page.items ?? const Iterable.empty())
-          .toList();
-    }, [albumsQuery.pages]);
+    final albums = albumsQuery.asData?.value.items ?? [];
 
     final theme = Theme.of(context);
 
     return HorizontalPlaybuttonCardView<Album>(
       isLoadingNextPage: albumsQuery.isLoadingNextPage,
-      hasNextPage: albumsQuery.hasNextPage,
+      hasNextPage: albumsQuery.asData?.value.hasMore ?? false,
       items: albums,
-      onFetchMore: albumsQuery.fetchNext,
+      onFetchMore: albumsQueryNotifier.fetchMore,
       title: Text(
         context.l10n.albums,
         style: theme.textTheme.headlineSmall,
