@@ -12,8 +12,8 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
-import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlainLyrics extends HookConsumerWidget {
@@ -30,8 +30,7 @@ class PlainLyrics extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final lyricsQuery =
-        useQueries.lyrics.spotifySynced(ref, playlist.activeTrack);
+    final lyricsQuery = ref.watch(syncedLyricsProvider(playlist.activeTrack));
     final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;
 
@@ -96,9 +95,9 @@ class PlainLyrics extends HookConsumerWidget {
                         }
 
                         final lyrics =
-                            lyricsQuery.data?.lyrics.mapIndexed((i, e) {
+                            lyricsQuery.value?.lyrics.mapIndexed((i, e) {
                           final next =
-                              lyricsQuery.data?.lyrics.elementAtOrNull(i + 1);
+                              lyricsQuery.value?.lyrics.elementAtOrNull(i + 1);
                           if (next != null &&
                               e.time - next.time >
                                   const Duration(milliseconds: 700)) {

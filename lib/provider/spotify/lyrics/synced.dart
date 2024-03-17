@@ -54,3 +54,24 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
   @override
   Map<String, dynamic> toJson(SubtitleSimple data) => data.toJson();
 }
+
+final syncedLyricsDelayProvider = StateProvider<int>((ref) => 0);
+
+final syncedLyricsProvider =
+    AsyncNotifierProviderFamily<SyncedLyricsNotifier, SubtitleSimple, Track?>(
+  () => SyncedLyricsNotifier(),
+);
+
+final syncedLyricsMapProvider =
+    FutureProvider.family((ref, Track? track) async {
+  final syncedLyrics = await ref.watch(syncedLyricsProvider(track).future);
+
+  final isStaticLyrics =
+      syncedLyrics.lyrics.every((l) => l.time == Duration.zero);
+
+  final lyricsMap = syncedLyrics.lyrics
+      .map((lyric) => {lyric.time.inSeconds: lyric.text})
+      .reduce((accumulator, lyricSlice) => {...accumulator, ...lyricSlice});
+
+  return (static: isStaticLyrics, lyricsMap: lyricsMap);
+});
