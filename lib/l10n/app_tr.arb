@@ -43,7 +43,7 @@
   "sort_album": "Albüme Göre Sırala",
   "sort_duration": "Süreye Göre Sırala",
   "sort_tracks": "Parçaları Sırala",
-  "currently_downloading": "Şu An İndiriliyor ({tracks_length})",
+  "currently_downloading": "Şu An İndirilenler ({tracks_length})",
   "cancel_all": "Tümünü İptal Et",
   "filter_artist": "Sanatçıları filtrele...",
   "followers": "{followers} Takipçiler",
