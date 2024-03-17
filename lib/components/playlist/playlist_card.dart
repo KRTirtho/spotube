@@ -21,7 +21,6 @@ class PlaylistCard extends HookConsumerWidget {
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
-    final tracks = useState<List<TrackSimple>?>(null);
     bool isPlaylistPlaying = useMemoized(
       () => playlistQueue.containsCollection(playlist.id!),
       [playlistQueue, playlist.id],
@@ -51,7 +50,8 @@ class PlaylistCard extends HookConsumerWidget {
       isPlaying: isPlaylistPlaying,
       isLoading:
           (isPlaylistPlaying && playlistQueue.isFetching) || updating.value,
-      isOwner: playlist.owner?.id == me.value?.id && me.value?.id != null,
+      isOwner: playlist.owner?.id == me.asData?.value.id &&
+          me.asData?.value.id != null,
       onTap: () {
         ServiceUtils.push(
           context,
@@ -74,7 +74,6 @@ class PlaylistCard extends HookConsumerWidget {
 
           await playlistNotifier.load(fetchedTracks, autoPlay: true);
           playlistNotifier.addCollection(playlist.id!);
-          tracks.value = fetchedTracks;
         } finally {
           if (context.mounted) {
             updating.value = false;
@@ -92,10 +91,9 @@ class PlaylistCard extends HookConsumerWidget {
 
           playlistNotifier.addTracks(fetchedTracks);
           playlistNotifier.addCollection(playlist.id!);
-          tracks.value = fetchedTracks;
           if (context.mounted) {
             final snackbar = SnackBar(
-              content: Text("Added ${tracks.value?.length} tracks to queue"),
+              content: Text("Added ${fetchedTracks.length} tracks to queue"),
               action: SnackBarAction(
                 label: "Undo",
                 onPressed: () {

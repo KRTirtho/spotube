@@ -33,9 +33,9 @@ class UserAlbums extends HookConsumerWidget {
 
     final albums = useMemoized(() {
       if (searchText.value.isEmpty) {
-        return albumsQuery.value?.items ?? [];
+        return albumsQuery.asData?.value.items ?? [];
       }
-      return albumsQuery.value?.items
+      return albumsQuery.asData?.value.items
               .map((e) => (
                     weightedRatio(e.name!, searchText.value),
                     e,
@@ -104,7 +104,7 @@ class UserAlbums extends HookConsumerWidget {
                             TypeConversionUtils.simpleAlbum_X_Album(album),
                           ),
                         if (albums.isNotEmpty &&
-                            albumsQuery.value?.hasMore == true)
+                            albumsQuery.asData?.value.hasMore == true)
                           Waypoint(
                             controller: controller,
                             isGrid: true,

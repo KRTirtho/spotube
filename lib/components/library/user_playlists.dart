@@ -54,12 +54,12 @@ class UserPlaylists extends HookConsumerWidget {
         if (searchText.value.isEmpty) {
           return [
             likedTracksPlaylist,
-            ...?playlistsQuery.value?.items,
+            ...?playlistsQuery.asData?.value.items,
           ];
         }
         return [
           likedTracksPlaylist,
-          ...?playlistsQuery.value?.items,
+          ...?playlistsQuery.asData?.value.items,
         ]
             .map((e) => (weightedRatio(e.name!, searchText.value), e))
             .sorted((a, b) => b.$1.compareTo(a.$1))
@@ -130,7 +130,7 @@ class UserPlaylists extends HookConsumerWidget {
                   ),
                   itemBuilder: (context, index) {
                     if (playlists.isNotEmpty && index == playlists.length) {
-                      if (playlistsQuery.value?.hasMore != true) {
+                      if (playlistsQuery.asData?.value.hasMore != true) {
                         return const SizedBox.shrink();
                       }
 

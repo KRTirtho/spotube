@@ -75,9 +75,9 @@ final userArtistAlbumReleasesProvider = Provider<List<Album>>((ref) {
   }
 
   final userArtists =
-      userArtistsQuery.value?.map((s) => s.id!).toList() ?? const [];
+      userArtistsQuery.asData?.value.map((s) => s.id!).toList() ?? const [];
 
-  final allReleases = newReleases.value?.items;
+  final allReleases = newReleases.asData?.value.items;
   final userArtistReleases = allReleases?.where((album) {
     return album.artists?.any((artist) => userArtists.contains(artist.id!)) ==
         true;

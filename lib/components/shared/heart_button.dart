@@ -65,7 +65,9 @@ UseTrackToggleLike useTrackToggleLike(Track track, WidgetRef ref) {
   final savedTracksNotifier = ref.watch(likedTracksProvider.notifier);
 
   final isLiked = useMemoized(
-    () => savedTracks.value?.any((element) => element.id == track.id) ?? false,
+    () =>
+        savedTracks.asData?.value.any((element) => element.id == track.id) ??
+        false,
     [savedTracks.value, track.id],
   );
 

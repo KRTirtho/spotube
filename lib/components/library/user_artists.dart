@@ -28,7 +28,7 @@ class UserArtists extends HookConsumerWidget {
     final searchText = useState('');
 
     final filteredArtists = useMemoized(() {
-      final artists = artistQuery.value?.items ?? [];
+      final artists = artistQuery.asData?.value.items ?? [];
 
       if (searchText.value.isEmpty) {
         return artists.toList();
@@ -42,7 +42,7 @@ class UserArtists extends HookConsumerWidget {
           .where((e) => e.$1 > 50)
           .map((e) => e.$2)
           .toList();
-    }, [artistQuery.value?.items, searchText.value]);
+    }, [artistQuery.asData?.value.items, searchText.value]);
 
     final controller = useScrollController();
 
@@ -66,7 +66,7 @@ class UserArtists extends HookConsumerWidget {
         ),
       ),
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: artistQuery.value?.items.isEmpty == true
+      body: artistQuery.asData?.value.items.isEmpty == true
           ? Padding(
               padding: const EdgeInsets.all(20),
               child: Row(

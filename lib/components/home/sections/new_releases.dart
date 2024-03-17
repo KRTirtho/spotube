@@ -20,7 +20,7 @@ class HomeNewReleasesSection extends HookConsumerWidget {
 
     if (auth == null ||
         newReleases.isLoading ||
-        newReleases.value?.items.isEmpty == true) {
+        newReleases.asData?.value.items.isEmpty == true) {
       return const SizedBox.shrink();
     }
 
@@ -28,7 +28,7 @@ class HomeNewReleasesSection extends HookConsumerWidget {
       items: albums,
       title: Text(context.l10n.new_releases),
       isLoadingNextPage: newReleases.isLoadingNextPage,
-      hasNextPage: newReleases.value?.hasMore ?? false,
+      hasNextPage: newReleases.asData?.value.hasMore ?? false,
       onFetchMore: newReleasesNotifier.fetchMore,
     );
   }

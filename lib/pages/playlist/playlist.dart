@@ -35,7 +35,7 @@ class PlaylistPage extends HookConsumerWidget {
         placeholder: ImagePlaceholder.collection,
       ),
       pagination: PaginationProps(
-        hasNextPage: tracks.value?.hasMore ?? false,
+        hasNextPage: tracks.asData?.value.hasMore ?? false,
         isLoading: tracks.isLoading,
         onFetchMore: tracksNotifier.fetchMore,
         onRefresh: () async {
@@ -47,7 +47,7 @@ class PlaylistPage extends HookConsumerWidget {
       ),
       title: playlist.name!,
       description: playlist.description,
-      tracks: tracks.value?.items ?? [],
+      tracks: tracks.asData?.value.items ?? [],
       routePath: '/playlist/${playlist.id}',
       isLiked: isFavoritePlaylist.value ?? false,
       shareUrl: playlist.externalUrls?.spotify ?? "",

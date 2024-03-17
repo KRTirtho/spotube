@@ -94,7 +94,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: mediaQuery.mdAndDown ? 12 : 24,
                 ),
-                sliver: playlists.value?.items.isNotEmpty != true
+                sliver: playlists.asData?.value.items.isNotEmpty != true
                     ? Skeletonizer.sliver(
                         child: SliverToBoxAdapter(
                           child: Wrap(
@@ -114,13 +114,14 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
                         ),
-                        itemCount: (playlists.value?.items.length ?? 0) + 1,
+                        itemCount:
+                            (playlists.asData?.value.items.length ?? 0) + 1,
                         itemBuilder: (context, index) {
-                          final playlist =
-                              playlists.value?.items.elementAtOrNull(index);
+                          final playlist = playlists.asData?.value.items
+                              .elementAtOrNull(index);
 
                           if (playlist == null) {
-                            if (playlists.value?.hasMore == false) {
+                            if (playlists.asData?.value.hasMore == false) {
                               return const SizedBox.shrink();
                             }
                             return Skeletonizer(

@@ -15,7 +15,8 @@ class HomePageFriendsSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final friendsQuery = ref.watch(friendsProvider);
-    final friends = friendsQuery.value?.friends ?? FakeData.friends.friends;
+    final friends =
+        friendsQuery.asData?.value.friends ?? FakeData.friends.friends;
 
     final groupCount = useBreakpointValue(
       sm: 3,
@@ -50,7 +51,8 @@ class HomePageFriendsSection extends HookConsumerWidget {
       },
     );
 
-    if (friendsQuery.isLoading || friendsQuery.value?.friends.isEmpty == true) {
+    if (friendsQuery.isLoading ||
+        friendsQuery.asData?.value.friends.isEmpty == true) {
       return const SliverToBoxAdapter(
         child: SizedBox.shrink(),
       );

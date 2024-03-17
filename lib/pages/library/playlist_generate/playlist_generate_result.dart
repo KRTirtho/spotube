@@ -30,7 +30,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
     final generatedPlaylist = ref.watch(generatePlaylistProvider(state));
 
     final selectedTracks = useState<List<String>>(
-      generatedPlaylist.value?.map((e) => e.id!).toList() ?? [],
+      generatedPlaylist.asData?.value.map((e) => e.id!).toList() ?? [],
     );
 
     useEffect(() {
@@ -41,8 +41,8 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
       return null;
     }, [generatedPlaylist.value]);
 
-    final isAllTrackSelected =
-        selectedTracks.value.length == (generatedPlaylist.value?.length ?? 0);
+    final isAllTrackSelected = selectedTracks.value.length ==
+        (generatedPlaylist.asData?.value.length ?? 0);
 
     return Scaffold(
       appBar: const PageWindowTitleBar(leading: BackButton()),

@@ -95,9 +95,9 @@ class PlainLyrics extends HookConsumerWidget {
                         }
 
                         final lyrics =
-                            lyricsQuery.value?.lyrics.mapIndexed((i, e) {
-                          final next =
-                              lyricsQuery.value?.lyrics.elementAtOrNull(i + 1);
+                            lyricsQuery.asData?.value.lyrics.mapIndexed((i, e) {
+                          final next = lyricsQuery.asData?.value.lyrics
+                              .elementAtOrNull(i + 1);
                           if (next != null &&
                               e.time - next.time >
                                   const Duration(milliseconds: 700)) {

@@ -15,11 +15,12 @@ class SearchPlaylistsSection extends HookConsumerWidget {
     final playlistsQuery = ref.watch(searchProvider(SearchType.playlist));
     final playlistsQueryNotifier =
         ref.watch(searchProvider(SearchType.playlist).notifier);
-    final playlists = playlistsQuery.value?.items.cast<PlaylistSimple>() ?? [];
+    final playlists =
+        playlistsQuery.asData?.value.items.cast<PlaylistSimple>() ?? [];
 
     return HorizontalPlaybuttonCardView(
       isLoadingNextPage: playlistsQuery.isLoadingNextPage,
-      hasNextPage: playlistsQuery.value?.hasMore == true,
+      hasNextPage: playlistsQuery.asData?.value.hasMore == true,
       items: playlists,
       onFetchMore: playlistsQueryNotifier.fetchMore,
       title: Text(context.l10n.playlists),

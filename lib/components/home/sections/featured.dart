@@ -18,10 +18,10 @@ class HomeFeaturedSection extends HookConsumerWidget {
     return Skeletonizer(
       enabled: featuredPlaylists.isLoadingAndEmpty,
       child: HorizontalPlaybuttonCardView<PlaylistSimple>(
-        items: featuredPlaylists.value?.items ?? [],
+        items: featuredPlaylists.asData?.value.items ?? [],
         title: Text(context.l10n.featured),
         isLoadingNextPage: featuredPlaylists.isLoadingNextPage,
-        hasNextPage: featuredPlaylists.value?.hasMore ?? false,
+        hasNextPage: featuredPlaylists.asData?.value.hasMore ?? false,
         onFetchMore: featuredPlaylistsNotifier.fetchMore,
       ),
     );

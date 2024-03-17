@@ -16,11 +16,11 @@ class SearchArtistsSection extends HookConsumerWidget {
     final query = ref.watch(searchProvider(SearchType.artist));
     final notifier = ref.watch(searchProvider(SearchType.artist).notifier);
 
-    final artists = query.value?.items.cast<Artist>() ?? [];
+    final artists = query.asData?.value.items.cast<Artist>() ?? [];
 
     return HorizontalPlaybuttonCardView<Artist>(
       isLoadingNextPage: query.isLoadingNextPage,
-      hasNextPage: query.value?.hasMore == true,
+      hasNextPage: query.asData?.value.hasMore == true,
       items: artists,
       onFetchMore: notifier.fetchMore,
       title: Text(context.l10n.artists),

@@ -19,7 +19,7 @@ class SearchAlbumsSection extends HookConsumerWidget {
     final notifier = ref.watch(searchProvider(SearchType.album).notifier);
     final albums = useMemoized(
       () =>
-          query.value?.items
+          query.asData?.value.items
               .cast<AlbumSimple>()
               .map(TypeConversionUtils.simpleAlbum_X_Album)
               .toList() ??
@@ -29,7 +29,7 @@ class SearchAlbumsSection extends HookConsumerWidget {
 
     return HorizontalPlaybuttonCardView(
       isLoadingNextPage: query.isLoadingNextPage,
-      hasNextPage: query.value?.hasMore == true,
+      hasNextPage: query.asData?.value.hasMore == true,
       items: albums,
       onFetchMore: notifier.fetchMore,
       title: Text(context.l10n.albums),

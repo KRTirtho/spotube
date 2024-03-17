@@ -178,7 +178,7 @@ class UserLocalTracks extends HookConsumerWidget {
               FilledButton(
                 onPressed: trackSnapshot.value != null
                     ? () async {
-                        if (trackSnapshot.value?.isNotEmpty == true) {
+                        if (trackSnapshot.asData?.value.isNotEmpty == true) {
                           if (!isPlaylistPlaying) {
                             await playLocalTracks(
                               ref,

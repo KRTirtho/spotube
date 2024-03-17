@@ -20,7 +20,7 @@ class SearchTracksSection extends HookConsumerWidget {
     final searchTrackNotifier =
         ref.watch(searchProvider(SearchType.track).notifier);
 
-    final tracks = searchTrack.value?.items.cast<Track>() ?? [];
+    final tracks = searchTrack.asData?.value.items.cast<Track>() ?? [];
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.provider.notifier);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final theme = Theme.of(context);
@@ -71,7 +71,7 @@ class SearchTracksSection extends HookConsumerWidget {
               },
             );
           }),
-        if (searchTrack.value?.hasMore == true && tracks.isNotEmpty)
+        if (searchTrack.asData?.value.hasMore == true && tracks.isNotEmpty)
           Center(
             child: TextButton(
               onPressed: searchTrack.isLoadingNextPage

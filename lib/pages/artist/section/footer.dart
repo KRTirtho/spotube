@@ -82,7 +82,7 @@ class ArtistPageFooter extends ConsumerWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
                   await launchUrlString(
-                    "http://en.wikipedia.org/wiki?curid=${summary.value?.pageid}",
+                    "http://en.wikipedia.org/wiki?curid=${summary.asData?.value?.pageid}",
                   );
                 },
             ),
