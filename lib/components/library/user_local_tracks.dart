@@ -217,7 +217,7 @@ class UserLocalTracks extends HookConsumerWidget {
               FilledButton(
                 child: const Icon(SpotubeIcons.refresh),
                 onPressed: () {
-                  ref.refresh(localTracksProvider);
+                  ref.invalidate(localTracksProvider);
                 },
               )
             ],
@@ -269,7 +269,7 @@ class UserLocalTracks extends HookConsumerWidget {
             return Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
-                  ref.refresh(localTracksProvider);
+                  ref.invalidate(localTracksProvider);
                 },
                 child: InterScrollbar(
                   controller: controller,

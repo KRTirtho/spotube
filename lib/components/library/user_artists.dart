@@ -13,7 +13,7 @@ import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class UserArtists extends HookConsumerWidget {
   const UserArtists({super.key});
@@ -23,12 +23,12 @@ class UserArtists extends HookConsumerWidget {
     final theme = Theme.of(context);
     final auth = ref.watch(AuthenticationNotifier.provider);
 
-    final artistQuery = useQueries.artist.followedByMeAll(ref);
+    final artistQuery = ref.watch(followedArtistsProvider);
 
     final searchText = useState('');
 
     final filteredArtists = useMemoized(() {
-      final artists = artistQuery.data ?? [];
+      final artists = artistQuery.value?.items ?? [];
 
       if (searchText.value.isEmpty) {
         return artists.toList();
@@ -42,7 +42,7 @@ class UserArtists extends HookConsumerWidget {
           .where((e) => e.$1 > 50)
           .map((e) => e.$2)
           .toList();
-    }, [artistQuery.data, searchText.value]);
+    }, [artistQuery.value?.items, searchText.value]);
 
     final controller = useScrollController();
 
@@ -66,7 +66,7 @@ class UserArtists extends HookConsumerWidget {
         ),
       ),
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: artistQuery.data?.isEmpty == true
+      body: artistQuery.value?.items.isEmpty == true
           ? Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
@@ -80,7 +80,7 @@ class UserArtists extends HookConsumerWidget {
             )
           : RefreshIndicator(
               onRefresh: () async {
-                await artistQuery.refresh();
+                ref.invalidate(followedArtistsProvider);
               },
               child: InterScrollbar(
                 controller: controller,
@@ -109,8 +109,9 @@ class UserArtists extends HookConsumerWidget {
                                         )
                                       ]
                                     : filteredArtists
-                                        .mapIndexed((index, artist) =>
-                                            ArtistCard(artist))
+                                        .mapIndexed(
+                                          (index, artist) => ArtistCard(artist),
+                                        )
                                         .toList(),
                           ),
                         ),

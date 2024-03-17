@@ -1,6 +1,6 @@
 part of '../spotify.dart';
 
-class FollowedArtistsState extends CursorPaginatedState<ArtistSimple> {
+class FollowedArtistsState extends CursorPaginatedState<Artist> {
   FollowedArtistsState({
     required super.items,
     required super.offset,
@@ -10,7 +10,7 @@ class FollowedArtistsState extends CursorPaginatedState<ArtistSimple> {
 
   @override
   FollowedArtistsState copyWith({
-    List<ArtistSimple>? items,
+    List<Artist>? items,
     String? offset,
     int? limit,
     bool? hasMore,
@@ -25,7 +25,7 @@ class FollowedArtistsState extends CursorPaginatedState<ArtistSimple> {
 }
 
 class FollowedArtistsNotifier
-    extends CursorPaginatedAsyncNotifier<ArtistSimple, FollowedArtistsState> {
+    extends CursorPaginatedAsyncNotifier<Artist, FollowedArtistsState> {
   FollowedArtistsNotifier() : super();
 
   @override
@@ -95,7 +95,7 @@ final followedArtistsProvider =
   () => FollowedArtistsNotifier(),
 );
 
-final allFollowedArtistsProvider = FutureProvider<List<ArtistSimple>>(
+final allFollowedArtistsProvider = FutureProvider<List<Artist>>(
   (ref) async {
     final spotify = ref.watch(spotifyProvider);
     final artists = await spotify.me.following(FollowingType.artist).all();

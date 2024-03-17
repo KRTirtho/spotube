@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
@@ -15,7 +14,7 @@ import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -25,32 +24,28 @@ class UserAlbums extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(AuthenticationNotifier.provider);
-    final albumsQuery = useQueries.album.ofMine(ref);
+    final albumsQuery = ref.watch(favoriteAlbumsProvider);
+    final albumsQueryNotifier = ref.watch(favoriteAlbumsProvider.notifier);
 
     final controller = useScrollController();
 
     final searchText = useState('');
 
-    final allAlbums = useMemoized(
-      () => albumsQuery.pages
-          .expand((element) => element.items ?? <AlbumSimple>[]),
-      [albumsQuery.pages],
-    );
-
     final albums = useMemoized(() {
       if (searchText.value.isEmpty) {
-        return allAlbums;
+        return albumsQuery.value?.items ?? [];
       }
-      return allAlbums
-          .map((e) => (
-                weightedRatio(e.name!, searchText.value),
-                e,
-              ))
-          .sorted((a, b) => b.$1.compareTo(a.$1))
-          .where((e) => e.$1 > 50)
-          .map((e) => e.$2)
-          .toList();
-    }, [allAlbums, searchText.value]);
+      return albumsQuery.value?.items
+              .map((e) => (
+                    weightedRatio(e.name!, searchText.value),
+                    e,
+                  ))
+              .sorted((a, b) => b.$1.compareTo(a.$1))
+              .where((e) => e.$1 > 50)
+              .map((e) => e.$2)
+              .toList() ??
+          [];
+    }, [albumsQuery.value, searchText.value]);
 
     if (auth == null) {
       return const AnonymousFallback();
@@ -60,7 +55,7 @@ class UserAlbums extends HookConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        await albumsQuery.refresh();
+        ref.invalidate(favoriteAlbumsProvider);
       },
       child: SafeArea(
         child: Scaffold(
@@ -85,7 +80,7 @@ class UserAlbums extends HookConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 controller: controller,
                 child: Skeletonizer(
-                  enabled: albumsQuery.pages.isEmpty,
+                  enabled: albumsQuery.isLoadingAndEmpty,
                   child: Center(
                     child: Wrap(
                       runSpacing: 20,
@@ -93,7 +88,8 @@ class UserAlbums extends HookConsumerWidget {
                       runAlignment: WrapAlignment.center,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        if (albumsQuery.pages.isEmpty)
+                        if (albumsQuery.value == null ||
+                            albumsQuery.value!.items.isEmpty)
                           ...List.generate(
                             10,
                             (index) => AlbumCard(FakeData.album),
@@ -107,11 +103,12 @@ class UserAlbums extends HookConsumerWidget {
                           AlbumCard(
                             TypeConversionUtils.simpleAlbum_X_Album(album),
                           ),
-                        if (albums.isNotEmpty && albumsQuery.hasNextPage)
+                        if (albums.isNotEmpty &&
+                            albumsQuery.value?.hasMore == true)
                           Waypoint(
                             controller: controller,
                             isGrid: true,
-                            onTouchEdge: albumsQuery.fetchNext,
+                            onTouchEdge: albumsQueryNotifier.fetchMore,
                             child: AlbumCard(FakeData.album),
                           )
                       ],
