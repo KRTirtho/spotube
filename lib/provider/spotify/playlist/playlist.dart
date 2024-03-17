@@ -16,7 +16,7 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
   }
 
   Future<void> create(PlaylistInput input, [ValueChanged? onError]) async {
-    if (state is AsyncData || state is AsyncLoading) return;
+    if (state is AsyncLoading) return;
     state = const AsyncLoading();
 
     final spotify = ref.read(spotifyProvider);
@@ -49,19 +49,6 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
     });
 
     ref.invalidate(favoritePlaylistsProvider);
-  }
-
-  Future<void> addTracks(List<String> trackIds) async {
-    if (state.value == null) return;
-
-    final spotify = ref.read(spotifyProvider);
-
-    await spotify.playlists.addTracks(
-      trackIds.map((id) => 'spotify:track:$id').toList(),
-      state.value!.id!,
-    );
-
-    ref.invalidate(playlistTracksProvider(state.value!.id!));
   }
 
   Future<void> modify(PlaylistInput input, [ValueChanged? onError]) async {

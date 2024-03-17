@@ -72,18 +72,24 @@ class FavoritePlaylistsNotifier
 
     ref.invalidate(isFavoritePlaylistProvider(playlist.id!));
   }
+
+  Future<void> addTracks(String playlistId, List<String> trackIds) async {
+    if (state.value == null) return;
+
+    final spotify = ref.read(spotifyProvider);
+
+    await spotify.playlists.addTracks(
+      trackIds.map((id) => 'spotify:track:$id').toList(),
+      playlistId,
+    );
+
+    ref.invalidate(playlistTracksProvider(playlistId));
+  }
 }
 
 final favoritePlaylistsProvider =
     AsyncNotifierProvider<FavoritePlaylistsNotifier, FavoritePlaylistsState>(
   () => FavoritePlaylistsNotifier(),
-);
-
-final allFavoritePlaylistsProvider = FutureProvider<List<PlaylistSimple>>(
-  (ref) async {
-    final spotify = ref.watch(spotifyProvider);
-    return (await spotify.playlists.me.all()).toList();
-  },
 );
 
 final isFavoritePlaylistProvider = FutureProvider.family<bool, String>(

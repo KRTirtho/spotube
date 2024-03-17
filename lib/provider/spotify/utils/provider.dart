@@ -23,6 +23,30 @@ abstract class PaginatedAsyncNotifier<K, T extends BasePaginatedState<K, int>>
       },
     );
   }
+
+  Future<List<K>> fetchAll() async {
+    if (state.value == null) return [];
+    if (!state.value!.hasMore) return state.value!.items;
+
+    bool hasMore = true;
+    while (hasMore) {
+      await update((state) async {
+        final items = await fetch(
+          state.offset + state.limit,
+          state.limit,
+        );
+
+        hasMore = items.length == state.limit;
+        return state.copyWith(
+          items: [...state.items, ...items],
+          offset: state.offset + state.limit,
+          hasMore: hasMore,
+        ) as T;
+      });
+    }
+
+    return state.value!.items;
+  }
 }
 
 abstract class CursorPaginatedAsyncNotifier<K,
@@ -48,6 +72,27 @@ abstract class CursorPaginatedAsyncNotifier<K,
         ) as T;
       },
     );
+  }
+
+  Future<List<K>> fetchAll() async {
+    if (state.value == null) return [];
+    if (!state.value!.hasMore) return state.value!.items;
+
+    bool hasMore = true;
+    while (hasMore) {
+      await update((state) async {
+        final items = await fetch(state.offset, state.limit);
+
+        hasMore = items.$1.length == state.limit;
+        return state.copyWith(
+          items: [...state.items, ...items.$1],
+          offset: items.$2,
+          hasMore: hasMore,
+        ) as T;
+      });
+    }
+
+    return state.value!.items;
   }
 }
 
