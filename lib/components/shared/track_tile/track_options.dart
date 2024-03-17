@@ -23,6 +23,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/services/mutations/mutations.dart';
 import 'package:spotube/services/queries/search.dart';
@@ -176,6 +177,7 @@ class TrackOptions extends HookConsumerWidget {
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
     final blacklist = ref.watch(BlackListNotifier.provider);
+    final me = ref.watch(meProvider);
 
     final favorites = useTrackToggleLike(track, ref);
 
@@ -220,7 +222,7 @@ class TrackOptions extends HookConsumerWidget {
             break;
           case TrackOptionValue.delete:
             await File((track as LocalTrack).path).delete();
-            ref.refresh(localTracksProvider);
+            ref.invalidate(localTracksProvider);
             break;
           case TrackOptionValue.addToQueue:
             await playback.addTrack(track);
@@ -257,7 +259,7 @@ class TrackOptions extends HookConsumerWidget {
             );
             break;
           case TrackOptionValue.favorite:
-            favorites.toggleTrackLike.mutate(favorites.isLiked);
+            favorites.toggleTrackLike(track);
             break;
           case TrackOptionValue.addToPlaylist:
             actionAddToPlaylist(context, track);
@@ -361,7 +363,7 @@ class TrackOptions extends HookConsumerWidget {
                 leading: const Icon(SpotubeIcons.queueRemove),
                 title: Text(context.l10n.remove_from_queue),
               ),
-            if (favorites.me.hasData)
+            if (me.value != null)
               PopSheetEntry(
                 value: TrackOptionValue.favorite,
                 leading: favorites.isLiked

@@ -34,7 +34,6 @@ class PlayerActions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final mediaQuery = MediaQuery.of(context);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final isLocalTrack = playlist.activeTrack is LocalTrack;
     ref.watch(downloadManagerProvider);

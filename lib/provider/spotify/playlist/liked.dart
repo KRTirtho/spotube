@@ -25,7 +25,7 @@ class LikedTracksNotifier extends AsyncNotifier<List<Track>> with Persistence {
         return tracks.where((e) => e.id != track.id).toList();
       } else {
         await spotify.tracks.me.saveOne(track.id!);
-        return [...tracks, track];
+        return [track, ...tracks];
       }
     });
   }
