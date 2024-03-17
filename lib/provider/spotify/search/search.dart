@@ -1,13 +1,13 @@
 part of '../spotify.dart';
 
+final searchTermStateProvider = StateProvider<String>((ref) => "");
+
 class SearchState<Y> extends PaginatedState<Y> {
-  final String query;
   SearchState({
     required super.items,
     required super.offset,
     required super.limit,
     required super.hasMore,
-    required this.query,
   });
 
   @override
@@ -16,14 +16,12 @@ class SearchState<Y> extends PaginatedState<Y> {
     int? offset,
     int? limit,
     bool? hasMore,
-    String? query,
   }) {
     return SearchState(
       items: items ?? this.items,
       offset: offset ?? this.offset,
       limit: limit ?? this.limit,
       hasMore: hasMore ?? this.hasMore,
-      query: query ?? this.query,
     );
   }
 }
@@ -37,7 +35,7 @@ class SearchNotifier<Y>
     if (state.value == null) return [];
     final results = await spotify.search
         .get(
-          state.value!.query,
+          ref.read(searchTermStateProvider),
           types: [arg],
           market: ref.read(userPreferencesProvider).recommendationMarket,
         )
@@ -48,6 +46,7 @@ class SearchNotifier<Y>
 
   @override
   build(arg) async {
+    ref.watch(searchTermStateProvider);
     ref.watch(spotifyProvider);
     ref.watch(
       userPreferencesProvider.select((value) => value.recommendationMarket),
@@ -60,29 +59,7 @@ class SearchNotifier<Y>
       offset: 0,
       limit: 10,
       hasMore: results.length == 10,
-      query: "",
     );
-  }
-
-  Future<void> search(String query) async {
-    if (state.value == null) return;
-
-    state = AsyncData(
-      state.value!.copyWith(
-        query: query,
-      ),
-    );
-
-    await update((state) async {
-      final results = await fetch(arg, 0, 10);
-
-      return state.copyWith(
-        items: results,
-        offset: 0,
-        limit: 10,
-        hasMore: results.length == 10,
-      );
-    });
   }
 }
 

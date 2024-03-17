@@ -1,32 +1,26 @@
 import 'package:collection/collection.dart';
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart' hide Page;
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class SearchTracksSection extends HookConsumerWidget {
-  final InfiniteQuery<List<Page<dynamic>>, dynamic, int> query;
   const SearchTracksSection({
     super.key,
-    required this.query,
   });
 
   @override
   Widget build(BuildContext context, ref) {
-    final searchTrack = query;
-    final tracks = useMemoized(
-      () => searchTrack.pages
-          .expand(
-            (page) => page.map((p) => p.items!).expand((element) => element),
-          )
-          .whereType<Track>(),
-      [searchTrack.pages],
-    );
+    final searchTrack = ref.watch(searchProvider(SearchType.track));
+
+    final searchTrackNotifier =
+        ref.watch(searchProvider(SearchType.track).notifier);
+
+    final tracks = searchTrack.value?.items.cast<Track>() ?? [];
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.provider.notifier);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final theme = Theme.of(context);
@@ -43,14 +37,10 @@ class SearchTracksSection extends HookConsumerWidget {
               style: theme.textTheme.titleLarge!,
             ),
           ),
-        if (!searchTrack.hasPageData &&
-            !searchTrack.hasPageError &&
-            !searchTrack.isLoadingNextPage)
+        if (searchTrack.isLoadingAndEmpty)
           const CircularProgressIndicator()
-        else if (searchTrack.hasPageError)
-          Text(
-            searchTrack.errors.lastOrNull?.toString() ?? "",
-          )
+        else if (searchTrack.hasError)
+          Text(searchTrack.error.toString())
         else
           ...tracks.mapIndexed((i, track) {
             return TrackTile(
@@ -81,12 +71,12 @@ class SearchTracksSection extends HookConsumerWidget {
               },
             );
           }),
-        if (searchTrack.hasNextPage && tracks.isNotEmpty)
+        if (searchTrack.value?.hasMore == true && tracks.isNotEmpty)
           Center(
             child: TextButton(
               onPressed: searchTrack.isLoadingNextPage
                   ? null
-                  : () => searchTrack.fetchNext(),
+                  : () => searchTrackNotifier.fetchMore,
               child: searchTrack.isLoadingNextPage
                   ? const CircularProgressIndicator()
                   : Text(context.l10n.load_more),
