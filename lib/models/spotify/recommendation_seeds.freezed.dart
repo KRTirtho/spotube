@@ -14,6 +14,316 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+/// @nodoc
+mixin _$GeneratePlaylistProviderInput {
+  Iterable<String>? get seedArtists => throw _privateConstructorUsedError;
+  Iterable<String>? get seedGenres => throw _privateConstructorUsedError;
+  Iterable<String>? get seedTracks => throw _privateConstructorUsedError;
+  int get limit => throw _privateConstructorUsedError;
+  RecommendationSeeds? get max => throw _privateConstructorUsedError;
+  RecommendationSeeds? get min => throw _privateConstructorUsedError;
+  RecommendationSeeds? get target => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $GeneratePlaylistProviderInputCopyWith<GeneratePlaylistProviderInput>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GeneratePlaylistProviderInputCopyWith<$Res> {
+  factory $GeneratePlaylistProviderInputCopyWith(
+          GeneratePlaylistProviderInput value,
+          $Res Function(GeneratePlaylistProviderInput) then) =
+      _$GeneratePlaylistProviderInputCopyWithImpl<$Res,
+          GeneratePlaylistProviderInput>;
+  @useResult
+  $Res call(
+      {Iterable<String>? seedArtists,
+      Iterable<String>? seedGenres,
+      Iterable<String>? seedTracks,
+      int limit,
+      RecommendationSeeds? max,
+      RecommendationSeeds? min,
+      RecommendationSeeds? target});
+
+  $RecommendationSeedsCopyWith<$Res>? get max;
+  $RecommendationSeedsCopyWith<$Res>? get min;
+  $RecommendationSeedsCopyWith<$Res>? get target;
+}
+
+/// @nodoc
+class _$GeneratePlaylistProviderInputCopyWithImpl<$Res,
+        $Val extends GeneratePlaylistProviderInput>
+    implements $GeneratePlaylistProviderInputCopyWith<$Res> {
+  _$GeneratePlaylistProviderInputCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? seedArtists = freezed,
+    Object? seedGenres = freezed,
+    Object? seedTracks = freezed,
+    Object? limit = null,
+    Object? max = freezed,
+    Object? min = freezed,
+    Object? target = freezed,
+  }) {
+    return _then(_value.copyWith(
+      seedArtists: freezed == seedArtists
+          ? _value.seedArtists
+          : seedArtists // ignore: cast_nullable_to_non_nullable
+              as Iterable<String>?,
+      seedGenres: freezed == seedGenres
+          ? _value.seedGenres
+          : seedGenres // ignore: cast_nullable_to_non_nullable
+              as Iterable<String>?,
+      seedTracks: freezed == seedTracks
+          ? _value.seedTracks
+          : seedTracks // ignore: cast_nullable_to_non_nullable
+              as Iterable<String>?,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as int,
+      max: freezed == max
+          ? _value.max
+          : max // ignore: cast_nullable_to_non_nullable
+              as RecommendationSeeds?,
+      min: freezed == min
+          ? _value.min
+          : min // ignore: cast_nullable_to_non_nullable
+              as RecommendationSeeds?,
+      target: freezed == target
+          ? _value.target
+          : target // ignore: cast_nullable_to_non_nullable
+              as RecommendationSeeds?,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $RecommendationSeedsCopyWith<$Res>? get max {
+    if (_value.max == null) {
+      return null;
+    }
+
+    return $RecommendationSeedsCopyWith<$Res>(_value.max!, (value) {
+      return _then(_value.copyWith(max: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $RecommendationSeedsCopyWith<$Res>? get min {
+    if (_value.min == null) {
+      return null;
+    }
+
+    return $RecommendationSeedsCopyWith<$Res>(_value.min!, (value) {
+      return _then(_value.copyWith(min: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $RecommendationSeedsCopyWith<$Res>? get target {
+    if (_value.target == null) {
+      return null;
+    }
+
+    return $RecommendationSeedsCopyWith<$Res>(_value.target!, (value) {
+      return _then(_value.copyWith(target: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$GeneratePlaylistProviderInputImplCopyWith<$Res>
+    implements $GeneratePlaylistProviderInputCopyWith<$Res> {
+  factory _$$GeneratePlaylistProviderInputImplCopyWith(
+          _$GeneratePlaylistProviderInputImpl value,
+          $Res Function(_$GeneratePlaylistProviderInputImpl) then) =
+      __$$GeneratePlaylistProviderInputImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {Iterable<String>? seedArtists,
+      Iterable<String>? seedGenres,
+      Iterable<String>? seedTracks,
+      int limit,
+      RecommendationSeeds? max,
+      RecommendationSeeds? min,
+      RecommendationSeeds? target});
+
+  @override
+  $RecommendationSeedsCopyWith<$Res>? get max;
+  @override
+  $RecommendationSeedsCopyWith<$Res>? get min;
+  @override
+  $RecommendationSeedsCopyWith<$Res>? get target;
+}
+
+/// @nodoc
+class __$$GeneratePlaylistProviderInputImplCopyWithImpl<$Res>
+    extends _$GeneratePlaylistProviderInputCopyWithImpl<$Res,
+        _$GeneratePlaylistProviderInputImpl>
+    implements _$$GeneratePlaylistProviderInputImplCopyWith<$Res> {
+  __$$GeneratePlaylistProviderInputImplCopyWithImpl(
+      _$GeneratePlaylistProviderInputImpl _value,
+      $Res Function(_$GeneratePlaylistProviderInputImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? seedArtists = freezed,
+    Object? seedGenres = freezed,
+    Object? seedTracks = freezed,
+    Object? limit = null,
+    Object? max = freezed,
+    Object? min = freezed,
+    Object? target = freezed,
+  }) {
+    return _then(_$GeneratePlaylistProviderInputImpl(
+      seedArtists: freezed == seedArtists
+          ? _value.seedArtists
+          : seedArtists // ignore: cast_nullable_to_non_nullable
+              as Iterable<String>?,
+      seedGenres: freezed == seedGenres
+          ? _value.seedGenres
+          : seedGenres // ignore: cast_nullable_to_non_nullable
+              as Iterable<String>?,
+      seedTracks: freezed == seedTracks
+          ? _value.seedTracks
+          : seedTracks // ignore: cast_nullable_to_non_nullable
+              as Iterable<String>?,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as int,
+      max: freezed == max
+          ? _value.max
+          : max // ignore: cast_nullable_to_non_nullable
+              as RecommendationSeeds?,
+      min: freezed == min
+          ? _value.min
+          : min // ignore: cast_nullable_to_non_nullable
+              as RecommendationSeeds?,
+      target: freezed == target
+          ? _value.target
+          : target // ignore: cast_nullable_to_non_nullable
+              as RecommendationSeeds?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$GeneratePlaylistProviderInputImpl
+    implements _GeneratePlaylistProviderInput {
+  _$GeneratePlaylistProviderInputImpl(
+      {this.seedArtists,
+      this.seedGenres,
+      this.seedTracks,
+      required this.limit,
+      this.max,
+      this.min,
+      this.target});
+
+  @override
+  final Iterable<String>? seedArtists;
+  @override
+  final Iterable<String>? seedGenres;
+  @override
+  final Iterable<String>? seedTracks;
+  @override
+  final int limit;
+  @override
+  final RecommendationSeeds? max;
+  @override
+  final RecommendationSeeds? min;
+  @override
+  final RecommendationSeeds? target;
+
+  @override
+  String toString() {
+    return 'GeneratePlaylistProviderInput(seedArtists: $seedArtists, seedGenres: $seedGenres, seedTracks: $seedTracks, limit: $limit, max: $max, min: $min, target: $target)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GeneratePlaylistProviderInputImpl &&
+            const DeepCollectionEquality()
+                .equals(other.seedArtists, seedArtists) &&
+            const DeepCollectionEquality()
+                .equals(other.seedGenres, seedGenres) &&
+            const DeepCollectionEquality()
+                .equals(other.seedTracks, seedTracks) &&
+            (identical(other.limit, limit) || other.limit == limit) &&
+            (identical(other.max, max) || other.max == max) &&
+            (identical(other.min, min) || other.min == min) &&
+            (identical(other.target, target) || other.target == target));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(seedArtists),
+      const DeepCollectionEquality().hash(seedGenres),
+      const DeepCollectionEquality().hash(seedTracks),
+      limit,
+      max,
+      min,
+      target);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GeneratePlaylistProviderInputImplCopyWith<
+          _$GeneratePlaylistProviderInputImpl>
+      get copyWith => __$$GeneratePlaylistProviderInputImplCopyWithImpl<
+          _$GeneratePlaylistProviderInputImpl>(this, _$identity);
+}
+
+abstract class _GeneratePlaylistProviderInput
+    implements GeneratePlaylistProviderInput {
+  factory _GeneratePlaylistProviderInput(
+      {final Iterable<String>? seedArtists,
+      final Iterable<String>? seedGenres,
+      final Iterable<String>? seedTracks,
+      required final int limit,
+      final RecommendationSeeds? max,
+      final RecommendationSeeds? min,
+      final RecommendationSeeds? target}) = _$GeneratePlaylistProviderInputImpl;
+
+  @override
+  Iterable<String>? get seedArtists;
+  @override
+  Iterable<String>? get seedGenres;
+  @override
+  Iterable<String>? get seedTracks;
+  @override
+  int get limit;
+  @override
+  RecommendationSeeds? get max;
+  @override
+  RecommendationSeeds? get min;
+  @override
+  RecommendationSeeds? get target;
+  @override
+  @JsonKey(ignore: true)
+  _$$GeneratePlaylistProviderInputImplCopyWith<
+          _$GeneratePlaylistProviderInputImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
 RecommendationSeeds _$RecommendationSeedsFromJson(Map<String, dynamic> json) {
   return _RecommendationSeeds.fromJson(json);
 }
@@ -207,59 +517,59 @@ class __$$RecommendationSeedsImplCopyWithImpl<$Res>
     Object? valence = freezed,
   }) {
     return _then(_$RecommendationSeedsImpl(
-      freezed == acousticness
+      acousticness: freezed == acousticness
           ? _value.acousticness
           : acousticness // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == danceability
+      danceability: freezed == danceability
           ? _value.danceability
           : danceability // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == durationMs
+      durationMs: freezed == durationMs
           ? _value.durationMs
           : durationMs // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == energy
+      energy: freezed == energy
           ? _value.energy
           : energy // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == instrumentalness
+      instrumentalness: freezed == instrumentalness
           ? _value.instrumentalness
           : instrumentalness // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == key
+      key: freezed == key
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == liveness
+      liveness: freezed == liveness
           ? _value.liveness
           : liveness // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == loudness
+      loudness: freezed == loudness
           ? _value.loudness
           : loudness // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == mode
+      mode: freezed == mode
           ? _value.mode
           : mode // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == popularity
+      popularity: freezed == popularity
           ? _value.popularity
           : popularity // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == speechiness
+      speechiness: freezed == speechiness
           ? _value.speechiness
           : speechiness // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == tempo
+      tempo: freezed == tempo
           ? _value.tempo
           : tempo // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == timeSignature
+      timeSignature: freezed == timeSignature
           ? _value.timeSignature
           : timeSignature // ignore: cast_nullable_to_non_nullable
               as num?,
-      freezed == valence
+      valence: freezed == valence
           ? _value.valence
           : valence // ignore: cast_nullable_to_non_nullable
               as num?,
@@ -271,7 +581,7 @@ class __$$RecommendationSeedsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RecommendationSeedsImpl implements _RecommendationSeeds {
   _$RecommendationSeedsImpl(
-      this.acousticness,
+      {this.acousticness,
       this.danceability,
       @JsonKey(name: "duration_ms") this.durationMs,
       this.energy,
@@ -284,7 +594,7 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
       this.speechiness,
       this.tempo,
       @JsonKey(name: "time_signature") this.timeSignature,
-      this.valence);
+      this.valence});
 
   factory _$RecommendationSeedsImpl.fromJson(Map<String, dynamic> json) =>
       _$$RecommendationSeedsImplFromJson(json);
@@ -391,7 +701,7 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
 
 abstract class _RecommendationSeeds implements RecommendationSeeds {
   factory _RecommendationSeeds(
-      final num? acousticness,
+      {final num? acousticness,
       final num? danceability,
       @JsonKey(name: "duration_ms") final num? durationMs,
       final num? energy,
@@ -404,7 +714,7 @@ abstract class _RecommendationSeeds implements RecommendationSeeds {
       final num? speechiness,
       final num? tempo,
       @JsonKey(name: "time_signature") final num? timeSignature,
-      final num? valence) = _$RecommendationSeedsImpl;
+      final num? valence}) = _$RecommendationSeedsImpl;
 
   factory _RecommendationSeeds.fromJson(Map<String, dynamic> json) =
       _$RecommendationSeedsImpl.fromJson;

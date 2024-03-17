@@ -1,34 +1,40 @@
 part of '../spotify.dart';
 
-typedef GeneratePlaylistProviderInput = ({
-  Iterable<String>? seedArtists,
-  Iterable<String>? seedGenres,
-  Iterable<String>? seedTracks,
-  int limit,
-  RecommendationSeeds? max,
-  RecommendationSeeds? min,
-  RecommendationSeeds? target,
-});
-
-final generatePlaylistProvider =
-    FutureProvider.family<List<TrackSimple>, GeneratePlaylistProviderInput>(
+final generatePlaylistProvider = FutureProvider.autoDispose
+    .family<List<Track>, GeneratePlaylistProviderInput>(
   (ref, input) async {
     final spotify = ref.watch(spotifyProvider);
     final market = ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),
     );
 
-    final recommendation = await spotify.recommendations.get(
+    final recommendation = await spotify.recommendations
+        .get(
       limit: input.limit,
       seedArtists: input.seedArtists?.toList(),
       seedGenres: input.seedGenres?.toList(),
       seedTracks: input.seedTracks?.toList(),
       market: market,
-      max: input.max?.toJson().cast<String, num>(),
-      min: input.min?.toJson().cast<String, num>(),
-      target: input.target?.toJson().cast<String, num>(),
-    );
+      max: (input.max?.toJson()?..removeWhere((key, value) => value == null))
+          ?.cast<String, num>(),
+      min: (input.min?.toJson()?..removeWhere((key, value) => value == null))
+          ?.cast<String, num>(),
+      target: (input.target?.toJson()
+            ?..removeWhere((key, value) => value == null))
+          ?.cast<String, num>(),
+    )
+        .catchError((e, stackTrace) {
+      Catcher2.reportCheckedError(e, stackTrace);
+      return Recommendations();
+    });
 
-    return recommendation.tracks?.toList() ?? [];
+    if (recommendation.tracks?.isEmpty ?? true) {
+      return [];
+    }
+
+    final tracks = await spotify.tracks
+        .list(recommendation.tracks!.map((e) => e.id!).toList());
+
+    return tracks.toList();
   },
 );

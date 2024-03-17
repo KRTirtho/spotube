@@ -9,20 +9,20 @@ part of 'recommendation_seeds.dart';
 _$RecommendationSeedsImpl _$$RecommendationSeedsImplFromJson(
         Map<String, dynamic> json) =>
     _$RecommendationSeedsImpl(
-      json['acousticness'] as num?,
-      json['danceability'] as num?,
-      json['duration_ms'] as num?,
-      json['energy'] as num?,
-      json['instrumentalness'] as num?,
-      json['key'] as num?,
-      json['liveness'] as num?,
-      json['loudness'] as num?,
-      json['mode'] as num?,
-      json['popularity'] as num?,
-      json['speechiness'] as num?,
-      json['tempo'] as num?,
-      json['time_signature'] as num?,
-      json['valence'] as num?,
+      acousticness: json['acousticness'] as num?,
+      danceability: json['danceability'] as num?,
+      durationMs: json['duration_ms'] as num?,
+      energy: json['energy'] as num?,
+      instrumentalness: json['instrumentalness'] as num?,
+      key: json['key'] as num?,
+      liveness: json['liveness'] as num?,
+      loudness: json['loudness'] as num?,
+      mode: json['mode'] as num?,
+      popularity: json['popularity'] as num?,
+      speechiness: json['speechiness'] as num?,
+      tempo: json['tempo'] as num?,
+      timeSignature: json['time_signature'] as num?,
+      valence: json['valence'] as num?,
     );
 
 Map<String, dynamic> _$$RecommendationSeedsImplToJson(
