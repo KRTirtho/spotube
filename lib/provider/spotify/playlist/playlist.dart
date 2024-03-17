@@ -15,7 +15,7 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
     return spotify.playlists.get(arg);
   }
 
-  Future<void> create(PlaylistInput input) async {
+  Future<void> create(PlaylistInput input, [ValueChanged? onError]) async {
     if (state is AsyncData || state is AsyncLoading) return;
     state = const AsyncLoading();
 
@@ -25,23 +25,30 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
     if (me.value == null) return;
 
     state = await AsyncValue.guard(() async {
-      final playlist = await spotify.playlists.createPlaylist(
-        me.value!.id!,
-        input.playlistName,
-        collaborative: input.collaborative,
-        description: input.description,
-        public: input.public,
-      );
-
-      if (input.base64Image != null) {
-        await spotify.playlists.updatePlaylistImage(
-          playlist.id!,
-          input.base64Image!,
+      try {
+        final playlist = await spotify.playlists.createPlaylist(
+          me.value!.id!,
+          input.playlistName,
+          collaborative: input.collaborative,
+          description: input.description,
+          public: input.public,
         );
-      }
 
-      return playlist;
+        if (input.base64Image != null) {
+          await spotify.playlists.updatePlaylistImage(
+            playlist.id!,
+            input.base64Image!,
+          );
+        }
+
+        return playlist;
+      } catch (e) {
+        onError?.call(e);
+        rethrow;
+      }
     });
+
+    ref.invalidate(favoritePlaylistsProvider);
   }
 
   Future<void> addTracks(List<String> trackIds) async {
@@ -57,29 +64,36 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
     ref.invalidate(playlistTracksProvider(state.value!.id!));
   }
 
-  Future<void> modify(PlaylistInput input) async {
+  Future<void> modify(PlaylistInput input, [ValueChanged? onError]) async {
     if (state.value == null) return;
 
     final spotify = ref.read(spotifyProvider);
 
     await update((state) async {
-      await spotify.playlists.updatePlaylist(
-        state.id!,
-        input.playlistName,
-        collaborative: input.collaborative,
-        description: input.description,
-        public: input.public,
-      );
-
-      if (input.base64Image != null) {
-        await spotify.playlists.updatePlaylistImage(
+      try {
+        await spotify.playlists.updatePlaylist(
           state.id!,
-          input.base64Image!,
+          input.playlistName,
+          collaborative: input.collaborative,
+          description: input.description,
+          public: input.public,
         );
-      }
 
-      return spotify.playlists.get(state.id!);
+        if (input.base64Image != null) {
+          await spotify.playlists.updatePlaylistImage(
+            state.id!,
+            input.base64Image!,
+          );
+        }
+
+        return spotify.playlists.get(state.id!);
+      } catch (e) {
+        onError?.call(e);
+        rethrow;
+      }
     });
+
+    ref.invalidate(favoritePlaylistsProvider);
   }
 }
 

@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:spotify/spotify.dart';
