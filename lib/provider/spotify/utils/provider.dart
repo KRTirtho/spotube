@@ -1,17 +1,25 @@
 part of '../spotify.dart';
 
+// ignore: subtype_of_sealed_class
+class AsyncLoadingNext<T> extends AsyncData<T> {
+  const AsyncLoadingNext(super.value);
+}
+
 abstract class PaginatedAsyncNotifier<K, T extends BasePaginatedState<K, int>>
     extends AsyncNotifier<T> with SpotifyMixin<T> {
   Future<List<K>> fetch(int offset, int limit);
 
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
-    state = const AsyncValue.loading();
+
+    state = AsyncLoadingNext(state.asData!.value);
 
     state = await AsyncValue.guard(
       () async {
         final items = await fetch(
-            state.value!.offset + state.value!.limit, state.value!.limit);
+          state.value!.offset + state.value!.limit,
+          state.value!.limit,
+        );
         return state.value!.copyWith(
           hasMore: items.length == state.value!.limit,
           items: [
@@ -57,7 +65,7 @@ abstract class CursorPaginatedAsyncNotifier<K,
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    state = const AsyncValue.loading();
+    state = AsyncLoadingNext(state.asData!.value);
 
     state = await AsyncValue.guard(
       () async {
@@ -105,7 +113,7 @@ abstract class FamilyPaginatedAsyncNotifier<
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    state = const AsyncLoading();
+    state = AsyncLoadingNext(state.asData!.value);
 
     state = await AsyncValue.guard(
       () async {
@@ -165,7 +173,7 @@ abstract class FamilyCursorPaginatedAsyncNotifier<
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    state = const AsyncLoading();
+    state = AsyncLoadingNext(state.asData!.value);
 
     state = await AsyncValue.guard(
       () async {

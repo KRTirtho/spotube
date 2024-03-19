@@ -39,7 +39,7 @@ class ArtistPage extends HookConsumerWidget {
             return Center(child: Text(artistQuery.error.toString()));
           }
           return Skeletonizer(
-            enabled: artistQuery.isLoadingAndEmpty,
+            enabled: artistQuery.isLoading,
             child: CustomScrollView(
               controller: scrollController,
               slivers: [

@@ -84,11 +84,11 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                         itemBuilder: (context, index) {
                           final item = items[index];
 
-                          return switch (item.runtimeType) {
-                            PlaylistSimple =>
+                          return switch (item) {
+                            PlaylistSimple() =>
                               PlaylistCard(item as PlaylistSimple),
-                            Album => AlbumCard(item as Album),
-                            Artist => Padding(
+                            Album() => AlbumCard(item as Album),
+                            Artist() => Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12.0),
                                 child: ArtistCard(item as Artist),

@@ -36,7 +36,7 @@ class PlaylistPage extends HookConsumerWidget {
       ),
       pagination: PaginationProps(
         hasNextPage: tracks.asData?.value.hasMore ?? false,
-        isLoading: tracks.isLoading,
+        isLoading: tracks.isLoadingNextPage,
         onFetchMore: tracksNotifier.fetchMore,
         onRefresh: () async {
           ref.invalidate(playlistTracksProvider(playlist.id!));

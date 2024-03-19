@@ -33,7 +33,7 @@ class AlbumPage extends HookConsumerWidget {
       tracks: tracks.asData?.value.items ?? [],
       pagination: PaginationProps(
         hasNextPage: tracks.asData?.value.hasMore ?? false,
-        isLoading: tracks.isLoading,
+        isLoading: tracks.isLoadingNextPage,
         onFetchMore: () async {
           await tracksNotifier.fetchMore();
         },

@@ -80,7 +80,7 @@ class UserAlbums extends HookConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 controller: controller,
                 child: Skeletonizer(
-                  enabled: albumsQuery.isLoadingAndEmpty,
+                  enabled: albumsQuery.isLoading,
                   child: Center(
                     child: Wrap(
                       runSpacing: 20,

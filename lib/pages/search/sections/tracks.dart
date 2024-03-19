@@ -37,7 +37,7 @@ class SearchTracksSection extends HookConsumerWidget {
               style: theme.textTheme.titleLarge!,
             ),
           ),
-        if (searchTrack.isLoadingAndEmpty)
+        if (searchTrack.isLoading)
           const CircularProgressIndicator()
         else if (searchTrack.hasError)
           Text(searchTrack.error.toString())

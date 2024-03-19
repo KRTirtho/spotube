@@ -13,10 +13,10 @@ class HomeFeaturedSection extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final featuredPlaylists = ref.watch(featuredPlaylistsProvider);
     final featuredPlaylistsNotifier =
-        ref.read(featuredPlaylistsProvider.notifier);
+        ref.watch(featuredPlaylistsProvider.notifier);
 
     return Skeletonizer(
-      enabled: featuredPlaylists.isLoadingAndEmpty,
+      enabled: featuredPlaylists.isLoading,
       child: HorizontalPlaybuttonCardView<PlaylistSimple>(
         items: featuredPlaylists.asData?.value.items ?? [],
         title: Text(context.l10n.featured),
