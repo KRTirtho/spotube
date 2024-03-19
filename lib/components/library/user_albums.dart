@@ -105,11 +105,14 @@ class UserAlbums extends HookConsumerWidget {
                           ),
                         if (albums.isNotEmpty &&
                             albumsQuery.asData?.value.hasMore == true)
-                          Waypoint(
-                            controller: controller,
-                            isGrid: true,
-                            onTouchEdge: albumsQueryNotifier.fetchMore,
-                            child: AlbumCard(FakeData.album),
+                          Skeletonizer(
+                            enabled: true,
+                            child: Waypoint(
+                              controller: controller,
+                              isGrid: true,
+                              onTouchEdge: albumsQueryNotifier.fetchMore,
+                              child: AlbumCard(FakeData.album),
+                            ),
                           )
                       ],
                     ),
