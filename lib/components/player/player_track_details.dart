@@ -13,8 +13,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class PlayerTrackDetails extends HookConsumerWidget {
   final String? albumArt;
   final Color? color;
-  const PlayerTrackDetails({Key? key, this.albumArt, this.color})
-      : super(key: key);
+  const PlayerTrackDetails({super.key, this.albumArt, this.color});
 
   @override
   Widget build(BuildContext context, ref) {

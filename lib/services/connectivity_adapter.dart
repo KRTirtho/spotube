@@ -2,17 +2,17 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/widgets.dart';
 
-class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
-    with WidgetsBindingObserver {
+class ConnectionCheckerService with WidgetsBindingObserver {
   final _connectionStreamController = StreamController<bool>.broadcast();
   final Dio dio;
 
-  FlQueryInternetConnectionCheckerAdapter()
-      : dio = Dio(),
-        super() {
+  static final _instance = ConnectionCheckerService._();
+
+  static ConnectionCheckerService get instance => _instance;
+
+  ConnectionCheckerService._() : dio = Dio() {
     Timer? timer;
 
     onConnectivityChanged.listen((connected) {
@@ -100,15 +100,16 @@ class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
         await isVpnActive(); // when VPN is active that means we are connected
   }
 
-  @override
+  bool isConnectedSync = false;
+
   Future<bool> get isConnected async {
     final connected = await _isConnected();
+    isConnectedSync = connected;
     if (connected != isConnectedSync /*previous value*/) {
       _connectionStreamController.add(connected);
     }
     return connected;
   }
 
-  @override
   Stream<bool> get onConnectivityChanged => _connectionStreamController.stream;
 }

@@ -44,8 +44,8 @@ class _PackageInfoHook<PageKeyType, ItemType> extends Hook<PackageInfo> {
     required this.version,
     required this.buildNumber,
     this.buildSignature = '',
-    List<Object?>? keys,
-  }) : super(keys: keys);
+    super.keys,
+  });
 
   @override
   HookState<PackageInfo, Hook<PackageInfo>> createState() =>

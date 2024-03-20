@@ -15,10 +15,10 @@ import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
-import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -31,8 +31,8 @@ class Sidebar extends HookConsumerWidget {
     required this.selectedIndex,
     required this.onSelectedIndexChanged,
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static Widget brandLogo() {
     return Container(
@@ -195,7 +195,7 @@ class Sidebar extends HookConsumerWidget {
 }
 
 class SidebarHeader extends HookWidget {
-  const SidebarHeader({Key? key}) : super(key: key);
+  const SidebarHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -234,15 +234,15 @@ class SidebarHeader extends HookWidget {
 
 class SidebarFooter extends HookConsumerWidget {
   const SidebarFooter({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final me = useQueries.user.me(ref);
-    final data = me.data;
+    final me = ref.watch(meProvider);
+    final data = me.asData?.value;
 
     final avatarImg = TypeConversionUtils.image_X_UrlString(
       data?.images,

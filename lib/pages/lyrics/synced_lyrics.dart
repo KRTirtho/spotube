@@ -13,13 +13,11 @@ import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
 import 'package:spotube/components/lyrics/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/queries/queries.dart';
 
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:stroke_text/stroke_text.dart';
-
-final _delay = StateProvider<int>((ref) => 0);
 
 class SyncedLyrics extends HookConsumerWidget {
   final PaletteColor palette;
@@ -30,8 +28,8 @@ class SyncedLyrics extends HookConsumerWidget {
     required this.palette,
     this.isModal,
     this.defaultTextZoom = 100,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -40,28 +38,18 @@ class SyncedLyrics extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
     final controller = useAutoScrollController();
 
-    final delay = ref.watch(_delay);
+    final delay = ref.watch(syncedLyricsDelayProvider);
 
     final timedLyricsQuery =
-        useQueries.lyrics.spotifySynced(ref, playlist.activeTrack);
+        ref.watch(syncedLyricsProvider(playlist.activeTrack));
 
-    final lyricValue = timedLyricsQuery.data;
+    final lyricValue = timedLyricsQuery.asData?.value;
 
-    final isUnSyncLyric = useMemoized(
-      () => lyricValue?.lyrics.every((l) => l.time == Duration.zero),
-      [lyricValue],
+    final lyricsState = ref.watch(
+      syncedLyricsMapProvider(playlist.activeTrack),
     );
-
-    final lyricsMap = useMemoized(
-      () =>
-          lyricValue?.lyrics
-              .map((lyric) => {lyric.time.inSeconds: lyric.text})
-              .reduce((accumulator, lyricSlice) =>
-                  {...accumulator, ...lyricSlice}) ??
-          {},
-      [lyricValue],
-    );
-    final currentTime = useSyncedLyrics(ref, lyricsMap, delay);
+    final currentTime =
+        useSyncedLyrics(ref, lyricsState.asData?.value.lyricsMap ?? {}, delay);
     final textZoomLevel = useState<int>(defaultTextZoom);
 
     final textTheme = Theme.of(context).textTheme;
@@ -70,7 +58,7 @@ class SyncedLyrics extends HookConsumerWidget {
       ProxyPlaylistNotifier.provider.select((s) => s.activeTrack),
       (previous, next) {
         controller.scrollToIndex(0);
-        ref.read(_delay.notifier).state = 0;
+        ref.read(syncedLyricsDelayProvider.notifier).state = 0;
       },
     );
 
@@ -105,7 +93,7 @@ class SyncedLyrics extends HookConsumerWidget {
               ),
             if (lyricValue != null &&
                 lyricValue.lyrics.isNotEmpty &&
-                isUnSyncLyric == false)
+                lyricsState.asData?.value.static != true)
               Expanded(
                 child: ListView.builder(
                   controller: controller,
@@ -202,7 +190,7 @@ class SyncedLyrics extends HookConsumerWidget {
               ),
               const Gap(26),
               const Icon(SpotubeIcons.noLyrics, size: 60),
-            ] else if (isUnSyncLyric == true)
+            ] else if (lyricsState.asData?.value.static == true)
               Expanded(
                 child: Center(
                   child: RichText(
@@ -235,7 +223,8 @@ class SyncedLyrics extends HookConsumerWidget {
             final actions = [
               ZoomControls(
                 value: delay,
-                onChanged: (value) => ref.read(_delay.notifier).state = value,
+                onChanged: (value) =>
+                    ref.read(syncedLyricsDelayProvider.notifier).state = value,
                 interval: 1,
                 unit: "s",
                 increaseIcon: const Icon(SpotubeIcons.add),

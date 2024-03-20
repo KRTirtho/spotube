@@ -3,7 +3,7 @@ import 'package:spotube/collections/assets.gen.dart';
 
 class NotFound extends StatelessWidget {
   final bool vertical;
-  const NotFound({Key? key, this.vertical = false}) : super(key: key);
+  const NotFound({super.key, this.vertical = false});
 
   @override
   Widget build(BuildContext context) {

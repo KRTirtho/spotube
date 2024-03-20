@@ -11,8 +11,8 @@ class SortTracksDropdown extends StatelessWidget {
   const SortTracksDropdown({
     this.onChanged,
     this.value,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

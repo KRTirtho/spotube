@@ -8,7 +8,6 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';
@@ -29,13 +28,12 @@ class PlayerActions extends HookConsumerWidget {
     this.floatingQueue = true,
     this.showQueue = true,
     this.extraActions,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final logger = getLogger(PlayerActions);
 
   @override
   Widget build(BuildContext context, ref) {
-    final mediaQuery = MediaQuery.of(context);
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final isLocalTrack = playlist.activeTrack is LocalTrack;
     ref.watch(downloadManagerProvider);

@@ -24,8 +24,8 @@ class _SidebarXControllerHook extends Hook<SidebarXController> {
   const _SidebarXControllerHook({
     required this.selectedIndex,
     this.extended,
-    List<Object?>? keys,
-  }) : super(keys: keys);
+    super.keys,
+  });
 
   final int selectedIndex;
   final bool? extended;

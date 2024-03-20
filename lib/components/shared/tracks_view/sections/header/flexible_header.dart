@@ -14,7 +14,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 
 class TrackViewFlexHeader extends HookConsumerWidget {
-  const TrackViewFlexHeader({Key? key}) : super(key: key);
+  const TrackViewFlexHeader({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

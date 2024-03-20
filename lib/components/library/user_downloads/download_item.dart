@@ -13,9 +13,9 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class DownloadItem extends HookConsumerWidget {
   final Track track;
   const DownloadItem({
-    Key? key,
+    super.key,
     required this.track,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

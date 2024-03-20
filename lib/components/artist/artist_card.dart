@@ -14,7 +14,7 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistCard extends HookConsumerWidget {
   final Artist artist;
-  const ArtistCard(this.artist, {Key? key}) : super(key: key);
+  const ArtistCard(this.artist, {super.key});
 
   @override
   Widget build(BuildContext context, ref) {

@@ -32,9 +32,6 @@ dependencies:
   duration: ^3.0.12
   envied: ^0.3.0
   file_selector: ^1.0.1
-  fl_query: ^1.0.0
-  fl_query_hooks: ^1.0.0
-  fl_query_devtools: ^0.1.0
   fluentui_system_icons: ^1.1.189
   flutter:
     sdk: flutter

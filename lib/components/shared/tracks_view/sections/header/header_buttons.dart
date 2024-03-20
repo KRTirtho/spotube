@@ -15,10 +15,10 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
   final PaletteColor color;
   final bool compact;
   const TrackViewHeaderButtons({
-    Key? key,
+    super.key,
     required this.color,
     this.compact = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

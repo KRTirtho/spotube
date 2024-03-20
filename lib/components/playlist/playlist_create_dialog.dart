@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotify/spotify.dart';
@@ -13,10 +14,8 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/mutations/mutations.dart';
-import 'package:spotube/services/mutations/playlist.dart';
-import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistCreateDialog extends HookConsumerWidget {
@@ -24,10 +23,10 @@ class PlaylistCreateDialog extends HookConsumerWidget {
   final List<String> trackIds;
   final String? playlistId;
   PlaylistCreateDialog({
-    Key? key,
+    super.key,
     this.trackIds = const [],
     this.playlistId,
-  }) : super(key: key);
+  });
 
   final formKey = GlobalKey<FormState>();
 
@@ -37,13 +36,16 @@ class PlaylistCreateDialog extends HookConsumerWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: HookBuilder(builder: (context) {
-          final userPlaylists = useQueries.playlist.ofMine(ref);
+          final userPlaylists = ref.watch(favoritePlaylistsProvider);
+          final playlist = ref.watch(playlistProvider(playlistId ?? ""));
+          final playlistNotifier =
+              ref.watch(playlistProvider(playlistId ?? "").notifier);
+
           final updatingPlaylist = useMemoized(
-            () => userPlaylists.pages
-                .expand((p) => p.items ?? <PlaylistSimple>[])
+            () => userPlaylists.asData?.value.items
                 .firstWhereOrNull((playlist) => playlist.id == playlistId),
             [
-              userPlaylists.pages,
+              userPlaylists.asData?.value.items,
               playlistId,
             ],
           );
@@ -84,28 +86,10 @@ class PlaylistCreateDialog extends HookConsumerWidget {
             }
           }, [scaffold, l10n, theme]);
 
-          final playlistCreateMutation = useMutations.playlist.create(
-            ref,
-            trackIds: trackIds,
-            onData: (value) {
-              Navigator.pop(context);
-            },
-            onError: onError,
-          );
-
-          final playlistUpdateMutation = useMutations.playlist.update(
-            ref,
-            playlistId: playlistId,
-            onData: (value) {
-              Navigator.pop(context);
-            },
-            onError: onError,
-          );
-
           Future<void> onCreate() async {
             if (!formKey.currentState!.validate()) return;
 
-            final PlaylistCRUDVariables payload = (
+            final PlaylistInput payload = (
               playlistName: playlistName.text,
               collaborative: collaborative.value,
               public: public.value,
@@ -118,9 +102,14 @@ class PlaylistCreateDialog extends HookConsumerWidget {
             );
 
             if (isUpdatingPlaylist) {
-              await playlistUpdateMutation.mutate(payload);
+              await playlistNotifier.modify(payload, onError);
             } else {
-              await playlistCreateMutation.mutate(payload);
+              await playlistNotifier.create(payload, onError);
+            }
+
+            if (context.mounted &&
+                !ref.read(playlistProvider(playlistId ?? "")).hasError) {
+              context.pop();
             }
           }
 
@@ -138,7 +127,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                 },
               ),
               FilledButton(
-                onPressed: onCreate,
+                onPressed: playlist.isLoading ? null : onCreate,
                 child: Text(
                   isUpdatingPlaylist
                       ? context.l10n.update
@@ -275,7 +264,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
 }
 
 class PlaylistCreateDialogButton extends HookConsumerWidget {
-  const PlaylistCreateDialogButton({Key? key}) : super(key: key);
+  const PlaylistCreateDialogButton({super.key});
 
   showPlaylistDialog(BuildContext context, SpotifyApi spotify) {
     showDialog(

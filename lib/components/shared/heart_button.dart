@@ -1,5 +1,3 @@
-import 'package:fl_query/fl_query.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,8 +6,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
-import 'package:spotube/services/mutations/mutations.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class HeartButton extends HookConsumerWidget {
   final bool isLiked;
@@ -23,8 +20,8 @@ class HeartButton extends HookConsumerWidget {
     this.color,
     this.tooltip,
     this.icon,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -60,90 +57,50 @@ class HeartButton extends HookConsumerWidget {
 
 typedef UseTrackToggleLike = ({
   bool isLiked,
-  Mutation<bool, dynamic, bool> toggleTrackLike,
-  Query<User?, dynamic> me,
+  Future<void> Function(Track track) toggleTrackLike,
 });
 
 UseTrackToggleLike useTrackToggleLike(Track track, WidgetRef ref) {
-  final me = useQueries.user.me(ref);
-
-  final savedTracks = useQueries.playlist.likedTracksQuery(ref);
+  final savedTracks = ref.watch(likedTracksProvider);
+  final savedTracksNotifier = ref.watch(likedTracksProvider.notifier);
 
   final isLiked = useMemoized(
-    () => savedTracks.data?.any((element) => element.id == track.id) ?? false,
-    [savedTracks.data, track.id],
+    () =>
+        savedTracks.asData?.value.any((element) => element.id == track.id) ??
+        false,
+    [savedTracks.value, track.id],
   );
-
-  final mounted = useIsMounted();
 
   final scrobblerNotifier = ref.read(scrobblerProvider.notifier);
 
-  final toggleTrackLike = useMutations.track.toggleFavorite(
-    ref,
-    track.id!,
-    onMutate: (isLiked) {
-      if (isLiked) {
-        savedTracks.setData(
-          savedTracks.data
-                  ?.where((element) => element.id != track.id)
-                  .toList() ??
-              [],
-        );
-      } else {
-        savedTracks.setData(
-          [
-            ...?savedTracks.data,
-            track,
-          ],
-        );
-      }
-      return isLiked;
-    },
-    onData: (isLiked, recoveryData) async {
-      await savedTracks.refresh();
-      if (isLiked) {
+  return (
+    isLiked: isLiked,
+    toggleTrackLike: (track) async {
+      await savedTracksNotifier.toggleFavorite(track);
+
+      if (!isLiked) {
         await scrobblerNotifier.love(track);
       } else {
         await scrobblerNotifier.unlove(track);
       }
     },
-    onError: (payload, isLiked) {
-      if (!mounted()) return;
-
-      if (isLiked != true) {
-        savedTracks.setData(
-          savedTracks.data
-                  ?.where((element) => element.id != track.id)
-                  .toList() ??
-              [],
-        );
-      } else {
-        savedTracks.setData(
-          [
-            ...?savedTracks.data,
-            track,
-          ],
-        );
-      }
-    },
   );
-
-  return (isLiked: isLiked, toggleTrackLike: toggleTrackLike, me: me);
 }
 
 class TrackHeartButton extends HookConsumerWidget {
   final Track track;
   const TrackHeartButton({
-    Key? key,
+    super.key,
     required this.track,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final savedTracks = useQueries.playlist.likedTracksQuery(ref);
-    final (:me, :isLiked, :toggleTrackLike) = useTrackToggleLike(track, ref);
+    final savedTracks = ref.watch(likedTracksProvider);
+    final me = ref.watch(meProvider);
+    final (:isLiked, :toggleTrackLike) = useTrackToggleLike(track, ref);
 
-    if (me.isLoading || !me.hasData) {
+    if (me.isLoading) {
       return const CircularProgressIndicator();
     }
 
@@ -152,104 +109,9 @@ class TrackHeartButton extends HookConsumerWidget {
           ? context.l10n.remove_from_favorites
           : context.l10n.save_as_favorite,
       isLiked: isLiked,
-      onPressed: savedTracks.hasData
+      onPressed: savedTracks.value != null
           ? () {
-              toggleTrackLike.mutate(isLiked);
-            }
-          : null,
-    );
-  }
-}
-
-class PlaylistHeartButton extends HookConsumerWidget {
-  final PlaylistSimple playlist;
-  final IconData? icon;
-  final ValueChanged<bool>? onData;
-
-  const PlaylistHeartButton({
-    required this.playlist,
-    Key? key,
-    this.icon,
-    this.onData,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final me = useQueries.user.me(ref);
-
-    final isLikedQuery = useQueries.playlist.doesUserFollow(
-      ref,
-      playlist.id!,
-      me.data?.id ?? '',
-    );
-
-    final togglePlaylistLike = useMutations.playlist.toggleFavorite(
-      ref,
-      playlist.id!,
-      refreshQueries: [
-        isLikedQuery.key,
-      ],
-      onData: onData,
-    );
-
-    if (me.isLoading || !me.hasData) {
-      return const CircularProgressIndicator();
-    }
-
-    return HeartButton(
-      isLiked: isLikedQuery.data ?? false,
-      tooltip: isLikedQuery.data ?? false
-          ? context.l10n.remove_from_favorites
-          : context.l10n.save_as_favorite,
-      color: Colors.white,
-      icon: icon,
-      onPressed: isLikedQuery.hasData
-          ? () {
-              togglePlaylistLike.mutate(isLikedQuery.data!);
-            }
-          : null,
-    );
-  }
-}
-
-class AlbumHeartButton extends HookConsumerWidget {
-  final AlbumSimple album;
-
-  const AlbumHeartButton({
-    required this.album,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final client = useQueryClient();
-    final me = useQueries.user.me(ref);
-
-    final albumIsSaved = useQueries.album.isSavedForMe(ref, album.id!);
-    final isLiked = albumIsSaved.data ?? false;
-
-    final toggleAlbumLike = useMutations.album.toggleFavorite(
-      ref,
-      album.id!,
-      refreshQueries: [albumIsSaved.key],
-      onData: (_, __) async {
-        await client.refreshInfiniteQueryAllPages("current-user-albums");
-      },
-    );
-
-    if (me.isLoading || !me.hasData) {
-      return const CircularProgressIndicator();
-    }
-
-    return HeartButton(
-      isLiked: isLiked,
-      tooltip: isLiked
-          ? context.l10n.remove_from_favorites
-          : context.l10n.save_as_favorite,
-      color: Colors.white,
-      onPressed: albumIsSaved.hasData
-          ? () {
-              toggleAlbumLike.mutate(isLiked);
+              toggleTrackLike(track);
             }
           : null,
     );

@@ -258,7 +258,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
 
   /// Gets value of property org.mpris.MediaPlayer2.Player.LoopStatus
   Future<DBusMethodResponse> getLoopStatus() async {
-    final loopMode = switch (await audioPlayer.loopMode) {
+    final loopMode = switch (audioPlayer.loopMode) {
       PlaybackLoopMode.all => "Playlist",
       PlaybackLoopMode.one => "Track",
       PlaybackLoopMode.none => "None",

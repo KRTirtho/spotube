@@ -14,7 +14,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 
 class SettingsPlaybackSection extends HookConsumerWidget {
-  const SettingsPlaybackSection({Key? key}) : super(key: key);
+  const SettingsPlaybackSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

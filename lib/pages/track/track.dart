@@ -13,17 +13,17 @@ import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/extensions/constrains.dart';
 
 class TrackPage extends HookConsumerWidget {
   final String trackId;
   const TrackPage({
-    Key? key,
+    super.key,
     required this.trackId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -35,9 +35,9 @@ class TrackPage extends HookConsumerWidget {
 
     final isActive = playlist.activeTrack?.id == trackId;
 
-    final trackQuery = useQueries.tracks.track(ref, trackId);
+    final trackQuery = ref.watch(trackProvider(trackId));
 
-    final track = trackQuery.data ?? FakeData.track;
+    final track = trackQuery.asData?.value ?? FakeData.track;
 
     void onPlay() async {
       if (isActive) {

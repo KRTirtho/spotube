@@ -25,7 +25,7 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class BottomPlayer extends HookConsumerWidget {
-  BottomPlayer({Key? key}) : super(key: key);
+  BottomPlayer({super.key});
 
   final logger = getLogger(BottomPlayer);
   @override

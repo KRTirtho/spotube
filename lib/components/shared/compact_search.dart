@@ -11,12 +11,12 @@ class CompactSearch extends HookWidget {
   final Color? iconColor;
 
   const CompactSearch({
-    Key? key,
+    super.key,
     this.onChanged,
     this.placeholder = "Search...",
     this.icon = SpotubeIcons.search,
     this.iconColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

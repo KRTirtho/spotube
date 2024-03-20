@@ -7,12 +7,11 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPageTopTracks extends HookConsumerWidget {
   final String artistId;
-  const ArtistPageTopTracks({Key? key, required this.artistId})
-      : super(key: key);
+  const ArtistPageTopTracks({super.key, required this.artistId});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -21,13 +20,10 @@ class ArtistPageTopTracks extends HookConsumerWidget {
 
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
-    final topTracksQuery = useQueries.artist.topTracksOf(
-      ref,
-      artistId,
-    );
+    final topTracksQuery = ref.watch(artistTopTracksProvider(artistId));
 
     final isPlaylistPlaying = playlist.containsTracks(
-      topTracksQuery.data ?? <Track>[],
+      topTracksQuery.value ?? <Track>[],
     );
 
     if (topTracksQuery.hasError) {
@@ -39,7 +35,7 @@ class ArtistPageTopTracks extends HookConsumerWidget {
     }
 
     final topTracks =
-        topTracksQuery.data ?? List.generate(10, (index) => FakeData.track);
+        topTracksQuery.value ?? List.generate(10, (index) => FakeData.track);
 
     void playPlaylist(List<Track> tracks, {Track? currentTrack}) async {
       currentTrack ??= tracks.first;

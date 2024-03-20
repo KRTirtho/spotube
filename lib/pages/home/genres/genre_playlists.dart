@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -12,7 +10,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
@@ -22,23 +20,10 @@ class GenrePlaylistsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlistsQuery = useQueries.category.playlistsOf(
-      ref,
-      category.id!,
-    );
-
-    final playlists = useMemoized(
-      () => playlistsQuery.pages.expand(
-        (page) {
-          return page.items?.whereNotNull() ??
-              const Iterable<PlaylistSimple>.empty();
-        },
-      ).toList(),
-      [playlistsQuery.pages],
-    );
-
     final mediaQuery = MediaQuery.of(context);
-
+    final playlists = ref.watch(categoryPlaylistsProvider(category.id!));
+    final playlistsNotifier =
+        ref.read(categoryPlaylistsProvider(category.id!).notifier);
     final scrollController = useScrollController();
 
     return Scaffold(
@@ -109,7 +94,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: mediaQuery.mdAndDown ? 12 : 24,
                 ),
-                sliver: playlists.isEmpty
+                sliver: playlists.asData?.value.items.isNotEmpty != true
                     ? Skeletonizer.sliver(
                         child: SliverToBoxAdapter(
                           child: Wrap(
@@ -129,12 +114,14 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
                         ),
-                        itemCount: playlists.length + 1,
+                        itemCount:
+                            (playlists.asData?.value.items.length ?? 0) + 1,
                         itemBuilder: (context, index) {
-                          final playlist = playlists.elementAtOrNull(index);
+                          final playlist = playlists.asData?.value.items
+                              .elementAtOrNull(index);
 
                           if (playlist == null) {
-                            if (!playlistsQuery.hasNextPage) {
+                            if (playlists.asData?.value.hasMore == false) {
                               return const SizedBox.shrink();
                             }
                             return Skeletonizer(
@@ -142,11 +129,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                               child: Waypoint(
                                 controller: scrollController,
                                 isGrid: true,
-                                onTouchEdge: () async {
-                                  if (playlistsQuery.hasNextPage) {
-                                    await playlistsQuery.fetchNext();
-                                  }
-                                },
+                                onTouchEdge: playlistsNotifier.fetchMore,
                                 child: PlaylistCard(FakeData.playlist),
                               ),
                             );

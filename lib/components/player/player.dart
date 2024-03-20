@@ -32,10 +32,10 @@ class PlayerView extends HookConsumerWidget {
   final PanelController panelController;
   final ScrollController scrollController;
   const PlayerView({
-    Key? key,
+    super.key,
     required this.panelController,
     required this.scrollController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

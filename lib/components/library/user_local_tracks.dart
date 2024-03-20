@@ -129,7 +129,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
 });
 
 class UserLocalTracks extends HookConsumerWidget {
-  const UserLocalTracks({Key? key}) : super(key: key);
+  const UserLocalTracks({super.key});
 
   Future<void> playLocalTracks(
     WidgetRef ref,
@@ -178,7 +178,7 @@ class UserLocalTracks extends HookConsumerWidget {
               FilledButton(
                 onPressed: trackSnapshot.value != null
                     ? () async {
-                        if (trackSnapshot.value?.isNotEmpty == true) {
+                        if (trackSnapshot.asData?.value.isNotEmpty == true) {
                           if (!isPlaylistPlaying) {
                             await playLocalTracks(
                               ref,
@@ -217,7 +217,7 @@ class UserLocalTracks extends HookConsumerWidget {
               FilledButton(
                 child: const Icon(SpotubeIcons.refresh),
                 onPressed: () {
-                  ref.refresh(localTracksProvider);
+                  ref.invalidate(localTracksProvider);
                 },
               )
             ],
@@ -269,7 +269,7 @@ class UserLocalTracks extends HookConsumerWidget {
             return Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
-                  ref.refresh(localTracksProvider);
+                  ref.invalidate(localTracksProvider);
                 },
                 child: InterScrollbar(
                   controller: controller,

@@ -2,19 +2,19 @@ import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomeMadeForUserSection extends HookConsumerWidget {
-  const HomeMadeForUserSection({Key? key}) : super(key: key);
+  const HomeMadeForUserSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    final madeForUser = useQueries.views.get(ref, "made-for-x-hub");
+    final madeForUser = ref.watch(viewProvider("made-for-x-hub"));
 
     return SliverList.builder(
-      itemCount: madeForUser.data?["content"]?["items"]?.length ?? 0,
+      itemCount: madeForUser.value?["content"]?["items"]?.length ?? 0,
       itemBuilder: (context, index) {
-        final item = madeForUser.data?["content"]?["items"]?[index];
+        final item = madeForUser.value?["content"]?["items"]?[index];
         final playlists = item["content"]?["items"]
                 ?.where((itemL2) => itemL2["type"] == "playlist")
                 .map((itemL2) => PlaylistSimple.fromJson(itemL2))

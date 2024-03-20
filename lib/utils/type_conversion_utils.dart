@@ -61,6 +61,9 @@ abstract class TypeConversionUtils {
           .entries
           .map(
             (artist) => Builder(builder: (context) {
+              if (artist.value.name == null) {
+                return Text("Spotify", style: textStyle);
+              }
               return AnchorButton(
                 (artist.key != artists.length - 1)
                     ? "${artist.value.name}, "

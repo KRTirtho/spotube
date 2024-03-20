@@ -22,8 +22,8 @@ class PlayerQueue extends HookConsumerWidget {
   final bool floating;
   const PlayerQueue({
     this.floating = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

@@ -12,13 +12,13 @@ class Action extends StatelessWidget {
   final bool isExpanded;
   final Color? backgroundColor;
   const Action({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     required this.onPressed,
     this.isExpanded = true,
     this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

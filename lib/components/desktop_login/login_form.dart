@@ -8,9 +8,9 @@ import 'package:spotube/provider/authentication_provider.dart';
 class TokenLoginForm extends HookConsumerWidget {
   final void Function()? onDone;
   const TokenLoginForm({
-    Key? key,
+    super.key,
     this.onDone,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

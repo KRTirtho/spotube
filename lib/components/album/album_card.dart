@@ -1,15 +1,12 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/infinite_query.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/queries/album.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -31,15 +28,12 @@ class AlbumCard extends HookConsumerWidget {
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
 
-    final queryClient = useQueryClient();
-
     bool isPlaylistPlaying = useMemoized(
       () => playlist.containsCollection(album.id!),
       [playlist, album.id],
     );
 
     final updating = useState(false);
-    final spotify = ref.watch(spotifyProvider);
 
     final scaffoldMessenger = ScaffoldMessenger.maybeOf(context);
 
@@ -50,23 +44,8 @@ class AlbumCard extends HookConsumerWidget {
                 TypeConversionUtils.simpleTrack_X_Track(track, album))
             .toList();
       }
-      final job = AlbumQueries.tracksOfJob(album.id!);
-
-      final query = queryClient.createInfiniteQuery(
-        job.queryKey,
-        (page) => job.task(page, (spotify: spotify, album: album)),
-        initialPage: 0,
-        nextPage: job.nextPage,
-      );
-
-      return await query.fetchAllTracks(
-        getAllTracks: () async {
-          final res = await spotify.albums.tracks(album.id!).all();
-          return res
-              .map((e) => TypeConversionUtils.simpleTrack_X_Track(e, album))
-              .toList();
-        },
-      );
+      await ref.read(albumTracksProvider(album).future);
+      return ref.read(albumTracksProvider(album).notifier).fetchAll();
     }
 
     return PlaybuttonCard(

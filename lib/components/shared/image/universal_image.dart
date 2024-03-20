@@ -20,8 +20,8 @@ class UniversalImage extends HookWidget {
     this.placeholder,
     this.fit,
     this.scale = 1,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static ImageProvider imageProvider(
     String path, {

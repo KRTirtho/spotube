@@ -8,7 +8,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
 class WebViewLogin extends HookConsumerWidget {
-  const WebViewLogin({Key? key}) : super(key: key);
+  const WebViewLogin({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

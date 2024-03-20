@@ -8,9 +8,9 @@ import 'package:spotube/provider/volume_provider.dart';
 class VolumeSlider extends HookConsumerWidget {
   final bool fullWidth;
   const VolumeSlider({
-    Key? key,
+    super.key,
     this.fullWidth = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

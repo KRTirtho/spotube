@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -8,8 +7,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
@@ -19,33 +17,40 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
   const PlaylistAddTrackDialog({
     required this.tracks,
     required this.openFromPlaylist,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme) = Theme.of(context);
-    final spotify = ref.watch(spotifyProvider);
-    final userPlaylists = useQueries.playlist.ofMineAll(ref);
+    final userPlaylists = ref.watch(favoritePlaylistsProvider);
+    final favoritePlaylistsNotifier =
+        ref.watch(favoritePlaylistsProvider.notifier);
 
-    final me = useQueries.user.me(ref);
+    final me = ref.watch(meProvider);
 
     final filteredPlaylists = useMemoized(
       () =>
-          userPlaylists.data
-              ?.where(
+          userPlaylists.asData?.value.items
+              .where(
                 (playlist) =>
                     playlist.owner?.id != null &&
-                    playlist.owner!.id == me.data?.id &&
+                    playlist.owner!.id == me.asData?.value.id &&
                     playlist.id != openFromPlaylist,
               )
               .toList() ??
           [],
-      [userPlaylists.data, me.data?.id, openFromPlaylist],
+      [userPlaylists.asData?.value, me.asData?.value.id, openFromPlaylist],
     );
 
     final playlistsCheck = useState(<String, bool>{});
-    final queryClient = useQueryClient();
+
+    useEffect(() {
+      if (userPlaylists.asData?.value != null) {
+        favoritePlaylistsNotifier.fetchAll();
+      }
+      return null;
+    }, [userPlaylists.asData?.value]);
 
     Future<void> onAdd() async {
       final selectedPlaylists = playlistsCheck.value.entries
@@ -54,21 +59,12 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
 
       await Future.wait(
         selectedPlaylists.map(
-          (playlistId) => spotify.playlists.addTracks(
-              tracks
-                  .map(
-                    (track) => track.uri!,
-                  )
-                  .toList(),
-              playlistId),
+          (playlistId) => favoritePlaylistsNotifier.addTracks(
+            playlistId,
+            tracks.map((e) => e.id!).toList(),
+          ),
         ),
       ).then((_) => Navigator.pop(context, true));
-
-      await queryClient.refreshQueries(
-        selectedPlaylists
-            .map((playlistId) => "playlist-tracks/$playlistId")
-            .toList(),
-      );
     }
 
     return AlertDialog(

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:spotify/spotify.dart';
 
@@ -18,19 +17,6 @@ class PaginationProps {
     required this.onFetchAll,
     required this.onRefresh,
   });
-
-  factory PaginationProps.fromQuery(
-    InfiniteQuery<List<Track>, dynamic, int> query, {
-    required Future<List<Track>> Function() onFetchAll,
-  }) {
-    return PaginationProps(
-      hasNextPage: query.hasNextPage,
-      isLoading: query.isLoadingNextPage,
-      onFetchMore: query.fetchNext,
-      onFetchAll: onFetchAll,
-      onRefresh: query.refreshAll,
-    );
-  }
 
   @override
   operator ==(Object other) {
