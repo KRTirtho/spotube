@@ -12,11 +12,10 @@ import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class UserAlbums extends HookConsumerWidget {
   const UserAlbums({super.key});
@@ -99,10 +98,7 @@ class UserAlbums extends HookConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [NotFound()],
                           ),
-                        for (final album in albums)
-                          AlbumCard(
-                            TypeConversionUtils.simpleAlbum_X_Album(album),
-                          ),
+                        for (final album in albums) AlbumCard(album.toAlbum()),
                         if (albums.isNotEmpty &&
                             albumsQuery.asData?.value.hasMore == true)
                           Skeletonizer(

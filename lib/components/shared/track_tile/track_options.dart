@@ -26,7 +26,7 @@ import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+
 import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {

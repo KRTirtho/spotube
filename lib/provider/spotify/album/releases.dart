@@ -36,10 +36,7 @@ class AlbumReleasesNotifier
         .newReleases(country: market)
         .getPage(limit, offset);
 
-    return albums.items
-            ?.map(TypeConversionUtils.simpleAlbum_X_Album)
-            .toList() ??
-        [];
+    return albums.items?.map((album) => album.toAlbum()).toList() ?? [];
   }
 
   @override

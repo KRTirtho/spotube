@@ -19,7 +19,6 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null

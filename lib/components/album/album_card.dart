@@ -6,11 +6,11 @@ import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 extension FormattedAlbumType on AlbumType {
   String get formatted => name.replaceFirst(name[0], name[0].toUpperCase());
@@ -41,10 +41,7 @@ class AlbumCard extends HookConsumerWidget {
 
     Future<List<Track>> fetchAllTrack() async {
       if (album.tracks != null && album.tracks!.isNotEmpty) {
-        return album.tracks!
-            .map((track) =>
-                TypeConversionUtils.simpleTrack_X_Track(track, album))
-            .toList();
+        return album.tracks!.map((track) => track.asTrack(album)).toList();
       }
       await ref.read(albumTracksProvider(album).future);
       return ref.read(albumTracksProvider(album).notifier).fetchAll();

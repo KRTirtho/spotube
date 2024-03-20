@@ -23,11 +23,11 @@ import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
 
 const supportedAudioTypes = [
@@ -112,7 +112,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
     final tracks = filesWithMetadata
         .map(
           (fileWithMetadata) => LocalTrack.fromTrack(
-            track: TypeConversionUtils.localTrack_X_Track(
+            track: Track().fromFile(
               fileWithMetadata["file"],
               metadata: fileWithMetadata["metadata"],
               art: fileWithMetadata["art"],

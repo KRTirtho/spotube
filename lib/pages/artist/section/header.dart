@@ -14,7 +14,6 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistPageHeader extends HookConsumerWidget {
   final String artistId;

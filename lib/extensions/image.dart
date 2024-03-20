@@ -1,8 +1,14 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:collection/collection.dart';
+
+enum ImagePlaceholder {
+  albumArt,
+  artist,
+  collection,
+  online,
+}
 
 extension SpotifyImageExtensions on List<Image>? {
   String asUrlString({

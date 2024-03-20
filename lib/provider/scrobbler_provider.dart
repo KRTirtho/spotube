@@ -8,7 +8,6 @@ import 'package:spotube/collections/env.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ScrobblerState {
   final String username;

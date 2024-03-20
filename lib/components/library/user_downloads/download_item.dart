@@ -10,7 +10,6 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class DownloadItem extends HookConsumerWidget {
   final Track track;

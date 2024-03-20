@@ -31,10 +31,7 @@ class AlbumTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<Track,
   @override
   fetch(arg, offset, limit) async {
     final tracks = await spotify.albums.tracks(arg.id!).getPage(limit, offset);
-    return tracks.items
-            ?.map((e) => TypeConversionUtils.simpleTrack_X_Track(e, arg))
-            .toList() ??
-        [];
+    return tracks.items?.map((e) => e.asTrack(arg)).toList() ?? [];
   }
 
   @override

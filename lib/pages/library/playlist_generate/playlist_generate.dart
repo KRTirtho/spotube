@@ -20,7 +20,6 @@ import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 

@@ -21,7 +21,6 @@ import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
   final int? selectedIndex;

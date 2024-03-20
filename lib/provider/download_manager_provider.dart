@@ -16,7 +16,6 @@ import 'package:spotube/services/download_manager/download_manager.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class DownloadManagerProvider extends ChangeNotifier {
   DownloadManagerProvider({required this.ref})

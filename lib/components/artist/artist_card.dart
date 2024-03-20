@@ -11,7 +11,6 @@ import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistCard extends HookConsumerWidget {
   final Artist artist;

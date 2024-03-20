@@ -8,7 +8,6 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class WindowsAudioService {
   final SMTCWindows smtc;

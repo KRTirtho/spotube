@@ -19,7 +19,6 @@ import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class LyricsPage extends HookConsumerWidget {
   final bool isModal;

@@ -15,8 +15,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
-import 'package:spotube/utils/type_conversion_utils.dart';
-
 class PlainLyrics extends HookConsumerWidget {
   final PaletteColor palette;
   final bool? isModal;

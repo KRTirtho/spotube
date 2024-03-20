@@ -9,7 +9,6 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 final dbus = DBusClient.session();
 
