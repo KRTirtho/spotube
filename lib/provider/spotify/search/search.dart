@@ -1,6 +1,11 @@
 part of '../spotify.dart';
 
-final searchTermStateProvider = StateProvider<String>((ref) => "");
+final searchTermStateProvider = StateProvider.autoDispose<String>(
+  (ref) {
+    ref.cacheFor(const Duration(minutes: 2));
+    return "";
+  },
+);
 
 class SearchState<Y> extends PaginatedState<Y> {
   SearchState({
@@ -26,8 +31,8 @@ class SearchState<Y> extends PaginatedState<Y> {
   }
 }
 
-class SearchNotifier<Y>
-    extends FamilyPaginatedAsyncNotifier<Y, SearchState<Y>, SearchType> {
+class SearchNotifier<Y> extends AutoDisposeFamilyPaginatedAsyncNotifier<Y,
+    SearchState<Y>, SearchType> {
   SearchNotifier() : super();
 
   @override
@@ -46,6 +51,8 @@ class SearchNotifier<Y>
 
   @override
   build(arg) async {
+    ref.cacheFor(const Duration(minutes: 2));
+
     ref.watch(searchTermStateProvider);
     ref.watch(spotifyProvider);
     ref.watch(
@@ -63,7 +70,7 @@ class SearchNotifier<Y>
   }
 }
 
-final searchProvider =
-    AsyncNotifierProvider.family<SearchNotifier, SearchState, SearchType>(
+final searchProvider = AsyncNotifierProvider.autoDispose
+    .family<SearchNotifier, SearchState, SearchType>(
   () => SearchNotifier(),
 );

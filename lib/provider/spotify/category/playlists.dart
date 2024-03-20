@@ -24,7 +24,7 @@ class CategoryPlaylistsState extends PaginatedState<PlaylistSimple> {
   }
 }
 
-class CategoryPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
+class CategoryPlaylistsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
     PlaylistSimple, CategoryPlaylistsState, String> {
   CategoryPlaylistsNotifier() : super();
 
@@ -44,6 +44,8 @@ class CategoryPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
 
   @override
   build(arg) async {
+    ref.cacheFor();
+
     ref.watch(spotifyProvider);
     ref.watch(userPreferencesProvider.select((s) => s.locale));
     ref.watch(userPreferencesProvider.select((s) => s.recommendationMarket));
@@ -59,7 +61,7 @@ class CategoryPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
   }
 }
 
-final categoryPlaylistsProvider = AsyncNotifierProviderFamily<
+final categoryPlaylistsProvider = AutoDisposeAsyncNotifierProviderFamily<
     CategoryPlaylistsNotifier, CategoryPlaylistsState, String>(
   () => CategoryPlaylistsNotifier(),
 );

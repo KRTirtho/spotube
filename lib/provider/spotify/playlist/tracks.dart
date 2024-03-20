@@ -24,8 +24,8 @@ class PlaylistTracksState extends PaginatedState<Track> {
   }
 }
 
-class PlaylistTracksNotifier
-    extends FamilyPaginatedAsyncNotifier<Track, PlaylistTracksState, String> {
+class PlaylistTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
+    Track, PlaylistTracksState, String> {
   PlaylistTracksNotifier() : super();
 
   @override
@@ -34,11 +34,16 @@ class PlaylistTracksNotifier
         .getTracksByPlaylistId(arg)
         .getPage(limit, offset);
 
-    return tracks.items?.toList() ?? <Track>[];
+    /// Filter out tracks with null id because some personal playlists
+    /// may contain local tracks that are not available in the Spotify catalog
+    return tracks.items?.where((track) => track.id != null).toList() ??
+        <Track>[];
   }
 
   @override
   build(arg) async {
+    ref.cacheFor();
+
     ref.watch(spotifyProvider);
     final tracks = await fetch(arg, 0, 20);
 
@@ -51,7 +56,7 @@ class PlaylistTracksNotifier
   }
 }
 
-final playlistTracksProvider = AsyncNotifierProviderFamily<
+final playlistTracksProvider = AutoDisposeAsyncNotifierProviderFamily<
     PlaylistTracksNotifier, PlaylistTracksState, String>(
   () => PlaylistTracksNotifier(),
 );

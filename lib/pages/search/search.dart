@@ -28,14 +28,13 @@ class SearchPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final controller = useTextEditingController();
+    final searchTerm = ref.watch(searchTermStateProvider);
+    final controller = useTextEditingController(text: searchTerm);
 
     ref.watch(AuthenticationNotifier.provider);
     final authenticationNotifier =
         ref.watch(AuthenticationNotifier.provider.notifier);
     final mediaQuery = MediaQuery.of(context);
-
-    final searchTerm = ref.watch(searchTermStateProvider);
 
     final searchTrack = ref.watch(searchProvider(SearchType.track));
     final searchAlbum = ref.watch(searchProvider(SearchType.album));

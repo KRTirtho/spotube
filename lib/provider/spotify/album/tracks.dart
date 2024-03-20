@@ -24,8 +24,8 @@ class AlbumTracksState extends PaginatedState<Track> {
   }
 }
 
-class AlbumTracksNotifier
-    extends FamilyPaginatedAsyncNotifier<Track, AlbumTracksState, AlbumSimple> {
+class AlbumTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<Track,
+    AlbumTracksState, AlbumSimple> {
   AlbumTracksNotifier() : super();
 
   @override
@@ -39,6 +39,8 @@ class AlbumTracksNotifier
 
   @override
   build(arg) async {
+    ref.cacheFor();
+
     ref.watch(spotifyProvider);
     final tracks = await fetch(arg, 0, 20);
     return AlbumTracksState(
@@ -50,7 +52,7 @@ class AlbumTracksNotifier
   }
 }
 
-final albumTracksProvider = AsyncNotifierProviderFamily<AlbumTracksNotifier,
-    AlbumTracksState, AlbumSimple>(
+final albumTracksProvider = AutoDisposeAsyncNotifierProviderFamily<
+    AlbumTracksNotifier, AlbumTracksState, AlbumSimple>(
   () => AlbumTracksNotifier(),
 );

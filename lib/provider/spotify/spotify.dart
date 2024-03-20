@@ -66,3 +66,8 @@ part 'utils/state.dart';
 part 'utils/provider.dart';
 part 'utils/persistence.dart';
 part 'utils/async.dart';
+
+part 'utils/provider/paginated.dart';
+part 'utils/provider/cursor.dart';
+part 'utils/provider/paginated_family.dart';
+part 'utils/provider/cursor_family.dart';

@@ -24,8 +24,8 @@ class ArtistAlbumsState extends PaginatedState<Album> {
   }
 }
 
-class ArtistAlbumsNotifier
-    extends FamilyPaginatedAsyncNotifier<Album, ArtistAlbumsState, String> {
+class ArtistAlbumsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
+    Album, ArtistAlbumsState, String> {
   ArtistAlbumsNotifier() : super();
 
   @override
@@ -40,6 +40,8 @@ class ArtistAlbumsNotifier
 
   @override
   build(arg) async {
+    ref.cacheFor();
+
     ref.watch(spotifyProvider);
     ref.watch(
       userPreferencesProvider.select((s) => s.recommendationMarket),
@@ -54,7 +56,7 @@ class ArtistAlbumsNotifier
   }
 }
 
-final artistAlbumsProvider = AsyncNotifierProviderFamily<ArtistAlbumsNotifier,
-    ArtistAlbumsState, String>(
+final artistAlbumsProvider = AutoDisposeAsyncNotifierProviderFamily<
+    ArtistAlbumsNotifier, ArtistAlbumsState, String>(
   () => ArtistAlbumsNotifier(),
 );
