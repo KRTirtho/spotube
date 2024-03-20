@@ -4,5 +4,6 @@ publisher_url: https://github.com/KRTirtho/spotube
 display_name: Spotube
 create_desktop_icon: true
 install_dir_name: Spotube
+script_template: inno_setup.iss
 locales:
   - en

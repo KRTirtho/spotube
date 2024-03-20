@@ -3,7 +3,7 @@
   <id>com.github.KRTirtho.Spotube</id>
   <name>Spotube</name>
   <summary>
-    🎧 Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop &amp; mobile!
+    Freedom of music
   </summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-4-Clause</project_license>
@@ -13,9 +13,11 @@
     <control>touch</control>
   </recommends>
   <developer_name>Kingkor Roy Tirtho</developer_name>
-  <url type="homepage">https://github.com/krtirtho/spotube</url>
+  <url type="bugtracker">https://github.com/krtirtho/spotube/issues</url>
+  <url type="homepage">https://spotube.krtirtho.dev</url>
+  <url type="donation">https://opencollective.com/spotube</url>
   <description>
-    <p>🎧 Open source Spotify client that doesn't require Premium nor uses Electron! Available for
+    <p>Open source Spotify client that doesn't require Premium nor uses Electron! Available for
       both desktop &amp; mobile!</p>
     <p>Following are the features that currently spotube offers:</p>
     <ul>
@@ -30,12 +32,13 @@
       <li>📖 Open source/libre software</li>
       <li>🔉 Playback control is done locally, not on the server</li>
     </ul>
-
   </description>
   <screenshots>
-    <screenshot>
+    <screenshot type="default">
       <image type="source">
-        https://rawcdn.githack.com/KRTirtho/spotube/62055018feade0b895663a0bfc5f85f265ae2154/assets/spotube-screenshot.png</image>
+        https://rawcdn.githack.com/KRTirtho/spotube/62055018feade0b895663a0bfc5f85f265ae2154/assets/spotube-screenshot.png
+      </image>
+      <caption>Spotube screenshot</caption>
     </screenshot>
   </screenshots>
   <launchable type="desktop-id">com.github.KRTirtho.Spotube.desktop</launchable>

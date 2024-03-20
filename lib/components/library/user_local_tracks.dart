@@ -50,10 +50,11 @@ enum SortBy {
   none,
   ascending,
   descending,
-  artist,
-  album,
   newest,
   oldest,
+  duration,
+  artist,
+  album,
 }
 
 final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {

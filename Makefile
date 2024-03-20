@@ -28,6 +28,7 @@ publishaur:
 
 innoinstall:
 						powershell curl -o build\installer.exe http://files.jrsoftware.org/is/6/innosetup-${INNO_VERSION}.exe
+						powershell git clone https://github.com/DomGries/InnoDependencyInstaller.git  build\inno-depend
 		 				powershell build\installer.exe /verysilent /allusers /dir=build\iscc
 
 inno:

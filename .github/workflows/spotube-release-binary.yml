@@ -26,7 +26,7 @@ on:
         default: true
 
 env:
-  FLUTTER_VERSION: '3.16.3'
+  FLUTTER_VERSION: '3.19.1'
 
 jobs:
   windows:
@@ -181,6 +181,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v3
+        if: ${{ inputs.channel == 'stable' }}
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
@@ -188,6 +189,16 @@ jobs:
             dist/Spotube-linux-x86_64.deb
             dist/Spotube-linux-x86_64.rpm
             dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
+            
+      - uses: actions/upload-artifact@v3
+        if: ${{ inputs.channel == 'nightly' }}
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            dist/Spotube-linux-x86_64.deb
+            dist/Spotube-linux-x86_64.rpm
+            dist/spotube-linux-nightly-x86_64.tar.xz
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}

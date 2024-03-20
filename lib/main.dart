@@ -29,6 +29,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:system_theme/system_theme.dart';
@@ -67,6 +68,8 @@ Future<void> main(List<String> rawArgs) async {
   if (DesktopTools.platform.isWindows || DesktopTools.platform.isLinux) {
     DiscordRPC.initialize();
   }
+
+  await KVStoreService.initialize();
 
   final hiveCacheDir =
       kIsWeb ? null : (await getApplicationSupportDirectory()).path;
@@ -184,6 +187,7 @@ class SpotubeState extends ConsumerState<Spotube> {
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     final paletteColor =
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
+    final router = ref.watch(routerProvider);
 
     useDisableBatteryOptimizations();
     useInitSysTray(ref);

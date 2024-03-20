@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/krtirtho/spotube/compare/v3.4.1...v3.5.0) (2024-03-08)
+
+
+### Features
+
+* add endless playback support [#285](https://github.com/krtirtho/spotube/issues/285) ([9dfd49c](https://github.com/krtirtho/spotube/commit/9dfd49ca04f0e915e333e205b17ac70456873f6e))
+* add getting started page ([96a2a1f](https://github.com/krtirtho/spotube/commit/96a2a1f5a622cb3c580041417d5023e37fa69716))
+* Add iOS background play support ([#1166](https://github.com/krtirtho/spotube/issues/1166)) ([095587e](https://github.com/krtirtho/spotube/commit/095587ee84f7d867c69fcf4b09ed608d63478e1e))
+* add songlink based track matching for youtube and open song link button ([9095a8c](https://github.com/krtirtho/spotube/commit/9095a8c8f849e42daabb7efcc20085cfb863c974))
+* **playlist:** show confirmation before deleting user playlist [#1222](https://github.com/krtirtho/spotube/issues/1222) ([9f92440](https://github.com/krtirtho/spotube/commit/9f9244062a39759aa0ce28d2d5f7c8fa53d73003))
+* Sort by Duration ([#1238](https://github.com/krtirtho/spotube/issues/1238)) ([6f8271f](https://github.com/krtirtho/spotube/commit/6f8271f5e9394cb4053e41dd222aa2844c34d609))
+* start radio support ([4defeef](https://github.com/krtirtho/spotube/commit/4defeefe7e5947aa00a2afb2a06577ec141cdc52))
+* **translations:** add Korean translation ([#1275](https://github.com/krtirtho/spotube/issues/1275)) ([fdea930](https://github.com/krtirtho/spotube/commit/fdea9307bbfb8f3f62cfb795bfb3ca58c38c33d9))
+* **translations:** Added Vietnamese ([#1135](https://github.com/krtirtho/spotube/issues/1135)) ([019ba86](https://github.com/krtirtho/spotube/commit/019ba865e20a8b54ea3490c01e47158eaf3a4c8d))
+* **windows:** Install Visual C++ 2015-2022 Redistributable if missing when installing ([ba69496](https://github.com/krtirtho/spotube/commit/ba69496dcc9a1b7f6ea4e104e71764a854d27f1f))
+
+
+### Bug Fixes
+
+* album images are small in certain places ([ca76a39](https://github.com/krtirtho/spotube/commit/ca76a39910b1a5af91aa7882a0d33c9d71db58a2))
+* album, artist page not loading [#1282](https://github.com/krtirtho/spotube/issues/1282) ([a9a1d4c](https://github.com/krtirtho/spotube/commit/a9a1d4c9dc24aaf3181dc4090d1822ebfe755991))
+* **android:** audio issue when screen is off and broadcast audio session id ([#1221](https://github.com/krtirtho/spotube/issues/1221) & [#1247](https://github.com/krtirtho/spotube/issues/1247)) ([17105a6](https://github.com/krtirtho/spotube/commit/17105a640bf5107bd5d333b9b4d097c14a3949a2)), closes [KRTirtho/spotube#571](https://github.com/KRTirtho/spotube/issues/571)
+* **android:** only ask battery optimization once [#1252](https://github.com/krtirtho/spotube/issues/1252) ([e516afb](https://github.com/krtirtho/spotube/commit/e516afb185f616471822ea745495a3d1d1281bd3))
+* **android:** pressing back button in any other tab other than home exits the app ([c3289a0](https://github.com/krtirtho/spotube/commit/c3289a0ba4e7de094a15246677ffcb940504ebde))
+* **android:** system back button in player page exits the app ([3294f65](https://github.com/krtirtho/spotube/commit/3294f657fe8a03b18d9be8974968b6508465963d))
+* cleanTitle removing feat and ft from words instead of whole words ([8612345](https://github.com/krtirtho/spotube/commit/86123456f2ff577921cf62cffca180427dfe1dd5))
+* friends list not scrollable with mouse drag ([ab08c82](https://github.com/krtirtho/spotube/commit/ab08c82c8dd501263049f3adcbd48907ba13e3a9))
+* no draggable scrollbar in playlist/album page [#1158](https://github.com/krtirtho/spotube/issues/1158) ([6f71e52](https://github.com/krtirtho/spotube/commit/6f71e52ea8a5712d2c3527f2a524af9fbb718bef))
+* non-banger songs breaking the queue if sources not found ([90f7c53](https://github.com/krtirtho/spotube/commit/90f7c531cdc8640afdbabf5a0592159715ea1e6f))
+* track loading when not found in Youtube ([e964f61](https://github.com/krtirtho/spotube/commit/e964f61d38cb303e3d3fd60c866414f57207181c))
+* **translations:** Update app_nl.arb ([#1168](https://github.com/krtirtho/spotube/issues/1168)) ([8167963](https://github.com/krtirtho/spotube/commit/8167963212eeb5dfb0b4fb2eadf81d466659a9f1))
+
 ## [3.4.1](https://personal.github.com/krtirtho/spotube/compare/v3.4.0...v3.4.1) (2024-01-27)
 
 

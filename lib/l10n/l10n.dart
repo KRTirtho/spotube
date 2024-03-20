@@ -8,7 +8,9 @@
 /// yuri-val@github => Ukrainian
 /// energywave@github, ncvescera@github, OpenCode@github => Italian
 /// mdksec@github => Turkish
-/// SecularSteve@github => Dutch
+/// Stephan-P@github, SecularSteve@github => Dutch
+/// doannc2212@github => Vietnamese
+/// sappho192@github => Korean
 import 'package:flutter/material.dart';
 
 class L10n {
@@ -25,6 +27,7 @@ class L10n {
     const Locale('hi', 'IN'),
     const Locale('it', 'IT'),
     const Locale('ja', 'JP'),
+    const Locale('ko', 'KR'),
     const Locale('nl', 'NL'),
     const Locale('pl', 'PL'),
     const Locale('pt', 'PT'),
@@ -32,5 +35,6 @@ class L10n {
     const Locale('uk', 'UA'),
     const Locale('tr', 'TR'),
     const Locale('zh', 'CN'),
+    const Locale('vi', 'VN'),
   ];
 }

@@ -15,9 +15,9 @@ import 'package:spotube/utils/type_conversion_utils.dart';
 class AlbumPage extends HookConsumerWidget {
   final AlbumSimple album;
   const AlbumPage({
-    Key? key,
+    super.key,
     required this.album,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -69,8 +69,9 @@ class AlbumPage extends HookConsumerWidget {
       shareUrl: album.externalUrls!.spotify!,
       isLiked: isLiked,
       onHeart: albumIsSaved.hasData
-          ? () {
-              toggleAlbumLike.mutate(isLiked);
+          ? () async {
+              await toggleAlbumLike.mutate(isLiked);
+              return null;
             }
           : null,
       child: const TrackView(),

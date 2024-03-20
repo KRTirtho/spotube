@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.4.1+28
+version: 3.5.0+29
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -16,7 +16,7 @@ dependencies:
   args: ^2.3.2
   async: ^2.9.0
   audio_service: ^0.18.9
-  audio_session: ^0.1.13
+  audio_session: ^0.1.18
   auto_size_text: ^3.0.0
   buttons_tabbar: ^1.3.6
   cached_network_image: ^3.3.0
@@ -27,7 +27,7 @@ dependencies:
   dbus: ^0.7.8
   device_info_plus: ^9.0.3
   device_preview: ^1.1.0
-  dio: ^5.3.2
+  dio: ^5.4.1
   disable_battery_optimization: ^1.1.0+1
   duration: ^3.0.12
   envied: ^0.3.0
@@ -49,19 +49,19 @@ dependencies:
   flutter_inappwebview: ^5.7.2+3
   flutter_localizations:
     sdk: flutter
-  flutter_native_splash: ^2.3.3
-  flutter_riverpod: ^2.4.3
+  flutter_native_splash: ^2.3.10
+  flutter_riverpod: ^2.4.10
   flutter_secure_storage: ^9.0.0
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
   fuzzywuzzy: ^1.1.6
-  go_router: ^13.0.1
+  go_router: 12.1.3 # Stuck on this https://github.com/flutter/flutter/issues/140869
   google_fonts: ^6.1.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hooks_riverpod: ^2.4.3
   html: ^0.15.1
-  http: ^1.1.0
+  http: ^1.2.0
   image_picker: ^1.0.4
   intl: ^0.18.0
   introduction_screen: ^3.0.2
@@ -76,7 +76,9 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
-  piped_client: ^0.1.0
+  piped_client:
+    git:
+      url: https://github.com/KRTirtho/piped_client.git
   popover: ^0.2.6+3
   scrobblenaut:
     git:
@@ -87,7 +89,6 @@ dependencies:
   shared_preferences: ^2.2.2
   skeleton_text: ^3.0.1
   smtc_windows: ^0.1.1
-  spotify: ^0.12.0
   stroke_text: ^0.0.2
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
@@ -122,6 +123,9 @@ dependencies:
   app_links: ^3.5.0
   win32_registry: ^1.1.2
   flutter_sharing_intent: ^1.1.0
+  flutter_broadcasts: ^0.4.0
+  freezed_annotation: ^2.4.1
+  spotify: ^0.13.3
 
 dev_dependencies:
   build_runner: ^2.3.2
@@ -129,7 +133,7 @@ dev_dependencies:
   flutter_distributor: ^0.0.2
   flutter_gen_runner: ^5.1.0+1
   flutter_launcher_icons: ^0.13.1
-  flutter_lints: ^2.0.1
+  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
   integration_test:
@@ -138,9 +142,9 @@ dev_dependencies:
   json_serializable: ^6.6.2
   pub_api_client: ^2.4.0
   pubspec_parse: ^1.2.2
+  freezed: ^2.4.6
 
 dependency_overrides:
-  http: ^1.1.0
   system_tray: 2.0.2
 
 flutter:
@@ -149,6 +153,7 @@ flutter:
   assets:
     - assets/
     - assets/tutorial/
+    - assets/logos/
     - LICENSE
 
 flutter_launcher_icons:

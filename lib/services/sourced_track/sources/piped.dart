@@ -55,7 +55,7 @@ class PipedSourcedTrack extends SourcedTrack {
     if (cachedSource == null) {
       final siblings = await fetchSiblings(ref: ref, track: track);
       if (siblings.isEmpty) {
-        throw TrackNotFoundException(track);
+        throw TrackNotFoundError(track);
       }
 
       await SourceMatch.box.put(
@@ -157,16 +157,20 @@ class PipedSourcedTrack extends SourcedTrack {
   }) async {
     final pipedClient = ref.read(pipedProvider);
     final preference = ref.read(userPreferencesProvider);
+
     final query = SourcedTrack.getSearchTerm(track);
 
     final PipedSearchResult(items: searchResults) = await pipedClient.search(
-      "$query - Topic",
+      query,
       preference.searchMode == SearchMode.youtube
-          ? PipedFilter.video
+          ? PipedFilter.videos
           : PipedFilter.musicSongs,
     );
 
-    final isYouTubeMusic = preference.searchMode == SearchMode.youtubeMusic;
+    // when falling back to piped API make sure to use the YouTube mode
+    final isYouTubeMusic = preference.audioSource != AudioSource.piped
+        ? false
+        : preference.searchMode == SearchMode.youtubeMusic;
 
     if (isYouTubeMusic) {
       final artists = (track.artists ?? [])

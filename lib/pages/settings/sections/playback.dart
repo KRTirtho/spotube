@@ -221,6 +221,12 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               preferencesNotifier.setDownloadMusicCodec(value);
             },
           ),
+        SwitchListTile(
+          secondary: const Icon(SpotubeIcons.repeat),
+          title: Text(context.l10n.endless_playback),
+          value: preferences.endlessPlayback,
+          onChanged: preferencesNotifier.setEndlessPlayback,
+        ),
       ],
     );
   }

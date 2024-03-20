@@ -1,3 +1,6 @@
+import 'dart:ffi';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -69,22 +72,27 @@ class HomePageFriendsSection extends HookConsumerWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final group in friendGroup)
-                    Row(
-                      children: [
-                        for (final friend in group)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FriendItem(friend: friend),
-                          ),
-                      ],
-                    ),
-                ],
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: PointerDeviceKind.values.toSet(),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final group in friendGroup)
+                      Row(
+                        children: [
+                          for (final friend in group)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: FriendItem(friend: friend),
+                            ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

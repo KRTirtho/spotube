@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart' hide Image;
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
@@ -32,8 +33,12 @@ abstract class TypeConversionUtils {
           "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png",
     }[placeholder]!;
 
-    return images != null && images.isNotEmpty
-        ? images[index > images.length - 1 ? images.length - 1 : index].url!
+    final sortedImage = images?.sorted((a, b) => a.width!.compareTo(b.width!));
+
+    return sortedImage != null && sortedImage.isNotEmpty
+        ? sortedImage[
+                index > sortedImage.length - 1 ? sortedImage.length - 1 : index]
+            .url!
         : placeholderUrl;
   }
 
