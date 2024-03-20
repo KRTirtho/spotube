@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
@@ -13,6 +12,7 @@ import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
@@ -247,9 +247,8 @@ class PlayerView extends HookConsumerWidget {
                                     ),
                                   )
                                 else
-                                  TypeConversionUtils
-                                      .artists_X_ClickableArtists(
-                                    currentTrack?.artists ?? [],
+                                  ArtistLink(
+                                    artists: currentTrack?.artists ?? [],
                                     textStyle:
                                         theme.textTheme.bodyMedium!.copyWith(
                                       fontWeight: FontWeight.bold,

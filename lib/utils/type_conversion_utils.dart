@@ -2,12 +2,9 @@
 
 import 'dart:io';
 
-import 'package:flutter/widgets.dart' hide Image;
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
-import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 enum ImagePlaceholder {
   albumArt,
@@ -17,47 +14,6 @@ enum ImagePlaceholder {
 }
 
 abstract class TypeConversionUtils {
-  static Widget artists_X_ClickableArtists(
-    List<ArtistSimple> artists, {
-    WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.center,
-    WrapAlignment mainAxisAlignment = WrapAlignment.center,
-    TextStyle textStyle = const TextStyle(),
-    void Function(String route)? onRouteChange,
-  }) {
-    return Wrap(
-      crossAxisAlignment: crossAxisAlignment,
-      alignment: mainAxisAlignment,
-      children: artists
-          .asMap()
-          .entries
-          .map(
-            (artist) => Builder(builder: (context) {
-              if (artist.value.name == null) {
-                return Text("Spotify", style: textStyle);
-              }
-              return AnchorButton(
-                (artist.key != artists.length - 1)
-                    ? "${artist.value.name}, "
-                    : artist.value.name!,
-                onTap: () {
-                  if (onRouteChange != null) {
-                    onRouteChange("/artist/${artist.value.id}");
-                  } else {
-                    ServiceUtils.push(
-                      context,
-                      "/artist/${artist.value.id}",
-                    );
-                  }
-                },
-                overflow: TextOverflow.ellipsis,
-                style: textStyle,
-              );
-            }),
-          )
-          .toList(),
-    );
-  }
-
   static Album simpleAlbum_X_Album(AlbumSimple albumSimple) {
     Album album = Album();
     album.albumType = albumSimple.albumType;

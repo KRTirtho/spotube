@@ -15,6 +15,7 @@ import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
@@ -309,9 +310,7 @@ class TrackOptions extends HookConsumerWidget {
           ),
           subtitle: Align(
             alignment: Alignment.centerLeft,
-            child: TypeConversionUtils.artists_X_ClickableArtists(
-              track.artists!,
-            ),
+            child: ArtistLink(artists: track.artists!),
           ),
         ),
       ],

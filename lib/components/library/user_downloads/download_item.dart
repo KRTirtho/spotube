@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
@@ -59,8 +60,8 @@ class DownloadItem extends HookConsumerWidget {
         ),
       ),
       title: Text(track.name ?? ''),
-      subtitle: TypeConversionUtils.artists_X_ClickableArtists(
-        track.artists ?? <Artist>[],
+      subtitle: ArtistLink(
+        artists: track.artists ?? <Artist>[],
         mainAxisAlignment: WrapAlignment.start,
       ),
       trailing: isQueryingSourceInfo

@@ -9,6 +9,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
 import 'package:spotube/extensions/artist_simple.dart';
@@ -236,9 +237,7 @@ class TrackTile extends HookConsumerWidget {
                     : ClipRect(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxHeight: 40),
-                          child: TypeConversionUtils.artists_X_ClickableArtists(
-                            track.artists ?? [],
-                          ),
+                          child: ArtistLink(artists: track.artists ?? []),
                         ),
                       ),
               ),

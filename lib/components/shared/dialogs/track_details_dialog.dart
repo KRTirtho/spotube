@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:spotube/extensions/duration.dart';
 
 class TrackDetailsDialog extends HookWidget {
@@ -24,8 +24,8 @@ class TrackDetailsDialog extends HookWidget {
 
     final detailsMap = {
       context.l10n.title: track.name!,
-      context.l10n.artist: TypeConversionUtils.artists_X_ClickableArtists(
-        track.artists ?? <Artist>[],
+      context.l10n.artist: ArtistLink(
+        artists: track.artists ?? <Artist>[],
         mainAxisAlignment: WrapAlignment.start,
         textStyle: const TextStyle(color: Colors.blue),
       ),

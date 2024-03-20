@@ -8,6 +8,7 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
@@ -145,10 +146,7 @@ class TrackPage extends HookConsumerWidget {
                                 children: [
                                   const Icon(SpotubeIcons.artist),
                                   const Gap(5),
-                                  TypeConversionUtils
-                                      .artists_X_ClickableArtists(
-                                    track.artists!,
-                                  ),
+                                  ArtistLink(artists: track.artists!),
                                 ],
                               ),
                               const Gap(10),
