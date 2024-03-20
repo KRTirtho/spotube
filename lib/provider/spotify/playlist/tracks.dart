@@ -36,7 +36,9 @@ class PlaylistTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
 
     /// Filter out tracks with null id because some personal playlists
     /// may contain local tracks that are not available in the Spotify catalog
-    return tracks.items?.where((track) => track.id != null).toList() ??
+    return tracks.items
+            ?.where((track) => track.id != null && track.type == "track")
+            .toList() ??
         <Track>[];
   }
 
