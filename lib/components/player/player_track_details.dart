@@ -5,6 +5,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -54,9 +55,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   ),
                 ),
                 Text(
-                  TypeConversionUtils.artists_X_String<Artist>(
-                    playback.activeTrack?.artists ?? [],
-                  ),
+                  playback.activeTrack?.artists?.asString() ?? "",
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall!.copyWith(color: color),
                 )

@@ -21,6 +21,7 @@ import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -242,7 +243,7 @@ class UserLocalTracks extends HookConsumerWidget {
               return sortedTracks
                   .map((e) => (
                         weightedRatio(
-                          "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
+                          "${e.name} - ${e.artists?.asString() ?? ""}",
                           searchController.text,
                         ),
                         e,

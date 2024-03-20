@@ -16,6 +16,7 @@ import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
@@ -239,10 +240,7 @@ class PlayerView extends HookConsumerWidget {
                                 ),
                                 if (isLocalTrack)
                                   Text(
-                                    TypeConversionUtils.artists_X_String<
-                                        Artist>(
-                                      currentTrack?.artists ?? [],
-                                    ),
+                                    currentTrack?.artists?.asString() ?? "",
                                     style: theme.textTheme.bodyMedium!.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: bodyTextColor,

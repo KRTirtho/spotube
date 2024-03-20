@@ -11,3 +11,9 @@ extension ArtistJson on ArtistSimple {
     };
   }
 }
+
+extension ArtistExtension on List<ArtistSimple> {
+  String asString() {
+    return map((e) => e.name?.replaceAll(",", " ")).join(", ");
+  }
+}

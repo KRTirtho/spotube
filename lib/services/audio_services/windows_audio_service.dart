@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -85,8 +86,7 @@ class WindowsAudioService {
       MusicMetadata(
         title: track.name!,
         albumArtist: track.artists?.firstOrNull?.name ?? "Unknown",
-        artist:
-            TypeConversionUtils.artists_X_String<Artist>(track.artists ?? []),
+        artist: track.artists?.asString() ?? "Unknown",
         album: track.album?.name ?? "Unknown",
         thumbnail: (track.album?.images).asUrlString(
           placeholder: ImagePlaceholder.albumArt,

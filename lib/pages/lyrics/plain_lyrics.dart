@@ -8,6 +8,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
@@ -55,8 +56,7 @@ class PlainLyrics extends HookConsumerWidget {
               ),
               Center(
                 child: Text(
-                  TypeConversionUtils.artists_X_String<Artist>(
-                      playlist.activeTrack?.artists ?? []),
+                  playlist.activeTrack?.artists?.asString() ?? "",
                   style: (mediaQuery.mdAndUp
                           ? textTheme.headlineSmall
                           : textTheme.titleLarge)

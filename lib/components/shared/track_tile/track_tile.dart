@@ -11,6 +11,7 @@ import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
@@ -230,9 +231,7 @@ class TrackTile extends HookConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: track is LocalTrack
                     ? Text(
-                        TypeConversionUtils.artists_X_String<Artist>(
-                          track.artists ?? [],
-                        ),
+                        track.artists?.asString() ?? '',
                       )
                     : ClipRect(
                         child: ConstrainedBox(

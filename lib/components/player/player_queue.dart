@@ -12,11 +12,11 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
@@ -55,7 +55,7 @@ class PlayerQueue extends HookConsumerWidget {
         return tracks
             .map((e) => (
                   weightedRatio(
-                    '${e.name!} - ${TypeConversionUtils.artists_X_String(e.artists!)}',
+                    '${e.name!} - ${e.artists?.asString() ?? ""}',
                     searchText.value,
                   ),
                   e

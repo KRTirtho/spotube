@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/heart_button.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';
@@ -16,7 +16,6 @@ import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/sleep_timer_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerActions extends HookConsumerWidget {
   final MainAxisAlignment mainAxisAlignment;
@@ -56,10 +55,8 @@ class PlayerActions extends HookConsumerWidget {
             (element) =>
                 element.name == playlist.activeTrack?.name &&
                 element.album?.name == playlist.activeTrack?.album?.name &&
-                TypeConversionUtils.artists_X_String<Artist>(
-                        element.artists ?? []) ==
-                    TypeConversionUtils.artists_X_String<Artist>(
-                        playlist.activeTrack?.artists ?? []),
+                element.artists?.asString() ==
+                    playlist.activeTrack?.artists?.asString(),
           ) ==
           true;
     }, [localTracks, playlist.activeTrack]);

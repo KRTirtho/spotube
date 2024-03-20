@@ -10,6 +10,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
@@ -67,7 +68,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     ).trim();
 
     final defaultSearchTerm =
-        "$title - ${TypeConversionUtils.artists_X_String<Artist>(playlist.activeTrack?.artists ?? [])}";
+        "$title - ${playlist.activeTrack?.artists?.asString() ?? ""}";
     final searchController = useTextEditingController(
       text: defaultSearchTerm,
     );

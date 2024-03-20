@@ -47,7 +47,7 @@ class AudioServices {
       id: track.id!,
       album: track.album?.name ?? "",
       title: track.name!,
-      artist: TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[]),
+      artist: track.artists?.toString() ?? "",
       duration: track is SourcedTrack
           ? track.sourceInfo.duration
           : Duration(milliseconds: track.durationMs ?? 0),

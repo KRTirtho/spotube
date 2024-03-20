@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -59,7 +60,7 @@ class AlbumCard extends HookConsumerWidget {
             updating.value,
         title: album.name!,
         description:
-            "${album.albumType?.formatted} • ${TypeConversionUtils.artists_X_String<ArtistSimple>(album.artists ?? [])}",
+            "${album.albumType?.formatted} • ${album.artists?.asString() ?? ""}",
         onTap: () {
           ServiceUtils.push(context, "/album/${album.id}", extra: album);
         },

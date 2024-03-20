@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
@@ -137,7 +138,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   String getTrackFileUrl(Track track) {
     final name =
-        "${track.name} - ${TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[])}.${downloadCodec.name}";
+        "${track.name} - ${track.artists?.asString() ?? ""}.${downloadCodec.name}";
     return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 

@@ -17,10 +17,6 @@ enum ImagePlaceholder {
 }
 
 abstract class TypeConversionUtils {
-  static String artists_X_String<T extends ArtistSimple>(List<T> artists) {
-    return artists.map((e) => e.name?.replaceAll(",", " ")).join(", ");
-  }
-
   static Widget artists_X_ClickableArtists(
     List<ArtistSimple> artists, {
     WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.center,
