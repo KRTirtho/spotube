@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -43,8 +44,7 @@ class PlaylistCard extends HookConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10),
       title: playlist.name!,
       description: playlist.description,
-      imageUrl: TypeConversionUtils.image_X_UrlString(
-        playlist.images,
+      imageUrl: playlist.images.asUrlString(
         placeholder: ImagePlaceholder.collection,
       ),
       isPlaying: isPlaylistPlaying,

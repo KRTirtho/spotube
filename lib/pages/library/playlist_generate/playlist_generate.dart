@@ -15,6 +15,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
@@ -84,8 +85,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       autocompleteOptionBuilder: (option, onSelected) => ListTile(
         leading: CircleAvatar(
           backgroundImage: UniversalImage.imageProvider(
-            TypeConversionUtils.image_X_UrlString(
-              option.images,
+            option.images.asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
@@ -117,8 +117,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       selectedSeedBuilder: (artist) => Chip(
         avatar: CircleAvatar(
           backgroundImage: UniversalImage.imageProvider(
-            TypeConversionUtils.image_X_UrlString(
-              artist.images,
+            artist.images.asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
@@ -163,8 +162,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       autocompleteOptionBuilder: (option, onSelected) => ListTile(
         leading: CircleAvatar(
           backgroundImage: UniversalImage.imageProvider(
-            TypeConversionUtils.image_X_UrlString(
-              option.album?.images,
+            (option.album?.images).asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),

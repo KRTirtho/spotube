@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dbus/dbus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotube/extensions/image.dart';
 
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -309,8 +310,7 @@ class _MprisMediaPlayer2Player extends DBusObject {
           (await audioPlayer.duration)?.inMicroseconds ?? 0,
         ),
         "mpris:artUrl": DBusString(
-          TypeConversionUtils.image_X_UrlString(
-            playlist.activeTrack?.album?.images,
+          (playlist.activeTrack?.album?.images).asUrlString(
             placeholder: ImagePlaceholder.albumArt,
           ),
         ),

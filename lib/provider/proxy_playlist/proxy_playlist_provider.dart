@@ -10,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
 
@@ -522,8 +523,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
       final palette = await PaletteGenerator.fromImageProvider(
         UniversalImage.imageProvider(
-          TypeConversionUtils.image_X_UrlString(
-            state.activeTrack?.album?.images,
+          (state.activeTrack?.album?.images).asUrlString(
             placeholder: ImagePlaceholder.albumArt,
           ),
           height: 50,

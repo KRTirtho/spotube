@@ -17,6 +17,7 @@ import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -294,8 +295,8 @@ class TrackOptions extends HookConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: UniversalImage(
-                path: TypeConversionUtils.image_X_UrlString(track.album!.images,
-                    placeholder: ImagePlaceholder.albumArt),
+                path: track.album!.images
+                    .asUrlString(placeholder: ImagePlaceholder.albumArt),
                 fit: BoxFit.cover,
               ),
             ),

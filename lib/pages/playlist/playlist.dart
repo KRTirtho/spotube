@@ -6,6 +6,7 @@ import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_
 import 'package:spotube/components/shared/tracks_view/track_view.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -30,8 +31,7 @@ class PlaylistPage extends HookConsumerWidget {
 
     return InheritedTrackView(
       collectionId: playlist.id!,
-      image: TypeConversionUtils.image_X_UrlString(
-        playlist.images,
+      image: playlist.images.asUrlString(
         placeholder: ImagePlaceholder.collection,
       ),
       pagination: PaginationProps(

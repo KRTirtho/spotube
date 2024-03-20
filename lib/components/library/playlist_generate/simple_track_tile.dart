@@ -4,6 +4,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
 class SimpleTrackTile extends HookWidget {
@@ -21,8 +22,7 @@ class SimpleTrackTile extends HookWidget {
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: UniversalImage(
-          path: TypeConversionUtils.image_X_UrlString(
-            track.album?.images,
+          path: (track.album?.images).asUrlString(
             placeholder: ImagePlaceholder.artist,
           ),
           height: 40,

@@ -11,6 +11,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/themed_button_tab_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
@@ -28,8 +29,7 @@ class LyricsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     String albumArt = useMemoized(
-      () => TypeConversionUtils.image_X_UrlString(
-        playlist.activeTrack?.album?.images,
+      () => (playlist.activeTrack?.album?.images).asUrlString(
         index: (playlist.activeTrack?.album?.images?.length ?? 1) - 1,
         placeholder: ImagePlaceholder.albumArt,
       ),

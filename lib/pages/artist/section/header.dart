@@ -8,6 +8,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -44,8 +45,7 @@ class ArtistPageHeader extends HookConsumerWidget {
       BlacklistedElement.artist(artistId, artist.name!),
     );
 
-    final image = TypeConversionUtils.image_X_UrlString(
-      artist.images,
+    final image = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
     );
 

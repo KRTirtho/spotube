@@ -7,6 +7,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 
@@ -105,8 +106,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
                   return CheckboxListTile(
                     secondary: CircleAvatar(
                       backgroundImage: UniversalImage.imageProvider(
-                        TypeConversionUtils.image_X_UrlString(
-                          playlist.images,
+                        playlist.images.asUrlString(
                           placeholder: ImagePlaceholder.collection,
                         ),
                       ),

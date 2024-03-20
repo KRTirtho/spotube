@@ -5,6 +5,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -18,8 +19,7 @@ class ArtistPageFooter extends ConsumerWidget {
     final ThemeData(:textTheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final artistImage = TypeConversionUtils.image_X_UrlString(
-      artist.images,
+    final artistImage = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
     );
     final summary = ref.watch(artistWikipediaSummaryProvider(artist));

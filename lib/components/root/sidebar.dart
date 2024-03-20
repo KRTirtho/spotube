@@ -11,6 +11,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
@@ -244,8 +245,7 @@ class SidebarFooter extends HookConsumerWidget {
     final me = ref.watch(meProvider);
     final data = me.asData?.value;
 
-    final avatarImg = TypeConversionUtils.image_X_UrlString(
-      data?.images,
+    final avatarImg = (data?.images).asUrlString(
       index: (data?.images?.length ?? 1) - 1,
       placeholder: ImagePlaceholder.artist,
     );

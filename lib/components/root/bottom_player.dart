@@ -14,6 +14,7 @@ import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +40,7 @@ class BottomPlayer extends HookConsumerWidget {
 
     String albumArt = useMemoized(
       () => playlist.activeTrack?.album?.images?.isNotEmpty == true
-          ? TypeConversionUtils.image_X_UrlString(
-              playlist.activeTrack?.album?.images,
+          ? (playlist.activeTrack?.album?.images).asUrlString(
               index: (playlist.activeTrack?.album?.images?.length ?? 1) - 1,
               placeholder: ImagePlaceholder.albumArt,
             )

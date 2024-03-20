@@ -12,6 +12,7 @@ import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -60,8 +61,7 @@ class TrackPage extends HookConsumerWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: UniversalImage.imageProvider(
-                    TypeConversionUtils.image_X_UrlString(
-                      track.album!.images,
+                    track.album!.images.asUrlString(
                       placeholder: ImagePlaceholder.albumArt,
                     ),
                   ),
@@ -104,8 +104,7 @@ class TrackPage extends HookConsumerWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: UniversalImage(
-                            path: TypeConversionUtils.image_X_UrlString(
-                              track.album!.images,
+                            path: track.album!.images.asUrlString(
                               placeholder: ImagePlaceholder.albumArt,
                             ),
                             height: 200,

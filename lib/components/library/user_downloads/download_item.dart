@@ -5,6 +5,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
@@ -51,8 +52,7 @@ class DownloadItem extends HookConsumerWidget {
           child: UniversalImage(
             height: 40,
             width: 40,
-            path: TypeConversionUtils.image_X_UrlString(
-              track.album?.images,
+            path: (track.album?.images).asUrlString(
               placeholder: ImagePlaceholder.albumArt,
             ),
           ),

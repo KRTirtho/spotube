@@ -18,6 +18,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
@@ -59,8 +60,7 @@ class PlayerView extends HookConsumerWidget {
     }, [mediaQuery.lgAndUp]);
 
     String albumArt = useMemoized(
-      () => TypeConversionUtils.image_X_UrlString(
-        currentTrack?.album?.images,
+      () => (currentTrack?.album?.images).asUrlString(
         placeholder: ImagePlaceholder.albumArt,
       ),
       [currentTrack?.album?.images],

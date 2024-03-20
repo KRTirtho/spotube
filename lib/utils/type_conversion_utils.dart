@@ -2,14 +2,11 @@
 
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart' hide Image;
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 enum ImagePlaceholder {
@@ -20,28 +17,6 @@ enum ImagePlaceholder {
 }
 
 abstract class TypeConversionUtils {
-  static String image_X_UrlString(
-    List<Image>? images, {
-    int index = 1,
-    required ImagePlaceholder placeholder,
-  }) {
-    final String placeholderUrl = {
-      ImagePlaceholder.albumArt: Assets.albumPlaceholder.path,
-      ImagePlaceholder.artist: Assets.userPlaceholder.path,
-      ImagePlaceholder.collection: Assets.placeholder.path,
-      ImagePlaceholder.online:
-          "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png",
-    }[placeholder]!;
-
-    final sortedImage = images?.sorted((a, b) => a.width!.compareTo(b.width!));
-
-    return sortedImage != null && sortedImage.isNotEmpty
-        ? sortedImage[
-                index > sortedImage.length - 1 ? sortedImage.length - 1 : index]
-            .url!
-        : placeholderUrl;
-  }
-
   static String artists_X_String<T extends ArtistSimple>(List<T> artists) {
     return artists.map((e) => e.name?.replaceAll(",", " ")).join(", ");
   }

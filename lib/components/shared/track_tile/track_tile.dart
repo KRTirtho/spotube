@@ -13,6 +13,7 @@ import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -135,8 +136,7 @@ class TrackTile extends HookConsumerWidget {
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: UniversalImage(
-                            path: TypeConversionUtils.image_X_UrlString(
-                              track.album?.images,
+                            path: (track.album?.images).asUrlString(
                               placeholder: ImagePlaceholder.albumArt,
                             ),
                             fit: BoxFit.cover,
