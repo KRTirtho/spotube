@@ -9,14 +9,15 @@ import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_brightness_value.dart';
+import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 
 final navigationPanelHeight = StateProvider<double>((ref) => 50);
 
 class SpotubeNavigationBar extends HookConsumerWidget {
-  final int selectedIndex;
+  final int? selectedIndex;
   final void Function(int) onSelectedIndexChanged;
 
   const SpotubeNavigationBar({
@@ -33,7 +34,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
-    final insideSelectedIndex = useState<int>(selectedIndex);
+    final insideSelectedIndex = useState<int>(selectedIndex ?? 0);
 
     final buttonColor = useBrightnessValue(
       theme.colorScheme.inversePrimary,
@@ -46,7 +47,9 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final panelHeight = ref.watch(navigationPanelHeight);
 
     useEffect(() {
-      insideSelectedIndex.value = selectedIndex;
+      if (selectedIndex != null) {
+        insideSelectedIndex.value = selectedIndex!;
+      }
       return null;
     }, [selectedIndex]);
 

@@ -5,7 +5,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_package_info.dart';
+import 'package:spotube/hooks/controllers/use_package_info.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

@@ -4,6 +4,7 @@ import 'package:spotube/services/queries/category.dart';
 import 'package:spotube/services/queries/lyrics.dart';
 import 'package:spotube/services/queries/playlist.dart';
 import 'package:spotube/services/queries/search.dart';
+import 'package:spotube/services/queries/tracks.dart';
 import 'package:spotube/services/queries/user.dart';
 import 'package:spotube/services/queries/views.dart';
 
@@ -17,6 +18,7 @@ class Queries {
   final search = const SearchQueries();
   final user = const UserQueries();
   final views = const ViewsQueries();
+  final tracks = const TracksQueries();
 }
 
 const useQueries = Queries._();

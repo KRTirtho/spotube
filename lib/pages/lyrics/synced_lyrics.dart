@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart' hide Offset;
@@ -7,8 +8,9 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/hooks/use_auto_scroll_controller.dart';
-import 'package:spotube/hooks/use_synced_lyrics.dart';
+import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
+import 'package:spotube/components/lyrics/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -45,6 +47,11 @@ class SyncedLyrics extends HookConsumerWidget {
 
     final lyricValue = timedLyricsQuery.data;
 
+    final isUnSyncLyric = useMemoized(
+      () => lyricValue?.lyrics.every((l) => l.time == Duration.zero),
+      [lyricValue],
+    );
+
     final lyricsMap = useMemoized(
       () =>
           lyricValue?.lyrics
@@ -72,6 +79,9 @@ class SyncedLyrics extends HookConsumerWidget {
             : textTheme.headlineMedium?.copyWith(fontSize: 25))
         ?.copyWith(color: palette.titleTextColor);
 
+    final bodyTextTheme = textTheme.bodyLarge?.copyWith(
+      color: palette.bodyTextColor,
+    );
     return Stack(
       children: [
         Column(
@@ -93,7 +103,9 @@ class SyncedLyrics extends HookConsumerWidget {
                       : textTheme.titleLarge,
                 ),
               ),
-            if (lyricValue != null && lyricValue.lyrics.isNotEmpty)
+            if (lyricValue != null &&
+                lyricValue.lyrics.isNotEmpty &&
+                isUnSyncLyric == false)
               Expanded(
                 child: ListView.builder(
                   controller: controller,
@@ -173,8 +185,48 @@ class SyncedLyrics extends HookConsumerWidget {
                 ),
               ),
             if (playlist.activeTrack != null &&
-                (lyricValue == null || lyricValue.lyrics.isEmpty == true))
-              const Expanded(child: ShimmerLyrics()),
+                (timedLyricsQuery.isLoading || timedLyricsQuery.isRefreshing))
+              const Expanded(
+                child: ShimmerLyrics(),
+              )
+            else if (playlist.activeTrack != null &&
+                (timedLyricsQuery.hasError)) ...[
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  context.l10n.no_lyrics_available,
+                  style: bodyTextTheme,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const Gap(26),
+              const Icon(SpotubeIcons.noLyrics, size: 60),
+            ] else if (isUnSyncLyric == true)
+              Expanded(
+                child: Center(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: bodyTextTheme,
+                      children: [
+                        const TextSpan(
+                          text:
+                              "Synced lyrics are not available for this song. Please use the",
+                        ),
+                        TextSpan(
+                          text: " Plain Lyrics ",
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: palette.bodyTextColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const TextSpan(text: "tab instead."),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
         Align(

@@ -6,24 +6,35 @@
 /// iceyear@github => Simplified Chinese
 /// TexturedPolak@github => Polish
 /// yuri-val@github => Ukrainian
+/// energywave@github, ncvescera@github, OpenCode@github => Italian
+/// mdksec@github => Turkish
+/// Stephan-P@github, SecularSteve@github => Dutch
+/// doannc2212@github => Vietnamese
+/// sappho192@github => Korean
 import 'package:flutter/material.dart';
 
 class L10n {
   static final all = [
     const Locale('en'),
+    const Locale('ar', 'SA'),
     const Locale('bn', 'BD'),
-    const Locale('de', 'GE'),
     const Locale('ca', 'AD'),
+    const Locale('de', 'GE'),
     const Locale('es', 'ES'),
     const Locale("fa", "IR"),
     const Locale('fr', 'FR'),
+    const Locale('ne', 'NP'),
     const Locale('hi', 'IN'),
+    const Locale('it', 'IT'),
     const Locale('ja', 'JP'),
-    const Locale('zh', 'CN'),
+    const Locale('ko', 'KR'),
+    const Locale('nl', 'NL'),
     const Locale('pl', 'PL'),
-    const Locale('ru', 'RU'),
     const Locale('pt', 'PT'),
+    const Locale('ru', 'RU'),
     const Locale('uk', 'UA'),
-    const Locale('ar', 'SA'),
+    const Locale('tr', 'TR'),
+    const Locale('zh', 'CN'),
+    const Locale('vi', 'VN'),
   ];
 }

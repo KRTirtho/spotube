@@ -18,19 +18,23 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/use_custom_status_bar_color.dart';
-import 'package:spotube/hooks/use_palette_color.dart';
+import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
+import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PlayerView extends HookConsumerWidget {
   final PanelController panelController;
+  final ScrollController scrollController;
   const PlayerView({
     Key? key,
     required this.panelController,
+    required this.scrollController,
   }) : super(key: key);
 
   @override
@@ -72,10 +76,14 @@ class PlayerView extends HookConsumerWidget {
         useMemoized(() => GlobalKey(), []);
 
     useEffect(() {
-      WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
+      for (final renderView in WidgetsBinding.instance.renderViews) {
+        renderView.automaticSystemUiAdjustment = false;
+      }
 
       return () {
-        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = true;
+        for (final renderView in WidgetsBinding.instance.renderViews) {
+          renderView.automaticSystemUiAdjustment = true;
+        }
       };
     }, [panelController.isPanelOpen]);
 
@@ -90,7 +98,7 @@ class PlayerView extends HookConsumerWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        panelController.close();
+        await panelController.close();
         return false;
       },
       child: IconTheme(
@@ -119,40 +127,63 @@ class PlayerView extends HookConsumerWidget {
               preferredSize: Size.fromHeight(
                 kToolbarHeight + topPadding,
               ),
-              child: Padding(
-                padding: EdgeInsets.only(top: topPadding),
-                child: PageWindowTitleBar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: titleTextColor,
-                  toolbarOpacity: 1,
-                  leading: IconButton(
-                    icon: const Icon(SpotubeIcons.angleDown, size: 18),
-                    onPressed: panelController.close,
+              child: ForceDraggableWidget(
+                child: Padding(
+                  padding: EdgeInsets.only(top: topPadding),
+                  child: PageWindowTitleBar(
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: titleTextColor,
+                    toolbarOpacity: 1,
+                    leading: IconButton(
+                      icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                      onPressed: panelController.close,
+                    ),
+                    actions: [
+                      if (currentTrack is YoutubeSourcedTrack)
+                        TextButton.icon(
+                          icon: Assets.logos.songlinkTransparent.image(
+                            width: 20,
+                            height: 20,
+                            color: bodyTextColor,
+                          ),
+                          label: Text(context.l10n.song_link),
+                          style: TextButton.styleFrom(
+                            foregroundColor: bodyTextColor,
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            final url =
+                                "https://song.link/s/${currentTrack.id}";
+
+                            launchUrlString(url);
+                          },
+                        ),
+                      IconButton(
+                        icon: const Icon(SpotubeIcons.info, size: 18),
+                        tooltip: context.l10n.details,
+                        style: IconButton.styleFrom(
+                          foregroundColor: bodyTextColor,
+                        ),
+                        onPressed: currentTrack == null
+                            ? null
+                            : () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return TrackDetailsDialog(
+                                        track: currentTrack,
+                                      );
+                                    });
+                              },
+                      )
+                    ],
                   ),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(SpotubeIcons.info, size: 18),
-                      tooltip: context.l10n.details,
-                      style:
-                          IconButton.styleFrom(foregroundColor: bodyTextColor),
-                      onPressed: currentTrack == null
-                          ? null
-                          : () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return TrackDetailsDialog(
-                                      track: currentTrack,
-                                    );
-                                  });
-                            },
-                    )
-                  ],
                 ),
               ),
             ),
             extendBodyBehindAppBar: true,
             body: SingleChildScrollView(
+              controller: scrollController,
               child: Container(
                 alignment: Alignment.center,
                 width: double.infinity,
@@ -163,27 +194,29 @@ class PlayerView extends HookConsumerWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            constraints: const BoxConstraints(
-                                maxHeight: 300, maxWidth: 300),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 0),
+                          ForceDraggableWidget(
+                            child: Container(
+                              margin: const EdgeInsets.all(8),
+                              constraints: const BoxConstraints(
+                                  maxHeight: 300, maxWidth: 300),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: UniversalImage(
+                                  path: albumArt,
+                                  placeholder: Assets.albumPlaceholder.path,
+                                  fit: BoxFit.cover,
                                 ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: UniversalImage(
-                                path: albumArt,
-                                placeholder: Assets.albumPlaceholder.path,
-                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

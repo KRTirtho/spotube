@@ -40,6 +40,8 @@ abstract class SpotubeIcons {
   static const trash = FeatherIcons.trash2;
   static const clock = FeatherIcons.clock;
   static const lyrics = Icons.lyrics_rounded;
+  static const lyricsOff = Icons.lyrics_outlined;
+  static const noLyrics = Icons.music_off_outlined;
   static const logout = FeatherIcons.logOut;
   static const login = FeatherIcons.logIn;
   static const dashboard = FeatherIcons.grid;
@@ -106,4 +108,11 @@ abstract class SpotubeIcons {
   static const eye = FeatherIcons.eye;
   static const noEye = FeatherIcons.eyeOff;
   static const normalize = FeatherIcons.barChart2;
+  static const wikipedia = SimpleIcons.wikipedia;
+  static const discord = SimpleIcons.discord;
+  static const youtube = SimpleIcons.youtube;
+  static const radio = FeatherIcons.radio;
+  static const github = SimpleIcons.github;
+  static const openCollective = SimpleIcons.opencollective;
+  static const anonymous = FeatherIcons.user;
 }

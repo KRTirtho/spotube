@@ -1,0 +1,32 @@
+name: Lint
+
+on:
+  pull_request:
+
+env:
+  FLUTTER_VERSION: '3.16.0'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Configure repo
+        run: |
+          flutter pub get
+          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Lint Dart files
+        run: |
+          dart analyze --no-fatal-warnings
+
+      - name: Lint translations & config files
+        run: |
+          npm install -g @prantlf/jsonlint
+          jsonlint -q -D --enforce-double-quotes ./lib/l10n/*.arb
+          jsonlint -q -D --enforce-double-quotes -T .vscode/*.json

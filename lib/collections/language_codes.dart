@@ -6,6 +6,11 @@ class ISOLanguageName {
     required this.name,
     required this.nativeName,
   });
+
+  @override
+  String toString() {
+    return "$name ($nativeName)";
+  }
 }
 
 // Uncomment the languages as we add support for them
@@ -164,10 +169,10 @@ abstract class LanguageLocals {
     //   name: "Maldivian;",
     //   nativeName: "ދިވެހި",
     // ),
-    // "nl": const ISOLanguageName(
-    //   name: "Dutch",
-    //   nativeName: "Vlaams",
-    // ),
+    "nl": const ISOLanguageName(
+      name: "Dutch",
+      nativeName: "Nederlands",
+    ),
     "en": const ISOLanguageName(
       name: "English",
       nativeName: "English",
@@ -288,10 +293,10 @@ abstract class LanguageLocals {
     //   name: "Icelandic",
     //   nativeName: "Íslenska",
     // ),
-    // "it": const ISOLanguageName(
-    //   name: "Italian",
-    //   nativeName: "Italiano",
-    // ),
+    "it": const ISOLanguageName(
+      name: "Italian",
+      nativeName: "Italiano",
+    ),
     // "iu": const ISOLanguageName(
     //   name: "Inuktitut",
     //   nativeName: "ᐃᓄᒃᑎᑐᑦ",
@@ -348,10 +353,10 @@ abstract class LanguageLocals {
     //   name: "Kongo",
     //   nativeName: "KiKongo",
     // ),
-    // "ko": const ISOLanguageName(
-    //   name: "Korean",
-    //   nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
-    // ),
+    "ko": const ISOLanguageName(
+     name: "Korean",
+     nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
+    ),
     // "ku": const ISOLanguageName(
     //   name: "Kurdish",
     //   nativeName: "Kurdî, كوردی‎",
@@ -452,10 +457,10 @@ abstract class LanguageLocals {
     //   name: "North Ndebele",
     //   nativeName: "isiNdebele",
     // ),
-    // "ne": const ISOLanguageName(
-    //   name: "Nepali",
-    //   nativeName: "नेपाली",
-    // ),
+    "ne": const ISOLanguageName(
+      name: "Nepali",
+      nativeName: "नेपाली",
+    ),
     // "ng": const ISOLanguageName(
     //   name: "Ndonga",
     //   nativeName: "Owambo",
@@ -660,10 +665,10 @@ abstract class LanguageLocals {
     //   name: "Tonga (Tonga Islands)",
     //   nativeName: "faka Tonga",
     // ),
-    // "tr": const ISOLanguageName(
-    //   name: "Turkish",
-    //   nativeName: "Türkçe",
-    // ),
+    "tr": const ISOLanguageName(
+      name: "Turkish",
+      nativeName: "Türkçe",
+    ),
     // "ts": const ISOLanguageName(
     //   name: "Tsonga",
     //   nativeName: "Xitsonga",
@@ -700,10 +705,10 @@ abstract class LanguageLocals {
     //   name: "Venda",
     //   nativeName: "Tshivenḓa",
     // ),
-    // "vi": const ISOLanguageName(
-    //   name: "Vietnamese",
-    //   nativeName: "Tiếng Việt",
-    // ),
+    "vi": const ISOLanguageName(
+      name: "Vietnamese",
+      nativeName: "Tiếng Việt",
+    ),
     // "vo": const ISOLanguageName(
     //   name: "Volapük",
     //   nativeName: "Volapük",

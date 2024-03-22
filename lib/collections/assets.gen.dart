@@ -9,6 +9,21 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsLogosGen {
+  const $AssetsLogosGen();
+
+  /// File path: assets/logos/songlink-transparent.png
+  AssetGenImage get songlinkTransparent =>
+      const AssetGenImage('assets/logos/songlink-transparent.png');
+
+  /// File path: assets/logos/songlink.png
+  AssetGenImage get songlink =>
+      const AssetGenImage('assets/logos/songlink.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [songlinkTransparent, songlink];
+}
+
 class $AssetsTutorialGen {
   const $AssetsTutorialGen();
 
@@ -34,6 +49,10 @@ class Assets {
       AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
+  static const AssetGenImage jiosaavn = AssetGenImage('assets/jiosaavn.png');
+  static const AssetGenImage likedTracks =
+      AssetGenImage('assets/liked-tracks.jpg');
+  static const $AssetsLogosGen logos = $AssetsLogosGen();
   static const AssetGenImage placeholder =
       AssetGenImage('assets/placeholder.png');
   static const AssetGenImage spotubeHeroBanner =
@@ -74,6 +93,8 @@ class Assets {
         bengaliPatternsBg,
         branding,
         emptyBox,
+        jiosaavn,
+        likedTracks,
         placeholder,
         spotubeHeroBanner,
         spotubeLogoForeground,

@@ -6,6 +6,8 @@ import 'package:collection/collection.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/services/download_manager/chunked_download.dart';
 import 'package:spotube/services/download_manager/download_request.dart';
@@ -77,7 +79,18 @@ class DownloadManager {
 
       logger.d("[DownloadManager] $url");
       final file = File(savePath.toString());
-      partialFilePath = savePath + partialExtension;
+
+      final tmpDirPath = await Directory(
+        path.join(
+          (await getTemporaryDirectory()).path,
+          "spotube-downloads",
+        ),
+      ).create(recursive: true);
+
+      partialFilePath = path.join(
+        tmpDirPath.path,
+        path.basename(savePath) + partialExtension,
+      );
       partialFile = File(partialFilePath);
 
       final fileExist = await file.exists();
@@ -111,7 +124,9 @@ class DownloadManager {
           await ioSink.addStream(partialChunkFile.openRead());
           await partialChunkFile.delete();
           await ioSink.close();
-          await partialFile.rename(savePath);
+
+          await partialFile.copy(savePath);
+          await partialFile.delete();
 
           setStatus(task, DownloadStatus.completed);
         }
@@ -125,7 +140,8 @@ class DownloadManager {
         );
 
         if (response.statusCode == HttpStatus.ok) {
-          await partialFile.rename(savePath);
+          await partialFile.copy(savePath);
+          await partialFile.delete();
           setStatus(task, DownloadStatus.completed);
         }
       }

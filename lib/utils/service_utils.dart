@@ -8,7 +8,7 @@ import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/models/lyrics.dart';
-import 'package:spotube/models/spotube_track.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
@@ -53,9 +53,9 @@ abstract class ServiceUtils {
 
     return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
         .toLowerCase()
-        .replaceAll(RegExp(" *\\[[^\\]]*]"), '')
-        .replaceAll(RegExp("feat.|ft."), '')
-        .replaceAll(RegExp("\\s+"), ' ')
+        .replaceAll(RegExp(r"\s*\[[^\]]*]"), ' ')
+        .replaceAll(RegExp(r"\sfeat\.|\sft\."), ' ')
+        .replaceAll(RegExp(r"\s+"), ' ')
         .trim();
   }
 
@@ -171,7 +171,7 @@ abstract class ServiceUtils {
   static const baseUri = "https://www.rentanadviser.com/subtitles";
 
   @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
-  static Future<SubtitleSimple?> getTimedLyrics(SpotubeTrack track) async {
+  static Future<SubtitleSimple?> getTimedLyrics(SourcedTrack track) async {
     final artistNames =
         track.artists?.map((artist) => artist.name!).toList() ?? [];
     final query = getTitle(
@@ -199,7 +199,7 @@ abstract class ServiceUtils {
           false;
       final hasTrackName = title.contains(track.name!.toLowerCase());
       final isNotLive = !PrimitiveUtils.containsTextInBracket(title, "live");
-      final exactYtMatch = title == track.ytTrack.title.toLowerCase();
+      final exactYtMatch = title == track.sourceInfo.title.toLowerCase();
       if (exactYtMatch) points = 7;
       for (final criteria in [hasTrackName, hasAllArtists, isNotLive]) {
         if (criteria) points++;
@@ -292,24 +292,24 @@ abstract class ServiceUtils {
     return List<T>.from(tracks)
       ..sort((a, b) {
         switch (sortBy) {
-          case SortBy.album:
-            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
-          case SortBy.artist:
-            return a.artists?.first.name
-                    ?.compareTo(b.artists?.first.name ?? "") ??
-                0;
           case SortBy.ascending:
             return a.name?.compareTo(b.name ?? "") ?? 0;
-          case SortBy.oldest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return aDate.compareTo(bDate);
+          case SortBy.descending:
+            return b.name?.compareTo(a.name ?? "") ?? 0;
           case SortBy.newest:
             final aDate = parseSpotifyAlbumDate(a.album);
             final bDate = parseSpotifyAlbumDate(b.album);
             return bDate.compareTo(aDate);
-          case SortBy.descending:
-            return b.name?.compareTo(a.name ?? "") ?? 0;
+          case SortBy.oldest:
+            final aDate = parseSpotifyAlbumDate(a.album);
+            final bDate = parseSpotifyAlbumDate(b.album);
+            return aDate.compareTo(bDate);
+          case SortBy.duration:
+            return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
+          case SortBy.artist:
+            return a.artists?.first.name?.compareTo(b.artists?.first.name ?? "") ?? 0;
+          case SortBy.album:
+            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
           default:
             return 0;
         }

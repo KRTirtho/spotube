@@ -119,7 +119,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/KRTirt
 
 Do the following:
 
-- Download the latest Flutter SDK (>=3.10.0) & enable desktop support
+- Download the latest Flutter SDK (>=3.16.0) & enable desktop support
 - Install Development dependencies in linux
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
@@ -145,7 +145,7 @@ Do the following:
   flutter run -d <window|macos|linux|(<android-device-id>)>
   ```
 
-Do debugging/testing/build etc then submit to us with PR against the development branch (master) & we'll review your code
+Do debugging/testing/build etc then submit to us with PR against the development branch (dev) & we'll review your code
 
 
 ### Submit Translations

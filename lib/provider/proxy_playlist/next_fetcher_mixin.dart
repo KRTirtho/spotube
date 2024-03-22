@@ -1,39 +1,32 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/models/matched_track.dart';
-import 'package:spotube/models/spotube_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/user_preferences_provider.dart';
-import 'package:spotube/services/supabase.dart';
-import 'package:spotube/services/youtube/youtube.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 final logger = getLogger("NextFetcherMixin");
 
 mixin NextFetcher on StateNotifier<ProxyPlaylist> {
-  Future<List<SpotubeTrack>> fetchTracks(
-    UserPreferences preferences,
-    YoutubeEndpoints youtube, {
+  Future<List<SourcedTrack>> fetchTracks(
+    Ref ref, {
     int count = 3,
     int offset = 0,
   }) async {
-    /// get [count] [state.tracks] that are not [SpotubeTrack] and [LocalTrack]
+    /// get [count] [state.tracks] that are not [SourcedTrack] and [LocalTrack]
 
     final bareTracks = state.tracks
         .skip(offset)
-        .where((element) => element is! SpotubeTrack && element is! LocalTrack)
+        .where((element) => element is! SourcedTrack && element is! LocalTrack)
         .take(count);
 
     /// fetch [bareTracks] one by one with 100ms delay
     final fetchedTracks = await Future.wait(
       bareTracks.mapIndexed((i, track) async {
-        final future = SpotubeTrack.fetchFromTrack(
-          track,
-          youtube,
-          preferences.streamMusicCodec,
+        final future = SourcedTrack.fetchFromTrack(
+          ref: ref,
+          track: track,
         );
         if (i == 0) {
           return await future;
@@ -48,9 +41,9 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
     return fetchedTracks;
   }
 
-  /// Merges List of [SpotubeTrack]s with [Track]s and outputs a mixed List
+  /// Merges List of [SourcedTrack]s with [Track]s and outputs a mixed List
   Set<Track> mergeTracks(
-    Iterable<SpotubeTrack> fetchTracks,
+    Iterable<SourcedTrack> fetchTracks,
     Iterable<Track> tracks,
   ) {
     return tracks.map((track) {
@@ -81,12 +74,12 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
 
   /// Returns appropriate Media source for [Track]
   ///
-  /// * If [Track] is [SpotubeTrack] then return [SpotubeTrack.ytUri]
+  /// * If [Track] is [SourcedTrack] then return [SourcedTrack.ytUri]
   /// * If [Track] is [LocalTrack] then return [LocalTrack.path]
   /// * If [Track] is [Track] then return [Track.id] with [isUnPlayable] source
   String makeAppropriateSource(Track track) {
-    if (track is SpotubeTrack) {
-      return track.ytUri;
+    if (track is SourcedTrack) {
+      return track.url;
     } else if (track is LocalTrack) {
       return track.path;
     } else {
@@ -104,31 +97,12 @@ mixin NextFetcher on StateNotifier<ProxyPlaylist> {
           final track = state.tracks.firstWhereOrNull(
             (track) =>
                 trackToUnplayableSource(track) == source ||
-                (track is SpotubeTrack && track.ytUri == source) ||
+                (track is SourcedTrack && track.url == source) ||
                 (track is LocalTrack && track.path == source),
           );
           return track;
         })
         .whereNotNull()
         .toList();
-  }
-
-  /// This method must be called after any playback operation as
-  /// it can increase the latency
-  Future<void> storeTrack(Track track, SpotubeTrack spotubeTrack) async {
-    try {
-      if (track is! SpotubeTrack) {
-        await supabase.insertTrack(
-          MatchedTrack(
-            youtubeId: spotubeTrack.ytTrack.id,
-            spotifyId: spotubeTrack.id!,
-            searchMode: spotubeTrack.ytTrack.searchMode,
-          ),
-        );
-      }
-    } catch (e, stackTrace) {
-      logger.e(e.toString());
-      logger.t(stackTrace);
-    }
   }
 }
