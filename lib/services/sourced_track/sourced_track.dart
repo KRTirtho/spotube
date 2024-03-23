@@ -127,7 +127,7 @@ abstract class SourcedTrack extends Track {
             weakMatch: true,
           ),
         AudioSource.jiosaavn =>
-          await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
+          await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
       };
     } on HttpClientClosedException catch (_) {
       return await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref);
