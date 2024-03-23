@@ -10,9 +10,9 @@ bool useIsUserPlaylist(WidgetRef ref, String playlistId) {
     () =>
         userPlaylistsQuery.asData?.value.items.any((e) =>
             e.id == playlistId &&
-            me.value != null &&
+            me.asData?.value != null &&
             e.owner?.id == me.asData?.value.id) ??
         false,
-    [userPlaylistsQuery.value, playlistId, me.value],
+    [userPlaylistsQuery.asData?.value, playlistId, me.asData?.value],
   );
 }

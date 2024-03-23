@@ -12,9 +12,9 @@ class HomeMadeForUserSection extends HookConsumerWidget {
     final madeForUser = ref.watch(viewProvider("made-for-x-hub"));
 
     return SliverList.builder(
-      itemCount: madeForUser.value?["content"]?["items"]?.length ?? 0,
+      itemCount: madeForUser.asData?.value["content"]?["items"]?.length ?? 0,
       itemBuilder: (context, index) {
-        final item = madeForUser.value?["content"]?["items"]?[index];
+        final item = madeForUser.asData?.value["content"]?["items"]?[index];
         final playlists = item["content"]?["items"]
                 ?.where((itemL2) => itemL2["type"] == "playlist")
                 .map((itemL2) => PlaylistSimple.fromJson(itemL2))

@@ -68,7 +68,7 @@ UseTrackToggleLike useTrackToggleLike(Track track, WidgetRef ref) {
     () =>
         savedTracks.asData?.value.any((element) => element.id == track.id) ??
         false,
-    [savedTracks.value, track.id],
+    [savedTracks.asData?.value, track.id],
   );
 
   final scrobblerNotifier = ref.read(scrobblerProvider.notifier);
@@ -109,7 +109,7 @@ class TrackHeartButton extends HookConsumerWidget {
           ? context.l10n.remove_from_favorites
           : context.l10n.save_as_favorite,
       isLiked: isLiked,
-      onPressed: savedTracks.value != null
+      onPressed: savedTracks.asData?.value != null
           ? () {
               toggleTrackLike(track);
             }

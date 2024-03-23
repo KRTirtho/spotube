@@ -348,7 +348,7 @@ class TrackOptions extends HookConsumerWidget {
                 leading: const Icon(SpotubeIcons.queueRemove),
                 title: Text(context.l10n.remove_from_queue),
               ),
-            if (me.value != null)
+            if (me.asData?.value != null)
               PopSheetEntry(
                 value: TrackOptionValue.favorite,
                 leading: favorites.isLiked

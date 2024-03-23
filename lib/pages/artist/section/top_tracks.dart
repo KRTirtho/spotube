@@ -23,7 +23,7 @@ class ArtistPageTopTracks extends HookConsumerWidget {
     final topTracksQuery = ref.watch(artistTopTracksProvider(artistId));
 
     final isPlaylistPlaying = playlist.containsTracks(
-      topTracksQuery.value ?? <Track>[],
+      topTracksQuery.asData?.value ?? <Track>[],
     );
 
     if (topTracksQuery.hasError) {
@@ -34,8 +34,8 @@ class ArtistPageTopTracks extends HookConsumerWidget {
       );
     }
 
-    final topTracks =
-        topTracksQuery.value ?? List.generate(10, (index) => FakeData.track);
+    final topTracks = topTracksQuery.asData?.value ??
+        List.generate(10, (index) => FakeData.track);
 
     void playPlaylist(List<Track> tracks, {Track? currentTrack}) async {
       currentTrack ??= tracks.first;

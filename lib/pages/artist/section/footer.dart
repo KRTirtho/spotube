@@ -23,7 +23,7 @@ class ArtistPageFooter extends ConsumerWidget {
       placeholder: ImagePlaceholder.artist,
     );
     final summary = ref.watch(artistWikipediaSummaryProvider(artist));
-    if (summary.value == null) return const SizedBox.shrink();
+    if (summary.asData?.value == null) return const SizedBox.shrink();
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -39,9 +39,9 @@ class ArtistPageFooter extends ConsumerWidget {
             BlendMode.darken,
           ),
           image: UniversalImage.imageProvider(
-            summary.value!.thumbnail?.source_ ?? artistImage,
-            height: summary.value!.thumbnail?.height.toDouble(),
-            width: summary.value!.thumbnail?.width.toDouble(),
+            summary.asData?.value!.thumbnail?.source_ ?? artistImage,
+            height: summary.asData?.value!.thumbnail?.height.toDouble(),
+            width: summary.asData?.value!.thumbnail?.width.toDouble(),
           ),
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -70,7 +70,7 @@ class ArtistPageFooter extends ConsumerWidget {
             ),
             const TextSpan(text: '\n\n'),
             TextSpan(
-              text: summary.value!.extract,
+              text: summary.asData?.value!.extract,
             ),
             TextSpan(
               text: '\n...read more at wikipedia',

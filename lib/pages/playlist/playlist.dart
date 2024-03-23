@@ -48,9 +48,9 @@ class PlaylistPage extends HookConsumerWidget {
       description: playlist.description,
       tracks: tracks.asData?.value.items ?? [],
       routePath: '/playlist/${playlist.id}',
-      isLiked: isFavoritePlaylist.value ?? false,
+      isLiked: isFavoritePlaylist.asData?.value ?? false,
       shareUrl: playlist.externalUrls?.spotify ?? "",
-      onHeart: isFavoritePlaylist.value == null
+      onHeart: isFavoritePlaylist.asData?.value == null
           ? null
           : () async {
               final confirmed = isUserPlaylist
@@ -62,7 +62,7 @@ class PlaylistPage extends HookConsumerWidget {
                   : true;
               if (!confirmed) return null;
 
-              if (isFavoritePlaylist.value!) {
+              if (isFavoritePlaylist.asData!.value) {
                 await favoritePlaylistsNotifier.removeFavorite(playlist);
               } else {
                 await favoritePlaylistsNotifier.addFavorite(playlist);

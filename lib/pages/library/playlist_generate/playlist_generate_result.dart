@@ -34,12 +34,12 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
     );
 
     useEffect(() {
-      if (generatedPlaylist.value != null) {
+      if (generatedPlaylist.asData?.value != null) {
         selectedTracks.value =
-            generatedPlaylist.value!.map((e) => e.id!).toList();
+            generatedPlaylist.asData!.value.map((e) => e.id!).toList();
       }
       return null;
-    }, [generatedPlaylist.value]);
+    }, [generatedPlaylist.asData?.value]);
 
     final isAllTrackSelected = selectedTracks.value.length ==
         (generatedPlaylist.asData?.value.length ?? 0);
@@ -78,7 +78,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                             ? null
                             : () async {
                                 await playlistNotifier.load(
-                                  generatedPlaylist.value!.where(
+                                  generatedPlaylist.asData!.value.where(
                                     (e) => selectedTracks.value.contains(e.id!),
                                   ),
                                   autoPlay: true,
@@ -92,7 +92,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                             ? null
                             : () async {
                                 await playlistNotifier.addTracks(
-                                  generatedPlaylist.value!.where(
+                                  generatedPlaylist.asData!.value.where(
                                     (e) => selectedTracks.value.contains(e.id!),
                                   ),
                                 );
@@ -142,7 +142,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                     openFromPlaylist: null,
                                     tracks: selectedTracks.value
                                         .map(
-                                          (e) => generatedPlaylist.value!
+                                          (e) => generatedPlaylist.asData!.value
                                               .firstWhere(
                                             (element) => element.id == e,
                                           ),
@@ -167,7 +167,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (generatedPlaylist.value != null)
+                  if (generatedPlaylist.asData?.value != null)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -181,8 +181,9 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                             if (isAllTrackSelected) {
                               selectedTracks.value = [];
                             } else {
-                              selectedTracks.value = generatedPlaylist.value
-                                      ?.map((e) => e.id!)
+                              selectedTracks.value = generatedPlaylist
+                                      .asData?.value
+                                      .map((e) => e.id!)
                                       .toList() ??
                                   [];
                             }
@@ -203,7 +204,8 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          for (final track in generatedPlaylist.value ?? [])
+                          for (final track
+                              in generatedPlaylist.asData?.value ?? [])
                             CheckboxListTile(
                               value: selectedTracks.value.contains(track.id),
                               onChanged: (value) {

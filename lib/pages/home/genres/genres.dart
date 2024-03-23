@@ -39,9 +39,9 @@ class GenrePage extends HookConsumerWidget {
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
-          itemCount: categories.value!.length,
+          itemCount: categories.asData!.value.length,
           itemBuilder: (context, index) {
-            final category = categories.value![index];
+            final category = categories.asData!.value[index];
             final gradient = gradients[Random().nextInt(gradients.length)];
             return InkWell(
               borderRadius: BorderRadius.circular(8),

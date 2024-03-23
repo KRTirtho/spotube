@@ -44,7 +44,7 @@ class UserAlbums extends HookConsumerWidget {
               .map((e) => e.$2)
               .toList() ??
           [];
-    }, [albumsQuery.value, searchText.value]);
+    }, [albumsQuery.asData?.value, searchText.value]);
 
     if (auth == null) {
       return const AnonymousFallback();
@@ -87,8 +87,8 @@ class UserAlbums extends HookConsumerWidget {
                       runAlignment: WrapAlignment.center,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        if (albumsQuery.value == null ||
-                            albumsQuery.value!.items.isEmpty)
+                        if (albumsQuery.asData?.value == null ||
+                            albumsQuery.asData!.value.items.isEmpty)
                           ...List.generate(
                             10,
                             (index) => AlbumCard(FakeData.album),

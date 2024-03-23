@@ -187,7 +187,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     );
 
     final genreSelector = MultiSelectField<String>(
-      options: genresCollection.value ?? [],
+      options: genresCollection.asData?.value ?? [],
       selectedOptions: genres.value,
       getValueForOption: (option) => option,
       onSelected: (value) {

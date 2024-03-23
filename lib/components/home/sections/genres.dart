@@ -26,12 +26,12 @@ class HomeGenresSection extends HookConsumerWidget {
     final categoriesQuery = ref.watch(categoriesProvider);
     final categories = useMemoized(
       () =>
-          categoriesQuery.value
-              ?.where((c) => (c.icons?.length ?? 0) > 0)
+          categoriesQuery.asData?.value
+              .where((c) => (c.icons?.length ?? 0) > 0)
               .take(mediaQuery.mdAndDown ? 6 : 10)
               .toList() ??
           <Category>[],
-      [mediaQuery.mdAndDown, categoriesQuery.value],
+      [mediaQuery.mdAndDown, categoriesQuery.asData?.value],
     );
 
     return SliverMainAxisGroup(

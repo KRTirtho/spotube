@@ -45,11 +45,11 @@ class AlbumPage extends HookConsumerWidget {
       ),
       routePath: "/album/${album.id}",
       shareUrl: album.externalUrls!.spotify!,
-      isLiked: isSavedAlbum.value ?? false,
-      onHeart: isSavedAlbum.value == null
+      isLiked: isSavedAlbum.asData?.value ?? false,
+      onHeart: isSavedAlbum.asData?.value == null
           ? null
           : () async {
-              if (isSavedAlbum.value!) {
+              if (isSavedAlbum.asData!.value) {
                 await favoriteAlbumsNotifier.removeFavorites([album.id!]);
               } else {
                 await favoriteAlbumsNotifier.addFavorites([album.id!]);

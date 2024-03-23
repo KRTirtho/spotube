@@ -22,7 +22,7 @@ class ArtistPageHeader extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final artistQuery = ref.watch(artistProvider(artistId));
-    final artist = artistQuery.value ?? FakeData.artist;
+    final artist = artistQuery.asData?.value ?? FakeData.artist;
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final mediaQuery = MediaQuery.of(context);

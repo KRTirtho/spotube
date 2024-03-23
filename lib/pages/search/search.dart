@@ -168,8 +168,8 @@ class SearchPage extends HookConsumerWidget {
                       },
                       builder: (context, controller) {
                         return SearchBar(
-                          autoFocus: queries.none(
-                                  (s) => s.value != null && !s.hasError) &&
+                          autoFocus: queries.none((s) =>
+                                  s.asData?.value != null && !s.hasError) &&
                               !kIsMobile,
                           controller: controller,
                           leading: const Icon(SpotubeIcons.search),

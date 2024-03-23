@@ -15,7 +15,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final likedTracks = ref.watch(likedTracksProvider);
-    final tracks = likedTracks.value ?? <Track>[];
+    final tracks = likedTracks.asData?.value ?? <Track>[];
 
     return InheritedTrackView(
       collectionId: playlist.id!,

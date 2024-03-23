@@ -24,7 +24,7 @@ class SearchAlbumsSection extends HookConsumerWidget {
               .map((e) => e.toAlbum())
               .toList() ??
           [],
-      [query.value],
+      [query.asData?.value],
     );
 
     return HorizontalPlaybuttonCardView(

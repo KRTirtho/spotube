@@ -160,7 +160,7 @@ class UserLocalTracks extends HookConsumerWidget {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying =
-        playlist.containsTracks(trackSnapshot.value ?? []);
+        playlist.containsTracks(trackSnapshot.asData?.value ?? []);
 
     final searchController = useTextEditingController();
     useValueListenable(searchController);
@@ -177,13 +177,13 @@ class UserLocalTracks extends HookConsumerWidget {
             children: [
               const SizedBox(width: 10),
               FilledButton(
-                onPressed: trackSnapshot.value != null
+                onPressed: trackSnapshot.asData?.value != null
                     ? () async {
                         if (trackSnapshot.asData?.value.isNotEmpty == true) {
                           if (!isPlaylistPlaying) {
                             await playLocalTracks(
                               ref,
-                              trackSnapshot.value!,
+                              trackSnapshot.asData!.value,
                             );
                           } else {
                             // TODO: Remove stop capability

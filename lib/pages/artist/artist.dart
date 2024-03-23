@@ -35,7 +35,7 @@ class ArtistPage extends HookConsumerWidget {
         ),
         extendBodyBehindAppBar: true,
         body: Builder(builder: (context) {
-          if (artistQuery.hasError && artistQuery.value == null) {
+          if (artistQuery.hasError && artistQuery.asData?.value == null) {
             return Center(child: Text(artistQuery.error.toString()));
           }
           return Skeletonizer(
@@ -66,11 +66,12 @@ class ArtistPage extends HookConsumerWidget {
                 SliverSafeArea(
                   sliver: ArtistPageRelatedArtists(artistId: artistId),
                 ),
-                if (artistQuery.value != null)
+                if (artistQuery.asData?.value != null)
                   SliverSafeArea(
                     top: false,
                     sliver: SliverToBoxAdapter(
-                      child: ArtistPageFooter(artist: artistQuery.value!),
+                      child:
+                          ArtistPageFooter(artist: artistQuery.asData!.value),
                     ),
                   ),
               ],
