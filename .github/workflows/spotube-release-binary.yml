@@ -141,9 +141,7 @@ jobs:
 
     needs:
       - windows
-      - linux
       - android
-      - macos
     steps:
       - uses: actions/download-artifact@v3
         with:
