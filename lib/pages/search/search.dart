@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,15 +14,16 @@ import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/utils/use_force_update.dart';
 import 'package:spotube/pages/search/sections/albums.dart';
 import 'package:spotube/pages/search/sections/artists.dart';
 import 'package:spotube/pages/search/sections/playlists.dart';
 import 'package:spotube/pages/search/sections/tracks.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
 
 import 'package:spotube/utils/platform.dart';
-import 'package:collection/collection.dart';
 
 class SearchPage extends HookConsumerWidget {
   const SearchPage({super.key});
@@ -29,7 +32,7 @@ class SearchPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final searchTerm = ref.watch(searchTermStateProvider);
-    final controller = useTextEditingController(text: searchTerm);
+    final controller = useSearchController();
 
     ref.watch(AuthenticationNotifier.provider);
     final authenticationNotifier =
@@ -44,6 +47,12 @@ class SearchPage extends HookConsumerWidget {
     final queries = [searchTrack, searchAlbum, searchPlaylist, searchArtist];
 
     final isFetching = queries.every((s) => s.isLoading);
+
+    useEffect(() {
+      controller.text = searchTerm;
+
+      return null;
+    }, []);
 
     final resultWidget = HookBuilder(
       builder: (context) {
@@ -88,22 +97,85 @@ class SearchPage extends HookConsumerWidget {
                       vertical: 10,
                     ),
                     color: theme.scaffoldBackgroundColor,
-                    child: TextField(
-                      controller: controller,
-                      autofocus:
-                          queries.none((s) => s.value != null && !s.hasError) &&
-                              !kIsMobile,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(SpotubeIcons.search),
-                        hintText: "${context.l10n.search}...",
-                      ),
-                      onSubmitted: (value) async {
+                    child: SearchAnchor(
+                      searchController: controller,
+                      viewBuilder: (_) => HookBuilder(builder: (context) {
+                        final searchController = useListenable(controller);
+                        final update = useForceUpdate();
+                        final suggestions = searchController.text.isEmpty
+                            ? KVStoreService.recentSearches
+                            : KVStoreService.recentSearches
+                                .where(
+                                  (s) =>
+                                      weightedRatio(
+                                        s.toLowerCase(),
+                                        searchController.text.toLowerCase(),
+                                      ) >
+                                      50,
+                                )
+                                .toList();
+
+                        return ListView.builder(
+                          itemCount: suggestions.length,
+                          itemBuilder: (context, index) {
+                            final suggestion = suggestions[index];
+
+                            return ListTile(
+                              leading: const Icon(SpotubeIcons.history),
+                              title: Text(suggestion),
+                              trailing: IconButton(
+                                icon: const Icon(SpotubeIcons.trash),
+                                onPressed: () {
+                                  KVStoreService.setRecentSearches(
+                                    KVStoreService.recentSearches
+                                        .where((s) => s != suggestion)
+                                        .toList(),
+                                  );
+                                  update();
+                                },
+                              ),
+                              onTap: () {
+                                controller.closeView(suggestion);
+                                ref
+                                    .read(searchTermStateProvider.notifier)
+                                    .state = suggestion;
+                              },
+                            );
+                          },
+                        );
+                      }),
+                      suggestionsBuilder: (context, controller) {
+                        return [];
+                      },
+                      viewOnSubmitted: (value) async {
+                        controller.closeView(value);
                         Timer(
                           const Duration(milliseconds: 50),
                           () {
                             ref.read(searchTermStateProvider.notifier).state =
                                 value;
+                            if (value.trim().isEmpty) {
+                              return;
+                            }
+                            KVStoreService.setRecentSearches(
+                              {
+                                value,
+                                ...KVStoreService.recentSearches,
+                              }.toList(),
+                            );
                           },
+                        );
+                      },
+                      builder: (context, controller) {
+                        return SearchBar(
+                          autoFocus: queries.none(
+                                  (s) => s.value != null && !s.hasError) &&
+                              !kIsMobile,
+                          controller: controller,
+                          leading: const Icon(SpotubeIcons.search),
+                          hintText: "${context.l10n.search}...",
+                          onTap: controller.openView,
+                          onChanged: (_) => controller.openView(),
                         );
                       },
                     ),

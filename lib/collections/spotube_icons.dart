@@ -115,4 +115,5 @@ abstract class SpotubeIcons {
   static const github = SimpleIcons.github;
   static const openCollective = SimpleIcons.opencollective;
   static const anonymous = FeatherIcons.user;
+  static const history = FeatherIcons.clock;
 }
