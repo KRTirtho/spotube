@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:catcher_2/catcher_2.dart';
+import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -14,6 +15,8 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:bonsoir/bonsoir.dart';
+import 'package:spotube/services/device_info/device_info.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 final logger = getLogger('ConnectServer');
@@ -29,6 +32,13 @@ final connectServerProvider = FutureProvider((ref) async {
 
   final app = Router();
 
+  app.get(
+    "/ping",
+    (Request req) {
+      return Response.ok("pong");
+    },
+  );
+
   final subscriptions = <StreamSubscription>[];
 
   final websocket = webSocketHandler(
@@ -40,6 +50,7 @@ final connectServerProvider = FutureProvider((ref) async {
             WebSocketQueueEvent(next).toJson(),
           );
         },
+        fireImmediately: true,
       );
 
       subscriptions.addAll([
@@ -122,16 +133,19 @@ final connectServerProvider = FutureProvider((ref) async {
       }
       return app(request);
     },
-    InternetAddress.loopbackIPv4,
+    InternetAddress.anyIPv4,
     port,
   );
 
   logger.i('Server running on http://${server.address.host}:${server.port}');
 
   final service = BonsoirService(
-    name: 'Spotube',
+    name: await DeviceInfoService.instance.computerName(),
     type: '_spotube._tcp',
     port: port,
+    attributes: {
+      "id": PrimitiveUtils.uuid.v4(),
+    },
   );
 
   final broadcast = BonsoirBroadcast(service: service);

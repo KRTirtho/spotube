@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Search;
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/pages/connect/connect.dart';
 import 'package:spotube/pages/getting_started/getting_started.dart';
 import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/pages/home/genres/genres.dart';
@@ -173,6 +174,12 @@ final routerProvider = Provider((ref) {
               );
             },
           ),
+          GoRoute(
+            path: "/connect",
+            pageBuilder: (context, state) => const SpotubePage(
+              child: ConnectPage(),
+            ),
+          )
         ],
       ),
       GoRoute(

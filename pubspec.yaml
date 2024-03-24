@@ -25,7 +25,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   curved_navigation_bar: ^1.0.3
   dbus: ^0.7.8
-  device_info_plus: ^9.0.3
+  device_info_plus: ^9.1.2
   device_preview: ^1.1.0
   dio: ^5.4.1
   disable_battery_optimization: ^1.1.0+1

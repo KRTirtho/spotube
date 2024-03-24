@@ -23,6 +23,8 @@ import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/models/source_match.dart';
+import 'package:spotube/provider/connect/clients.dart';
+import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -182,6 +184,7 @@ class SpotubeState extends ConsumerState<Spotube> {
     final router = ref.watch(routerProvider);
 
     ref.read(connectServerProvider);
+    ref.read(connectClientsProvider);
 
     useDisableBatteryOptimizations();
     useInitSysTray(ref);

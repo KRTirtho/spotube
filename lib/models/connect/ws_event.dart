@@ -47,8 +47,7 @@ class WebSocketEvent<T> {
     EventCallback<WebSocketPositionEvent> callback,
   ) async {
     if (type == WsEvent.position) {
-      await callback(
-          WebSocketPositionEvent.fromJson(data as Map<String, dynamic>));
+      await callback(WebSocketPositionEvent.fromJson({"data": data}));
     }
   }
 
@@ -129,7 +128,8 @@ class WebSocketEvent<T> {
   ) async {
     if (type == WsEvent.queue) {
       await callback(
-          WebSocketQueueEvent.fromJson(data as Map<String, dynamic>));
+        WebSocketQueueEvent.fromJson(data as Map<String, dynamic>),
+      );
     }
   }
 }
@@ -186,6 +186,6 @@ class WebSocketQueueEvent extends WebSocketEvent<ProxyPlaylist> {
 
   factory WebSocketQueueEvent.fromJson(Map<String, dynamic> json) =>
       WebSocketQueueEvent(
-        ProxyPlaylist.fromJsonRaw(json["data"] as Map<String, dynamic>),
+        ProxyPlaylist.fromJsonRaw(json),
       );
 }
