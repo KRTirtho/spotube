@@ -1,6 +1,103 @@
 {
+  "ar": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "bn": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "ca": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "de": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "es": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "fa": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "fr": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "hi": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "it": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "ja": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "ko": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "ne": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "nl": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "pl": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "pt": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "ru": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "tr": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "uk": [
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
   "vi": [
     "friends",
-    "no_lyrics_available"
+    "no_lyrics_available",
+    "enable_connect",
+    "enable_connect_description"
+  ],
+
+  "zh": [
+    "enable_connect",
+    "enable_connect_description"
   ]
 }

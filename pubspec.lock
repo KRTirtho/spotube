@@ -177,6 +177,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  bonsoir:
+    dependency: "direct main"
+    description:
+      name: bonsoir
+      sha256: "9703ca3ce201c7ab6cd278ae5a530a125959687f59c2b97822f88a8db5bef106"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.9"
+  bonsoir_android:
+    dependency: transitive
+    description:
+      name: bonsoir_android
+      sha256: "19583ae34a5e5743fa2c16619e4ec699b35ae5e6cece59b99b1cf21c1b4ed618"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.4"
+  bonsoir_darwin:
+    dependency: transitive
+    description:
+      name: bonsoir_darwin
+      sha256: "985c4c38b4cbfa57ed5870e724a7e17aa080ee7f49d03b43e6d08781511505c6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.2"
+  bonsoir_linux:
+    dependency: transitive
+    description:
+      name: bonsoir_linux
+      sha256: "65554b20bc169c68c311eb31fab46ccdd8ee3d3dd89a2d57c338f4cbf6ceb00d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.2"
+  bonsoir_platform_interface:
+    dependency: transitive
+    description:
+      name: bonsoir_platform_interface
+      sha256: "4ee898bec0b5a63f04f82b06da9896ae8475f32a33b6fa395bea56399daeb9f0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.2"
+  bonsoir_windows:
+    dependency: transitive
+    description:
+      name: bonsoir_windows
+      sha256: abbc90b73ac39e823b0c127da43b91d8906dcc530fc0cec4e169cf0d8c4404b1
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.4"
   boolean_selector:
     dependency: transitive
     description:
@@ -478,10 +526,10 @@ packages:
     dependency: "direct main"
     description:
       name: dbus
-      sha256: "6f07cba3f7b3448d42d015bfd3d53fe12e5b36da2423f23838efc1d5fb31a263"
+      sha256: "365c771ac3b0e58845f39ec6deebc76e3276aa9922b0cc60840712094d9047ac"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.8"
+    version: "0.7.10"
   device_frame:
     dependency: transitive
     description:
@@ -1146,6 +1194,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  http_methods:
+    dependency: transitive
+    description:
+      name: http_methods
+      sha256: "6bccce8f1ec7b5d701e7921dca35e202d425b57e317ba1a37f2638590e29e566"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -1882,13 +1938,21 @@ packages:
     source: hosted
     version: "2.3.2"
   shelf:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shelf
       sha256: ad29c505aee705f41a4d8963641f91ac4cee3c8fad5947e033390a7bd8180fa4
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  shelf_router:
+    dependency: "direct main"
+    description:
+      name: shelf_router
+      sha256: f5e5d492440a7fb165fe1e2e1a623f31f734d3370900070b2b1e0d0428d59864
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   shelf_static:
     dependency: transitive
     description:
@@ -1898,7 +1962,7 @@ packages:
     source: hosted
     version: "1.1.2"
   shelf_web_socket:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shelf_web_socket
       sha256: "9ca081be41c60190ebcb4766b2486a7d50261db7bd0f5d9615f2d653637a84c1"
@@ -2311,13 +2375,13 @@ packages:
     source: hosted
     version: "0.5.0"
   web_socket_channel:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: web_socket_channel
-      sha256: d88238e5eac9a42bb43ca4e721edba3c08c6354d4a53063afaa568516217621b
+      sha256: "1d8e795e2a8b3730c41b8a98a2dff2e0fb57ae6f0764a1c46ec5915387d257b2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.4"
   webdriver:
     dependency: transitive
     description:

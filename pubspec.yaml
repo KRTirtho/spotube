@@ -123,6 +123,11 @@ dependencies:
   flutter_broadcasts: ^0.4.0
   freezed_annotation: ^2.4.1
   spotify: ^0.13.3
+  bonsoir: ^5.1.9
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  shelf_web_socket: ^1.0.4
+  web_socket_channel: ^2.4.4
 
 dev_dependencies:
   build_runner: ^2.3.2

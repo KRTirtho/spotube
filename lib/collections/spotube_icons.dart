@@ -116,4 +116,5 @@ abstract class SpotubeIcons {
   static const openCollective = SimpleIcons.opencollective;
   static const anonymous = FeatherIcons.user;
   static const history = FeatherIcons.clock;
+  static const connect = FeatherIcons.link;
 }

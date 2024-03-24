@@ -227,6 +227,13 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           value: preferences.endlessPlayback,
           onChanged: preferencesNotifier.setEndlessPlayback,
         ),
+        SwitchListTile(
+          title: Text(context.l10n.enable_connect),
+          subtitle: Text(context.l10n.enable_connect_description),
+          secondary: const Icon(SpotubeIcons.connect),
+          value: preferences.enableConnect,
+          onChanged: preferencesNotifier.setEnableConnect,
+        ),
       ],
     );
   }
