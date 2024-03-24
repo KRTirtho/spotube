@@ -105,7 +105,7 @@ static void my_application_init(MyApplication* self) {}
 
 MyApplication* my_application_new() {
   return MY_APPLICATION(g_object_new(my_application_get_type(),
-                                     "com.github.KRTirtho.Spotube", APPLICATION_ID,
+                                     "application-id", APPLICATION_ID,
                                      "flags", G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN,
                                      nullptr));
 }
