@@ -637,10 +637,10 @@ abstract class LanguageLocals {
     //   name: "Tajik",
     //   nativeName: "тоҷикӣ, toğikī, تاجیکی‎",
     // ),
-    // "th": const ISOLanguageName(
-    //   name: "Thai",
-    //   nativeName: "ไทย",
-    // ),
+    "th": const ISOLanguageName(
+      name: "Thai",
+      nativeName: "ไทย",
+    ),
     // "ti": const ISOLanguageName(
     //   name: "Tigrinya",
     //   nativeName: "ትግርኛ",
