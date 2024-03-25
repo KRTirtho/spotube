@@ -119,4 +119,5 @@ abstract class SpotubeIcons {
   static const connect = FeatherIcons.link;
   static const speaker = FeatherIcons.speaker;
   static const monitor = FeatherIcons.monitor;
+  static const power = FeatherIcons.power;
 }

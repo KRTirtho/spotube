@@ -8,6 +8,7 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
@@ -16,19 +17,40 @@ import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
+  final ProxyPlaylist playlist;
+
+  final Future<void> Function(Track track) onJump;
+  final Future<void> Function(String trackId) onRemove;
+  final Future<void> Function(int oldIndex, int newIndex) onReorder;
+  final Future<void> Function() onStop;
+
   const PlayerQueue({
     this.floating = true,
+    required this.playlist,
+    required this.onJump,
+    required this.onRemove,
+    required this.onReorder,
+    required this.onStop,
     super.key,
   });
 
+  PlayerQueue.fromProxyPlaylistNotifier({
+    this.floating = true,
+    required this.playlist,
+    required ProxyPlaylistNotifier notifier,
+    super.key,
+  })  : onJump = notifier.jumpToTrack,
+        onRemove = notifier.removeTrack,
+        onReorder = notifier.moveTrack,
+        onStop = notifier.stop;
+
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
     final controller = useAutoScrollController();
     final searchText = useState('');
 
@@ -191,7 +213,7 @@ class PlayerQueue extends HookConsumerWidget {
                           ],
                         ),
                         onPressed: () {
-                          playlistNotifier.stop();
+                          onStop();
                           Navigator.of(context).pop();
                         },
                       ),
@@ -204,7 +226,7 @@ class PlayerQueue extends HookConsumerWidget {
                   Flexible(
                     child: ReorderableListView.builder(
                       onReorder: (oldIndex, newIndex) {
-                        playlistNotifier.moveTrack(oldIndex, newIndex);
+                        onReorder(oldIndex, newIndex);
                       },
                       scrollController: controller,
                       itemCount: tracks.length,
@@ -232,7 +254,7 @@ class PlayerQueue extends HookConsumerWidget {
                                 if (playlist.activeTrack?.id == track.id) {
                                   return;
                                 }
-                                await playlistNotifier.jumpToTrack(track);
+                                onJump(track);
                               },
                               leadingActions: [
                                 ReorderableDragStartListener(
@@ -265,7 +287,7 @@ class PlayerQueue extends HookConsumerWidget {
                                 if (playlist.activeTrack?.id == track.id) {
                                   return;
                                 }
-                                await playlistNotifier.jumpToTrack(track);
+                                onJump(track);
                               },
                             ),
                           );

@@ -75,7 +75,9 @@ class BottomPlayer extends HookConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: PlayerTrackDetails(albumArt: albumArt)),
+                Expanded(
+                  child: PlayerTrackDetails(track: playlist.activeTrack),
+                ),
                 // controls
                 Flexible(
                   flex: 3,

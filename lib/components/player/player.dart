@@ -46,9 +46,7 @@ class PlayerView extends HookConsumerWidget {
     final currentTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
       (value) => value.activeTrack,
     ));
-    final isLocalTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
-      (value) => value.activeTrack is LocalTrack,
-    ));
+    final isLocalTrack = currentTrack is LocalTrack;
     final mediaQuery = MediaQuery.of(context);
 
     useEffect(() {
@@ -240,7 +238,7 @@ class PlayerView extends HookConsumerWidget {
                                 ),
                                 if (isLocalTrack)
                                   Text(
-                                    currentTrack?.artists?.asString() ?? "",
+                                    currentTrack.artists?.asString() ?? "",
                                     style: theme.textTheme.bodyMedium!.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: bodyTextColor,
@@ -304,10 +302,25 @@ class PlayerView extends HookConsumerWidget {
                                                             .height *
                                                         .7,
                                               ),
-                                              builder: (context) {
-                                                return const PlayerQueue(
-                                                    floating: false);
-                                              },
+                                              builder: (context) => Consumer(
+                                                builder: (context, ref, _) {
+                                                  final playlist = ref.watch(
+                                                    ProxyPlaylistNotifier
+                                                        .provider,
+                                                  );
+                                                  final playlistNotifier =
+                                                      ref.read(
+                                                    ProxyPlaylistNotifier
+                                                        .notifier,
+                                                  );
+                                                  return PlayerQueue
+                                                      .fromProxyPlaylistNotifier(
+                                                    floating: false,
+                                                    playlist: playlist,
+                                                    notifier: playlistNotifier,
+                                                  );
+                                                },
+                                              ),
                                             );
                                           }
                                         : null),

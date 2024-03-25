@@ -1,22 +1,37 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/provider/connect/clients.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
+import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
-final playingStreamController = StreamController<bool>.broadcast();
-final playingProvider = StreamProvider.autoDispose<bool>(
-  (ref) => playingStreamController.stream,
+final playingProvider = StateProvider<bool>(
+  (ref) => false,
 );
 
-final positionStreamController = StreamController<Duration>.broadcast();
-final positionProvider = StreamProvider.autoDispose<Duration>(
-  (ref) => positionStreamController.stream,
+final positionProvider = StateProvider<Duration>(
+  (ref) => Duration.zero,
+);
+
+final durationProvider = StateProvider<Duration>(
+  (ref) => Duration.zero,
+);
+
+final shuffleProvider = StateProvider<bool>(
+  (ref) => false,
+);
+
+final loopModeProvider = StateProvider<PlaybackLoopMode>(
+  (ref) => PlaybackLoopMode.none,
+);
+
+final queueProvider = StateProvider<ProxyPlaylist>(
+  (ref) => ProxyPlaylist({}),
 );
 
 class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
@@ -48,15 +63,27 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
               WebSocketEvent.fromJson(jsonDecode(message), (data) => data);
 
           event.onQueue((event) {
-            ref.read(ProxyPlaylistNotifier.notifier).state = event.data;
+            ref.read(queueProvider.notifier).state = event.data;
           });
 
           event.onPlaying((event) {
-            playingStreamController.add(event.data);
+            ref.read(playingProvider.notifier).state = event.data;
           });
 
           event.onPosition((event) {
-            positionStreamController.add(event.data);
+            ref.read(positionProvider.notifier).state = event.data;
+          });
+
+          event.onDuration((event) {
+            ref.read(durationProvider.notifier).state = event.data;
+          });
+
+          event.onShuffle((event) {
+            ref.read(shuffleProvider.notifier).state = event.data;
+          });
+
+          event.onLoop((event) {
+            ref.read(loopModeProvider.notifier).state = event.data;
           });
         },
         onError: (error) {
@@ -79,39 +106,63 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
     }
   }
 
-  void emit(Object message) {
+  Future<void> emit(Object message) async {
     if (state.value == null) return;
     state.value?.sink.add(
       message is String ? message : (message as dynamic).toJson(),
     );
   }
 
-  void resume() {
+  Future<void> resume() async {
     emit(WebSocketResumeEvent());
   }
 
-  void pause() {
+  Future<void> pause() async {
     emit(WebSocketPauseEvent());
   }
 
-  void stop() {
+  Future<void> stop() async {
     emit(WebSocketStopEvent());
   }
 
-  void jumpTo(int position) {
+  Future<void> jumpTo(int position) async {
     emit(WebSocketJumpEvent(position));
   }
 
-  void load(WebSocketLoadEventData data) {
+  Future<void> load(WebSocketLoadEventData data) async {
     emit(WebSocketLoadEvent(data));
   }
 
-  void next() {
+  Future<void> next() async {
     emit(WebSocketNextEvent());
   }
 
-  void previous() {
+  Future<void> previous() async {
     emit(WebSocketPreviousEvent());
+  }
+
+  Future<void> seek(Duration position) async {
+    emit(WebSocketSeekEvent(position));
+  }
+
+  Future<void> setShuffle(bool value) async {
+    emit(WebSocketShuffleEvent(value));
+  }
+
+  Future<void> setLoopMode(PlaybackLoopMode value) async {
+    emit(WebSocketLoopEvent(value));
+  }
+
+  Future<void> addTrack(Track data) async {
+    emit(WebSocketAddTrackEvent(data));
+  }
+
+  Future<void> removeTrack(String data) async {
+    emit(WebSocketRemoveTrackEvent(data));
+  }
+
+  Future<void> reorder(ReorderData data) async {
+    emit(WebSocketReorderEvent(data));
   }
 }
 

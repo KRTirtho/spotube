@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/provider/connect/clients.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class ConnectPage extends HookConsumerWidget {
   const ConnectPage({super.key});
@@ -46,12 +47,21 @@ class ConnectPage extends HookConsumerWidget {
               selectedTileColor: colorScheme.secondary.withOpacity(0.1),
               onTap: () {
                 if (selected) {
-                  connectClientsNotifier.clearResolvedService();
+                  ServiceUtils.push(
+                    context,
+                    "/connect/control",
+                  );
                 } else {
                   connectClientsNotifier.resolveService(device);
                 }
               },
-              trailing: selected ? const Icon(SpotubeIcons.done) : null,
+              trailing: selected
+                  ? IconButton(
+                      icon: const Icon(SpotubeIcons.power),
+                      onPressed: () =>
+                          connectClientsNotifier.clearResolvedService(),
+                    )
+                  : null,
             ),
           );
         },

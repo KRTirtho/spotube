@@ -11,6 +11,7 @@ import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -24,9 +25,11 @@ final logger = getLogger('ConnectServer');
 final connectServerProvider = FutureProvider((ref) async {
   final enabled =
       ref.watch(userPreferencesProvider.select((s) => s.enableConnect));
+  final resolvedService = await ref
+      .watch(connectClientsProvider.selectAsync((s) => s.resolvedService));
   final playbackNotifier = ref.read(ProxyPlaylistNotifier.notifier);
 
-  if (!enabled) {
+  if (!enabled || resolvedService != null) {
     return null;
   }
 
@@ -42,7 +45,7 @@ final connectServerProvider = FutureProvider((ref) async {
   final subscriptions = <StreamSubscription>[];
 
   final websocket = webSocketHandler(
-    (WebSocketChannel channel, String? protocol) {
+    (WebSocketChannel channel, String? protocol) async {
       ref.listen(
         ProxyPlaylistNotifier.provider,
         (previous, next) {
@@ -51,6 +54,25 @@ final connectServerProvider = FutureProvider((ref) async {
           );
         },
         fireImmediately: true,
+      );
+
+      // because audioPlayer events doesn't fireImmediately
+      channel.sink.add(
+        WebSocketPlayingEvent(audioPlayer.isPlaying).toJson(),
+      );
+      channel.sink.add(
+        WebSocketPositionEvent(await audioPlayer.position ?? Duration.zero)
+            .toJson(),
+      );
+      channel.sink.add(
+        WebSocketDurationEvent(await audioPlayer.duration ?? Duration.zero)
+            .toJson(),
+      );
+      channel.sink.add(
+        WebSocketShuffleEvent(await audioPlayer.isShuffled).toJson(),
+      );
+      channel.sink.add(
+        WebSocketLoopEvent(audioPlayer.loopMode).toJson(),
       );
 
       subscriptions.addAll([
@@ -64,7 +86,28 @@ final connectServerProvider = FutureProvider((ref) async {
         audioPlayer.playingStream.listen(
           (playing) {
             channel.sink.add(
-              WebSocketEvent(WsEvent.playing, playing).toJson(),
+              WebSocketPlayingEvent(playing).toJson(),
+            );
+          },
+        ),
+        audioPlayer.durationStream.listen(
+          (duration) {
+            channel.sink.add(
+              WebSocketDurationEvent(duration).toJson(),
+            );
+          },
+        ),
+        audioPlayer.shuffledStream.listen(
+          (shuffled) {
+            channel.sink.add(
+              WebSocketShuffleEvent(shuffled).toJson(),
+            );
+          },
+        ),
+        audioPlayer.loopModeStream.listen(
+          (loopMode) {
+            channel.sink.add(
+              WebSocketLoopEvent(loopMode).toJson(),
             );
           },
         ),
@@ -110,6 +153,33 @@ final connectServerProvider = FutureProvider((ref) async {
 
               event.onJump((event) async {
                 await playbackNotifier.jumpTo(event.data);
+              });
+
+              event.onSeek((event) async {
+                await audioPlayer.seek(event.data);
+              });
+
+              event.onShuffle((event) async {
+                await audioPlayer.setShuffle(event.data);
+              });
+
+              event.onLoop((event) async {
+                await audioPlayer.setLoopMode(event.data);
+              });
+
+              event.onAddTrack((event) async {
+                await playbackNotifier.addTrack(event.data);
+              });
+
+              event.onRemoveTrack((event) async {
+                await playbackNotifier.removeTrack(event.data);
+              });
+
+              event.onReorder((event) async {
+                await playbackNotifier.moveTrack(
+                  event.data.oldIndex,
+                  event.data.newIndex,
+                );
               });
             } catch (e, stackTrace) {
               Catcher2.reportCheckedError(e, stackTrace);

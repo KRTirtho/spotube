@@ -17,6 +17,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/hooks/configurators/use_update_checker.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
@@ -191,7 +192,19 @@ class RootApp extends HookConsumerWidget {
                   top: 40,
                   bottom: 100,
                 ),
-                child: const PlayerQueue(floating: true),
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+                    final playlistNotifier =
+                        ref.read(ProxyPlaylistNotifier.notifier);
+
+                    return PlayerQueue.fromProxyPlaylistNotifier(
+                      floating: true,
+                      playlist: playlist,
+                      notifier: playlistNotifier,
+                    );
+                  },
+                ),
               )
             : null,
         bottomNavigationBar: Column(

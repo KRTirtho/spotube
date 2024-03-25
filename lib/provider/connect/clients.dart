@@ -52,10 +52,15 @@ class ConnectClientsNotifier extends AsyncNotifier<ConnectClientsState> {
           break;
         case BonsoirDiscoveryEventType.discoveryServiceLost:
           state = AsyncData(
-            state.value!.copyWith(
+            ConnectClientsState(
               services: state.value!.services
-                  .where((service) => service.name != event.service!.name)
+                  .where((s) => s.name != event.service!.name)
                   .toList(),
+              discovery: state.value!.discovery,
+              resolvedService:
+                  event.service?.name == state.value!.resolvedService!.name
+                      ? null
+                      : state.value!.resolvedService,
             ),
           );
           break;

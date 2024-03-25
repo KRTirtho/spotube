@@ -2,6 +2,13 @@ part of 'connect.dart';
 
 enum WsEvent {
   error,
+  removeTrack,
+  addTrack,
+  reorder,
+  shuffle,
+  loop,
+  seek,
+  duration,
   queue,
   position,
   playing,
@@ -132,6 +139,92 @@ class WebSocketEvent<T> {
       );
     }
   }
+
+  Future<void> onDuration(
+    EventCallback<WebSocketDurationEvent> callback,
+  ) async {
+    if (type == WsEvent.duration) {
+      await callback(
+        WebSocketDurationEvent(
+          Duration(seconds: data as int),
+        ),
+      );
+    }
+  }
+
+  Future<void> onSeek(
+    EventCallback<WebSocketSeekEvent> callback,
+  ) async {
+    if (type == WsEvent.seek) {
+      await callback(
+        WebSocketSeekEvent(
+          Duration(seconds: data as int),
+        ),
+      );
+    }
+  }
+
+  Future<void> onShuffle(
+    EventCallback<WebSocketShuffleEvent> callback,
+  ) async {
+    if (type == WsEvent.shuffle) {
+      await callback(WebSocketShuffleEvent(data as bool));
+    }
+  }
+
+  Future<void> onLoop(
+    EventCallback<WebSocketLoopEvent> callback,
+  ) async {
+    if (type == WsEvent.loop) {
+      await callback(
+        WebSocketLoopEvent(
+          PlaybackLoopMode.fromString(data as String),
+        ),
+      );
+    }
+  }
+
+  Future<void> onRemoveTrack(
+    EventCallback<WebSocketRemoveTrackEvent> callback,
+  ) async {
+    if (type == WsEvent.removeTrack) {
+      await callback(WebSocketRemoveTrackEvent(data as String));
+    }
+  }
+
+  Future<void> onAddTrack(
+    EventCallback<WebSocketAddTrackEvent> callback,
+  ) async {
+    if (type == WsEvent.addTrack) {
+      await callback(
+          WebSocketAddTrackEvent.fromJson(data as Map<String, dynamic>));
+    }
+  }
+
+  Future<void> onReorder(
+    EventCallback<WebSocketReorderEvent> callback,
+  ) async {
+    if (type == WsEvent.reorder) {
+      await callback(
+          WebSocketReorderEvent.fromJson(data as Map<String, dynamic>));
+    }
+  }
+}
+
+class WebSocketLoopEvent extends WebSocketEvent<PlaybackLoopMode> {
+  WebSocketLoopEvent(PlaybackLoopMode data) : super(WsEvent.loop, data);
+
+  WebSocketLoopEvent.fromJson(Map<String, dynamic> json)
+      : super(
+            WsEvent.loop, PlaybackLoopMode.fromString(json["data"] as String));
+
+  @override
+  String toJson() {
+    return jsonEncode({
+      "type": type.name,
+      "data": data.name,
+    });
+  }
 }
 
 class WebSocketPositionEvent extends WebSocketEvent<Duration> {
@@ -147,6 +240,40 @@ class WebSocketPositionEvent extends WebSocketEvent<Duration> {
       "data": data.inSeconds,
     });
   }
+}
+
+class WebSocketDurationEvent extends WebSocketEvent<Duration> {
+  WebSocketDurationEvent(Duration data) : super(WsEvent.duration, data);
+
+  WebSocketDurationEvent.fromJson(Map<String, dynamic> json)
+      : super(WsEvent.duration, Duration(seconds: json["data"] as int));
+
+  @override
+  String toJson() {
+    return jsonEncode({
+      "type": type.name,
+      "data": data.inSeconds,
+    });
+  }
+}
+
+class WebSocketSeekEvent extends WebSocketEvent<Duration> {
+  WebSocketSeekEvent(Duration data) : super(WsEvent.seek, data);
+
+  WebSocketSeekEvent.fromJson(Map<String, dynamic> json)
+      : super(WsEvent.seek, Duration(seconds: json["data"] as int));
+
+  @override
+  String toJson() {
+    return jsonEncode({
+      "type": type.name,
+      "data": data.inSeconds,
+    });
+  }
+}
+
+class WebSocketShuffleEvent extends WebSocketEvent<bool> {
+  WebSocketShuffleEvent(bool data) : super(WsEvent.shuffle, data);
 }
 
 class WebSocketPlayingEvent extends WebSocketEvent<bool> {
@@ -188,4 +315,43 @@ class WebSocketQueueEvent extends WebSocketEvent<ProxyPlaylist> {
       WebSocketQueueEvent(
         ProxyPlaylist.fromJsonRaw(json),
       );
+}
+
+class WebSocketRemoveTrackEvent extends WebSocketEvent<String> {
+  WebSocketRemoveTrackEvent(String data) : super(WsEvent.removeTrack, data);
+}
+
+class WebSocketAddTrackEvent extends WebSocketEvent<Track> {
+  WebSocketAddTrackEvent(Track data) : super(WsEvent.addTrack, data);
+
+  WebSocketAddTrackEvent.fromJson(Map<String, dynamic> json)
+      : super(
+          WsEvent.addTrack,
+          Track.fromJson(json["data"] as Map<String, dynamic>),
+        );
+}
+
+typedef ReorderData = ({int oldIndex, int newIndex});
+
+class WebSocketReorderEvent extends WebSocketEvent<ReorderData> {
+  WebSocketReorderEvent(ReorderData data) : super(WsEvent.reorder, data);
+
+  factory WebSocketReorderEvent.fromJson(Map<String, dynamic> json) =>
+      WebSocketReorderEvent(
+        (
+          oldIndex: json["oldIndex"] as int,
+          newIndex: json["newIndex"] as int,
+        ),
+      );
+
+  @override
+  String toJson() {
+    return jsonEncode({
+      "type": type.name,
+      "data": {
+        "oldIndex": data.oldIndex,
+        "newIndex": data.newIndex,
+      },
+    });
+  }
 }
