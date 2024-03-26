@@ -89,6 +89,7 @@ class TrackViewBodySection extends HookConsumerWidget {
             loadingBuilder: (context) => Skeletonizer(
               enabled: true,
               child: TrackTile(
+                playlist: playlist,
                 track: FakeData.track,
                 index: 0,
               ),
@@ -98,13 +99,18 @@ class TrackViewBodySection extends HookConsumerWidget {
               child: Column(
                 children: List.generate(
                   10,
-                  (index) => TrackTile(track: FakeData.track, index: index),
+                  (index) => TrackTile(
+                    track: FakeData.track,
+                    index: index,
+                    playlist: playlist,
+                  ),
                 ),
               ),
             ),
             itemBuilder: (context, index) {
               final track = tracks[index];
               return TrackTile(
+                playlist: playlist,
                 track: track,
                 index: index,
                 selected: trackViewState.selectedTrackIds.contains(track.id!),

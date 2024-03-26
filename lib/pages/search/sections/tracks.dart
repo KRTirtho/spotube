@@ -46,6 +46,7 @@ class SearchTracksSection extends HookConsumerWidget {
             return TrackTile(
               index: i,
               track: track,
+              playlist: playlist,
               onTap: () async {
                 final isTrackPlaying = playlist.activeTrack?.id == track.id;
                 if (!isTrackPlaying && context.mounted) {

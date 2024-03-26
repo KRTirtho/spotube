@@ -53,7 +53,8 @@ class HomePage extends HookConsumerWidget {
                         },
                       );
                     },
-                  )
+                  ),
+                  const Gap(10),
                 ],
               ),
               const HomeGenresSection(),

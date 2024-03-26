@@ -107,6 +107,7 @@ class ArtistPageTopTracks extends HookConsumerWidget {
             final track = topTracks.elementAt(index);
             return TrackTile(
               index: index,
+              playlist: playlist,
               track: track,
               onTap: () async {
                 playPlaylist(
