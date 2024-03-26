@@ -43,7 +43,7 @@ dependencies:
   flutter_displaymode: ^0.6.0
   flutter_feather_icons: ^2.0.0+1
   flutter_hooks: ^0.20.0
-  flutter_inappwebview: ^5.7.2+3
+  flutter_inappwebview: ^6.0.0
   flutter_localizations:
     sdk: flutter
   flutter_native_splash: ^2.3.10
