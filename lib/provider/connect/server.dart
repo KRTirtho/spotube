@@ -74,6 +74,9 @@ final connectServerProvider = FutureProvider((ref) async {
       channel.sink.add(
         WebSocketLoopEvent(audioPlayer.loopMode).toJson(),
       );
+      channel.sink.add(
+        WebSocketVolumeEvent(audioPlayer.volume).toJson(),
+      );
 
       subscriptions.addAll([
         audioPlayer.positionStream.listen(
@@ -108,6 +111,13 @@ final connectServerProvider = FutureProvider((ref) async {
           (loopMode) {
             channel.sink.add(
               WebSocketLoopEvent(loopMode).toJson(),
+            );
+          },
+        ),
+        audioPlayer.volumeStream.listen(
+          (volume) {
+            channel.sink.add(
+              WebSocketVolumeEvent(volume).toJson(),
             );
           },
         ),
@@ -180,6 +190,10 @@ final connectServerProvider = FutureProvider((ref) async {
                   event.data.oldIndex,
                   event.data.newIndex,
                 );
+              });
+
+              event.onVolume((event) async {
+                await audioPlayer.setVolume(event.data);
               });
             } catch (e, stackTrace) {
               Catcher2.reportCheckedError(e, stackTrace);

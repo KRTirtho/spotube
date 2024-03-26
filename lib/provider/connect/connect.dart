@@ -34,6 +34,10 @@ final queueProvider = StateProvider<ProxyPlaylist>(
   (ref) => ProxyPlaylist({}),
 );
 
+final volumeProvider = StateProvider<double>(
+  (ref) => 1.0,
+);
+
 class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
   @override
   build() async {
@@ -84,6 +88,10 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
 
           event.onLoop((event) {
             ref.read(loopModeProvider.notifier).state = event.data;
+          });
+
+          event.onVolume((event) {
+            ref.read(volumeProvider.notifier).state = event.data;
           });
         },
         onError: (error) {
@@ -163,6 +171,10 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
 
   Future<void> reorder(ReorderData data) async {
     emit(WebSocketReorderEvent(data));
+  }
+
+  Future<void> setVolume(double value) async {
+    emit(WebSocketVolumeEvent(value));
   }
 }
 

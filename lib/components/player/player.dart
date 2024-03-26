@@ -26,6 +26,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
@@ -378,11 +379,21 @@ class PlayerView extends HookConsumerWidget {
                                 enabledThumbRadius: 8,
                               ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: VolumeSlider(
-                                fullWidth: true,
-                              ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Consumer(builder: (context, ref, _) {
+                                final volume = ref.watch(volumeProvider);
+                                return VolumeSlider(
+                                  fullWidth: true,
+                                  value: volume,
+                                  onChanged: (value) {
+                                    ref
+                                        .read(volumeProvider.notifier)
+                                        .setVolume(value);
+                                  },
+                                );
+                              }),
                             ),
                           ),
                         ],

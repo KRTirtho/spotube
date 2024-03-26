@@ -19,10 +19,11 @@ import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/connect/connect.dart';
+import 'package:spotube/provider/connect/connect.dart' hide volumeProvider;
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
 class BottomPlayer extends HookConsumerWidget {
@@ -125,7 +126,16 @@ class BottomPlayer extends HookConsumerWidget {
                     Container(
                       height: 40,
                       constraints: const BoxConstraints(maxWidth: 250),
-                      child: const VolumeSlider(),
+                      child: Consumer(builder: (context, ref, _) {
+                        final volume = ref.watch(volumeProvider);
+                        return VolumeSlider(
+                          fullWidth: true,
+                          value: volume,
+                          onChanged: (value) {
+                            ref.read(volumeProvider.notifier).setVolume(value);
+                          },
+                        );
+                      }),
                     )
                   ],
                 )

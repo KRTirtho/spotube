@@ -2,6 +2,7 @@ part of 'connect.dart';
 
 enum WsEvent {
   error,
+  volume,
   removeTrack,
   addTrack,
   reorder,
@@ -209,6 +210,14 @@ class WebSocketEvent<T> {
           WebSocketReorderEvent.fromJson(data as Map<String, dynamic>));
     }
   }
+
+  Future<void> onVolume(
+    EventCallback<WebSocketVolumeEvent> callback,
+  ) async {
+    if (type == WsEvent.volume) {
+      await callback(WebSocketVolumeEvent(data as double));
+    }
+  }
 }
 
 class WebSocketLoopEvent extends WebSocketEvent<PlaybackLoopMode> {
@@ -354,4 +363,8 @@ class WebSocketReorderEvent extends WebSocketEvent<ReorderData> {
       },
     });
   }
+}
+
+class WebSocketVolumeEvent extends WebSocketEvent<double> {
+  WebSocketVolumeEvent(double data) : super(WsEvent.volume, data);
 }

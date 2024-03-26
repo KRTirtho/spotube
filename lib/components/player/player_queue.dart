@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -298,6 +299,7 @@ class PlayerQueue extends HookConsumerWidget {
                         ),
                       ),
                     ),
+                  const Gap(100),
                 ],
               ),
             ),

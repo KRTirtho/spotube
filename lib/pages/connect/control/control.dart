@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_queue.dart';
+import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
 import 'package:spotube/components/shared/links/artist_link.dart';
@@ -260,6 +261,22 @@ class ConnectControlPage extends HookConsumerWidget {
                                   },
                           )
                         ],
+                      ),
+                    ),
+                    const SliverGap(30),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: Consumer(builder: (context, ref, _) {
+                          final volume = ref.watch(volumeProvider);
+                          return VolumeSlider(
+                            fullWidth: true,
+                            value: volume,
+                            onChanged: (value) {
+                              ref.read(volumeProvider.notifier).state = value;
+                            },
+                          );
+                        }),
                       ),
                     ),
                     const SliverGap(30),
