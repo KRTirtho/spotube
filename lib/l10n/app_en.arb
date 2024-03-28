@@ -315,5 +315,6 @@
   "donate_on_open_collective": "Donate on Open Collective",
   "browse_anonymously": "Browse Anonymously",
   "enable_connect": "Enable Connect",
-  "enable_connect_description": "Control Spotube from other devices"
+  "enable_connect_description": "Control Spotube from other devices",
+  "devices": "Devices"
 }

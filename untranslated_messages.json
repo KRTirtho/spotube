@@ -1,103 +1,123 @@
 {
   "ar": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "bn": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "ca": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "de": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "es": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "fa": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "fr": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "hi": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "it": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "ja": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "ko": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "ne": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "nl": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "pl": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "pt": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "ru": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "tr": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "uk": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "vi": [
     "friends",
     "no_lyrics_available",
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ],
 
   "zh": [
     "enable_connect",
-    "enable_connect_description"
+    "enable_connect_description",
+    "devices"
   ]
 }
