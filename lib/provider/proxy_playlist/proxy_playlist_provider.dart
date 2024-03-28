@@ -128,6 +128,19 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
         }
       });
 
+      removeActiveTrack() {
+        if (audioPlayer.currentSource == null) {
+          state = state.copyWith(
+            active: -1,
+          );
+        }
+      }
+
+      audioPlayer.completedStream.listen((event) async {
+        await Future.delayed(
+            const Duration(milliseconds: 250), removeActiveTrack);
+      });
+
       listenTo2Percent(int percent) async {
         if (isPreSearching.value ||
             audioPlayer.currentSource == null ||

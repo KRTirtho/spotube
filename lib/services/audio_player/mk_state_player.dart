@@ -217,6 +217,7 @@ class MkPlayerWithState extends Player {
         case PlaylistMode.none:
           // Fixes auto-repeating the last track
           await super.stop();
+          playlist = _playlist!.copyWith(index: -1);
           break;
         default:
       }
