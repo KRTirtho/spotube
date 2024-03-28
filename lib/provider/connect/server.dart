@@ -22,6 +22,9 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:spotube/provider/volume_provider.dart';
 
 final logger = getLogger('ConnectServer');
+final _connectClientStreamController = StreamController<String>.broadcast();
+
+Stream<String> get connectClientStream => _connectClientStreamController.stream;
 
 final connectServerProvider = FutureProvider((ref) async {
   final enabled =
@@ -45,169 +48,175 @@ final connectServerProvider = FutureProvider((ref) async {
 
   final subscriptions = <StreamSubscription>[];
 
-  final websocket = webSocketHandler(
-    (WebSocketChannel channel, String? protocol) async {
-      ref.listen(
-        ProxyPlaylistNotifier.provider,
-        (previous, next) {
-          channel.sink.add(
-            WebSocketQueueEvent(next).toJson(),
-          );
-        },
-        fireImmediately: true,
-      );
+  FutureOr<Response> websocket(Request req) => webSocketHandler(
+        (WebSocketChannel channel, String? protocol) async {
+          final context =
+              (req.context["shelf.io.connection_info"] as HttpConnectionInfo?);
+          final origin =
+              "${context?.remoteAddress.host}:${context?.remotePort}";
+          _connectClientStreamController.add(origin);
 
-      // because audioPlayer events doesn't fireImmediately
-      channel.sink.add(
-        WebSocketPlayingEvent(audioPlayer.isPlaying).toJson(),
-      );
-      channel.sink.add(
-        WebSocketPositionEvent(await audioPlayer.position ?? Duration.zero)
-            .toJson(),
-      );
-      channel.sink.add(
-        WebSocketDurationEvent(await audioPlayer.duration ?? Duration.zero)
-            .toJson(),
-      );
-      channel.sink.add(
-        WebSocketShuffleEvent(await audioPlayer.isShuffled).toJson(),
-      );
-      channel.sink.add(
-        WebSocketLoopEvent(audioPlayer.loopMode).toJson(),
-      );
-      channel.sink.add(
-        WebSocketVolumeEvent(audioPlayer.volume).toJson(),
-      );
-
-      subscriptions.addAll([
-        audioPlayer.positionStream.listen(
-          (position) {
-            channel.sink.add(
-              WebSocketPositionEvent(position).toJson(),
-            );
-          },
-        ),
-        audioPlayer.playingStream.listen(
-          (playing) {
-            channel.sink.add(
-              WebSocketPlayingEvent(playing).toJson(),
-            );
-          },
-        ),
-        audioPlayer.durationStream.listen(
-          (duration) {
-            channel.sink.add(
-              WebSocketDurationEvent(duration).toJson(),
-            );
-          },
-        ),
-        audioPlayer.shuffledStream.listen(
-          (shuffled) {
-            channel.sink.add(
-              WebSocketShuffleEvent(shuffled).toJson(),
-            );
-          },
-        ),
-        audioPlayer.loopModeStream.listen(
-          (loopMode) {
-            channel.sink.add(
-              WebSocketLoopEvent(loopMode).toJson(),
-            );
-          },
-        ),
-        audioPlayer.volumeStream.listen(
-          (volume) {
-            channel.sink.add(
-              WebSocketVolumeEvent(volume).toJson(),
-            );
-          },
-        ),
-        channel.stream.listen(
-          (message) {
-            try {
-              final event = WebSocketEvent.fromJson(
-                jsonDecode(message),
-                (data) => data,
+          ref.listen(
+            ProxyPlaylistNotifier.provider,
+            (previous, next) {
+              channel.sink.add(
+                WebSocketQueueEvent(next).toJson(),
               );
+            },
+            fireImmediately: true,
+          );
 
-              event.onLoad((event) async {
-                await playbackNotifier.load(
-                  event.data.tracks,
-                  autoPlay: true,
-                  initialIndex: event.data.initialIndex ?? 0,
+          // because audioPlayer events doesn't fireImmediately
+          channel.sink.add(
+            WebSocketPlayingEvent(audioPlayer.isPlaying).toJson(),
+          );
+          channel.sink.add(
+            WebSocketPositionEvent(await audioPlayer.position ?? Duration.zero)
+                .toJson(),
+          );
+          channel.sink.add(
+            WebSocketDurationEvent(await audioPlayer.duration ?? Duration.zero)
+                .toJson(),
+          );
+          channel.sink.add(
+            WebSocketShuffleEvent(await audioPlayer.isShuffled).toJson(),
+          );
+          channel.sink.add(
+            WebSocketLoopEvent(audioPlayer.loopMode).toJson(),
+          );
+          channel.sink.add(
+            WebSocketVolumeEvent(audioPlayer.volume).toJson(),
+          );
+
+          subscriptions.addAll([
+            audioPlayer.positionStream.listen(
+              (position) {
+                channel.sink.add(
+                  WebSocketPositionEvent(position).toJson(),
                 );
+              },
+            ),
+            audioPlayer.playingStream.listen(
+              (playing) {
+                channel.sink.add(
+                  WebSocketPlayingEvent(playing).toJson(),
+                );
+              },
+            ),
+            audioPlayer.durationStream.listen(
+              (duration) {
+                channel.sink.add(
+                  WebSocketDurationEvent(duration).toJson(),
+                );
+              },
+            ),
+            audioPlayer.shuffledStream.listen(
+              (shuffled) {
+                channel.sink.add(
+                  WebSocketShuffleEvent(shuffled).toJson(),
+                );
+              },
+            ),
+            audioPlayer.loopModeStream.listen(
+              (loopMode) {
+                channel.sink.add(
+                  WebSocketLoopEvent(loopMode).toJson(),
+                );
+              },
+            ),
+            audioPlayer.volumeStream.listen(
+              (volume) {
+                channel.sink.add(
+                  WebSocketVolumeEvent(volume).toJson(),
+                );
+              },
+            ),
+            channel.stream.listen(
+              (message) {
+                try {
+                  final event = WebSocketEvent.fromJson(
+                    jsonDecode(message),
+                    (data) => data,
+                  );
 
-                if (event.data.collectionId != null) {
-                  playbackNotifier.addCollection(event.data.collectionId!);
+                  event.onLoad((event) async {
+                    await playbackNotifier.load(
+                      event.data.tracks,
+                      autoPlay: true,
+                      initialIndex: event.data.initialIndex ?? 0,
+                    );
+
+                    if (event.data.collectionId != null) {
+                      playbackNotifier.addCollection(event.data.collectionId!);
+                    }
+                  });
+
+                  event.onPause((event) async {
+                    await audioPlayer.pause();
+                  });
+
+                  event.onResume((event) async {
+                    await audioPlayer.resume();
+                  });
+
+                  event.onStop((event) async {
+                    await audioPlayer.stop();
+                  });
+
+                  event.onNext((event) async {
+                    await playbackNotifier.next();
+                  });
+
+                  event.onPrevious((event) async {
+                    await playbackNotifier.previous();
+                  });
+
+                  event.onJump((event) async {
+                    await playbackNotifier.jumpTo(event.data);
+                  });
+
+                  event.onSeek((event) async {
+                    await audioPlayer.seek(event.data);
+                  });
+
+                  event.onShuffle((event) async {
+                    await audioPlayer.setShuffle(event.data);
+                  });
+
+                  event.onLoop((event) async {
+                    await audioPlayer.setLoopMode(event.data);
+                  });
+
+                  event.onAddTrack((event) async {
+                    await playbackNotifier.addTrack(event.data);
+                  });
+
+                  event.onRemoveTrack((event) async {
+                    await playbackNotifier.removeTrack(event.data);
+                  });
+
+                  event.onReorder((event) async {
+                    await playbackNotifier.moveTrack(
+                      event.data.oldIndex,
+                      event.data.newIndex,
+                    );
+                  });
+
+                  event.onVolume((event) async {
+                    ref.read(volumeProvider.notifier).setVolume(event.data);
+                  });
+                } catch (e, stackTrace) {
+                  Catcher2.reportCheckedError(e, stackTrace);
+                  channel.sink.add(WebSocketErrorEvent(e.toString()).toJson());
                 }
-              });
-
-              event.onPause((event) async {
-                await audioPlayer.pause();
-              });
-
-              event.onResume((event) async {
-                await audioPlayer.resume();
-              });
-
-              event.onStop((event) async {
-                await audioPlayer.stop();
-              });
-
-              event.onNext((event) async {
-                await playbackNotifier.next();
-              });
-
-              event.onPrevious((event) async {
-                await playbackNotifier.previous();
-              });
-
-              event.onJump((event) async {
-                await playbackNotifier.jumpTo(event.data);
-              });
-
-              event.onSeek((event) async {
-                await audioPlayer.seek(event.data);
-              });
-
-              event.onShuffle((event) async {
-                await audioPlayer.setShuffle(event.data);
-              });
-
-              event.onLoop((event) async {
-                await audioPlayer.setLoopMode(event.data);
-              });
-
-              event.onAddTrack((event) async {
-                await playbackNotifier.addTrack(event.data);
-              });
-
-              event.onRemoveTrack((event) async {
-                await playbackNotifier.removeTrack(event.data);
-              });
-
-              event.onReorder((event) async {
-                await playbackNotifier.moveTrack(
-                  event.data.oldIndex,
-                  event.data.newIndex,
-                );
-              });
-
-              event.onVolume((event) async {
-                ref.read(volumeProvider.notifier).setVolume(event.data);
-              });
-            } catch (e, stackTrace) {
-              Catcher2.reportCheckedError(e, stackTrace);
-              channel.sink.add(WebSocketErrorEvent(e.toString()).toJson());
-            }
-          },
-          onDone: () {
-            logger.i('Connection closed');
-          },
-        ),
-      ]);
-    },
-  );
+              },
+              onDone: () {
+                logger.i('Connection closed');
+              },
+            ),
+          ]);
+        },
+      )(req);
 
   final port = Random().nextInt(17000) + 3000;
 

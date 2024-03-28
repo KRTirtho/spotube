@@ -3,126 +3,144 @@
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "bn": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "ca": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "de": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "es": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "fa": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "fr": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "hi": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "it": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "ja": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "ko": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "ne": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "nl": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "pl": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "pt": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "ru": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "tr": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "uk": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "vi": [
@@ -131,13 +149,15 @@
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ],
 
   "zh": [
     "enable_connect",
     "enable_connect_description",
     "devices",
-    "select"
+    "select",
+    "connect_client_alert"
   ]
 }

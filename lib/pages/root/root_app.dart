@@ -16,6 +16,7 @@ import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/hooks/configurators/use_update_checker.dart';
+import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
@@ -54,50 +55,75 @@ class RootApp extends HookConsumerWidget {
         }
       });
 
-      final subscription = ConnectionCheckerService
-          .instance.onConnectivityChanged
-          .listen((status) {
-        if (status) {
+      final subscriptions = [
+        ConnectionCheckerService.instance.onConnectivityChanged
+            .listen((status) {
+          if (status) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(
+                      SpotubeIcons.wifi,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(context.l10n.connection_restored),
+                  ],
+                ),
+                backgroundColor: theme.colorScheme.primary,
+                showCloseIcon: true,
+                width: 350,
+              ),
+            );
+          } else {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(
+                      SpotubeIcons.noWifi,
+                      color: theme.colorScheme.onError,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(context.l10n.you_are_offline),
+                  ],
+                ),
+                backgroundColor: theme.colorScheme.error,
+                showCloseIcon: true,
+                width: 300,
+              ),
+            );
+          }
+        }),
+        connectClientStream.listen((clientOrigin) {
           scaffoldMessenger.showSnackBar(
             SnackBar(
+              backgroundColor: Colors.yellow[600],
+              behavior: SnackBarBehavior.floating,
               content: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    SpotubeIcons.wifi,
-                    color: theme.colorScheme.onPrimary,
+                  const Icon(
+                    SpotubeIcons.error,
+                    color: Colors.black,
                   ),
                   const SizedBox(width: 10),
-                  Text(context.l10n.connection_restored),
-                ],
-              ),
-              backgroundColor: theme.colorScheme.primary,
-              showCloseIcon: true,
-              width: 350,
-            ),
-          );
-        } else {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  Icon(
-                    SpotubeIcons.noWifi,
-                    color: theme.colorScheme.onError,
+                  Text(
+                    context.l10n.connect_client_alert(clientOrigin),
+                    style: const TextStyle(color: Colors.black),
                   ),
-                  const SizedBox(width: 10),
-                  Text(context.l10n.you_are_offline),
                 ],
               ),
-              backgroundColor: theme.colorScheme.error,
-              showCloseIcon: true,
-              width: 300,
             ),
           );
-        }
-      });
+        })
+      ];
 
       return () {
-        subscription.cancel();
+        for (final subscription in subscriptions) {
+          subscription.cancel();
+        }
       };
     }, []);
 
