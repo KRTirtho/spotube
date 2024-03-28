@@ -4,8 +4,11 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/shared/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
@@ -39,16 +42,41 @@ class ArtistPageTopTracks extends HookConsumerWidget {
 
     void playPlaylist(List<Track> tracks, {Track? currentTrack}) async {
       currentTrack ??= tracks.first;
-      if (!isPlaylistPlaying) {
-        playlistNotifier.load(
-          tracks,
-          initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
-          autoPlay: true,
-        );
-      } else if (isPlaylistPlaying &&
-          currentTrack.id != null &&
-          currentTrack.id != playlist.activeTrack?.id) {
-        await playlistNotifier.jumpToTrack(currentTrack);
+
+      final isRemoteDevice = await showSelectDeviceDialog(context, ref);
+      if (isRemoteDevice) {
+        final remotePlayback = ref.read(connectProvider.notifier);
+        final remotePlaylist = ref.read(queueProvider);
+
+        final isPlaylistPlaying = remotePlaylist.containsTracks(tracks);
+
+        if (!isPlaylistPlaying) {
+          await remotePlayback.load(
+            WebSocketLoadEventData(
+              tracks: tracks,
+              initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
+            ),
+          );
+        } else if (isPlaylistPlaying &&
+            currentTrack.id != null &&
+            currentTrack.id != remotePlaylist.activeTrack?.id) {
+          final index = playlist.tracks
+              .toList()
+              .indexWhere((s) => s.id == currentTrack!.id);
+          await remotePlayback.jumpTo(index);
+        }
+      } else {
+        if (!isPlaylistPlaying) {
+          playlistNotifier.load(
+            tracks,
+            initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
+            autoPlay: true,
+          );
+        } else if (isPlaylistPlaying &&
+            currentTrack.id != null &&
+            currentTrack.id != playlist.activeTrack?.id) {
+          await playlistNotifier.jumpToTrack(currentTrack);
+        }
       }
     }
 
@@ -107,6 +135,7 @@ class ArtistPageTopTracks extends HookConsumerWidget {
             final track = topTracks.elementAt(index);
             return TrackTile(
               index: index,
+              playlist: playlist,
               track: track,
               onTap: () async {
                 playPlaylist(

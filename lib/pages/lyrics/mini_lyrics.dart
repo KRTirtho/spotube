@@ -221,7 +221,18 @@ class MiniLyricsPage extends HookConsumerWidget {
                                       MediaQuery.of(context).size.height * .7,
                                 ),
                                 builder: (context) {
-                                  return const PlayerQueue(floating: true);
+                                  return Consumer(builder: (context, ref, _) {
+                                    final playlist = ref
+                                        .watch(ProxyPlaylistNotifier.provider);
+
+                                    return PlayerQueue
+                                        .fromProxyPlaylistNotifier(
+                                      floating: true,
+                                      playlist: playlist,
+                                      notifier: ref
+                                          .read(ProxyPlaylistNotifier.notifier),
+                                    );
+                                  });
                                 },
                               );
                             }

@@ -26,6 +26,8 @@ class PageWindowTitleBar extends StatefulHookConsumerWidget
   final double? titleWidth;
   final Widget? title;
 
+  final bool _sliver;
+
   const PageWindowTitleBar({
     super.key,
     this.actions,
@@ -42,7 +44,38 @@ class PageWindowTitleBar extends StatefulHookConsumerWidget
     this.titleTextStyle,
     this.titleWidth,
     this.toolbarTextStyle,
-  });
+  })  : _sliver = false,
+        pinned = false,
+        floating = false,
+        snap = false,
+        stretch = false;
+
+  final bool pinned;
+  final bool floating;
+  final bool snap;
+  final bool stretch;
+
+  const PageWindowTitleBar.sliver({
+    super.key,
+    this.actions,
+    this.title,
+    this.backgroundColor,
+    this.actionsIconTheme,
+    this.automaticallyImplyLeading = false,
+    this.centerTitle,
+    this.foregroundColor,
+    this.leading,
+    this.leadingWidth,
+    this.titleSpacing,
+    this.titleTextStyle,
+    this.titleWidth,
+    this.toolbarTextStyle,
+    this.pinned = false,
+    this.floating = false,
+    this.snap = false,
+    this.stretch = false,
+  })  : _sliver = true,
+        toolbarOpacity = 1;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -63,6 +96,48 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+
+    if (widget._sliver) {
+      return SliverLayoutBuilder(
+        builder: (context, constraints) {
+          final hasFullscreen =
+              mediaQuery.size.width == constraints.crossAxisExtent;
+          final hasLeadingOrCanPop =
+              widget.leading != null || Navigator.canPop(context);
+
+          return SliverPadding(
+            padding: EdgeInsets.only(
+              left: DesktopTools.platform.isMacOS &&
+                      hasFullscreen &&
+                      hasLeadingOrCanPop
+                  ? 65
+                  : 0,
+            ),
+            sliver: SliverAppBar(
+              leading: widget.leading,
+              automaticallyImplyLeading: widget.automaticallyImplyLeading,
+              actions: [
+                ...?widget.actions,
+                WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
+              ],
+              backgroundColor: widget.backgroundColor,
+              foregroundColor: widget.foregroundColor,
+              actionsIconTheme: widget.actionsIconTheme,
+              centerTitle: widget.centerTitle,
+              titleSpacing: widget.titleSpacing,
+              leadingWidth: widget.leadingWidth,
+              toolbarTextStyle: widget.toolbarTextStyle,
+              titleTextStyle: widget.titleTextStyle,
+              title: widget.title,
+              pinned: widget.pinned,
+              floating: widget.floating,
+              snap: widget.snap,
+              stretch: widget.stretch,
+            ),
+          );
+        },
+      );
+    }
 
     return LayoutBuilder(builder: (context, constrains) {
       final hasFullscreen = mediaQuery.size.width == constrains.maxWidth;
@@ -349,10 +424,7 @@ class WindowButton extends StatelessWidget {
 
 class MinimizeWindowButton extends WindowButton {
   MinimizeWindowButton(
-      {super.key,
-      super.colors,
-      super.onPressed,
-      bool? animate})
+      {super.key, super.colors, super.onPressed, bool? animate})
       : super(
           animate: animate ?? false,
           iconBuilder: (buttonContext) =>
@@ -362,10 +434,7 @@ class MinimizeWindowButton extends WindowButton {
 
 class MaximizeWindowButton extends WindowButton {
   MaximizeWindowButton(
-      {super.key,
-      super.colors,
-      super.onPressed,
-      bool? animate})
+      {super.key, super.colors, super.onPressed, bool? animate})
       : super(
           animate: animate ?? false,
           iconBuilder: (buttonContext) =>
@@ -374,11 +443,7 @@ class MaximizeWindowButton extends WindowButton {
 }
 
 class RestoreWindowButton extends WindowButton {
-  RestoreWindowButton(
-      {super.key,
-      super.colors,
-      super.onPressed,
-      bool? animate})
+  RestoreWindowButton({super.key, super.colors, super.onPressed, bool? animate})
       : super(
           animate: animate ?? false,
           iconBuilder: (buttonContext) =>
@@ -394,10 +459,7 @@ final _defaultCloseButtonColors = WindowButtonColors(
 
 class CloseWindowButton extends WindowButton {
   CloseWindowButton(
-      {super.key,
-      WindowButtonColors? colors,
-      super.onPressed,
-      bool? animate})
+      {super.key, WindowButtonColors? colors, super.onPressed, bool? animate})
       : super(
           colors: colors ?? _defaultCloseButtonColors,
           animate: animate ?? false,

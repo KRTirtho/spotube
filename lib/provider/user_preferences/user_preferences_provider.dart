@@ -127,6 +127,10 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     state = state.copyWith(endlessPlayback: endless);
   }
 
+  void setEnableConnect(bool enable) {
+    state = state.copyWith(enableConnect: enable);
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 

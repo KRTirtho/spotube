@@ -8,13 +8,14 @@ import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
-  final String? albumArt;
   final Color? color;
-  const PlayerTrackDetails({super.key, this.albumArt, this.color});
+  final Track? track;
+  const PlayerTrackDetails({super.key, this.color, this.track});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -34,7 +35,8 @@ class PlayerTrackDetails extends HookConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: UniversalImage(
-                path: albumArt ?? "",
+                path: (track?.album?.images)
+                    .asUrlString(placeholder: ImagePlaceholder.albumArt),
                 placeholder: Assets.albumPlaceholder.path,
               ),
             ),

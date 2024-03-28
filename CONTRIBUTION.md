@@ -25,7 +25,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
       - [Before Submitting an Enhancement](#before-submitting-an-enhancement)
       - [How Do I Submit a Good Enhancement Suggestion?](#how-do-i-submit-a-good-enhancement-suggestion)
     - [Your First Code Contribution](#your-first-code-contribution)
-    - [Submit translations](#submit-translations)
+    - [Submit Translations](#submit-translations)
 
 ## Code of Conduct
 
@@ -123,16 +123,16 @@ Do the following:
 - Install Development dependencies in linux
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
-    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev
+    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev avahi-daemon avahi-discover avahi-utils libnss-mdns mdns-scan
     ```
     - Use `libjsoncpp1` instead of `libjsoncpp25` (for Ubuntu < 22.04)
   - Arch/Manjaro
     ```bash
-    yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify
+    yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify avahi nss-mdns mdns-scan
     ```
   - Fedora
     ```bash
-    dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel
+    dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel avahi mdns-scan nss-mdns
     ```
 - Clone the Repo
 - Create a `.env` in root of the project following the `.env.example` template

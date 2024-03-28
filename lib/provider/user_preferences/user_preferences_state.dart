@@ -91,6 +91,7 @@ class UserPreferences with _$UserPreferences {
     @Default(SourceCodecs.m4a) SourceCodecs downloadMusicCodec,
     @Default(true) bool discordPresence,
     @Default(true) bool endlessPlayback,
+    @Default(false) bool enableConnect,
   }) = _UserPreferences;
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>
       _$UserPreferencesFromJson(json);

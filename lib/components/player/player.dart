@@ -26,6 +26,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
@@ -46,9 +47,7 @@ class PlayerView extends HookConsumerWidget {
     final currentTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
       (value) => value.activeTrack,
     ));
-    final isLocalTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
-      (value) => value.activeTrack is LocalTrack,
-    ));
+    final isLocalTrack = currentTrack is LocalTrack;
     final mediaQuery = MediaQuery.of(context);
 
     useEffect(() {
@@ -240,7 +239,7 @@ class PlayerView extends HookConsumerWidget {
                                 ),
                                 if (isLocalTrack)
                                   Text(
-                                    currentTrack?.artists?.asString() ?? "",
+                                    currentTrack.artists?.asString() ?? "",
                                     style: theme.textTheme.bodyMedium!.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: bodyTextColor,
@@ -304,10 +303,25 @@ class PlayerView extends HookConsumerWidget {
                                                             .height *
                                                         .7,
                                               ),
-                                              builder: (context) {
-                                                return const PlayerQueue(
-                                                    floating: false);
-                                              },
+                                              builder: (context) => Consumer(
+                                                builder: (context, ref, _) {
+                                                  final playlist = ref.watch(
+                                                    ProxyPlaylistNotifier
+                                                        .provider,
+                                                  );
+                                                  final playlistNotifier =
+                                                      ref.read(
+                                                    ProxyPlaylistNotifier
+                                                        .notifier,
+                                                  );
+                                                  return PlayerQueue
+                                                      .fromProxyPlaylistNotifier(
+                                                    floating: false,
+                                                    playlist: playlist,
+                                                    notifier: playlistNotifier,
+                                                  );
+                                                },
+                                              ),
                                             );
                                           }
                                         : null),
@@ -365,11 +379,21 @@ class PlayerView extends HookConsumerWidget {
                                 enabledThumbRadius: 8,
                               ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: VolumeSlider(
-                                fullWidth: true,
-                              ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Consumer(builder: (context, ref, _) {
+                                final volume = ref.watch(volumeProvider);
+                                return VolumeSlider(
+                                  fullWidth: true,
+                                  value: volume,
+                                  onChanged: (value) {
+                                    ref
+                                        .read(volumeProvider.notifier)
+                                        .setVolume(value);
+                                  },
+                                );
+                              }),
                             ),
                           ),
                         ],

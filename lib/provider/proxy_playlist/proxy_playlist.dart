@@ -27,6 +27,16 @@ class ProxyPlaylist {
     );
   }
 
+  factory ProxyPlaylist.fromJsonRaw(Map<String, dynamic> json) => ProxyPlaylist(
+        json['tracks'] == null
+            ? <Track>{}
+            : (json['tracks'] as List).map((t) => Track.fromJson(t)).toSet(),
+        json['active'] as int?,
+        json['collections'] == null
+            ? {}
+            : (json['collections'] as List).toSet().cast<String>(),
+      );
+
   Track? get activeTrack =>
       active == null || active == -1 ? null : tracks.elementAtOrNull(active!);
 
@@ -62,8 +72,8 @@ class ProxyPlaylist {
   /// Otherwise default super.toJson() is used
   static Map<String, dynamic> _makeAppropriateTrackJson(Track track) {
     return switch (track.runtimeType) {
-      LocalTrack => track.toJson(),
-      SourcedTrack => track.toJson(),
+      LocalTrack() => track.toJson(),
+      SourcedTrack() => track.toJson(),
       _ => track.toJson(),
     };
   }

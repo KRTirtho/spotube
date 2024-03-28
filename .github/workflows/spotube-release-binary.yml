@@ -284,7 +284,7 @@ jobs:
 
   macos:
 
-    runs-on: macos-12
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2.12.0
@@ -349,7 +349,7 @@ jobs:
           limit-access-to-actor: true
 
   iOS:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2.10.0

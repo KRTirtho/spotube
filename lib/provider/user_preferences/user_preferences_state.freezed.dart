@@ -50,6 +50,7 @@ mixin _$UserPreferences {
   SourceCodecs get downloadMusicCodec => throw _privateConstructorUsedError;
   bool get discordPresence => throw _privateConstructorUsedError;
   bool get endlessPlayback => throw _privateConstructorUsedError;
+  bool get enableConnect => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -93,7 +94,8 @@ abstract class $UserPreferencesCopyWith<$Res> {
       SourceCodecs streamMusicCodec,
       SourceCodecs downloadMusicCodec,
       bool discordPresence,
-      bool endlessPlayback});
+      bool endlessPlayback,
+      bool enableConnect});
 }
 
 /// @nodoc
@@ -131,6 +133,7 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
     Object? downloadMusicCodec = null,
     Object? discordPresence = null,
     Object? endlessPlayback = null,
+    Object? enableConnect = null,
   }) {
     return _then(_value.copyWith(
       audioQuality: null == audioQuality
@@ -221,6 +224,10 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
           ? _value.endlessPlayback
           : endlessPlayback // ignore: cast_nullable_to_non_nullable
               as bool,
+      enableConnect: null == enableConnect
+          ? _value.enableConnect
+          : enableConnect // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -263,7 +270,8 @@ abstract class _$$UserPreferencesImplCopyWith<$Res>
       SourceCodecs streamMusicCodec,
       SourceCodecs downloadMusicCodec,
       bool discordPresence,
-      bool endlessPlayback});
+      bool endlessPlayback,
+      bool enableConnect});
 }
 
 /// @nodoc
@@ -299,6 +307,7 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
     Object? downloadMusicCodec = null,
     Object? discordPresence = null,
     Object? endlessPlayback = null,
+    Object? enableConnect = null,
   }) {
     return _then(_$UserPreferencesImpl(
       audioQuality: null == audioQuality
@@ -389,6 +398,10 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
           ? _value.endlessPlayback
           : endlessPlayback // ignore: cast_nullable_to_non_nullable
               as bool,
+      enableConnect: null == enableConnect
+          ? _value.enableConnect
+          : enableConnect // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -426,7 +439,8 @@ class _$UserPreferencesImpl implements _UserPreferences {
       this.streamMusicCodec = SourceCodecs.weba,
       this.downloadMusicCodec = SourceCodecs.m4a,
       this.discordPresence = true,
-      this.endlessPlayback = true});
+      this.endlessPlayback = true,
+      this.enableConnect = false});
 
   factory _$UserPreferencesImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserPreferencesImplFromJson(json);
@@ -503,10 +517,13 @@ class _$UserPreferencesImpl implements _UserPreferences {
   @override
   @JsonKey()
   final bool endlessPlayback;
+  @override
+  @JsonKey()
+  final bool enableConnect;
 
   @override
   String toString() {
-    return 'UserPreferences(audioQuality: $audioQuality, albumColorSync: $albumColorSync, amoledDarkTheme: $amoledDarkTheme, checkUpdate: $checkUpdate, normalizeAudio: $normalizeAudio, showSystemTrayIcon: $showSystemTrayIcon, skipNonMusic: $skipNonMusic, systemTitleBar: $systemTitleBar, closeBehavior: $closeBehavior, accentColorScheme: $accentColorScheme, layoutMode: $layoutMode, locale: $locale, recommendationMarket: $recommendationMarket, searchMode: $searchMode, downloadLocation: $downloadLocation, pipedInstance: $pipedInstance, themeMode: $themeMode, audioSource: $audioSource, streamMusicCodec: $streamMusicCodec, downloadMusicCodec: $downloadMusicCodec, discordPresence: $discordPresence, endlessPlayback: $endlessPlayback)';
+    return 'UserPreferences(audioQuality: $audioQuality, albumColorSync: $albumColorSync, amoledDarkTheme: $amoledDarkTheme, checkUpdate: $checkUpdate, normalizeAudio: $normalizeAudio, showSystemTrayIcon: $showSystemTrayIcon, skipNonMusic: $skipNonMusic, systemTitleBar: $systemTitleBar, closeBehavior: $closeBehavior, accentColorScheme: $accentColorScheme, layoutMode: $layoutMode, locale: $locale, recommendationMarket: $recommendationMarket, searchMode: $searchMode, downloadLocation: $downloadLocation, pipedInstance: $pipedInstance, themeMode: $themeMode, audioSource: $audioSource, streamMusicCodec: $streamMusicCodec, downloadMusicCodec: $downloadMusicCodec, discordPresence: $discordPresence, endlessPlayback: $endlessPlayback, enableConnect: $enableConnect)';
   }
 
   @override
@@ -556,7 +573,9 @@ class _$UserPreferencesImpl implements _UserPreferences {
             (identical(other.discordPresence, discordPresence) ||
                 other.discordPresence == discordPresence) &&
             (identical(other.endlessPlayback, endlessPlayback) ||
-                other.endlessPlayback == endlessPlayback));
+                other.endlessPlayback == endlessPlayback) &&
+            (identical(other.enableConnect, enableConnect) ||
+                other.enableConnect == enableConnect));
   }
 
   @JsonKey(ignore: true)
@@ -584,7 +603,8 @@ class _$UserPreferencesImpl implements _UserPreferences {
         streamMusicCodec,
         downloadMusicCodec,
         discordPresence,
-        endlessPlayback
+        endlessPlayback,
+        enableConnect
       ]);
 
   @JsonKey(ignore: true)
@@ -633,7 +653,8 @@ abstract class _UserPreferences implements UserPreferences {
       final SourceCodecs streamMusicCodec,
       final SourceCodecs downloadMusicCodec,
       final bool discordPresence,
-      final bool endlessPlayback}) = _$UserPreferencesImpl;
+      final bool endlessPlayback,
+      final bool enableConnect}) = _$UserPreferencesImpl;
 
   factory _UserPreferences.fromJson(Map<String, dynamic> json) =
       _$UserPreferencesImpl.fromJson;
@@ -690,6 +711,8 @@ abstract class _UserPreferences implements UserPreferences {
   bool get discordPresence;
   @override
   bool get endlessPlayback;
+  @override
+  bool get enableConnect;
   @override
   @JsonKey(ignore: true)
   _$$UserPreferencesImplCopyWith<_$UserPreferencesImpl> get copyWith =>

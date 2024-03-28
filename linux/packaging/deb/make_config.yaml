@@ -18,6 +18,11 @@ dependencies:
   - libjsoncpp25
   - libmpv1 | libmpv2
   - xdg-user-dirs
+  - avahi-daemon
+  - avahi-discover
+  - avahi-utils
+  - libnss-mdns
+  - mdns-scan
 
 essential: false
 icon: assets/spotube-logo.png

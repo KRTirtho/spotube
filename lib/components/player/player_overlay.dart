@@ -115,7 +115,7 @@ class PlayerOverlay extends HookConsumerWidget {
                                 width: double.infinity,
                                 color: Colors.transparent,
                                 child: PlayerTrackDetails(
-                                  albumArt: albumArt,
+                                  track: playlist.activeTrack,
                                   color: textColor,
                                 ),
                               ),
