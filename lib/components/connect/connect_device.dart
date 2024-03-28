@@ -12,11 +12,14 @@ class ConnectDeviceButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:colorScheme) = Theme.of(context);
+    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final connectClients = ref.watch(connectClientsProvider);
 
     return SizedBox(
-      height: 40,
+      height: 40 * pixelRatio,
       child: Stack(
+        alignment: Alignment.centerRight,
+        fit: StackFit.loose,
         children: [
           Center(
             child: InkWell(
@@ -66,8 +69,10 @@ class ConnectDeviceButton extends HookConsumerWidget {
             right: 0,
             child: IconButton.filled(
               icon: const Icon(SpotubeIcons.speaker),
-              style:
-                  IconButton.styleFrom(foregroundColor: colorScheme.onPrimary),
+              style: IconButton.styleFrom(
+                visualDensity: VisualDensity.standard,
+                foregroundColor: colorScheme.onPrimary,
+              ),
               onPressed: () {
                 ServiceUtils.push(context, "/connect");
               },

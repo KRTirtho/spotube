@@ -19,6 +19,7 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:spotube/services/device_info/device_info.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:spotube/provider/volume_provider.dart';
 
 final logger = getLogger('ConnectServer');
 
@@ -193,7 +194,7 @@ final connectServerProvider = FutureProvider((ref) async {
               });
 
               event.onVolume((event) async {
-                await audioPlayer.setVolume(event.data);
+                ref.read(volumeProvider.notifier).setVolume(event.data);
               });
             } catch (e, stackTrace) {
               Catcher2.reportCheckedError(e, stackTrace);

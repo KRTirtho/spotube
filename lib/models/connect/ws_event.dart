@@ -95,7 +95,11 @@ class WebSocketEvent<T> {
     EventCallback<WebSocketLoadEvent> callback,
   ) async {
     if (type == WsEvent.load) {
-      await callback(WebSocketLoadEvent.fromJson(data as Map<String, dynamic>));
+      await callback(
+        WebSocketLoadEvent(
+          WebSocketLoadEventData.fromJson(data as Map<String, dynamic>),
+        ),
+      );
     }
   }
 

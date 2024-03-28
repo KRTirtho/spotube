@@ -8,12 +8,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/components/shared/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/track_view_body_headers.dart';
 import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_playlist.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_provider.dart';
+import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
@@ -131,16 +134,37 @@ class TrackViewBodySection extends HookConsumerWidget {
                     return;
                   }
 
-                  if (isActive || playlist.tracks.contains(track)) {
-                    await playlistNotifier.jumpToTrack(track);
+                  final isRemoteDevice =
+                      await showSelectDeviceDialog(context, ref);
+
+                  if (isRemoteDevice) {
+                    final remotePlayback = ref.read(connectProvider.notifier);
+                    final remoteQueue = ref.read(queueProvider);
+                    if (remoteQueue.collections.contains(props.collectionId) ||
+                        remoteQueue.tracks.any((s) => s.id == track.id)) {
+                      await playlistNotifier.jumpToTrack(track);
+                    } else {
+                      final tracks = await props.pagination.onFetchAll();
+                      await remotePlayback.load(
+                        WebSocketLoadEventData(
+                          tracks: tracks,
+                          collectionId: props.collectionId,
+                          initialIndex: index,
+                        ),
+                      );
+                    }
                   } else {
-                    final tracks = await props.pagination.onFetchAll();
-                    await playlistNotifier.load(
-                      tracks,
-                      initialIndex: index,
-                      autoPlay: true,
-                    );
-                    playlistNotifier.addCollection(props.collectionId);
+                    if (isActive || playlist.tracks.contains(track)) {
+                      await playlistNotifier.jumpToTrack(track);
+                    } else {
+                      final tracks = await props.pagination.onFetchAll();
+                      await playlistNotifier.load(
+                        tracks,
+                        initialIndex: index,
+                        autoPlay: true,
+                      );
+                      playlistNotifier.addCollection(props.collectionId);
+                    }
                   }
                 },
               );

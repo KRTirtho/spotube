@@ -231,7 +231,7 @@ class PlayerQueue extends HookConsumerWidget {
                           onReorder(oldIndex, newIndex);
                         },
                         scrollController: controller,
-                        itemCount: tracks.length,
+                        itemCount: tracks.length + 1,
                         shrinkWrap: true,
                         buildDefaultDragHandles: false,
                         onReorderStart: (index) {
@@ -241,6 +241,15 @@ class PlayerQueue extends HookConsumerWidget {
                           HapticFeedback.selectionClick();
                         },
                         itemBuilder: (context, i) {
+                          if (i == tracks.length) {
+                            return AutoScrollTag(
+                              index: i,
+                              controller: controller,
+                              key: const ValueKey('end'),
+                              child: const Gap(100),
+                            );
+                          }
+
                           final track = tracks.elementAt(i);
                           return AutoScrollTag(
                             key: ValueKey(i),
@@ -277,8 +286,12 @@ class PlayerQueue extends HookConsumerWidget {
                         controller: controller,
                         child: ListView.builder(
                           controller: controller,
-                          itemCount: filteredTracks.length,
+                          itemCount: filteredTracks.length + 1,
                           itemBuilder: (context, i) {
+                            if (i == filteredTracks.length) {
+                              return const Gap(100);
+                            }
+
                             final track = filteredTracks.elementAt(i);
                             return Padding(
                               padding:
@@ -299,7 +312,6 @@ class PlayerQueue extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                  const Gap(100),
                 ],
               ),
             ),

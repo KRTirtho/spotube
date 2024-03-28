@@ -316,5 +316,6 @@
   "browse_anonymously": "Browse Anonymously",
   "enable_connect": "Enable Connect",
   "enable_connect_description": "Control Spotube from other devices",
-  "devices": "Devices"
+  "devices": "Devices",
+  "select": "Select"
 }
