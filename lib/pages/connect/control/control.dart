@@ -274,6 +274,7 @@ class ConnectControlPage extends HookConsumerWidget {
                             value: volume,
                             onChanged: (value) {
                               ref.read(volumeProvider.notifier).state = value;
+                              connectNotifier.setVolume(value);
                             },
                           );
                         }),

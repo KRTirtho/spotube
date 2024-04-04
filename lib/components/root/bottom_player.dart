@@ -126,6 +126,7 @@ class BottomPlayer extends HookConsumerWidget {
                     Container(
                       height: 40,
                       constraints: const BoxConstraints(maxWidth: 250),
+                      padding: const EdgeInsets.only(right: 10),
                       child: Consumer(builder: (context, ref, _) {
                         final volume = ref.watch(volumeProvider);
                         return VolumeSlider(
@@ -138,7 +139,7 @@ class BottomPlayer extends HookConsumerWidget {
                       }),
                     )
                   ],
-                )
+                ),
               ],
             ),
           ),
