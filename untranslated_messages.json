@@ -4,7 +4,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "bn": [
@@ -12,7 +14,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "ca": [
@@ -20,7 +24,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "de": [
@@ -28,7 +34,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "es": [
@@ -36,7 +44,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "fa": [
@@ -44,7 +54,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "fr": [
@@ -52,7 +64,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "hi": [
@@ -60,7 +74,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "it": [
@@ -68,7 +84,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "ja": [
@@ -76,7 +94,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "ko": [
@@ -84,7 +104,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "ne": [
@@ -92,7 +114,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "nl": [
@@ -100,7 +124,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "pl": [
@@ -108,7 +134,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "pt": [
@@ -116,7 +144,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "ru": [
@@ -124,7 +154,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "tr": [
@@ -132,7 +164,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "uk": [
@@ -140,7 +174,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "vi": [
@@ -150,7 +186,9 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ],
 
   "zh": [
@@ -158,6 +196,8 @@
     "enable_connect_description",
     "devices",
     "select",
-    "connect_client_alert"
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ]
 }

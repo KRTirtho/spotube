@@ -318,5 +318,7 @@
   "enable_connect_description": "Control Spotube from other devices",
   "devices": "Devices",
   "select": "Select",
-  "connect_client_alert": "You're being controlled by {client}"
+  "connect_client_alert": "You're being controlled by {client}",
+  "this_device": "This Device",
+  "remote": "Remote"
 }
