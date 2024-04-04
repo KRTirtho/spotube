@@ -1,4 +1,8 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -71,125 +75,128 @@ class SyncedLyrics extends HookConsumerWidget {
     );
     return Stack(
       children: [
-        Column(
-          children: [
+        CustomScrollView(
+          controller: controller,
+          slivers: [
             if (isModal != true)
-              Center(
-                child: Text(
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
+                centerTitle: true,
+                title: Text(
                   playlist.activeTrack?.name ?? "Not Playing",
                   style: headlineTextStyle,
                 ),
-              ),
-            if (isModal != true)
-              Center(
-                child: Text(
-                  playlist.activeTrack?.artists?.asString() ?? "",
-                  style: mediaQuery.mdAndUp
-                      ? textTheme.headlineSmall
-                      : textTheme.titleLarge,
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(40),
+                  child: Text(
+                    playlist.activeTrack?.artists?.asString() ?? "",
+                    style: mediaQuery.mdAndUp
+                        ? textTheme.headlineSmall
+                        : textTheme.titleLarge,
+                  ),
                 ),
               ),
             if (lyricValue != null &&
                 lyricValue.lyrics.isNotEmpty &&
                 lyricsState.asData?.value.static != true)
-              Expanded(
-                child: ListView.builder(
-                  controller: controller,
-                  itemCount: lyricValue.lyrics.length,
-                  itemBuilder: (context, index) {
-                    final lyricSlice = lyricValue.lyrics[index];
-                    final isActive = lyricSlice.time.inSeconds == currentTime;
+              SliverList.builder(
+                itemCount: lyricValue.lyrics.length,
+                itemBuilder: (context, index) {
+                  final lyricSlice = lyricValue.lyrics[index];
+                  final isActive = lyricSlice.time.inSeconds == currentTime;
 
-                    if (isActive) {
-                      controller.scrollToIndex(
-                        index,
-                        preferPosition: AutoScrollPosition.middle,
-                      );
-                    }
-                    return AutoScrollTag(
-                      key: ValueKey(index),
-                      index: index,
-                      controller: controller,
-                      child: lyricSlice.text.isEmpty
-                          ? Container(
+                  if (isActive) {
+                    controller.scrollToIndex(
+                      index,
+                      preferPosition: AutoScrollPosition.middle,
+                    );
+                  }
+                  return AutoScrollTag(
+                    key: ValueKey(index),
+                    index: index,
+                    controller: controller,
+                    child: lyricSlice.text.isEmpty
+                        ? Container(
+                            padding: index == lyricValue.lyrics.length - 1
+                                ? EdgeInsets.only(
+                                    bottom: mediaQuery.size.height / 2,
+                                  )
+                                : null,
+                          )
+                        : Center(
+                            child: Padding(
                               padding: index == lyricValue.lyrics.length - 1
-                                  ? EdgeInsets.only(
-                                      bottom: mediaQuery.size.height / 2,
+                                  ? const EdgeInsets.all(8.0).copyWith(
+                                      bottom: 100,
                                     )
-                                  : null,
-                            )
-                          : Center(
-                              child: Padding(
-                                padding: index == lyricValue.lyrics.length - 1
-                                    ? const EdgeInsets.all(8.0).copyWith(
-                                        bottom: 100,
-                                      )
-                                    : const EdgeInsets.all(8.0),
-                                child: AnimatedDefaultTextStyle(
-                                  duration: const Duration(milliseconds: 250),
-                                  style: TextStyle(
-                                    fontWeight: isActive
-                                        ? FontWeight.w500
-                                        : FontWeight.normal,
-                                    fontSize: (isActive ? 28 : 26) *
-                                        (textZoomLevel.value / 100),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      final duration =
-                                          await audioPlayer.duration ??
-                                              Duration.zero;
-                                      final time = Duration(
-                                        seconds:
-                                            lyricSlice.time.inSeconds - delay,
-                                      );
-                                      if (time > duration || time.isNegative) {
-                                        return;
-                                      }
-                                      audioPlayer.seek(time);
-                                    },
-                                    child: Builder(builder: (context) {
-                                      return StrokeText(
-                                        text: lyricSlice.text,
-                                        textStyle:
-                                            DefaultTextStyle.of(context).style,
-                                        textColor: isActive
-                                            ? Colors.white
-                                            : palette.bodyTextColor,
-                                        strokeColor: isActive
-                                            ? Colors.black
-                                            : Colors.transparent,
-                                      );
-                                    }),
-                                  ),
+                                  : const EdgeInsets.all(8.0),
+                              child: AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 250),
+                                style: TextStyle(
+                                  fontWeight: isActive
+                                      ? FontWeight.w500
+                                      : FontWeight.normal,
+                                  fontSize: (isActive ? 28 : 26) *
+                                      (textZoomLevel.value / 100),
+                                ),
+                                textAlign: TextAlign.center,
+                                child: InkWell(
+                                  onTap: () async {
+                                    final duration =
+                                        await audioPlayer.duration ??
+                                            Duration.zero;
+                                    final time = Duration(
+                                      seconds:
+                                          lyricSlice.time.inSeconds - delay,
+                                    );
+                                    if (time > duration || time.isNegative) {
+                                      return;
+                                    }
+                                    audioPlayer.seek(time);
+                                  },
+                                  child: Builder(builder: (context) {
+                                    return StrokeText(
+                                      text: lyricSlice.text,
+                                      textStyle:
+                                          DefaultTextStyle.of(context).style,
+                                      textColor: isActive
+                                          ? Colors.white
+                                          : palette.bodyTextColor,
+                                      strokeColor: isActive
+                                          ? Colors.black
+                                          : Colors.transparent,
+                                    );
+                                  }),
                                 ),
                               ),
                             ),
-                    );
-                  },
-                ),
+                          ),
+                  );
+                },
               ),
             if (playlist.activeTrack != null &&
                 (timedLyricsQuery.isLoading || timedLyricsQuery.isRefreshing))
-              const Expanded(
-                child: ShimmerLyrics(),
-              )
+              const SliverToBoxAdapter(child: ShimmerLyrics())
             else if (playlist.activeTrack != null &&
                 (timedLyricsQuery.hasError)) ...[
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  context.l10n.no_lyrics_available,
-                  style: bodyTextTheme,
-                  textAlign: TextAlign.center,
+              SliverToBoxAdapter(
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    context.l10n.no_lyrics_available,
+                    style: bodyTextTheme,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-              const Gap(26),
-              const Icon(SpotubeIcons.noLyrics, size: 60),
+              const SliverGap(26),
+              const SliverToBoxAdapter(
+                child: Icon(SpotubeIcons.noLyrics, size: 60),
+              ),
             ] else if (lyricsState.asData?.value.static == true)
-              Expanded(
+              SliverFillRemaining(
                 child: Center(
                   child: RichText(
                     textAlign: TextAlign.center,

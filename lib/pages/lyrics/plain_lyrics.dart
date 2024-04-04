@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
@@ -120,6 +119,7 @@ class PlainLyrics extends HookConsumerWidget {
                             lyrics == null && playlist.activeTrack == null
                                 ? "No Track being played currently"
                                 : lyrics ?? "",
+                            textAlign: TextAlign.center,
                           ),
                         );
                       },

@@ -128,6 +128,7 @@ dependencies:
   shelf_router: ^1.1.4
   shelf_web_socket: ^1.0.4
   web_socket_channel: ^2.4.4
+  lrc: ^1.0.2
 
 dev_dependencies:
   build_runner: ^2.3.2

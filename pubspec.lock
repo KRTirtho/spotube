@@ -1455,6 +1455,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  lrc:
+    dependency: "direct main"
+    description:
+      name: lrc
+      sha256: "5100362b5c8e97f4d3f03ff87efeb40e73a6dd780eca2cbde9312e0d44b8e5ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   mailer:
     dependency: transitive
     description:

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
@@ -19,6 +20,7 @@ import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class LyricsPage extends HookConsumerWidget {
   final bool isModal;
@@ -43,11 +45,39 @@ class LyricsPage extends HookConsumerWidget {
       noSetBGColor: true,
     );
 
-    final tabbar = ThemedButtonsTabBar(
+    PreferredSizeWidget tabbar = ThemedButtonsTabBar(
       tabs: [
         Tab(text: "  ${context.l10n.synced}  "),
         Tab(text: "  ${context.l10n.plain}  "),
       ],
+    );
+
+    tabbar = PreferredSize(
+      preferredSize: tabbar.preferredSize,
+      child: Row(
+        children: [
+          tabbar,
+          const Spacer(),
+          Consumer(
+            builder: (context, ref, child) {
+              final playback = ref.watch(ProxyPlaylistNotifier.provider);
+              final lyric =
+                  ref.watch(syncedLyricsProvider(playback.activeTrack));
+              final providerName = lyric.asData?.value.provider;
+
+              if (providerName == null) {
+                return const SizedBox.shrink();
+              }
+
+              return Align(
+                alignment: Alignment.bottomRight,
+                child: Text("Powered by $providerName"),
+              );
+            },
+          ),
+          const Gap(5),
+        ],
+      ),
     );
 
     final auth = ref.watch(AuthenticationNotifier.provider);

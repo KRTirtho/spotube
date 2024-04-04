@@ -8,6 +8,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:lrc/lrc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotify/spotify.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: depend_on_referenced_packages, implementation_imports

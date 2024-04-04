@@ -251,6 +251,7 @@ abstract class ServiceUtils {
       uri: subtitleUri,
       lyrics: lrcList,
       rating: rateSortedResults.first["points"] as int,
+      provider: "Rent An Adviser",
     );
 
     return subtitle;
@@ -307,7 +308,9 @@ abstract class ServiceUtils {
           case SortBy.duration:
             return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
           case SortBy.artist:
-            return a.artists?.first.name?.compareTo(b.artists?.first.name ?? "") ?? 0;
+            return a.artists?.first.name
+                    ?.compareTo(b.artists?.first.name ?? "") ??
+                0;
           case SortBy.album:
             return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
           default:
