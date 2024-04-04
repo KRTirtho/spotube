@@ -183,8 +183,8 @@ class SpotubeState extends ConsumerState<Spotube> {
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
     final router = ref.watch(routerProvider);
 
-    ref.read(connectServerProvider);
-    ref.read(connectClientsProvider);
+    ref.listen(connectServerProvider, (_, __) {});
+    ref.listen(connectClientsProvider, (_, __) {});
 
     useDisableBatteryOptimizations();
     useInitSysTray(ref);

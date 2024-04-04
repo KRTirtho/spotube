@@ -239,6 +239,7 @@ final connectServerProvider = FutureProvider((ref) async {
     port: port,
     attributes: {
       "id": PrimitiveUtils.uuid.v4(),
+      "deviceId": await DeviceInfoService.instance.deviceId(),
     },
   );
 

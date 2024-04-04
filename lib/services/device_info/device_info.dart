@@ -6,6 +6,19 @@ class DeviceInfoService {
 
   static final instance = DeviceInfoService._();
 
+  Future<String> deviceId() async {
+    final info = await deviceInfo.deviceInfo;
+
+    return switch (info) {
+      AndroidDeviceInfo() => info.id,
+      IosDeviceInfo() => info.identifierForVendor ?? info.model,
+      MacOsDeviceInfo() => info.systemGUID ?? info.model,
+      WindowsDeviceInfo() => info.deviceId,
+      LinuxDeviceInfo() => info.machineId ?? info.id,
+      _ => 'Unknown',
+    };
+  }
+
   Future<String> computerName() async {
     final info = await deviceInfo.deviceInfo;
 

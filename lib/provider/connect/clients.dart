@@ -1,5 +1,6 @@
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spotube/services/device_info/device_info.dart';
 
 class ConnectClientsState {
   final List<BonsoirService> services;
@@ -31,9 +32,15 @@ class ConnectClientsNotifier extends AsyncNotifier<ConnectClientsState> {
   @override
   build() async {
     final discovery = BonsoirDiscovery(type: '_spotube._tcp');
+    final deviceId = await DeviceInfoService.instance.deviceId();
     await discovery.ready;
 
     final subscription = discovery.eventStream?.listen((event) {
+      // ignore device itself
+      if (event.service?.attributes["deviceId"] == deviceId) {
+        return;
+      }
+
       switch (event.type) {
         case BonsoirDiscoveryEventType.discoveryServiceFound:
           state = AsyncData(state.value!.copyWith(
