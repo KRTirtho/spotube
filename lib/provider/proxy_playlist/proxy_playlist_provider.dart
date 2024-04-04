@@ -242,7 +242,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
 
     final nthFetchedTrack = switch (track.runtimeType) {
-      SourcedTrack => track as SourcedTrack,
+      SourcedTrack() => track as SourcedTrack,
       _ => await SourcedTrack.fetchFromTrack(ref: ref, track: track),
     };
 
