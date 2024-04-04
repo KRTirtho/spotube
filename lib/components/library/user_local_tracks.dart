@@ -283,12 +283,17 @@ class UserLocalTracks extends HookConsumerWidget {
                           trackSnapshot.isLoading ? 5 : filteredTracks.length,
                       itemBuilder: (context, index) {
                         if (trackSnapshot.isLoading) {
-                          return TrackTile(track: FakeData.track, index: index);
+                          return TrackTile(
+                            playlist: playlist,
+                            track: FakeData.track,
+                            index: index,
+                          );
                         }
 
                         final track = filteredTracks[index];
                         return TrackTile(
                           index: index,
+                          playlist: playlist,
                           track: track,
                           userPlaylist: false,
                           onTap: () async {
@@ -311,8 +316,11 @@ class UserLocalTracks extends HookConsumerWidget {
               enabled: true,
               child: ListView.builder(
                 itemCount: 5,
-                itemBuilder: (context, index) =>
-                    TrackTile(track: FakeData.track, index: index),
+                itemBuilder: (context, index) => TrackTile(
+                  track: FakeData.track,
+                  index: index,
+                  playlist: playlist,
+                ),
               ),
             ),
           ),

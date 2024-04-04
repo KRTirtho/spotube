@@ -1,4 +1,5 @@
 import 'package:catcher_2/catcher_2.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:spotube/services/audio_player/mk_state_player.dart';
 // import 'package:just_audio/just_audio.dart' as ja;
 import 'dart:async';
@@ -14,7 +15,7 @@ part 'audio_player_impl.dart';
 
 abstract class AudioPlayerInterface {
   final MkPlayerWithState _mkPlayer;
-  // final ja.AudioPlayer? _justAudio;
+  // final ja.AudioPlayer? _justAudxio;
 
   AudioPlayerInterface()
       : _mkPlayer = MkPlayerWithState(
@@ -58,6 +59,14 @@ abstract class AudioPlayerInterface {
     } else {
       return null;
     }
+  }
+
+  Future<AudioDevice> get selectedDevice async {
+    return _mkPlayer.state.audioDevice;
+  }
+
+  Future<List<AudioDevice>> get devices async {
+    return _mkPlayer.state.audioDevices;
   }
 
   bool get hasSource {

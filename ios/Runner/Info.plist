@@ -66,5 +66,11 @@
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <true />
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>To allow other devices on the network control playback of Spotube securely.</string>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_spotube._tcp</string>
+    </array>
   </dict>
 </plist>
