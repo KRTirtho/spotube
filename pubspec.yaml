@@ -131,7 +131,7 @@ dependencies:
   lrc: ^1.0.2
 
 dev_dependencies:
-  build_runner: ^2.3.2
+  build_runner: ^2.4.9
   envied_generator: ^0.3.0+3
   flutter_distributor: ^0.0.2
   flutter_gen_runner: ^5.1.0+1
