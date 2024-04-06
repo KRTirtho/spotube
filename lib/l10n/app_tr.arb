@@ -314,4 +314,11 @@
   "contribute_on_github": "GitHub'a katkıda bulunun",
   "donate_on_open_collective": "Open Collective'e bağış yapın",
   "browse_anonymously": "Anonim Olarak Göz at"
+  "enable_connect": "Bağlantıyı Etkinleştir",
+  "enable_connect_description": "Spotube'u diğer cihazlardan kontrol edin",
+  "devices": "Cihazlar",
+  "select": "Seç",
+  "connect_client_alert": "{client} tarafından kontrol ediliyorsun.",
+  "this_device": "Bu Cihaz",
+  "remote": "Yönet"
 }
