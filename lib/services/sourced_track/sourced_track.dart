@@ -131,6 +131,8 @@ abstract class SourcedTrack extends Track {
       };
     } on HttpClientClosedException catch (_) {
       return await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref);
+    } on VideoUnplayableException catch (_) {
+      return await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref);
     } catch (e) {
       if (e is DioException || e is ClientException || e is SocketException) {
         if (preferences.audioSource == AudioSource.jiosaavn) {
