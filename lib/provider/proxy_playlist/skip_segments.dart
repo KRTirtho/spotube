@@ -3,12 +3,10 @@ import 'dart:convert';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/skip_segment.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class SourcedSegments {
   final String source;
@@ -75,12 +73,8 @@ Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
 
 final segmentProvider = FutureProvider<SourcedSegments?>(
   (ref) async {
-    final track = ref.watch(
-      ProxyPlaylistNotifier.provider.select((s) => s.activeTrack),
-    );
+    final track = ref.watch(activeSourcedTrackProvider);
     if (track == null) return null;
-
-    if (track is LocalTrack || track is! SourcedTrack) return null;
 
     final skipNonMusic = ref.watch(
       userPreferencesProvider.select(

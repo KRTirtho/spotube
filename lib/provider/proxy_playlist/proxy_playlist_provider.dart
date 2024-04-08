@@ -18,7 +18,6 @@ import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
 import 'package:spotube/provider/discord_provider.dart';
-import 'package:spotube/services/sourced_track/models/source_info.dart';
 
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
@@ -146,42 +145,9 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
 
       await audioPlayer.addTrackAt(
         SpotubeMedia(track),
-        i + 1,
+        (state.active ?? 0) + i + 1,
       );
     }
-  }
-
-  Future<void> populateSibling() async {
-    // if (state.activeTrack is SourcedTrack) {
-    //   final activeTrackWithSiblingsForSure =
-    //       await (state.activeTrack as SourcedTrack).copyWithSibling();
-
-    //   state = state.copyWith(
-    //     tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
-    //     active: state.tracks.toList().indexWhere(
-    //         (element) => element.id == activeTrackWithSiblingsForSure.id),
-    //   );
-    // }
-  }
-
-  Future<void> swapSibling(SourceInfo sibling) async {
-    // if (state.activeTrack is SourcedTrack) {
-    //   await populateSibling();
-    //   final newTrack =
-    //       await (state.activeTrack as SourcedTrack).swapWithSibling(sibling);
-    //   if (newTrack == null) return;
-    //   state = state.copyWith(
-    //     tracks: mergeTracks([newTrack], state.tracks),
-    //     active: state.tracks
-    //         .toList()
-    //         .indexWhere((element) => element.id == newTrack.id),
-    //   );
-    //   await audioPlayer.pause();
-    //   await audioPlayer.replaceSource(
-    //     audioPlayer.currentSource!,
-    //     makeAppropriateSource(newTrack),
-    //   );
-    // }
   }
 
   Future<void> next() async {

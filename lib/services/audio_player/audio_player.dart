@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:catcher_2/catcher_2.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';
 // import 'package:just_audio/just_audio.dart' as ja;
 import 'dart:async';
@@ -9,13 +13,13 @@ import 'package:media_kit/media_kit.dart' as mk;
 
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 part 'audio_players_streams_mixin.dart';
 part 'audio_player_impl.dart';
 
 class SpotubeMedia extends mk.Media {
   final Track track;
+
   SpotubeMedia(
     this.track, {
     Map<String, String>? extras,
@@ -23,12 +27,17 @@ class SpotubeMedia extends mk.Media {
   }) : super(
           track is LocalTrack
               ? track.path
-              : "http://localhost:3000/stream/${track.id}",
+              : "http://${InternetAddress.loopbackIPv4.address}:${PlaybackServer.port}/stream/${track.id}",
           extras: {
             ...?extras,
-            "trackId": track.id,
+            "track": track.toJson(),
           },
         );
+
+  factory SpotubeMedia.fromMedia(mk.Media media) {
+    final track = Track.fromJson(media.extras?["track"]);
+    return SpotubeMedia(track);
+  }
 }
 
 abstract class AudioPlayerInterface {

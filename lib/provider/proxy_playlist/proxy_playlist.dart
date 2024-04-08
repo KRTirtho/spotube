@@ -38,10 +38,7 @@ class ProxyPlaylist {
   Track? get activeTrack =>
       active == null || active == -1 ? null : tracks.elementAtOrNull(active!);
 
-  bool get isFetching =>
-      activeTrack != null &&
-      activeTrack is! SourcedTrack &&
-      activeTrack is! LocalTrack;
+  bool get isFetching => activeTrack == null && tracks.isNotEmpty;
 
   bool containsCollection(String collection) {
     return collections.contains(collection);

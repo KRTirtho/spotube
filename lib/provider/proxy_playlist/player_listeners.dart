@@ -13,7 +13,7 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
     return audioPlayer.playlistStream.listen((playlist) {
       state = state.copyWith(
         tracks: playlist.medias
-            .map((media) => (media as SpotubeMedia).track)
+            .map((media) => SpotubeMedia.fromMedia(media).track)
             .toSet(),
         active: playlist.index,
       );
