@@ -1,6 +1,7 @@
 import 'package:catcher_2/catcher_2.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:spotube/services/audio_player/mk_state_player.dart';
+import 'package:spotify/spotify.dart';
+import 'package:spotube/models/local_track.dart';
+import 'package:spotube/services/audio_player/custom_player.dart';
 // import 'package:just_audio/just_audio.dart' as ja;
 import 'dart:async';
 
@@ -13,12 +14,29 @@ import 'package:spotube/services/sourced_track/sourced_track.dart';
 part 'audio_players_streams_mixin.dart';
 part 'audio_player_impl.dart';
 
+class SpotubeMedia extends mk.Media {
+  final Track track;
+  SpotubeMedia(
+    this.track, {
+    Map<String, String>? extras,
+    super.httpHeaders,
+  }) : super(
+          track is LocalTrack
+              ? track.path
+              : "http://localhost:3000/stream/${track.id}",
+          extras: {
+            ...?extras,
+            "trackId": track.id,
+          },
+        );
+}
+
 abstract class AudioPlayerInterface {
-  final MkPlayerWithState _mkPlayer;
+  final CustomPlayer _mkPlayer;
   // final ja.AudioPlayer? _justAudxio;
 
   AudioPlayerInterface()
-      : _mkPlayer = MkPlayerWithState(
+      : _mkPlayer = CustomPlayer(
           configuration: const mk.PlayerConfiguration(
             title: "Spotube",
           ),
@@ -61,18 +79,18 @@ abstract class AudioPlayerInterface {
     }
   }
 
-  Future<AudioDevice> get selectedDevice async {
+  Future<mk.AudioDevice> get selectedDevice async {
     return _mkPlayer.state.audioDevice;
   }
 
-  Future<List<AudioDevice>> get devices async {
+  Future<List<mk.AudioDevice>> get devices async {
     return _mkPlayer.state.audioDevices;
   }
 
   bool get hasSource {
-    return _mkPlayer.playlist.medias.isNotEmpty;
+    return _mkPlayer.state.playlist.medias.isNotEmpty;
     // if (mkSupportedPlatform) {
-    //   return _mkPlayer.playlist.medias.isNotEmpty;
+    //   return _mkPlayer.state.playlist.medias.isNotEmpty;
     // } else {
     //   return _justAudio!.audioSource != null;
     // }
@@ -125,7 +143,7 @@ abstract class AudioPlayerInterface {
   }
 
   PlaybackLoopMode get loopMode {
-    return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.loopMode);
+    return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.state.playlistMode);
     // if (mkSupportedPlatform) {
     //   return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.loopMode);
     // } else {

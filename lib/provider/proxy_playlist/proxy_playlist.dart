@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
@@ -14,12 +13,11 @@ class ProxyPlaylist {
 
   factory ProxyPlaylist.fromJson(
     Map<String, dynamic> json,
-    Ref ref,
   ) {
     return ProxyPlaylist(
       List.castFrom<dynamic, Map<String, dynamic>>(
         json['tracks'] ?? <Map<String, dynamic>>[],
-      ).map((t) => _makeAppropriateTrack(t, ref)).toSet(),
+      ).map((t) => _makeAppropriateTrack(t)).toSet(),
       json['active'] as int?,
       json['collections'] == null
           ? {}
@@ -58,10 +56,8 @@ class ProxyPlaylist {
     return tracks.every(containsTrack);
   }
 
-  static Track _makeAppropriateTrack(Map<String, dynamic> track, Ref ref) {
-    if (track.containsKey("ytUri")) {
-      return SourcedTrack.fromJson(track, ref: ref);
-    } else if (track.containsKey("path")) {
+  static Track _makeAppropriateTrack(Map<String, dynamic> track) {
+    if (track.containsKey("path")) {
       return LocalTrack.fromJson(track);
     } else {
       return Track.fromJson(track);

@@ -83,7 +83,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // await _justAudio?.setSpeed(speed);
   }
 
-  Future<void> setAudioDevice(AudioDevice device) async {
+  Future<void> setAudioDevice(mk.AudioDevice device) async {
     await _mkPlayer.setAudioDevice(device);
   }
 
@@ -95,7 +95,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   // Playlist related
 
   Future<void> openPlaylist(
-    List<String> tracks, {
+    List<mk.Media> tracks, {
     bool autoPlay = true,
     int initialIndex = 0,
   }) async {
@@ -103,10 +103,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     assert(initialIndex <= tracks.length - 1);
     // if (mkSupportedPlatform) {
     await _mkPlayer.open(
-      mk.Playlist(
-        tracks.map(mk.Media.new).toList(),
-        index: initialIndex,
-      ),
+      mk.Playlist(tracks, index: initialIndex),
       play: autoPlay,
     );
     // } else {
@@ -137,7 +134,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   List<String> get sources {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.playlist.medias.map((e) => e.uri).toList();
+    return _mkPlayer.state.playlist.medias.map((e) => e.uri).toList();
     // } else {
     //   return _justAudio!.sequenceState?.effectiveSequence
     //           .map((e) => (e as ja.UriAudioSource).uri.toString())
@@ -148,9 +145,9 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
 
   String? get currentSource {
     // if (mkSupportedPlatform) {
-    if (_mkPlayer.playlist.index == -1) return null;
-    return _mkPlayer.playlist.medias
-        .elementAtOrNull(_mkPlayer.playlist.index)
+    if (_mkPlayer.state.playlist.index == -1) return null;
+    return _mkPlayer.state.playlist.medias
+        .elementAtOrNull(_mkPlayer.state.playlist.index)
         ?.uri;
     // } else {
     //   return (_justAudio?.sequenceState?.effectiveSequence
@@ -165,12 +162,13 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // if (mkSupportedPlatform) {
 
     if (loopMode == PlaybackLoopMode.all &&
-        _mkPlayer.playlist.index == _mkPlayer.playlist.medias.length - 1) {
+        _mkPlayer.state.playlist.index ==
+            _mkPlayer.state.playlist.medias.length - 1) {
       return sources.first;
     }
 
-    return _mkPlayer.playlist.medias
-        .elementAtOrNull(_mkPlayer.playlist.index + 1)
+    return _mkPlayer.state.playlist.medias
+        .elementAtOrNull(_mkPlayer.state.playlist.index + 1)
         ?.uri;
     // } else {
     //   return (_justAudio?.sequenceState?.effectiveSequence
@@ -182,13 +180,14 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   }
 
   String? get previousSource {
-    if (loopMode == PlaybackLoopMode.all && _mkPlayer.playlist.index == 0) {
+    if (loopMode == PlaybackLoopMode.all &&
+        _mkPlayer.state.playlist.index == 0) {
       return sources.last;
     }
 
     // if (mkSupportedPlatform) {
-    return _mkPlayer.playlist.medias
-        .elementAtOrNull(_mkPlayer.playlist.index - 1)
+    return _mkPlayer.state.playlist.medias
+        .elementAtOrNull(_mkPlayer.state.playlist.index - 1)
         ?.uri;
     // } else {
     //   return (_justAudio?.sequenceState?.effectiveSequence
@@ -223,20 +222,18 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // }
   }
 
-  Future<void> addTrack(String url) async {
-    final urlType = _resolveUrlType(url);
+  Future<void> addTrack(mk.Media media) async {
     // if (mkSupportedPlatform && urlType is mk.Media) {
-    await _mkPlayer.add(urlType as mk.Media);
+    await _mkPlayer.add(media);
     // } else {
     //   await (_justAudio!.audioSource as ja.ConcatenatingAudioSource)
     //       .add(urlType as ja.AudioSource);
     // }
   }
 
-  Future<void> addTrackAt(String url, int index) async {
-    final urlType = _resolveUrlType(url);
+  Future<void> addTrackAt(mk.Media media, int index) async {
     // if (mkSupportedPlatform && urlType is mk.Media) {
-    await _mkPlayer.insert(index, urlType as mk.Media);
+    await _mkPlayer.insert(index, media);
     // } else {
     //   await (_justAudio!.audioSource as ja.ConcatenatingAudioSource)
     //       .insert(index, urlType as ja.AudioSource);
@@ -270,7 +267,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     if (oldSourceIndex == -1) return;
 
     // if (mkSupportedPlatform) {
-    _mkPlayer.replace(oldSource, newSource);
+    // _mkPlayer.replace(oldSource, newSource);
     // } else {
     //   final playlist = _justAudio!.audioSource as ja.ConcatenatingAudioSource;
 

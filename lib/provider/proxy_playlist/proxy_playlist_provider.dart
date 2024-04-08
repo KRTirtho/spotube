@@ -1,17 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/models/local_track.dart';
+import 'package:spotube/extensions/track.dart';
 
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
-import 'package:spotube/provider/proxy_playlist/next_fetcher_mixin.dart';
 import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
@@ -21,12 +19,10 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
-class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
-    with NextFetcher {
+class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
   final Ref ref;
   late final AudioServices notificationService;
 
@@ -54,49 +50,22 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
     _subscriptions = [
       // These are subscription methods from player_listeners.dart
-      subscribeToSourceChanges(),
-      subscribeToPercentCompletion(),
-      subscribeToShuffleChanges(),
+      subscribeToPlaylist(),
       subscribeToSkipSponsor(),
       subscribeToScrobbleChanged(),
     ];
   }
-
-  Future<SourcedTrack?> ensureSourcePlayable(String source) async {
-    if (isPlayable(source)) return null;
-
-    final track = mapSourcesToTracks([source]).firstOrNull;
-
-    if (track == null || track is LocalTrack) {
-      return null;
-    }
-
-    final nthFetchedTrack = switch (track.runtimeType) {
-      SourcedTrack() => track as SourcedTrack,
-      _ => await SourcedTrack.fetchFromTrack(ref: ref, track: track),
-    };
-
-    await audioPlayer.replaceSource(
-      source,
-      nthFetchedTrack.url,
-    );
-
-    return nthFetchedTrack;
-  }
-
   // Basic methods for adding or removing tracks to playlist
 
   Future<void> addTrack(Track track) async {
     if (blacklist.contains(track)) return;
-    state = state.copyWith(tracks: {...state.tracks, track});
-    await audioPlayer.addTrack(makeAppropriateSource(track));
+    await audioPlayer.addTrack(SpotubeMedia(track));
   }
 
   Future<void> addTracks(Iterable<Track> tracks) async {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
-    state = state.copyWith(tracks: {...state.tracks, ...tracks});
     for (final track in tracks) {
-      await audioPlayer.addTrack(makeAppropriateSource(track));
+      await audioPlayer.addTrack(SpotubeMedia(track));
     }
   }
 
@@ -114,25 +83,17 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
   }
 
   Future<void> removeTrack(String trackId) async {
-    final track =
-        state.tracks.firstWhereOrNull((element) => element.id == trackId);
-    if (track == null) return;
-    state = state.copyWith(tracks: {...state.tracks..remove(track)});
-    final index = audioPlayer.sources.indexOf(makeAppropriateSource(track));
-    if (index == -1) return;
-    await audioPlayer.removeTrack(index);
+    final trackIndex =
+        state.tracks.toList().indexWhere((element) => element.id == trackId);
+    if (trackIndex == -1) return;
+    await audioPlayer.removeTrack(trackIndex);
   }
 
   Future<void> removeTracks(Iterable<String> tracksIds) async {
-    final tracks =
-        state.tracks.where((element) => tracksIds.contains(element.id));
-
-    state = state.copyWith(tracks: {
-      ...state.tracks..removeWhere((element) => tracksIds.contains(element.id))
-    });
+    final tracks = state.tracks.map((t) => t.id!).toList();
 
     for (final track in tracks) {
-      final index = audioPlayer.sources.indexOf(makeAppropriateSource(track));
+      final index = tracks.indexOf(track);
       if (index == -1) continue;
       await audioPlayer.removeTrack(index);
     }
@@ -144,64 +105,16 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     bool autoPlay = false,
   }) async {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
-    final indexTrack = tracks.elementAtOrNull(initialIndex) ?? tracks.first;
-
-    if (indexTrack is LocalTrack) {
-      state = state.copyWith(
-        tracks: tracks.toSet(),
-        active: initialIndex,
-        collections: {},
-      );
-      await notificationService.addTrack(indexTrack);
-      discord.updatePresence(indexTrack);
-    } else {
-      final addableTrack = await SourcedTrack.fetchFromTrack(
-        ref: ref,
-        track: tracks.elementAtOrNull(initialIndex) ?? tracks.first,
-      ).catchError((e, stackTrace) {
-        return SourcedTrack.fetchFromTrack(
-          ref: ref,
-          track: tracks.elementAtOrNull(initialIndex + 1) ?? tracks.first,
-        );
-      });
-
-      state = state.copyWith(
-        tracks: mergeTracks([addableTrack], tracks),
-        active: initialIndex,
-        collections: {},
-      );
-      await notificationService.addTrack(addableTrack);
-      discord.updatePresence(addableTrack);
-    }
 
     await audioPlayer.openPlaylist(
-      state.tracks.map(makeAppropriateSource).toList(),
+      tracks.asMediaList(),
       initialIndex: initialIndex,
       autoPlay: autoPlay,
     );
   }
 
   Future<void> jumpTo(int index) async {
-    final oldTrack =
-        mapSourcesToTracks([audioPlayer.currentSource!]).firstOrNull;
-
-    state = state.copyWith(active: index);
-    await audioPlayer.pause();
-    final track = await ensureSourcePlayable(audioPlayer.sources[index]);
-
-    if (track != null) {
-      state = state.copyWith(
-        tracks: mergeTracks([track], state.tracks),
-        active: index,
-      );
-    }
-
     await audioPlayer.jumpTo(index);
-
-    if (oldTrack != null || track != null) {
-      await notificationService.addTrack(track ?? oldTrack!);
-      discord.updatePresence(track ?? oldTrack!);
-    }
   }
 
   Future<void> jumpToTrack(Track track) async {
@@ -211,18 +124,12 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     await jumpTo(index);
   }
 
-  // TODO: add safe guards for active/playing track that needs to be moved
   Future<void> moveTrack(int oldIndex, int newIndex) async {
     if (oldIndex == newIndex ||
         newIndex < 0 ||
         oldIndex < 0 ||
         newIndex > state.tracks.length - 1 ||
         oldIndex > state.tracks.length - 1) return;
-
-    final tracks = state.tracks.toList();
-    final track = tracks.removeAt(oldIndex);
-    tracks.insert(newIndex, track);
-    state = state.copyWith(tracks: {...tracks});
 
     await audioPlayer.moveTrack(oldIndex, newIndex);
   }
@@ -233,104 +140,56 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
     }
 
     tracks = blacklist.filter(tracks).toList() as List<Track>;
-    final destIndex = state.active != null ? state.active! + 1 : 0;
-    final newTracks = state.tracks.toList()..insertAll(destIndex, tracks);
-    state = state.copyWith(tracks: newTracks.toSet());
 
-    tracks.forEachIndexed((index, track) async {
-      audioPlayer.addTrackAt(
-        makeAppropriateSource(track),
-        destIndex + index,
+    for (int i = 0; i < tracks.length; i++) {
+      final track = tracks.elementAt(i);
+
+      await audioPlayer.addTrackAt(
+        SpotubeMedia(track),
+        i + 1,
       );
-    });
+    }
   }
 
   Future<void> populateSibling() async {
-    if (state.activeTrack is SourcedTrack) {
-      final activeTrackWithSiblingsForSure =
-          await (state.activeTrack as SourcedTrack).copyWithSibling();
+    // if (state.activeTrack is SourcedTrack) {
+    //   final activeTrackWithSiblingsForSure =
+    //       await (state.activeTrack as SourcedTrack).copyWithSibling();
 
-      state = state.copyWith(
-        tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
-        active: state.tracks.toList().indexWhere(
-            (element) => element.id == activeTrackWithSiblingsForSure.id),
-      );
-    }
+    //   state = state.copyWith(
+    //     tracks: mergeTracks([activeTrackWithSiblingsForSure], state.tracks),
+    //     active: state.tracks.toList().indexWhere(
+    //         (element) => element.id == activeTrackWithSiblingsForSure.id),
+    //   );
+    // }
   }
 
   Future<void> swapSibling(SourceInfo sibling) async {
-    if (state.activeTrack is SourcedTrack) {
-      await populateSibling();
-      final newTrack =
-          await (state.activeTrack as SourcedTrack).swapWithSibling(sibling);
-      if (newTrack == null) return;
-      state = state.copyWith(
-        tracks: mergeTracks([newTrack], state.tracks),
-        active: state.tracks
-            .toList()
-            .indexWhere((element) => element.id == newTrack.id),
-      );
-      await audioPlayer.pause();
-      await audioPlayer.replaceSource(
-        audioPlayer.currentSource!,
-        makeAppropriateSource(newTrack),
-      );
-    }
+    // if (state.activeTrack is SourcedTrack) {
+    //   await populateSibling();
+    //   final newTrack =
+    //       await (state.activeTrack as SourcedTrack).swapWithSibling(sibling);
+    //   if (newTrack == null) return;
+    //   state = state.copyWith(
+    //     tracks: mergeTracks([newTrack], state.tracks),
+    //     active: state.tracks
+    //         .toList()
+    //         .indexWhere((element) => element.id == newTrack.id),
+    //   );
+    //   await audioPlayer.pause();
+    //   await audioPlayer.replaceSource(
+    //     audioPlayer.currentSource!,
+    //     makeAppropriateSource(newTrack),
+    //   );
+    // }
   }
 
   Future<void> next() async {
-    if (audioPlayer.nextSource == null) return;
-    final oldTrack = mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
-
-    state = state.copyWith(
-      active: state.tracks
-          .toList()
-          .indexWhere((element) => element.id == oldTrack?.id),
-    );
-
-    await audioPlayer.pause();
-    final track = await ensureSourcePlayable(audioPlayer.nextSource!);
-
-    if (track != null) {
-      state = state.copyWith(
-        tracks: mergeTracks([track], state.tracks),
-        active: state.tracks
-            .toList()
-            .indexWhere((element) => element.id == track.id),
-      );
-    }
     await audioPlayer.skipToNext();
-
-    if (oldTrack != null || track != null) {
-      await notificationService.addTrack(track ?? oldTrack!);
-      discord.updatePresence(track ?? oldTrack!);
-    }
   }
 
   Future<void> previous() async {
-    if (audioPlayer.previousSource == null) return;
-    final oldTrack =
-        mapSourcesToTracks([audioPlayer.previousSource!]).firstOrNull;
-    state = state.copyWith(
-      active: state.tracks
-          .toList()
-          .indexWhere((element) => element.id == oldTrack?.id),
-    );
-    await audioPlayer.pause();
-    final track = await ensureSourcePlayable(audioPlayer.previousSource!);
-    if (track != null) {
-      state = state.copyWith(
-        tracks: mergeTracks([track], state.tracks),
-        active: state.tracks
-            .toList()
-            .indexWhere((element) => element.id == track.id),
-      );
-    }
     await audioPlayer.skipToPrevious();
-    if (oldTrack != null || track != null) {
-      await notificationService.addTrack(track ?? oldTrack!);
-      discord.updatePresence(track ?? oldTrack!);
-    }
   }
 
   Future<void> stop() async {
@@ -385,7 +244,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist>
 
   @override
   FutureOr<ProxyPlaylist> fromJson(Map<String, dynamic> json) {
-    return ProxyPlaylist.fromJson(json, ref);
+    return ProxyPlaylist.fromJson(json);
   }
 
   @override
