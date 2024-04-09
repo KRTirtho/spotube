@@ -4,6 +4,7 @@ import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
@@ -38,19 +39,21 @@ final volumeProvider = StateProvider<double>(
   (ref) => 1.0,
 );
 
+final logger = getLogger('ConnectNotifier');
+
 class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
   @override
   build() async {
     try {
       final connectClients = ref.watch(connectClientsProvider);
-      print('Building ConnectNotifier');
 
       if (connectClients.asData?.value.resolvedService == null) return null;
 
       final service = connectClients.asData!.value.resolvedService!;
 
-      print(
-          'Connecting to ${service.name}: ws://${service.host}:${service.port}/ws');
+      logger.t(
+        '♾️ Connecting to ${service.name}: ws://${service.host}:${service.port}/ws',
+      );
 
       final channel = WebSocketChannel.connect(
         Uri.parse('ws://${service.host}:${service.port}/ws'),
@@ -58,8 +61,9 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
 
       await channel.ready;
 
-      print(
-          'Connected to ${service.name}: ws://${service.host}:${service.port}/ws');
+      logger.t(
+        '✅ Connected to ${service.name}: ws://${service.host}:${service.port}/ws',
+      );
 
       final subscription = channel.stream.listen(
         (message) {
