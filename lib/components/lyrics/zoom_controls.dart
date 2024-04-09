@@ -17,7 +17,7 @@ class ZoomControls extends HookWidget {
   final String unit;
 
   const ZoomControls({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChanged,
     this.min,
@@ -27,7 +27,7 @@ class ZoomControls extends HookWidget {
     this.decreaseIcon = const Icon(SpotubeIcons.zoomOut),
     this.direction = Axis.horizontal,
     this.unit = "%",
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

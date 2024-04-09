@@ -1,6 +1,203 @@
 {
+  "ar": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "bn": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "ca": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "de": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "es": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "fa": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "fr": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "hi": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "it": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "ja": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "ko": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "ne": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "nl": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "pl": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "pt": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "ru": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "tr": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "uk": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
   "vi": [
     "friends",
-    "no_lyrics_available"
+    "no_lyrics_available",
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
+  ],
+
+  "zh": [
+    "enable_connect",
+    "enable_connect_description",
+    "devices",
+    "select",
+    "connect_client_alert",
+    "this_device",
+    "remote"
   ]
 }

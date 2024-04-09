@@ -10,7 +10,7 @@ import 'package:spotube/components/shared/tracks_view/sections/body/track_view_b
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 
 class TrackView extends HookConsumerWidget {
-  const TrackView({Key? key}) : super(key: key);
+  const TrackView({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

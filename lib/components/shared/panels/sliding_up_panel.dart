@@ -146,7 +146,7 @@ class SlidingUpPanel extends StatefulWidget {
   final BoxDecoration? panelDecoration;
 
   const SlidingUpPanel(
-      {Key? key,
+      {super.key,
       this.body,
       this.collapsed,
       this.minHeight = 100.0,
@@ -176,8 +176,7 @@ class SlidingUpPanel extends StatefulWidget {
       this.panelBuilder})
       : assert(panelBuilder != null),
         assert(0 <= backdropOpacity && backdropOpacity <= 1.0),
-        assert(snapPoint == null || 0 < snapPoint && snapPoint < 1.0),
-        super(key: key);
+        assert(snapPoint == null || 0 < snapPoint && snapPoint < 1.0);
 
   @override
   SlidingUpPanelState createState() => SlidingUpPanelState();

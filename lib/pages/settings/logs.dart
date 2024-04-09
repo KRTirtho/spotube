@@ -11,7 +11,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
 
 class LogsPage extends HookWidget {
-  const LogsPage({Key? key}) : super(key: key);
+  const LogsPage({super.key});
 
   List<({DateTime? date, String body})> parseLogs(String raw) {
     return raw

@@ -62,7 +62,7 @@ class BlackListNotifier
 
     final containsTrackArtists = track.artists?.any(
           (artist) => state.contains(
-            BlacklistedElement.artist(artist.id!, artist.name!),
+            BlacklistedElement.artist(artist.id!, artist.name ?? "Spotify"),
           ),
         ) ??
         false;

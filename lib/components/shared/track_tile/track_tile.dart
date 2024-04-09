@@ -9,14 +9,16 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/hover_builder.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
@@ -28,25 +30,26 @@ class TrackTile extends HookConsumerWidget {
   final VoidCallback? onLongPress;
   final bool userPlaylist;
   final String? playlistId;
+  final ProxyPlaylist playlist;
 
   final List<Widget>? leadingActions;
 
   const TrackTile({
-    Key? key,
+    super.key,
     this.index,
     required this.track,
     this.selected = false,
+    required this.playlist,
     this.onTap,
     this.onLongPress,
     this.onChanged,
     this.userPlaylist = false,
     this.playlistId,
     this.leadingActions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final theme = Theme.of(context);
 
     final blacklist = ref.watch(BlackListNotifier.provider);
@@ -63,9 +66,9 @@ class TrackTile extends HookConsumerWidget {
 
     final showOptionCbRef = useRef<ValueChanged<RelativeRect>?>(null);
 
-    final isPlaying = track.id == playlist.activeTrack?.id;
-
     final isLoading = useState(false);
+
+    final isPlaying = playlist.activeTrack?.id == track.id;
 
     final isSelected = isPlaying || isLoading.value;
 
@@ -135,8 +138,7 @@ class TrackTile extends HookConsumerWidget {
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: UniversalImage(
-                            path: TypeConversionUtils.image_X_UrlString(
-                              track.album?.images,
+                            path: (track.album?.images).asUrlString(
                               placeholder: ImagePlaceholder.albumArt,
                             ),
                             fit: BoxFit.cover,
@@ -230,16 +232,12 @@ class TrackTile extends HookConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: track is LocalTrack
                     ? Text(
-                        TypeConversionUtils.artists_X_String<Artist>(
-                          track.artists ?? [],
-                        ),
+                        track.artists?.asString() ?? '',
                       )
                     : ClipRect(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxHeight: 40),
-                          child: TypeConversionUtils.artists_X_ClickableArtists(
-                            track.artists ?? [],
-                          ),
+                          child: ArtistLink(artists: track.artists ?? []),
                         ),
                       ),
               ),

@@ -5,7 +5,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class PipedDownDialog extends HookConsumerWidget {
-  const PipedDownDialog({Key? key}) : super(key: key);
+  const PipedDownDialog({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

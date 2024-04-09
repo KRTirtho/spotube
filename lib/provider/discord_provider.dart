@@ -4,9 +4,9 @@ import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class Discord extends ChangeNotifier {
   final DiscordRPC? discordRPC;
@@ -23,8 +23,7 @@ class Discord extends ChangeNotifier {
 
   void updatePresence(Track track) {
     clear();
-    final artistNames =
-        TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[]);
+    final artistNames = track.artists?.asString() ?? "";
     discordRPC?.updatePresence(
       DiscordPresence(
         details: "Song: ${track.name} by $artistNames",

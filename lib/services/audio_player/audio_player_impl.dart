@@ -83,6 +83,10 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     // await _justAudio?.setSpeed(speed);
   }
 
+  Future<void> setAudioDevice(AudioDevice device) async {
+    await _mkPlayer.setAudioDevice(device);
+  }
+
   Future<void> dispose() async {
     await _mkPlayer.dispose();
     // await _justAudio?.dispose();

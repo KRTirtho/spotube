@@ -137,7 +137,7 @@ class MobileAudioService extends BaseAudioHandler {
       shuffleMode: await audioPlayer.isShuffled == true
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,
-      repeatMode: (await audioPlayer.loopMode).toAudioServiceRepeatMode(),
+      repeatMode: (audioPlayer.loopMode).toAudioServiceRepeatMode(),
       processingState: playlist.isFetching == true
           ? AudioProcessingState.loading
           : AudioProcessingState.ready,
