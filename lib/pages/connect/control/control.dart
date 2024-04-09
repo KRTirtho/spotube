@@ -18,6 +18,33 @@ import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/utils/service_utils.dart';
 
+class RemotePlayerQueue extends ConsumerWidget {
+  const RemotePlayerQueue({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final connectNotifier = ref.watch(connectProvider.notifier);
+    final playlist = ref.watch(queueProvider);
+    return PlayerQueue(
+      playlist: playlist,
+      floating: true,
+      onJump: (track) async {
+        final index = playlist.tracks.toList().indexOf(track);
+        connectNotifier.jumpTo(index);
+      },
+      onRemove: (track) async {
+        await connectNotifier.removeTrack(track);
+      },
+      onStop: () async => connectNotifier.stop(),
+      onReorder: (oldIndex, newIndex) async {
+        await connectNotifier.reorder(
+          (oldIndex: oldIndex, newIndex: newIndex),
+        );
+      },
+    );
+  }
+}
+
 class ConnectControlPage extends HookConsumerWidget {
   const ConnectControlPage({super.key});
 
@@ -49,27 +76,6 @@ class ConnectControlPage extends HookConsumerWidget {
       foregroundColor: colorScheme.onPrimaryContainer,
       minimumSize: const Size(28, 28),
     );
-
-    final playerQueue = Consumer(builder: (context, ref, _) {
-      final playlist = ref.watch(queueProvider);
-      return PlayerQueue(
-        playlist: playlist,
-        floating: true,
-        onJump: (track) async {
-          final index = playlist.tracks.toList().indexOf(track);
-          connectNotifier.jumpTo(index);
-        },
-        onRemove: (track) async {
-          await connectNotifier.removeTrack(track);
-        },
-        onStop: () async => connectNotifier.stop(),
-        onReorder: (oldIndex, newIndex) async {
-          await connectNotifier.reorder(
-            (oldIndex: oldIndex, newIndex: newIndex),
-          );
-        },
-      );
-    });
 
     ref.listen(connectClientsProvider, (prev, next) {
       if (next.asData?.value.resolvedService == null) {
@@ -292,7 +298,7 @@ class ConnectControlPage extends HookConsumerWidget {
                               showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
-                                  return playerQueue;
+                                  return const RemotePlayerQueue();
                                 },
                               );
                             },
@@ -304,8 +310,8 @@ class ConnectControlPage extends HookConsumerWidget {
               ),
               if (constrains.lgAndUp) ...[
                 const VerticalDivider(thickness: 1),
-                Expanded(
-                  child: playerQueue,
+                const Expanded(
+                  child: RemotePlayerQueue(),
                 ),
               ]
             ],

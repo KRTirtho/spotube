@@ -64,10 +64,10 @@ class ConnectClientsNotifier extends AsyncNotifier<ConnectClientsState> {
                   .where((s) => s.name != event.service!.name)
                   .toList(),
               discovery: state.value!.discovery,
-              resolvedService:
-                  event.service?.name == state.value!.resolvedService!.name
-                      ? null
-                      : state.value!.resolvedService,
+              resolvedService: state.value?.resolvedService != null &&
+                      event.service?.name == state.value?.resolvedService?.name
+                  ? null
+                  : state.value!.resolvedService,
             ),
           );
           break;

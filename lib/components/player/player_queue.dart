@@ -53,8 +53,7 @@ class PlayerQueue extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final mediaQuery = MediaQuery.of(context);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+
     final controller = useAutoScrollController();
     final searchText = useState('');
 
@@ -241,7 +240,7 @@ class PlayerQueue extends HookConsumerWidget {
                                 ],
                               ),
                               onPressed: () {
-                                playlistNotifier.stop();
+                                onStop();
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -251,9 +250,7 @@ class PlayerQueue extends HookConsumerWidget {
                       ),
                       const SliverGap(10),
                       SliverReorderableList(
-                        onReorder: (oldIndex, newIndex) {
-                          playlistNotifier.moveTrack(oldIndex, newIndex);
-                        },
+                        onReorder: onReorder,
                         itemCount: filteredTracks.length,
                         onReorderStart: (index) {
                           HapticFeedback.selectionClick();
@@ -277,7 +274,7 @@ class PlayerQueue extends HookConsumerWidget {
                                   if (playlist.activeTrack?.id == track.id) {
                                     return;
                                   }
-                                  await playlistNotifier.jumpToTrack(track);
+                                  await onJump(track);
                                 },
                                 leadingActions: [
                                   if (!isSearching.value &&
