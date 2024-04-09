@@ -51,6 +51,7 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
       // These are subscription methods from player_listeners.dart
       subscribeToPlaylist(),
       subscribeToSkipSponsor(),
+      subscribeToPosition(),
       subscribeToScrobbleChanged(),
     ];
   }

@@ -161,7 +161,7 @@ class PlayerQueue extends HookConsumerWidget {
                         snap: false,
                         backgroundColor: Colors.transparent,
                         elevation: 0,
-                        automaticallyImplyLeading: !isSearching.value,
+                        automaticallyImplyLeading: false,
                         title: BackdropFilter(
                           filter: ImageFilter.blur(
                             sigmaX: 10,

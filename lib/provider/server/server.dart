@@ -13,9 +13,9 @@ import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
+import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class PlaybackServer {
   final Ref ref;
@@ -38,7 +38,6 @@ class PlaybackServer {
 
     if (kDebugMode) {
       pipeline.addMiddleware(logRequests());
-      dio.interceptors.add(LogInterceptor());
     }
 
     serve(pipeline.addHandler(router.call), InternetAddress.loopbackIPv4, port)
@@ -58,13 +57,15 @@ class PlaybackServer {
     try {
       final track =
           playlist.tracks.firstWhere((element) => element.id == trackId);
-      final sourcedTrack =
-          await SourcedTrack.fetchFromTrack(track: track, ref: ref);
+      final activeSourcedTrack = ref.read(activeSourcedTrackProvider);
+      final sourcedTrack = activeSourcedTrack?.id == track.id
+          ? activeSourcedTrack
+          : await ref.read(sourcedTrackProvider(track).future);
 
       ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
 
       final res = await dio.get(
-        sourcedTrack.url,
+        sourcedTrack!.url,
         options: Options(
           headers: {
             ...request.headers,
@@ -75,13 +76,14 @@ class PlaybackServer {
             "Connection": "keep-alive",
           },
           responseType: ResponseType.stream,
+          validateStatus: (status) => status! < 500,
         ),
       );
 
       final audioStream = res.data?.stream as Stream<Uint8List>?;
 
       return Response(
-        200,
+        res.statusCode!,
         body: audioStream,
         context: {
           "shelf.io.buffer_output": false,

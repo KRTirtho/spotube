@@ -6,6 +6,7 @@ import 'package:catcher_2/catcher_2.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/skip_segments.dart';
+import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
@@ -60,6 +61,21 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
       } catch (e, stack) {
         Catcher2.reportCheckedError(e, stack);
       }
+    });
+  }
+
+  StreamSubscription subscribeToPosition() {
+    String lastTrack = ""; // used to prevent multiple calls to the same track
+    return audioPlayer.positionStream.listen((event) async {
+      if (event < const Duration(seconds: 3) ||
+          state.active == null ||
+          state.active == state.tracks.length - 1) return;
+      final nextTrack = state.tracks.elementAt(state.active! + 1);
+
+      if (lastTrack == nextTrack.id) return;
+
+      await ref.read(sourcedTrackProvider(nextTrack).future);
+      lastTrack = nextTrack.id!;
     });
   }
 
