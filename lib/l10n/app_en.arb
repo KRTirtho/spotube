@@ -313,5 +313,12 @@
   "help_project_grow_description": "Spotube is an open-source project. You can help this project grow by contributing to the project, reporting bugs, or suggesting new features.",
   "contribute_on_github": "Contribute on GitHub",
   "donate_on_open_collective": "Donate on Open Collective",
-  "browse_anonymously": "Browse Anonymously"
+  "browse_anonymously": "Browse Anonymously",
+  "enable_connect": "Enable Connect",
+  "enable_connect_description": "Control Spotube from other devices",
+  "devices": "Devices",
+  "select": "Select",
+  "connect_client_alert": "You're being controlled by {client}",
+  "this_device": "This Device",
+  "remote": "Remote"
 }

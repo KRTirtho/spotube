@@ -26,8 +26,10 @@ class PageWindowTitleBar extends StatefulHookConsumerWidget
   final double? titleWidth;
   final Widget? title;
 
+  final bool _sliver;
+
   const PageWindowTitleBar({
-    Key? key,
+    super.key,
     this.actions,
     this.title,
     this.toolbarOpacity = 1,
@@ -42,7 +44,38 @@ class PageWindowTitleBar extends StatefulHookConsumerWidget
     this.titleTextStyle,
     this.titleWidth,
     this.toolbarTextStyle,
-  }) : super(key: key);
+  })  : _sliver = false,
+        pinned = false,
+        floating = false,
+        snap = false,
+        stretch = false;
+
+  final bool pinned;
+  final bool floating;
+  final bool snap;
+  final bool stretch;
+
+  const PageWindowTitleBar.sliver({
+    super.key,
+    this.actions,
+    this.title,
+    this.backgroundColor,
+    this.actionsIconTheme,
+    this.automaticallyImplyLeading = false,
+    this.centerTitle,
+    this.foregroundColor,
+    this.leading,
+    this.leadingWidth,
+    this.titleSpacing,
+    this.titleTextStyle,
+    this.titleWidth,
+    this.toolbarTextStyle,
+    this.pinned = false,
+    this.floating = false,
+    this.snap = false,
+    this.stretch = false,
+  })  : _sliver = true,
+        toolbarOpacity = 1;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -63,6 +96,48 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+
+    if (widget._sliver) {
+      return SliverLayoutBuilder(
+        builder: (context, constraints) {
+          final hasFullscreen =
+              mediaQuery.size.width == constraints.crossAxisExtent;
+          final hasLeadingOrCanPop =
+              widget.leading != null || Navigator.canPop(context);
+
+          return SliverPadding(
+            padding: EdgeInsets.only(
+              left: DesktopTools.platform.isMacOS &&
+                      hasFullscreen &&
+                      hasLeadingOrCanPop
+                  ? 65
+                  : 0,
+            ),
+            sliver: SliverAppBar(
+              leading: widget.leading,
+              automaticallyImplyLeading: widget.automaticallyImplyLeading,
+              actions: [
+                ...?widget.actions,
+                WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
+              ],
+              backgroundColor: widget.backgroundColor,
+              foregroundColor: widget.foregroundColor,
+              actionsIconTheme: widget.actionsIconTheme,
+              centerTitle: widget.centerTitle,
+              titleSpacing: widget.titleSpacing,
+              leadingWidth: widget.leadingWidth,
+              toolbarTextStyle: widget.toolbarTextStyle,
+              titleTextStyle: widget.titleTextStyle,
+              title: widget.title,
+              pinned: widget.pinned,
+              floating: widget.floating,
+              snap: widget.snap,
+              stretch: widget.stretch,
+            ),
+          );
+        },
+      );
+    }
 
     return LayoutBuilder(builder: (context, constrains) {
       final hasFullscreen = mediaQuery.size.width == constrains.maxWidth;
@@ -107,9 +182,9 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
 class WindowTitleBarButtons extends HookConsumerWidget {
   final Color? foregroundColor;
   const WindowTitleBarButtons({
-    Key? key,
+    super.key,
     this.foregroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -277,14 +352,13 @@ class WindowButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   WindowButton(
-      {Key? key,
+      {super.key,
       WindowButtonColors? colors,
       this.builder,
       @required this.iconBuilder,
       this.padding,
       this.onPressed,
-      this.animate = false})
-      : super(key: key) {
+      this.animate = false}) {
     this.colors = colors ?? _defaultButtonColors;
   }
 
@@ -350,49 +424,30 @@ class WindowButton extends StatelessWidget {
 
 class MinimizeWindowButton extends WindowButton {
   MinimizeWindowButton(
-      {Key? key,
-      WindowButtonColors? colors,
-      VoidCallback? onPressed,
-      bool? animate})
+      {super.key, super.colors, super.onPressed, bool? animate})
       : super(
-          key: key,
-          colors: colors,
           animate: animate ?? false,
           iconBuilder: (buttonContext) =>
               MinimizeIcon(color: buttonContext.iconColor),
-          onPressed: onPressed,
         );
 }
 
 class MaximizeWindowButton extends WindowButton {
   MaximizeWindowButton(
-      {Key? key,
-      WindowButtonColors? colors,
-      VoidCallback? onPressed,
-      bool? animate})
+      {super.key, super.colors, super.onPressed, bool? animate})
       : super(
-          key: key,
-          colors: colors,
           animate: animate ?? false,
           iconBuilder: (buttonContext) =>
               MaximizeIcon(color: buttonContext.iconColor),
-          onPressed: onPressed,
         );
 }
 
 class RestoreWindowButton extends WindowButton {
-  RestoreWindowButton(
-      {Key? key,
-      WindowButtonColors? colors,
-      VoidCallback? onPressed,
-      bool? animate})
+  RestoreWindowButton({super.key, super.colors, super.onPressed, bool? animate})
       : super(
-          key: key,
-          colors: colors,
           animate: animate ?? false,
           iconBuilder: (buttonContext) =>
               RestoreIcon(color: buttonContext.iconColor),
-          onPressed: onPressed,
         );
 }
 
@@ -404,17 +459,12 @@ final _defaultCloseButtonColors = WindowButtonColors(
 
 class CloseWindowButton extends WindowButton {
   CloseWindowButton(
-      {Key? key,
-      WindowButtonColors? colors,
-      VoidCallback? onPressed,
-      bool? animate})
+      {super.key, WindowButtonColors? colors, super.onPressed, bool? animate})
       : super(
-          key: key,
           colors: colors ?? _defaultCloseButtonColors,
           animate: animate ?? false,
           iconBuilder: (buttonContext) =>
               CloseIcon(color: buttonContext.iconColor),
-          onPressed: onPressed,
         );
 }
 
@@ -423,7 +473,7 @@ class CloseWindowButton extends WindowButton {
 /// Close
 class CloseIcon extends StatelessWidget {
   final Color color;
-  const CloseIcon({Key? key, required this.color}) : super(key: key);
+  const CloseIcon({super.key, required this.color});
   @override
   Widget build(BuildContext context) => Align(
         alignment: Alignment.topLeft,
@@ -444,13 +494,13 @@ class CloseIcon extends StatelessWidget {
 /// Maximize
 class MaximizeIcon extends StatelessWidget {
   final Color color;
-  const MaximizeIcon({Key? key, required this.color}) : super(key: key);
+  const MaximizeIcon({super.key, required this.color});
   @override
   Widget build(BuildContext context) => _AlignedPaint(_MaximizePainter(color));
 }
 
 class _MaximizePainter extends _IconPainter {
-  _MaximizePainter(Color color) : super(color);
+  _MaximizePainter(super.color);
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = getPaint(color);
@@ -462,15 +512,15 @@ class _MaximizePainter extends _IconPainter {
 class RestoreIcon extends StatelessWidget {
   final Color color;
   const RestoreIcon({
-    Key? key,
+    super.key,
     required this.color,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) => _AlignedPaint(_RestorePainter(color));
 }
 
 class _RestorePainter extends _IconPainter {
-  _RestorePainter(Color color) : super(color);
+  _RestorePainter(super.color);
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = getPaint(color);
@@ -487,13 +537,13 @@ class _RestorePainter extends _IconPainter {
 /// Minimize
 class MinimizeIcon extends StatelessWidget {
   final Color color;
-  const MinimizeIcon({Key? key, required this.color}) : super(key: key);
+  const MinimizeIcon({super.key, required this.color});
   @override
   Widget build(BuildContext context) => _AlignedPaint(_MinimizePainter(color));
 }
 
 class _MinimizePainter extends _IconPainter {
-  _MinimizePainter(Color color) : super(color);
+  _MinimizePainter(super.color);
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = getPaint(color);
@@ -512,7 +562,7 @@ abstract class _IconPainter extends CustomPainter {
 }
 
 class _AlignedPaint extends StatelessWidget {
-  const _AlignedPaint(this.painter, {Key? key}) : super(key: key);
+  const _AlignedPaint(this.painter);
   final CustomPainter painter;
 
   @override
@@ -547,8 +597,7 @@ T? _ambiguate<T>(T? value) => value;
 class MouseStateBuilder extends StatefulWidget {
   final MouseStateBuilderCB builder;
   final VoidCallback? onPressed;
-  const MouseStateBuilder({Key? key, required this.builder, this.onPressed})
-      : super(key: key);
+  const MouseStateBuilder({super.key, required this.builder, this.onPressed});
   @override
   _MouseStateBuilderState createState() => _MouseStateBuilderState();
 }

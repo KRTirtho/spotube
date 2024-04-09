@@ -2,11 +2,15 @@
   "cmake.configureOnOpen": false,
   "cSpell.words": [
     "acousticness",
+    "Amoled",
+    "Buildless",
     "danceability",
+    "fuzzywuzzy",
     "instrumentalness",
     "Mpris",
     "riverpod",
     "Scrobblenaut",
+    "skeletonizer",
     "speechiness",
     "Spotube",
     "winget"

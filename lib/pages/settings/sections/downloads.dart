@@ -10,7 +10,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SettingsDownloadsSection extends HookConsumerWidget {
-  const SettingsDownloadsSection({Key? key}) : super(key: key);
+  const SettingsDownloadsSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

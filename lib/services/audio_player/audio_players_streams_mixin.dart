@@ -140,4 +140,12 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     //       .cast<String>();
     // }
   }
+
+  Stream<List<AudioDevice>> get devicesStream =>
+      _mkPlayer.stream.audioDevices.asBroadcastStream();
+
+  Stream<AudioDevice> get selectedDeviceStream =>
+      _mkPlayer.stream.audioDevice.asBroadcastStream();
+
+  Stream<String> get errorStream => _mkPlayer.stream.error;
 }

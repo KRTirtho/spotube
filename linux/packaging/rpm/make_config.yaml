@@ -13,6 +13,9 @@ requires:
   - libsecret
   - libnotify
   - xdg-user-dirs
+  - avahi
+  - mdns-scan
+  - nss-mdns
 
 display_name: Spotube
 

@@ -15,14 +15,14 @@ class LinkText<T> extends StatelessWidget {
   const LinkText(
     this.text,
     this.route, {
-    Key? key,
+    super.key,
     this.textAlign,
     this.extra,
     this.overflow,
     this.style = const TextStyle(),
     this.maxLines,
     this.push = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

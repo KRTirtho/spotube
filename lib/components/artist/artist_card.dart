@@ -6,22 +6,21 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ArtistCard extends HookConsumerWidget {
   final Artist artist;
-  const ArtistCard(this.artist, {Key? key}) : super(key: key);
+  const ArtistCard(this.artist, {super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final backgroundImage = UniversalImage.imageProvider(
-      TypeConversionUtils.image_X_UrlString(
-        artist.images,
+      artist.images.asUrlString(
         placeholder: ImagePlaceholder.artist,
       ),
     );

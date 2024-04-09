@@ -21,13 +21,14 @@ class DownloadTask {
       completer.complete(status.value);
     }
 
-    var listener;
-    listener = () {
+    void listener() {
       if (status.value.isCompleted) {
         completer.complete(status.value);
         status.removeListener(listener);
       }
-    };
+    }
+
+    ;
 
     status.addListener(listener);
 

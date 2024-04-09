@@ -6,7 +6,7 @@ abstract class FakeData {
   static final Image image = Image()
     ..height = 1
     ..width = 1
-    ..url = "url";
+    ..url = "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg";
 
   static final Followers followers = Followers()
     ..href = "text"

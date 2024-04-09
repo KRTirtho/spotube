@@ -21,7 +21,7 @@ import 'package:spotube/utils/platform.dart';
 
 class MiniLyricsPage extends HookConsumerWidget {
   final Size prevSize;
-  const MiniLyricsPage({Key? key, required this.prevSize}) : super(key: key);
+  const MiniLyricsPage({super.key, required this.prevSize});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -221,7 +221,18 @@ class MiniLyricsPage extends HookConsumerWidget {
                                       MediaQuery.of(context).size.height * .7,
                                 ),
                                 builder: (context) {
-                                  return const PlayerQueue(floating: true);
+                                  return Consumer(builder: (context, ref, _) {
+                                    final playlist = ref
+                                        .watch(ProxyPlaylistNotifier.provider);
+
+                                    return PlayerQueue
+                                        .fromProxyPlaylistNotifier(
+                                      floating: true,
+                                      playlist: playlist,
+                                      notifier: ref
+                                          .read(ProxyPlaylistNotifier.notifier),
+                                    );
+                                  });
                                 },
                               );
                             }

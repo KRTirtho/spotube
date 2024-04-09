@@ -5,25 +5,26 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/services/queries/queries.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/extensions/image.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
+
 import 'package:url_launcher/url_launcher_string.dart';
 
-class ArtistPageFooter extends HookConsumerWidget {
+class ArtistPageFooter extends ConsumerWidget {
   final Artist artist;
-  const ArtistPageFooter({Key? key, required this.artist}) : super(key: key);
+  const ArtistPageFooter({super.key, required this.artist});
 
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final artistImage = TypeConversionUtils.image_X_UrlString(
-      artist.images,
+    final artistImage = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
     );
-    final summary = useQueries.artist.wikipediaSummary(artist);
-    if (summary.hasError || !summary.hasData) return const SizedBox.shrink();
+    final summary = ref.watch(artistWikipediaSummaryProvider(artist));
+    if (summary.asData?.value == null) return const SizedBox.shrink();
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: mediaQuery.smAndDown
@@ -38,9 +39,9 @@ class ArtistPageFooter extends HookConsumerWidget {
             BlendMode.darken,
           ),
           image: UniversalImage.imageProvider(
-            summary.data!.thumbnail?.source_ ?? artistImage,
-            height: summary.data!.thumbnail?.height.toDouble(),
-            width: summary.data!.thumbnail?.width.toDouble(),
+            summary.asData?.value!.thumbnail?.source_ ?? artistImage,
+            height: summary.asData?.value!.thumbnail?.height.toDouble(),
+            width: summary.asData?.value!.thumbnail?.width.toDouble(),
           ),
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -69,7 +70,7 @@ class ArtistPageFooter extends HookConsumerWidget {
             ),
             const TextSpan(text: '\n\n'),
             TextSpan(
-              text: summary.data!.extract,
+              text: summary.asData?.value!.extract,
             ),
             TextSpan(
               text: '\n...read more at wikipedia',
@@ -81,7 +82,7 @@ class ArtistPageFooter extends HookConsumerWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
                   await launchUrlString(
-                    "http://en.wikipedia.org/wiki?curid=${summary.data?.pageid}",
+                    "http://en.wikipedia.org/wiki?curid=${summary.asData?.value?.pageid}",
                   );
                 },
             ),

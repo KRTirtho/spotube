@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ShimmerLyrics extends HookWidget {
-  const ShimmerLyrics({Key? key}) : super(key: key);
+  const ShimmerLyrics({super.key});
 
   @override
   Widget build(BuildContext context) {

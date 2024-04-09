@@ -43,8 +43,8 @@ class PlaybuttonCard extends HookWidget {
     this.onAddToQueuePressed,
     this.onTap,
     this.isOwner = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

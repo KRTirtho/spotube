@@ -5,7 +5,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
 class ConfirmDownloadDialog extends StatelessWidget {
-  const ConfirmDownloadDialog({Key? key}) : super(key: key);
+  const ConfirmDownloadDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class ConfirmDownloadDialog extends StatelessWidget {
 
 class BulletPoint extends StatelessWidget {
   final String text;
-  const BulletPoint(this.text, {Key? key}) : super(key: key);
+  const BulletPoint(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {

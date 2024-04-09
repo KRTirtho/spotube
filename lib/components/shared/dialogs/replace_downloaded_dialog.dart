@@ -8,8 +8,7 @@ final replaceDownloadedFileState = StateProvider<bool?>((ref) => null);
 
 class ReplaceDownloadedDialog extends ConsumerWidget {
   final Track track;
-  const ReplaceDownloadedDialog({required this.track, Key? key})
-      : super(key: key);
+  const ReplaceDownloadedDialog({required this.track, super.key});
 
   @override
   Widget build(BuildContext context, ref) {

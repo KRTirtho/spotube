@@ -11,7 +11,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 
 class BlackListPage extends HookConsumerWidget {
-  const BlackListPage({Key? key}) : super(key: key);
+  const BlackListPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

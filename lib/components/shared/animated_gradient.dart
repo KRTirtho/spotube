@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class AnimateGradient extends HookWidget {
   const AnimateGradient({
-    Key? key,
+    super.key,
     required this.primaryColors,
     required this.secondaryColors,
     this.child,
@@ -17,8 +17,7 @@ class AnimateGradient extends HookWidget {
     this.reverse = true,
   })  : assert(primaryColors.length >= 2),
         assert(primaryColors.length == secondaryColors.length),
-        _controller = controller,
-        super(key: key);
+        _controller = controller;
 
   /// [controller]: pass this to have a fine control over the [Animation]
   final AnimationController? _controller;

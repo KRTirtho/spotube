@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrobblenaut/scrobblenaut.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class ScrobblerState {
   final String username;
@@ -85,14 +85,14 @@ class ScrobblerNotifier extends PersistedStateNotifier<ScrobblerState?> {
 
   Future<void> love(Track track) async {
     await state?.scrobblenaut.track.love(
-      artist: TypeConversionUtils.artists_X_String(track.artists!),
+      artist: track.artists!.asString(),
       track: track.name!,
     );
   }
 
   Future<void> unlove(Track track) async {
     await state?.scrobblenaut.track.unLove(
-      artist: TypeConversionUtils.artists_X_String(track.artists!),
+      artist: track.artists!.asString(),
       track: track.name!,
     );
   }
