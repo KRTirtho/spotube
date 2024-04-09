@@ -170,7 +170,7 @@ brew install --cask spotube
         <td>IOS - <a href="https://github.com/KRTirtho/spotube/releases/download/nightly/Spotube-iOS.ipa">IOS</a>
                 </td>
                 <td>
-                    <p><code>IOS Install Spotube</code></p>
+                    <p>IOS Install Spotube</p>
                 </td>
             </tr>
 </table>
