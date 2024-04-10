@@ -80,7 +80,24 @@ class PlaybackServer {
         ),
       );
 
-      final audioStream = res.data?.stream as Stream<Uint8List>?;
+      final audioStream =
+          (res.data?.stream as Stream<Uint8List>?)?.asBroadcastStream();
+
+      // if (res.statusCode! > 300) {
+      // debugPrint(
+      //   "[[Request]]\n"
+      //   "URI: ${res.requestOptions.uri}\n"
+      //   "Status: ${res.statusCode}\n"
+      //   "Request Headers: ${res.requestOptions.headers}\n"
+      //   "Response Body: ${res.data}\n"
+      //   "Response Headers: ${res.headers.map}",
+      // );
+      // }
+
+      audioStream!.listen(
+        (event) {},
+        cancelOnError: true,
+      );
 
       return Response(
         res.statusCode!,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:catcher_2/catcher_2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
@@ -48,6 +49,7 @@ abstract class AudioPlayerInterface {
       : _mkPlayer = CustomPlayer(
           configuration: const mk.PlayerConfiguration(
             title: "Spotube",
+            logLevel: kDebugMode ? mk.MPVLogLevel.info : mk.MPVLogLevel.error,
           ),
         )
   // _justAudio = !_mkSupportedPlatform ? ja.AudioPlayer() : null

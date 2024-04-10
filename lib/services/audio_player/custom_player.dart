@@ -25,6 +25,8 @@ class CustomPlayer extends Player {
       : _playerStateStream = StreamController.broadcast(),
         _shuffleStream = StreamController.broadcast(),
         _shuffled = false {
+    nativePlayer.setProperty("network-timeout", "120");
+
     _subscriptions = [
       stream.buffering.listen((event) {
         _playerStateStream.add(AudioPlaybackState.buffering);

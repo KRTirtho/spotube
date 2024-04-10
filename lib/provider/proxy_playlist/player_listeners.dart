@@ -74,9 +74,11 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
 
       if (lastTrack == nextTrack.id) return;
 
-      await ref.read(sourcedTrackProvider(nextTrack).future).whenComplete(() {
+      try {
+        await ref.read(sourcedTrackProvider(nextTrack).future);
+      } finally {
         lastTrack = nextTrack.id!;
-      });
+      }
     });
   }
 
