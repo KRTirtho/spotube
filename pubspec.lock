@@ -5,26 +5,26 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: ae92f5d747aee634b87f89d9946000c2de774be1d6ac3e58268224348cd0101a
+      sha256: "0b2f2bd91ba804e53a61d757b986f89f1f9eaed5b11e4b2f5a2468d86d6c9fc7"
       url: "https://pub.dev"
     source: hosted
-    version: "61.0.0"
+    version: "67.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: ea3d8652bda62982addfd92fdc2d0214e5f82e43325104990d4f4c4a2a313562
+      sha256: "37577842a27e4338429a1cbc32679d508836510b056f1eedf0c8d20e39c1383d"
       url: "https://pub.dev"
     source: hosted
-    version: "5.13.0"
+    version: "6.4.1"
   analyzer_plugin:
     dependency: transitive
     description:
       name: analyzer_plugin
-      sha256: c1d5f167683de03d5ab6c3b53fc9aeefc5d59476e7810ba7bbddff50c6f4392d
+      sha256: "9661b30b13a685efaee9f02e5d01ed9f2b423bd889d28a304d02d704aee69161"
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.2"
+    version: "0.11.3"
   ansicolor:
     dependency: transitive
     description:
@@ -469,26 +469,26 @@ packages:
     dependency: "direct dev"
     description:
       name: custom_lint
-      sha256: "22bd87a362f433ba6aae127a7bac2838645270737f3721b180916d7c5946cb5d"
+      sha256: "7c0aec12df22f9082146c354692056677f1e70bc43471644d1fdb36c6fdda799"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.11"
+    version: "0.6.4"
   custom_lint_builder:
     dependency: transitive
     description:
       name: custom_lint_builder
-      sha256: "0d48e002438950f9582e574ef806b2bea5719d8d14c0f9f754fbad729bcf3b19"
+      sha256: d7dc41e709dde223806660268678be7993559e523eb3164e2a1425fd6f7615a9
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.14"
+    version: "0.6.4"
   custom_lint_core:
     dependency: transitive
     description:
       name: custom_lint_core
-      sha256: "2952837953022de610dacb464f045594854ced6506ac7f76af28d4a6490e189b"
+      sha256: a85e8f78f4c52f6c63cdaf8c872eb573db0231dcdf3c3a5906d493c1f8bc20e6
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.14"
+    version: "0.6.3"
   dart_des:
     dependency: transitive
     description:
@@ -607,18 +607,18 @@ packages:
     dependency: "direct main"
     description:
       name: envied
-      sha256: "60d3f5606c7b35bc6ef493e650d916b34351d8af2e58b7ac45881ba59dfcf039"
+      sha256: bbff9c76120e4dc5e2e36a46690cf0a26feb65e7765633f4e8d916bcd173a450
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0+3"
+    version: "0.5.4+1"
   envied_generator:
     dependency: "direct dev"
     description:
       name: envied_generator
-      sha256: dfdbe5dc52863e54c036a4c4042afbdf1bd528cb4c1e638ecba26228ba72e9e5
+      sha256: "637901d274db3974afb3919ca9ba2e1a97f110fd57350ac13a3adcd20ad7d530"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0+3"
+    version: "0.5.2"
   fake_async:
     dependency: transitive
     description:
@@ -1864,6 +1864,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   riverpod:
     dependency: transitive
     description:
@@ -1876,18 +1884,18 @@ packages:
     dependency: transitive
     description:
       name: riverpod_analyzer_utils
-      sha256: d72d7096964baf288b55619fe48100001fc4564ab7923ed0a7f5c7650e03c0d6
+      sha256: "8b71f03fc47ae27d13769496a1746332df4cec43918aeba9aff1e232783a780f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.4"
+    version: "0.5.1"
   riverpod_lint:
     dependency: "direct dev"
     description:
       name: riverpod_lint
-      sha256: "70198738c3047ae4f6517ef1a2011a8514a980a52576c7f629a3a08810319a02"
+      sha256: e9bbd02e9e89e18eecb183bbca556d7b523a0669024da9b8167c08903f442937
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.3.9"
   rxdart:
     dependency: transitive
     description:

@@ -30,7 +30,7 @@ dependencies:
   dio: ^5.4.1
   disable_battery_optimization: ^1.1.0+1
   duration: ^3.0.12
-  envied: ^0.3.0
+  envied: ^0.5.4+1
   file_selector: ^1.0.1
   fluentui_system_icons: ^1.1.189
   flutter:
@@ -134,7 +134,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.9
-  envied_generator: ^0.3.0+3
+  envied_generator: ^0.5.2
   flutter_distributor: ^0.0.2
   flutter_gen_runner: ^5.4.0
   flutter_launcher_icons: ^0.13.1
@@ -146,8 +146,8 @@ dev_dependencies:
   hive_generator: ^2.0.0
   json_serializable: ^6.6.2
   freezed: ^2.4.6
-  custom_lint: ^0.5.11
-  riverpod_lint: ^2.1.1
+  custom_lint: ^0.6.4
+  riverpod_lint: ^2.3.9
 
 dependency_overrides:
   system_tray: 2.0.2
