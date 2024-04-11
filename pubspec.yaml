@@ -82,7 +82,7 @@ dependencies:
       url: https://github.com/KRTirtho/scrobblenaut.git
       ref: dart-3-support
   scroll_to_index: ^3.0.1
-  sidebarx: ^0.16.3
+  sidebarx: ^0.17.1
   shared_preferences: ^2.2.2
   skeleton_text: ^3.0.1
   smtc_windows: ^0.1.1
