@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:spotube/models/logger.dart';
 
 void useCustomStatusBarColor(
   Color color,
@@ -48,9 +47,6 @@ void useCustomStatusBarColor(
       if (automaticSystemUiAdjustment != null) {
         // ignore: deprecated_member_use
         WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
-        getLogger(["useCustomStatusBarColor"]).w(
-          "renderView.automaticSystemUiAdjustment is deprecated. Please use SystemChrome.setSystemUIOverlayStyle instead.",
-        );
       }
     };
   }, [color, isCurrentRoute, statusBarColor]);
