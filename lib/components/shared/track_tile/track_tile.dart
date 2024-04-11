@@ -208,7 +208,7 @@ class TrackTile extends HookConsumerWidget {
                     Expanded(
                       flex: 4,
                       child: switch (track.runtimeType) {
-                        LocalTrack => Text(
+                        LocalTrack() => Text(
                             track.album!.name!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

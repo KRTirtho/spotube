@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -40,7 +42,6 @@ void main(List<String> args) {
     "Translate following to their appropriate locale for flutter arb translations files."
     " Put the respective new translations in a map of their corresponding locale.",
   );
-  // ignore: avoid_print
   print(
     const JsonEncoder.withIndent('  ').convert(
       args.isNotEmpty ? messagesWithValues[args.first] : messagesWithValues,

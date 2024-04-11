@@ -190,6 +190,7 @@ class RootApp extends HookConsumerWidget {
       }
     }
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         if (rootPaths[location] != 0) {

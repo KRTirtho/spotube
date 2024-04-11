@@ -30,10 +30,12 @@ linter:
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
 analyzer:
-  enable-experiment:
-    - records
-    - patterns
   errors:
     invalid_annotation_target: ignore
   plugins:
     - custom_lint
+  exclude:
+    - "**.freezed.dart"
+    - "**.g.dart"
+    - "**.gr.dart"
+    - "**/generated_plugin_registrant.dart"

@@ -19,7 +19,6 @@ import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/connect/connect.dart' hide volumeProvider;
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
@@ -36,7 +35,6 @@ class BottomPlayer extends HookConsumerWidget {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
-    final remoteControl = ref.watch(connectProvider);
 
     final mediaQuery = MediaQuery.of(context);
 

@@ -11,6 +11,7 @@ class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
   final ProxyPlaylistNotifier playlistNotifier;
 
+  // ignore: invalid_use_of_protected_member
   ProxyPlaylist get playlist => playlistNotifier.state;
 
   MobileAudioService(this.playlistNotifier) {

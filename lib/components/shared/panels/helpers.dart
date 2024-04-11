@@ -1,4 +1,4 @@
-part of panels;
+part of "./sliding_up_panel.dart";
 
 /// if you want to prevent the panel from being dragged using the widget,
 /// wrap the widget with this
