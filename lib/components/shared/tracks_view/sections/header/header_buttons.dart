@@ -46,6 +46,8 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
 
         final allTracks = await props.pagination.onFetchAll();
 
+        if (!context.mounted) return;
+
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
         if (isRemoteDevice) {
           final remotePlayback = ref.read(connectProvider.notifier);
@@ -75,6 +77,8 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
         isLoading.value = true;
 
         final allTracks = await props.pagination.onFetchAll();
+
+        if (!context.mounted) return;
 
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
         if (isRemoteDevice) {

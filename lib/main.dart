@@ -26,6 +26,7 @@ import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/palette_provider.dart';
+import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
@@ -182,6 +183,7 @@ class SpotubeState extends ConsumerState<Spotube> {
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
     final router = ref.watch(routerProvider);
 
+    ref.listen(playbackServerProvider, (_, __) {});
     ref.listen(connectServerProvider, (_, __) {});
     ref.listen(connectClientsProvider, (_, __) {});
 

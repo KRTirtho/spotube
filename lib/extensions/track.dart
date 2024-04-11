@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 
 extension TrackExtensions on Track {
   Track fromFile(
@@ -88,5 +89,11 @@ extension TrackSimpleExtensions on TrackSimple {
     track.type = type;
     track.uri = uri;
     return track;
+  }
+}
+
+extension TracksToMediaExtension on Iterable<Track> {
+  List<SpotubeMedia> asMediaList() {
+    return map((track) => SpotubeMedia(track)).toList();
   }
 }

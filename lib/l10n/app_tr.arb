@@ -313,7 +313,7 @@
   "help_project_grow_description": "Spotube açık kaynaklı bir projedir. Projeye katkıda bulunarak, hataları bildirerek veya yeni özellikler önererek bu projenin büyümesine yardımcı olabilirsiniz.",
   "contribute_on_github": "GitHub'a katkıda bulunun",
   "donate_on_open_collective": "Open Collective'e bağış yap",
-  "browse_anonymously": "Anonim Olarak Göz at"
+  "browse_anonymously": "Anonim Olarak Göz at",
   "enable_connect": "Bağlantıyı Etkinleştir",
   "enable_connect_description": "Spotube'u diğer cihazlardan kontrol edin",
   "devices": "Cihazlar",

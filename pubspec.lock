@@ -1817,7 +1817,7 @@ packages:
     source: hosted
     version: "6.0.5"
   pub_api_client:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: pub_api_client
       sha256: d456816ef5142906a22dc56e37be6bef6cb0276f0a26c11d1f7d277868202e71
@@ -1841,7 +1841,7 @@ packages:
     source: hosted
     version: "2.3.0"
   pubspec_parse:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: pubspec_parse
       sha256: c63b2876e58e194e4b0828fcb080ad0e06d051cb607a6be51a9e084f47cb9367

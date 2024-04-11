@@ -96,6 +96,7 @@ class PlayerView extends HookConsumerWidget {
 
     final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         await panelController.close();

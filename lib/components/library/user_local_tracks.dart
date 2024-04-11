@@ -28,6 +28,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
 
 const supportedAudioTypes = [
@@ -185,9 +186,6 @@ class UserLocalTracks extends HookConsumerWidget {
                               ref,
                               trackSnapshot.asData!.value,
                             );
-                          } else {
-                            // TODO: Remove stop capability
-                            // playlistNotifier.stop();
                           }
                         }
                       }

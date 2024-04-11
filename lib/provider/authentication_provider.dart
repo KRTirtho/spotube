@@ -131,7 +131,7 @@ class AuthenticationNotifier
   Future<void> logout() async {
     state = null;
     if (kIsMobile) {
-      WebStorageManager.instance().android.deleteAllData();
+      WebStorageManager.instance().deleteAllData();
       CookieManager.instance().deleteAllCookies();
     }
   }

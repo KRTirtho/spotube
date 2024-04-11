@@ -72,7 +72,7 @@ class PlaylistCard extends HookConsumerWidget {
 
           List<Track> fetchedTracks = await fetchAllTracks();
 
-          if (fetchedTracks.isEmpty) return;
+          if (fetchedTracks.isEmpty || !context.mounted) return;
 
           final isRemoteDevice = await showSelectDeviceDialog(context, ref);
           if (isRemoteDevice) {

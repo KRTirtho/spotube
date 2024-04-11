@@ -3,87 +3,25 @@
 import 'dart:async';
 
 import 'package:catcher_2/catcher_2.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/proxy_playlist/skip_segments.dart';
+import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/sourced_track/exceptions.dart';
 
 extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
-  StreamSubscription<String> subscribeToSourceChanges() =>
-      audioPlayer.activeSourceChangedStream.listen((event) {
-        try {
-          final newActiveTrack = mapSourcesToTracks([event]).firstOrNull;
+  StreamSubscription subscribeToPlaylist() {
+    return audioPlayer.playlistStream.listen((playlist) {
+      state = state.copyWith(
+        tracks: playlist.medias
+            .map((media) => SpotubeMedia.fromMedia(media).track)
+            .toSet(),
+        active: playlist.index,
+      );
 
-          if (newActiveTrack == null ||
-              newActiveTrack.id == state.activeTrack?.id) {
-            return;
-          }
-
-          notificationService.addTrack(newActiveTrack);
-          discord.updatePresence(newActiveTrack);
-          state = state.copyWith(
-            active: state.tracks
-                .toList()
-                .indexWhere((element) => element.id == newActiveTrack.id),
-          );
-
-          updatePalette();
-        } catch (e, stackTrace) {
-          Catcher2.reportCheckedError(e, stackTrace);
-        }
-      });
-
-  StreamSubscription subscribeToPercentCompletion() {
-    final isPreSearching = ObjectRef(false);
-
-    return audioPlayer.percentCompletedStream(2).listen((event) async {
-      if (isPreSearching.value ||
-          audioPlayer.currentSource == null ||
-          audioPlayer.nextSource == null ||
-          isPlayable(audioPlayer.nextSource!)) return;
-
-      try {
-        isPreSearching.value = true;
-
-        final track = await ensureSourcePlayable(audioPlayer.nextSource!);
-
-        if (track != null) {
-          state = state.copyWith(tracks: mergeTracks([track], state.tracks));
-        }
-      } catch (e, stackTrace) {
-        // Removing tracks that were not found to avoid queue interruption
-        if (e is TrackNotFoundError) {
-          final oldTrack =
-              mapSourcesToTracks([audioPlayer.nextSource!]).firstOrNull;
-          await removeTrack(oldTrack!.id!);
-        }
-        Catcher2.reportCheckedError(e, stackTrace);
-      } finally {
-        isPreSearching.value = false;
-      }
-    });
-  }
-
-  StreamSubscription subscribeToShuffleChanges() {
-    return audioPlayer.shuffledStream.listen((event) {
-      try {
-        final newlyOrderedTracks = mapSourcesToTracks(audioPlayer.sources);
-
-        final newActiveIndex = newlyOrderedTracks.indexWhere(
-          (element) => element.id == state.activeTrack?.id,
-        );
-
-        if (newActiveIndex == -1) return;
-
-        state = state.copyWith(
-          tracks: newlyOrderedTracks.toSet(),
-          active: newActiveIndex,
-        );
-      } catch (e, stackTrace) {
-        Catcher2.reportCheckedError(e, stackTrace);
-      }
+      notificationService.addTrack(state.activeTrack!);
+      discord.updatePresence(state.activeTrack!);
+      updatePalette();
     });
   }
 
@@ -122,6 +60,24 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
         lastScrobbled = uid;
       } catch (e, stack) {
         Catcher2.reportCheckedError(e, stack);
+      }
+    });
+  }
+
+  StreamSubscription subscribeToPosition() {
+    String lastTrack = ""; // used to prevent multiple calls to the same track
+    return audioPlayer.positionStream.listen((event) async {
+      if (event < const Duration(seconds: 3) ||
+          state.active == null ||
+          state.active == state.tracks.length - 1) return;
+      final nextTrack = state.tracks.elementAt(state.active! + 1);
+
+      if (lastTrack == nextTrack.id || nextTrack is LocalTrack) return;
+
+      try {
+        await ref.read(sourcedTrackProvider(nextTrack).future);
+      } finally {
+        lastTrack = nextTrack.id!;
       }
     });
   }
