@@ -46,7 +46,7 @@ dependencies:
   flutter_inappwebview: ^6.0.0
   flutter_localizations:
     sdk: flutter
-  flutter_native_splash: ^2.3.10
+  flutter_native_splash: ^2.4.0
   flutter_riverpod: ^2.4.10
   flutter_secure_storage: ^9.0.0
   flutter_svg: ^1.1.6
