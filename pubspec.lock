@@ -1491,10 +1491,10 @@ packages:
     dependency: "direct main"
     description:
       name: media_kit
-      sha256: "92c7f59e075d74471b31e703f81ccc1d7102739ebcce945b30a6417fa2f751d5"
+      sha256: "3289062540e3b8b9746e5c50d95bd78a9289826b7227e253dff806d002b9e67a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.7"
+    version: "1.1.10+1"
   media_kit_libs_android_audio:
     dependency: transitive
     description:

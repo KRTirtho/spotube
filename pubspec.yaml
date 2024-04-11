@@ -64,7 +64,7 @@ dependencies:
   introduction_screen: ^3.0.2
   json_annotation: ^4.8.1
   logger: ^2.0.2
-  media_kit: ^1.1.3
+  media_kit: ^1.1.10+1
   media_kit_libs_audio: ^1.0.3
   metadata_god: ^0.5.2+1
   mime: ^1.0.2
