@@ -10,6 +10,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
@@ -24,7 +25,6 @@ import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 final sourceInfoToIconMap = {
   YoutubeSourceInfo: const Icon(SpotubeIcons.youtube, color: Color(0xFFFF0000)),
@@ -45,9 +45,9 @@ final sourceInfoToIconMap = {
 class SiblingTracksSheet extends HookConsumerWidget {
   final bool floating;
   const SiblingTracksSheet({
-    Key? key,
+    super.key,
     this.floating = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -67,7 +67,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     ).trim();
 
     final defaultSearchTerm =
-        "$title - ${TypeConversionUtils.artists_X_String<Artist>(playlist.activeTrack?.artists ?? [])}";
+        "$title - ${playlist.activeTrack?.artists?.asString() ?? ""}";
     final searchController = useTextEditingController(
       text: defaultSearchTerm,
     );

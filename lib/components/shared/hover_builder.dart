@@ -7,8 +7,8 @@ class HoverBuilder extends HookWidget {
   const HoverBuilder({
     required this.builder,
     this.permanentState,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

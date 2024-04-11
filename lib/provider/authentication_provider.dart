@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
@@ -52,8 +51,7 @@ class AuthenticationCredentials {
         ),
       );
     } catch (e) {
-      if (rootNavigatorKey?.currentContext != null &&
-          await QueryClient.connectivity.isConnected) {
+      if (rootNavigatorKey?.currentContext != null) {
         showPromptDialog(
           context: rootNavigatorKey!.currentContext!,
           title: rootNavigatorKey!.currentContext!.l10n

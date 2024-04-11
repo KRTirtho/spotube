@@ -115,4 +115,10 @@ abstract class SpotubeIcons {
   static const github = SimpleIcons.github;
   static const openCollective = SimpleIcons.opencollective;
   static const anonymous = FeatherIcons.user;
+  static const history = FeatherIcons.clock;
+  static const connect = FeatherIcons.link;
+  static const speaker = FeatherIcons.speaker;
+  static const monitor = FeatherIcons.monitor;
+  static const power = FeatherIcons.power;
+  static const bluetooth = FeatherIcons.bluetooth;
 }

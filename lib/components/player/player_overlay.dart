@@ -19,8 +19,8 @@ class PlayerOverlay extends HookConsumerWidget {
 
   const PlayerOverlay({
     required this.albumArt,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -115,7 +115,7 @@ class PlayerOverlay extends HookConsumerWidget {
                                 width: double.infinity,
                                 color: Colors.transparent,
                                 child: PlayerTrackDetails(
-                                  albumArt: albumArt,
+                                  track: playlist.activeTrack,
                                   color: textColor,
                                 ),
                               ),

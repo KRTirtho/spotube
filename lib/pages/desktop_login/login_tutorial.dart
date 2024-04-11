@@ -12,7 +12,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LoginTutorial extends ConsumerWidget {
-  const LoginTutorial({Key? key}) : super(key: key);
+  const LoginTutorial({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

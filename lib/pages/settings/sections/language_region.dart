@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/language_codes.dart';
@@ -23,6 +24,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.language_region,
       children: [
+        const Gap(10),
         AdaptiveSelectTile<Locale>(
           value: preferences.locale,
           onChanged: (locale) {

@@ -8,7 +8,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
 class WebViewLogin extends HookConsumerWidget {
-  const WebViewLogin({Key? key}) : super(key: key);
+  const WebViewLogin({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -27,19 +27,17 @@ class WebViewLogin extends HookConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: InAppWebView(
-          initialOptions: InAppWebViewGroupOptions(
-            crossPlatform: InAppWebViewOptions(
-              userAgent:
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 afari/537.36",
-            ),
+          initialSettings: InAppWebViewSettings(
+            userAgent:
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 afari/537.36",
           ),
           initialUrlRequest: URLRequest(
-            url: Uri.parse("https://accounts.spotify.com/"),
+            url: WebUri("https://accounts.spotify.com/"),
           ),
-          androidOnPermissionRequest: (controller, origin, resources) async {
-            return PermissionRequestResponse(
-              resources: resources,
-              action: PermissionRequestResponseAction.GRANT,
+          onPermissionRequest: (controller, permissionRequest) async {
+            return PermissionResponse(
+              resources: permissionRequest.resources,
+              action: PermissionResponseAction.GRANT,
             );
           },
           onLoadStop: (controller, action) async {

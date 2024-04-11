@@ -47,8 +47,7 @@ class ForceDraggableWidgetRenderBox extends RenderPointerListener {
 /// To make [ForceDraggableWidget] work in [Scrollable] widgets
 class PanelScrollPhysics extends ScrollPhysics {
   final PanelController controller;
-  const PanelScrollPhysics({required this.controller, ScrollPhysics? parent})
-      : super(parent: parent);
+  const PanelScrollPhysics({required this.controller, super.parent});
   @override
   PanelScrollPhysics applyTo(ScrollPhysics? ancestor) {
     return PanelScrollPhysics(

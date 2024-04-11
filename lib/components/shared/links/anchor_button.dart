@@ -11,13 +11,13 @@ class AnchorButton<T> extends HookWidget {
 
   const AnchorButton(
     this.text, {
-    Key? key,
+    super.key,
     this.onTap,
     this.textAlign,
     this.overflow,
     this.maxLines,
     this.style = const TextStyle(),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

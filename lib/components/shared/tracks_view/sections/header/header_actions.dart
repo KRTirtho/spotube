@@ -12,7 +12,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 class TrackViewHeaderActions extends HookConsumerWidget {
-  const TrackViewHeaderActions({Key? key}) : super(key: key);
+  const TrackViewHeaderActions({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

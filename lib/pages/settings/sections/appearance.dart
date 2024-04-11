@@ -13,9 +13,9 @@ import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 class SettingsAppearanceSection extends HookConsumerWidget {
   final bool isGettingStarted;
   const SettingsAppearanceSection({
-    Key? key,
+    super.key,
     this.isGettingStarted = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

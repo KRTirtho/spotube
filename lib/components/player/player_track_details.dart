@@ -4,17 +4,18 @@ import 'package:spotify/spotify.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
-  final String? albumArt;
   final Color? color;
-  const PlayerTrackDetails({Key? key, this.albumArt, this.color})
-      : super(key: key);
+  final Track? track;
+  const PlayerTrackDetails({super.key, this.color, this.track});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -34,7 +35,8 @@ class PlayerTrackDetails extends HookConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: UniversalImage(
-                path: albumArt ?? "",
+                path: (track?.album?.images)
+                    .asUrlString(placeholder: ImagePlaceholder.albumArt),
                 placeholder: Assets.albumPlaceholder.path,
               ),
             ),
@@ -55,9 +57,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   ),
                 ),
                 Text(
-                  TypeConversionUtils.artists_X_String<Artist>(
-                    playback.activeTrack?.artists ?? [],
-                  ),
+                  playback.activeTrack?.artists?.asString() ?? "",
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall!.copyWith(color: color),
                 )
@@ -76,8 +76,8 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, color: color),
                 ),
-                TypeConversionUtils.artists_X_ClickableArtists(
-                  playback.activeTrack?.artists ?? [],
+                ArtistLink(
+                  artists: playback.activeTrack?.artists ?? [],
                   onRouteChange: (route) {
                     ServiceUtils.push(context, route);
                   },

@@ -23,8 +23,8 @@ class SpotubeNavigationBar extends HookConsumerWidget {
   const SpotubeNavigationBar({
     required this.selectedIndex,
     required this.onSelectedIndexChanged,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

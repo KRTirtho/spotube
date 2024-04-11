@@ -14,18 +14,20 @@ import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/connect/connect.dart' hide volumeProvider;
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class BottomPlayer extends HookConsumerWidget {
-  BottomPlayer({Key? key}) : super(key: key);
+  BottomPlayer({super.key});
 
   final logger = getLogger(BottomPlayer);
   @override
@@ -34,13 +36,13 @@ class BottomPlayer extends HookConsumerWidget {
     final playlist = ref.watch(ProxyPlaylistNotifier.provider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
+    final remoteControl = ref.watch(connectProvider);
 
     final mediaQuery = MediaQuery.of(context);
 
     String albumArt = useMemoized(
       () => playlist.activeTrack?.album?.images?.isNotEmpty == true
-          ? TypeConversionUtils.image_X_UrlString(
-              playlist.activeTrack?.album?.images,
+          ? (playlist.activeTrack?.album?.images).asUrlString(
               index: (playlist.activeTrack?.album?.images?.length ?? 1) - 1,
               placeholder: ImagePlaceholder.albumArt,
             )
@@ -74,7 +76,9 @@ class BottomPlayer extends HookConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: PlayerTrackDetails(albumArt: albumArt)),
+                Expanded(
+                  child: PlayerTrackDetails(track: playlist.activeTrack),
+                ),
                 // controls
                 Flexible(
                   flex: 3,
@@ -122,10 +126,20 @@ class BottomPlayer extends HookConsumerWidget {
                     Container(
                       height: 40,
                       constraints: const BoxConstraints(maxWidth: 250),
-                      child: const VolumeSlider(),
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Consumer(builder: (context, ref, _) {
+                        final volume = ref.watch(volumeProvider);
+                        return VolumeSlider(
+                          fullWidth: true,
+                          value: volume,
+                          onChanged: (value) {
+                            ref.read(volumeProvider.notifier).setVolume(value);
+                          },
+                        );
+                      }),
                     )
                   ],
-                )
+                ),
               ],
             ),
           ),

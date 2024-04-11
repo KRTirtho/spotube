@@ -3,19 +3,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/tracks_view/track_view.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class LikedPlaylistPage extends HookConsumerWidget {
   final PlaylistSimple playlist;
   const LikedPlaylistPage({
-    Key? key,
+    super.key,
     required this.playlist,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final likedTracks = useQueries.playlist.likedTracksQuery(ref);
-    final tracks = likedTracks.data ?? <Track>[];
+    final likedTracks = ref.watch(likedTracksProvider);
+    final tracks = likedTracks.asData?.value ?? <Track>[];
 
     return InheritedTrackView(
       collectionId: playlist.id!,
@@ -28,7 +28,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
           return tracks.toList();
         },
         onRefresh: () async {
-          await likedTracks.refresh();
+          ref.invalidate(likedTracksProvider);
         },
       ),
       title: playlist.name!,
