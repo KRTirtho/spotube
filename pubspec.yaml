@@ -53,7 +53,7 @@ dependencies:
   form_validator: ^2.1.1
   fuzzywuzzy: ^1.1.6
   go_router: 12.1.3 # Stuck on this https://github.com/flutter/flutter/issues/140869
-  google_fonts: ^6.1.0
+  google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hooks_riverpod: ^2.4.3
