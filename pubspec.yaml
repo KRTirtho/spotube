@@ -42,7 +42,7 @@ dependencies:
       ref: 1f0bec3283626dcbd8ee2f54e238d096d8dea50e
   flutter_displaymode: ^0.6.0
   flutter_feather_icons: ^2.0.0+1
-  flutter_hooks: ^0.20.0
+  flutter_hooks: ^0.20.5
   flutter_inappwebview: ^6.0.0
   flutter_localizations:
     sdk: flutter
