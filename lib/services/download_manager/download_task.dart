@@ -28,8 +28,6 @@ class DownloadTask {
       }
     }
 
-    ;
-
     status.addListener(listener);
 
     return completer.future.timeout(timeout);

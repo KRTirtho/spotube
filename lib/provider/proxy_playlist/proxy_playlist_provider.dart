@@ -106,6 +106,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
   }) async {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
 
+    state = state.copyWith(collections: {});
+
     await audioPlayer.openPlaylist(
       tracks.asMediaList(),
       initialIndex: initialIndex,
