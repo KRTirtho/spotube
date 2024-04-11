@@ -72,7 +72,7 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
           state.active == state.tracks.length - 1) return;
       final nextTrack = state.tracks.elementAt(state.active! + 1);
 
-      if (lastTrack == nextTrack.id) return;
+      if (lastTrack == nextTrack.id || nextTrack is LocalTrack) return;
 
       try {
         await ref.read(sourcedTrackProvider(nextTrack).future);
