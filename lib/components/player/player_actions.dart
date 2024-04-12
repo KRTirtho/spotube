@@ -33,7 +33,7 @@ class PlayerActions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final isLocalTrack = playlist.activeTrack is LocalTrack;
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
@@ -46,9 +46,9 @@ class PlayerActions extends HookConsumerWidget {
     ]);
 
     final localTracks = [] /* ref.watch(localTracksProvider).value */;
-    final auth = ref.watch(AuthenticationNotifier.provider);
-    final sleepTimer = ref.watch(SleepTimerNotifier.provider);
-    final sleepTimerNotifier = ref.watch(SleepTimerNotifier.notifier);
+    final auth = ref.watch(authenticationProvider);
+    final sleepTimer = ref.watch(sleepTimerProvider);
+    final sleepTimerNotifier = ref.watch(sleepTimerProvider.notifier);
 
     final isDownloaded = useMemoized(() {
       return localTracks.any(

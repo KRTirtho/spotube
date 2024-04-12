@@ -22,7 +22,7 @@ class TrackViewBodyOptions extends HookConsumerWidget {
 
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
     final audioSource =
         ref.watch(userPreferencesProvider.select((s) => s.audioSource));
 

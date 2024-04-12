@@ -32,7 +32,7 @@ class SyncedLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
 
     final mediaQuery = MediaQuery.of(context);
     final controller = useAutoScrollController();
@@ -54,7 +54,7 @@ class SyncedLyrics extends HookConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     ref.listen(
-      ProxyPlaylistNotifier.provider.select((s) => s.activeTrack),
+      proxyPlaylistProvider.select((s) => s.activeTrack),
       (previous, next) {
         controller.scrollToIndex(0);
         ref.read(syncedLyricsDelayProvider.notifier).state = 0;

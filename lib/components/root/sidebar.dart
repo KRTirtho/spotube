@@ -249,7 +249,7 @@ class SidebarFooter extends HookConsumerWidget {
       placeholder: ImagePlaceholder.artist,
     );
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     if (mediaQuery.mdAndDown) {
       return IconButton(

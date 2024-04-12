@@ -34,9 +34,8 @@ class SearchPage extends HookConsumerWidget {
     final searchTerm = ref.watch(searchTermStateProvider);
     final controller = useSearchController();
 
-    ref.watch(AuthenticationNotifier.provider);
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    ref.watch(authenticationProvider);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
     final mediaQuery = MediaQuery.of(context);
 
     final searchTrack = ref.watch(searchProvider(SearchType.track));

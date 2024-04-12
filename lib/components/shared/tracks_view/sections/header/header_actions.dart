@@ -18,8 +18,8 @@ class TrackViewHeaderActions extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final props = InheritedTrackView.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     final isActive = playlist.collections.contains(props.collectionId);
 
@@ -27,7 +27,7 @@ class TrackViewHeaderActions extends HookConsumerWidget {
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     return Row(
       mainAxisSize: MainAxisSize.min,

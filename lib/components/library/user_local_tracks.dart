@@ -138,8 +138,8 @@ class UserLocalTracks extends HookConsumerWidget {
     List<LocalTrack> tracks, {
     LocalTrack? currentTrack,
   }) async {
-    final playlist = ref.read(ProxyPlaylistNotifier.provider);
-    final playback = ref.read(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.read(proxyPlaylistProvider);
+    final playback = ref.read(proxyPlaylistProvider.notifier);
     currentTrack ??= tracks.first;
     final isPlaylistPlaying = playlist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
@@ -158,7 +158,7 @@ class UserLocalTracks extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying =
         playlist.containsTracks(trackSnapshot.asData?.value ?? []);

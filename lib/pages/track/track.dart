@@ -32,8 +32,8 @@ class TrackPage extends HookConsumerWidget {
     final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     final isActive = playlist.activeTrack?.id == trackId;
 

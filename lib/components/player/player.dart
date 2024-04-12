@@ -43,8 +43,8 @@ class PlayerView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final auth = ref.watch(AuthenticationNotifier.provider);
-    final currentTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
+    final auth = ref.watch(authenticationProvider);
+    final currentTrack = ref.watch(proxyPlaylistProvider.select(
       (value) => value.activeTrack,
     ));
     final isLocalTrack = currentTrack is LocalTrack;
@@ -307,12 +307,11 @@ class PlayerView extends HookConsumerWidget {
                                               builder: (context) => Consumer(
                                                 builder: (context, ref, _) {
                                                   final playlist = ref.watch(
-                                                    ProxyPlaylistNotifier
-                                                        .provider,
+                                                    proxyPlaylistProvider,
                                                   );
                                                   final playlistNotifier =
                                                       ref.read(
-                                                    ProxyPlaylistNotifier
+                                                    proxyPlaylistProvider
                                                         .notifier,
                                                   );
                                                   return PlayerQueue

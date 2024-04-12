@@ -5,6 +5,6 @@ import 'package:spotube/services/custom_spotify_endpoints/spotify_endpoints.dart
 
 final customSpotifyEndpointProvider = Provider<CustomSpotifyEndpoints>((ref) {
   ref.watch(spotifyProvider);
-  final auth = ref.watch(AuthenticationNotifier.provider);
+  final auth = ref.watch(authenticationProvider);
   return CustomSpotifyEndpoints(auth?.accessToken ?? "");
 });

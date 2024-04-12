@@ -12,7 +12,7 @@ final sourcedTrackProvider =
   }
 
   ref.listen(
-    ProxyPlaylistNotifier.provider,
+    proxyPlaylistProvider,
     (old, next) {
       if (next.tracks.isEmpty ||
           next.tracks.none((element) => element.id == track.id)) {

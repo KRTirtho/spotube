@@ -95,11 +95,6 @@ class AuthenticationCredentials {
 
 class AuthenticationNotifier
     extends PersistedStateNotifier<AuthenticationCredentials?> {
-  static final provider =
-      StateNotifierProvider<AuthenticationNotifier, AuthenticationCredentials?>(
-    (ref) => AuthenticationNotifier(),
-  );
-
   bool get isLoggedIn => state != null;
 
   AuthenticationNotifier() : super(null, "authentication", encrypted: true);
@@ -154,3 +149,8 @@ class AuthenticationNotifier
     return state?.toJson() ?? {};
   }
 }
+
+final authenticationProvider =
+    StateNotifierProvider<AuthenticationNotifier, AuthenticationCredentials?>(
+  (ref) => AuthenticationNotifier(),
+);

@@ -28,10 +28,10 @@ class AlbumCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     bool isPlaylistPlaying = useMemoized(
       () => playlist.containsCollection(album.id!),

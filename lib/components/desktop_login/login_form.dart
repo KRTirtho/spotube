@@ -14,8 +14,7 @@ class TokenLoginForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
     final directCodeController = useTextEditingController();
     final mounted = useIsMounted();
 

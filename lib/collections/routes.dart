@@ -49,8 +49,7 @@ final routerProvider = Provider((ref) {
           GoRoute(
             path: "/",
             redirect: (context, state) async {
-              final authNotifier =
-                  ref.read(AuthenticationNotifier.provider.notifier);
+              final authNotifier = ref.read(authenticationProvider.notifier);
               final json = await authNotifier.box.get(authNotifier.cacheKey);
 
               if (json?["cookie"] == null &&

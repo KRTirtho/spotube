@@ -52,7 +52,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final preferences = ref.watch(userPreferencesProvider);
 
     final isSearching = useState(false);

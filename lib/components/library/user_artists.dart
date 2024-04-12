@@ -21,7 +21,7 @@ class UserArtists extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     final artistQuery = ref.watch(followedArtistsProvider);
 

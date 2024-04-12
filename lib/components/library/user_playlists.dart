@@ -26,7 +26,7 @@ class UserPlaylists extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final searchText = useState('');
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     final playlistsQuery = ref.watch(favoritePlaylistsProvider);
     final playlistsQueryNotifier =

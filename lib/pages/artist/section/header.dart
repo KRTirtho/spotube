@@ -38,8 +38,8 @@ class ArtistPageHeader extends HookConsumerWidget {
       xxl: textTheme.titleMedium,
     );
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
-    final blacklist = ref.watch(BlackListNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
+    final blacklist = ref.watch(blacklistProvider);
     final isBlackListed = blacklist.contains(
       BlacklistedElement.artist(artistId, artist.name!),
     );
@@ -187,14 +187,12 @@ class ArtistPageHeader extends HookConsumerWidget {
                           ),
                           onPressed: () async {
                             if (isBlackListed) {
-                              ref
-                                  .read(BlackListNotifier.provider.notifier)
-                                  .remove(
+                              ref.read(blacklistProvider.notifier).remove(
                                     BlacklistedElement.artist(
                                         artist.id!, artist.name!),
                                   );
                             } else {
-                              ref.read(BlackListNotifier.provider.notifier).add(
+                              ref.read(blacklistProvider.notifier).add(
                                     BlacklistedElement.artist(
                                         artist.id!, artist.name!),
                                   );

@@ -24,8 +24,8 @@ class PlayerOverlay extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final canShow = playlist.activeTrack != null;
 
     final playing =

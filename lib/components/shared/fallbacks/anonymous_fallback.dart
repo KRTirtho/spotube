@@ -14,7 +14,7 @@ class AnonymousFallback extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final isLoggedIn = ref.watch(AuthenticationNotifier.provider) != null;
+    final isLoggedIn = ref.watch(authenticationProvider) != null;
 
     if (isLoggedIn && child != null) return child!;
     return Center(

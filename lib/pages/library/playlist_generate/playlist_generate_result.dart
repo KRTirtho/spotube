@@ -25,7 +25,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final router = GoRouter.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     final generatedPlaylist = ref.watch(generatePlaylistProvider(state));
 

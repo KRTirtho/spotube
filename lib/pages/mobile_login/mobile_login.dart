@@ -13,8 +13,7 @@ class WebViewLogin extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final mounted = useIsMounted();
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
 
     if (kIsDesktop) {
       const Scaffold(

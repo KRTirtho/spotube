@@ -21,7 +21,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final playback = ref.watch(ProxyPlaylistNotifier.provider);
+    final playback = ref.watch(proxyPlaylistProvider);
 
     return Row(
       children: [

@@ -16,9 +16,8 @@ class LoginTutorial extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    ref.watch(AuthenticationNotifier.provider);
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    ref.watch(authenticationProvider);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
     final key = GlobalKey<State<IntroductionScreen>>();
     final theme = Theme.of(context);
 

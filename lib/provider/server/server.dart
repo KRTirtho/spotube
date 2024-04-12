@@ -20,7 +20,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 class PlaybackServer {
   final Ref ref;
   UserPreferences get userPreferences => ref.read(userPreferencesProvider);
-  ProxyPlaylist get playlist => ref.read(ProxyPlaylistNotifier.provider);
+  ProxyPlaylist get playlist => ref.read(proxyPlaylistProvider);
   final Logger logger;
   final Dio dio;
 

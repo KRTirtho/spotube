@@ -57,7 +57,7 @@ final discordProvider = ChangeNotifierProvider(
   (ref) {
     final isEnabled =
         ref.watch(userPreferencesProvider.select((s) => s.discordPresence));
-    final playback = ref.read(ProxyPlaylistNotifier.provider);
+    final playback = ref.read(proxyPlaylistProvider);
     final discord = Discord(isEnabled);
 
     if (playback.activeTrack != null) {

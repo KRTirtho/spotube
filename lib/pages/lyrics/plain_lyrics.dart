@@ -27,7 +27,7 @@ class PlainLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final lyricsQuery = ref.watch(syncedLyricsProvider(playlist.activeTrack));
     final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;

@@ -25,7 +25,7 @@ class ArtistCard extends HookConsumerWidget {
       ),
     );
     final isBlackListed = ref.watch(
-      BlackListNotifier.provider.select(
+      blacklistProvider.select(
         (blacklist) => blacklist.contains(
           BlacklistedElement.artist(artist.id!, artist.name!),
         ),

@@ -22,7 +22,7 @@ class UserAlbums extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
     final albumsQuery = ref.watch(favoriteAlbumsProvider);
     final albumsQueryNotifier = ref.watch(favoriteAlbumsProvider.notifier);
 

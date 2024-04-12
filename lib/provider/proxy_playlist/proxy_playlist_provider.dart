@@ -28,17 +28,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
   ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
   UserPreferences get preferences => ref.read(userPreferencesProvider);
   ProxyPlaylist get playlist => state;
-  BlackListNotifier get blacklist =>
-      ref.read(BlackListNotifier.provider.notifier);
+  BlackListNotifier get blacklist => ref.read(blacklistProvider.notifier);
   Discord get discord => ref.read(discordProvider);
-
-  static final provider =
-      StateNotifierProvider<ProxyPlaylistNotifier, ProxyPlaylist>(
-    (ref) => ProxyPlaylistNotifier(ref),
-  );
-
-  static AlwaysAliveRefreshable<ProxyPlaylistNotifier> get notifier =>
-      provider.notifier;
 
   List<StreamSubscription> _subscriptions = [];
 
@@ -230,3 +221,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
     super.dispose();
   }
 }
+
+final proxyPlaylistProvider =
+    StateNotifierProvider<ProxyPlaylistNotifier, ProxyPlaylist>(
+  (ref) => ProxyPlaylistNotifier(ref),
+);

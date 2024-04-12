@@ -26,8 +26,8 @@ class TrackViewBodySection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
     final props = InheritedTrackView.of(context);
     final trackViewState = ref.watch(trackViewProvider(props.tracks));
 

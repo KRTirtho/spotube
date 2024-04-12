@@ -52,7 +52,7 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     if (!sync) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
-      ref.read(ProxyPlaylistNotifier.notifier).updatePalette();
+      ref.read(proxyPlaylistProvider.notifier).updatePalette();
     }
   }
 

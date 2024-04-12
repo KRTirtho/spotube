@@ -24,8 +24,8 @@ class SearchTracksSection extends HookConsumerWidget {
         ref.watch(searchProvider(SearchType.track).notifier);
 
     final tracks = searchTrack.asData?.value.items.cast<Track>() ?? [];
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.provider.notifier);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final theme = Theme.of(context);
 
     return Column(

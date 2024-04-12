@@ -21,8 +21,8 @@ class ArtistPageTopTracks extends HookConsumerWidget {
     final theme = Theme.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
     final topTracksQuery = ref.watch(artistTopTracksProvider(artistId));
 
     final isPlaylistPlaying = playlist.containsTracks(

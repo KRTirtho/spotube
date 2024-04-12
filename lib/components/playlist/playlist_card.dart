@@ -20,8 +20,8 @@ class PlaylistCard extends HookConsumerWidget {
   });
   @override
   Widget build(BuildContext context, ref) {
-    final playlistQueue = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlistQueue = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     bool isPlaylistPlaying = useMemoized(

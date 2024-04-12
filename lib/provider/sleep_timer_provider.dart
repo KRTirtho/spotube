@@ -8,13 +8,6 @@ class SleepTimerNotifier extends StateNotifier<Duration?> {
 
   Timer? _timer;
 
-  static final provider = StateNotifierProvider<SleepTimerNotifier, Duration?>(
-    (ref) => SleepTimerNotifier(),
-  );
-
-  static AlwaysAliveRefreshable<SleepTimerNotifier> get notifier =>
-      provider.notifier;
-
   void setSleepTimer(Duration duration) {
     state = duration;
 
@@ -29,3 +22,7 @@ class SleepTimerNotifier extends StateNotifier<Duration?> {
     _timer?.cancel();
   }
 }
+
+final sleepTimerProvider = StateNotifierProvider<SleepTimerNotifier, Duration?>(
+  (ref) => SleepTimerNotifier(),
+);

@@ -15,8 +15,8 @@ void useInitSysTray(WidgetRef ref) {
 
   final initializeMenu = useCallback(() async {
     systemTray.value?.destroy();
-    final playlist = ref.read(ProxyPlaylistNotifier.provider);
-    final playlistQueue = ref.read(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.read(proxyPlaylistProvider);
+    final playlistQueue = ref.read(proxyPlaylistProvider.notifier);
     final preferences = ref.read(userPreferencesProvider);
     if (!preferences.showSystemTrayIcon) {
       await systemTray.value?.destroy();
@@ -105,7 +105,7 @@ void useInitSysTray(WidgetRef ref) {
   useReassemble(initializeMenu);
 
   ref.listen<ProxyPlaylist?>(
-    ProxyPlaylistNotifier.provider,
+    proxyPlaylistProvider,
     (previous, next) {
       initializeMenu();
     },

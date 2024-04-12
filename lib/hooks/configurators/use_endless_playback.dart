@@ -9,13 +9,12 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 void useEndlessPlayback(WidgetRef ref) {
-  final auth = ref.watch(AuthenticationNotifier.provider);
-  final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-  final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+  final auth = ref.watch(authenticationProvider);
+  final playback = ref.watch(proxyPlaylistProvider.notifier);
+  final playlist = ref.watch(proxyPlaylistProvider);
   final spotify = ref.watch(spotifyProvider);
   final endlessPlayback =
       ref.watch(userPreferencesProvider.select((s) => s.endlessPlayback));
-
 
   useEffect(
     () {
@@ -23,7 +22,7 @@ void useEndlessPlayback(WidgetRef ref) {
 
       void listener(int index) async {
         try {
-          final playlist = ref.read(ProxyPlaylistNotifier.provider);
+          final playlist = ref.read(proxyPlaylistProvider);
           if (index != playlist.tracks.length - 1) return;
 
           final track = playlist.tracks.last;
@@ -57,7 +56,7 @@ void useEndlessPlayback(WidgetRef ref) {
           await playback.addTracks(
             tracks.toList()
               ..removeWhere((e) {
-                final playlist = ref.read(ProxyPlaylistNotifier.provider);
+                final playlist = ref.read(proxyPlaylistProvider);
                 final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
                 return e.id == track.id || isDuplicate;
               }),

@@ -28,7 +28,7 @@ class ActiveSourcedTrackNotifier extends Notifier<SourcedTrack?> {
     state = newTrack;
     await audioPlayer.pause();
 
-    final playbackNotifier = ref.read(ProxyPlaylistNotifier.notifier);
+    final playbackNotifier = ref.read(proxyPlaylistProvider.notifier);
     final oldActiveIndex = audioPlayer.currentIndex;
 
     await playbackNotifier.addTracksAtFirst([newTrack]);

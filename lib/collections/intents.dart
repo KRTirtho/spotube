@@ -92,7 +92,7 @@ class SeekIntent extends Intent {
 class SeekAction extends Action<SeekIntent> {
   @override
   invoke(intent) async {
-    final playlist = intent.ref.read(ProxyPlaylistNotifier.provider);
+    final playlist = intent.ref.read(proxyPlaylistProvider);
     if (playlist.isFetching) {
       DirectionalFocusAction().invoke(
         DirectionalFocusIntent(

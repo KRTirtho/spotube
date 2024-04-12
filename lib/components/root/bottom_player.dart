@@ -31,8 +31,8 @@ class BottomPlayer extends HookConsumerWidget {
   final logger = getLogger(BottomPlayer);
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(AuthenticationNotifier.provider);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 

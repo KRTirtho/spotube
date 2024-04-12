@@ -43,11 +43,6 @@ class BlackListNotifier
     extends PersistedStateNotifier<Set<BlacklistedElement>> {
   BlackListNotifier() : super({}, "blacklist");
 
-  static final provider =
-      StateNotifierProvider<BlackListNotifier, Set<BlacklistedElement>>(
-    (ref) => BlackListNotifier(),
-  );
-
   void add(BlacklistedElement element) {
     state = state.union({element});
   }
@@ -106,3 +101,8 @@ class BlackListNotifier
     return {'blacklist': state.map((e) => e.toJson()).toList()};
   }
 }
+
+final blacklistProvider =
+    StateNotifierProvider<BlackListNotifier, Set<BlacklistedElement>>((ref) {
+  return BlackListNotifier();
+});

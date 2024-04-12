@@ -95,8 +95,8 @@ class TrackOptions extends HookConsumerWidget {
     WidgetRef ref,
     Track track,
   ) async {
-    final playback = ref.read(ProxyPlaylistNotifier.notifier);
-    final playlist = ref.read(ProxyPlaylistNotifier.provider);
+    final playback = ref.read(proxyPlaylistProvider.notifier);
+    final playlist = ref.read(proxyPlaylistProvider);
     final spotify = ref.read(spotifyProvider);
     final query = "${track.name} Radio";
     final pages =
@@ -159,12 +159,12 @@ class TrackOptions extends HookConsumerWidget {
     final router = GoRouter.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playback = ref.watch(proxyPlaylistProvider.notifier);
+    final auth = ref.watch(authenticationProvider);
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
-    final blacklist = ref.watch(BlackListNotifier.provider);
+    final blacklist = ref.watch(blacklistProvider);
     final me = ref.watch(meProvider);
 
     final favorites = useTrackToggleLike(track, ref);
@@ -257,11 +257,11 @@ class TrackOptions extends HookConsumerWidget {
             break;
           case TrackOptionValue.blacklist:
             if (isBlackListed) {
-              ref.read(BlackListNotifier.provider.notifier).remove(
+              ref.read(blacklistProvider.notifier).remove(
                     BlacklistedElement.track(track.id!, track.name!),
                   );
             } else {
-              ref.read(BlackListNotifier.provider.notifier).add(
+              ref.read(blacklistProvider.notifier).add(
                     BlacklistedElement.track(track.id!, track.name!),
                   );
             }

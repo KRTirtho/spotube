@@ -26,8 +26,8 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final props = InheritedTrackView.of(context);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     final isActive = playlist.collections.contains(props.collectionId);
 

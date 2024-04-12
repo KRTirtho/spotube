@@ -28,7 +28,7 @@ class LyricsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     String albumArt = useMemoized(
       () => (playlist.activeTrack?.album?.images).asUrlString(
         index: (playlist.activeTrack?.album?.images?.length ?? 1) - 1,
@@ -60,7 +60,7 @@ class LyricsPage extends HookConsumerWidget {
           const Spacer(),
           Consumer(
             builder: (context, ref, child) {
-              final playback = ref.watch(ProxyPlaylistNotifier.provider);
+              final playback = ref.watch(proxyPlaylistProvider);
               final lyric =
                   ref.watch(syncedLyricsProvider(playback.activeTrack));
               final providerName = lyric.asData?.value.provider;
@@ -80,7 +80,7 @@ class LyricsPage extends HookConsumerWidget {
       ),
     );
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     if (auth == null) {
       return Scaffold(

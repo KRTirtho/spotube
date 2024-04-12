@@ -25,7 +25,7 @@ class HeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     if (auth == null) return const SizedBox.shrink();
 

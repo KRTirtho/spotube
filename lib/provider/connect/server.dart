@@ -31,7 +31,7 @@ final connectServerProvider = FutureProvider((ref) async {
       ref.watch(userPreferencesProvider.select((s) => s.enableConnect));
   final resolvedService = await ref
       .watch(connectClientsProvider.selectAsync((s) => s.resolvedService));
-  final playbackNotifier = ref.read(ProxyPlaylistNotifier.notifier);
+  final playbackNotifier = ref.read(proxyPlaylistProvider.notifier);
 
   if (!enabled || resolvedService != null) {
     return null;
@@ -57,7 +57,7 @@ final connectServerProvider = FutureProvider((ref) async {
           _connectClientStreamController.add(origin);
 
           ref.listen(
-            ProxyPlaylistNotifier.provider,
+            proxyPlaylistProvider,
             (previous, next) {
               channel.sink.add(
                 WebSocketQueueEvent(next).toJson(),

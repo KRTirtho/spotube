@@ -221,9 +221,9 @@ class RootApp extends HookConsumerWidget {
                 ),
                 child: Consumer(
                   builder: (context, ref, _) {
-                    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+                    final playlist = ref.watch(proxyPlaylistProvider);
                     final playlistNotifier =
-                        ref.read(ProxyPlaylistNotifier.notifier);
+                        ref.read(proxyPlaylistProvider.notifier);
 
                     return PlayerQueue.fromProxyPlaylistNotifier(
                       floating: true,

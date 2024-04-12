@@ -11,7 +11,7 @@ class HomeNewReleasesSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     final newReleases = ref.watch(albumReleasesProvider);
     final newReleasesNotifier = ref.read(albumReleasesProvider.notifier);
