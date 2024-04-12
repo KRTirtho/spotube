@@ -1,5 +1,4 @@
 import 'package:catcher_2/catcher_2.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
@@ -39,7 +38,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/hooks/configurators/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:spotube/utils/android_utils.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final arguments = await startCLI(rawArgs);
@@ -54,7 +53,7 @@ Future<void> main(List<String> rawArgs) async {
 
   // force High Refresh Rate on some Android devices (like One Plus)
   if (DesktopTools.platform.isAndroid) {
-      await AndroidUtils.setHighRefreshRate();
+    await FlutterDisplayMode.setHighRefreshRate();
   }
 
   if (DesktopTools.platform.isDesktop) {
