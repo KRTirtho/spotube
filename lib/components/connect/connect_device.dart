@@ -7,13 +7,44 @@ import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class ConnectDeviceButton extends HookConsumerWidget {
-  const ConnectDeviceButton({super.key});
+  final bool _sidebar;
+  const ConnectDeviceButton({super.key}) : _sidebar = false;
+  const ConnectDeviceButton.sidebar({super.key}) : _sidebar = true;
 
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:colorScheme) = Theme.of(context);
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final connectClients = ref.watch(connectClientsProvider);
+
+    if (_sidebar) {
+      return SizedBox(
+        width: double.infinity,
+        child: TextButton(
+          onPressed: () {
+            ServiceUtils.push(context, "/connect");
+          },
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.all(5),
+          ),
+          child: Row(
+            children: [
+              Text(context.l10n.devices),
+              if (connectClients.asData?.value.services.isNotEmpty == true)
+                Text(
+                  " (${connectClients.asData?.value.services.length})",
+                ),
+              const Spacer(),
+              const Icon(SpotubeIcons.speaker),
+              const Gap(5),
+            ],
+          ),
+        ),
+      );
+    }
 
     return SizedBox(
       height: 40 * pixelRatio,

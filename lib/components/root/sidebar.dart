@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:sidebarx/sidebarx.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/connect/connect_device.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
@@ -261,43 +263,50 @@ class SidebarFooter extends HookConsumerWidget {
     return Container(
       padding: const EdgeInsets.only(left: 12),
       width: 250,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          if (auth != null && data == null)
-            const CircularProgressIndicator()
-          else if (data != null)
-            Flexible(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: UniversalImage.imageProvider(avatarImg),
-                    onBackgroundImageError: (exception, stackTrace) =>
-                        Assets.userPlaceholder.image(
-                      height: 16,
-                      width: 16,
-                    ),
+          const ConnectDeviceButton.sidebar(),
+          const Gap(10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (auth != null && data == null)
+                const CircularProgressIndicator()
+              else if (data != null)
+                Flexible(
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage:
+                            UniversalImage.imageProvider(avatarImg),
+                        onBackgroundImageError: (exception, stackTrace) =>
+                            Assets.userPlaceholder.image(
+                          height: 16,
+                          width: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
+                          data.displayName ?? context.l10n.guest,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Text(
-                      data.displayName ?? context.l10n.guest,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+                ),
+              IconButton(
+                icon: const Icon(SpotubeIcons.settings),
+                onPressed: () {
+                  Sidebar.goToSettings(context);
+                },
               ),
-            ),
-          IconButton(
-            icon: const Icon(SpotubeIcons.settings),
-            onPressed: () {
-              Sidebar.goToSettings(context);
-            },
+            ],
           ),
         ],
       ),

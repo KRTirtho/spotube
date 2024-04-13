@@ -11,6 +11,8 @@ import 'package:spotube/components/home/sections/genres.dart';
 import 'package:spotube/components/home/sections/made_for_user.dart';
 import 'package:spotube/components/home/sections/new_releases.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/utils/platform.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -18,6 +20,7 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final controller = useScrollController();
+    final mediaQuery = MediaQuery.of(context);
 
     return SafeArea(
         bottom: false,
@@ -25,18 +28,21 @@ class HomePage extends HookConsumerWidget {
           body: CustomScrollView(
             controller: controller,
             slivers: [
-              PageWindowTitleBar.sliver(
-                pinned: DesktopTools.platform.isDesktop,
-                actions: [
-                  const ConnectDeviceButton(),
-                  const Gap(10),
-                  IconButton.filledTonal(
-                    icon: const Icon(SpotubeIcons.user),
-                    onPressed: () {},
-                  ),
-                  const Gap(10),
-                ],
-              ),
+              if (mediaQuery.mdAndDown)
+                PageWindowTitleBar.sliver(
+                  pinned: DesktopTools.platform.isDesktop,
+                  actions: [
+                    const ConnectDeviceButton(),
+                    const Gap(10),
+                    IconButton.filledTonal(
+                      icon: const Icon(SpotubeIcons.user),
+                      onPressed: () {},
+                    ),
+                    const Gap(10),
+                  ],
+                )
+              else if (kIsMacOS)
+                const SliverGap(10),
               const HomeGenresSection(),
               const SliverToBoxAdapter(child: HomeFeaturedSection()),
               const HomePageFriendsSection(),
