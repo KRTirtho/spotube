@@ -18,6 +18,7 @@ import 'package:spotube/pages/library/playlist_generate/playlist_generate_result
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/playlist/liked_playlist.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
+import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
@@ -175,20 +176,26 @@ final routerProvider = Provider((ref) {
             },
           ),
           GoRoute(
-              path: "/connect",
-              pageBuilder: (context, state) => const SpotubePage(
-                    child: ConnectPage(),
-                  ),
-              routes: [
-                GoRoute(
-                  path: "control",
-                  pageBuilder: (context, state) {
-                    return const SpotubePage(
-                      child: ConnectControlPage(),
-                    );
-                  },
-                )
-              ])
+            path: "/connect",
+            pageBuilder: (context, state) => const SpotubePage(
+              child: ConnectPage(),
+            ),
+            routes: [
+              GoRoute(
+                path: "control",
+                pageBuilder: (context, state) {
+                  return const SpotubePage(
+                    child: ConnectControlPage(),
+                  );
+                },
+              )
+            ],
+          ),
+          GoRoute(
+            path: "/profile",
+            pageBuilder: (context, state) =>
+                const SpotubePage(child: ProfilePage()),
+          )
         ],
       ),
       GoRoute(

@@ -23,6 +23,7 @@ import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
   final int? selectedIndex;
@@ -275,29 +276,35 @@ class SidebarFooter extends HookConsumerWidget {
                 const CircularProgressIndicator()
               else if (data != null)
                 Flexible(
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            UniversalImage.imageProvider(avatarImg),
-                        onBackgroundImageError: (exception, stackTrace) =>
-                            Assets.userPlaceholder.image(
-                          height: 16,
-                          width: 16,
+                  child: InkWell(
+                    onTap: () {
+                      ServiceUtils.push(context, "/profile");
+                    },
+                    borderRadius: BorderRadius.circular(30),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              UniversalImage.imageProvider(avatarImg),
+                          onBackgroundImageError: (exception, stackTrace) =>
+                              Assets.userPlaceholder.image(
+                            height: 16,
+                            width: 16,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          data.displayName ?? context.l10n.guest,
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: theme.textTheme.bodyMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            data.displayName ?? context.l10n.guest,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               IconButton(
