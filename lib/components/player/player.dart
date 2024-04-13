@@ -26,6 +26,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 
@@ -44,9 +45,10 @@ class PlayerView extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final auth = ref.watch(authenticationProvider);
-    final currentTrack = ref.watch(proxyPlaylistProvider.select(
-      (value) => value.activeTrack,
-    ));
+    final sourcedCurrentTrack = ref.watch(activeSourcedTrackProvider);
+    final currentActiveTrack =
+        ref.watch(proxyPlaylistProvider.select((s) => s.activeTrack));
+    final currentTrack = sourcedCurrentTrack ?? currentActiveTrack;
     final isLocalTrack = currentTrack is LocalTrack;
     final mediaQuery = MediaQuery.of(context);
 
@@ -150,7 +152,7 @@ class PlayerView extends HookConsumerWidget {
                           label: Text(context.l10n.song_link),
                           style: TextButton.styleFrom(
                             foregroundColor: bodyTextColor,
-                            padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                           ),
                           onPressed: () {
                             final url =
