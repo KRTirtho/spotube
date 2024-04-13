@@ -12,6 +12,7 @@
 /// doannc2212@github => Vietnamese
 /// sappho192@github => Korean
 /// watchakorn-18k@github => Thai
+/// Microsoft Copilot, Tutislav@github => Czech
 
 library l10n;
 
@@ -23,6 +24,7 @@ class L10n {
     const Locale('ar', 'SA'),
     const Locale('bn', 'BD'),
     const Locale('ca', 'AD'),
+    const Locale('cs', 'CZ'),
     const Locale('de', 'GE'),
     const Locale('es', 'ES'),
     const Locale('fa', 'IR'),
