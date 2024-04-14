@@ -8,6 +8,7 @@ import 'package:spotube/components/home/sections/featured.dart';
 import 'package:spotube/components/home/sections/feed.dart';
 import 'package:spotube/components/home/sections/friends.dart';
 import 'package:spotube/components/home/sections/genres.dart';
+import 'package:spotube/components/home/sections/made_for_user.dart';
 import 'package:spotube/components/home/sections/new_releases.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -66,8 +67,8 @@ class HomePage extends HookConsumerWidget {
               const SliverToBoxAdapter(child: HomeFeaturedSection()),
               const HomePageFriendsSection(),
               const SliverToBoxAdapter(child: HomeNewReleasesSection()),
-              const SliverSafeArea(sliver: HomePageFeedSection()),
-              // const SliverSafeArea(sliver: HomeMadeForUserSection()),
+              const HomePageFeedSection(),
+              const SliverSafeArea(sliver: HomeMadeForUserSection()),
             ],
           ),
         ));
