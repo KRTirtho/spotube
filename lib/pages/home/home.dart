@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/connect/connect_device.dart';
 import 'package:spotube/components/home/sections/featured.dart';
+import 'package:spotube/components/home/sections/feed.dart';
 import 'package:spotube/components/home/sections/friends.dart';
 import 'package:spotube/components/home/sections/genres.dart';
 import 'package:spotube/components/home/sections/made_for_user.dart';
@@ -66,6 +67,7 @@ class HomePage extends HookConsumerWidget {
               const SliverToBoxAdapter(child: HomeFeaturedSection()),
               const HomePageFriendsSection(),
               const SliverToBoxAdapter(child: HomeNewReleasesSection()),
+              const HomePageFeedSection(),
               const SliverSafeArea(sliver: HomeMadeForUserSection()),
             ],
           ),

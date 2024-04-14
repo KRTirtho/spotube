@@ -17,18 +17,21 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
   final VoidCallback onFetchMore;
   final bool isLoadingNextPage;
   final bool hasNextPage;
+  final Widget? titleTrailing;
 
-  const HorizontalPlaybuttonCardView({
+  HorizontalPlaybuttonCardView({
     required this.title,
     required this.items,
     required this.hasNextPage,
     required this.onFetchMore,
     required this.isLoadingNextPage,
+    this.titleTrailing,
     super.key,
   }) : assert(
-          items is List<PlaylistSimple> ||
-              items is List<Album> ||
-              items is List<Artist>,
+          items.every(
+            (item) =>
+                item is PlaylistSimple || item is Artist || item is AlbumSimple,
+          ),
         );
 
   @override
@@ -48,9 +51,15 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DefaultTextStyle(
-            style: textTheme.titleMedium!,
-            child: title,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              DefaultTextStyle(
+                style: textTheme.titleMedium!,
+                child: title,
+              ),
+              if (titleTrailing != null) titleTrailing!,
+            ],
           ),
           SizedBox(
             height: height,
@@ -87,7 +96,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                           return switch (item) {
                             PlaylistSimple() =>
                               PlaylistCard(item as PlaylistSimple),
-                            Album() => AlbumCard(item as Album),
+                            AlbumSimple() => AlbumCard(item as Album),
                             Artist() => Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12.0),

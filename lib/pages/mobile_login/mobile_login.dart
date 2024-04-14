@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,7 +11,6 @@ class WebViewLogin extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final mounted = useIsMounted();
     final authenticationNotifier = ref.watch(authenticationProvider.notifier);
 
     if (kIsDesktop) {
@@ -57,7 +55,7 @@ class WebViewLogin extends HookConsumerWidget {
               authenticationNotifier.setCredentials(
                 await AuthenticationCredentials.fromCookie(cookieHeader),
               );
-              if (mounted()) {
+              if (context.mounted) {
                 // ignore: use_build_context_synchronously
                 GoRouter.of(context).go("/");
               }
