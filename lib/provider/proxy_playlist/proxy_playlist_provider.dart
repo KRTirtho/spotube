@@ -7,12 +7,14 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
+import 'package:spotube/models/local_track.dart';
 
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
+import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -98,6 +100,13 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
     tracks = blacklist.filter(tracks).toList() as List<Track>;
 
     state = state.copyWith(collections: {});
+
+    // Giving the initial track a boost so MediaKit won't skip
+    // because of timeout
+    final intendedActiveTrack = tracks.elementAt(initialIndex);
+    if (intendedActiveTrack is! LocalTrack) {
+      await ref.read(sourcedTrackProvider(intendedActiveTrack).future);
+    }
 
     await audioPlayer.openPlaylist(
       tracks.asMediaList(),
