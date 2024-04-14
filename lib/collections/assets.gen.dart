@@ -88,7 +88,7 @@ class Assets {
       AssetGenImage('assets/user-placeholder.png');
 
   /// List of all assets
-  List<dynamic> get values => [
+  static List<dynamic> get values => [
         albumPlaceholder,
         bengaliPatternsBg,
         branding,

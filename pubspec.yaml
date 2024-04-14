@@ -131,6 +131,8 @@ dependencies:
   lrc: ^1.0.2
   pub_api_client: ^2.4.0
   pubspec_parse: ^1.2.2
+  timezone: ^0.9.2
+  crypto: ^3.0.3
 
 dev_dependencies:
   build_runner: ^2.4.9

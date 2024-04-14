@@ -39,6 +39,7 @@ import 'package:spotube/hooks/configurators/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> main(List<String> rawArgs) async {
   final arguments = await startCLI(rawArgs);
@@ -46,6 +47,8 @@ Future<void> main(List<String> rawArgs) async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   await registerWindowsScheme("spotify");
+
+  tz.initializeTimeZones();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 

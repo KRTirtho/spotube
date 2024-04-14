@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
@@ -25,12 +26,16 @@ class AuthenticationCredentials {
 
   static Future<AuthenticationCredentials> fromCookie(String cookie) async {
     try {
+      final spDc = cookie
+          .split("; ")
+          .firstWhereOrNull((c) => c.trim().startsWith("sp_dc="))
+          ?.trim();
       final res = await get(
         Uri.parse(
           "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
         ),
         headers: {
-          "Cookie": cookie,
+          "Cookie": spDc ?? "",
           "User-Agent":
               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
         },
@@ -44,7 +49,7 @@ class AuthenticationCredentials {
       }
 
       return AuthenticationCredentials(
-        cookie: cookie,
+        cookie: "${res.headers["set-cookie"]}; $spDc",
         accessToken: body['accessToken'],
         expiration: DateTime.fromMillisecondsSinceEpoch(
           body['accessTokenExpirationTimestampMs'],
@@ -63,6 +68,15 @@ class AuthenticationCredentials {
       rethrow;
     }
   }
+
+  /// Returns the cookie value
+  String? getCookie(String key) => cookie
+      .split("; ")
+      .firstWhereOrNull((c) => c.trim().startsWith("$key="))
+      ?.trim()
+      .split("=")
+      .last
+      .replaceAll(";", "");
 
   factory AuthenticationCredentials.fromJson(Map<String, dynamic> json) {
     return AuthenticationCredentials(

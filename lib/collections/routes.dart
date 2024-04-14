@@ -9,6 +9,7 @@ import 'package:spotube/pages/album/album.dart';
 import 'package:spotube/pages/connect/connect.dart';
 import 'package:spotube/pages/connect/control/control.dart';
 import 'package:spotube/pages/getting_started/getting_started.dart';
+import 'package:spotube/pages/home/feed/feed_section.dart';
 import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
@@ -76,6 +77,14 @@ final routerProvider = Provider((ref) {
                   ),
                 ),
               ),
+              GoRoute(
+                path: "feeds/:feedId",
+                pageBuilder: (context, state) => SpotubePage(
+                  child: HomeFeedSectionPage(
+                    sectionUri: state.pathParameters["feedId"] as String,
+                  ),
+                ),
+              )
             ],
           ),
           GoRoute(
