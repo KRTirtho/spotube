@@ -7,7 +7,7 @@ import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/hooks/utils/use_async_effect.dart';
 
 void useGetStoragePermissions(WidgetRef ref) {
-  final isMounted = useIsMounted();
+  final context = useContext();
 
   useAsyncEffect(
     () async {
@@ -25,11 +25,11 @@ void useGetStoragePermissions(WidgetRef ref) {
 
       if (hasNoStoragePerm) {
         await Permission.storage.request();
-        if (isMounted()) ref.invalidate(localTracksProvider);
+        if (context.mounted) ref.invalidate(localTracksProvider);
       }
       if (hasNoAudioPerm) {
         await Permission.audio.request();
-        if (isMounted()) ref.invalidate(localTracksProvider);
+        if (context.mounted) ref.invalidate(localTracksProvider);
       }
     },
     null,

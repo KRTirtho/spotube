@@ -38,7 +38,6 @@ class RootApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final isMounted = useIsMounted();
     final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -129,7 +128,7 @@ class RootApp extends HookConsumerWidget {
 
     useEffect(() {
       downloader.onFileExists = (track) async {
-        if (!isMounted()) return false;
+        if (!context.mounted) return false;
 
         if (!showingDialogCompleter.value.isCompleted) {
           await showingDialogCompleter.value.future;
