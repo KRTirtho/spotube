@@ -29,6 +29,7 @@ class HomePage extends HookConsumerWidget {
     return SafeArea(
         bottom: false,
         child: Scaffold(
+          appBar: kIsMobile || kIsMacOS ? null : const PageWindowTitleBar(),
           body: CustomScrollView(
             controller: controller,
             slivers: [
