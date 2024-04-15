@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 3.4.1
+        default: 3.6.0
         required: true
       channel:
         type: choice

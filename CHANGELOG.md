@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0-0](https://github.com/krtirtho/spotube/compare/v3.5.0...v3.6.0-0) (2024-04-15)
+
+
+### Features
+
+* add Spotify homepage personalized recommendations ([#1402](https://github.com/krtirtho/spotube/issues/1402)) ([9e25c74](https://github.com/krtirtho/spotube/commit/9e25c742d4e43e4e10d2b48afb8e6d90288ffa11))
+* add user profile page ([39e97ee](https://github.com/krtirtho/spotube/commit/39e97eef34d87348a264843e145f31f82832d12e))
+* **android:** Filter Device To Force High Frame Rate ([#880](https://github.com/krtirtho/spotube/issues/880)) ([6e41b10](https://github.com/krtirtho/spotube/commit/6e41b106fa989adee393d3ce2535e75446ad3eea))
+* improved caching based on riverpod ([#1343](https://github.com/krtirtho/spotube/issues/1343)) ([6673e5a](https://github.com/krtirtho/spotube/commit/6673e5a8a86b9667cf9dbff9bb7c40ea6b7de771))
+* LAN connect a.k.a control remote Spotube playback and local output device selection ([#1355](https://github.com/krtirtho/spotube/issues/1355)) ([68374ef](https://github.com/krtirtho/spotube/commit/68374efd3ec556f31b937e5b96920787b54eec78))
+* **lyrics:** add LRCLIB lyrics provider as fallback ([5afe823](https://github.com/krtirtho/spotube/commit/5afe823abdb198340b55d138d8173d886a811632))
+* search history support [#1236](https://github.com/krtirtho/spotube/issues/1236) ([82b1cfa](https://github.com/krtirtho/spotube/commit/82b1cfa0d775e3958c666280943a893c9113d468))
+* **translations:** Add Czech translation ([#1401](https://github.com/krtirtho/spotube/issues/1401)) ([5a6b800](https://github.com/krtirtho/spotube/commit/5a6b80091259359bc38c4b91cd8cb496c4270fa4))
+* **translations:** add Thai Language ([#1319](https://github.com/krtirtho/spotube/issues/1319)) ([b70f250](https://github.com/krtirtho/spotube/commit/b70f250e8d5137fd990787ec9e3d058126cf14f3)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311)
+
+
+### Bug Fixes
+
+* instance of Artist bug [#1362](https://github.com/krtirtho/spotube/issues/1362) ([c8dd802](https://github.com/krtirtho/spotube/commit/c8dd8025ec96bd78ed77cae35f1429aa48c16fde))
+* **playback:** sponsor block skips and stutters in same position ([0d080b7](https://github.com/krtirtho/spotube/commit/0d080b77b72529c0be5ebc27ace1c52307511f73))
+
 ## [3.5.0](https://github.com/krtirtho/spotube/compare/v3.4.1...v3.5.0) (2024-03-08)
 
 
