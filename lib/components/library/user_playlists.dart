@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -18,6 +19,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/utils/platform.dart';
 
 class UserPlaylists extends HookConsumerWidget {
   const UserPlaylists({super.key});
@@ -86,39 +88,37 @@ class UserPlaylists extends HookConsumerWidget {
           child: CustomScrollView(
             controller: controller,
             slivers: [
-              SliverToBoxAdapter(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: SearchBar(
-                        onChanged: (value) => searchText.value = value,
-                        hintText: context.l10n.filter_playlists,
-                        leading: const Icon(SpotubeIcons.filter),
+              SliverAppBar(
+                floating: true,
+                flexibleSpace: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: SearchBar(
+                    onChanged: (value) => searchText.value = value,
+                    hintText: context.l10n.filter_playlists,
+                    leading: const Icon(SpotubeIcons.filter),
+                  ),
+                ),
+                bottom: PreferredSize(
+                  preferredSize:
+                      Size.fromHeight(kIsDesktop ? 35 : kToolbarHeight),
+                  child: Row(
+                    children: [
+                      const Gap(10),
+                      const PlaylistCreateDialogButton(),
+                      const Gap(10),
+                      ElevatedButton.icon(
+                        icon: const Icon(SpotubeIcons.magic),
+                        label: Text(context.l10n.generate_playlist),
+                        onPressed: () {
+                          GoRouter.of(context).push("/library/generate");
+                        },
                       ),
-                    ),
-                    Row(
-                      children: [
-                        const SizedBox(width: 10),
-                        const PlaylistCreateDialogButton(),
-                        const SizedBox(width: 10),
-                        ElevatedButton.icon(
-                          icon: const Icon(SpotubeIcons.magic),
-                          label: Text(context.l10n.generate_playlist),
-                          onPressed: () {
-                            GoRouter.of(context).push("/library/generate");
-                          },
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    ),
-                  ],
+                      const Gap(10),
+                    ],
+                  ),
                 ),
               ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 10),
-              ),
+              const SliverGap(10),
               SliverLayoutBuilder(builder: (context, constrains) {
                 return SliverGrid.builder(
                   itemCount: playlists.isEmpty ? 6 : playlists.length + 1,

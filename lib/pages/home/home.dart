@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/connect/connect_device.dart';
 import 'package:spotube/components/home/sections/featured.dart';
 import 'package:spotube/components/home/sections/feed.dart';
@@ -34,8 +34,9 @@ class HomePage extends HookConsumerWidget {
             controller: controller,
             slivers: [
               if (mediaQuery.mdAndDown)
-                PageWindowTitleBar.sliver(
-                  pinned: DesktopTools.platform.isDesktop,
+                SliverAppBar(
+                  floating: true,
+                  title: Assets.spotubeLogoPng.image(height: 45),
                   actions: [
                     const ConnectDeviceButton(),
                     const Gap(10),

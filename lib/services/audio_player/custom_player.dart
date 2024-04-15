@@ -106,6 +106,10 @@ class CustomPlayer extends Player {
     _shuffled = shuffle;
     await super.setShuffle(shuffle);
     _shuffleStream.add(shuffle);
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (shuffle) {
+      await move(state.playlist.index, 0);
+    }
   }
 
   @override

@@ -23,6 +23,7 @@ class ConnectPage extends HookConsumerWidget {
       appBar: PageWindowTitleBar(
         automaticallyImplyLeading: true,
         title: Text(context.l10n.devices),
+        titleSpacing: 0,
       ),
       body: ListTileTheme(
         shape: RoundedRectangleBorder(

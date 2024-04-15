@@ -176,7 +176,7 @@ class UserLocalTracks extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               FilledButton(
                 onPressed: trackSnapshot.asData?.value != null
                     ? () async {
@@ -212,7 +212,7 @@ class UserLocalTracks extends HookConsumerWidget {
                   sortBy.value = value;
                 },
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               FilledButton(
                 child: const Icon(SpotubeIcons.refresh),
                 onPressed: () {

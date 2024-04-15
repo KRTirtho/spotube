@@ -26,6 +26,7 @@ class GenrePage extends HookConsumerWidget {
       appBar: PageWindowTitleBar(
         title: Text(context.l10n.explore_genres),
         automaticallyImplyLeading: true,
+        titleSpacing: 0,
       ),
       body: SafeArea(
         top: false,
