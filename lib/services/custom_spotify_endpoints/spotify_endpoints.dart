@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/spotify/home_feed.dart';
 import 'package:spotube/models/spotify_friends.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class CustomSpotifyEndpoints {
   static const _baseUrl = 'https://api.spotify.com/v1';
@@ -174,5 +176,127 @@ class CustomSpotifyEndpoints {
       },
     );
     return SpotifyFriends.fromJson(jsonDecode(res.body));
+  }
+
+  Future<SpotifyHomeFeed> getHomeFeed({
+    required String spTCookie,
+    required Market country,
+  }) async {
+    final headers = {
+      'app-platform': 'WebPlayer',
+      'authorization': 'Bearer $accessToken',
+      'content-type': 'application/json;charset=UTF-8',
+      'dnt': '1',
+      'origin': 'https://open.spotify.com',
+      'referer': 'https://open.spotify.com/'
+    };
+    final response = await http.get(
+      Uri(
+        scheme: "https",
+        host: "api-partner.spotify.com",
+        path: "/pathfinder/v1/query",
+        queryParameters: {
+          "operationName": "home",
+          "variables": jsonEncode({
+            "timeZone": tz.local.name,
+            "sp_t": spTCookie,
+            "country": country.name,
+            "facet": null,
+            "sectionItemsLimit": 10
+          }),
+          "extensions": jsonEncode(
+            {
+              "persistedQuery": {
+                "version": 1,
+
+                /// GraphQL persisted Query hash
+                /// This can change overtime. We've to lookout for it
+                /// Docs: https://www.apollographql.com/docs/graphos/operations/persisted-queries/
+                "sha256Hash":
+                    "eb3fba2d388cf4fc4d696b1757a58584e9538a3b515ea742e9cc9465807340be",
+              }
+            },
+          ),
+        },
+      ),
+      headers: headers,
+    );
+
+    if (response.statusCode >= 400) {
+      throw Exception(
+        "[RequestException] "
+        "Status: ${response.statusCode}\n"
+        "Body: ${response.body}",
+      );
+    }
+
+    final data = SpotifyHomeFeed.fromJson(
+      transformHomeFeedJsonMap(
+        jsonDecode(response.body),
+      ),
+    );
+
+    return data;
+  }
+
+  Future<SpotifyHomeFeedSection> getHomeFeedSection(
+    String sectionUri, {
+    required String spTCookie,
+    required Market country,
+  }) async {
+    final headers = {
+      'app-platform': 'WebPlayer',
+      'authorization': 'Bearer $accessToken',
+      'content-type': 'application/json;charset=UTF-8',
+      'dnt': '1',
+      'origin': 'https://open.spotify.com',
+      'referer': 'https://open.spotify.com/'
+    };
+    final response = await http.get(
+      Uri(
+        scheme: "https",
+        host: "api-partner.spotify.com",
+        path: "/pathfinder/v1/query",
+        queryParameters: {
+          "operationName": "homeSection",
+          "variables": jsonEncode({
+            "timeZone": tz.local.name,
+            "sp_t": spTCookie,
+            "country": country.name,
+            "uri": sectionUri
+          }),
+          "extensions": jsonEncode(
+            {
+              "persistedQuery": {
+                "version": 1,
+
+                /// GraphQL persisted Query hash
+                /// This can change overtime. We've to lookout for it
+                /// Docs: https://www.apollographql.com/docs/graphos/operations/persisted-queries/
+                "sha256Hash":
+                    "eb3fba2d388cf4fc4d696b1757a58584e9538a3b515ea742e9cc9465807340be",
+              }
+            },
+          ),
+        },
+      ),
+      headers: headers,
+    );
+
+    if (response.statusCode >= 400) {
+      throw Exception(
+        "[RequestException] "
+        "Status: ${response.statusCode}\n"
+        "Body: ${response.body}",
+      );
+    }
+
+    final data = SpotifyHomeFeedSection.fromJson(
+      transformSectionItemJsonMap(
+        jsonDecode(response.body)["data"]["homeSections"]["sections"][0],
+      ),
+    );
+
+    return data;
   }
 }

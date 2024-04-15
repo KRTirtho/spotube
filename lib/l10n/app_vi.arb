@@ -311,5 +311,14 @@
   "help_project_grow_description": "Spotube là một dự án mã nguồn mở. Bạn có thể giúp dự án này phát triển bằng cách đóng góp vào dự án, báo cáo lỗi hoặc đề xuất tính năng mới.",
   "contribute_on_github": "Đóng góp trên GitHub",
   "donate_on_open_collective": "Quyên góp trên Open Collective",
-  "browse_anonymously": "Duyệt Anonymously"
+  "browse_anonymously": "Duyệt Anonymously",
+  "friends": "Bạn bè",
+  "no_lyrics_available": "Xin lỗi, không tìm thấy lời cho bài hát này",
+  "enable_connect": "Kích hoạt kết nối",
+  "enable_connect_description": "Điều khiển Spotube từ các thiết bị khác",
+  "devices": "Thiết bị",
+  "select": "Chọn",
+  "connect_client_alert": "Bạn đang được điều khiển bởi {client}",
+  "this_device": "Thiết bị này",
+  "remote": "Từ xa"
 }

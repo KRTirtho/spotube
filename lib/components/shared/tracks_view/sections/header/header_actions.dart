@@ -12,14 +12,14 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 class TrackViewHeaderActions extends HookConsumerWidget {
-  const TrackViewHeaderActions({Key? key}) : super(key: key);
+  const TrackViewHeaderActions({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final props = InheritedTrackView.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     final isActive = playlist.collections.contains(props.collectionId);
 
@@ -27,7 +27,7 @@ class TrackViewHeaderActions extends HookConsumerWidget {
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     return Row(
       mainAxisSize: MainAxisSize.min,

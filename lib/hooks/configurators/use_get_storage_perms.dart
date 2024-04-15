@@ -25,11 +25,11 @@ void useGetStoragePermissions(WidgetRef ref) {
 
       if (hasNoStoragePerm) {
         await Permission.storage.request();
-        if (isMounted()) ref.refresh(localTracksProvider);
+        if (isMounted()) ref.invalidate(localTracksProvider);
       }
       if (hasNoAudioPerm) {
         await Permission.audio.request();
-        if (isMounted()) ref.refresh(localTracksProvider);
+        if (isMounted()) ref.invalidate(localTracksProvider);
       }
     },
     null,

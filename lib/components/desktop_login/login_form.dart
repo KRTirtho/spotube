@@ -8,14 +8,13 @@ import 'package:spotube/provider/authentication_provider.dart';
 class TokenLoginForm extends HookConsumerWidget {
   final void Function()? onDone;
   const TokenLoginForm({
-    Key? key,
+    super.key,
     this.onDone,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
     final directCodeController = useTextEditingController();
     final mounted = useIsMounted();
 

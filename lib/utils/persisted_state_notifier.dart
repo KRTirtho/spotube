@@ -126,7 +126,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
     }
   }
 
-  Map<String, dynamic> castNestedJson(Map map) {
+  static Map<String, dynamic> castNestedJson(Map map) {
     return Map.castFrom<dynamic, dynamic, String, dynamic>(
       map.map((key, value) {
         if (value is Map) {

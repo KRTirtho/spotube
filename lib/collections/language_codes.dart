@@ -157,10 +157,10 @@ abstract class LanguageLocals {
     //   name: "Croatian",
     //   nativeName: "hrvatski",
     // ),
-    // "cs": const ISOLanguageName(
-    //   name: "Czech",
-    //   nativeName: "česky, čeština",
-    // ),
+    "cs": const ISOLanguageName(
+      name: "Czech",
+      nativeName: "česky, čeština",
+    ),
     // "da": const ISOLanguageName(
     //   name: "Danish",
     //   nativeName: "dansk",
@@ -637,10 +637,10 @@ abstract class LanguageLocals {
     //   name: "Tajik",
     //   nativeName: "тоҷикӣ, toğikī, تاجیکی‎",
     // ),
-    // "th": const ISOLanguageName(
-    //   name: "Thai",
-    //   nativeName: "ไทย",
-    // ),
+    "th": const ISOLanguageName(
+      name: "Thai",
+      nativeName: "ไทย",
+    ),
     // "ti": const ISOLanguageName(
     //   name: "Tigrinya",
     //   nativeName: "ትግርኛ",

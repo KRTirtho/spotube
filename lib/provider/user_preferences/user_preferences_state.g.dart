@@ -59,6 +59,7 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
           SourceCodecs.m4a,
       discordPresence: json['discordPresence'] as bool? ?? true,
       endlessPlayback: json['endlessPlayback'] as bool? ?? true,
+      enableConnect: json['enableConnect'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$UserPreferencesImplToJson(
@@ -87,6 +88,7 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
       'downloadMusicCodec': _$SourceCodecsEnumMap[instance.downloadMusicCodec]!,
       'discordPresence': instance.discordPresence,
       'endlessPlayback': instance.endlessPlayback,
+      'enableConnect': instance.enableConnect,
     };
 
 const _$SourceQualitiesEnumMap = {

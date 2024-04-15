@@ -39,8 +39,8 @@ class _AutoScrollControllerHook extends Hook<AutoScrollController> {
     this.copyTagsFrom,
     this.suggestedRowHeight,
     this.debugLabel,
-    List<Object?>? keys,
-  }) : super(keys: keys);
+    super.keys,
+  });
 
   final double initialScrollOffset;
   final bool keepScrollOffset;

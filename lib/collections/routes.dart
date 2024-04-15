@@ -4,8 +4,12 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Search;
+import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/pages/connect/connect.dart';
+import 'package:spotube/pages/connect/control/control.dart';
 import 'package:spotube/pages/getting_started/getting_started.dart';
+import 'package:spotube/pages/home/feed/feed_section.dart';
 import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
@@ -15,6 +19,7 @@ import 'package:spotube/pages/library/playlist_generate/playlist_generate_result
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/playlist/liked_playlist.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
+import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
@@ -46,8 +51,7 @@ final routerProvider = Provider((ref) {
           GoRoute(
             path: "/",
             redirect: (context, state) async {
-              final authNotifier =
-                  ref.read(AuthenticationNotifier.provider.notifier);
+              final authNotifier = ref.read(authenticationProvider.notifier);
               final json = await authNotifier.box.get(authNotifier.cacheKey);
 
               if (json?["cookie"] == null &&
@@ -73,6 +77,14 @@ final routerProvider = Provider((ref) {
                   ),
                 ),
               ),
+              GoRoute(
+                path: "feeds/:feedId",
+                pageBuilder: (context, state) => SpotubePage(
+                  child: HomeFeedSectionPage(
+                    sectionUri: state.pathParameters["feedId"] as String,
+                  ),
+                ),
+              )
             ],
           ),
           GoRoute(
@@ -96,8 +108,7 @@ final routerProvider = Provider((ref) {
                         path: "result",
                         pageBuilder: (context, state) => SpotubePage(
                           child: PlaylistGenerateResultPage(
-                            state:
-                                state.extra as PlaylistGenerateResultRouteState,
+                            state: state.extra as GeneratePlaylistProviderInput,
                           ),
                         ),
                       ),
@@ -173,6 +184,27 @@ final routerProvider = Provider((ref) {
               );
             },
           ),
+          GoRoute(
+            path: "/connect",
+            pageBuilder: (context, state) => const SpotubePage(
+              child: ConnectPage(),
+            ),
+            routes: [
+              GoRoute(
+                path: "control",
+                pageBuilder: (context, state) {
+                  return const SpotubePage(
+                    child: ConnectControlPage(),
+                  );
+                },
+              )
+            ],
+          ),
+          GoRoute(
+            path: "/profile",
+            pageBuilder: (context, state) =>
+                const SpotubePage(child: ProfilePage()),
+          )
         ],
       ),
       GoRoute(

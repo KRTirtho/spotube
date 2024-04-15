@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -8,19 +9,21 @@ import 'package:sidebarx/sidebarx.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/connect/connect_device.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
-import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
   final int? selectedIndex;
@@ -31,8 +34,8 @@ class Sidebar extends HookConsumerWidget {
     required this.selectedIndex,
     required this.onSelectedIndexChanged,
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static Widget brandLogo() {
     return Container(
@@ -195,7 +198,7 @@ class Sidebar extends HookConsumerWidget {
 }
 
 class SidebarHeader extends HookWidget {
-  const SidebarHeader({Key? key}) : super(key: key);
+  const SidebarHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -234,23 +237,22 @@ class SidebarHeader extends HookWidget {
 
 class SidebarFooter extends HookConsumerWidget {
   const SidebarFooter({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final me = useQueries.user.me(ref);
-    final data = me.data;
+    final me = ref.watch(meProvider);
+    final data = me.asData?.value;
 
-    final avatarImg = TypeConversionUtils.image_X_UrlString(
-      data?.images,
+    final avatarImg = (data?.images).asUrlString(
       index: (data?.images?.length ?? 1) - 1,
       placeholder: ImagePlaceholder.artist,
     );
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     if (mediaQuery.mdAndDown) {
       return IconButton(
@@ -262,43 +264,56 @@ class SidebarFooter extends HookConsumerWidget {
     return Container(
       padding: const EdgeInsets.only(left: 12),
       width: 250,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          if (auth != null && data == null)
-            const CircularProgressIndicator()
-          else if (data != null)
-            Flexible(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: UniversalImage.imageProvider(avatarImg),
-                    onBackgroundImageError: (exception, stackTrace) =>
-                        Assets.userPlaceholder.image(
-                      height: 16,
-                      width: 16,
+          const ConnectDeviceButton.sidebar(),
+          const Gap(10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (auth != null && data == null)
+                const CircularProgressIndicator()
+              else if (data != null)
+                Flexible(
+                  child: InkWell(
+                    onTap: () {
+                      ServiceUtils.push(context, "/profile");
+                    },
+                    borderRadius: BorderRadius.circular(30),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              UniversalImage.imageProvider(avatarImg),
+                          onBackgroundImageError: (exception, stackTrace) =>
+                              Assets.userPlaceholder.image(
+                            height: 16,
+                            width: 16,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            data.displayName ?? context.l10n.guest,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Text(
-                      data.displayName ?? context.l10n.guest,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+                ),
+              IconButton(
+                icon: const Icon(SpotubeIcons.settings),
+                onPressed: () {
+                  Sidebar.goToSettings(context);
+                },
               ),
-            ),
-          IconButton(
-            icon: const Icon(SpotubeIcons.settings),
-            onPressed: () {
-              Sidebar.goToSettings(context);
-            },
+            ],
           ),
         ],
       ),

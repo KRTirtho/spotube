@@ -1,18 +1,18 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 bool useIsUserPlaylist(WidgetRef ref, String playlistId) {
-  final userPlaylistsQuery = useQueries.playlist.ofMineAll(ref);
-  final me = useQueries.user.me(ref);
+  final userPlaylistsQuery = ref.watch(favoritePlaylistsProvider);
+  final me = ref.watch(meProvider);
 
   return useMemoized(
     () =>
-        userPlaylistsQuery.data?.any((e) =>
+        userPlaylistsQuery.asData?.value.items.any((e) =>
             e.id == playlistId &&
-            me.data != null &&
-            e.owner?.id == me.data?.id) ??
+            me.asData?.value != null &&
+            e.owner?.id == me.asData?.value.id) ??
         false,
-    [userPlaylistsQuery.data, playlistId, me.data],
+    [userPlaylistsQuery.asData?.value, playlistId, me.asData?.value],
   );
 }

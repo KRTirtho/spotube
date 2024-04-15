@@ -5,14 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/gradients.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-
-import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class GenrePage extends HookConsumerWidget {
   const GenrePage({super.key});
@@ -21,13 +18,7 @@ class GenrePage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme) = Theme.of(context);
     final scrollController = useScrollController();
-    final recommendationMarket = ref.watch(
-      userPreferencesProvider.select((s) => s.recommendationMarket),
-    );
-    final categoriesQuery =
-        useQueries.category.listAll(ref, recommendationMarket);
-
-    final categories = categoriesQuery.data ?? <Category>[];
+    final categories = ref.watch(categoriesProvider);
 
     final mediaQuery = MediaQuery.of(context);
 
@@ -35,6 +26,7 @@ class GenrePage extends HookConsumerWidget {
       appBar: PageWindowTitleBar(
         title: Text(context.l10n.explore_genres),
         automaticallyImplyLeading: true,
+        titleSpacing: 0,
       ),
       body: SafeArea(
         top: false,
@@ -48,9 +40,9 @@ class GenrePage extends HookConsumerWidget {
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
-          itemCount: categories.length,
+          itemCount: categories.asData!.value.length,
           itemBuilder: (context, index) {
-            final category = categories[index];
+            final category = categories.asData!.value[index];
             final gradient = gradients[Random().nextInt(gradients.length)];
             return InkWell(
               borderRadius: BorderRadius.circular(8),

@@ -37,7 +37,7 @@ class LocalTrack extends Track {
 
   Map<String, dynamic> toJson() {
     return {
-      ...TrackJson.trackToJson(this),
+      ...TrackExtensions.trackToJson(this),
       'path': path,
     };
   }

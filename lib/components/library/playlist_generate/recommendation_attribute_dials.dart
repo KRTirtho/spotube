@@ -20,12 +20,12 @@ class RecommendationAttributeDials extends HookWidget {
   final double base;
 
   const RecommendationAttributeDials({
-    Key? key,
+    super.key,
     required this.values,
     required this.onChanged,
     required this.title,
     this.base = 1,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

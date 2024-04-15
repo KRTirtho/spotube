@@ -19,11 +19,13 @@ void useCustomStatusBarColor(
         ),
       );
 
+  // ignore: invalid_use_of_visible_for_testing_member
   final statusBarColor = SystemChrome.latestStyle?.statusBarColor;
 
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (automaticSystemUiAdjustment != null) {
+        // ignore: deprecated_member_use
         WidgetsBinding.instance.renderView.automaticSystemUiAdjustment =
             automaticSystemUiAdjustment;
       }
@@ -43,6 +45,7 @@ void useCustomStatusBarColor(
     });
     return () {
       if (automaticSystemUiAdjustment != null) {
+        // ignore: deprecated_member_use
         WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
       }
     };

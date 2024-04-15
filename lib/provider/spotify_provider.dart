@@ -6,7 +6,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 final spotifyProvider = Provider<SpotifyApi>((ref) {
-  final authState = ref.watch(AuthenticationNotifier.provider);
+  final authState = ref.watch(authenticationProvider);
   final anonCred = PrimitiveUtils.getRandomElement(Env.spotifySecrets);
 
   if (authState == null) {

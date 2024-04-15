@@ -73,7 +73,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
 
   Stream<PlaybackLoopMode> get loopModeStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.loopModeStream.map(PlaybackLoopMode.fromPlaylistMode);
+    return _mkPlayer.stream.playlistMode.map(PlaybackLoopMode.fromPlaylistMode);
     // } else {
     //   return _justAudio!.loopModeStream
     //       .map(PlaybackLoopMode.fromLoopMode)
@@ -127,7 +127,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     // if (mkSupportedPlatform) {
     return _mkPlayer.indexChangeStream
         .map((event) {
-          return _mkPlayer.playlist.medias.elementAtOrNull(event)?.uri;
+          return _mkPlayer.state.playlist.medias.elementAtOrNull(event)?.uri;
         })
         .where((event) => event != null)
         .cast<String>();
@@ -140,4 +140,14 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     //       .cast<String>();
     // }
   }
+
+  Stream<List<mk.AudioDevice>> get devicesStream =>
+      _mkPlayer.stream.audioDevices.asBroadcastStream();
+
+  Stream<mk.AudioDevice> get selectedDeviceStream =>
+      _mkPlayer.stream.audioDevice.asBroadcastStream();
+
+  Stream<String> get errorStream => _mkPlayer.stream.error;
+
+  Stream<mk.Playlist> get playlistStream => _mkPlayer.stream.playlist;
 }

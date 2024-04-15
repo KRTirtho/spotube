@@ -313,5 +313,12 @@
   "help_project_grow_description": "Spotube是一个开源项目。您可以通过为项目做出贡献、报告错误或建议新功能来帮助该项目成长。",
   "contribute_on_github": "在GitHub上做出贡献",
   "donate_on_open_collective": "在Open Collective上捐款",
-  "browse_anonymously": "匿名浏览"
+  "browse_anonymously": "匿名浏览",
+  "enable_connect": "启用连接",
+  "enable_connect_description": "从其他设备控制Spotube",
+  "devices": "设备",
+  "select": "选择",
+  "connect_client_alert": "您正在被 {client} 控制",
+  "this_device": "此设备",
+  "remote": "远程"
 }

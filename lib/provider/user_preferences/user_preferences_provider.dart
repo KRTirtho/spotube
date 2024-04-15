@@ -52,7 +52,7 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     if (!sync) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
-      ref.read(ProxyPlaylistNotifier.notifier).updatePalette();
+      ref.read(proxyPlaylistProvider.notifier).updatePalette();
     }
   }
 
@@ -125,6 +125,10 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
 
   void setEndlessPlayback(bool endless) {
     state = state.copyWith(endlessPlayback: endless);
+  }
+
+  void setEnableConnect(bool enable) {
+    state = state.copyWith(enableConnect: enable);
   }
 
   Future<String> _getDefaultDownloadDirectory() async {

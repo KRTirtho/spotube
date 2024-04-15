@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 3.4.1
+        default: 3.6.0
         required: true
       channel:
         type: choice
@@ -284,7 +284,7 @@ jobs:
 
   macos:
 
-    runs-on: macos-12
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2.12.0
@@ -327,7 +327,7 @@ jobs:
 
       - name: Package Macos App
         run: |
-          python3 -m pip install setuptools
+          brew install python-setuptools
           npm install -g appdmg
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-universal.dmg
@@ -349,7 +349,7 @@ jobs:
           limit-access-to-actor: true
 
   iOS:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2.10.0

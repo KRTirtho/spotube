@@ -12,13 +12,12 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LoginTutorial extends ConsumerWidget {
-  const LoginTutorial({Key? key}) : super(key: key);
+  const LoginTutorial({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    ref.watch(AuthenticationNotifier.provider);
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    ref.watch(authenticationProvider);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
     final key = GlobalKey<State<IntroductionScreen>>();
     final theme = Theme.of(context);
 

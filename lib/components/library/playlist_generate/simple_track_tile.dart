@@ -4,16 +4,16 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/extensions/image.dart';
 
 class SimpleTrackTile extends HookWidget {
   final Track track;
   final VoidCallback? onDelete;
   const SimpleTrackTile({
-    Key? key,
+    super.key,
     required this.track,
     this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,7 @@ class SimpleTrackTile extends HookWidget {
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: UniversalImage(
-          path: TypeConversionUtils.image_X_UrlString(
-            track.album?.images,
+          path: (track.album?.images).asUrlString(
             placeholder: ImagePlaceholder.artist,
           ),
           height: 40,

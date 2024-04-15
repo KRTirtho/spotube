@@ -12,7 +12,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 
 class LibraryPage extends HookConsumerWidget {
-  const LibraryPage({Key? key}) : super(key: key);
+  const LibraryPage({super.key});
   @override
   Widget build(BuildContext context, ref) {
     final downloadingCount = ref.watch(downloadManagerProvider).$downloadCount;

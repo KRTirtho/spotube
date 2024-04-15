@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -16,17 +15,18 @@ import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/services/mutations/mutations.dart';
-import 'package:spotube/services/queries/search.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+
 import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {
@@ -53,13 +53,13 @@ class TrackOptions extends HookConsumerWidget {
   final ObjectRef<ValueChanged<RelativeRect>?>? showMenuCbRef;
   final Widget? icon;
   const TrackOptions({
-    Key? key,
+    super.key,
     required this.track,
     this.showMenuCbRef,
     this.userPlaylist = false,
     this.playlistId,
     this.icon,
-  }) : super(key: key);
+  });
 
   void actionShare(BuildContext context, Track track) {
     final data = "https://open.spotify.com/track/${track.id}";
@@ -95,25 +95,14 @@ class TrackOptions extends HookConsumerWidget {
     WidgetRef ref,
     Track track,
   ) async {
-    final playback = ref.read(ProxyPlaylistNotifier.notifier);
-    final playlist = ref.read(ProxyPlaylistNotifier.provider);
+    final playback = ref.read(proxyPlaylistProvider.notifier);
+    final playlist = ref.read(proxyPlaylistProvider);
     final spotify = ref.read(spotifyProvider);
     final query = "${track.name} Radio";
-    final pages = await QueryClient.of(context)
-            .fetchInfiniteQueryJob<List<Page>, dynamic, int, SearchParams>(
-          job: SearchQueries.queryJob(query),
-          args: (
-            spotify: spotify,
-            searchType: SearchType.playlist,
-            query: query,
-          ),
-        ) ??
-        [];
+    final pages =
+        await spotify.search.get(query, types: [SearchType.playlist]).first();
 
-    final radios = pages
-        .expand((e) => e.items?.toList() ?? <PlaylistSimple>[])
-        .toList()
-        .cast<PlaylistSimple>();
+    final radios = pages.map((e) => e.items).toList().cast<PlaylistSimple>();
 
     final artists = track.artists!.map((e) => e.name);
 
@@ -170,12 +159,13 @@ class TrackOptions extends HookConsumerWidget {
     final router = GoRouter.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playback = ref.watch(proxyPlaylistProvider.notifier);
+    final auth = ref.watch(authenticationProvider);
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
-    final blacklist = ref.watch(BlackListNotifier.provider);
+    final blacklist = ref.watch(blacklistProvider);
+    final me = ref.watch(meProvider);
 
     final favorites = useTrackToggleLike(track, ref);
 
@@ -190,10 +180,8 @@ class TrackOptions extends HookConsumerWidget {
     );
 
     final removingTrack = useState<String?>(null);
-    final removeTrack = useMutations.playlist.removeTrackOf(
-      ref,
-      playlistId ?? "",
-    );
+    final favoritePlaylistsNotifier =
+        ref.watch(favoritePlaylistsProvider.notifier);
 
     final isInQueue = useMemoized(() {
       if (playlist.activeTrack == null) return false;
@@ -220,7 +208,7 @@ class TrackOptions extends HookConsumerWidget {
             break;
           case TrackOptionValue.delete:
             await File((track as LocalTrack).path).delete();
-            ref.refresh(localTracksProvider);
+            ref.invalidate(localTracksProvider);
             break;
           case TrackOptionValue.addToQueue:
             await playback.addTrack(track);
@@ -257,22 +245,23 @@ class TrackOptions extends HookConsumerWidget {
             );
             break;
           case TrackOptionValue.favorite:
-            favorites.toggleTrackLike.mutate(favorites.isLiked);
+            favorites.toggleTrackLike(track);
             break;
           case TrackOptionValue.addToPlaylist:
             actionAddToPlaylist(context, track);
             break;
           case TrackOptionValue.removeFromPlaylist:
             removingTrack.value = track.uri;
-            removeTrack.mutate(track.uri!);
+            favoritePlaylistsNotifier
+                .removeTracks(playlistId ?? "", [track.id!]);
             break;
           case TrackOptionValue.blacklist:
             if (isBlackListed) {
-              ref.read(BlackListNotifier.provider.notifier).remove(
+              ref.read(blacklistProvider.notifier).remove(
                     BlacklistedElement.track(track.id!, track.name!),
                   );
             } else {
-              ref.read(BlackListNotifier.provider.notifier).add(
+              ref.read(blacklistProvider.notifier).add(
                     BlacklistedElement.track(track.id!, track.name!),
                   );
             }
@@ -307,8 +296,8 @@ class TrackOptions extends HookConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: UniversalImage(
-                path: TypeConversionUtils.image_X_UrlString(track.album!.images,
-                    placeholder: ImagePlaceholder.albumArt),
+                path: track.album!.images
+                    .asUrlString(placeholder: ImagePlaceholder.albumArt),
                 fit: BoxFit.cover,
               ),
             ),
@@ -321,14 +310,12 @@ class TrackOptions extends HookConsumerWidget {
           ),
           subtitle: Align(
             alignment: Alignment.centerLeft,
-            child: TypeConversionUtils.artists_X_ClickableArtists(
-              track.artists!,
-            ),
+            child: ArtistLink(artists: track.artists!),
           ),
         ),
       ],
       children: switch (track.runtimeType) {
-        LocalTrack => [
+        LocalTrack() => [
             PopSheetEntry(
               value: TrackOptionValue.delete,
               leading: const Icon(SpotubeIcons.trash),
@@ -361,7 +348,7 @@ class TrackOptions extends HookConsumerWidget {
                 leading: const Icon(SpotubeIcons.queueRemove),
                 title: Text(context.l10n.remove_from_queue),
               ),
-            if (favorites.me.hasData)
+            if (me.asData?.value != null)
               PopSheetEntry(
                 value: TrackOptionValue.favorite,
                 leading: favorites.isLiked
@@ -391,10 +378,7 @@ class TrackOptions extends HookConsumerWidget {
             if (userPlaylist && auth != null)
               PopSheetEntry(
                 value: TrackOptionValue.removeFromPlaylist,
-                leading: (removeTrack.isMutating || !removeTrack.hasData) &&
-                        removingTrack.value == track.uri
-                    ? const CircularProgressIndicator()
-                    : const Icon(SpotubeIcons.removeFilled),
+                leading: const Icon(SpotubeIcons.removeFilled),
                 title: Text(context.l10n.remove_from_playlist),
               ),
             PopSheetEntry(
