@@ -313,5 +313,13 @@
   "help_project_grow_description": "Spotube เป็นโครงการโอเพนซอร์ส คุณสามารถช่วยให้โครงการนี้เติบโตได้โดยการมีส่วนร่วมในโครงการ รายงานข้อบกพร่อง หรือเสนอคุณสมบัติใหม่",
   "contribute_on_github": "มีส่วนร่วมบน GitHub",
   "donate_on_open_collective": "บริจาคบน Open Collective",
-  "browse_anonymously": "เรียกดูแบบไม่ระบุตัวตน"
+  "browse_anonymously": "เรียกดูแบบไม่ระบุตัวตน",
+  "choose_your_language": "เลือกภาษาของคุณ",
+  "enable_connect": "เปิดใช้งานการเชื่อมต่อ",
+  "enable_connect_description": "ควบคุม Spotube จากอุปกรณ์อื่น",
+  "devices": "อุปกรณ์",
+  "select": "เลือก",
+  "connect_client_alert": "คุณกำลังถูกควบคุมโดย {client}",
+  "this_device": "อุปกรณ์นี้",
+  "remote": "ระยะไกล"
 }

@@ -313,5 +313,12 @@
   "help_project_grow_description": "Spotube एक ओपन सोर्स परियोजना है। आप इस परियोजना को योगदान देकर, बग रिपोर्ट करके या नई विशेषताओं का सुझाव देकर इस परियोजना को बढ़ा सकते हैं।",
   "contribute_on_github": "GitHub पर योगदान करें",
   "donate_on_open_collective": "ओपन कलेक्टिव पर दान करें",
-  "browse_anonymously": "बिना नाम के ब्राउज़ करें"
+  "browse_anonymously": "बिना नाम के ब्राउज़ करें",
+  "enable_connect": "कनेक्ट सक्षम करें",
+  "enable_connect_description": "अन्य उपकरणों से Spotube को नियंत्रित करें",
+  "devices": "उपकरण",
+  "select": "चयन करें",
+  "connect_client_alert": "आप {client} द्वारा नियंत्रित हो रहे हैं",
+  "this_device": "यह उपकरण",
+  "remote": "रिमोट"
 }
