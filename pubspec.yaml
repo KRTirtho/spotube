@@ -122,7 +122,10 @@ dependencies:
   flutter_sharing_intent: ^1.1.0
   flutter_broadcasts: ^0.4.0
   freezed_annotation: ^2.4.1
-  spotify: ^0.13.3
+  spotify:
+    git:
+      url: https://github.com/KRTirtho/spotify-dart.git
+      ref: feat/to-json
   bonsoir: ^5.1.9
   shelf: ^1.4.1
   shelf_router: ^1.1.4
