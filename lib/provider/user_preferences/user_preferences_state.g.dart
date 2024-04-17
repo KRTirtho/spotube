@@ -16,12 +16,12 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
       amoledDarkTheme: json['amoledDarkTheme'] as bool? ?? false,
       checkUpdate: json['checkUpdate'] as bool? ?? true,
       normalizeAudio: json['normalizeAudio'] as bool? ?? false,
-      showSystemTrayIcon: json['showSystemTrayIcon'] as bool? ?? true,
+      showSystemTrayIcon: json['showSystemTrayIcon'] as bool? ?? false,
       skipNonMusic: json['skipNonMusic'] as bool? ?? false,
       systemTitleBar: json['systemTitleBar'] as bool? ?? false,
       closeBehavior:
           $enumDecodeNullable(_$CloseBehaviorEnumMap, json['closeBehavior']) ??
-              CloseBehavior.minimizeToTray,
+              CloseBehavior.close,
       accentColorScheme: UserPreferences._accentColorSchemeReadValue(
                   json, 'accentColorScheme') ==
               null

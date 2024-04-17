@@ -4,11 +4,11 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +19,7 @@ import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
+import 'package:spotube/provider/tray_manager/tray_manager.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/skip_segment.dart';
@@ -31,15 +32,17 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
+import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:spotube/hooks/configurators/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:window_manager/window_manager.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final arguments = await startCLI(rawArgs);
@@ -55,12 +58,12 @@ Future<void> main(List<String> rawArgs) async {
   MediaKit.ensureInitialized();
 
   // force High Refresh Rate on some Android devices (like One Plus)
-  if (DesktopTools.platform.isAndroid) {
+  if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();
   }
 
-  if (DesktopTools.platform.isDesktop) {
-    await DesktopTools.window.setPreventClose(true);
+  if (kIsDesktop) {
+    await windowManager.setPreventClose(true);
   }
 
   await SystemTheme.accentColor.load();
@@ -69,7 +72,7 @@ Future<void> main(List<String> rawArgs) async {
     MetadataGod.initialize();
   }
 
-  if (DesktopTools.platform.isWindows || DesktopTools.platform.isLinux) {
+  if (kIsWindows || kIsLinux) {
     DiscordRPC.initialize();
   }
 
@@ -101,14 +104,10 @@ Future<void> main(List<String> rawArgs) async {
     path: hiveCacheDir,
   );
 
-  await DesktopTools.ensureInitialized(
-    DesktopWindowOptions(
-      hideTitleBar: true,
-      title: "Spotube",
-      backgroundColor: Colors.transparent,
-      minimumSize: const Size(300, 700),
-    ),
-  );
+  if (kIsDesktop) {
+    await localNotifier.setup(appName: "Spotube");
+    await WindowManagerTools.initialize();
+  }
 
   Catcher2(
     enableLogger: arguments["verbose"],
@@ -189,9 +188,9 @@ class SpotubeState extends ConsumerState<Spotube> {
     ref.listen(playbackServerProvider, (_, __) {});
     ref.listen(connectServerProvider, (_, __) {});
     ref.listen(connectClientsProvider, (_, __) {});
+    ref.listen(trayManagerProvider, (_, __) {});
 
     useDisableBatteryOptimizations();
-    useInitSysTray(ref);
     useDeepLinking(ref);
     useCloseBehavior(ref);
     useGetStoragePermissions(ref);
@@ -233,9 +232,7 @@ class SpotubeState extends ConsumerState<Spotube> {
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,
-          DesktopTools.platform.isDesktop && !DesktopTools.platform.isMacOS
-              ? DragToResizeArea(child: child!)
-              : child,
+          kIsDesktop && !kIsMacOS ? DragToResizeArea(child: child!) : child,
         );
       },
       themeMode: themeMode,

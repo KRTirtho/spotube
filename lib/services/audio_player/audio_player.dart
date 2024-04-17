@@ -101,7 +101,7 @@ abstract class AudioPlayerInterface {
     return _mkPlayer.state.completed;
   }
 
-  Future<bool> get isShuffled async {
+  bool get isShuffled {
     return _mkPlayer.shuffled;
   }
 
