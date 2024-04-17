@@ -97,12 +97,7 @@ This handy table lists all the methods you can use to install Spotube:
   </tr>
   <tr>
     <td>AppImage</td>
-    <td>
-      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-linux-x86_64.AppImage">
-        <img width="220" alt="Download AppImage" src="https://user-images.githubusercontent.com/61944859/169455015-13385466-8901-48fe-ba90-b62d58b0be64.png">
-      </a>
-      <p><b>Note:</b> <a href="https://github.com/TheAssassin/AppImageLauncher">AppimageLauncher</a> is required!</p>
-    </td>
+    <td>AppImage's lacking stability led to it's temporal removal. More information at https://github.com/KRTirtho/spotube/issues/1082</td>
   </tr>
   <tr>
     <td>Debian/Ubuntu</td>
