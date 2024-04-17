@@ -71,6 +71,14 @@ This handy table lists all the methods you can use to install Spotube:
     </td>
   </tr>
   <tr>
+    <td>iOS</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/download/nightly/Spotube-iOS.ipa">
+        <img width="220" alt="iOS Download" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/640px-Download_on_the_App_Store_Badge.svg.png">
+      </a>
+    </td>
+  </tr>
+  <tr>
     <td>Android</td>
     <td>
       <a href="https://play.google.com/store/apps/details?id=oss.krtirtho.spotube">
