@@ -314,6 +314,13 @@ jobs:
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+          check-latest: true
 
       - name: Install Dependencies
         run: |
