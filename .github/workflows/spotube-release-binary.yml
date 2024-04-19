@@ -207,12 +207,12 @@ jobs:
           limit-access-to-actor: true
 
   linux_arm:
-    runs-on: macos-14
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Docker
-        run: brew install --cask docker
+      - name: Setup Docker on macOS
+        uses: douglascamata/setup-docker-macos-action@v1-alpha
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}
@@ -246,7 +246,8 @@ jobs:
 
       - name: Build Linux Arm
         run: |
-          docker build -t spotube-linux-arm -f .github/Dockerfile . --build-arg BUILD_VERSION=${{ env.BUILD_VERSION }} --build-arg FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
+          docker buildx create --use
+          docker buildx build --platform linux/arm64 -t spotube-linux-arm -f .github/Dockerfile . --build-arg BUILD_VERSION=${{ env.BUILD_VERSION }} --build-arg FLUTTER_VERSION=${{ env.FLUTTER_VERSION }} --load
           docker create --name spotube-linux-arm spotube-linux-arm
           docker cp spotube-linux-arm:/app/dist .
           docker rm -f spotube-linux-arm
