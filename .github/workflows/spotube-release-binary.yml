@@ -287,7 +287,6 @@ jobs:
           name: Spotube-Release-Binaries
           path: |
             dist/Spotube-linux-aarch64.deb
-            dist/Spotube-linux-aarch64.rpm
             dist/spotube-linux-${{ env.BUILD_VERSION }}-aarch64.tar.xz
             
       - uses: actions/upload-artifact@v3
@@ -297,7 +296,6 @@ jobs:
           name: Spotube-Release-Binaries
           path: |
             dist/Spotube-linux-aarch64.deb
-            dist/Spotube-linux-aarch64.rpm
             dist/spotube-linux-nightly-aarch64.tar.xz
 
       - name: Debug With SSH When fails
