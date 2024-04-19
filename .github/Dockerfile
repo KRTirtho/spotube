@@ -1,7 +1,7 @@
 ARG FLUTTER_VERSION
 ARG BUILD_VERSION
 
-FROM --platform=arm64 fischerscode/flutter-sudo:${FLUTTER_VERSION}
+FROM fischerscode/flutter-sudo:${FLUTTER_VERSION}
 
 WORKDIR /app
 
