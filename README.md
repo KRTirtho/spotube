@@ -74,7 +74,7 @@ This handy table lists all the methods you can use to install Spotube:
     <td>iOS</td>
     <td>
       <a href="https://github.com/KRTirtho/spotube/releases/download/nightly/Spotube-iOS.ipa">
-        <img width="220" alt="iOS Download" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/640px-Download_on_the_App_Store_Badge.svg.png">
+        <img width="220" alt="iOS Download" src="https://static.vecteezy.com/system/resources/previews/021/514/755/original/ios-icon-logo-software-phone-apple-symbol-with-name-white-design-mobile-illustration-with-black-background-free-vector.jpg">
       </a>
     </td>
   </tr>
