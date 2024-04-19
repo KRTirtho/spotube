@@ -234,7 +234,7 @@ jobs:
 
       - name: Replace Version in files
         run: |
-          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ env.BUILD_VERSION }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+          sed -i '' 's|%{{APPDATA_RELEASE}}%|<release version="${{ env.BUILD_VERSION }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
 
       - name: Create Stable .env
         if: ${{ inputs.channel == 'stable' }}
