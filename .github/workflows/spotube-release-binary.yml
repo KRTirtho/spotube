@@ -212,7 +212,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Docker
-        run: brew install docker
+        run: brew install --cask docker
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}
