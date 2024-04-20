@@ -222,7 +222,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libunwind-dev locate patchelf gir1.2-appindicator3-0.1 libappindicator3-1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev mpv libmpv-dev
+          sudo apt-get install -y pkg-config make python3-pip python3-setuptools
 
       - name: Replace pubspec version and BUILD_VERSION Env (nightly)
         if: ${{ inputs.channel == 'nightly' }}
@@ -257,7 +257,7 @@ jobs:
           push: false
           platforms: linux/arm64
           file: .github/Dockerfile
-          tags: spotube-linux-arm64:latest
+          tags: krtirtho/spotube_linux_arm:latest
           build-args: |
             BUILD_VERSION=${{ env.BUILD_VERSION }}
             FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
@@ -270,15 +270,15 @@ jobs:
           push: false
           platforms: linux/arm64
           file: .github/Dockerfile
-          tags: spotube-linux-arm64:latest
+          tags: krtirtho/spotube_linux_arm:latest
           build-args: |
             BUILD_VERSION=nighlty
             FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
 
       - name: Copy the built packages
         run: |
-          docker create --name spotube-linux-arm64 spotube-linux-arm64:latest
-          docker cp spotube-linux-arm64:/app/dist/ dist/
+          docker create --name spotube_linux_arm krtirtho/spotube_linux_arm:latest
+          docker cp spotube_linux_arm:/app/dist/ dist/
 
       - uses: actions/upload-artifact@v3
         if: ${{ inputs.channel == 'stable' }}
