@@ -277,6 +277,7 @@ jobs:
 
       - name: Copy the built packages
         run: |
+          docker images ls
           docker create --name spotube_linux_arm krtirtho/spotube_linux_arm:latest
           docker cp spotube_linux_arm:/app/dist/ dist/
 
