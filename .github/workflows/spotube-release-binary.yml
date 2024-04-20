@@ -249,31 +249,15 @@ jobs:
         run: |
           sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ env.BUILD_VERSION }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
       
-      - name: Build and push (stable)
+      - name: Build Binaries (stable)
         if: ${{ inputs.channel == 'stable' }}
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          platforms: linux/arm64
-          file: .github/Dockerfile
-          tags: krtirtho/spotube_linux_arm:latest
-          build-args: |
-            BUILD_VERSION=${{ env.BUILD_VERSION }}
-            FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
+        run: |
+          docker buildx build --platform=linux/arm64 -f .github/Dockerfile . --build-arg FLUTTER_VERSION=${{env.FLUTTER_VERSION}} --build-arg BUILD_VERSION=${{env.BUILD_VERSION}} -t krtirtho/spotube_linux_arm:latest --load
 
-      - name: Build and push (nightly)
+      - name: Build Binaries (nightly)
         if: ${{ inputs.channel == 'nightly' }}
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          platforms: linux/arm64
-          file: .github/Dockerfile
-          tags: krtirtho/spotube_linux_arm:latest
-          build-args: |
-            BUILD_VERSION=nighlty
-            FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
+        run: |
+          docker buildx build --platform=linux/arm64 -f .github/Dockerfile . --build-arg FLUTTER_VERSION=${{env.FLUTTER_VERSION}} --build-arg BUILD_VERSION=nightly -t krtirtho/spotube_linux_arm:latest --load
 
       - name: Copy the built packages
         run: |
