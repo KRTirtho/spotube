@@ -1,12 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/home/sections/friends/friend_item.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/models/spotify_friends.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomePageFriendsSection extends HookConsumerWidget {
@@ -14,6 +16,7 @@ class HomePageFriendsSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final auth = ref.watch(authenticationProvider);
     final friendsQuery = ref.watch(friendsProvider);
     final friends =
         friendsQuery.asData?.value.friends ?? FakeData.friends.friends;
@@ -27,32 +30,36 @@ class HomePageFriendsSection extends HookConsumerWidget {
       xxl: 7,
     );
 
-    final friendGroup = friends.fold<List<List<SpotifyFriendActivity>>>(
-      [],
-      (previousValue, element) {
-        if (previousValue.isEmpty) {
+    final friendGroup = useMemoized(
+      () => friends.fold<List<List<SpotifyFriendActivity>>>(
+        [],
+        (previousValue, element) {
+          if (previousValue.isEmpty) {
+            return [
+              [element]
+            ];
+          }
+
+          final lastGroup = previousValue.last;
+          if (lastGroup.length < groupCount) {
+            return [
+              ...previousValue.sublist(0, previousValue.length - 1),
+              [...lastGroup, element]
+            ];
+          }
+
           return [
+            ...previousValue,
             [element]
           ];
-        }
-
-        final lastGroup = previousValue.last;
-        if (lastGroup.length < groupCount) {
-          return [
-            ...previousValue.sublist(0, previousValue.length - 1),
-            [...lastGroup, element]
-          ];
-        }
-
-        return [
-          ...previousValue,
-          [element]
-        ];
-      },
+        },
+      ),
+      [friends, groupCount],
     );
 
     if (friendsQuery.isLoading ||
-        friendsQuery.asData?.value.friends.isEmpty == true) {
+        friendsQuery.asData?.value.friends.isEmpty == true ||
+        auth == null) {
       return const SliverToBoxAdapter(
         child: SizedBox.shrink(),
       );

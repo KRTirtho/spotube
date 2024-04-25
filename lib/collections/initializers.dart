@@ -1,9 +1,10 @@
 import 'dart:io';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+
+import 'package:spotube/utils/platform.dart';
 import 'package:win32_registry/win32_registry.dart';
 
 Future<void> registerWindowsScheme(String scheme) async {
-  if (!DesktopTools.platform.isWindows) return;
+  if (!kIsWindows) return;
   String appPath = Platform.resolvedExecutable;
 
   String protocolRegKey = 'Software\\Classes\\$scheme';

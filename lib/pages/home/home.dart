@@ -14,6 +14,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -41,8 +42,13 @@ class HomePage extends HookConsumerWidget {
                     const ConnectDeviceButton(),
                     const Gap(10),
                     Consumer(builder: (context, ref, _) {
+                      final auth = ref.watch(authenticationProvider);
                       final me = ref.watch(meProvider);
                       final meData = me.asData?.value;
+
+                      if (auth == null) {
+                        return const SizedBox();
+                      }
 
                       return IconButton(
                         icon: CircleAvatar(

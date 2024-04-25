@@ -26,7 +26,7 @@ on:
         default: true
 
 env:
-  FLUTTER_VERSION: '3.19.1'
+  FLUTTER_VERSION: '3.19.5'
 
 jobs:
   windows:
@@ -70,7 +70,7 @@ jobs:
         run: |
           flutter config --enable-windows-desktop
           flutter pub get
-          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          dart run build_runner build --delete-conflicting-outputs 
 
       - name: Build Windows Executable
         run: |
@@ -156,7 +156,7 @@ jobs:
         run: |
           flutter config --enable-linux-desktop
           flutter pub get
-          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          dart run build_runner build --delete-conflicting-outputs 
 
       - name: Build Linux Packages
         run: |
@@ -206,6 +206,66 @@ jobs:
         with:
           limit-access-to-actor: true
 
+  linux_arm:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Docker
+        run: brew install --cask docker
+
+      - name: Replace pubspec version and BUILD_VERSION Env (nightly)
+        if: ${{ inputs.channel == 'nightly' }}
+        run: |
+          brew install yq
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+
+
+      - name: BUILD_VERSION Env (stable)
+        if: ${{ inputs.channel == 'stable' }}
+        run: |
+          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Replace Version in files
+        run: |
+          sed -i '' 's|%{{APPDATA_RELEASE}}%|<release version="${{ env.BUILD_VERSION }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+
+      - name: Create Stable .env
+        if: ${{ inputs.channel == 'stable' }}
+        run: echo '${{ secrets.DOTENV_RELEASE }}' > .env
+
+      - name: Create Nightly .env
+        if: ${{ inputs.channel == 'nightly' }}
+        run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
+
+      - name: Build Linux Arm
+        run: |
+          docker build -t spotube-linux-arm -f .github/Dockerfile . --build-arg BUILD_VERSION=${{ env.BUILD_VERSION }} --build-arg FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
+          docker create --name spotube-linux-arm spotube-linux-arm
+          docker cp spotube-linux-arm:/app/dist .
+          docker rm -f spotube-linux-arm
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            dist/Spotube-linux-aarch64.deb
+            dist/Spotube-linux-aarch64.rpm
+            dist/spotube-linux-nightly-aarch64.tar.xz
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
 
   android:
     runs-on: ubuntu-latest
@@ -245,7 +305,7 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
-          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          dart run build_runner build --delete-conflicting-outputs 
 
       - name: Sign Apk
         run: |
@@ -260,7 +320,7 @@ jobs:
       - name: Build Playstore AppBundle
         run: |
           echo 'ENABLE_UPDATE_CHECK=0' >> .env
-          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          dart run build_runner build --delete-conflicting-outputs 
           export MANIFEST=android/app/src/main/AndroidManifest.xml
           xmlstarlet ed -d '//meta-data[@android:name="com.google.android.gms.car.application"]' $MANIFEST > $MANIFEST.tmp
           mv $MANIFEST.tmp $MANIFEST
@@ -283,7 +343,6 @@ jobs:
           limit-access-to-actor: true
 
   macos:
-
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
@@ -317,7 +376,7 @@ jobs:
         run: |
           dart pub global activate flutter_distributor
           flutter pub get
-          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          dart run build_runner build --delete-conflicting-outputs 
 
       - name: Build Macos App
         run: |
@@ -381,7 +440,7 @@ jobs:
       - name: Generate Secrets
         run: |
           flutter pub get
-          dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+          dart run build_runner build --delete-conflicting-outputs 
 
       - name: Build iOS iPA
         run: |
@@ -408,6 +467,7 @@ jobs:
     needs:
       - windows
       - linux
+      - linux_arm
       - android
       - macos
       - iOS

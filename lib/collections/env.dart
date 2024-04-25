@@ -1,5 +1,5 @@
 import 'package:envied/envied.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:spotube/utils/platform.dart';
 
 part 'env.g.dart';
 
@@ -26,7 +26,7 @@ abstract class Env {
   static final String _enableUpdateChecker = _Env._enableUpdateChecker;
 
   static bool get enableUpdateChecker =>
-      DesktopTools.platform.isFlatpak || _enableUpdateChecker == "1";
+      kIsFlatpak || _enableUpdateChecker == "1";
 
   static String discordAppId = "1176718791388975124";
 }
