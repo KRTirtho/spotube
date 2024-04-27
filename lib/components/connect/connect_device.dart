@@ -52,52 +52,58 @@ class ConnectDeviceButton extends HookConsumerWidget {
         alignment: Alignment.centerRight,
         fit: StackFit.loose,
         children: [
-          Center(
-            child: InkWell(
-              onTap: () {
-                ServiceUtils.push(context, "/connect");
-              },
-              borderRadius: BorderRadius.circular(50),
-              child: Ink(
-                decoration: BoxDecoration(
+          Material(
+            type: MaterialType.transparency,
+            child: Center(
+              child: ClipRect(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  onTap: () {
+                    ServiceUtils.push(context, "/connect");
+                  },
                   borderRadius: BorderRadius.circular(50),
-                  color: colorScheme.primaryContainer,
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (connectClients.asData?.value.resolvedService !=
-                        null) ...[
-                      Container(
-                        width: 7,
-                        height: 7,
-                        decoration: BoxDecoration(
-                          color: Colors.greenAccent,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                      ),
-                      const Gap(5),
-                    ],
-                    Text(context.l10n.devices),
-                    if (connectClients.asData?.value.services.isNotEmpty ==
-                        true)
-                      Text(
-                        " (${connectClients.asData?.value.services.length})",
-                        style: TextStyle(
-                          color:
-                              colorScheme.onPrimaryContainer.withOpacity(0.5),
-                        ),
-                      ),
-                    const Gap(35),
-                  ],
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: colorScheme.primaryContainer,
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (connectClients.asData?.value.resolvedService !=
+                            null) ...[
+                          Container(
+                            width: 7,
+                            height: 7,
+                            decoration: BoxDecoration(
+                              color: Colors.greenAccent,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          const Gap(5),
+                        ],
+                        Text(context.l10n.devices),
+                        if (connectClients.asData?.value.services.isNotEmpty ==
+                            true)
+                          Text(
+                            " (${connectClients.asData?.value.services.length})",
+                            style: TextStyle(
+                              color: colorScheme.onPrimaryContainer
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                        const Gap(35),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
           Positioned(
-            right: 0,
+            right: -3,
             child: IconButton.filled(
               icon: const Icon(SpotubeIcons.speaker),
               style: IconButton.styleFrom(

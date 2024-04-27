@@ -54,6 +54,11 @@ class HomeFeedSectionPage extends HookConsumerWidget {
                 );
               },
             ),
+            const SliverToBoxAdapter(
+              child: SafeArea(
+                child: SizedBox(),
+              ),
+            ),
           ],
         ),
       ),

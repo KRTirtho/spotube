@@ -62,10 +62,10 @@ class UserPreferences with _$UserPreferences {
     @Default(false) bool amoledDarkTheme,
     @Default(true) bool checkUpdate,
     @Default(false) bool normalizeAudio,
-    @Default(true) bool showSystemTrayIcon,
+    @Default(false) bool showSystemTrayIcon,
     @Default(false) bool skipNonMusic,
     @Default(false) bool systemTitleBar,
-    @Default(CloseBehavior.minimizeToTray) CloseBehavior closeBehavior,
+    @Default(CloseBehavior.close) CloseBehavior closeBehavior,
     @Default(SpotubeColor(0xFF2196F3, name: "Blue"))
     @JsonKey(
       fromJson: UserPreferences._accentColorSchemeFromJson,

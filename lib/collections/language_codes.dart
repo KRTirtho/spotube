@@ -157,10 +157,10 @@ abstract class LanguageLocals {
     //   name: "Croatian",
     //   nativeName: "hrvatski",
     // ),
-    // "cs": const ISOLanguageName(
-    //   name: "Czech",
-    //   nativeName: "česky, čeština",
-    // ),
+    "cs": const ISOLanguageName(
+      name: "Czech",
+      nativeName: "česky, čeština",
+    ),
     // "da": const ISOLanguageName(
     //   name: "Danish",
     //   nativeName: "dansk",

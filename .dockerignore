@@ -1,0 +1,4 @@
+build
+dist
+.dart_tool
+.idea

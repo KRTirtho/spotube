@@ -313,5 +313,12 @@
   "help_project_grow_description": "Spotube - это проект с открытым исходным кодом. Вы можете помочь этому проекту развиваться, внося вклад в проект, сообщая ошибках или предлагая новые функции.",
   "contribute_on_github": "Внести вклад на GitHub",
   "donate_on_open_collective": "Пожертвовать на Open Collective",
-  "browse_anonymously": "Анонимно просматривать"
+  "browse_anonymously": "Анонимно просматривать",
+  "enable_connect": "Включить подключение",
+  "enable_connect_description": "Управление Spotube с других устройств",
+  "devices": "Устройства",
+  "select": "Выбрать",
+  "connect_client_alert": "Вас контролирует {client}",
+  "this_device": "Это устройство",
+  "remote": "Дистанционное управление"
 }

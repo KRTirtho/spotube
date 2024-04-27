@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
@@ -12,6 +12,7 @@ import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 import 'package:gap/gap.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
+import 'package:spotube/utils/platform.dart';
 
 class TrackViewFlexHeader extends HookConsumerWidget {
   const TrackViewFlexHeader({super.key});
@@ -53,7 +54,7 @@ class TrackViewFlexHeader extends HookConsumerWidget {
             floating: false,
             pinned: true,
             expandedHeight: 450,
-            automaticallyImplyLeading: DesktopTools.platform.isMobile,
+            automaticallyImplyLeading: kIsMobile,
             backgroundColor: palette.color,
             title: isExpanded ? null : Text(props.title, style: headingStyle),
             flexibleSpace: FlexibleSpaceBar(

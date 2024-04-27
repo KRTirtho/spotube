@@ -314,5 +314,12 @@
   "help_project_grow_description": "Spotube는 오픈 소스 프로젝트입니다. 프로젝트에 기여하거나 버그를 보고하거나 새로운 기능을 제안하여이 프로젝트의 성장에 도움을 줄 수 있습니다.",
   "contribute_on_github": "GitHub에서 기여하기",
   "donate_on_open_collective": "Open Collective에 기부하기",
-  "browse_anonymously": "익명으로 둘러보기"
+  "browse_anonymously": "익명으로 둘러보기",
+  "enable_connect": "연결 활성화",
+  "enable_connect_description": "다른 장치에서 Spotube 제어",
+  "devices": "장치",
+  "select": "선택",
+  "connect_client_alert": "{client}님에 의해 제어되고 있습니다",
+  "this_device": "이 장치",
+  "remote": "원격"
 }
