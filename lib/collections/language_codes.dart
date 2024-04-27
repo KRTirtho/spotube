@@ -197,10 +197,10 @@ abstract class LanguageLocals {
     //   name: "Fijian",
     //   nativeName: "vosa Vakaviti",
     // ),
-    // "fi": const ISOLanguageName(
-    //   name: "Finnish",
-    //   nativeName: "suomi",
-    // ),
+    "fi": const ISOLanguageName(
+      name: "Finnish",
+      nativeName: "suomi",
+    ),
     "fr": const ISOLanguageName(
       name: "French",
       nativeName: "français",
