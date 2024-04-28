@@ -6,56 +6,51 @@ part of 'state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PlaybackHistoryBase _$PlaybackHistoryBaseFromJson(Map<String, dynamic> json) =>
-    PlaybackHistoryBase(
+_$PlaybackHistoryPlaylistImpl _$$PlaybackHistoryPlaylistImplFromJson(
+        Map json) =>
+    _$PlaybackHistoryPlaylistImpl(
       date: DateTime.parse(json['date'] as String),
+      playlist: PlaylistSimple.fromJson(
+          Map<String, dynamic>.from(json['playlist'] as Map)),
+      $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$PlaybackHistoryBaseToJson(
-        PlaybackHistoryBase instance) =>
+Map<String, dynamic> _$$PlaybackHistoryPlaylistImplToJson(
+        _$PlaybackHistoryPlaylistImpl instance) =>
     <String, dynamic>{
       'date': instance.date.toIso8601String(),
+      'playlist': instance.playlist.toJson(),
+      'runtimeType': instance.$type,
     };
 
-PlaybackHistoryPlaylist _$PlaybackHistoryPlaylistFromJson(
-        Map<String, dynamic> json) =>
-    PlaybackHistoryPlaylist(
+_$PlaybackHistoryAlbumImpl _$$PlaybackHistoryAlbumImplFromJson(Map json) =>
+    _$PlaybackHistoryAlbumImpl(
       date: DateTime.parse(json['date'] as String),
-      playlist:
-          PlaylistSimple.fromJson(json['playlist'] as Map<String, dynamic>),
+      album:
+          AlbumSimple.fromJson(Map<String, dynamic>.from(json['album'] as Map)),
+      $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$PlaybackHistoryPlaylistToJson(
-        PlaybackHistoryPlaylist instance) =>
+Map<String, dynamic> _$$PlaybackHistoryAlbumImplToJson(
+        _$PlaybackHistoryAlbumImpl instance) =>
     <String, dynamic>{
       'date': instance.date.toIso8601String(),
-      'playlist': instance.playlist,
+      'album': instance.album.toJson(),
+      'runtimeType': instance.$type,
     };
 
-PlaybackHistoryAlbum _$PlaybackHistoryAlbumFromJson(
-        Map<String, dynamic> json) =>
-    PlaybackHistoryAlbum(
+_$PlaybackHistoryTrackImpl _$$PlaybackHistoryTrackImplFromJson(Map json) =>
+    _$PlaybackHistoryTrackImpl(
       date: DateTime.parse(json['date'] as String),
-      album: AlbumSimple.fromJson(json['album'] as Map<String, dynamic>),
+      track:
+          TrackSimple.fromJson(Map<String, dynamic>.from(json['track'] as Map)),
+      $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$PlaybackHistoryAlbumToJson(
-        PlaybackHistoryAlbum instance) =>
+Map<String, dynamic> _$$PlaybackHistoryTrackImplToJson(
+        _$PlaybackHistoryTrackImpl instance) =>
     <String, dynamic>{
       'date': instance.date.toIso8601String(),
-      'album': instance.album,
-    };
-
-PlaybackHistoryTrack _$PlaybackHistoryTrackFromJson(
-        Map<String, dynamic> json) =>
-    PlaybackHistoryTrack(
-      date: DateTime.parse(json['date'] as String),
-      track: TrackSimple.fromJson(json['track'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$PlaybackHistoryTrackToJson(
-        PlaybackHistoryTrack instance) =>
-    <String, dynamic>{
-      'date': instance.date.toIso8601String(),
-      'track': instance.track,
+      'track': instance.track.toJson(),
+      'runtimeType': instance.$type,
     };

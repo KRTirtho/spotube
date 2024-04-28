@@ -10,6 +10,7 @@ import 'package:spotube/components/home/sections/friends.dart';
 import 'package:spotube/components/home/sections/genres.dart';
 import 'package:spotube/components/home/sections/made_for_user.dart';
 import 'package:spotube/components/home/sections/new_releases.dart';
+import 'package:spotube/components/home/sections/recent.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -72,6 +73,8 @@ class HomePage extends HookConsumerWidget {
               else if (kIsMacOS)
                 const SliverGap(10),
               const HomeGenresSection(),
+              const SliverGap(10),
+              const SliverToBoxAdapter(child: HomeRecentlyPlayedSection()),
               const SliverToBoxAdapter(child: HomeFeaturedSection()),
               const HomePageFriendsSection(),
               const SliverToBoxAdapter(child: HomeNewReleasesSection()),

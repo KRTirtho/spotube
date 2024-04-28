@@ -118,7 +118,7 @@ dependencies:
   spotify:
     git:
       url: https://github.com/KRTirtho/spotify-dart.git
-      ref: feat/to-json
+      ref: fix/explicit-to-json
   bonsoir: ^5.1.9
   shelf: ^1.4.1
   shelf_router: ^1.1.4

@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
@@ -32,6 +30,8 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
   ProxyPlaylist get playlist => state;
   BlackListNotifier get blacklist => ref.read(blacklistProvider.notifier);
   Discord get discord => ref.read(discordProvider);
+  PlaybackHistoryNotifier get history =>
+      ref.read(playbackHistoryProvider.notifier);
 
   List<StreamSubscription> _subscriptions = [];
 
@@ -165,28 +165,6 @@ class ProxyPlaylistNotifier extends PersistedStateNotifier<ProxyPlaylist> {
     state = ProxyPlaylist({});
     await audioPlayer.stop();
     discord.clear();
-  }
-
-  Future<void> updatePalette() async {
-    final palette = ref.read(paletteProvider);
-    if (!preferences.albumColorSync) {
-      if (palette != null) ref.read(paletteProvider.notifier).state = null;
-      return;
-    }
-    return Future.microtask(() async {
-      if (state.activeTrack == null) return;
-
-      final palette = await PaletteGenerator.fromImageProvider(
-        UniversalImage.imageProvider(
-          (state.activeTrack?.album?.images).asUrlString(
-            placeholder: ImagePlaceholder.albumArt,
-          ),
-          height: 50,
-          width: 50,
-        ),
-      );
-      ref.read(paletteProvider.notifier).state = palette;
-    });
   }
 
   @override

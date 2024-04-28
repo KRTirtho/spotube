@@ -2048,11 +2048,19 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "feat/to-json"
-      resolved-ref: "05ace91cdfe64db23d8c62077069e7c25b3645cb"
+      ref: "fix/explicit-to-json"
+      resolved-ref: c4b37c599413ac7bfd78993e416a56105c62b634
       url: "https://github.com/KRTirtho/spotify-dart.git"
     source: git
-    version: "0.13.5"
+    version: "0.13.6"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   sqflite:
     dependency: transitive
     description:

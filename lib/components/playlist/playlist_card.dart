@@ -81,9 +81,9 @@ class PlaylistCard extends HookConsumerWidget {
           if (isRemoteDevice) {
             final remotePlayback = ref.read(connectProvider.notifier);
             await remotePlayback.load(
-              WebSocketLoadEventData(
+              WebSocketLoadEventData.playlist(
                 tracks: fetchedTracks,
-                collectionId: playlist.id!,
+                collection: playlist,
               ),
             );
           } else {

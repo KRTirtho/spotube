@@ -6,13 +6,19 @@ import 'package:spotube/provider/history/state.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
 class PlaybackHistoryState {
-  final List<PlaybackHistoryBase> items;
+  final List<PlaybackHistoryItem> items;
   const PlaybackHistoryState({this.items = const []});
 
   factory PlaybackHistoryState.fromJson(Map<String, dynamic> json) {
     return PlaybackHistoryState(
-        items:
-            json["items"]?.map((json) => PlaybackHistoryBase.fromJson(json)));
+      items: json["items"]
+              ?.map(
+                (json) => PlaybackHistoryItem.fromJson(json),
+              )
+              .toList()
+              .cast<PlaybackHistoryItem>() ??
+          <PlaybackHistoryItem>[],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -22,7 +28,7 @@ class PlaybackHistoryState {
   }
 
   PlaybackHistoryState copyWith({
-    List<PlaybackHistoryBase>? items,
+    List<PlaybackHistoryItem>? items,
   }) {
     return PlaybackHistoryState(items: items ?? this.items);
   }
@@ -47,7 +53,8 @@ class PlaybackHistoryNotifier
       items: [
         ...state.items,
         for (final playlist in playlists)
-          PlaybackHistoryPlaylist(date: DateTime.now(), playlist: playlist),
+          PlaybackHistoryItem.playlist(
+              date: DateTime.now(), playlist: playlist),
       ],
     );
   }
@@ -57,7 +64,7 @@ class PlaybackHistoryNotifier
       items: [
         ...state.items,
         for (final album in albums)
-          PlaybackHistoryAlbum(date: DateTime.now(), album: album),
+          PlaybackHistoryItem.album(date: DateTime.now(), album: album),
       ],
     );
   }
@@ -67,7 +74,7 @@ class PlaybackHistoryNotifier
       items: [
         ...state.items,
         for (final track in tracks)
-          PlaybackHistoryTrack(date: DateTime.now(), track: track),
+          PlaybackHistoryItem.track(date: DateTime.now(), track: track),
       ],
     );
   }

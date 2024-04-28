@@ -22,7 +22,7 @@ class AlbumPage extends HookConsumerWidget {
     final isSavedAlbum = ref.watch(albumsIsSavedProvider(album.id!));
 
     return InheritedTrackView(
-      collectionId: album.id!,
+      collection: album,
       image: album.images.asUrlString(
         placeholder: ImagePlaceholder.albumArt,
       ),

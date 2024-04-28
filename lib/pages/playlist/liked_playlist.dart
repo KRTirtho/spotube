@@ -18,7 +18,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
     final tracks = likedTracks.asData?.value ?? <Track>[];
 
     return InheritedTrackView(
-      collectionId: playlist.id!,
+      collection: playlist,
       image: "assets/liked-tracks.jpg",
       pagination: PaginationProps(
         hasNextPage: false,

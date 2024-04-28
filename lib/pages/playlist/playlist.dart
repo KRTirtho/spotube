@@ -29,7 +29,7 @@ class PlaylistPage extends HookConsumerWidget {
     final isUserPlaylist = useIsUserPlaylist(ref, playlist.id!);
 
     return InheritedTrackView(
-      collectionId: playlist.id!,
+      collection: playlist,
       image: playlist.images.asUrlString(
         placeholder: ImagePlaceholder.collection,
       ),

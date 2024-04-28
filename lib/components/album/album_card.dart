@@ -81,9 +81,9 @@ class AlbumCard extends HookConsumerWidget {
             if (isRemoteDevice) {
               final remotePlayback = ref.read(connectProvider.notifier);
               await remotePlayback.load(
-                WebSocketLoadEventData(
+                WebSocketLoadEventData.album(
                   tracks: fetchedTracks,
-                  collectionId: album.id!,
+                  collection: album,
                 ),
               );
             } else {
