@@ -83,7 +83,7 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
         }
 
         scrobbler.scrobble(playlist.activeTrack!);
-        history.addTracks([playlist.activeTrack!]);
+        history.addTrack(playlist.activeTrack!);
         lastScrobbled = uid;
       } catch (e, stack) {
         Catcher2.reportCheckedError(e, stack);

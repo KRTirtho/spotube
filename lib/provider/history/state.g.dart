@@ -42,8 +42,7 @@ Map<String, dynamic> _$$PlaybackHistoryAlbumImplToJson(
 _$PlaybackHistoryTrackImpl _$$PlaybackHistoryTrackImplFromJson(Map json) =>
     _$PlaybackHistoryTrackImpl(
       date: DateTime.parse(json['date'] as String),
-      track:
-          TrackSimple.fromJson(Map<String, dynamic>.from(json['track'] as Map)),
+      track: Track.fromJson(Map<String, dynamic>.from(json['track'] as Map)),
       $type: json['runtimeType'] as String?,
     );
 

@@ -18,7 +18,7 @@ class PlaybackHistoryItem with _$PlaybackHistoryItem {
 
   factory PlaybackHistoryItem.track({
     required DateTime date,
-    required TrackSimple track,
+    required Track track,
   }) = PlaybackHistoryTrack;
 
   factory PlaybackHistoryItem.fromJson(Map<String, dynamic> json) =>

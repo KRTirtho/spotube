@@ -15,6 +15,7 @@ import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/hooks/configurators/use_update_checker.dart';
+import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -173,10 +174,11 @@ class RootApp extends HookConsumerWidget {
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        // if (rootPaths[location] != 0) {
-        //   onSelectIndexChanged(0);
-        //   return false;
-        // }
+        final routerState = GoRouterState.of(context);
+        if (routerState.matchedLocation != "/") {
+          context.goNamed(HomePage.name);
+          return false;
+        }
         return true;
       },
       child: Scaffold(

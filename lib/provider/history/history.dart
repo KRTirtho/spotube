@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/history/state.dart';
+import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 
 class PlaybackHistoryState {
@@ -36,8 +38,11 @@ class PlaybackHistoryState {
 
 class PlaybackHistoryNotifier
     extends PersistedStateNotifier<PlaybackHistoryState> {
-  PlaybackHistoryNotifier()
+  final Ref ref;
+  PlaybackHistoryNotifier(this.ref)
       : super(const PlaybackHistoryState(), "playback_history");
+
+  SpotifyApi get spotify => ref.read(spotifyProvider);
 
   @override
   FutureOr<PlaybackHistoryState> fromJson(Map<String, dynamic> json) =>
@@ -69,12 +74,18 @@ class PlaybackHistoryNotifier
     );
   }
 
-  void addTracks(List<TrackSimple> tracks) {
+  void addTrack(Track track) async {
+    // For some reason Track's artists images are `null`
+    // so we need to fetch them from the API
+    final artists =
+        await spotify.artists.list(track.artists!.map((e) => e.id!).toList());
+
+    track.artists = artists.toList();
+
     state = state.copyWith(
       items: [
         ...state.items,
-        for (final track in tracks)
-          PlaybackHistoryItem.track(date: DateTime.now(), track: track),
+        PlaybackHistoryItem.track(date: DateTime.now(), track: track),
       ],
     );
   }
@@ -86,5 +97,33 @@ class PlaybackHistoryNotifier
 
 final playbackHistoryProvider =
     StateNotifierProvider<PlaybackHistoryNotifier, PlaybackHistoryState>(
-  (ref) => PlaybackHistoryNotifier(),
+  (ref) => PlaybackHistoryNotifier(ref),
 );
+
+typedef PlaybackHistoryGrouped = ({
+  List<PlaybackHistoryTrack> tracks,
+  List<PlaybackHistoryAlbum> albums,
+  List<PlaybackHistoryPlaylist> playlists,
+});
+
+final playbackHistoryGroupedProvider = Provider<PlaybackHistoryGrouped>((ref) {
+  final history = ref.watch(playbackHistoryProvider);
+  final tracks = history.items
+      .whereType<PlaybackHistoryTrack>()
+      .sorted((a, b) => b.date.compareTo(a.date))
+      .toList();
+  final albums = history.items
+      .whereType<PlaybackHistoryAlbum>()
+      .sorted((a, b) => b.date.compareTo(a.date))
+      .toList();
+  final playlists = history.items
+      .whereType<PlaybackHistoryPlaylist>()
+      .sorted((a, b) => b.date.compareTo(a.date))
+      .toList();
+
+  return (
+    tracks: tracks,
+    albums: albums,
+    playlists: playlists,
+  );
+});
