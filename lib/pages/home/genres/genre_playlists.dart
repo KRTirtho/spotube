@@ -15,6 +15,8 @@ import 'package:collection/collection.dart';
 import 'package:spotube/utils/platform.dart';
 
 class GenrePlaylistsPage extends HookConsumerWidget {
+  static const name = "genre_playlists";
+
   final Category category;
   const GenrePlaylistsPage({super.key, required this.category});
 

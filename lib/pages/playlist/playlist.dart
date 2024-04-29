@@ -10,6 +10,8 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class PlaylistPage extends HookConsumerWidget {
+  static const name = "playlist";
+
   final PlaylistSimple playlist;
   const PlaylistPage({
     super.key,

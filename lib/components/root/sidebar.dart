@@ -16,6 +16,8 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
+import 'package:spotube/pages/profile/profile.dart';
+import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
@@ -26,13 +28,9 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
-  final int? selectedIndex;
-  final void Function(int) onSelectedIndexChanged;
   final Widget child;
 
   const Sidebar({
-    required this.selectedIndex,
-    required this.onSelectedIndexChanged,
     required this.child,
     super.key,
   });
@@ -47,12 +45,9 @@ class Sidebar extends HookConsumerWidget {
     );
   }
 
-  static void goToSettings(BuildContext context) {
-    GoRouter.of(context).go("/settings");
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final routerState = GoRouterState.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
@@ -60,8 +55,17 @@ class Sidebar extends HookConsumerWidget {
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
+    final sidebarTileList = useMemoized(
+      () => getSidebarTileList(context.l10n),
+      [context.l10n],
+    );
+
+    final selectedIndex = sidebarTileList.indexWhere(
+      (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
+    );
+
     final controller = useSidebarXController(
-      selectedIndex: selectedIndex ?? 0,
+      selectedIndex: selectedIndex,
       extended: mediaQuery.lgAndUp,
     );
 
@@ -73,29 +77,6 @@ class Sidebar extends HookConsumerWidget {
       Color.lerp(bg, Colors.black, 0.45)!,
     );
 
-    final sidebarTileList = useMemoized(
-      () => getSidebarTileList(context.l10n),
-      [context.l10n],
-    );
-
-    useEffect(() {
-      if (controller.selectedIndex != selectedIndex && selectedIndex != null) {
-        controller.selectIndex(selectedIndex!);
-      }
-      return null;
-    }, [selectedIndex]);
-
-    useEffect(() {
-      void listener() {
-        onSelectedIndexChanged(controller.selectedIndex);
-      }
-
-      controller.addListener(listener);
-      return () {
-        controller.removeListener(listener);
-      };
-    }, [controller]);
-
     useEffect(() {
       if (!context.mounted) return;
       if (mediaQuery.lgAndUp && !controller.extended) {
@@ -105,6 +86,13 @@ class Sidebar extends HookConsumerWidget {
       }
       return null;
     }, [mediaQuery, controller]);
+
+    useEffect(() {
+      if (controller.selectedIndex != selectedIndex) {
+        controller.selectIndex(selectedIndex);
+      }
+      return null;
+    }, [selectedIndex]);
 
     if (layoutMode == LayoutMode.compact ||
         (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
@@ -119,23 +107,28 @@ class Sidebar extends HookConsumerWidget {
             items: sidebarTileList.mapIndexed(
               (index, e) {
                 return SidebarXItem(
-                  iconWidget: Badge(
-                    backgroundColor: theme.colorScheme.primary,
-                    isLabelVisible: e.title == "Library" && downloadCount > 0,
-                    label: Text(
-                      downloadCount.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
+                  onTap: () {
+                    context.goNamed(e.name);
+                  },
+                  iconBuilder: (selected, hovered) {
+                    return Badge(
+                      backgroundColor: theme.colorScheme.primary,
+                      isLabelVisible: e.title == "Library" && downloadCount > 0,
+                      label: Text(
+                        downloadCount.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
                       ),
-                    ),
-                    child: Icon(
-                      e.icon,
-                      color: selectedIndex == index
-                          ? theme.colorScheme.primary
-                          : null,
-                    ),
-                  ),
+                      child: Icon(
+                        e.icon,
+                        color: selected || hovered
+                            ? theme.colorScheme.primary
+                            : null,
+                      ),
+                    );
+                  },
                   label: e.title,
                 );
               },
@@ -257,7 +250,7 @@ class SidebarFooter extends HookConsumerWidget {
     if (mediaQuery.mdAndDown) {
       return IconButton(
         icon: const Icon(SpotubeIcons.settings),
-        onPressed: () => Sidebar.goToSettings(context),
+        onPressed: () => ServiceUtils.navigateNamed(context, SettingsPage.name),
       );
     }
 
@@ -278,7 +271,7 @@ class SidebarFooter extends HookConsumerWidget {
                 Flexible(
                   child: InkWell(
                     onTap: () {
-                      ServiceUtils.push(context, "/profile");
+                      ServiceUtils.pushNamed(context, ProfilePage.name);
                     },
                     borderRadius: BorderRadius.circular(30),
                     child: Row(
@@ -310,7 +303,7 @@ class SidebarFooter extends HookConsumerWidget {
               IconButton(
                 icon: const Icon(SpotubeIcons.settings),
                 onPressed: () {
-                  Sidebar.goToSettings(context);
+                  ServiceUtils.navigateNamed(context, SettingsPage.name);
                 },
               ),
             ],

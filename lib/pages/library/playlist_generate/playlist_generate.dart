@@ -24,6 +24,8 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 
 class PlaylistGeneratorPage extends HookConsumerWidget {
+  static const name = "playlist_generator";
+
   const PlaylistGeneratorPage({super.key});
 
   @override

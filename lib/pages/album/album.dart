@@ -8,6 +8,8 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class AlbumPage extends HookConsumerWidget {
+  static const name = "album";
+
   final AlbumSimple album;
   const AlbumPage({
     super.key,

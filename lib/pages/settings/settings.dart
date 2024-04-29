@@ -16,6 +16,8 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/utils/platform.dart';
 
 class SettingsPage extends HookConsumerWidget {
+  static const name = "settings";
+
   const SettingsPage({super.key});
 
   @override

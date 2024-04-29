@@ -6,6 +6,7 @@ import 'package:spotube/components/shared/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -58,9 +59,12 @@ class PlaylistCard extends HookConsumerWidget {
       isOwner: playlist.owner?.id == me.asData?.value.id &&
           me.asData?.value.id != null,
       onTap: () {
-        ServiceUtils.push(
+        ServiceUtils.pushNamed(
           context,
-          "/playlist/${playlist.id}",
+          PlaylistPage.name,
+          pathParameters: {
+            "id": playlist.id!,
+          },
           extra: playlist,
         );
       },

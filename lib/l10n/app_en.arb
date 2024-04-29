@@ -320,5 +320,6 @@
   "select": "Select",
   "connect_client_alert": "You're being controlled by {client}",
   "this_device": "This Device",
-  "remote": "Remote"
+  "remote": "Remote",
+  "stats": "Stats"
 }

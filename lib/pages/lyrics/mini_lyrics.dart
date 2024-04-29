@@ -20,6 +20,8 @@ import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
 class MiniLyricsPage extends HookConsumerWidget {
+  static const name = "mini_lyrics";
+
   final Size prevSize;
   const MiniLyricsPage({super.key, required this.prevSize});
 

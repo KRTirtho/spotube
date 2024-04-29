@@ -9,6 +9,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/pages/album/album.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -64,7 +65,14 @@ class AlbumCard extends HookConsumerWidget {
         description:
             "${album.albumType?.formatted} • ${album.artists?.asString() ?? ""}",
         onTap: () {
-          ServiceUtils.push(context, "/album/${album.id}", extra: album);
+          ServiceUtils.pushNamed(
+            context,
+            AlbumPage.name,
+            pathParameters: {
+              "id": album.id!,
+            },
+            extra: album,
+          );
         },
         onPlaybuttonPressed: () async {
           updating.value = true;

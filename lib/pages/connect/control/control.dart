@@ -13,6 +13,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/services/audio_player/loop_mode.dart';
@@ -46,6 +47,8 @@ class RemotePlayerQueue extends ConsumerWidget {
 }
 
 class ConnectControlPage extends HookConsumerWidget {
+  static const name = "connect_control";
+
   const ConnectControlPage({super.key});
 
   @override
@@ -125,9 +128,13 @@ class ConnectControlPage extends HookConsumerWidget {
                               playlist.activeTrack?.name ?? "",
                               style: textTheme.titleLarge!,
                               onTap: () {
-                                ServiceUtils.push(
+                                if (playlist.activeTrack == null) return;
+                                ServiceUtils.pushNamed(
                                   context,
-                                  "/track/${playlist.activeTrack?.id}",
+                                  TrackPage.name,
+                                  pathParameters: {
+                                    "id": playlist.activeTrack!.id!,
+                                  },
                                 );
                               },
                             ),

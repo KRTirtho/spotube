@@ -23,6 +23,8 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class LyricsPage extends HookConsumerWidget {
+  static const name = "lyrics";
+
   final bool isModal;
   const LyricsPage({super.key, this.isModal = false});
 

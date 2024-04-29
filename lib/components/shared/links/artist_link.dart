@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/links/anchor_button.dart';
+import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class ArtistLink extends StatelessWidget {
@@ -40,9 +41,12 @@ class ArtistLink extends StatelessWidget {
                   if (onRouteChange != null) {
                     onRouteChange?.call("/artist/${artist.value.id}");
                   } else {
-                    ServiceUtils.push(
+                    ServiceUtils.pushNamed(
                       context,
-                      "/artist/${artist.value.id}",
+                      ArtistPage.name,
+                      pathParameters: {
+                        "id": artist.value.id!,
+                      },
                     );
                   }
                 },

@@ -7,6 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/components/player/player_controls.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/library/library.dart';
+import 'package:spotube/pages/lyrics/lyrics.dart';
+import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
@@ -67,16 +71,16 @@ class HomeTabAction extends Action<HomeTabIntent> {
     final router = intent.ref.read(routerProvider);
     switch (intent.tab) {
       case HomeTabs.browse:
-        router.go("/");
+        router.goNamed(HomePage.name);
         break;
       case HomeTabs.search:
-        router.go("/search");
+        router.goNamed(SearchPage.name);
         break;
       case HomeTabs.library:
-        router.go("/library");
+        router.goNamed(LibraryPage.name);
         break;
       case HomeTabs.lyrics:
-        router.go("/lyrics");
+        router.goNamed(LyricsPage.name);
         break;
     }
     return null;

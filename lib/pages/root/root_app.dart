@@ -22,13 +22,6 @@ import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 
-const rootPaths = {
-  "/": 0,
-  "/search": 1,
-  "/library": 2,
-  "/lyrics": 3,
-};
-
 class RootApp extends HookConsumerWidget {
   final Widget child;
   const RootApp({
@@ -42,7 +35,6 @@ class RootApp extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final theme = Theme.of(context);
-    final location = GoRouterState.of(context).matchedLocation;
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -178,32 +170,17 @@ class RootApp extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    void onSelectIndexChanged(int d) {
-      final invertedRouteMap =
-          rootPaths.map((key, value) => MapEntry(value, key));
-
-      if (context.mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          GoRouter.of(context).go(invertedRouteMap[d]!);
-        });
-      }
-    }
-
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        if (rootPaths[location] != 0) {
-          onSelectIndexChanged(0);
-          return false;
-        }
+        // if (rootPaths[location] != 0) {
+        //   onSelectIndexChanged(0);
+        //   return false;
+        // }
         return true;
       },
       child: Scaffold(
-        body: Sidebar(
-          selectedIndex: rootPaths[location],
-          onSelectedIndexChanged: onSelectIndexChanged,
-          child: child,
-        ),
+        body: Sidebar(child: child),
         extendBody: true,
         drawerScrimColor: Colors.transparent,
         endDrawer: kIsDesktop
@@ -237,10 +214,7 @@ class RootApp extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             BottomPlayer(),
-            SpotubeNavigationBar(
-              selectedIndex: rootPaths[location],
-              onSelectedIndexChanged: onSelectIndexChanged,
-            ),
+            const SpotubeNavigationBar(),
           ],
         ),
       ),
