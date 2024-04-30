@@ -10,7 +10,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
 
 class LastFMLoginPage extends HookConsumerWidget {
-  const LastFMLoginPage({Key? key}) : super(key: key);
+  const LastFMLoginPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

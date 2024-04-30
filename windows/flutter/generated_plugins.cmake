@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
+  bonsoir_windows
   dart_discord_rpc
   file_selector_windows
   flutter_secure_storage_windows

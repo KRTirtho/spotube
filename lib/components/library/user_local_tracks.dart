@@ -21,12 +21,14 @@ import 'package:spotube/components/shared/fallbacks/not_found.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
 import 'package:spotube/components/shared/track_tile/track_tile.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
 
 const supportedAudioTypes = [
@@ -50,10 +52,11 @@ enum SortBy {
   none,
   ascending,
   descending,
-  artist,
-  album,
   newest,
   oldest,
+  duration,
+  artist,
+  album,
 }
 
 final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
@@ -110,7 +113,7 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
     final tracks = filesWithMetadata
         .map(
           (fileWithMetadata) => LocalTrack.fromTrack(
-            track: TypeConversionUtils.localTrack_X_Track(
+            track: Track().fromFile(
               fileWithMetadata["file"],
               metadata: fileWithMetadata["metadata"],
               art: fileWithMetadata["art"],
@@ -128,15 +131,15 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
 });
 
 class UserLocalTracks extends HookConsumerWidget {
-  const UserLocalTracks({Key? key}) : super(key: key);
+  const UserLocalTracks({super.key});
 
   Future<void> playLocalTracks(
     WidgetRef ref,
     List<LocalTrack> tracks, {
     LocalTrack? currentTrack,
   }) async {
-    final playlist = ref.read(ProxyPlaylistNotifier.provider);
-    final playback = ref.read(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.read(proxyPlaylistProvider);
+    final playback = ref.read(proxyPlaylistProvider.notifier);
     currentTrack ??= tracks.first;
     final isPlaylistPlaying = playlist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
@@ -155,10 +158,10 @@ class UserLocalTracks extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying =
-        playlist.containsTracks(trackSnapshot.value ?? []);
+        playlist.containsTracks(trackSnapshot.asData?.value ?? []);
 
     final searchController = useTextEditingController();
     useValueListenable(searchController);
@@ -173,19 +176,16 @@ class UserLocalTracks extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               FilledButton(
-                onPressed: trackSnapshot.value != null
+                onPressed: trackSnapshot.asData?.value != null
                     ? () async {
-                        if (trackSnapshot.value?.isNotEmpty == true) {
+                        if (trackSnapshot.asData?.value.isNotEmpty == true) {
                           if (!isPlaylistPlaying) {
                             await playLocalTracks(
                               ref,
-                              trackSnapshot.value!,
+                              trackSnapshot.asData!.value,
                             );
-                          } else {
-                            // TODO: Remove stop capability
-                            // playlistNotifier.stop();
                           }
                         }
                       }
@@ -212,11 +212,11 @@ class UserLocalTracks extends HookConsumerWidget {
                   sortBy.value = value;
                 },
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               FilledButton(
                 child: const Icon(SpotubeIcons.refresh),
                 onPressed: () {
-                  ref.refresh(localTracksProvider);
+                  ref.invalidate(localTracksProvider);
                 },
               )
             ],
@@ -241,7 +241,7 @@ class UserLocalTracks extends HookConsumerWidget {
               return sortedTracks
                   .map((e) => (
                         weightedRatio(
-                          "${e.name} - ${TypeConversionUtils.artists_X_String<Artist>(e.artists ?? [])}",
+                          "${e.name} - ${e.artists?.asString() ?? ""}",
                           searchController.text,
                         ),
                         e,
@@ -268,7 +268,7 @@ class UserLocalTracks extends HookConsumerWidget {
             return Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
-                  ref.refresh(localTracksProvider);
+                  ref.invalidate(localTracksProvider);
                 },
                 child: InterScrollbar(
                   controller: controller,
@@ -281,12 +281,17 @@ class UserLocalTracks extends HookConsumerWidget {
                           trackSnapshot.isLoading ? 5 : filteredTracks.length,
                       itemBuilder: (context, index) {
                         if (trackSnapshot.isLoading) {
-                          return TrackTile(track: FakeData.track, index: index);
+                          return TrackTile(
+                            playlist: playlist,
+                            track: FakeData.track,
+                            index: index,
+                          );
                         }
 
                         final track = filteredTracks[index];
                         return TrackTile(
                           index: index,
+                          playlist: playlist,
                           track: track,
                           userPlaylist: false,
                           onTap: () async {
@@ -309,8 +314,11 @@ class UserLocalTracks extends HookConsumerWidget {
               enabled: true,
               child: ListView.builder(
                 itemCount: 5,
-                itemBuilder: (context, index) =>
-                    TrackTile(track: FakeData.track, index: index),
+                itemBuilder: (context, index) => TrackTile(
+                  track: FakeData.track,
+                  index: index,
+                  playlist: playlist,
+                ),
               ),
             ),
           ),

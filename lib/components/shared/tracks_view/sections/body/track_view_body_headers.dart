@@ -13,10 +13,10 @@ class TrackViewBodyHeaders extends HookConsumerWidget {
   final FocusNode searchFocus;
 
   const TrackViewBodyHeaders({
-    Key? key,
+    super.key,
     required this.isFiltering,
     required this.searchFocus,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {

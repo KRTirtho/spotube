@@ -11,8 +11,8 @@ class SortTracksDropdown extends StatelessWidget {
   const SortTracksDropdown({
     this.onChanged,
     this.value,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +47,11 @@ class SortTracksDropdown extends StatelessWidget {
             value: SortBy.oldest,
             enabled: value != SortBy.oldest,
             title: Text(context.l10n.sort_oldest),
+          ),
+          PopSheetEntry(
+            value: SortBy.duration,
+            enabled: value != SortBy.duration,
+            title: Text(context.l10n.sort_duration),
           ),
           PopSheetEntry(
             value: SortBy.artist,

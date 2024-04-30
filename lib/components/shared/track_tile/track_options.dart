@@ -1,31 +1,38 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
+import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/services/mutations/mutations.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/spotify_provider.dart';
+
+import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {
   album,
   share,
+  songlink,
   addToPlaylist,
   addToQueue,
   removeFromPlaylist,
@@ -36,6 +43,7 @@ enum TrackOptionValue {
   favorite,
   details,
   download,
+  startRadio,
 }
 
 class TrackOptions extends HookConsumerWidget {
@@ -45,13 +53,13 @@ class TrackOptions extends HookConsumerWidget {
   final ObjectRef<ValueChanged<RelativeRect>?>? showMenuCbRef;
   final Widget? icon;
   const TrackOptions({
-    Key? key,
+    super.key,
     required this.track,
     this.showMenuCbRef,
     this.userPlaylist = false,
     this.playlistId,
     this.icon,
-  }) : super(key: key);
+  });
 
   void actionShare(BuildContext context, Track track) {
     final data = "https://open.spotify.com/track/${track.id}";
@@ -82,18 +90,82 @@ class TrackOptions extends HookConsumerWidget {
     );
   }
 
+  void actionStartRadio(
+    BuildContext context,
+    WidgetRef ref,
+    Track track,
+  ) async {
+    final playback = ref.read(proxyPlaylistProvider.notifier);
+    final playlist = ref.read(proxyPlaylistProvider);
+    final spotify = ref.read(spotifyProvider);
+    final query = "${track.name} Radio";
+    final pages =
+        await spotify.search.get(query, types: [SearchType.playlist]).first();
+
+    final radios = pages.map((e) => e.items).toList().cast<PlaylistSimple>();
+
+    final artists = track.artists!.map((e) => e.name);
+
+    final radio = radios.firstWhere(
+      (e) {
+        final validPlaylists =
+            artists.where((a) => e.description!.contains(a!));
+        return e.name == "${track.name} Radio" &&
+            (validPlaylists.length >= 2 ||
+                validPlaylists.length == artists.length) &&
+            e.owner?.displayName == "Spotify";
+      },
+      orElse: () => radios.first,
+    );
+
+    bool replaceQueue = false;
+
+    if (context.mounted && playlist.tracks.isNotEmpty) {
+      replaceQueue = await showPromptDialog(
+        context: context,
+        title: context.l10n.how_to_start_radio,
+        message: context.l10n.replace_queue_question,
+        okText: context.l10n.replace,
+        cancelText: context.l10n.add_to_queue,
+      );
+    }
+
+    if (replaceQueue || playlist.tracks.isEmpty) {
+      await playback.stop();
+      await playback.load([track], autoPlay: true);
+
+      // we don't have to add those tracks as useEndlessPlayback will do it for us
+      return;
+    } else {
+      await playback.addTrack(track);
+    }
+
+    final tracks =
+        await spotify.playlists.getTracksByPlaylistId(radio.id!).all();
+
+    await playback.addTracks(
+      tracks.toList()
+        ..removeWhere((e) {
+          final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
+          return e.id == track.id || isDuplicate;
+        }),
+    );
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final mediaQuery = MediaQuery.of(context);
     final router = GoRouter.of(context);
+    final ThemeData(:colorScheme) = Theme.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playback = ref.watch(proxyPlaylistProvider.notifier);
+    final auth = ref.watch(authenticationProvider);
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
-    final blacklist = ref.watch(BlackListNotifier.provider);
+    final blacklist = ref.watch(blacklistProvider);
+    final me = ref.watch(meProvider);
 
     final favorites = useTrackToggleLike(track, ref);
 
@@ -108,10 +180,8 @@ class TrackOptions extends HookConsumerWidget {
     );
 
     final removingTrack = useState<String?>(null);
-    final removeTrack = useMutations.playlist.removeTrackOf(
-      ref,
-      playlistId ?? "",
-    );
+    final favoritePlaylistsNotifier =
+        ref.watch(favoritePlaylistsProvider.notifier);
 
     final isInQueue = useMemoized(() {
       if (playlist.activeTrack == null) return false;
@@ -138,7 +208,7 @@ class TrackOptions extends HookConsumerWidget {
             break;
           case TrackOptionValue.delete:
             await File((track as LocalTrack).path).delete();
-            ref.refresh(localTracksProvider);
+            ref.invalidate(localTracksProvider);
             break;
           case TrackOptionValue.addToQueue:
             await playback.addTrack(track);
@@ -175,28 +245,33 @@ class TrackOptions extends HookConsumerWidget {
             );
             break;
           case TrackOptionValue.favorite:
-            favorites.toggleTrackLike.mutate(favorites.isLiked);
+            favorites.toggleTrackLike(track);
             break;
           case TrackOptionValue.addToPlaylist:
             actionAddToPlaylist(context, track);
             break;
           case TrackOptionValue.removeFromPlaylist:
             removingTrack.value = track.uri;
-            removeTrack.mutate(track.uri!);
+            favoritePlaylistsNotifier
+                .removeTracks(playlistId ?? "", [track.id!]);
             break;
           case TrackOptionValue.blacklist:
             if (isBlackListed) {
-              ref.read(BlackListNotifier.provider.notifier).remove(
+              ref.read(blacklistProvider.notifier).remove(
                     BlacklistedElement.track(track.id!, track.name!),
                   );
             } else {
-              ref.read(BlackListNotifier.provider.notifier).add(
+              ref.read(blacklistProvider.notifier).add(
                     BlacklistedElement.track(track.id!, track.name!),
                   );
             }
             break;
           case TrackOptionValue.share:
             actionShare(context, track);
+            break;
+          case TrackOptionValue.songlink:
+            final url = "https://song.link/s/${track.id}";
+            await launchUrlString(url);
             break;
           case TrackOptionValue.details:
             showDialog(
@@ -206,6 +281,9 @@ class TrackOptions extends HookConsumerWidget {
             break;
           case TrackOptionValue.download:
             await downloadManager.addToQueue(track);
+            break;
+          case TrackOptionValue.startRadio:
+            actionStartRadio(context, ref, track);
             break;
         }
       },
@@ -218,8 +296,8 @@ class TrackOptions extends HookConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: UniversalImage(
-                path: TypeConversionUtils.image_X_UrlString(track.album!.images,
-                    placeholder: ImagePlaceholder.albumArt),
+                path: track.album!.images
+                    .asUrlString(placeholder: ImagePlaceholder.albumArt),
                 fit: BoxFit.cover,
               ),
             ),
@@ -232,14 +310,12 @@ class TrackOptions extends HookConsumerWidget {
           ),
           subtitle: Align(
             alignment: Alignment.centerLeft,
-            child: TypeConversionUtils.artists_X_ClickableArtists(
-              track.artists!,
-            ),
+            child: ArtistLink(artists: track.artists!),
           ),
         ),
       ],
       children: switch (track.runtimeType) {
-        LocalTrack => [
+        LocalTrack() => [
             PopSheetEntry(
               value: TrackOptionValue.delete,
               leading: const Icon(SpotubeIcons.trash),
@@ -272,7 +348,7 @@ class TrackOptions extends HookConsumerWidget {
                 leading: const Icon(SpotubeIcons.queueRemove),
                 title: Text(context.l10n.remove_from_queue),
               ),
-            if (favorites.me.hasData)
+            if (me.asData?.value != null)
               PopSheetEntry(
                 value: TrackOptionValue.favorite,
                 leading: favorites.isLiked
@@ -287,19 +363,22 @@ class TrackOptions extends HookConsumerWidget {
                       : context.l10n.save_as_favorite,
                 ),
               ),
-            if (auth != null)
+            if (auth != null) ...[
+              PopSheetEntry(
+                value: TrackOptionValue.startRadio,
+                leading: const Icon(SpotubeIcons.radio),
+                title: Text(context.l10n.start_a_radio),
+              ),
               PopSheetEntry(
                 value: TrackOptionValue.addToPlaylist,
                 leading: const Icon(SpotubeIcons.playlistAdd),
                 title: Text(context.l10n.add_to_playlist),
               ),
+            ],
             if (userPlaylist && auth != null)
               PopSheetEntry(
                 value: TrackOptionValue.removeFromPlaylist,
-                leading: (removeTrack.isMutating || !removeTrack.hasData) &&
-                        removingTrack.value == track.uri
-                    ? const CircularProgressIndicator()
-                    : const Icon(SpotubeIcons.removeFilled),
+                leading: const Icon(SpotubeIcons.removeFilled),
                 title: Text(context.l10n.remove_from_playlist),
               ),
             PopSheetEntry(
@@ -330,6 +409,15 @@ class TrackOptions extends HookConsumerWidget {
               value: TrackOptionValue.share,
               leading: const Icon(SpotubeIcons.share),
               title: Text(context.l10n.share),
+            ),
+            PopSheetEntry(
+              value: TrackOptionValue.songlink,
+              leading: Assets.logos.songlinkTransparent.image(
+                width: 22,
+                height: 22,
+                color: colorScheme.onSurface.withOpacity(0.5),
+              ),
+              title: Text(context.l10n.song_link),
             ),
             PopSheetEntry(
               value: TrackOptionValue.details,

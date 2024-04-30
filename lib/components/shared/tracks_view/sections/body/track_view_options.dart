@@ -13,7 +13,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 
 class TrackViewBodyOptions extends HookConsumerWidget {
-  const TrackViewBodyOptions({Key? key}) : super(key: key);
+  const TrackViewBodyOptions({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -22,7 +22,7 @@ class TrackViewBodyOptions extends HookConsumerWidget {
 
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
     final audioSource =
         ref.watch(userPreferencesProvider.select((s) => s.audioSource));
 

@@ -8,36 +8,38 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/links/link_text.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/track_tile/track_options.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/queries/queries.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+
 import 'package:spotube/extensions/constrains.dart';
 
 class TrackPage extends HookConsumerWidget {
   final String trackId;
   const TrackPage({
-    Key? key,
+    super.key,
     required this.trackId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     final isActive = playlist.activeTrack?.id == trackId;
 
-    final trackQuery = useQueries.tracks.track(ref, trackId);
+    final trackQuery = ref.watch(trackProvider(trackId));
 
-    final track = trackQuery.data ?? FakeData.track;
+    final track = trackQuery.asData?.value ?? FakeData.track;
 
     void onPlay() async {
       if (isActive) {
@@ -60,8 +62,7 @@ class TrackPage extends HookConsumerWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: UniversalImage.imageProvider(
-                    TypeConversionUtils.image_X_UrlString(
-                      track.album!.images,
+                    track.album!.images.asUrlString(
                       placeholder: ImagePlaceholder.albumArt,
                     ),
                   ),
@@ -104,8 +105,7 @@ class TrackPage extends HookConsumerWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: UniversalImage(
-                            path: TypeConversionUtils.image_X_UrlString(
-                              track.album!.images,
+                            path: track.album!.images.asUrlString(
                               placeholder: ImagePlaceholder.albumArt,
                             ),
                             height: 200,
@@ -146,10 +146,7 @@ class TrackPage extends HookConsumerWidget {
                                 children: [
                                   const Icon(SpotubeIcons.artist),
                                   const Gap(5),
-                                  TypeConversionUtils
-                                      .artists_X_ClickableArtists(
-                                    track.artists!,
-                                  ),
+                                  ArtistLink(artists: track.artists!),
                                 ],
                               ),
                               const Gap(10),

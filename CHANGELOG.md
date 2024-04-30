@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0-0](https://github.com/krtirtho/spotube/compare/v3.5.0...v3.6.0-0) (2024-04-15)
+
+
+### Features
+
+* add Spotify homepage personalized recommendations ([#1402](https://github.com/krtirtho/spotube/issues/1402)) ([9e25c74](https://github.com/krtirtho/spotube/commit/9e25c742d4e43e4e10d2b48afb8e6d90288ffa11))
+* add user profile page ([39e97ee](https://github.com/krtirtho/spotube/commit/39e97eef34d87348a264843e145f31f82832d12e))
+* **android:** Filter Device To Force High Frame Rate ([#880](https://github.com/krtirtho/spotube/issues/880)) ([6e41b10](https://github.com/krtirtho/spotube/commit/6e41b106fa989adee393d3ce2535e75446ad3eea))
+* improved caching based on riverpod ([#1343](https://github.com/krtirtho/spotube/issues/1343)) ([6673e5a](https://github.com/krtirtho/spotube/commit/6673e5a8a86b9667cf9dbff9bb7c40ea6b7de771))
+* LAN connect a.k.a control remote Spotube playback and local output device selection ([#1355](https://github.com/krtirtho/spotube/issues/1355)) ([68374ef](https://github.com/krtirtho/spotube/commit/68374efd3ec556f31b937e5b96920787b54eec78))
+* **lyrics:** add LRCLIB lyrics provider as fallback ([5afe823](https://github.com/krtirtho/spotube/commit/5afe823abdb198340b55d138d8173d886a811632))
+* search history support [#1236](https://github.com/krtirtho/spotube/issues/1236) ([82b1cfa](https://github.com/krtirtho/spotube/commit/82b1cfa0d775e3958c666280943a893c9113d468))
+* **translations:** Add Czech translation ([#1401](https://github.com/krtirtho/spotube/issues/1401)) ([5a6b800](https://github.com/krtirtho/spotube/commit/5a6b80091259359bc38c4b91cd8cb496c4270fa4))
+* **translations:** add Thai Language ([#1319](https://github.com/krtirtho/spotube/issues/1319)) ([b70f250](https://github.com/krtirtho/spotube/commit/b70f250e8d5137fd990787ec9e3d058126cf14f3)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311)
+
+
+### Bug Fixes
+
+* instance of Artist bug [#1362](https://github.com/krtirtho/spotube/issues/1362) ([c8dd802](https://github.com/krtirtho/spotube/commit/c8dd8025ec96bd78ed77cae35f1429aa48c16fde))
+* **playback:** sponsor block skips and stutters in same position ([0d080b7](https://github.com/krtirtho/spotube/commit/0d080b77b72529c0be5ebc27ace1c52307511f73))
+
+## [3.5.0](https://github.com/krtirtho/spotube/compare/v3.4.1...v3.5.0) (2024-03-08)
+
+
+### Features
+
+* add endless playback support [#285](https://github.com/krtirtho/spotube/issues/285) ([9dfd49c](https://github.com/krtirtho/spotube/commit/9dfd49ca04f0e915e333e205b17ac70456873f6e))
+* add getting started page ([96a2a1f](https://github.com/krtirtho/spotube/commit/96a2a1f5a622cb3c580041417d5023e37fa69716))
+* Add iOS background play support ([#1166](https://github.com/krtirtho/spotube/issues/1166)) ([095587e](https://github.com/krtirtho/spotube/commit/095587ee84f7d867c69fcf4b09ed608d63478e1e))
+* add songlink based track matching for youtube and open song link button ([9095a8c](https://github.com/krtirtho/spotube/commit/9095a8c8f849e42daabb7efcc20085cfb863c974))
+* **playlist:** show confirmation before deleting user playlist [#1222](https://github.com/krtirtho/spotube/issues/1222) ([9f92440](https://github.com/krtirtho/spotube/commit/9f9244062a39759aa0ce28d2d5f7c8fa53d73003))
+* Sort by Duration ([#1238](https://github.com/krtirtho/spotube/issues/1238)) ([6f8271f](https://github.com/krtirtho/spotube/commit/6f8271f5e9394cb4053e41dd222aa2844c34d609))
+* start radio support ([4defeef](https://github.com/krtirtho/spotube/commit/4defeefe7e5947aa00a2afb2a06577ec141cdc52))
+* **translations:** add Korean translation ([#1275](https://github.com/krtirtho/spotube/issues/1275)) ([fdea930](https://github.com/krtirtho/spotube/commit/fdea9307bbfb8f3f62cfb795bfb3ca58c38c33d9))
+* **translations:** Added Vietnamese ([#1135](https://github.com/krtirtho/spotube/issues/1135)) ([019ba86](https://github.com/krtirtho/spotube/commit/019ba865e20a8b54ea3490c01e47158eaf3a4c8d))
+* **windows:** Install Visual C++ 2015-2022 Redistributable if missing when installing ([ba69496](https://github.com/krtirtho/spotube/commit/ba69496dcc9a1b7f6ea4e104e71764a854d27f1f))
+
+
+### Bug Fixes
+
+* album images are small in certain places ([ca76a39](https://github.com/krtirtho/spotube/commit/ca76a39910b1a5af91aa7882a0d33c9d71db58a2))
+* album, artist page not loading [#1282](https://github.com/krtirtho/spotube/issues/1282) ([a9a1d4c](https://github.com/krtirtho/spotube/commit/a9a1d4c9dc24aaf3181dc4090d1822ebfe755991))
+* **android:** audio issue when screen is off and broadcast audio session id ([#1221](https://github.com/krtirtho/spotube/issues/1221) & [#1247](https://github.com/krtirtho/spotube/issues/1247)) ([17105a6](https://github.com/krtirtho/spotube/commit/17105a640bf5107bd5d333b9b4d097c14a3949a2)), closes [KRTirtho/spotube#571](https://github.com/KRTirtho/spotube/issues/571)
+* **android:** only ask battery optimization once [#1252](https://github.com/krtirtho/spotube/issues/1252) ([e516afb](https://github.com/krtirtho/spotube/commit/e516afb185f616471822ea745495a3d1d1281bd3))
+* **android:** pressing back button in any other tab other than home exits the app ([c3289a0](https://github.com/krtirtho/spotube/commit/c3289a0ba4e7de094a15246677ffcb940504ebde))
+* **android:** system back button in player page exits the app ([3294f65](https://github.com/krtirtho/spotube/commit/3294f657fe8a03b18d9be8974968b6508465963d))
+* cleanTitle removing feat and ft from words instead of whole words ([8612345](https://github.com/krtirtho/spotube/commit/86123456f2ff577921cf62cffca180427dfe1dd5))
+* friends list not scrollable with mouse drag ([ab08c82](https://github.com/krtirtho/spotube/commit/ab08c82c8dd501263049f3adcbd48907ba13e3a9))
+* no draggable scrollbar in playlist/album page [#1158](https://github.com/krtirtho/spotube/issues/1158) ([6f71e52](https://github.com/krtirtho/spotube/commit/6f71e52ea8a5712d2c3527f2a524af9fbb718bef))
+* non-banger songs breaking the queue if sources not found ([90f7c53](https://github.com/krtirtho/spotube/commit/90f7c531cdc8640afdbabf5a0592159715ea1e6f))
+* track loading when not found in Youtube ([e964f61](https://github.com/krtirtho/spotube/commit/e964f61d38cb303e3d3fd60c866414f57207181c))
+* **translations:** Update app_nl.arb ([#1168](https://github.com/krtirtho/spotube/issues/1168)) ([8167963](https://github.com/krtirtho/spotube/commit/8167963212eeb5dfb0b4fb2eadf81d466659a9f1))
+
 ## [3.4.1](https://personal.github.com/krtirtho/spotube/compare/v3.4.0...v3.4.1) (2024-01-27)
 
 

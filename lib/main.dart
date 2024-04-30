@@ -1,7 +1,6 @@
 import 'package:catcher_2/catcher_2.dart';
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,11 +23,14 @@ import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/models/source_match.dart';
+import 'package:spotube/provider/connect/clients.dart';
+import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/palette_provider.dart';
+import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
-import 'package:spotube/services/connectivity_adapter.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:system_theme/system_theme.dart';
@@ -37,6 +39,7 @@ import 'package:spotube/hooks/configurators/use_init_sys_tray.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> main(List<String> rawArgs) async {
   final arguments = await startCLI(rawArgs);
@@ -44,6 +47,8 @@ Future<void> main(List<String> rawArgs) async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   await registerWindowsScheme("spotify");
+
+  tz.initializeTimeZones();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
@@ -68,14 +73,12 @@ Future<void> main(List<String> rawArgs) async {
     DiscordRPC.initialize();
   }
 
+  await KVStoreService.initialize();
+
   final hiveCacheDir =
       kIsWeb ? null : (await getApplicationSupportDirectory()).path;
 
-  await QueryClient.initialize(
-    cachePrefix: "oss.krtirtho.spotube",
-    cacheDir: hiveCacheDir,
-    connectivity: FlQueryInternetConnectionCheckerAdapter(),
-  );
+  Hive.init(hiveCacheDir);
 
   Hive.registerAdapter(SkipSegmentAdapter());
 
@@ -132,21 +135,18 @@ Future<void> main(List<String> rawArgs) async {
     ),
     runAppFunction: () {
       runApp(
-        DevicePreview(
-          availableLocales: L10n.all,
-          enabled: false,
-          data: const DevicePreviewData(
-            isEnabled: false,
-            orientation: Orientation.portrait,
+        ProviderScope(
+          child: DevicePreview(
+            availableLocales: L10n.all,
+            enabled: false,
+            data: const DevicePreviewData(
+              isEnabled: false,
+              orientation: Orientation.portrait,
+            ),
+            builder: (context) {
+              return const Spotube();
+            },
           ),
-          builder: (context) {
-            return ProviderScope(
-              child: QueryClientProvider(
-                staleDuration: const Duration(minutes: 30),
-                child: const Spotube(),
-              ),
-            );
-          },
         ),
       );
     },
@@ -154,7 +154,7 @@ Future<void> main(List<String> rawArgs) async {
 }
 
 class Spotube extends StatefulHookConsumerWidget {
-  const Spotube({Key? key}) : super(key: key);
+  const Spotube({super.key});
 
   @override
   SpotubeState createState() => SpotubeState();
@@ -184,6 +184,11 @@ class SpotubeState extends ConsumerState<Spotube> {
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     final paletteColor =
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
+    final router = ref.watch(routerProvider);
+
+    ref.listen(playbackServerProvider, (_, __) {});
+    ref.listen(connectServerProvider, (_, __) {});
+    ref.listen(connectClientsProvider, (_, __) {});
 
     useDisableBatteryOptimizations();
     useInitSysTray(ref);
@@ -228,7 +233,7 @@ class SpotubeState extends ConsumerState<Spotube> {
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,
-          DesktopTools.platform.isDesktop
+          DesktopTools.platform.isDesktop && !DesktopTools.platform.isMacOS
               ? DragToResizeArea(child: child!)
               : child,
         );

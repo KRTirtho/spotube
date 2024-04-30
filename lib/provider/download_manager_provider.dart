@@ -9,12 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class DownloadManagerProvider extends ChangeNotifier {
   DownloadManagerProvider({required this.ref})
@@ -52,8 +53,10 @@ class DownloadManagerProvider extends ChangeNotifier {
       }
 
       final imageBytes = await downloadImage(
-        TypeConversionUtils.image_X_UrlString(track.album?.images,
-            placeholder: ImagePlaceholder.albumArt, index: 1),
+        (track.album?.images).asUrlString(
+          placeholder: ImagePlaceholder.albumArt,
+          index: 1,
+        ),
       );
 
       final metadata = Metadata(
@@ -134,7 +137,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   String getTrackFileUrl(Track track) {
     final name =
-        "${track.name} - ${TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[])}.${downloadCodec.name}";
+        "${track.name} - ${track.artists?.asString() ?? ""}.${downloadCodec.name}";
     return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 

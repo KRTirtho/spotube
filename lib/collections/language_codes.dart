@@ -6,6 +6,11 @@ class ISOLanguageName {
     required this.name,
     required this.nativeName,
   });
+
+  @override
+  String toString() {
+    return "$name ($nativeName)";
+  }
 }
 
 // Uncomment the languages as we add support for them
@@ -152,10 +157,10 @@ abstract class LanguageLocals {
     //   name: "Croatian",
     //   nativeName: "hrvatski",
     // ),
-    // "cs": const ISOLanguageName(
-    //   name: "Czech",
-    //   nativeName: "česky, čeština",
-    // ),
+    "cs": const ISOLanguageName(
+      name: "Czech",
+      nativeName: "česky, čeština",
+    ),
     // "da": const ISOLanguageName(
     //   name: "Danish",
     //   nativeName: "dansk",
@@ -348,10 +353,10 @@ abstract class LanguageLocals {
     //   name: "Kongo",
     //   nativeName: "KiKongo",
     // ),
-    // "ko": const ISOLanguageName(
-    //   name: "Korean",
-    //   nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
-    // ),
+    "ko": const ISOLanguageName(
+     name: "Korean",
+     nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
+    ),
     // "ku": const ISOLanguageName(
     //   name: "Kurdish",
     //   nativeName: "Kurdî, كوردی‎",
@@ -632,10 +637,10 @@ abstract class LanguageLocals {
     //   name: "Tajik",
     //   nativeName: "тоҷикӣ, toğikī, تاجیکی‎",
     // ),
-    // "th": const ISOLanguageName(
-    //   name: "Thai",
-    //   nativeName: "ไทย",
-    // ),
+    "th": const ISOLanguageName(
+      name: "Thai",
+      nativeName: "ไทย",
+    ),
     // "ti": const ISOLanguageName(
     //   name: "Tigrinya",
     //   nativeName: "ትግርኛ",
@@ -700,10 +705,10 @@ abstract class LanguageLocals {
     //   name: "Venda",
     //   nativeName: "Tshivenḓa",
     // ),
-    // "vi": const ISOLanguageName(
-    //   name: "Vietnamese",
-    //   nativeName: "Tiếng Việt",
-    // ),
+    "vi": const ISOLanguageName(
+      name: "Vietnamese",
+      nativeName: "Tiếng Việt",
+    ),
     // "vo": const ISOLanguageName(
     //   name: "Volapük",
     //   nativeName: "Volapük",

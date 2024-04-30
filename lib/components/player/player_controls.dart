@@ -21,8 +21,8 @@ class PlayerControls extends HookConsumerWidget {
   PlayerControls({
     this.palette,
     this.compact = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final logger = getLogger(PlayerControls);
 
@@ -43,8 +43,8 @@ class PlayerControls extends HookConsumerWidget {
               SeekIntent: SeekAction(),
             },
         []);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
 
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
@@ -256,20 +256,16 @@ class PlayerControls extends HookConsumerWidget {
                           onPressed: playlist.isFetching == true
                               ? null
                               : () async {
-                                  switch (await audioPlayer.loopMode) {
-                                    case PlaybackLoopMode.all:
-                                      audioPlayer
-                                          .setLoopMode(PlaybackLoopMode.one);
-                                      break;
-                                    case PlaybackLoopMode.one:
-                                      audioPlayer
-                                          .setLoopMode(PlaybackLoopMode.none);
-                                      break;
-                                    case PlaybackLoopMode.none:
-                                      audioPlayer
-                                          .setLoopMode(PlaybackLoopMode.all);
-                                      break;
-                                  }
+                                  audioPlayer.setLoopMode(
+                                    switch (loopMode) {
+                                      PlaybackLoopMode.all =>
+                                        PlaybackLoopMode.one,
+                                      PlaybackLoopMode.one =>
+                                        PlaybackLoopMode.none,
+                                      PlaybackLoopMode.none =>
+                                        PlaybackLoopMode.all,
+                                    },
+                                  );
                                 },
                         );
                       }),

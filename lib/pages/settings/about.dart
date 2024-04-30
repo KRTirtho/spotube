@@ -16,7 +16,7 @@ final _licenseProvider = FutureProvider<String>((ref) async {
 });
 
 class AboutSpotube extends HookConsumerWidget {
-  const AboutSpotube({Key? key}) : super(key: key);
+  const AboutSpotube({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

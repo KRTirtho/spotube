@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -5,15 +7,16 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/home/sections/friends/friend_item.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/models/spotify_friends.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomePageFriendsSection extends HookConsumerWidget {
-  const HomePageFriendsSection({Key? key}) : super(key: key);
+  const HomePageFriendsSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    final friendsQuery = useQueries.user.friendActivity(ref);
-    final friends = friendsQuery.data?.friends ?? FakeData.friends.friends;
+    final friendsQuery = ref.watch(friendsProvider);
+    final friends =
+        friendsQuery.asData?.value.friends ?? FakeData.friends.friends;
 
     final groupCount = useBreakpointValue(
       sm: 3,
@@ -48,8 +51,8 @@ class HomePageFriendsSection extends HookConsumerWidget {
       },
     );
 
-    if (!friendsQuery.isLoading &&
-        (!friendsQuery.hasData || friendsQuery.data!.friends.isEmpty)) {
+    if (friendsQuery.isLoading ||
+        friendsQuery.asData?.value.friends.isEmpty == true) {
       return const SliverToBoxAdapter(
         child: SizedBox.shrink(),
       );
@@ -69,22 +72,27 @@ class HomePageFriendsSection extends HookConsumerWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final group in friendGroup)
-                    Row(
-                      children: [
-                        for (final friend in group)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FriendItem(friend: friend),
-                          ),
-                      ],
-                    ),
-                ],
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: PointerDeviceKind.values.toSet(),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final group in friendGroup)
+                      Row(
+                        children: [
+                          for (final friend in group)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: FriendItem(friend: friend),
+                            ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

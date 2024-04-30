@@ -37,8 +37,6 @@ Duration parseDuration(String input) {
     days = p ~/ 24;
   }
 
-  // TODO verify that there are no negative parts
-
   return Duration(
     days: days,
     hours: hours,

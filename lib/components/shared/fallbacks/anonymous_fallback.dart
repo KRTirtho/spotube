@@ -8,13 +8,13 @@ import 'package:spotube/utils/service_utils.dart';
 class AnonymousFallback extends ConsumerWidget {
   final Widget? child;
   const AnonymousFallback({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final isLoggedIn = ref.watch(AuthenticationNotifier.provider) != null;
+    final isLoggedIn = ref.watch(authenticationProvider) != null;
 
     if (isLoggedIn && child != null) return child!;
     return Center(

@@ -6,7 +6,7 @@ import 'package:spotube/components/settings/section_card_with_heading.dart';
 import 'package:spotube/extensions/context.dart';
 
 class SettingsDevelopersSection extends HookWidget {
-  const SettingsDevelopersSection({Key? key}) : super(key: key);
+  const SettingsDevelopersSection({super.key});
 
   @override
   Widget build(BuildContext context) {

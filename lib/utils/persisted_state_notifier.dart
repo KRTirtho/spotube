@@ -119,12 +119,14 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
   Future<void> _load() async {
     final json = await box.get(cacheKey);
 
-    if (json != null) {
+    if (json != null ||
+        (json is Map && json.entries.isNotEmpty) ||
+        (json is List && json.isNotEmpty)) {
       state = await fromJson(castNestedJson(json));
     }
   }
 
-  Map<String, dynamic> castNestedJson(Map map) {
+  static Map<String, dynamic> castNestedJson(Map map) {
     return Map.castFrom<dynamic, dynamic, String, dynamic>(
       map.map((key, value) {
         if (value is Map) {

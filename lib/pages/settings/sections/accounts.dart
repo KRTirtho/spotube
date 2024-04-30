@@ -10,12 +10,12 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
 
 class SettingsAccountSection extends HookConsumerWidget {
-  const SettingsAccountSection({Key? key}) : super(key: key);
+  const SettingsAccountSection({super.key});
 
   @override
   Widget build(context, ref) {
     final theme = Theme.of(context);
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
     final scrobbler = ref.watch(scrobblerProvider);
     final router = GoRouter.of(context);
 
@@ -86,7 +86,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               trailing: FilledButton(
                 style: logoutBtnStyle,
                 onPressed: () async {
-                  ref.read(AuthenticationNotifier.provider.notifier).logout();
+                  ref.read(authenticationProvider.notifier).logout();
                   GoRouter.of(context).pop();
                 },
                 child: Text(context.l10n.logout),

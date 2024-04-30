@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,7 +15,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 
 class SettingsPlaybackSection extends HookConsumerWidget {
-  const SettingsPlaybackSection({Key? key}) : super(key: key);
+  const SettingsPlaybackSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -25,6 +26,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.playback,
       children: [
+        const Gap(10),
         AdaptiveSelectTile<SourceQualities>(
           secondary: const Icon(SpotubeIcons.audioQuality),
           title: Text(context.l10n.audio_quality),
@@ -49,6 +51,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             }
           },
         ),
+        const Gap(5),
         AdaptiveSelectTile<AudioSource>(
           secondary: const Icon(SpotubeIcons.api),
           title: Text(context.l10n.audio_source),
@@ -181,7 +184,8 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           value: preferences.normalizeAudio,
           onChanged: preferencesNotifier.setNormalizeAudio,
         ),
-        if (preferences.audioSource != AudioSource.jiosaavn)
+        if (preferences.audioSource != AudioSource.jiosaavn) ...[
+          const Gap(5),
           AdaptiveSelectTile<SourceCodecs>(
             secondary: const Icon(SpotubeIcons.stream),
             title: Text(context.l10n.streaming_music_codec),
@@ -201,7 +205,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               preferencesNotifier.setStreamMusicCodec(value);
             },
           ),
-        if (preferences.audioSource != AudioSource.jiosaavn)
+          const Gap(5),
           AdaptiveSelectTile<SourceCodecs>(
             secondary: const Icon(SpotubeIcons.file),
             title: Text(context.l10n.download_music_codec),
@@ -220,7 +224,21 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               if (value == null) return;
               preferencesNotifier.setDownloadMusicCodec(value);
             },
-          ),
+          )
+        ],
+        SwitchListTile(
+          secondary: const Icon(SpotubeIcons.repeat),
+          title: Text(context.l10n.endless_playback),
+          value: preferences.endlessPlayback,
+          onChanged: preferencesNotifier.setEndlessPlayback,
+        ),
+        SwitchListTile(
+          title: Text(context.l10n.enable_connect),
+          subtitle: Text(context.l10n.enable_connect_description),
+          secondary: const Icon(SpotubeIcons.connect),
+          value: preferences.enableConnect,
+          onChanged: preferencesNotifier.setEnableConnect,
+        ),
       ],
     );
   }

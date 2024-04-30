@@ -1,12 +1,13 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
+import 'package:spotube/models/spotify/home_feed.dart';
 import 'package:spotube/models/spotify_friends.dart';
 
 abstract class FakeData {
   static final Image image = Image()
     ..height = 1
     ..width = 1
-    ..url = "url";
+    ..url = "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg";
 
   static final Followers followers = Followers()
     ..href = "text"
@@ -194,6 +195,32 @@ abstract class FakeData {
             uri: "uri",
           ),
         ),
+    ],
+  );
+
+  static final feedSection = SpotifyHomeFeedSection(
+    typename: "HomeGenericSectionData",
+    uri: "spotify:section:lol",
+    title: "Dummy",
+    items: [
+      for (int i = 0; i < 10; i++)
+        SpotifyHomeFeedSectionItem(
+          typename: "PlaylistResponseWrapper",
+          playlist: SpotifySectionPlaylist(
+            name: "Playlist $i",
+            description: "Really super important description $i",
+            format: "daily-mix",
+            images: [
+              const SpotifySectionItemImage(
+                height: 1,
+                width: 1,
+                url: "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg",
+              ),
+            ],
+            owner: "Spotify",
+            uri: "spotify:playlist:id",
+          ),
+        )
     ],
   );
 }

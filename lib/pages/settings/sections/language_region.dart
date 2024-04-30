@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/language_codes.dart';
@@ -12,7 +13,7 @@ import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SettingsLanguageRegionSection extends HookConsumerWidget {
-  const SettingsLanguageRegionSection({Key? key}) : super(key: key);
+  const SettingsLanguageRegionSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -23,6 +24,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.language_region,
       children: [
+        const Gap(10),
         AdaptiveSelectTile<Locale>(
           value: preferences.locale,
           onChanged: (locale) {

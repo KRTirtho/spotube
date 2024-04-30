@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to release (x.x.x)
-        default: 3.4.1
+        default: 3.6.0
         required: true
       channel:
         type: choice
@@ -26,7 +26,7 @@ on:
         default: true
 
 env:
-  FLUTTER_VERSION: '3.16.3'
+  FLUTTER_VERSION: '3.19.1'
 
 jobs:
   windows:
@@ -181,6 +181,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v3
+        if: ${{ inputs.channel == 'stable' }}
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
@@ -188,6 +189,16 @@ jobs:
             dist/Spotube-linux-x86_64.deb
             dist/Spotube-linux-x86_64.rpm
             dist/spotube-linux-${{ env.BUILD_VERSION }}-x86_64.tar.xz
+            
+      - uses: actions/upload-artifact@v3
+        if: ${{ inputs.channel == 'nightly' }}
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            dist/Spotube-linux-x86_64.deb
+            dist/Spotube-linux-x86_64.rpm
+            dist/spotube-linux-nightly-x86_64.tar.xz
 
       - name: Debug With SSH When fails
         if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
@@ -273,7 +284,7 @@ jobs:
 
   macos:
 
-    runs-on: macos-12
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2.12.0
@@ -316,7 +327,7 @@ jobs:
 
       - name: Package Macos App
         run: |
-          python3 -m pip install setuptools
+          brew install python-setuptools
           npm install -g appdmg
           mkdir -p build/${{ env.BUILD_VERSION }}
           appdmg appdmg.json build/Spotube-macos-universal.dmg
@@ -338,7 +349,7 @@ jobs:
           limit-access-to-actor: true
 
   iOS:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2.10.0

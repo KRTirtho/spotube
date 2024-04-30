@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 
 class AdaptiveSelectTile<T> extends HookWidget {
@@ -38,11 +39,22 @@ class AdaptiveSelectTile<T> extends HookWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final rawControl = DropdownButton<T>(
-      items: options,
-      value: value,
-      onChanged: onChanged,
-      menuMaxHeight: mediaQuery.size.height * 0.6,
+    final rawControl = DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: DropdownButton<T>(
+        items: options,
+        value: value,
+        onChanged: onChanged,
+        menuMaxHeight: mediaQuery.size.height * 0.6,
+        underline: const SizedBox.shrink(),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        borderRadius: BorderRadius.circular(10),
+        icon: const Icon(SpotubeIcons.angleDown),
+        dropdownColor: theme.colorScheme.secondaryContainer,
+      ),
     );
     final controlPlaceholder = useMemoized(
         () => options
