@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:catcher_2/catcher_2.dart';
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:device_preview/device_preview.dart';
@@ -48,6 +51,9 @@ Future<void> main(List<String> rawArgs) async {
   final arguments = await startCLI(rawArgs);
 
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  final data = await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
+  SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
 
   await registerWindowsScheme("spotify");
 
