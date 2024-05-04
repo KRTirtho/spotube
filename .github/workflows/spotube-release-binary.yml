@@ -42,9 +42,10 @@ jobs:
         if: ${{ inputs.channel == 'nightly' }}
         run: |
           choco install sed make yq -y
-          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version |= sub("\+\d+", "-${{ inputs.channel }}+")' pubspec.yaml
           yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
-          "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel }}.${{ github.run_number }}" >> $env:GITHUB_ENV
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+        shell: bash
 
       - name: BUILD_VERSION Env (stable)
         if: ${{ inputs.channel == 'stable' }}
@@ -207,34 +208,35 @@ jobs:
           limit-access-to-actor: true
 
   linux_arm:
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Docker
-        run: brew install --cask docker
-
-      - name: Replace pubspec version and BUILD_VERSION Env (nightly)
-        if: ${{ inputs.channel == 'nightly' }}
-        run: |
-          brew install yq
-          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
-          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
-          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
-
-
-      - name: BUILD_VERSION Env (stable)
-        if: ${{ inputs.channel == 'stable' }}
-        run: |
-          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
-      - name: Replace Version in files
+      - name: Install Dependencies
         run: |
-          sed -i '' 's|%{{APPDATA_RELEASE}}%|<release version="${{ env.BUILD_VERSION }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+          sudo apt-get update -y
+          sudo apt-get install -y pkg-config make python3-pip python3-setuptools
+
+      - name: Replace pubspec version and BUILD_VERSION Env (nightly)
+        if: ${{ inputs.channel == 'nightly' }}
+        run: |
+          curl -sS https://webi.sh/yq | sh
+          yq -i '.version |= sub("\+\d+", "+${{ inputs.channel }}.")' pubspec.yaml
+          yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: BUILD_VERSION Env (stable)
+        if: ${{ inputs.channel == 'stable' }}
+        run: |
+          echo "BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
 
       - name: Create Stable .env
         if: ${{ inputs.channel == 'stable' }}
@@ -244,20 +246,42 @@ jobs:
         if: ${{ inputs.channel == 'nightly' }}
         run: echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
 
-      - name: Build Linux Arm
+      - name: Replace Version in files
         run: |
-          docker build -t spotube-linux-arm -f .github/Dockerfile . --build-arg BUILD_VERSION=${{ env.BUILD_VERSION }} --build-arg FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
-          docker create --name spotube-linux-arm spotube-linux-arm
-          docker cp spotube-linux-arm:/app/dist .
-          docker rm -f spotube-linux-arm
+          sed -i 's|%{{APPDATA_RELEASE}}%|<release version="${{ env.BUILD_VERSION }}" date="${{ steps.date.outputs.date }}" />|' linux/com.github.KRTirtho.Spotube.appdata.xml
+      
+      - name: Build Binaries (stable)
+        if: ${{ inputs.channel == 'stable' }}
+        run: |
+          docker buildx build --platform=linux/arm64 -f .github/Dockerfile . --build-arg FLUTTER_VERSION=${{env.FLUTTER_VERSION}} --build-arg BUILD_VERSION=${{env.BUILD_VERSION}} -t krtirtho/spotube_linux_arm:latest --load
+
+      - name: Build Binaries (nightly)
+        if: ${{ inputs.channel == 'nightly' }}
+        run: |
+          docker buildx build --platform=linux/arm64 -f .github/Dockerfile . --build-arg FLUTTER_VERSION=${{env.FLUTTER_VERSION}} --build-arg BUILD_VERSION=nightly -t krtirtho/spotube_linux_arm:latest --load
+
+      - name: Copy the built packages
+        run: |
+          docker images ls
+          docker create --name spotube_linux_arm krtirtho/spotube_linux_arm:latest
+          docker cp spotube_linux_arm:/app/dist/ dist/
 
       - uses: actions/upload-artifact@v3
+        if: ${{ inputs.channel == 'stable' }}
         with:
           if-no-files-found: error
           name: Spotube-Release-Binaries
           path: |
             dist/Spotube-linux-aarch64.deb
-            dist/Spotube-linux-aarch64.rpm
+            dist/spotube-linux-${{ env.BUILD_VERSION }}-aarch64.tar.xz
+            
+      - uses: actions/upload-artifact@v3
+        if: ${{ inputs.channel == 'nightly' }}
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            dist/Spotube-linux-aarch64.deb
             dist/spotube-linux-nightly-aarch64.tar.xz
 
       - name: Debug With SSH When fails
@@ -265,7 +289,6 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-
 
   android:
     runs-on: ubuntu-latest
@@ -275,6 +298,13 @@ jobs:
         with:
           cache: true
           flutter-version: ${{ env.FLUTTER_VERSION  }}
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+          check-latest: true
 
       - name: Install Dependencies
         run: |

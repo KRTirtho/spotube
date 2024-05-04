@@ -14,7 +14,6 @@ import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
-import 'package:spotube/hooks/configurators/use_update_checker.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
@@ -22,6 +21,7 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class RootApp extends HookConsumerWidget {
   final Widget child;
@@ -39,6 +39,8 @@ class RootApp extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        ServiceUtils.checkForUpdates(context, ref);
+
         final sharedPreferences = await SharedPreferences.getInstance();
 
         if (sharedPreferences.getBool(kIsUsingEncryption) == false &&
@@ -153,7 +155,6 @@ class RootApp extends HookConsumerWidget {
     }, [downloader]);
 
     // checks for latest version of the application
-    useUpdateChecker(ref);
 
     useEndlessPlayback(ref);
 
