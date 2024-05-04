@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart' hide Element;
 import 'package:go_router/go_router.dart';
-import 'package:html/dom.dart';
+import 'package:html/dom.dart' hide Text;
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/components/root/update_dialog.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotube/models/lyrics.dart';
@@ -13,6 +13,16 @@ import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:html/parser.dart' as parser;
+
+import 'dart:async';
+
+import 'package:flutter/material.dart' hide Element;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:spotube/collections/env.dart';
+
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:version/version.dart';
 
 abstract class ServiceUtils {
   static final logger = getLogger("ServiceUtils");
@@ -317,5 +327,43 @@ abstract class ServiceUtils {
             return 0;
         }
       });
+  }
+
+  static Future<void> checkForUpdates(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    if (!Env.enableUpdateChecker) return;
+    if (!ref.read(userPreferencesProvider.select((s) => s.checkUpdate))) return;
+
+    final packageInfo = await PackageInfo.fromPlatform();
+
+    final value = await http.get(
+      Uri.parse(
+        "https://api.github.com/repos/KRTirtho/spotube/releases/latest",
+      ),
+    );
+    final tagName =
+        (jsonDecode(value.body)["tag_name"] as String).replaceAll("v", "");
+    final currentVersion = packageInfo.version == "Unknown"
+        ? null
+        : Version.parse(packageInfo.version);
+    final latestVersion = tagName == "nightly" ? null : Version.parse(tagName);
+
+    if (currentVersion == null ||
+        latestVersion == null ||
+        (latestVersion.isPreRelease && !currentVersion.isPreRelease) ||
+        (!latestVersion.isPreRelease && currentVersion.isPreRelease)) return;
+
+    if (latestVersion <= currentVersion || !context.mounted) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black26,
+      builder: (context) {
+        return RootAppUpdateDialog(version: latestVersion);
+      },
+    );
   }
 }
