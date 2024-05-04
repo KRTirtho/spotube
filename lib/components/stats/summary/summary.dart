@@ -28,20 +28,12 @@ class StatsPageSummarySection extends HookConsumerWidget {
             childAspectRatio: constrains.isXs ? 1.3 : 1.5,
           ),
           delegate: SliverChildListDelegate([
-            switch (summary.duration) {
-              >= const Duration(hours: 1) => SummaryCard(
-                  title: summary.duration.inHours.toDouble(),
-                  unit: "hours",
-                  description: 'Listened to music',
-                  color: Colors.green,
-                ),
-              _ => SummaryCard(
-                  title: summary.duration.inMinutes.toDouble(),
-                  unit: "minutes",
-                  description: 'Listened to music',
-                  color: Colors.green,
-                ),
-            },
+            SummaryCard(
+              title: summary.duration.inMinutes.toDouble(),
+              unit: "minutes",
+              description: 'Listened to music',
+              color: Colors.green,
+            ),
             SummaryCard(
               title: summary.tracks.toDouble(),
               unit: "songs",

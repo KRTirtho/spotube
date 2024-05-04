@@ -4,6 +4,15 @@ import 'package:spotify/spotify.dart';
 part 'state.freezed.dart';
 part 'state.g.dart';
 
+enum HistoryDuration {
+  allTime,
+  days7,
+  days30,
+  months6,
+  year,
+  years2,
+}
+
 @freezed
 class PlaybackHistoryItem with _$PlaybackHistoryItem {
   factory PlaybackHistoryItem.playlist({

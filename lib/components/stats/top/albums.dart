@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/album/album_card.dart';
@@ -15,8 +14,9 @@ class TopAlbums extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final albums =
-        ref.watch(playbackHistoryTopProvider.select((value) => value.albums));
+    final historyDuration = ref.watch(playbackHistoryTopDurationProvider);
+    final albums = ref.watch(playbackHistoryTopProvider(historyDuration)
+        .select((value) => value.albums));
 
     return SliverList.builder(
       itemCount: albums.length,

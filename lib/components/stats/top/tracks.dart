@@ -13,8 +13,9 @@ class TopTracks extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final tracks =
-        ref.watch(playbackHistoryTopProvider.select((value) => value.tracks));
+    final historyDuration = ref.watch(playbackHistoryTopDurationProvider);
+    final tracks = ref.watch(playbackHistoryTopProvider(historyDuration)
+        .select((value) => value.tracks));
 
     return SliverList.builder(
       itemCount: tracks.length,

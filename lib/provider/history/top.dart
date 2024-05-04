@@ -2,12 +2,41 @@ import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/history/history.dart';
+import 'package:spotube/provider/history/state.dart';
 
-final playbackHistoryTopProvider = Provider((ref) {
-  final (:tracks, :albums, playlists: _) =
-      ref.watch(playbackHistoryGroupedProvider);
+final playbackHistoryTopDurationProvider =
+    StateProvider((ref) => HistoryDuration.days7);
+final playbackHistoryTopProvider =
+    Provider.family((ref, HistoryDuration durationState) {
+  final grouped = ref.watch(playbackHistoryGroupedProvider);
 
-  final tracksWithCount = groupBy(tracks, (track) => track.track.id!)
+  final duration = switch (durationState) {
+    HistoryDuration.allTime => const Duration(days: 365 * 2003),
+    HistoryDuration.days7 => const Duration(days: 7),
+    HistoryDuration.days30 => const Duration(days: 30),
+    HistoryDuration.months6 => const Duration(days: 30 * 6),
+    HistoryDuration.year => const Duration(days: 365),
+    HistoryDuration.years2 => const Duration(days: 365 * 2),
+  };
+  final tracks = grouped.tracks
+      .where(
+        (item) => item.date.isAfter(
+          DateTime.now().subtract(duration),
+        ),
+      )
+      .toList();
+  final albums = grouped.albums
+      .where(
+        (item) => item.date.isAfter(
+          DateTime.now().subtract(duration),
+        ),
+      )
+      .toList();
+
+  final tracksWithCount = groupBy(
+    tracks,
+    (track) => track.track.id!,
+  )
       .entries
       .map((entry) {
         return (count: entry.value.length, track: entry.value.first.track);

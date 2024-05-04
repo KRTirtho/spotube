@@ -12,8 +12,9 @@ class TopArtists extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final artists =
-        ref.watch(playbackHistoryTopProvider.select((value) => value.artists));
+    final historyDuration = ref.watch(playbackHistoryTopDurationProvider);
+    final artists = ref.watch(playbackHistoryTopProvider(historyDuration)
+        .select((value) => value.artists));
 
     return SliverList.builder(
       itemCount: artists.length,

@@ -5,6 +5,8 @@ import 'package:spotube/components/shared/themed_button_tab_bar.dart';
 import 'package:spotube/components/stats/top/albums.dart';
 import 'package:spotube/components/stats/top/artists.dart';
 import 'package:spotube/components/stats/top/tracks.dart';
+import 'package:spotube/provider/history/state.dart';
+import 'package:spotube/provider/history/top.dart';
 
 class StatsPageTopSection extends HookConsumerWidget {
   const StatsPageTopSection({super.key});
@@ -12,6 +14,9 @@ class StatsPageTopSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final tabController = useTabController(initialLength: 3);
+    final historyDuration = ref.watch(playbackHistoryTopDurationProvider);
+    final historyDurationNotifier =
+        ref.watch(playbackHistoryTopDurationProvider.notifier);
 
     return SliverMainAxisGroup(
       slivers: [
@@ -39,6 +44,50 @@ class StatsPageTopSection extends HookConsumerWidget {
                 ),
               ),
             ],
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: DropdownButton(
+              style: Theme.of(context).textTheme.bodySmall!,
+              isDense: true,
+              padding: const EdgeInsets.all(4),
+              borderRadius: BorderRadius.circular(4),
+              underline: const SizedBox(),
+              value: historyDuration,
+              onChanged: (value) {
+                if (value == null) return;
+                historyDurationNotifier.update((_) => value);
+              },
+              icon: const Icon(Icons.arrow_drop_down),
+              items: const [
+                DropdownMenuItem(
+                  value: HistoryDuration.days7,
+                  child: Text("This week"),
+                ),
+                DropdownMenuItem(
+                  value: HistoryDuration.days30,
+                  child: Text("This month"),
+                ),
+                DropdownMenuItem(
+                  value: HistoryDuration.months6,
+                  child: Text("Last 6 months"),
+                ),
+                DropdownMenuItem(
+                  value: HistoryDuration.year,
+                  child: Text("This year"),
+                ),
+                DropdownMenuItem(
+                  value: HistoryDuration.years2,
+                  child: Text("Last 2 years"),
+                ),
+                DropdownMenuItem(
+                  value: HistoryDuration.allTime,
+                  child: Text("All time"),
+                ),
+              ],
+            ),
           ),
         ),
         ListenableBuilder(
