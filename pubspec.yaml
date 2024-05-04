@@ -153,7 +153,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
-    - assets/ca/
     - assets/tutorial/
     - assets/logos/
     - LICENSE
