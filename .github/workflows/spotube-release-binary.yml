@@ -44,7 +44,7 @@ jobs:
           choco install sed make yq -y
           yq -i '.version |= sub("\+\d+", "-${{ inputs.channel }}+")' pubspec.yaml
           yq -i '.version += strenv(GITHUB_RUN_NUMBER)' pubspec.yaml
-          "BUILD_VERSION=${{ inputs.version }}-${{ inputs.channel }}+${{ github.run_number }}" >> $env:GITHUB_ENV
+          echo "BUILD_VERSION=${{ inputs.version }}+${{ inputs.channel  }}.${{ github.run_number }}" >> $GITHUB_ENV
         shell: bash
 
       - name: BUILD_VERSION Env (stable)
