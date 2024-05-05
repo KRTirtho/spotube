@@ -107,6 +107,7 @@
   "always_on_top": "Always on top",
   "exit_mini_player": "Exit Mini player",
   "download_location": "Download location",
+  "local_library_location": "Local library location",
   "account": "Account",
   "login_with_spotify": "Login with your Spotify account",
   "connect_with_spotify": "Connect with Spotify",

@@ -43,6 +43,7 @@ mixin _$UserPreferences {
   Market get recommendationMarket => throw _privateConstructorUsedError;
   SearchMode get searchMode => throw _privateConstructorUsedError;
   String get downloadLocation => throw _privateConstructorUsedError;
+  String get localLibraryLocation => throw _privateConstructorUsedError;
   String get pipedInstance => throw _privateConstructorUsedError;
   ThemeMode get themeMode => throw _privateConstructorUsedError;
   AudioSource get audioSource => throw _privateConstructorUsedError;
@@ -88,6 +89,7 @@ abstract class $UserPreferencesCopyWith<$Res> {
       Market recommendationMarket,
       SearchMode searchMode,
       String downloadLocation,
+      String localLibraryLocation,
       String pipedInstance,
       ThemeMode themeMode,
       AudioSource audioSource,
@@ -126,6 +128,7 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
     Object? recommendationMarket = null,
     Object? searchMode = null,
     Object? downloadLocation = null,
+    Object? localLibraryLocation = null,
     Object? pipedInstance = null,
     Object? themeMode = null,
     Object? audioSource = null,
@@ -196,6 +199,10 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
           ? _value.downloadLocation
           : downloadLocation // ignore: cast_nullable_to_non_nullable
               as String,
+      localLibraryLocation: null == localLibraryLocation
+          ? _value.localLibraryLocation
+          : localLibraryLocation // ignore: cast_nullable_to_non_nullable
+              as String,
       pipedInstance: null == pipedInstance
           ? _value.pipedInstance
           : pipedInstance // ignore: cast_nullable_to_non_nullable
@@ -264,6 +271,7 @@ abstract class _$$UserPreferencesImplCopyWith<$Res>
       Market recommendationMarket,
       SearchMode searchMode,
       String downloadLocation,
+      String localLibraryLocation,
       String pipedInstance,
       ThemeMode themeMode,
       AudioSource audioSource,
@@ -300,6 +308,7 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
     Object? recommendationMarket = null,
     Object? searchMode = null,
     Object? downloadLocation = null,
+    Object? localLibraryLocation = null,
     Object? pipedInstance = null,
     Object? themeMode = null,
     Object? audioSource = null,
@@ -370,6 +379,10 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
           ? _value.downloadLocation
           : downloadLocation // ignore: cast_nullable_to_non_nullable
               as String,
+      localLibraryLocation: null == localLibraryLocation
+          ? _value.localLibraryLocation
+          : localLibraryLocation // ignore: cast_nullable_to_non_nullable
+              as String,
       pipedInstance: null == pipedInstance
           ? _value.pipedInstance
           : pipedInstance // ignore: cast_nullable_to_non_nullable
@@ -433,6 +446,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
       this.recommendationMarket = Market.US,
       this.searchMode = SearchMode.youtube,
       this.downloadLocation = "",
+      this.localLibraryLocation = "",
       this.pipedInstance = "https://pipedapi.kavin.rocks",
       this.themeMode = ThemeMode.system,
       this.audioSource = AudioSource.youtube,
@@ -498,6 +512,9 @@ class _$UserPreferencesImpl implements _UserPreferences {
   final String downloadLocation;
   @override
   @JsonKey()
+  final String localLibraryLocation;
+  @override
+  @JsonKey()
   final String pipedInstance;
   @override
   @JsonKey()
@@ -523,7 +540,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
 
   @override
   String toString() {
-    return 'UserPreferences(audioQuality: $audioQuality, albumColorSync: $albumColorSync, amoledDarkTheme: $amoledDarkTheme, checkUpdate: $checkUpdate, normalizeAudio: $normalizeAudio, showSystemTrayIcon: $showSystemTrayIcon, skipNonMusic: $skipNonMusic, systemTitleBar: $systemTitleBar, closeBehavior: $closeBehavior, accentColorScheme: $accentColorScheme, layoutMode: $layoutMode, locale: $locale, recommendationMarket: $recommendationMarket, searchMode: $searchMode, downloadLocation: $downloadLocation, pipedInstance: $pipedInstance, themeMode: $themeMode, audioSource: $audioSource, streamMusicCodec: $streamMusicCodec, downloadMusicCodec: $downloadMusicCodec, discordPresence: $discordPresence, endlessPlayback: $endlessPlayback, enableConnect: $enableConnect)';
+    return 'UserPreferences(audioQuality: $audioQuality, albumColorSync: $albumColorSync, amoledDarkTheme: $amoledDarkTheme, checkUpdate: $checkUpdate, normalizeAudio: $normalizeAudio, showSystemTrayIcon: $showSystemTrayIcon, skipNonMusic: $skipNonMusic, systemTitleBar: $systemTitleBar, closeBehavior: $closeBehavior, accentColorScheme: $accentColorScheme, layoutMode: $layoutMode, locale: $locale, recommendationMarket: $recommendationMarket, searchMode: $searchMode, downloadLocation: $downloadLocation, localLibraryLocation: $localLibraryLocation, pipedInstance: $pipedInstance, themeMode: $themeMode, audioSource: $audioSource, streamMusicCodec: $streamMusicCodec, downloadMusicCodec: $downloadMusicCodec, discordPresence: $discordPresence, endlessPlayback: $endlessPlayback, enableConnect: $enableConnect)';
   }
 
   @override
@@ -560,6 +577,8 @@ class _$UserPreferencesImpl implements _UserPreferences {
                 other.searchMode == searchMode) &&
             (identical(other.downloadLocation, downloadLocation) ||
                 other.downloadLocation == downloadLocation) &&
+            (identical(other.localLibraryLocation, localLibraryLocation) ||
+                other.localLibraryLocation == localLibraryLocation) &&
             (identical(other.pipedInstance, pipedInstance) ||
                 other.pipedInstance == pipedInstance) &&
             (identical(other.themeMode, themeMode) ||
@@ -597,6 +616,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
         recommendationMarket,
         searchMode,
         downloadLocation,
+        localLibraryLocation,
         pipedInstance,
         themeMode,
         audioSource,
@@ -647,6 +667,7 @@ abstract class _UserPreferences implements UserPreferences {
       final Market recommendationMarket,
       final SearchMode searchMode,
       final String downloadLocation,
+      final String localLibraryLocation,
       final String pipedInstance,
       final ThemeMode themeMode,
       final AudioSource audioSource,
@@ -697,6 +718,8 @@ abstract class _UserPreferences implements UserPreferences {
   SearchMode get searchMode;
   @override
   String get downloadLocation;
+  @override
+  String get localLibraryLocation;
   @override
   String get pipedInstance;
   @override

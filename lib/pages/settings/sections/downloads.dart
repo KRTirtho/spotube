@@ -33,6 +33,22 @@ class SettingsDownloadsSection extends HookConsumerWidget {
       }
     }, [preferences.downloadLocation]);
 
+    final pickLocalLibraryLocation = useCallback(() async {
+      if (DesktopTools.platform.isMobile || DesktopTools.platform.isMacOS) {
+        final dirStr = await FilePicker.platform.getDirectoryPath(
+          initialDirectory: preferences.localLibraryLocation,
+        );
+        if (dirStr == null) return;
+        preferencesNotifier.setLocalLibraryLocation(dirStr);
+      } else {
+        String? dirStr = await getDirectoryPath(
+          initialDirectory: preferences.localLibraryLocation,
+        );
+        if (dirStr == null) return;
+        preferencesNotifier.setLocalLibraryLocation(dirStr);
+      }
+    }, [preferences.localLibraryLocation]);
+
     return SectionCardWithHeading(
       heading: context.l10n.downloads,
       children: [
@@ -45,6 +61,16 @@ class SettingsDownloadsSection extends HookConsumerWidget {
             child: const Icon(SpotubeIcons.folder),
           ),
           onTap: pickDownloadLocation,
+        ),
+        ListTile(
+          leading: const Icon(SpotubeIcons.folder),
+          title: Text(context.l10n.local_library_location),
+          subtitle: Text(preferences.localLibraryLocation),
+          trailing: FilledButton(
+            onPressed: pickLocalLibraryLocation,
+            child: const Icon(SpotubeIcons.folder),
+          ),
+          onTap: pickLocalLibraryLocation,
         ),
       ],
     );
