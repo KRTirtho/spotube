@@ -27,7 +27,7 @@ Future<File> getLogsPath() async {
   }
   final file = File(path.join(dir, ".spotube_logs"));
   if (!await file.exists()) {
-    await file.create();
+    await file.create(recursive: true);
   }
   return file;
 }
