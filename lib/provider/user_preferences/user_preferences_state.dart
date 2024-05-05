@@ -84,7 +84,7 @@ class UserPreferences with _$UserPreferences {
     @Default(Market.US) Market recommendationMarket,
     @Default(SearchMode.youtube) SearchMode searchMode,
     @Default("") String downloadLocation,
-    @Default("") String localLibraryLocation,
+    @Default([]) List<String> localLibraryLocation,
     @Default("https://pipedapi.kavin.rocks") String pipedInstance,
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default(AudioSource.youtube) AudioSource audioSource,

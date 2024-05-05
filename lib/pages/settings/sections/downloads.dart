@@ -3,6 +3,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/settings/section_card_with_heading.dart';
 import 'package:spotube/extensions/context.dart';
@@ -33,22 +34,6 @@ class SettingsDownloadsSection extends HookConsumerWidget {
       }
     }, [preferences.downloadLocation]);
 
-    final pickLocalLibraryLocation = useCallback(() async {
-      if (DesktopTools.platform.isMobile || DesktopTools.platform.isMacOS) {
-        final dirStr = await FilePicker.platform.getDirectoryPath(
-          initialDirectory: preferences.localLibraryLocation,
-        );
-        if (dirStr == null) return;
-        preferencesNotifier.setLocalLibraryLocation(dirStr);
-      } else {
-        String? dirStr = await getDirectoryPath(
-          initialDirectory: preferences.localLibraryLocation,
-        );
-        if (dirStr == null) return;
-        preferencesNotifier.setLocalLibraryLocation(dirStr);
-      }
-    }, [preferences.localLibraryLocation]);
-
     return SectionCardWithHeading(
       heading: context.l10n.downloads,
       children: [
@@ -64,13 +49,12 @@ class SettingsDownloadsSection extends HookConsumerWidget {
         ),
         ListTile(
           leading: const Icon(SpotubeIcons.folder),
-          title: Text(context.l10n.local_library_location),
-          subtitle: Text(preferences.localLibraryLocation),
-          trailing: FilledButton(
-            onPressed: pickLocalLibraryLocation,
-            child: const Icon(SpotubeIcons.folder),
-          ),
-          onTap: pickLocalLibraryLocation,
+          title: Text(context.l10n.local_library),
+          subtitle: Text(context.l10n.local_library_description),
+          onTap: () {
+            GoRouter.of(context).push("/settings/local_library");
+          },
+          trailing: const Icon(SpotubeIcons.angleRight),
         ),
       ],
     );

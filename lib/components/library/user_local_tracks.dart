@@ -71,20 +71,17 @@ final localTracksProvider = FutureProvider<List<LocalTrack>>((ref) async {
       await downloadDir.create(recursive: true);
       return [];
     }
-    final downloadEntities = downloadDir.listSync(recursive: true);
+    final entities = downloadDir.listSync(recursive: true);
 
-    final localLibraryLocation = ref.watch(
+    final localLibraryLocations = ref.watch(
       userPreferencesProvider.select((s) => s.localLibraryLocation),
     );
-    if (localLibraryLocation.isEmpty) return [];
-    final localLibraryDir = Directory(localLibraryLocation);
-    if (!await localLibraryDir.exists()) {
-      await localLibraryDir.create(recursive: true);
-      return [];
+    for (final location in localLibraryLocations) {
+      final dir = Directory(location);
+      if (await Directory(location).exists()) {
+        entities.addAll(Directory(location).listSync(recursive: true));
+      }
     }
-    final localLibraryEntities = localLibraryDir.listSync(recursive: true);
-
-    final entities = [...downloadEntities, ...localLibraryEntities];
 
     final filesWithMetadata = (await Future.wait(
       entities.map((e) => File(e.path)).where((file) {

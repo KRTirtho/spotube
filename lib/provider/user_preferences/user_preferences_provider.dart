@@ -69,9 +69,9 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     state = state.copyWith(downloadLocation: downloadDir);
   }
 
-  void setLocalLibraryLocation(String localLibraryDir) {
-    if (localLibraryDir.isEmpty) return;
-    state = state.copyWith(localLibraryLocation: localLibraryDir);
+  void setLocalLibraryLocation(List<String> localLibraryDirs) {
+    //if (localLibraryDir.isEmpty) return;
+    state = state.copyWith(localLibraryLocation: localLibraryDirs);
   }
 
   void setLayoutMode(LayoutMode mode) {

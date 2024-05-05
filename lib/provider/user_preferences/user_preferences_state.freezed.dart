@@ -43,7 +43,7 @@ mixin _$UserPreferences {
   Market get recommendationMarket => throw _privateConstructorUsedError;
   SearchMode get searchMode => throw _privateConstructorUsedError;
   String get downloadLocation => throw _privateConstructorUsedError;
-  String get localLibraryLocation => throw _privateConstructorUsedError;
+  List<String> get localLibraryLocation => throw _privateConstructorUsedError;
   String get pipedInstance => throw _privateConstructorUsedError;
   ThemeMode get themeMode => throw _privateConstructorUsedError;
   AudioSource get audioSource => throw _privateConstructorUsedError;
@@ -89,7 +89,7 @@ abstract class $UserPreferencesCopyWith<$Res> {
       Market recommendationMarket,
       SearchMode searchMode,
       String downloadLocation,
-      String localLibraryLocation,
+      List<String> localLibraryLocation,
       String pipedInstance,
       ThemeMode themeMode,
       AudioSource audioSource,
@@ -202,7 +202,7 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
       localLibraryLocation: null == localLibraryLocation
           ? _value.localLibraryLocation
           : localLibraryLocation // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<String>,
       pipedInstance: null == pipedInstance
           ? _value.pipedInstance
           : pipedInstance // ignore: cast_nullable_to_non_nullable
@@ -271,7 +271,7 @@ abstract class _$$UserPreferencesImplCopyWith<$Res>
       Market recommendationMarket,
       SearchMode searchMode,
       String downloadLocation,
-      String localLibraryLocation,
+      List<String> localLibraryLocation,
       String pipedInstance,
       ThemeMode themeMode,
       AudioSource audioSource,
@@ -380,9 +380,9 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
           : downloadLocation // ignore: cast_nullable_to_non_nullable
               as String,
       localLibraryLocation: null == localLibraryLocation
-          ? _value.localLibraryLocation
+          ? _value._localLibraryLocation
           : localLibraryLocation // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<String>,
       pipedInstance: null == pipedInstance
           ? _value.pipedInstance
           : pipedInstance // ignore: cast_nullable_to_non_nullable
@@ -446,7 +446,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
       this.recommendationMarket = Market.US,
       this.searchMode = SearchMode.youtube,
       this.downloadLocation = "",
-      this.localLibraryLocation = "",
+      final List<String> localLibraryLocation = const [],
       this.pipedInstance = "https://pipedapi.kavin.rocks",
       this.themeMode = ThemeMode.system,
       this.audioSource = AudioSource.youtube,
@@ -454,7 +454,8 @@ class _$UserPreferencesImpl implements _UserPreferences {
       this.downloadMusicCodec = SourceCodecs.m4a,
       this.discordPresence = true,
       this.endlessPlayback = true,
-      this.enableConnect = false});
+      this.enableConnect = false})
+      : _localLibraryLocation = localLibraryLocation;
 
   factory _$UserPreferencesImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserPreferencesImplFromJson(json);
@@ -510,9 +511,16 @@ class _$UserPreferencesImpl implements _UserPreferences {
   @override
   @JsonKey()
   final String downloadLocation;
+  final List<String> _localLibraryLocation;
   @override
   @JsonKey()
-  final String localLibraryLocation;
+  List<String> get localLibraryLocation {
+    if (_localLibraryLocation is EqualUnmodifiableListView)
+      return _localLibraryLocation;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_localLibraryLocation);
+  }
+
   @override
   @JsonKey()
   final String pipedInstance;
@@ -577,8 +585,8 @@ class _$UserPreferencesImpl implements _UserPreferences {
                 other.searchMode == searchMode) &&
             (identical(other.downloadLocation, downloadLocation) ||
                 other.downloadLocation == downloadLocation) &&
-            (identical(other.localLibraryLocation, localLibraryLocation) ||
-                other.localLibraryLocation == localLibraryLocation) &&
+            const DeepCollectionEquality()
+                .equals(other._localLibraryLocation, _localLibraryLocation) &&
             (identical(other.pipedInstance, pipedInstance) ||
                 other.pipedInstance == pipedInstance) &&
             (identical(other.themeMode, themeMode) ||
@@ -616,7 +624,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
         recommendationMarket,
         searchMode,
         downloadLocation,
-        localLibraryLocation,
+        const DeepCollectionEquality().hash(_localLibraryLocation),
         pipedInstance,
         themeMode,
         audioSource,
@@ -667,7 +675,7 @@ abstract class _UserPreferences implements UserPreferences {
       final Market recommendationMarket,
       final SearchMode searchMode,
       final String downloadLocation,
-      final String localLibraryLocation,
+      final List<String> localLibraryLocation,
       final String pipedInstance,
       final ThemeMode themeMode,
       final AudioSource audioSource,
@@ -719,7 +727,7 @@ abstract class _UserPreferences implements UserPreferences {
   @override
   String get downloadLocation;
   @override
-  String get localLibraryLocation;
+  List<String> get localLibraryLocation;
   @override
   String get pipedInstance;
   @override
