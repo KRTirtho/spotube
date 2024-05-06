@@ -2,27 +2,22 @@ name: Build Packages
 on:
   workflow_dispatch:
     inputs:
+      debug:
+        type: boolean
+        default: false
+        description: Debug with SSH toggle
+        required: false
       channel:
         type: choice
-        description: Release Channel
-        required: true
         options:
           - stable
           - nightly
         default: nightly
-      debug:
-        description: Debug on failed when channel is nightly
-        required: true
+        description: The release channel
+      dry_run:
         type: boolean
         default: false
-      dry_run:
-        description: Dry run
-        required: true
-        type: boolean
-        default: true
-  push:
-    branches:
-      - refactor/config-cli
+        description: Dry run without uploading to release
 
 env:
   FLUTTER_VERSION: 3.19.5
