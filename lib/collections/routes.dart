@@ -36,7 +36,6 @@ import 'package:spotube/pages/desktop_login/desktop_login.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
-import 'package:spotube/pages/settings/library.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
 final rootNavigatorKey = Catcher2.navigatorKey;
@@ -131,12 +130,6 @@ final routerProvider = Provider((ref) {
                 path: "blacklist",
                 pageBuilder: (context, state) => SpotubeSlidePage(
                   child: const BlackListPage(),
-                ),
-              ),
-              GoRoute(
-                path: "local_library",
-                pageBuilder: (context, state) => SpotubeSlidePage(
-                  child: const LocalLibrariesPage(),
                 ),
               ),
               if (!kIsWeb)

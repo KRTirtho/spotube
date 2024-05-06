@@ -47,15 +47,6 @@ class SettingsDownloadsSection extends HookConsumerWidget {
           ),
           onTap: pickDownloadLocation,
         ),
-        ListTile(
-          leading: const Icon(SpotubeIcons.folder),
-          title: Text(context.l10n.local_library),
-          subtitle: Text(context.l10n.local_library_description),
-          onTap: () {
-            GoRouter.of(context).push("/settings/local_library");
-          },
-          trailing: const Icon(SpotubeIcons.angleRight),
-        ),
       ],
     );
   }
