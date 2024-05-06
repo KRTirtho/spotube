@@ -1,155 +1,155 @@
 {
   "ar": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "bn": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "ca": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "cs": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "de": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "es": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "fa": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "fr": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "hi": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "it": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "ja": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "ko": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "ne": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "nl": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "pl": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "pt": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "ru": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "th": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "tr": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "uk": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "vi": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ],
 
   "zh": [
     "local_library",
-    "local_library_description",
     "add_library_location",
-    "remove_library_location"
+    "remove_library_location",
+    "local_tab"
   ]
 }
