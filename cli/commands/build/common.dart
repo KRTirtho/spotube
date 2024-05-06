@@ -5,6 +5,8 @@ import 'package:path/path.dart';
 import 'package:process_run/shell_run.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
+import '../../core/env.dart';
+
 mixin BuildCommandCommonSteps on Command {
   final shell = Shell();
   Directory get cwd => Directory.current;
@@ -29,7 +31,13 @@ mixin BuildCommandCommonSteps on Command {
   RegExp get versionVarRegExp =>
       RegExp(r"\%\{\{SPOTUBE_VERSION\}\}\%", multiLine: true);
 
+  File get dotEnvFile => File(join(cwd.path, ".env"));
+
   Future<void> bootstrap() async {
+    await dotEnvFile.create(recursive: true);
+
+    await dotEnvFile.writeAsString(CliEnv.dotenv);
+
     await shell.run(
       """
       flutter pub get
