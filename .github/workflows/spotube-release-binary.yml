@@ -2,11 +2,6 @@ name: Spotube Release Binary
 on:
   workflow_dispatch:
     inputs:
-      debug:
-        type: boolean
-        default: false
-        description: Debug with SSH toggle
-        required: false
       channel:
         type: choice
         options:
@@ -14,6 +9,11 @@ on:
           - nightly
         default: nightly
         description: The release channel
+      debug:
+        type: boolean
+        default: false
+        description: Debug with SSH toggle
+        required: false
       dry_run:
         type: boolean
         default: false
@@ -21,6 +21,9 @@ on:
 
 env:
   FLUTTER_VERSION: 3.19.5
+
+permissions:
+  contents: write
 
 jobs:
   build_platform:
@@ -69,7 +72,9 @@ jobs:
           check-latest: true
 
       - name: Install ${{matrix.platform}} dependencies
-        run: dart cli/cli.dart install-dependencies --platform=${{matrix.platform}}
+        run: |
+          flutter pub get
+          dart cli/cli.dart install-dependencies --platform=${{matrix.platform}}
 
       - name: Sign Apk
         if: ${{matrix.platform == 'android'}}
