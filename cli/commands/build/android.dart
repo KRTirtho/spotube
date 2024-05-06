@@ -21,7 +21,7 @@ class AndroidBuildCommand extends Command with BuildCommandCommonSteps {
     await bootstrap();
 
     await shell.run(
-      "flutter build apk --flavor ${CliEnv.channel}",
+      "flutter build apk --flavor ${CliEnv.channel.name}",
     );
 
     await dotEnvFile.writeAsString(
@@ -51,7 +51,7 @@ class AndroidBuildCommand extends Command with BuildCommandCommonSteps {
     await shell.run(
       """
       dart run build_runner build --delete-conflicting-outputs
-      flutter build appbundle --flavor ${CliEnv.channel}
+      flutter build appbundle --flavor ${CliEnv.channel.name}
       """,
     );
 
@@ -61,7 +61,7 @@ class AndroidBuildCommand extends Command with BuildCommandCommonSteps {
         "app",
         "outputs",
         "flutter-apk",
-        "app-${CliEnv.channel}-release.apk",
+        "app-${CliEnv.channel.name}-release.apk",
       ),
     );
 
@@ -76,8 +76,8 @@ class AndroidBuildCommand extends Command with BuildCommandCommonSteps {
         "app",
         "outputs",
         "bundle",
-        "${CliEnv.channel}Release",
-        "app-${CliEnv.channel}-release.aab",
+        "${CliEnv.channel.name}Release",
+        "app-${CliEnv.channel.name}-release.aab",
       ),
     );
 

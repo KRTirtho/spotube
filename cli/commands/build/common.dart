@@ -38,7 +38,7 @@ mixin BuildCommandCommonSteps on Command {
 
     await dotEnvFile.writeAsString(
       "${CliEnv.dotenv}\n"
-      "RELEASE_CHANNEL=${CliEnv.channel}\n",
+      "RELEASE_CHANNEL=${CliEnv.channel.name}\n",
     );
 
     if (CliEnv.channel == BuildChannel.nightly) {
@@ -47,9 +47,12 @@ mixin BuildCommandCommonSteps on Command {
       pubspecFile.writeAsStringSync(
         pubspecFile.readAsStringSync().replaceAll(
               "version: ${pubspec.version!.canonicalizedVersion}",
-              "version: $versionWithoutBuildNumber+${CliEnv.ghRunNumber}"
+              "version: $versionWithoutBuildNumber+${CliEnv.ghRunNumber}",
             ),
       );
+
+      _pubspec = null;
+      pubspec;
     }
 
     await shell.run(

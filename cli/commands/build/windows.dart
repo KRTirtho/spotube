@@ -45,7 +45,7 @@ class WindowsBuildCommand extends Command with BuildCommandCommonSteps {
     }
 
     await bootstrap();
-    await innoInstall();
+    // await innoInstall();
 
     await shell.run(
       "flutter_distributor package --platform=windows --targets=exe --skip-clean",

@@ -37,7 +37,6 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
 
     await shell.run(
       """
-      alias dpkg-deb="dpkg-deb --Zxz"
       flutter_distributor package --platform=linux --targets=deb
       flutter_distributor package --platform=linux --targets=rpm
       """,

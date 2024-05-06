@@ -20,9 +20,9 @@ class IosBuildCommand extends Command with BuildCommandCommonSteps {
     final buildDirPath = join(cwd.path, "build", "ios", "iphoneos");
     await shell.run(
       """
-      flutter build ios --release --no-codesign --flavor ${CliEnv.channel}
+      flutter build ios --release --no-codesign --flavor ${CliEnv.channel.name}
       ln -sf $buildDirPath Payload
-      zip -r9 Spotube-iOS.ipa ${join("Payload", "${CliEnv.channel}.app")}
+      zip -r9 Spotube-iOS.ipa ${join("Payload", "${CliEnv.channel.name}.app")}
       """,
     );
   }
