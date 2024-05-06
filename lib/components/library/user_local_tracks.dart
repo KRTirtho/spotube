@@ -285,108 +285,106 @@ class UserLocalTracks extends HookConsumerWidget {
               onRefresh: () async {
                 ref.invalidate(localTracksProvider);
               },
-              child: Expanded(
-                child: InterScrollbar(
+              child: InterScrollbar(
+                controller: controller,
+                child: CustomScrollView(
                   controller: controller,
-                  child: CustomScrollView(
-                    controller: controller,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    slivers: [
-                      for (var MapEntry(key: location, value: tracks) in groups.entries) ...[
-                        SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          sliver: SliverToBoxAdapter(
-                            child: Row(
-                              children: [
-                                Text(preferences.downloadLocation == location ? context.l10n.downloads : location,
-                                  style: Theme.of(context).textTheme.titleLarge
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    for (var MapEntry(key: location, value: tracks) in groups.entries) ...[
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        sliver: SliverToBoxAdapter(
+                          child: Row(
+                            children: [
+                              Text(preferences.downloadLocation == location ? context.l10n.downloads : location,
+                                style: Theme.of(context).textTheme.titleLarge
+                              ),
+                              const Expanded(child: SizedBox()),
+                              if (preferences.downloadLocation != location) Tooltip(
+                                message: context.l10n.remove_library_location,
+                                child: IconButton(
+                                  icon: Icon(SpotubeIcons.folderRemove, color: Colors.red[400]),
+                                  onPressed: () => removeLocalLibraryLocation(location),
                                 ),
-                                const Expanded(child: SizedBox()),
-                                if (preferences.downloadLocation != location) Tooltip(
-                                  message: context.l10n.remove_library_location,
-                                  child: IconButton(
-                                    icon: Icon(SpotubeIcons.folderRemove, color: Colors.red[400]),
-                                    onPressed: () => removeLocalLibraryLocation(location),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                        HookBuilder(
-                          key: ValueKey("LocalTracks\$$location"),
-                          builder: (context) {
-                            final sortedTracks = useMemoized(() {
-                              return ServiceUtils.sortTracks(tracks, sortBy.value);
-                            }, [sortBy.value, tracks]);
-                      
-                            final filteredTracks = useMemoized(() {
-                              if (searchController.text.isEmpty) {
-                                return sortedTracks;
-                              }
-                              return sortedTracks
-                                  .map((e) => (
-                                        weightedRatio(
-                                          "${e.name} - ${e.artists?.asString() ?? ""}",
-                                          searchController.text,
-                                        ),
-                                        e,
-                                      ))
-                                  .toList()
-                                  .sorted(
-                                    (a, b) => b.$1.compareTo(a.$1),
-                                  )
-                                  .where((e) => e.$1 > 50)
-                                  .map((e) => e.$2)
-                                  .toList()
-                                  .toList();
-                            }, [searchController.text, sortedTracks]);
-                      
-                            if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
-                              return const SliverFillRemaining(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [NotFound()],
-                                ),
-                              );
+                      ),
+                      HookBuilder(
+                        key: ValueKey("LocalTracks\$$location"),
+                        builder: (context) {
+                          final sortedTracks = useMemoized(() {
+                            return ServiceUtils.sortTracks(tracks, sortBy.value);
+                          }, [sortBy.value, tracks]);
+                    
+                          final filteredTracks = useMemoized(() {
+                            if (searchController.text.isEmpty) {
+                              return sortedTracks;
                             }
-                            return SliverSkeletonizer(
-                              enabled: trackSnapshot.isLoading,
-                              child: SliverList.builder(
-                                itemCount:
-                                    trackSnapshot.isLoading ? 5 : filteredTracks.length,
-                                itemBuilder: (context, index) {
-                                  if (trackSnapshot.isLoading) {
-                                    return TrackTile(
-                                      playlist: playlist,
-                                      track: FakeData.track,
-                                      index: index,
-                                    );
-                                  }
-                      
-                                  final track = filteredTracks[index];
-                                  return TrackTile(
-                                    index: index,
-                                    playlist: playlist,
-                                    track: track,
-                                    userPlaylist: false,
-                                    onTap: () async {
-                                      await playLocalTracks(
-                                        ref,
-                                        sortedTracks,
-                                        currentTrack: track,
-                                      );
-                                    },
-                                  );
-                                },
+                            return sortedTracks
+                                .map((e) => (
+                                      weightedRatio(
+                                        "${e.name} - ${e.artists?.asString() ?? ""}",
+                                        searchController.text,
+                                      ),
+                                      e,
+                                    ))
+                                .toList()
+                                .sorted(
+                                  (a, b) => b.$1.compareTo(a.$1),
+                                )
+                                .where((e) => e.$1 > 50)
+                                .map((e) => e.$2)
+                                .toList()
+                                .toList();
+                          }, [searchController.text, sortedTracks]);
+                    
+                          if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
+                            return const SliverFillRemaining(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [NotFound()],
                               ),
                             );
                           }
-                        )
-                      ]
+                          return SliverSkeletonizer(
+                            enabled: trackSnapshot.isLoading,
+                            child: SliverList.builder(
+                              itemCount:
+                                  trackSnapshot.isLoading ? 5 : filteredTracks.length,
+                              itemBuilder: (context, index) {
+                                if (trackSnapshot.isLoading) {
+                                  return TrackTile(
+                                    playlist: playlist,
+                                    track: FakeData.track,
+                                    index: index,
+                                  );
+                                }
+                    
+                                final track = filteredTracks[index];
+                                return TrackTile(
+                                  index: index,
+                                  playlist: playlist,
+                                  track: track,
+                                  userPlaylist: false,
+                                  onTap: () async {
+                                    await playLocalTracks(
+                                      ref,
+                                      sortedTracks,
+                                      currentTrack: track,
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      )
                     ]
-                  )
-                ),
+                  ]
+                )
               ),
             ),
           ),
