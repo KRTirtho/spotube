@@ -259,7 +259,7 @@ class UserLocalTracks extends HookConsumerWidget {
                   message: context.l10n.add_library_location,
                   child: IconButton(
                     onPressed: addLocalLibraryLocation,
-                    icon: const Icon(SpotubeIcons.folderAdd), // TODO: use a "folder add" icon
+                    icon: const Icon(SpotubeIcons.folderAdd),
                   ),
                 ),
               ],
