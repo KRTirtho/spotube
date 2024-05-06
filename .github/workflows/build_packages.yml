@@ -20,6 +20,9 @@ on:
         required: true
         type: boolean
         default: true
+  push:
+    branches:
+      - refactor/config-cli
 
 env:
   FLUTTER_VERSION: 3.19.5
