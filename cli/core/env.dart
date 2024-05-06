@@ -19,4 +19,5 @@ enum BuildChannel {
 class CliEnv {
   static final channel = BuildChannel.fromEnvironment("CHANNEL");
   static final dotenv = Platform.environment["DOTENV"]!;
+  static final ghRunNumber = Platform.environment["GITHUB_RUN_NUMBER"];
 }

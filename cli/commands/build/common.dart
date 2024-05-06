@@ -36,7 +36,21 @@ mixin BuildCommandCommonSteps on Command {
   Future<void> bootstrap() async {
     await dotEnvFile.create(recursive: true);
 
-    await dotEnvFile.writeAsString(CliEnv.dotenv);
+    await dotEnvFile.writeAsString(
+      "${CliEnv.dotenv}\n"
+      "RELEASE_CHANNEL=${CliEnv.channel}\n",
+    );
+
+    if (CliEnv.channel == BuildChannel.nightly) {
+      final pubspecFile = File(join(cwd.path, "pubspec.yaml"));
+
+      pubspecFile.writeAsStringSync(
+        pubspecFile.readAsStringSync().replaceAll(
+              "version: ${pubspec.version!.canonicalizedVersion}",
+              "version: $versionWithoutBuildNumber+${CliEnv.ghRunNumber}"
+            ),
+      );
+    }
 
     await shell.run(
       """

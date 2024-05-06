@@ -1,0 +1,155 @@
+name: Build
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        type: choice
+        description: Release Channel
+        required: true
+        options:
+          - stable
+          - nightly
+        default: nightly
+      debug:
+        description: Debug on failed when channel is nightly
+        required: true
+        type: boolean
+        default: false
+      dry_run:
+        description: Dry run
+        required: true
+        type: boolean
+        default: true
+
+env:
+  FLUTTER_VERSION: 3.19.5
+
+jobs:
+  build_platform:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            files: |
+              dist/Spotube-linux-x86_64.deb
+              dist/Spotube-linux-x86_64.rpm
+              dist/spotube-linux-*-x86_64.tar.xz
+          - os: ubuntu-latest
+            platform: android
+            files: |
+              build/Spotube-android-all-arch.apk
+              build/Spotube-playstore-all-arch.aab
+          - os: windows-latest
+            platform: windows
+            files: |
+              dist/Spotube-windows-x86_64.nupkg
+              dist/Spotube-windows-x86_64-setup.exe
+          - os: macos-latest
+            platform: ios
+            files: |
+              Spotube-iOS.ipa
+          - os: macos-14
+            platform: macos
+            files: |
+              build/Spotube-macos-universal.dmg
+              build/Spotube-macos-universal.pkg
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2.12.0
+        with:
+          cache: true
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
+      - name: Setup Java
+        if: ${{matrix.platform == 'android'}}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+          check-latest: true
+
+      - name: Install ${{matrix.platform}} dependencies
+        run: dart cli/cli.dart install-dependencies --platform=${{matrix.platform}}
+
+      - name: Sign Apk
+        if: ${{matrix.platform == 'android'}}
+        run: |
+          echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
+          echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
+      
+      - name: Build ${{matrix.platform}} binaries
+        run: dart cli/cli.dart build ${{matrix.platform}}
+        env:
+          CHANNEL: ${{inputs.channel}}
+          DOTENV: ${{secrets.DOTENV_RELEASE}}
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: ${{matrix.files}}
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
+  upload:
+    runs-on: ubuntu-latest
+    needs:
+      - build_platform
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Spotube-Release-Binaries
+          path: ./Spotube-Release-Binaries
+
+      - name: Install dependencies
+        run: sudo apt-get install tree -y
+
+      - name: Generate Checksums
+        run: |
+          tree .
+          md5sum Spotube-Release-Binaries/* >> RELEASE.md5sum
+          sha256sum Spotube-Release-Binaries/* >> RELEASE.sha256sum
+          sed -i 's|Spotube-Release-Binaries/||' RELEASE.sha256sum RELEASE.md5sum
+      
+      - name: Extract pubspec version
+        run: |
+          echo "PUBSPEC_VERSION=$(grep -oP 'version:\s*\K[^+]+(?=\+)' pubspec.yaml)" >> $GITHUB_ENV
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: Spotube-Release-Binaries
+          path: |
+            RELEASE.md5sum
+            RELEASE.sha256sum
+
+      - name: Upload Release Binaries (stable)
+        if: ${{ !inputs.dry_run && inputs.channel == 'stable' }}
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ env.PUBSPEC_VERSION }} # mind the "v" prefix
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          allowUpdates: true
+          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
+
+      - name: Upload Release Binaries (nightly)
+        if: ${{ !inputs.dry_run && inputs.channel == 'nightly' }}
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: nightly
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          allowUpdates: true
+          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
+          body: 'Build Number: ${{github.run_number}}'
