@@ -259,7 +259,7 @@ class UserLocalTracks extends HookConsumerWidget {
                   message: context.l10n.add_library_location,
                   child: IconButton(
                     onPressed: addLocalLibraryLocation,
-                    icon: const Icon(SpotubeIcons.folder), // TODO: use a "folder add" icon
+                    icon: const Icon(SpotubeIcons.folderAdd), // TODO: use a "folder add" icon
                   ),
                 ),
               ],
@@ -302,10 +302,10 @@ class UserLocalTracks extends HookConsumerWidget {
                                   style: Theme.of(context).textTheme.titleLarge
                                 ),
                                 const Expanded(child: SizedBox()),
-                                Tooltip(
+                                if (preferences.downloadLocation != location) Tooltip(
                                   message: context.l10n.remove_library_location,
                                   child: IconButton(
-                                    icon: Icon(SpotubeIcons.trash, color: Colors.red[400]),
+                                    icon: Icon(SpotubeIcons.folderRemove, color: Colors.red[400]),
                                     onPressed: () => removeLocalLibraryLocation(location),
                                   ),
                                 ),
