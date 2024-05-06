@@ -55,7 +55,6 @@ jobs:
       - name: Replace version in files
         run: |
           choco install sed make -y
-          sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.BUILD_VERSION }}/" windows/runner/Runner.rc
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.BUILD_VERSION }}/" choco-struct/tools/VERIFICATION.txt
           sed -i "s/%{{SPOTUBE_VERSION}}%/${{ env.BUILD_VERSION }}/" choco-struct/spotube.nuspec
 
