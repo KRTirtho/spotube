@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:io/io.dart';
 import 'package:args/command_runner.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -45,6 +46,9 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     final tempDir = Directory(join(Directory.systemTemp.path, "spotube-tar"))
       ..createSync(recursive: true);
 
+    final bundleDirPath =
+        join(cwd.path, "build", "linux", "x64", "release", "bundle", "*");
+
     final tarPath = join(
       cwd.path,
       "build",
@@ -52,9 +56,11 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
           "${CliEnv.channel == BuildChannel.nightly ? "nightly" : versionWithoutBuildNumber}"
           "-x86_64.tar.xz",
     );
+
+    await copyPath(bundleDirPath, tempDir.path);
+
     await shell.run(
       """
-      cp -r build/linux/x64/release/bundle/* ${tempDir.path}
       cp ${join(cwd.path, "linux", "spotube.desktop")} ${tempDir.path}
       cp ${join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml")} ${tempDir.path}
       cp ${join(cwd.path, "assets", "spotube-logo.png")} ${tempDir.path}
