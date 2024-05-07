@@ -43,7 +43,7 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       """,
     );
 
-    final tempDir = Directory(join(Directory.systemTemp.path, "spotube-tar"));
+    final tempDir = join(Directory.systemTemp.path, "spotube-tar");
 
     final bundleDirPath =
         join(cwd.path, "build", "linux", "x64", "release", "bundle");
@@ -56,18 +56,16 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
           "-x86_64.tar.xz",
     );
 
-    await copyPath(bundleDirPath, tempDir.path);
+    await copyPath(bundleDirPath, tempDir);
 
     await shell.run(
       """
-      cp ${join(cwd.path, "linux", "spotube.desktop")} ${tempDir.path}
-      cp ${join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml")} ${tempDir.path}
-      cp ${join(cwd.path, "assets", "spotube-logo.png")} ${tempDir.path}
-      tar -cJf $tarPath -C ${tempDir.path} .
+      cp ${join(cwd.path, "linux", "spotube.desktop")} $tempDir
+      cp ${join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml")} $tempDir
+      cp ${join(cwd.path, "assets", "spotube-logo.png")} $tempDir
+      tar -cJf $tarPath -C $tempDir .
       """,
     );
-
-    await tempDir.delete();
 
     await File(tarPath).copy(join(cwd.path, "dist"));
 
