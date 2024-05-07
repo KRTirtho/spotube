@@ -147,7 +147,6 @@ dev_dependencies:
   process_run: ^0.14.2
   xml: ^6.5.0
   io: ^1.0.4
-  archive: ^3.5.1
 
 dependency_overrides:
   uuid: ^4.4.0

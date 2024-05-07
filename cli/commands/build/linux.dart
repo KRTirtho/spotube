@@ -5,7 +5,6 @@ import 'package:io/io.dart';
 import 'package:args/command_runner.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
-import 'package:archive/archive.dart';
 
 import '../../core/env.dart';
 import 'common.dart';
@@ -70,23 +69,9 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       join(tempDir, "spotube-logo.png"),
     );
 
-    final archive = Archive();
-
-    for (final entity in Directory(tempDir).listSync(recursive: true)) {
-      if (entity is File) {
-        final fileRelPath = relative(entity.path, from: tempDir);
-        final file = File(entity.path);
-        final fileData = file.readAsBytesSync();
-        archive.addFile(ArchiveFile(fileRelPath, fileData.length, fileData));
-      }
-    }
-
-    // convert to tar.xz
-    final tarEncoder = TarEncoder();
-    final xzEncoder = XZEncoder();
-    final tarXzData = xzEncoder.encode(tarEncoder.encode(archive));
-
-    await tarFile.writeAsBytes(tarXzData);
+    await shell.run(
+      "tar -cJf ${tarFile.path} -C $tempDir .",
+    );
 
     final ogDeb = File(
       join(

@@ -42,7 +42,7 @@ packages:
     source: hosted
     version: "4.0.1"
   archive:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: archive
       sha256: ecf4273855368121b1caed0d10d4513c7241dfc813f7d3c8933b36622ae9b265
