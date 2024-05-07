@@ -58,12 +58,17 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     ));
 
     await copyPath(bundleDirPath, tempDir);
-    await copyPath(join(cwd.path, "linux", "spotube.desktop"), tempDir);
-    await copyPath(
-      join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml"),
-      tempDir,
+    await File(join(cwd.path, "linux", "spotube.desktop")).copy(
+      join(tempDir, "spotube.desktop"),
     );
-    await copyPath(join(cwd.path, "assets", "spotube-logo.png"), tempDir);
+    await File(
+      join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml"),
+    ).copy(
+      join(tempDir, "com.github.KRTirtho.Spotube.appdata.xml"),
+    );
+    await File(join(cwd.path, "assets", "spotube-logo.png")).copy(
+      join(tempDir, "spotube-logo.png"),
+    );
 
     final archive = Archive();
 
