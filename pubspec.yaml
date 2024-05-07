@@ -146,6 +146,7 @@ dev_dependencies:
   riverpod_lint: ^2.3.10
   process_run: ^0.14.2
   xml: ^6.5.0
+  io: ^1.0.4
 
 dependency_overrides:
   uuid: ^4.4.0

@@ -45,9 +45,6 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     final tempDir = Directory(join(Directory.systemTemp.path, "spotube-tar"))
       ..createSync(recursive: true);
 
-    final bundleDirPath =
-        join(cwd.path, "build", "linux", "x64", "release", "bundle", "*");
-
     final tarPath = join(
       cwd.path,
       "build",
@@ -57,7 +54,7 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     );
     await shell.run(
       """
-      cp -r $bundleDirPath ${tempDir.path}
+      cp -r build/linux/x64/release/bundle/* ${tempDir.path}
       cp ${join(cwd.path, "linux", "spotube.desktop")} ${tempDir.path}
       cp ${join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml")} ${tempDir.path}
       cp ${join(cwd.path, "assets", "spotube-logo.png")} ${tempDir.path}
