@@ -43,11 +43,10 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       """,
     );
 
-    final tempDir = Directory(join(Directory.systemTemp.path, "spotube-tar"))
-      ..createSync(recursive: true);
+    final tempDir = Directory(join(Directory.systemTemp.path, "spotube-tar"));
 
     final bundleDirPath =
-        join(cwd.path, "build", "linux", "x64", "release", "bundle", "*");
+        join(cwd.path, "build", "linux", "x64", "release", "bundle");
 
     final tarPath = join(
       cwd.path,
