@@ -5,6 +5,7 @@ import 'package:io/io.dart';
 import 'package:args/command_runner.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
+import 'package:archive/archive.dart';
 
 import '../../core/env.dart';
 import 'common.dart';
@@ -48,26 +49,39 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     final bundleDirPath =
         join(cwd.path, "build", "linux", "x64", "release", "bundle");
 
-    final tarPath = join(
+    final tarFile = File(join(
       cwd.path,
-      "build",
+      "dist",
       "spotube-linux-"
           "${CliEnv.channel == BuildChannel.nightly ? "nightly" : versionWithoutBuildNumber}"
           "-x86_64.tar.xz",
-    );
+    ));
 
     await copyPath(bundleDirPath, tempDir);
-
-    await shell.run(
-      """
-      cp ${join(cwd.path, "linux", "spotube.desktop")} $tempDir
-      cp ${join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml")} $tempDir
-      cp ${join(cwd.path, "assets", "spotube-logo.png")} $tempDir
-      tar -cJf $tarPath -C $tempDir .
-      """,
+    await copyPath(join(cwd.path, "linux", "spotube.desktop"), tempDir);
+    await copyPath(
+      join(cwd.path, "linux", "com.github.KRTirtho.Spotube.appdata.xml"),
+      tempDir,
     );
+    await copyPath(join(cwd.path, "assets", "spotube-logo.png"), tempDir);
 
-    await File(tarPath).copy(join(cwd.path, "dist"));
+    final archive = Archive();
+
+    for (final entity in Directory(tempDir).listSync(recursive: true)) {
+      if (entity is File) {
+        final fileRelPath = relative(entity.path, from: tempDir);
+        final file = File(entity.path);
+        final fileData = file.readAsBytesSync();
+        archive.addFile(ArchiveFile(fileRelPath, fileData.length, fileData));
+      }
+    }
+
+    // convert to tar.xz
+    final tarEncoder = TarEncoder();
+    final xzEncoder = XZEncoder();
+    final tarXzData = xzEncoder.encode(tarEncoder.encode(archive));
+
+    await tarFile.writeAsBytes(tarXzData);
 
     final ogDeb = File(
       join(
