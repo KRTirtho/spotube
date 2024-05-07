@@ -12,17 +12,11 @@ class WindowsBuildCommand extends Command with BuildCommandCommonSteps {
   @override
   String get name => "windows";
 
-  Future<void> innoInstall() async {
-    final innoInstallerPath = join(cwd.path, "build", "installer.exe");
-    const innoVersion = "6.2.0";
+  Future<void> innoDependInstall() async {
     final innoDependencyPath = join(cwd.path, "build", "inno-depend");
 
     await shell.run(
-      """
-      curl -o $innoInstallerPath http://files.jrsoftware.org/is/6/innosetup-$innoVersion.exe
-      git clone https://github.com/DomGries/InnoDependencyInstaller.git  $innoDependencyPath
-      $innoInstallerPath /verysilent /allusers /dir=build\\iscc
-      """,
+      "git clone https://github.com/DomGries/InnoDependencyInstaller.git $innoDependencyPath",
     );
   }
 
@@ -45,7 +39,7 @@ class WindowsBuildCommand extends Command with BuildCommandCommonSteps {
     }
 
     await bootstrap();
-    // await innoInstall();
+    await innoDependInstall();
 
     await shell.run(
       "flutter_distributor package --platform=windows --targets=exe --skip-clean",

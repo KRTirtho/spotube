@@ -82,7 +82,7 @@ class AndroidBuildCommand extends Command with BuildCommandCommonSteps {
     );
 
     await ogAppbundleFile.copy(
-      join(cwd.path, "dist", "Spotube-playstore-all-arch.aab"),
+      join(cwd.path, "build", "Spotube-playstore-all-arch.aab"),
     );
 
     stdout.writeln("✅ Built Android Apk and Appbundle");
