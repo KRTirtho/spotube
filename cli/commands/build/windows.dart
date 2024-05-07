@@ -63,7 +63,7 @@ class WindowsBuildCommand extends Command with BuildCommandCommonSteps {
 
     final exeFile = File(exePath);
 
-    final hash = sha256.convert(exeFile.readAsBytesSync()).toString();
+    final hash = sha256.convert(await exeFile.readAsBytes()).toString();
 
     final chocoVerificationFile = File(chocoFiles.first);
 
@@ -74,8 +74,9 @@ class WindowsBuildCommand extends Command with BuildCommandCommonSteps {
           ),
     );
 
-    final chocoToolsPath = join(cwd.path, "choco-struct", "tools");
-    exeFile.copySync(chocoToolsPath);
+    await exeFile.copy(
+      join(cwd.path, "choco-struct", "tools", basename(exeFile.path)),
+    );
 
     await shell.run(
       "choco pack ${chocoFiles[1]}  --outputdirectory ${join(cwd.path, "dist")}",
