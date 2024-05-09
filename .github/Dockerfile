@@ -10,14 +10,10 @@ COPY . .
 
 RUN chown -R $(whoami) /app
 
-RUN flutter pub get &&\
-  flutter config --enable-linux-desktop &&\
-  flutter pub get &&\
-  dart run build_runner build --delete-conflicting-outputs
+RUN flutter pub get
 
 RUN alias dpkg-deb="dpkg-deb --Zxz" &&\
-  flutter_distributor package --platform=linux --targets=deb
-
+  flutter_distributor package --platform=linux --targets=deb --skip-clean
 
 RUN make tar VERSION=${BUILD_VERSION} ARCH=arm64 PKG_ARCH=aarch64
 
