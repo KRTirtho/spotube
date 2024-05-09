@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
@@ -149,45 +150,12 @@ final localTracksProvider = FutureProvider<Map<String, List<LocalTrack>>>((ref) 
 class UserLocalTracks extends HookConsumerWidget {
   const UserLocalTracks({super.key});
 
-  Future<void> playLocalTracks(
-    WidgetRef ref,
-    List<LocalTrack> tracks, {
-    LocalTrack? currentTrack,
-  }) async {
-    final playlist = ref.read(proxyPlaylistProvider);
-    final playback = ref.read(proxyPlaylistProvider.notifier);
-    currentTrack ??= tracks.first;
-    final isPlaylistPlaying = playlist.containsTracks(tracks);
-    if (!isPlaylistPlaying) {
-      await playback.load(
-        tracks,
-        initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
-        autoPlay: true,
-      );
-    } else if (isPlaylistPlaying &&
-        currentTrack.id != null &&
-        currentTrack.id != playlist.activeTrack?.id) {
-      await playback.jumpToTrack(currentTrack);
-    }
-  }
-
   @override
   Widget build(BuildContext context, ref) {
-    final sortBy = useState<SortBy>(SortBy.none);
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final trackSnapshot = ref.watch(localTracksProvider);
-    final isPlaylistPlaying =
-        playlist.containsTracks(trackSnapshot.asData?.value.values.flattened.toList() ?? []);
 
-    final searchController = useTextEditingController();
-    useValueListenable(searchController);
-    final searchFocus = useFocusNode();
-    final isFiltering = useState(false);
-
-    final controller = useScrollController();
     final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final preferences = ref.watch(userPreferencesProvider);
-    
+
     final addLocalLibraryLocation = useCallback(() async {
       if (kIsMobile || kIsMacOS) {
         final dirStr = await FilePicker.platform.getDirectoryPath(
@@ -211,6 +179,10 @@ class UserLocalTracks extends HookConsumerWidget {
       preferencesNotifier.setLocalLibraryLocation([...preferences.localLibraryLocation]..remove(location));
     }, [preferences.localLibraryLocation]);
 
+    // This is just to pre-load the tracks.
+    // For now, this gets all of them.
+    ref.watch(localTracksProvider);
+
     return Column(
       children: [
         Padding(
@@ -218,193 +190,42 @@ class UserLocalTracks extends HookConsumerWidget {
           child: Row(
             children: [
               const SizedBox(width: 5),
-              FilledButton(
-                onPressed: trackSnapshot.asData?.value != null
-                    ? () async {
-                        if (trackSnapshot.asData?.value.isNotEmpty == true) {
-                          if (!isPlaylistPlaying) {
-                            await playLocalTracks(
-                              ref,
-                              trackSnapshot.asData!.value.values.flattened.toList(),
-                            );
-                          }
-                        }
-                      }
-                    : null,
-                child: Row(
-                  children: [
-                    Text(context.l10n.play),
-                    Icon(
-                      isPlaylistPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
-                    )
-                  ],
-                ),
-              ),
-              const Spacer(),
-              ExpandableSearchButton(
-                isFiltering: isFiltering.value,
-                onPressed: (value) => isFiltering.value = value,
-                searchFocus: searchFocus,
-              ),
-              const SizedBox(width: 10),
-              SortTracksDropdown(
-                value: sortBy.value,
-                onChanged: (value) {
-                  sortBy.value = value;
-                },
-              ),
-              if (!kIsWeb) ...[
-                const SizedBox(width: 10),
-                Tooltip(
-                  message: context.l10n.add_library_location,
-                  child: IconButton(
-                    onPressed: addLocalLibraryLocation,
-                    icon: const Icon(SpotubeIcons.folderAdd),
-                  ),
-                ),
-              ],
-              const SizedBox(width: 5),
-              FilledButton(
-                child: const Icon(SpotubeIcons.refresh),
-                onPressed: () {
-                  ref.invalidate(localTracksProvider);
-                },
+              TextButton.icon(
+                icon: const Icon(SpotubeIcons.folderAdd),
+                label: Text(context.l10n.add_library_location),
+                onPressed: addLocalLibraryLocation,
               )
-            ],
+            ]
+          )
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: preferences.localLibraryLocation.length+1,
+            itemBuilder: (context, index) {
+              late final String location;
+              if (index == 0) {
+                location = preferences.downloadLocation;
+              } else {
+                location = preferences.localLibraryLocation[index-1];
+              }
+              return ListTile(
+                title: preferences.downloadLocation != location ? Text(location)
+                : Text(context.l10n.downloads),
+                trailing: preferences.downloadLocation != location ? Tooltip(
+                  message: context.l10n.remove_library_location,
+                  child: IconButton(
+                    icon: Icon(SpotubeIcons.folderRemove, color: Colors.red[400]),
+                    onPressed: () => removeLocalLibraryLocation(location),
+                  ),
+                ) : null,
+                onTap: () async {
+                  context.go("/library/local${location == preferences.downloadLocation ? "?downloads=1" : ""}", extra: location);
+                }
+              );
+            }
           ),
         ),
-        ExpandableSearchField(
-          searchController: searchController,
-          searchFocus: searchFocus,
-          isFiltering: isFiltering.value,
-          onChangeFiltering: (value) => isFiltering.value = value,
-        ),
-        trackSnapshot.when(
-          data: (groups) => Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                ref.invalidate(localTracksProvider);
-              },
-              child: InterScrollbar(
-                controller: controller,
-                child: CustomScrollView(
-                  controller: controller,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    for (var MapEntry(key: location, value: tracks) in groups.entries) ...[
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        sliver: SliverToBoxAdapter(
-                          child: Row(
-                            children: [
-                              Text(preferences.downloadLocation == location ? context.l10n.downloads : location,
-                                style: Theme.of(context).textTheme.titleLarge
-                              ),
-                              const Expanded(child: SizedBox()),
-                              if (preferences.downloadLocation != location) Tooltip(
-                                message: context.l10n.remove_library_location,
-                                child: IconButton(
-                                  icon: Icon(SpotubeIcons.folderRemove, color: Colors.red[400]),
-                                  onPressed: () => removeLocalLibraryLocation(location),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      HookBuilder(
-                        key: ValueKey("LocalTracks\$$location"),
-                        builder: (context) {
-                          final sortedTracks = useMemoized(() {
-                            return ServiceUtils.sortTracks(tracks, sortBy.value);
-                          }, [sortBy.value, tracks]);
-                    
-                          final filteredTracks = useMemoized(() {
-                            if (searchController.text.isEmpty) {
-                              return sortedTracks;
-                            }
-                            return sortedTracks
-                                .map((e) => (
-                                      weightedRatio(
-                                        "${e.name} - ${e.artists?.asString() ?? ""}",
-                                        searchController.text,
-                                      ),
-                                      e,
-                                    ))
-                                .toList()
-                                .sorted(
-                                  (a, b) => b.$1.compareTo(a.$1),
-                                )
-                                .where((e) => e.$1 > 50)
-                                .map((e) => e.$2)
-                                .toList()
-                                .toList();
-                          }, [searchController.text, sortedTracks]);
-                    
-                          if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
-                            return const SliverFillRemaining(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [NotFound()],
-                              ),
-                            );
-                          }
-                          return SliverSkeletonizer(
-                            enabled: trackSnapshot.isLoading,
-                            child: SliverList.builder(
-                              itemCount:
-                                  trackSnapshot.isLoading ? 5 : filteredTracks.length,
-                              itemBuilder: (context, index) {
-                                if (trackSnapshot.isLoading) {
-                                  return TrackTile(
-                                    playlist: playlist,
-                                    track: FakeData.track,
-                                    index: index,
-                                  );
-                                }
-                    
-                                final track = filteredTracks[index];
-                                return TrackTile(
-                                  index: index,
-                                  playlist: playlist,
-                                  track: track,
-                                  userPlaylist: false,
-                                  onTap: () async {
-                                    await playLocalTracks(
-                                      ref,
-                                      sortedTracks,
-                                      currentTrack: track,
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          );
-                        }
-                      )
-                    ]
-                  ]
-                )
-              ),
-            ),
-          ),
-          loading: () => Expanded(
-            child: Skeletonizer(
-              enabled: true,
-              child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) => TrackTile(
-                  track: FakeData.track,
-                  index: index,
-                  playlist: playlist,
-                ),
-              ),
-            ),
-          ),
-          error: (error, stackTrace) =>
-              Text(error.toString() + stackTrace.toString()),
-        )
-      ],
+      ]
     );
   }
 }
