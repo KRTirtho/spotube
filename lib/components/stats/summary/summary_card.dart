@@ -30,6 +30,8 @@ class SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData(:textTheme, :brightness) = Theme.of(context);
 
+    final descriptionNewLines = description.split("").where((s) => s == "\n");
+
     return Card(
       color: brightness == Brightness.dark ? color.shade100 : color.shade50,
       child: Padding(
@@ -61,7 +63,9 @@ class SummaryCard extends StatelessWidget {
             const Gap(5),
             AutoSizeText(
               description,
-              maxLines: 1,
+              maxLines: description.contains("\n")
+                  ? descriptionNewLines.length + 1
+                  : 1,
               minFontSize: 9,
               style: textTheme.labelMedium!.copyWith(
                 color: color.shade900,

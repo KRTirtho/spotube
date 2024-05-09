@@ -303,7 +303,7 @@ class SidebarFooter extends HookConsumerWidget {
               IconButton(
                 icon: const Icon(SpotubeIcons.settings),
                 onPressed: () {
-                  ServiceUtils.navigateNamed(context, SettingsPage.name);
+                  ServiceUtils.pushNamed(context, SettingsPage.name);
                 },
               ),
             ],

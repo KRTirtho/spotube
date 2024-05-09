@@ -31,6 +31,7 @@ class SettingsPage extends HookConsumerWidget {
         appBar: PageWindowTitleBar(
           title: Text(context.l10n.settings),
           centerTitle: true,
+          automaticallyImplyLeading: true,
         ),
         body: Scrollbar(
           controller: controller,

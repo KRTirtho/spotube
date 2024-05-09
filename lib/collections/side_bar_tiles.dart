@@ -5,7 +5,6 @@ import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
-import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/stats/stats.dart';
 
 class SideBarTiles {
@@ -63,6 +62,12 @@ List<SideBarTiles> getNavbarTileList(AppLocalizations l10n) => [
         title: l10n.browse,
       ),
       SideBarTiles(
+        id: "search",
+        name: SearchPage.name,
+        icon: SpotubeIcons.search,
+        title: l10n.search,
+      ),
+      SideBarTiles(
         id: "library",
         name: LibraryPage.name,
         icon: SpotubeIcons.library,
@@ -74,10 +79,4 @@ List<SideBarTiles> getNavbarTileList(AppLocalizations l10n) => [
         icon: SpotubeIcons.chart,
         title: l10n.stats,
       ),
-      SideBarTiles(
-        id: "settings",
-        name: SettingsPage.name,
-        icon: SpotubeIcons.settings,
-        title: l10n.settings,
-      )
     ];

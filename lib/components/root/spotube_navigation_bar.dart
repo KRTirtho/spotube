@@ -37,14 +37,20 @@ class SpotubeNavigationBar extends HookConsumerWidget {
       theme.colorScheme.primary.withOpacity(0.2),
     );
 
-    final navbarTileList =
-        useMemoized(() => getNavbarTileList(context.l10n), [context.l10n]);
+    final navbarTileList = useMemoized(
+      () => getNavbarTileList(context.l10n),
+      [context.l10n],
+    );
 
     final panelHeight = ref.watch(navigationPanelHeight);
 
-    final selectedIndex = navbarTileList.indexWhere(
-      (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
-    );
+    final selectedIndex = useMemoized(() {
+      final index = navbarTileList.indexWhere(
+        (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
+      );
+
+      return index == -1 ? 0 : index;
+    }, [navbarTileList, routerState.matchedLocation]);
 
     if (layoutMode == LayoutMode.extended ||
         (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||

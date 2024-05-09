@@ -44,7 +44,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
             SummaryCard.unformatted(
               title: usdFormatter.format(summary.fees.toDouble()),
               unit: "",
-              description: 'Worth of streams',
+              description: 'Owed to artists\nthis month',
               color: Colors.green,
             ),
             SummaryCard(
