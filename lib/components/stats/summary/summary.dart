@@ -3,7 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/stats/summary/summary_card.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/pages/stats/minutes/minutes.dart';
+import 'package:spotube/pages/stats/streams/streams.dart';
 import 'package:spotube/provider/history/summary.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class StatsPageSummarySection extends HookConsumerWidget {
   const StatsPageSummarySection({super.key});
@@ -34,12 +37,18 @@ class StatsPageSummarySection extends HookConsumerWidget {
               unit: "minutes",
               description: 'Listened to music',
               color: Colors.purple,
+              onTap: () {
+                ServiceUtils.pushNamed(context, StatsMinutesPage.name);
+              },
             ),
             SummaryCard(
               title: summary.tracks.toDouble(),
               unit: "songs",
               description: 'Streamed overall',
               color: Colors.lightBlue,
+              onTap: () {
+                ServiceUtils.pushNamed(context, StatsStreamsPage.name);
+              },
             ),
             SummaryCard.unformatted(
               title: usdFormatter.format(summary.fees.toDouble()),

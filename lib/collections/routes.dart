@@ -24,7 +24,9 @@ import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/pages/settings/logs.dart';
+import 'package:spotube/pages/stats/minutes/minutes.dart';
 import 'package:spotube/pages/stats/stats.dart';
+import 'package:spotube/pages/stats/streams/streams.dart';
 import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
@@ -230,6 +232,22 @@ final routerProvider = Provider((ref) {
             pageBuilder: (context, state) => const SpotubePage(
               child: StatsPage(),
             ),
+            routes: [
+              GoRoute(
+                path: "minutes",
+                name: StatsMinutesPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsMinutesPage(),
+                ),
+              ),
+              GoRoute(
+                path: "streams",
+                name: StatsStreamsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsStreamsPage(),
+                ),
+              )
+            ],
           )
         ],
       ),

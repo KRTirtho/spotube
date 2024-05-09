@@ -7,6 +7,7 @@ class SummaryCard extends StatelessWidget {
   final String title;
   final String unit;
   final String description;
+  final VoidCallback? onTap;
 
   final MaterialColor color;
 
@@ -16,6 +17,7 @@ class SummaryCard extends StatelessWidget {
     required this.unit,
     required this.description,
     required this.color,
+    this.onTap,
   }) : title = compactNumberFormatter.format(title);
 
   const SummaryCard.unformatted({
@@ -24,6 +26,7 @@ class SummaryCard extends StatelessWidget {
     required this.unit,
     required this.description,
     required this.color,
+    this.onTap,
   });
 
   @override
@@ -34,44 +37,48 @@ class SummaryCard extends StatelessWidget {
 
     return Card(
       color: brightness == Brightness.dark ? color.shade100 : color.shade50,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AutoSizeText.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: title,
-                    style: textTheme.headlineLarge?.copyWith(
-                      color: color.shade900,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AutoSizeText.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: title,
+                      style: textTheme.headlineLarge?.copyWith(
+                        color: color.shade900,
+                      ),
                     ),
-                  ),
-                  TextSpan(
-                    text: " $unit",
-                    style: textTheme.titleMedium?.copyWith(
-                      color: color.shade900,
+                    TextSpan(
+                      text: " $unit",
+                      style: textTheme.titleMedium?.copyWith(
+                        color: color.shade900,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                maxLines: 1,
               ),
-              maxLines: 1,
-            ),
-            const Gap(5),
-            AutoSizeText(
-              description,
-              maxLines: description.contains("\n")
-                  ? descriptionNewLines.length + 1
-                  : 1,
-              minFontSize: 9,
-              style: textTheme.labelMedium!.copyWith(
-                color: color.shade900,
+              const Gap(5),
+              AutoSizeText(
+                description,
+                maxLines: description.contains("\n")
+                    ? descriptionNewLines.length + 1
+                    : 1,
+                minFontSize: 9,
+                style: textTheme.labelMedium!.copyWith(
+                  color: color.shade900,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
