@@ -31,10 +31,10 @@ class RootAppUpdateDialog extends StatelessWidget {
         children: [
           Text(
             nightlyBuildNum != null
-                ? "Spotube Nightly $nightlyBuildNum has been releases"
+                ? "Spotube Nightly $nightlyBuildNum has been released"
                 : "Spotube v$version has been released",
           ),
-          if (nightlyBuildNum != null)
+          if (nightlyBuildNum == null)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -340,16 +340,12 @@ abstract class ServiceUtils {
     if (Env.releaseChannel == ReleaseChannel.nightly) {
       final value = await http.get(
         Uri.parse(
-          "https://api.github.com/repos/KRTirtho/spotube/releases/tags/nightly",
+          "https://api.github.com/repos/KRTirtho/spotube/actions/workflows/spotube-release-binary.yml/runs?status=success&per_page=1",
         ),
       );
 
-      final body = jsonDecode(value.body)["body"] as String;
-
-      final buildNum = int.tryParse(
-            RegExp(r'Build Number: (\d+)').firstMatch(body)?.group(1) ?? '0',
-          ) ??
-          0;
+      final buildNum =
+          jsonDecode(value.body)["workflow_runs"][0]["run_number"] as int;
 
       if (buildNum <= int.parse(packageInfo.buildNumber) || !context.mounted) {
         return;
