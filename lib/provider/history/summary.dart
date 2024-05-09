@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/history/history.dart';
+import 'package:spotube/provider/history/state.dart';
+import 'package:spotube/provider/history/top.dart';
 
 final playbackHistorySummaryProvider = Provider((ref) {
   final (:tracks, :albums, :playlists) =
@@ -43,10 +45,17 @@ final playbackHistorySummaryProvider = Provider((ref) {
       )
       .length;
 
+  final tracksThisMonth = ref.watch(
+    playbackHistoryTopProvider(HistoryDuration.days30).select((s) => s.tracks),
+  );
+
+  final streams = tracksThisMonth.fold(0, (acc, el) => acc + el.count);
+
   return (
     duration: totalDurationListened,
     tracks: totalTracksListened,
     artists: totalArtistsListened,
+    fees: streams * 0.005, // Spotify pays $0.003 to $0.005
     albums: totalAlbumsListened,
     playlists: totalPlaylistsListened,
   );

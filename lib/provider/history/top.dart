@@ -6,6 +6,7 @@ import 'package:spotube/provider/history/state.dart';
 
 final playbackHistoryTopDurationProvider =
     StateProvider((ref) => HistoryDuration.days7);
+
 final playbackHistoryTopProvider =
     Provider.family((ref, HistoryDuration durationState) {
   final grouped = ref.watch(playbackHistoryGroupedProvider);

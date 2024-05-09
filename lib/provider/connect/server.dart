@@ -82,7 +82,7 @@ final connectServerProvider = FutureProvider((ref) async {
                 .toJson(),
           );
           channel.sink.add(
-            WebSocketShuffleEvent(await audioPlayer.isShuffled).toJson(),
+            WebSocketShuffleEvent(audioPlayer.isShuffled).toJson(),
           );
           channel.sink.add(
             WebSocketLoopEvent(audioPlayer.loopMode).toJson(),

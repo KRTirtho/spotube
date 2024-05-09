@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/stats/summary/summary_card.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/history/summary.dart';
@@ -32,13 +33,19 @@ class StatsPageSummarySection extends HookConsumerWidget {
               title: summary.duration.inMinutes.toDouble(),
               unit: "minutes",
               description: 'Listened to music',
-              color: Colors.green,
+              color: Colors.purple,
             ),
             SummaryCard(
               title: summary.tracks.toDouble(),
               unit: "songs",
               description: 'Streamed overall',
               color: Colors.lightBlue,
+            ),
+            SummaryCard.unformatted(
+              title: usdFormatter.format(summary.fees.toDouble()),
+              unit: "",
+              description: 'Worth of streams',
+              color: Colors.green,
             ),
             SummaryCard(
               title: summary.artists.toDouble(),

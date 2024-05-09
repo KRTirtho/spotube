@@ -4,13 +4,21 @@ import 'package:gap/gap.dart';
 import 'package:spotube/collections/formatters.dart';
 
 class SummaryCard extends StatelessWidget {
-  final double title;
+  final String title;
   final String unit;
   final String description;
 
   final MaterialColor color;
 
-  const SummaryCard({
+  SummaryCard({
+    super.key,
+    required double title,
+    required this.unit,
+    required this.description,
+    required this.color,
+  }) : title = compactNumberFormatter.format(title);
+
+  const SummaryCard.unformatted({
     super.key,
     required this.title,
     required this.unit,
@@ -35,7 +43,7 @@ class SummaryCard extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: compactNumberFormatter.format(title),
+                    text: title,
                     style: textTheme.headlineLarge?.copyWith(
                       color: color.shade900,
                     ),
