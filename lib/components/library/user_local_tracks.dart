@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -30,6 +29,7 @@ import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
@@ -189,7 +189,7 @@ class UserLocalTracks extends HookConsumerWidget {
     final preferences = ref.watch(userPreferencesProvider);
     
     final addLocalLibraryLocation = useCallback(() async {
-      if (DesktopTools.platform.isMobile || DesktopTools.platform.isMacOS) {
+      if (kIsMobile || kIsMacOS) {
         final dirStr = await FilePicker.platform.getDirectoryPath(
           initialDirectory: preferences.downloadLocation,
         );
