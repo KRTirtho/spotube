@@ -33,7 +33,7 @@ abstract class Env {
   @EnviedField(varName: "RELEASE_CHANNEL", defaultValue: "nightly")
   static final String _releaseChannel = _Env._releaseChannel;
 
-  ReleaseChannel get releaseChannel => _releaseChannel == "stable"
+  static ReleaseChannel get releaseChannel => _releaseChannel == "stable"
       ? ReleaseChannel.stable
       : ReleaseChannel.nightly;
 

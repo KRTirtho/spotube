@@ -5,18 +5,23 @@ import 'package:version/version.dart';
 
 class RootAppUpdateDialog extends StatelessWidget {
   final Version? version;
-  const RootAppUpdateDialog({super.key, this.version});
+  final int? nightlyBuildNum;
+
+  const RootAppUpdateDialog({super.key, this.version}) : nightlyBuildNum = null;
+  const RootAppUpdateDialog.nightly({super.key, required this.nightlyBuildNum})
+      : version = null;
 
   @override
   Widget build(BuildContext context) {
     const url = "https://spotube.krtirtho.dev/downloads";
+    const nightlyUrl = "https://spotube.krtirtho.dev/downloads/nightly";
     return AlertDialog(
       title: const Text("Spotube has an update"),
       actions: [
         FilledButton(
           child: const Text("Download Now"),
           onPressed: () => launchUrlString(
-            url,
+            nightlyBuildNum != null ? nightlyUrl : url,
             mode: LaunchMode.externalApplication,
           ),
         ),
@@ -24,21 +29,26 @@ class RootAppUpdateDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("Spotube v$version has been released"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Read the latest "),
-              AnchorButton(
-                "release notes",
-                style: const TextStyle(color: Colors.blue),
-                onTap: () => launchUrlString(
-                  url,
-                  mode: LaunchMode.externalApplication,
-                ),
-              ),
-            ],
+          Text(
+            nightlyBuildNum != null
+                ? "Spotube Nightly $nightlyBuildNum has been releases"
+                : "Spotube v$version has been released",
           ),
+          if (nightlyBuildNum != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Read the latest "),
+                AnchorButton(
+                  "release notes",
+                  style: const TextStyle(color: Colors.blue),
+                  onTap: () => launchUrlString(
+                    url,
+                    mode: LaunchMode.externalApplication,
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );

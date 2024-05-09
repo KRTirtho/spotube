@@ -166,4 +166,8 @@ jobs:
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
           artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
-          body: 'Build Number: ${{github.run_number}}'
+          body: |
+            Build Number: ${{github.run_number}}
+            
+            Nightly release includes newest features but may contain bugs
+            It is preferred to use the stable version unless you know what you're doing
