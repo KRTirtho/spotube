@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:args/command_runner.dart';
+import 'package:path/path.dart';
 
 import '../../core/env.dart';
 import 'common.dart';
@@ -18,7 +19,7 @@ class LinuxArmBuildCommand extends Command with BuildCommandCommonSteps {
 
     await shell.run(
       "docker buildx build --platform=linux/arm64 "
-      "-f .github/Dockerfile . "
+      "-f ${join(cwd.path, ".github", "Dockerfile")} ${cwd.path} "
       "--build-arg FLUTTER_VERSION=${CliEnv.flutterVersion} "
       "--build-arg BUILD_VERSION=${CliEnv.channel == BuildChannel.nightly ? "nightly" : versionWithoutBuildNumber} "
       "-t krtirtho/spotube_linux_arm:latest "
