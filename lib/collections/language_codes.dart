@@ -265,10 +265,10 @@ abstract class LanguageLocals {
     //   name: "Interlingua",
     //   nativeName: "Interlingua",
     // ),
-    // "id": const ISOLanguageName(
-    //   name: "Indonesian",
-    //   nativeName: "Bahasa Indonesia",
-    // ),
+    "id": const ISOLanguageName(
+      name: "Indonesian",
+      nativeName: "Bahasa Indonesia",
+    ),
     // "ie": const ISOLanguageName(
     //   name: "Interlingue",
     //   nativeName: "Occidental",
