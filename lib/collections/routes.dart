@@ -24,7 +24,11 @@ import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/pages/settings/logs.dart';
+import 'package:spotube/pages/stats/albums/albums.dart';
+import 'package:spotube/pages/stats/artists/artists.dart';
+import 'package:spotube/pages/stats/fees/fees.dart';
 import 'package:spotube/pages/stats/minutes/minutes.dart';
+import 'package:spotube/pages/stats/playlists/playlists.dart';
 import 'package:spotube/pages/stats/stats.dart';
 import 'package:spotube/pages/stats/streams/streams.dart';
 import 'package:spotube/pages/track/track.dart';
@@ -246,7 +250,35 @@ final routerProvider = Provider((ref) {
                 pageBuilder: (context, state) => const SpotubePage(
                   child: StatsStreamsPage(),
                 ),
-              )
+              ),
+              GoRoute(
+                path: "fees",
+                name: StatsStreamFeesPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsStreamFeesPage(),
+                ),
+              ),
+              GoRoute(
+                path: "artists",
+                name: StatsArtistsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsArtistsPage(),
+                ),
+              ),
+              GoRoute(
+                path: "albums",
+                name: StatsAlbumsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsAlbumsPage(),
+                ),
+              ),
+              GoRoute(
+                path: "playlists",
+                name: StatsPlaylistsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsPlaylistsPage(),
+                ),
+              ),
             ],
           )
         ],

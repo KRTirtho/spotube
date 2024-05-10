@@ -34,6 +34,14 @@ final playbackHistoryTopProvider =
       )
       .toList();
 
+  final playlists = grouped.playlists
+      .where(
+        (item) => item.date.isAfter(
+          DateTime.now().subtract(duration),
+        ),
+      )
+      .toList();
+
   final tracksWithCount = groupBy(
     tracks,
     (track) => track.track.id!,
@@ -69,9 +77,19 @@ final playbackHistoryTopProvider =
       .sorted((a, b) => b.count.compareTo(a.count))
       .toList();
 
+  final playlistsWithCount =
+      groupBy(playlists, (playlist) => playlist.playlist.id!)
+          .entries
+          .map((entry) {
+            return (count: entry.value.length, playlist: entry.value.first);
+          })
+          .sorted((a, b) => b.count.compareTo(a.count))
+          .toList();
+
   return (
     tracks: tracksWithCount,
     albums: albumsWithCount,
-    artists: artistsWithCount
+    artists: artistsWithCount,
+    playlists: playlistsWithCount,
   );
 });
