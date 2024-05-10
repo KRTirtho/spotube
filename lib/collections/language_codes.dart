@@ -83,7 +83,7 @@ abstract class LanguageLocals {
     // ),
     "eu": const ISOLanguageName(
       name: "Basque",
-      nativeName: "euskara,",
+      nativeName: "euskara",
     ),
     // "be": const ISOLanguageName(
     //   name: "Belarusian",
