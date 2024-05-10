@@ -5,7 +5,7 @@ import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/history/state.dart';
 
 final playbackHistoryTopDurationProvider =
-    StateProvider((ref) => HistoryDuration.days7);
+    StateProvider((ref) => HistoryDuration.days30);
 
 final playbackHistoryTopProvider =
     Provider.family((ref, HistoryDuration durationState) {
