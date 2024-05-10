@@ -81,10 +81,10 @@ abstract class LanguageLocals {
     //   name: "Bashkir",
     //   nativeName: "башҡорт теле",
     // ),
-    // "eu": const ISOLanguageName(
-    //   name: "Basque",
-    //   nativeName: "euskara,",
-    // ),
+    "eu": const ISOLanguageName(
+      name: "Basque",
+      nativeName: "euskara",
+    ),
     // "be": const ISOLanguageName(
     //   name: "Belarusian",
     //   nativeName: "Беларуская",
