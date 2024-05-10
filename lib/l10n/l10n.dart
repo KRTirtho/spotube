@@ -28,6 +28,7 @@ class L10n {
     const Locale('de', 'GE'),
     const Locale('es', 'ES'),
     const Locale('fa', 'IR'),
+    const Locale('fi', 'FI'),
     const Locale('fr', 'FR'),
     const Locale('ne', 'NP'),
     const Locale('hi', 'IN'),
