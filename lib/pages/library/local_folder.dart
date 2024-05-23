@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -46,14 +45,14 @@ class LocalLibraryPage extends HookConsumerWidget {
       await playback.jumpToTrack(currentTrack);
     }
   }
-  
+
   @override
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
     final playlist = ref.watch(proxyPlaylistProvider);
     final trackSnapshot = ref.watch(localTracksProvider);
-    final isPlaylistPlaying =
-        playlist.containsTracks(trackSnapshot.asData?.value.values.flattened.toList() ?? []);
+    final isPlaylistPlaying = playlist.containsTracks(
+        trackSnapshot.asData?.value.values.flattened.toList() ?? []);
 
     final searchController = useTextEditingController();
     useValueListenable(searchController);
@@ -61,176 +60,178 @@ class LocalLibraryPage extends HookConsumerWidget {
     final isFiltering = useState(false);
 
     final controller = useScrollController();
-    
+
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        appBar: PageWindowTitleBar(
-          leading: const BackButton(),
-          centerTitle: true,
-          title: Text(isDownloads ? context.l10n.downloads : location),
-          backgroundColor: Colors.transparent,
-        ),
-        extendBodyBehindAppBar: true,
-        body: Column(
-          children: [
-            const SizedBox(height: 56),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  const SizedBox(width: 5),
-                  FilledButton(
-                    onPressed: trackSnapshot.asData?.value != null
-                        ? () async {
-                            if (trackSnapshot.asData?.value.isNotEmpty == true) {
-                              if (!isPlaylistPlaying) {
-                                await playLocalTracks(
-                                  ref,
-                                  trackSnapshot.asData!.value[location] ?? [],
-                                );
+          appBar: PageWindowTitleBar(
+            leading: const BackButton(),
+            centerTitle: true,
+            title: Text(isDownloads ? context.l10n.downloads : location),
+            backgroundColor: Colors.transparent,
+          ),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 5),
+                    FilledButton(
+                      onPressed: trackSnapshot.asData?.value != null
+                          ? () async {
+                              if (trackSnapshot.asData?.value.isNotEmpty ==
+                                  true) {
+                                if (!isPlaylistPlaying) {
+                                  await playLocalTracks(
+                                    ref,
+                                    trackSnapshot.asData!.value[location] ?? [],
+                                  );
+                                }
                               }
                             }
-                          }
-                        : null,
-                    child: Row(
-                      children: [
-                        Text(context.l10n.play),
-                        Icon(
-                          isPlaylistPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
-                        )
-                      ],
+                          : null,
+                      child: Row(
+                        children: [
+                          Text(context.l10n.play),
+                          Icon(
+                            isPlaylistPlaying
+                                ? SpotubeIcons.stop
+                                : SpotubeIcons.play,
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  ExpandableSearchButton(
-                    isFiltering: isFiltering.value,
-                    onPressed: (value) => isFiltering.value = value,
-                    searchFocus: searchFocus,
-                  ),
-                  const SizedBox(width: 10),
-                  SortTracksDropdown(
-                    value: sortBy.value,
-                    onChanged: (value) {
-                      sortBy.value = value;
-                    },
-                  ),
-                  const SizedBox(width: 5),
-                  FilledButton(
-                    child: const Icon(SpotubeIcons.refresh),
-                    onPressed: () {
-                      ref.invalidate(localTracksProvider);
-                    },
-                  )
-                ],
+                    const Spacer(),
+                    ExpandableSearchButton(
+                      isFiltering: isFiltering.value,
+                      onPressed: (value) => isFiltering.value = value,
+                      searchFocus: searchFocus,
+                    ),
+                    const SizedBox(width: 10),
+                    SortTracksDropdown(
+                      value: sortBy.value,
+                      onChanged: (value) {
+                        sortBy.value = value;
+                      },
+                    ),
+                    const SizedBox(width: 5),
+                    FilledButton(
+                      child: const Icon(SpotubeIcons.refresh),
+                      onPressed: () {
+                        ref.invalidate(localTracksProvider);
+                      },
+                    )
+                  ],
+                ),
               ),
-            ),
-            ExpandableSearchField(
-              searchController: searchController,
-              searchFocus: searchFocus,
-              isFiltering: isFiltering.value,
-              onChangeFiltering: (value) => isFiltering.value = value,
-            ),
-            trackSnapshot.when(
-              data: (tracks) {
-                final sortedTracks = useMemoized(() {
-                  return ServiceUtils.sortTracks(tracks[location] ?? <LocalTrack>[], sortBy.value);
-                }, [sortBy.value, tracks]);
+              ExpandableSearchField(
+                searchController: searchController,
+                searchFocus: searchFocus,
+                isFiltering: isFiltering.value,
+                onChangeFiltering: (value) => isFiltering.value = value,
+              ),
+              trackSnapshot.when(
+                data: (tracks) {
+                  final sortedTracks = useMemoized(() {
+                    return ServiceUtils.sortTracks(
+                        tracks[location] ?? <LocalTrack>[], sortBy.value);
+                  }, [sortBy.value, tracks]);
 
-                final filteredTracks = useMemoized(() {
-                  if (searchController.text.isEmpty) {
-                    return sortedTracks;
+                  final filteredTracks = useMemoized(() {
+                    if (searchController.text.isEmpty) {
+                      return sortedTracks;
+                    }
+                    return sortedTracks
+                        .map((e) => (
+                              weightedRatio(
+                                "${e.name} - ${e.artists?.asString() ?? ""}",
+                                searchController.text,
+                              ),
+                              e,
+                            ))
+                        .toList()
+                        .sorted(
+                          (a, b) => b.$1.compareTo(a.$1),
+                        )
+                        .where((e) => e.$1 > 50)
+                        .map((e) => e.$2)
+                        .toList()
+                        .toList();
+                  }, [searchController.text, sortedTracks]);
+
+                  if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
+                    return const Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [NotFound()],
+                      ),
+                    );
                   }
-                  return sortedTracks
-                      .map((e) => (
-                            weightedRatio(
-                              "${e.name} - ${e.artists?.asString() ?? ""}",
-                              searchController.text,
-                            ),
-                            e,
-                          ))
-                      .toList()
-                      .sorted(
-                        (a, b) => b.$1.compareTo(a.$1),
-                      )
-                      .where((e) => e.$1 > 50)
-                      .map((e) => e.$2)
-                      .toList()
-                      .toList();
-                }, [searchController.text, sortedTracks]);
 
-                if (!trackSnapshot.isLoading && filteredTracks.isEmpty) {
-                  return const Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [NotFound()],
-                    ),
-                  );
-                }
-
-                return Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      ref.invalidate(localTracksProvider);
-                    },
-                    child: InterScrollbar(
-                      controller: controller,
-                      child: Skeletonizer(
-                        enabled: trackSnapshot.isLoading,
-                        child: ListView.builder(
-                          controller: controller,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount:
-                              trackSnapshot.isLoading ? 5 : filteredTracks.length,
-                          itemBuilder: (context, index) {
-                            if (trackSnapshot.isLoading) {
-                              return TrackTile(
-                                playlist: playlist,
-                                track: FakeData.track,
-                                index: index,
-                              );
-                            }
-
-                            final track = filteredTracks[index];
-                            return TrackTile(
-                              index: index,
-                              playlist: playlist,
-                              track: track,
-                              userPlaylist: false,
-                              onTap: () async {
-                                await playLocalTracks(
-                                  ref,
-                                  sortedTracks,
-                                  currentTrack: track,
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        ref.invalidate(localTracksProvider);
+                      },
+                      child: InterScrollbar(
+                        controller: controller,
+                        child: Skeletonizer(
+                          enabled: trackSnapshot.isLoading,
+                          child: ListView.builder(
+                            controller: controller,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: trackSnapshot.isLoading
+                                ? 5
+                                : filteredTracks.length,
+                            itemBuilder: (context, index) {
+                              if (trackSnapshot.isLoading) {
+                                return TrackTile(
+                                  playlist: playlist,
+                                  track: FakeData.track,
+                                  index: index,
                                 );
-                              },
-                            );
-                          },
+                              }
+
+                              final track = filteredTracks[index];
+                              return TrackTile(
+                                index: index,
+                                playlist: playlist,
+                                track: track,
+                                userPlaylist: false,
+                                onTap: () async {
+                                  await playLocalTracks(
+                                    ref,
+                                    sortedTracks,
+                                    currentTrack: track,
+                                  );
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-              loading: () => Expanded(
-                child: Skeletonizer(
-                  enabled: true,
-                  child: ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (context, index) => TrackTile(
-                      track: FakeData.track,
-                      index: index,
-                      playlist: playlist,
+                  );
+                },
+                loading: () => Expanded(
+                  child: Skeletonizer(
+                    enabled: true,
+                    child: ListView.builder(
+                      itemCount: 5,
+                      itemBuilder: (context, index) => TrackTile(
+                        track: FakeData.track,
+                        index: index,
+                        playlist: playlist,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              error: (error, stackTrace) =>
-                  Text(error.toString() + stackTrace.toString()),
-            )
-          ],
-        ) 
-      ),
+                error: (error, stackTrace) =>
+                    Text(error.toString() + stackTrace.toString()),
+              )
+            ],
+          )),
     );
   }
 }

@@ -45,7 +45,14 @@ class ProxyPlaylist {
   }
 
   bool containsTrack(TrackSimple track) {
-    return tracks.firstWhereOrNull((element) => element.id == track.id) != null;
+    return tracks.firstWhereOrNull((element) {
+          if (element is LocalTrack && track is LocalTrack) {
+            return element.path == track.path;
+          }
+
+          return element.id == track.id;
+        }) !=
+        null;
   }
 
   bool containsTracks(Iterable<TrackSimple> tracks) {
@@ -65,8 +72,8 @@ class ProxyPlaylist {
   /// Otherwise default super.toJson() is used
   static Map<String, dynamic> _makeAppropriateTrackJson(Track track) {
     return switch (track.runtimeType) {
-      LocalTrack() => track.toJson(),
-      SourcedTrack() => track.toJson(),
+      LocalTrack() => (track as LocalTrack).toJson(),
+      SourcedTrack() => (track as SourcedTrack).toJson(),
       _ => track.toJson(),
     };
   }

@@ -41,7 +41,21 @@
     "local_tab"
   ],
 
+  "eu": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
   "fa": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "fi": [
     "local_library",
     "add_library_location",
     "remove_library_location",
@@ -62,6 +76,13 @@
     "local_tab"
   ],
 
+  "id": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
   "it": [
     "local_library",
     "add_library_location",
@@ -70,6 +91,13 @@
   ],
 
   "ja": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "ka": [
     "local_library",
     "add_library_location",
     "remove_library_location",
