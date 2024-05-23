@@ -44,6 +44,10 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
           $enumDecodeNullable(_$SearchModeEnumMap, json['searchMode']) ??
               SearchMode.youtube,
       downloadLocation: json['downloadLocation'] as String? ?? "",
+      localLibraryLocation: (json['localLibraryLocation'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       pipedInstance:
           json['pipedInstance'] as String? ?? "https://pipedapi.kavin.rocks",
       themeMode: $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode']) ??
@@ -81,6 +85,7 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
       'recommendationMarket': _$MarketEnumMap[instance.recommendationMarket]!,
       'searchMode': _$SearchModeEnumMap[instance.searchMode]!,
       'downloadLocation': instance.downloadLocation,
+      'localLibraryLocation': instance.localLibraryLocation,
       'pipedInstance': instance.pipedInstance,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'audioSource': _$AudioSourceEnumMap[instance.audioSource]!,
