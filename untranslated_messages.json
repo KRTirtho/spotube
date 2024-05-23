@@ -1,89 +1,209 @@
 {
   "ar": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "bn": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "ca": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "cs": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "de": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "es": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
+    "stats"
+  ],
+
+  "eu": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "fa": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
+    "stats"
+  ],
+
+  "fi": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "fr": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "hi": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
+    "stats"
+  ],
+
+  "id": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "it": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "ja": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
+    "stats"
+  ],
+
+  "ka": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "ko": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "ne": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "nl": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "pl": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "pt": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "ru": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "th": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "tr": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "uk": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "vi": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ],
 
   "zh": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab",
     "stats"
   ]
 }

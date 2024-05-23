@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 
@@ -31,11 +30,17 @@ class VolumeSlider extends HookConsumerWidget {
           }
         }
       },
-      child: Slider(
-        min: 0,
-        max: 1,
-        value: value,
-        onChanged: onChanged,
+      child: SliderTheme(
+        data: const SliderThemeData(
+          showValueIndicator: ShowValueIndicator.always,
+        ),
+        child: Slider(
+          min: 0,
+          max: 1,
+          label: (value * 100).toStringAsFixed(0),
+          value: value,
+          onChanged: onChanged,
+        ),
       ),
     );
     return Row(

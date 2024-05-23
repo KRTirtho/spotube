@@ -12,6 +12,7 @@ import 'package:media_kit/media_kit.dart' as mk;
 
 import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 part 'audio_players_streams_mixin.dart';
 part 'audio_player_impl.dart';
@@ -29,12 +30,18 @@ class SpotubeMedia extends mk.Media {
               : "http://${InternetAddress.loopbackIPv4.address}:${PlaybackServer.port}/stream/${track.id}",
           extras: {
             ...?extras,
-            "track": track.toJson(),
+            "track": switch (track) {
+              LocalTrack() => track.toJson(),
+              SourcedTrack() => track.toJson(),
+              _ => track.toJson(),
+            },
           },
         );
 
   factory SpotubeMedia.fromMedia(mk.Media media) {
-    final track = Track.fromJson(media.extras?["track"]);
+    final track = media.uri.startsWith("http")
+        ? Track.fromJson(media.extras?["track"])
+        : LocalTrack.fromJson(media.extras?["track"]);
     return SpotubeMedia(track);
   }
 }

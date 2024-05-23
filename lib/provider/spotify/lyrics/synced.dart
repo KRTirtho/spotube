@@ -127,7 +127,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
       final token = await spotify.getCredentials();
       SubtitleSimple lyrics = await getSpotifyLyrics(token.accessToken);
 
-      if (lyrics.lyrics.isEmpty) {
+      if (lyrics.lyrics.isEmpty || lyrics.lyrics.length <= 5) {
         lyrics = await getLRCLibLyrics();
       }
 
