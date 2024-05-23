@@ -159,11 +159,11 @@ dependency_overrides:
     git:
       url: https://github.com/antler119/system_tray
       ref: dc7ef410d5cfec897edf060c1c4baff69f7c181c
-  media_kit_native_event_loop: # to fix "macro name must be an identifier"
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: media_kit_native_event_loop
-      ref: main
+  # media_kit_native_event_loop: # to fix "macro name must be an identifier"
+  #   git:
+  #     url: https://github.com/media-kit/media-kit
+  #     path: media_kit_native_event_loop
+  #     ref: main
 
 flutter:
   generate: true

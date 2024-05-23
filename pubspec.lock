@@ -1455,13 +1455,12 @@ packages:
     source: hosted
     version: "1.0.9"
   media_kit_native_event_loop:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: media_kit_native_event_loop
-      ref: main
-      resolved-ref: "285f7919bbf4a7d89a62615b14a3766a171ad575"
-      url: "https://github.com/media-kit/media-kit"
-    source: git
+      name: media_kit_native_event_loop
+      sha256: a605cf185499d14d58935b8784955a92a4bf0ff4e19a23de3d17a9106303930e
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.8"
   menu_base:
     dependency: transitive
