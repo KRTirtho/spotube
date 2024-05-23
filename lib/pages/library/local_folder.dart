@@ -16,6 +16,7 @@ import 'package:spotube/components/shared/track_tile/track_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 

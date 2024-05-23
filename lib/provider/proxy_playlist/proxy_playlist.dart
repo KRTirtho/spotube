@@ -71,8 +71,10 @@ class ProxyPlaylist {
   /// To make sure proper instance method is used for JSON serialization
   /// Otherwise default super.toJson() is used
   static Map<String, dynamic> _makeAppropriateTrackJson(Track track) {
-    return switch (track.runtimeType) {
+    return switch (track) {
+      // ignore: unnecessary_cast
       LocalTrack() => (track as LocalTrack).toJson(),
+      // ignore: unnecessary_cast
       SourcedTrack() => (track as SourcedTrack).toJson(),
       _ => track.toJson(),
     };
