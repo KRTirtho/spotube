@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,12 +14,13 @@ import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
-import 'package:spotube/hooks/configurators/use_update_checker.dart';
 import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:spotube/utils/platform.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 const rootPaths = {
   "/": 0,
@@ -38,7 +38,6 @@ class RootApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final isMounted = useIsMounted();
     final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -47,6 +46,8 @@ class RootApp extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        ServiceUtils.checkForUpdates(context, ref);
+
         final sharedPreferences = await SharedPreferences.getInstance();
 
         if (sharedPreferences.getBool(kIsUsingEncryption) == false &&
@@ -129,7 +130,7 @@ class RootApp extends HookConsumerWidget {
 
     useEffect(() {
       downloader.onFileExists = (track) async {
-        if (!isMounted()) return false;
+        if (!context.mounted) return false;
 
         if (!showingDialogCompleter.value.isCompleted) {
           await showingDialogCompleter.value.future;
@@ -161,7 +162,6 @@ class RootApp extends HookConsumerWidget {
     }, [downloader]);
 
     // checks for latest version of the application
-    useUpdateChecker(ref);
 
     useEndlessPlayback(ref);
 
@@ -207,7 +207,7 @@ class RootApp extends HookConsumerWidget {
         ),
         extendBody: true,
         drawerScrimColor: Colors.transparent,
-        endDrawer: DesktopTools.platform.isDesktop
+        endDrawer: kIsDesktop
             ? Container(
                 constraints: const BoxConstraints(maxWidth: 800),
                 decoration: BoxDecoration(

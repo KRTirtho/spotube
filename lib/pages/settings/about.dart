@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -70,6 +71,13 @@ class AboutSpotube extends HookConsumerWidget {
                             Text(context.l10n.version),
                             colon,
                             Text("v${packageInfo.version}")
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(context.l10n.channel),
+                            colon,
+                            Text(Env.releaseChannel.name)
                           ],
                         ),
                         TableRow(

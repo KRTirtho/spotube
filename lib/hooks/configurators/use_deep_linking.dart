@@ -7,7 +7,7 @@ import 'package:spotube/collections/routes.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:spotube/utils/platform.dart';
 
 final appLinks = AppLinks();
 final linkStream = appLinks.allStringLinkStream.asBroadcastStream();
@@ -53,7 +53,7 @@ void useDeepLinking(WidgetRef ref) {
 
     StreamSubscription? mediaStream;
 
-    if (DesktopTools.platform.isMobile) {
+    if (kIsMobile) {
       FlutterSharingIntent.instance.getInitialSharing().then(uriListener);
 
       mediaStream =

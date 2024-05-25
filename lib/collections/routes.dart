@@ -14,6 +14,7 @@ import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
+import 'package:spotube/pages/library/local_folder.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate_result.dart';
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
@@ -113,6 +114,17 @@ final routerProvider = Provider((ref) {
                         ),
                       ),
                     ]),
+                GoRoute(
+                  path: "local",
+                  pageBuilder: (context, state) {
+                    assert(state.extra is String);
+                    return SpotubePage(
+                      child: LocalLibraryPage(state.extra as String,
+                        isDownloads: state.uri.queryParameters["downloads"] != null
+                      ),
+                    );
+                  },
+                ),
               ]),
           GoRoute(
             path: "/lyrics",

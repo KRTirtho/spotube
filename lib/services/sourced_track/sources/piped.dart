@@ -163,7 +163,7 @@ class PipedSourcedTrack extends SourcedTrack {
     final PipedSearchResult(items: searchResults) = await pipedClient.search(
       query,
       preference.searchMode == SearchMode.youtube
-          ? PipedFilter.videos
+          ? PipedFilter.video
           : PipedFilter.musicSongs,
     );
 

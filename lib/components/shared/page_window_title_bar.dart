@@ -7,7 +7,8 @@ import 'package:titlebar_buttons/titlebar_buttons.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+
+import 'package:window_manager/window_manager.dart';
 
 class PageWindowTitleBar extends StatefulHookConsumerWidget
     implements PreferredSizeWidget {
@@ -89,7 +90,7 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
     final systemTitleBar =
         ref.read(userPreferencesProvider.select((s) => s.systemTitleBar));
     if (kIsDesktop && !systemTitleBar) {
-      DesktopTools.window.startDragging();
+      windowManager.startDragging();
     }
   }
 
@@ -107,11 +108,7 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
 
           return SliverPadding(
             padding: EdgeInsets.only(
-              left: DesktopTools.platform.isMacOS &&
-                      hasFullscreen &&
-                      hasLeadingOrCanPop
-                  ? 65
-                  : 0,
+              left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0,
             ),
             sliver: SliverAppBar(
               leading: widget.leading,
@@ -149,11 +146,7 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
         onVerticalDragStart: onDrag,
         child: Padding(
           padding: EdgeInsets.only(
-            left: DesktopTools.platform.isMacOS &&
-                    hasFullscreen &&
-                    hasLeadingOrCanPop
-                ? 65
-                : 0,
+            left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0,
           ),
           child: AppBar(
             leading: widget.leading,
@@ -193,12 +186,12 @@ class WindowTitleBarButtons extends HookConsumerWidget {
     const type = ThemeType.auto;
 
     Future<void> onClose() async {
-      await DesktopTools.window.close();
+      await windowManager.close();
     }
 
     useEffect(() {
       if (kIsDesktop) {
-        DesktopTools.window.isMaximized().then((value) {
+        windowManager.isMaximized().then((value) {
           isMaximized.value = value;
         });
       }
@@ -235,14 +228,14 @@ class WindowTitleBarButtons extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MinimizeWindowButton(
-              onPressed: DesktopTools.window.minimize,
+              onPressed: windowManager.minimize,
               colors: colors,
             ),
             if (isMaximized.value != true)
               MaximizeWindowButton(
                 colors: colors,
                 onPressed: () {
-                  DesktopTools.window.maximize();
+                  windowManager.maximize();
                   isMaximized.value = true;
                 },
               )
@@ -250,7 +243,7 @@ class WindowTitleBarButtons extends HookConsumerWidget {
               RestoreWindowButton(
                 colors: colors,
                 onPressed: () {
-                  DesktopTools.window.unmaximize();
+                  windowManager.unmaximize();
                   isMaximized.value = false;
                 },
               ),
@@ -270,16 +263,16 @@ class WindowTitleBarButtons extends HookConsumerWidget {
         children: [
           DecoratedMinimizeButton(
             type: type,
-            onPressed: DesktopTools.window.minimize,
+            onPressed: windowManager.minimize,
           ),
           DecoratedMaximizeButton(
             type: type,
             onPressed: () async {
-              if (await DesktopTools.window.isMaximized()) {
-                await DesktopTools.window.unmaximize();
+              if (await windowManager.isMaximized()) {
+                await windowManager.unmaximize();
                 isMaximized.value = false;
               } else {
-                await DesktopTools.window.maximize();
+                await windowManager.maximize();
                 isMaximized.value = true;
               }
             },

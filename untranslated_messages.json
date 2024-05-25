@@ -1,1 +1,183 @@
-{}
+{
+  "ar": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "bn": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "ca": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "cs": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "de": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "es": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "eu": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "fa": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "fi": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "fr": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "hi": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "id": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "it": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "ja": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "ka": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "ko": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "ne": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "nl": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "pl": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "pt": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "ru": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "th": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "tr": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "uk": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "vi": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ],
+
+  "zh": [
+    "local_library",
+    "add_library_location",
+    "remove_library_location",
+    "local_tab"
+  ]
+}

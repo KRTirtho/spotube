@@ -1,7 +1,12 @@
 import 'package:envied/envied.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:spotube/utils/platform.dart';
 
 part 'env.g.dart';
+
+enum ReleaseChannel {
+  nightly,
+  stable,
+}
 
 @Envied(obfuscate: true, requireEnvFile: true, path: ".env")
 abstract class Env {
@@ -25,8 +30,15 @@ abstract class Env {
   @EnviedField(varName: 'ENABLE_UPDATE_CHECK', defaultValue: "1")
   static final String _enableUpdateChecker = _Env._enableUpdateChecker;
 
+  @EnviedField(varName: "RELEASE_CHANNEL", defaultValue: "nightly")
+  static final String _releaseChannel = _Env._releaseChannel;
+
+  static ReleaseChannel get releaseChannel => _releaseChannel == "stable"
+      ? ReleaseChannel.stable
+      : ReleaseChannel.nightly;
+
   static bool get enableUpdateChecker =>
-      DesktopTools.platform.isFlatpak || _enableUpdateChecker == "1";
+      kIsFlatpak || _enableUpdateChecker == "1";
 
   static String discordAppId = "1176718791388975124";
 }

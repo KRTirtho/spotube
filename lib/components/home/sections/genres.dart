@@ -54,7 +54,7 @@ class HomeGenresSection extends HookConsumerWidget {
                     },
                     icon: const Icon(SpotubeIcons.angleRight),
                     label: Text(
-                      "Browse All",
+                      context.l10n.browse_all,
                       style: textTheme.bodyMedium?.copyWith(
                         color: colorScheme.secondary,
                       ),

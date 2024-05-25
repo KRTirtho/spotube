@@ -20,8 +20,6 @@ class Waypoint extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMounted = useIsMounted();
-
     useEffect(() {
       if (isGrid) {
         return null;
@@ -32,19 +30,19 @@ class Waypoint extends HookWidget {
 
         // scrollController fetches the next paginated data when the current
         // position of the user on the screen has surpassed
-        if (controller.position.pixels >= nextPageTrigger && isMounted()) {
+        if (controller.position.pixels >= nextPageTrigger && context.mounted) {
           await onTouchEdge?.call();
         }
       }
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (controller.hasClients && isMounted()) {
+        if (controller.hasClients && context.mounted) {
           listener();
           controller.addListener(listener);
         }
       });
       return () => controller.removeListener(listener);
-    }, [controller, onTouchEdge, isMounted]);
+    }, [controller, onTouchEdge]);
 
     if (isGrid) {
       return VisibilityDetector(
