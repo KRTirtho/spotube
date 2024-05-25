@@ -96,6 +96,24 @@ class SearchPage extends HookConsumerWidget {
                       vertical: 10,
                     ),
                     color: theme.scaffoldBackgroundColor,
+master
+                    child: TextField(
+                      autofocus: queries
+                              .none((s) => s.hasPageData && !s.hasPageError) &&
+                          !kIsMobile,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(SpotubeIcons.search),
+                        hintText: "${context.l10n.search}...",
+                      ),
+                      onChanged: (value) async {
+                        ref.read(searchTermStateProvider.notifier).state =
+                            value;
+                        // Fl-Query is too fast, so we need to delay the search
+                        // to prevent spamming the API :)
+                        Timer(const Duration(milliseconds: 50), () {
+                          onSearch();
+                        });
+
                     child: SearchAnchor(
                       searchController: controller,
                       viewBuilder: (_) => HookBuilder(builder: (context) {
@@ -176,6 +194,7 @@ class SearchPage extends HookConsumerWidget {
                           onTap: controller.openView,
                           onChanged: (_) => controller.openView(),
                         );
+master
                       },
                     ),
                   ),
