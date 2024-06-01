@@ -2,13 +2,19 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 import 'package:path/path.dart';
 import 'package:pub_api_client/pub_api_client.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
 class CreditsCommand extends Command {
+  final dio = Dio(
+    BaseOptions(
+      responseType: ResponseType.plain,
+    ),
+  );
+
   @override
   String get description => "Generate credits for used Library's authors";
 
@@ -66,11 +72,11 @@ class CreditsCommand extends Command {
     final gitPubspecs = await Future.wait(
       gitDeps.map(
         (d) {
-          Pubspec parser(res) {
+          Pubspec parser(Response res) {
             try {
-              return Pubspec.parse(res.body);
+              return Pubspec.parse(res.data);
             } catch (e) {
-              final document = parse(res.body);
+              final document = parse(res.data);
               final pre = document.querySelector('pre');
               if (pre == null) {
                 stdout.writeln(d.toString());
@@ -80,8 +86,9 @@ class CreditsCommand extends Command {
             }
           }
 
-          return get(Uri.parse(d.value)).then(parser).catchError(
-                (_) => get(Uri.parse(d.value.replaceFirst('/main', '/master')))
+          return dio.get(d.value).then(parser).catchError(
+                (_) => dio
+                    .get(d.value.replaceFirst('/main', '/master'))
                     .then(parser),
               );
         },
