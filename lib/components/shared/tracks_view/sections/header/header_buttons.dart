@@ -47,12 +47,12 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
       try {
         isLoading.value = true;
 
-        final allTracks = await props.pagination.onFetchAll();
-
+        final initialTracks = props.tracks;
         if (!context.mounted) return;
 
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
         if (isRemoteDevice) {
+          final allTracks = await props.pagination.onFetchAll();
           final remotePlayback = ref.read(connectProvider.notifier);
           await remotePlayback.load(
             props.collection is AlbumSimple
@@ -69,9 +69,9 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
           await remotePlayback.setShuffle(true);
         } else {
           await playlistNotifier.load(
-            allTracks,
+            initialTracks,
             autoPlay: true,
-            initialIndex: Random().nextInt(allTracks.length),
+            initialIndex: Random().nextInt(initialTracks.length),
           );
           await audioPlayer.setShuffle(true);
           playlistNotifier.addCollection(props.collectionId);
@@ -80,6 +80,12 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
           } else {
             historyNotifier.addPlaylists([props.collection as PlaylistSimple]);
           }
+
+          final allTracks = await props.pagination.onFetchAll();
+
+          await playlistNotifier.addTracks(
+            allTracks.sublist(initialTracks.length),
+          );
         }
       } finally {
         isLoading.value = false;
@@ -90,12 +96,13 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
       try {
         isLoading.value = true;
 
-        final allTracks = await props.pagination.onFetchAll();
+        final initialTracks = props.tracks;
 
         if (!context.mounted) return;
 
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
         if (isRemoteDevice) {
+          final allTracks = await props.pagination.onFetchAll();
           final remotePlayback = ref.read(connectProvider.notifier);
           await remotePlayback.load(
             props.collection is AlbumSimple
@@ -109,13 +116,19 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
                   ),
           );
         } else {
-          await playlistNotifier.load(allTracks, autoPlay: true);
+          await playlistNotifier.load(initialTracks, autoPlay: true);
           playlistNotifier.addCollection(props.collectionId);
           if (props.collection is AlbumSimple) {
             historyNotifier.addAlbums([props.collection as AlbumSimple]);
           } else {
             historyNotifier.addPlaylists([props.collection as PlaylistSimple]);
           }
+
+          final allTracks = await props.pagination.onFetchAll();
+
+          await playlistNotifier.addTracks(
+            allTracks.sublist(initialTracks.length),
+          );
         }
       } finally {
         isLoading.value = false;
