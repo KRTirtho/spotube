@@ -52,8 +52,9 @@ class AuthenticationCredentials {
           headers: {
             "Cookie": spDc ?? "",
             "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
           },
+          validateStatus: (status) => true,
         ),
       );
       final body = res.data;
@@ -65,7 +66,7 @@ class AuthenticationCredentials {
       }
 
       return AuthenticationCredentials(
-        cookie: "${res.headers["set-cookie"]}; $spDc",
+        cookie: "${res.headers["set-cookie"]?.join(";")}; $spDc",
         accessToken: body['accessToken'],
         expiration: DateTime.fromMillisecondsSinceEpoch(
           body['accessTokenExpirationTimestampMs'],

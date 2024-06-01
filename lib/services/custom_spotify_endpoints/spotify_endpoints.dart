@@ -181,35 +181,36 @@ class CustomSpotifyEndpoints {
       'referer': 'https://open.spotify.com/'
     };
     final response = await _client.getUri(
-        Uri(
-          scheme: "https",
-          host: "api-partner.spotify.com",
-          path: "/pathfinder/v1/query",
-          queryParameters: {
-            "operationName": "home",
-            "variables": jsonEncode({
-              "timeZone": tz.local.name,
-              "sp_t": spTCookie,
-              "country": country.name,
-              "facet": null,
-              "sectionItemsLimit": 10
-            }),
-            "extensions": jsonEncode(
-              {
-                "persistedQuery": {
-                  "version": 1,
+      Uri(
+        scheme: "https",
+        host: "api-partner.spotify.com",
+        path: "/pathfinder/v1/query",
+        queryParameters: {
+          "operationName": "home",
+          "variables": jsonEncode({
+            "timeZone": tz.local.name,
+            "sp_t": spTCookie,
+            "country": country.name,
+            "facet": null,
+            "sectionItemsLimit": 10
+          }),
+          "extensions": jsonEncode(
+            {
+              "persistedQuery": {
+                "version": 1,
 
-                  /// GraphQL persisted Query hash
-                  /// This can change overtime. We've to lookout for it
-                  /// Docs: https://www.apollographql.com/docs/graphos/operations/persisted-queries/
-                  "sha256Hash":
-                      "eb3fba2d388cf4fc4d696b1757a58584e9538a3b515ea742e9cc9465807340be",
-                }
-              },
-            ),
-          },
-        ),
-        options: Options(headers: headers));
+                /// GraphQL persisted Query hash
+                /// This can change overtime. We've to lookout for it
+                /// Docs: https://www.apollographql.com/docs/graphos/operations/persisted-queries/
+                "sha256Hash":
+                    "eb3fba2d388cf4fc4d696b1757a58584e9538a3b515ea742e9cc9465807340be",
+              }
+            },
+          ),
+        },
+      ),
+      options: Options(headers: headers),
+    );
 
     final data = SpotifyHomeFeed.fromJson(
       transformHomeFeedJsonMap(response.data),
