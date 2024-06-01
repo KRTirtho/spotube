@@ -66,6 +66,7 @@ jobs:
       - uses: subosito/flutter-action@v2.12.0
         with:
           cache: true
+          cache-key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
           flutter-version: ${{ env.FLUTTER_VERSION  }}
       - name: Setup Java
         if: ${{matrix.platform == 'android'}}

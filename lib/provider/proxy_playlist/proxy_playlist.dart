@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 

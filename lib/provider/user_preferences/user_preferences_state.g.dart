@@ -6,8 +6,7 @@ part of 'user_preferences_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$UserPreferencesImpl _$$UserPreferencesImplFromJson(
-        Map<String, dynamic> json) =>
+_$UserPreferencesImpl _$$UserPreferencesImplFromJson(Map json) =>
     _$UserPreferencesImpl(
       audioQuality:
           $enumDecodeNullable(_$SourceQualitiesEnumMap, json['audioQuality']) ??

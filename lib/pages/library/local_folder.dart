@@ -21,6 +21,8 @@ import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LocalLibraryPage extends HookConsumerWidget {
+  static const name = "local_library_page";
+
   final String location;
   final bool isDownloads;
   const LocalLibraryPage(this.location, {super.key, this.isDownloads = false});

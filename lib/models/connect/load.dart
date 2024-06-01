@@ -6,14 +6,27 @@ List<Map<String, dynamic>> _tracksJson(List<Track> tracks) {
 
 @freezed
 class WebSocketLoadEventData with _$WebSocketLoadEventData {
-  factory WebSocketLoadEventData({
+  const WebSocketLoadEventData._();
+
+  factory WebSocketLoadEventData.playlist({
     @JsonKey(name: 'tracks', toJson: _tracksJson) required List<Track> tracks,
-    String? collectionId,
+    PlaylistSimple? collection,
     int? initialIndex,
-  }) = _WebSocketLoadEventData;
+  }) = WebSocketLoadEventDataPlaylist;
+
+  factory WebSocketLoadEventData.album({
+    @JsonKey(name: 'tracks', toJson: _tracksJson) required List<Track> tracks,
+    AlbumSimple? collection,
+    int? initialIndex,
+  }) = WebSocketLoadEventDataAlbum;
 
   factory WebSocketLoadEventData.fromJson(Map<String, dynamic> json) =>
       _$WebSocketLoadEventDataFromJson(json);
+
+  String? get collectionId => when(
+        playlist: (tracks, collection, _) => collection?.id,
+        album: (tracks, collection, _) => collection?.id,
+      );
 }
 
 class WebSocketLoadEvent extends WebSocketEvent<WebSocketLoadEventData> {

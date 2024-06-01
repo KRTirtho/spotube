@@ -76,7 +76,7 @@ class SearchTracksSection extends HookConsumerWidget {
 
                     if (shouldPlay) {
                       await remotePlayback.load(
-                        WebSocketLoadEventData(
+                        WebSocketLoadEventData.playlist(
                           tracks: [track],
                         ),
                       );

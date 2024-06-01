@@ -6,7 +6,7 @@ part of 'source_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SourceInfo _$SourceInfoFromJson(Map<String, dynamic> json) => SourceInfo(
+SourceInfo _$SourceInfoFromJson(Map json) => SourceInfo(
       id: json['id'] as String,
       title: json['title'] as String,
       artist: json['artist'] as String,

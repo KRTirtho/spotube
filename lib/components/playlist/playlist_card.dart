@@ -6,7 +6,9 @@ import 'package:spotube/components/shared/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/connect/connect.dart';
+import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -22,6 +24,8 @@ class PlaylistCard extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final playlistQueue = ref.watch(proxyPlaylistProvider);
     final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final historyNotifier = ref.read(playbackHistoryProvider.notifier);
+
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     bool isPlaylistPlaying = useMemoized(
@@ -55,9 +59,12 @@ class PlaylistCard extends HookConsumerWidget {
       isOwner: playlist.owner?.id == me.asData?.value.id &&
           me.asData?.value.id != null,
       onTap: () {
-        ServiceUtils.push(
+        ServiceUtils.pushNamed(
           context,
-          "/playlist/${playlist.id}",
+          PlaylistPage.name,
+          pathParameters: {
+            "id": playlist.id!,
+          },
           extra: playlist,
         );
       },
@@ -78,14 +85,15 @@ class PlaylistCard extends HookConsumerWidget {
           if (isRemoteDevice) {
             final remotePlayback = ref.read(connectProvider.notifier);
             await remotePlayback.load(
-              WebSocketLoadEventData(
+              WebSocketLoadEventData.playlist(
                 tracks: fetchedTracks,
-                collectionId: playlist.id!,
+                collection: playlist,
               ),
             );
           } else {
             await playlistNotifier.load(fetchedTracks, autoPlay: true);
             playlistNotifier.addCollection(playlist.id!);
+            historyNotifier.addPlaylists([playlist]);
           }
         } finally {
           if (context.mounted) {
@@ -104,6 +112,7 @@ class PlaylistCard extends HookConsumerWidget {
 
           playlistNotifier.addTracks(fetchedTracks);
           playlistNotifier.addCollection(playlist.id!);
+          historyNotifier.addPlaylists([playlist]);
           if (context.mounted) {
             final snackbar = SnackBar(
               content: Text("Added ${fetchedTracks.length} tracks to queue"),

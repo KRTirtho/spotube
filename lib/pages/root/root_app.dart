@@ -14,6 +14,7 @@ import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/components/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
+import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
@@ -21,13 +22,6 @@ import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
-
-const rootPaths = {
-  "/": 0,
-  "/search": 1,
-  "/library": 2,
-  "/lyrics": 3,
-};
 
 class RootApp extends HookConsumerWidget {
   final Widget child;
@@ -42,7 +36,6 @@ class RootApp extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final theme = Theme.of(context);
-    final location = GoRouterState.of(context).matchedLocation;
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -179,32 +172,18 @@ class RootApp extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    void onSelectIndexChanged(int d) {
-      final invertedRouteMap =
-          rootPaths.map((key, value) => MapEntry(value, key));
-
-      if (context.mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          GoRouter.of(context).go(invertedRouteMap[d]!);
-        });
-      }
-    }
-
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        if (rootPaths[location] != 0) {
-          onSelectIndexChanged(0);
+        final routerState = GoRouterState.of(context);
+        if (routerState.matchedLocation != "/") {
+          context.goNamed(HomePage.name);
           return false;
         }
         return true;
       },
       child: Scaffold(
-        body: Sidebar(
-          selectedIndex: rootPaths[location],
-          onSelectedIndexChanged: onSelectIndexChanged,
-          child: child,
-        ),
+        body: Sidebar(child: child),
         extendBody: true,
         drawerScrimColor: Colors.transparent,
         endDrawer: kIsDesktop
@@ -238,10 +217,7 @@ class RootApp extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             BottomPlayer(),
-            SpotubeNavigationBar(
-              selectedIndex: rootPaths[location],
-              onSelectedIndexChanged: onSelectIndexChanged,
-            ),
+            const SpotubeNavigationBar(),
           ],
         ),
       ),

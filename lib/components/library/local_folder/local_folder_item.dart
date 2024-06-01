@@ -11,6 +11,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
+import 'package:spotube/pages/library/local_folder.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -57,14 +58,13 @@ class LocalFolderItem extends HookConsumerWidget {
 
     return InkWell(
       onTap: () {
-        if (isDownloadFolder) {
-          context.go("/library/local?downloads=1", extra: folder);
-        } else {
-          context.go(
-            "/library/local",
-            extra: folder,
-          );
-        }
+        context.goNamed(
+          LocalLibraryPage.name,
+          queryParameters: {
+            if (isDownloadFolder) "downloads": 1,
+          },
+          extra: folder,
+        );
       },
       borderRadius: BorderRadius.circular(8),
       child: Ink(

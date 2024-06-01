@@ -3,55 +3,54 @@ import 'dart:ui';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/side_bar_tiles.dart';
-import 'package:spotube/components/root/sidebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 final navigationPanelHeight = StateProvider<double>((ref) => 50);
 
 class SpotubeNavigationBar extends HookConsumerWidget {
-  final int? selectedIndex;
-  final void Function(int) onSelectedIndexChanged;
-
   const SpotubeNavigationBar({
-    required this.selectedIndex,
-    required this.onSelectedIndexChanged,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
+    final routerState = GoRouterState.of(context);
+
     final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
     final mediaQuery = MediaQuery.of(context);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
-
-    final insideSelectedIndex = useState<int>(selectedIndex ?? 0);
 
     final buttonColor = useBrightnessValue(
       theme.colorScheme.inversePrimary,
       theme.colorScheme.primary.withOpacity(0.2),
     );
 
-    final navbarTileList =
-        useMemoized(() => getNavbarTileList(context.l10n), [context.l10n]);
+    final navbarTileList = useMemoized(
+      () => getNavbarTileList(context.l10n),
+      [context.l10n],
+    );
 
     final panelHeight = ref.watch(navigationPanelHeight);
 
-    useEffect(() {
-      if (selectedIndex != null) {
-        insideSelectedIndex.value = selectedIndex!;
-      }
-      return null;
-    }, [selectedIndex]);
+    final selectedIndex = useMemoized(() {
+      final index = navbarTileList.indexWhere(
+        (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
+      );
+
+      return index == -1 ? 0 : index;
+    }, [navbarTileList, routerState.matchedLocation]);
 
     if (layoutMode == LayoutMode.extended ||
         (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||
@@ -91,14 +90,9 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                 });
               },
             ).toList(),
-            index: insideSelectedIndex.value,
+            index: selectedIndex,
             onTap: (i) {
-              insideSelectedIndex.value = i;
-              if (navbarTileList[i].id == "settings") {
-                Sidebar.goToSettings(context);
-                return;
-              }
-              onSelectedIndexChanged(i);
+              ServiceUtils.navigateNamed(context, navbarTileList[i].name);
             },
           ),
         ),

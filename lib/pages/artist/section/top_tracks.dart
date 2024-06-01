@@ -52,8 +52,9 @@ class ArtistPageTopTracks extends HookConsumerWidget {
 
         if (!isPlaylistPlaying) {
           await remotePlayback.load(
-            WebSocketLoadEventData(
+            WebSocketLoadEventData.playlist(
               tracks: tracks,
+              collection: null,
               initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
             ),
           );

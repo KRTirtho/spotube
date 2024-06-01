@@ -5,10 +5,13 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/connect/local_devices.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/connect/control/control.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class ConnectPage extends HookConsumerWidget {
+  static const name = "connect";
+
   const ConnectPage({super.key});
 
   @override
@@ -65,9 +68,9 @@ class ConnectPage extends HookConsumerWidget {
                       selected: selected,
                       onTap: () {
                         if (selected) {
-                          ServiceUtils.push(
+                          ServiceUtils.pushNamed(
                             context,
-                            "/connect/control",
+                            ConnectControlPage.name,
                           );
                         } else {
                           connectClientsNotifier.resolveService(device);

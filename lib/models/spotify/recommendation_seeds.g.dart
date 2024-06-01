@@ -6,8 +6,7 @@ part of 'recommendation_seeds.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$RecommendationSeedsImpl _$$RecommendationSeedsImplFromJson(
-        Map<String, dynamic> json) =>
+_$RecommendationSeedsImpl _$$RecommendationSeedsImplFromJson(Map json) =>
     _$RecommendationSeedsImpl(
       acousticness: json['acousticness'] as num?,
       danceability: json['danceability'] as num?,

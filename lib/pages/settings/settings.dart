@@ -16,6 +16,8 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/utils/platform.dart';
 
 class SettingsPage extends HookConsumerWidget {
+  static const name = "settings";
+
   const SettingsPage({super.key});
 
   @override
@@ -29,6 +31,7 @@ class SettingsPage extends HookConsumerWidget {
         appBar: PageWindowTitleBar(
           title: Text(context.l10n.settings),
           centerTitle: true,
+          automaticallyImplyLeading: true,
         ),
         body: Scrollbar(
           controller: controller,

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';

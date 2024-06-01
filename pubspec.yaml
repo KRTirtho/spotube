@@ -115,7 +115,10 @@ dependencies:
   flutter_sharing_intent: ^1.1.0
   flutter_broadcasts: ^0.4.0
   freezed_annotation: ^2.4.1
-  spotify: ^0.13.5
+  spotify:
+    git:
+      url: https://github.com/KRTirtho/spotify-dart.git
+      ref: fix/explicit-to-json
   bonsoir: ^5.1.9
   shelf: ^1.4.1
   shelf_router: ^1.1.4
@@ -156,11 +159,11 @@ dependency_overrides:
     git:
       url: https://github.com/antler119/system_tray
       ref: dc7ef410d5cfec897edf060c1c4baff69f7c181c
-  media_kit_native_event_loop: # to fix "macro name must be an identifier"
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: media_kit_native_event_loop
-      ref: main
+  # media_kit_native_event_loop: # to fix "macro name must be an identifier"
+  #   git:
+  #     url: https://github.com/media-kit/media-kit
+  #     path: media_kit_native_event_loop
+  #     ref: main
 
 flutter:
   generate: true

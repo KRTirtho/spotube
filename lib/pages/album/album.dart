@@ -8,6 +8,8 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class AlbumPage extends HookConsumerWidget {
+  static const name = "album";
+
   final AlbumSimple album;
   const AlbumPage({
     super.key,
@@ -22,7 +24,7 @@ class AlbumPage extends HookConsumerWidget {
     final isSavedAlbum = ref.watch(albumsIsSavedProvider(album.id!));
 
     return InheritedTrackView(
-      collectionId: album.id!,
+      collection: album,
       image: album.images.asUrlString(
         placeholder: ImagePlaceholder.albumArt,
       ),
