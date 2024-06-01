@@ -75,7 +75,7 @@ class CustomSpotifyEndpoints {
     );
 
     if (res.statusCode == 200) {
-      return jsonDecode(res.body);
+      return jsonDecode(utf8.decode(res.bodyBytes));
     } else {
       throw Exception(
         '[CustomSpotifyEndpoints.getView]: Failed to get view'
@@ -96,7 +96,7 @@ class CustomSpotifyEndpoints {
     );
 
     if (res.statusCode == 200) {
-      final body = jsonDecode(res.body);
+      final body = jsonDecode(utf8.decode(res.bodyBytes));
       return List<String>.from(body["genres"] ?? []);
     } else {
       throw Exception(
@@ -160,7 +160,7 @@ class CustomSpotifyEndpoints {
         "accept": "application/json",
       },
     );
-    final result = jsonDecode(res.body);
+    final result = jsonDecode(utf8.decode(res.bodyBytes));
     return List.castFrom<dynamic, Track>(
       result["tracks"].map((track) => Track.fromJson(track)).toList(),
     );
@@ -175,7 +175,7 @@ class CustomSpotifyEndpoints {
         "accept": "application/json",
       },
     );
-    return SpotifyFriends.fromJson(jsonDecode(res.body));
+    return SpotifyFriends.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
   }
 
   Future<SpotifyHomeFeed> getHomeFeed({
@@ -232,7 +232,7 @@ class CustomSpotifyEndpoints {
 
     final data = SpotifyHomeFeed.fromJson(
       transformHomeFeedJsonMap(
-        jsonDecode(response.body),
+        jsonDecode(utf8.decode(response.bodyBytes)),
       ),
     );
 
@@ -293,7 +293,8 @@ class CustomSpotifyEndpoints {
 
     final data = SpotifyHomeFeedSection.fromJson(
       transformSectionItemJsonMap(
-        jsonDecode(response.body)["data"]["homeSections"]["sections"][0],
+        jsonDecode(utf8.decode(response.bodyBytes))["data"]["homeSections"]
+            ["sections"][0],
       ),
     );
 

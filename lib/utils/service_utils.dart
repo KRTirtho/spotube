@@ -115,7 +115,7 @@ abstract class ServiceUtils {
       Uri.parse(authHeader ? reqUrl : "$reqUrl&access_token=$apiKey"),
       headers: authHeader ? headers : null,
     );
-    Map data = jsonDecode(response.body)["response"];
+    Map data = jsonDecode(utf8.decode(response.bodyBytes))["response"];
     if (data["hits"]?.length == 0) return null;
     List results = data["hits"]?.map((val) {
       return <String, dynamic>{

@@ -30,7 +30,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
       );
     }
     final linesRaw = Map.castFrom<dynamic, dynamic, String, dynamic>(
-      jsonDecode(res.body),
+      jsonDecode(utf8.decode(res.bodyBytes)),
     )["lyrics"]?["lines"] as List?;
 
     final lines = linesRaw?.map((line) {
@@ -83,7 +83,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
       );
     }
 
-    final json = jsonDecode(res.body) as Map<String, dynamic>;
+    final json = jsonDecode(utf8.decode(res.bodyBytes)) as Map<String, dynamic>;
 
     final syncedLyricsRaw = json["syncedLyrics"] as String?;
     final syncedLyrics = syncedLyricsRaw?.isNotEmpty == true
