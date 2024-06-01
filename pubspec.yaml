@@ -55,7 +55,6 @@ dependencies:
   hive_flutter: ^1.1.0
   hooks_riverpod: ^2.5.1
   html: ^0.15.1
-  http: ^1.2.0
   image_picker: ^1.1.0
   intl: ^0.18.0
   introduction_screen: ^3.1.14
@@ -131,6 +130,7 @@ dependencies:
   crypto: ^3.0.3
   local_notifier: ^0.1.6
   tray_manager: ^0.2.2
+  http: ^1.2.1
 
 dev_dependencies:
   build_runner: ^2.4.9
