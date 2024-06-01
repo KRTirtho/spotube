@@ -61,7 +61,7 @@ class LocalFolderItem extends HookConsumerWidget {
         context.goNamed(
           LocalLibraryPage.name,
           queryParameters: {
-            if (isDownloadFolder) "downloads": 1,
+            if (isDownloadFolder) "downloads": "true",
           },
           extra: folder,
         );
