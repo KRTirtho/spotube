@@ -1,6 +1,5 @@
 import 'package:catcher_2/catcher_2.dart';
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,19 +133,7 @@ Future<void> main(List<String> rawArgs) async {
     ),
     runAppFunction: () {
       runApp(
-        ProviderScope(
-          child: DevicePreview(
-            availableLocales: L10n.all,
-            enabled: false,
-            data: const DevicePreviewData(
-              isEnabled: false,
-              orientation: Orientation.portrait,
-            ),
-            builder: (context) {
-              return const Spotube();
-            },
-          ),
-        ),
+        const ProviderScope(child: Spotube()),
       );
     },
   );
@@ -230,10 +217,8 @@ class SpotubeState extends ConsumerState<Spotube> {
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       builder: (context, child) {
-        return DevicePreview.appBuilder(
-          context,
-          kIsDesktop && !kIsMacOS ? DragToResizeArea(child: child!) : child,
-        );
+        if (kIsDesktop && !kIsMacOS) return DragToResizeArea(child: child!);
+        return child!;
       },
       themeMode: themeMode,
       theme: lightTheme,
