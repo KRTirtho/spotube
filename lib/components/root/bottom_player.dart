@@ -14,7 +14,6 @@ import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication_provider.dart';
@@ -49,12 +48,6 @@ class BottomPlayer extends HookConsumerWidget {
     );
 
     final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceVariant;
-
-    final bgColor = useBrightnessValue(
-      Color.lerp(bg, Colors.white, 0.7),
-      Color.lerp(bg, Colors.black, 0.45)!,
-    );
 
     // returning an empty non spacious Container as the overlay will take
     // place in the global overlay stack aka [_entries]
@@ -67,7 +60,9 @@ class BottomPlayer extends HookConsumerWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: DecoratedBox(
-          decoration: BoxDecoration(color: bgColor?.withOpacity(0.8)),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainer.withOpacity(.8),
+          ),
           child: Material(
             type: MaterialType.transparency,
             textStyle: theme.textTheme.bodyMedium!,

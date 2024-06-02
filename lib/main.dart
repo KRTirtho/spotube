@@ -10,7 +10,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/initializers.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
@@ -139,28 +138,11 @@ Future<void> main(List<String> rawArgs) async {
   );
 }
 
-class Spotube extends StatefulHookConsumerWidget {
+class Spotube extends HookConsumerWidget {
   const Spotube({super.key});
 
   @override
-  SpotubeState createState() => SpotubeState();
-
-  static SpotubeState of(BuildContext context) =>
-      context.findAncestorStateOfType<SpotubeState>()!;
-}
-
-class SpotubeState extends ConsumerState<Spotube> {
-  final logger = getLogger(Spotube);
-  SharedPreferences? localStorage;
-
-  @override
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance().then(((value) => localStorage = value));
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final accentMaterialColor =
@@ -195,6 +177,7 @@ class SpotubeState extends ConsumerState<Spotube> {
       () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
       [paletteColor, accentMaterialColor],
     );
+
     final darkTheme = useMemoized(
       () => theme(
         paletteColor ?? accentMaterialColor,

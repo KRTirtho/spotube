@@ -82,7 +82,7 @@ class SettingsAccountSection extends HookConsumerWidget {
                         router.push("/login");
                       },
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25.0),
                           ),

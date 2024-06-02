@@ -179,9 +179,9 @@ class ColorTile extends StatelessWidget {
       colorScheme.primaryContainer,
       colorScheme.secondary,
       colorScheme.secondaryContainer,
-      colorScheme.background,
       colorScheme.surface,
-      colorScheme.surfaceVariant,
+      colorScheme.surface,
+      colorScheme.surfaceContainerHighest,
       colorScheme.onPrimary,
       colorScheme.onSurface,
     ];
