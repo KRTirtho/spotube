@@ -320,5 +320,10 @@
   "select": "Pilih",
   "connect_client_alert": "Anda dikendalikan oleh {client}",
   "this_device": "Perangkat Ini",
-  "remote": "Remot"
+  "remote": "Remot",
+  "local_library": "Perpustakaan lokal",
+  "add_library_location": "Tambahkan ke perpustakaan",
+  "remove_library_location": "Hapus dari perpustakaan",
+  "local_tab": "Lokal",
+  "stats": "Statistik"
 }

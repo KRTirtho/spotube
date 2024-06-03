@@ -321,5 +321,10 @@
   "select": "เลือก",
   "connect_client_alert": "คุณกำลังถูกควบคุมโดย {client}",
   "this_device": "อุปกรณ์นี้",
-  "remote": "ระยะไกล"
+  "remote": "ระยะไกล",
+  "local_library": "ห้องสมุดท้องถิ่น",
+  "add_library_location": "เพิ่มในห้องสมุด",
+  "remove_library_location": "ลบออกจากห้องสมุด",
+  "local_tab": "ท้องถิ่น",
+  "stats": "สถิติ"
 }

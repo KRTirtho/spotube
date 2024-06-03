@@ -320,5 +320,10 @@
   "select": "Vybrat",
   "connect_client_alert": "Zařízení je ovládáno z {client}",
   "this_device": "Toto zařízení",
-  "remote": "Ovladač"
+  "remote": "Ovladač",
+  "local_library": "Místní knihovna",
+  "add_library_location": "Přidat do knihovny",
+  "remove_library_location": "Odebrat z knihovny",
+  "local_tab": "Místní",
+  "stats": "Statistiky"
 }

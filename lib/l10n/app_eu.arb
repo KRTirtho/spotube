@@ -320,5 +320,10 @@
   "select": "Aukeratu",
   "connect_client_alert": "{client} gailuak kontrolatzen zaitu",
   "this_device": "Gailu hau",
-  "remote": "Urrunekoa"
+  "remote": "Urrunekoa",
+  "local_library": "Liburutegi lokala",
+  "add_library_location": "Gehitu liburutegira",
+  "remove_library_location": "Kendu liburutegitik",
+  "local_tab": "Tokiko",
+  "stats": "Estatistikak"
 }

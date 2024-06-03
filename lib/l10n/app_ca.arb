@@ -320,5 +320,10 @@
   "select": "Selecciona",
   "connect_client_alert": "Estàs sent controlat per {client}",
   "this_device": "Aquest dispositiu",
-  "remote": "Remot"
+  "remote": "Remot",
+  "local_library": "Biblioteca local",
+  "add_library_location": "Afegeix a la biblioteca",
+  "remove_library_location": "Elimina de la biblioteca",
+  "local_tab": "Local",
+  "stats": "Estadístiques"
 }

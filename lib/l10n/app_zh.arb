@@ -320,5 +320,10 @@
   "select": "选择",
   "connect_client_alert": "您正在被 {client} 控制",
   "this_device": "此设备",
-  "remote": "远程"
+  "remote": "远程",
+  "local_library": "本地图书馆",
+  "add_library_location": "添加到图书馆",
+  "remove_library_location": "从图书馆中删除",
+  "local_tab": "本地",
+  "stats": "统计"
 }
