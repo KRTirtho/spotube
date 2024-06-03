@@ -1,39 +1,46 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/provider/volume_provider.dart';
 
 class VolumeSlider extends HookConsumerWidget {
   final bool fullWidth;
+
+  final double value;
+  final ValueChanged<double> onChanged;
+
   const VolumeSlider({
-    Key? key,
+    super.key,
     this.fullWidth = false,
-  }) : super(key: key);
+    required this.value,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final volume = ref.watch(volumeProvider);
-    final volumeNotifier = ref.watch(volumeProvider.notifier);
-
     var slider = Listener(
       onPointerSignal: (event) async {
         if (event is PointerScrollEvent) {
           if (event.scrollDelta.dy > 0) {
-            final value = volume - .2;
-            volumeNotifier.setVolume(value < 0 ? 0 : value);
+            final newValue = value - .2;
+            onChanged(newValue < 0 ? 0 : newValue);
           } else {
-            final value = volume + .2;
-            volumeNotifier.setVolume(value > 1 ? 1 : value);
+            final newValue = value + .2;
+            onChanged(newValue > 1 ? 1 : newValue);
           }
         }
       },
-      child: Slider(
-        min: 0,
-        max: 1,
-        value: volume,
-        onChanged: volumeNotifier.setVolume,
+      child: SliderTheme(
+        data: const SliderThemeData(
+          showValueIndicator: ShowValueIndicator.always,
+        ),
+        child: Slider(
+          min: 0,
+          max: 1,
+          label: (value * 100).toStringAsFixed(0),
+          value: value,
+          onChanged: onChanged,
+        ),
       ),
     );
     return Row(
@@ -42,20 +49,20 @@ class VolumeSlider extends HookConsumerWidget {
       children: [
         IconButton(
           icon: Icon(
-            volume == 0
+            value == 0
                 ? SpotubeIcons.volumeMute
-                : volume <= 0.2
+                : value <= 0.2
                     ? SpotubeIcons.volumeLow
-                    : volume <= 0.6
+                    : value <= 0.6
                         ? SpotubeIcons.volumeMedium
                         : SpotubeIcons.volumeHigh,
             size: 16,
           ),
           onPressed: () {
-            if (volume == 0) {
-              volumeNotifier.setVolume(1);
+            if (value == 0) {
+              onChanged(1);
             } else {
-              volumeNotifier.setVolume(0);
+              onChanged(0);
             }
           },
         ),

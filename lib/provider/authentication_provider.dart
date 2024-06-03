@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
-import 'package:fl_query/fl_query.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart'
+    hide X509Certificate;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/extensions/context.dart';
@@ -18,6 +20,18 @@ class AuthenticationCredentials {
 
   bool get isExpired => DateTime.now().isAfter(expiration);
 
+  static final Dio dio = () {
+    final dio = Dio();
+
+    (dio.httpClientAdapter as IOHttpClientAdapter)
+        .createHttpClient = () => HttpClient()
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) {
+        return host.endsWith("spotify.com") && port == 443;
+      };
+
+    return dio;
+  }();
+
   AuthenticationCredentials({
     required this.cookie,
     required this.accessToken,
@@ -26,34 +40,40 @@ class AuthenticationCredentials {
 
   static Future<AuthenticationCredentials> fromCookie(String cookie) async {
     try {
-      final res = await get(
+      final spDc = cookie
+          .split("; ")
+          .firstWhereOrNull((c) => c.trim().startsWith("sp_dc="))
+          ?.trim();
+      final res = await dio.getUri(
         Uri.parse(
           "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
         ),
-        headers: {
-          "Cookie": cookie,
-          "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
-        },
+        options: Options(
+          headers: {
+            "Cookie": spDc ?? "",
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+          },
+          validateStatus: (status) => true,
+        ),
       );
-      final body = jsonDecode(res.body);
+      final body = res.data;
 
-      if (res.statusCode >= 400) {
+      if ((res.statusCode ?? 500) >= 400) {
         throw Exception(
-          "Failed to get access token: ${body['error'] ?? res.reasonPhrase}",
+          "Failed to get access token: ${body['error'] ?? res.statusMessage}",
         );
       }
 
       return AuthenticationCredentials(
-        cookie: cookie,
+        cookie: "${res.headers["set-cookie"]?.join(";")}; $spDc",
         accessToken: body['accessToken'],
         expiration: DateTime.fromMillisecondsSinceEpoch(
           body['accessTokenExpirationTimestampMs'],
         ),
       );
     } catch (e) {
-      if (rootNavigatorKey?.currentContext != null &&
-          await QueryClient.connectivity.isConnected) {
+      if (rootNavigatorKey?.currentContext != null) {
         showPromptDialog(
           context: rootNavigatorKey!.currentContext!,
           title: rootNavigatorKey!.currentContext!.l10n
@@ -65,6 +85,15 @@ class AuthenticationCredentials {
       rethrow;
     }
   }
+
+  /// Returns the cookie value
+  String? getCookie(String key) => cookie
+      .split("; ")
+      .firstWhereOrNull((c) => c.trim().startsWith("$key="))
+      ?.trim()
+      .split("=")
+      .last
+      .replaceAll(";", "");
 
   factory AuthenticationCredentials.fromJson(Map<String, dynamic> json) {
     return AuthenticationCredentials(
@@ -97,11 +126,6 @@ class AuthenticationCredentials {
 
 class AuthenticationNotifier
     extends PersistedStateNotifier<AuthenticationCredentials?> {
-  static final provider =
-      StateNotifierProvider<AuthenticationNotifier, AuthenticationCredentials?>(
-    (ref) => AuthenticationNotifier(),
-  );
-
   bool get isLoggedIn => state != null;
 
   AuthenticationNotifier() : super(null, "authentication", encrypted: true);
@@ -133,7 +157,7 @@ class AuthenticationNotifier
   Future<void> logout() async {
     state = null;
     if (kIsMobile) {
-      WebStorageManager.instance().android.deleteAllData();
+      WebStorageManager.instance().deleteAllData();
       CookieManager.instance().deleteAllCookies();
     }
   }
@@ -156,3 +180,8 @@ class AuthenticationNotifier
     return state?.toJson() ?? {};
   }
 }
+
+final authenticationProvider =
+    StateNotifierProvider<AuthenticationNotifier, AuthenticationCredentials?>(
+  (ref) => AuthenticationNotifier(),
+);

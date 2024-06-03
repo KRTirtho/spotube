@@ -13,28 +13,28 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/pages/home/genres/genre_playlists.dart';
+import 'package:spotube/pages/home/genres/genres.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomeGenresSection extends HookConsumerWidget {
-  const HomeGenresSection({Key? key}) : super(key: key);
+  const HomeGenresSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final recommendationMarket = ref.watch(
-      userPreferencesProvider.select((s) => s.recommendationMarket),
+    final categoriesQuery = ref.watch(categoriesProvider);
+    final categories = useMemoized(
+      () =>
+          categoriesQuery.asData?.value
+              .where((c) => (c.icons?.length ?? 0) > 0)
+              .take(mediaQuery.mdAndDown ? 6 : 10)
+              .toList() ??
+          <Category>[],
+      [mediaQuery.mdAndDown, categoriesQuery.asData?.value],
     );
-    final categoriesQuery =
-        useQueries.category.listAll(ref, recommendationMarket);
-
-    final categories = categoriesQuery.data
-            ?.where((c) => (c.icons?.length ?? 0) > 0)
-            .take(mediaQuery.mdAndDown ? 6 : 10)
-            .toList() ??
-        <Category>[];
 
     return SliverMainAxisGroup(
       slivers: [
@@ -52,11 +52,11 @@ class HomeGenresSection extends HookConsumerWidget {
                   textDirection: TextDirection.rtl,
                   child: TextButton.icon(
                     onPressed: () {
-                      context.push('/genres');
+                      context.pushNamed(GenrePage.name);
                     },
                     icon: const Icon(SpotubeIcons.angleRight),
                     label: Text(
-                      "Browse All",
+                      context.l10n.browse_all,
                       style: textTheme.bodyMedium?.copyWith(
                         color: colorScheme.secondary,
                       ),
@@ -112,7 +112,13 @@ class HomeGenresSection extends HookConsumerWidget {
 
                   return InkWell(
                     onTap: () {
-                      context.push('/genre/${category.id}', extra: category);
+                      context.pushNamed(
+                        GenrePlaylistsPage.name,
+                        pathParameters: {
+                          "categoryId": category.id!,
+                        },
+                        extra: category,
+                      );
                     },
                     borderRadius: BorderRadius.circular(8),
                     child: Ink(
@@ -128,7 +134,7 @@ class HomeGenresSection extends HookConsumerWidget {
                       child: Ink(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: colorScheme.surfaceVariant,
+                          color: colorScheme.surfaceContainerHighest,
                           gradient: categoriesQuery.isLoading ? null : gradient,
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16),

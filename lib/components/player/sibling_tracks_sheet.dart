@@ -4,17 +4,18 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
@@ -24,7 +25,6 @@ import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 final sourceInfoToIconMap = {
   YoutubeSourceInfo: const Icon(SpotubeIcons.youtube, color: Color(0xFFFF0000)),
@@ -45,29 +45,30 @@ final sourceInfoToIconMap = {
 class SiblingTracksSheet extends HookConsumerWidget {
   final bool floating;
   const SiblingTracksSheet({
-    Key? key,
+    super.key,
     this.floating = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
     final preferences = ref.watch(userPreferencesProvider);
 
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
+    final activeTrackNotifier = ref.watch(activeSourcedTrackProvider.notifier);
+    final activeTrack =
+        ref.watch(activeSourcedTrackProvider) ?? playlist.activeTrack;
 
     final title = ServiceUtils.getTitle(
-      playlist.activeTrack?.name ?? "",
-      artists:
-          playlist.activeTrack?.artists?.map((e) => e.name!).toList() ?? [],
+      activeTrack?.name ?? "",
+      artists: activeTrack?.artists?.map((e) => e.name!).toList() ?? [],
       onlyCleanArtist: true,
     ).trim();
 
     final defaultSearchTerm =
-        "$title - ${TypeConversionUtils.artists_X_String<Artist>(playlist.activeTrack?.artists ?? [])}";
+        "$title - ${activeTrack?.artists?.asString() ?? ""}";
     final searchController = useTextEditingController(
       text: defaultSearchTerm,
     );
@@ -91,8 +92,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
           return siblingType.info;
         }));
 
-        final activeSourceInfo =
-            (playlist.activeTrack! as SourcedTrack).sourceInfo;
+        final activeSourceInfo = (activeTrack! as SourcedTrack).sourceInfo;
 
         return results
           ..removeWhere((element) => element.id == activeSourceInfo.id)
@@ -112,8 +112,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
             return siblingType.info;
           }),
         );
-        final activeSourceInfo =
-            (playlist.activeTrack! as SourcedTrack).sourceInfo;
+        final activeSourceInfo = (activeTrack! as SourcedTrack).sourceInfo;
         return searchResults
           ..removeWhere((element) => element.id == activeSourceInfo.id)
           ..insert(
@@ -124,18 +123,18 @@ class SiblingTracksSheet extends HookConsumerWidget {
     }, [
       searchTerm,
       searchMode.value,
-      playlist.activeTrack,
+      activeTrack,
       preferences.audioSource,
     ]);
 
     final siblings = useMemoized(
       () => playlist.isFetching == false
           ? [
-              (playlist.activeTrack as SourcedTrack).sourceInfo,
-              ...(playlist.activeTrack as SourcedTrack).siblings,
+              (activeTrack as SourcedTrack).sourceInfo,
+              ...activeTrack.siblings,
             ]
           : <SourceInfo>[],
-      [playlist.isFetching, playlist.activeTrack],
+      [playlist.isFetching, activeTrack],
     );
 
     final borderRadius = floating
@@ -146,12 +145,11 @@ class SiblingTracksSheet extends HookConsumerWidget {
           );
 
     useEffect(() {
-      if (playlist.activeTrack is SourcedTrack &&
-          (playlist.activeTrack as SourcedTrack).siblings.isEmpty) {
-        playlistNotifier.populateSibling();
+      if (activeTrack is SourcedTrack && activeTrack.siblings.isEmpty) {
+        activeTrackNotifier.populateSibling();
       }
       return null;
-    }, [playlist.activeTrack]);
+    }, [activeTrack]);
 
     final itemBuilder = useCallback(
       (SourceInfo sourceInfo) {
@@ -178,20 +176,18 @@ class SiblingTracksSheet extends HookConsumerWidget {
           ),
           enabled: playlist.isFetching != true,
           selected: playlist.isFetching != true &&
-              sourceInfo.id ==
-                  (playlist.activeTrack as SourcedTrack).sourceInfo.id,
+              sourceInfo.id == (activeTrack as SourcedTrack).sourceInfo.id,
           selectedTileColor: theme.popupMenuTheme.color,
           onTap: () {
             if (playlist.isFetching == false &&
-                sourceInfo.id !=
-                    (playlist.activeTrack as SourcedTrack).sourceInfo.id) {
-              playlistNotifier.swapSibling(sourceInfo);
+                sourceInfo.id != (activeTrack as SourcedTrack).sourceInfo.id) {
+              activeTrackNotifier.swapSibling(sourceInfo);
               Navigator.of(context).pop();
             }
           },
         );
       },
-      [playlist.isFetching, playlist.activeTrack, siblings],
+      [playlist.isFetching, activeTrack, siblings],
     );
 
     final mediaQuery = MediaQuery.of(context);
@@ -212,7 +208,8 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   : mediaQuery.size.height * .6,
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
-                color: theme.colorScheme.surfaceVariant.withOpacity(.5),
+                color:
+                    theme.colorScheme.surfaceContainerHighest.withOpacity(.5),
               ),
               child: Scaffold(
                 backgroundColor: Colors.transparent,

@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:spotube/utils/platform.dart';
+import 'package:window_manager/window_manager.dart';
 
 class CallbackWindowListener implements WindowListener {
   final VoidCallback? _onWindowClose;
@@ -154,6 +156,8 @@ void useWindowListener({
   VoidCallback? onWindowEvent,
 }) {
   useEffect(() {
+    if (!kIsDesktop) return null;
+
     final listener = CallbackWindowListener(
       onWindowClose: onWindowClose,
       onWindowFocus: onWindowFocus,
@@ -172,9 +176,9 @@ void useWindowListener({
       onWindowUndocked: onWindowUndocked,
       onWindowEvent: onWindowEvent,
     );
-    DesktopTools.window.addListener(listener);
+    windowManager.addListener(listener);
     return () {
-      DesktopTools.window.removeListener(listener);
+      windowManager.removeListener(listener);
     };
   }, [
     onWindowClose,

@@ -6,8 +6,7 @@ part of 'user_preferences_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$UserPreferencesImpl _$$UserPreferencesImplFromJson(
-        Map<String, dynamic> json) =>
+_$UserPreferencesImpl _$$UserPreferencesImplFromJson(Map json) =>
     _$UserPreferencesImpl(
       audioQuality:
           $enumDecodeNullable(_$SourceQualitiesEnumMap, json['audioQuality']) ??
@@ -16,12 +15,12 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
       amoledDarkTheme: json['amoledDarkTheme'] as bool? ?? false,
       checkUpdate: json['checkUpdate'] as bool? ?? true,
       normalizeAudio: json['normalizeAudio'] as bool? ?? false,
-      showSystemTrayIcon: json['showSystemTrayIcon'] as bool? ?? true,
+      showSystemTrayIcon: json['showSystemTrayIcon'] as bool? ?? false,
       skipNonMusic: json['skipNonMusic'] as bool? ?? false,
       systemTitleBar: json['systemTitleBar'] as bool? ?? false,
       closeBehavior:
           $enumDecodeNullable(_$CloseBehaviorEnumMap, json['closeBehavior']) ??
-              CloseBehavior.minimizeToTray,
+              CloseBehavior.close,
       accentColorScheme: UserPreferences._accentColorSchemeReadValue(
                   json, 'accentColorScheme') ==
               null
@@ -44,6 +43,10 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
           $enumDecodeNullable(_$SearchModeEnumMap, json['searchMode']) ??
               SearchMode.youtube,
       downloadLocation: json['downloadLocation'] as String? ?? "",
+      localLibraryLocation: (json['localLibraryLocation'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       pipedInstance:
           json['pipedInstance'] as String? ?? "https://pipedapi.kavin.rocks",
       themeMode: $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode']) ??
@@ -59,6 +62,7 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
           SourceCodecs.m4a,
       discordPresence: json['discordPresence'] as bool? ?? true,
       endlessPlayback: json['endlessPlayback'] as bool? ?? true,
+      enableConnect: json['enableConnect'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$UserPreferencesImplToJson(
@@ -80,6 +84,7 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
       'recommendationMarket': _$MarketEnumMap[instance.recommendationMarket]!,
       'searchMode': _$SearchModeEnumMap[instance.searchMode]!,
       'downloadLocation': instance.downloadLocation,
+      'localLibraryLocation': instance.localLibraryLocation,
       'pipedInstance': instance.pipedInstance,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'audioSource': _$AudioSourceEnumMap[instance.audioSource]!,
@@ -87,6 +92,7 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
       'downloadMusicCodec': _$SourceCodecsEnumMap[instance.downloadMusicCodec]!,
       'discordPresence': instance.discordPresence,
       'endlessPlayback': instance.endlessPlayback,
+      'enableConnect': instance.enableConnect,
     };
 
 const _$SourceQualitiesEnumMap = {

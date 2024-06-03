@@ -314,5 +314,17 @@
   "help_project_grow_description": "Spotube è un progetto open-source. Puoi aiutare questo progetto a crescere contribuendo al progetto, segnalando bug o suggerendo nuove funzionalità.",
   "contribute_on_github": "Contribuisci su GitHub",
   "donate_on_open_collective": "Dona su Open Collective",
-  "browse_anonymously": "Naviga in modo anonimo"
+  "browse_anonymously": "Naviga in modo anonimo",
+  "enable_connect": "Abilita connessione",
+  "enable_connect_description": "Controlla Spotube da altri dispositivi",
+  "devices": "Dispositivi",
+  "select": "Seleziona",
+  "connect_client_alert": "Stai venendo controllato da {client}",
+  "this_device": "Questo dispositivo",
+  "remote": "Remoto",
+  "local_library": "Biblioteca locale",
+  "add_library_location": "Aggiungi alla biblioteca",
+  "remove_library_location": "Rimuovi dalla biblioteca",
+  "local_tab": "Locale",
+  "stats": "Statistiche"
 }

@@ -1,15 +1,13 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:spotube/utils/platform.dart';
 
 final appLinks = AppLinks();
 final linkStream = appLinks.allStringLinkStream.asBroadcastStream();
@@ -17,8 +15,6 @@ final linkStream = appLinks.allStringLinkStream.asBroadcastStream();
 void useDeepLinking(WidgetRef ref) {
   // single instance no worries
   final spotify = ref.watch(spotifyProvider);
-  final queryClient = useQueryClient();
-
   final router = ref.watch(routerProvider);
 
   useEffect(() {
@@ -32,10 +28,7 @@ void useDeepLinking(WidgetRef ref) {
           case "album":
             router.push(
               "/album/${url.pathSegments.last}",
-              extra: await queryClient.fetchQuery<Album, dynamic>(
-                "album/${url.pathSegments.last}",
-                () => spotify.albums.get(url.pathSegments.last),
-              ),
+              extra: await spotify.albums.get(url.pathSegments.last),
             );
             break;
           case "artist":
@@ -44,10 +37,7 @@ void useDeepLinking(WidgetRef ref) {
           case "playlist":
             router.push(
               "/playlist/${url.pathSegments.last}",
-              extra: await queryClient.fetchQuery<Playlist, dynamic>(
-                "playlist/${url.pathSegments.last}",
-                () => spotify.playlists.get(url.pathSegments.last),
-              ),
+              extra: await spotify.playlists.get(url.pathSegments.last),
             );
             break;
           case "track":
@@ -63,7 +53,7 @@ void useDeepLinking(WidgetRef ref) {
 
     StreamSubscription? mediaStream;
 
-    if (DesktopTools.platform.isMobile) {
+    if (kIsMobile) {
       FlutterSharingIntent.instance.getInitialSharing().then(uriListener);
 
       mediaStream =
@@ -78,10 +68,7 @@ void useDeepLinking(WidgetRef ref) {
         case "spotify:album":
           await router.push(
             "/album/$endSegment",
-            extra: await queryClient.fetchQuery<Album, dynamic>(
-              "album/$endSegment",
-              () => spotify.albums.get(endSegment),
-            ),
+            extra: await spotify.albums.get(endSegment),
           );
           break;
         case "spotify:artist":
@@ -93,10 +80,7 @@ void useDeepLinking(WidgetRef ref) {
         case "spotify:playlist":
           await router.push(
             "/playlist/$endSegment",
-            extra: await queryClient.fetchQuery<Playlist, dynamic>(
-              "playlist/$endSegment",
-              () => spotify.playlists.get(endSegment),
-            ),
+            extra: await spotify.playlists.get(endSegment),
           );
           break;
         default:
@@ -108,5 +92,5 @@ void useDeepLinking(WidgetRef ref) {
       mediaStream?.cancel();
       subscription.cancel();
     };
-  }, [spotify, queryClient]);
+  }, [spotify]);
 }

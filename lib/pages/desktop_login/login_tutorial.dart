@@ -8,17 +8,18 @@ import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/links/hyper_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LoginTutorial extends ConsumerWidget {
-  const LoginTutorial({Key? key}) : super(key: key);
+  static const name = "login_tutorial";
+  const LoginTutorial({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    ref.watch(AuthenticationNotifier.provider);
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    ref.watch(authenticationProvider);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
     final key = GlobalKey<State<IntroductionScreen>>();
     final theme = Theme.of(context);
 
@@ -54,7 +55,7 @@ class LoginTutorial extends ConsumerWidget {
         overrideDone: FilledButton(
           onPressed: authenticationNotifier.isLoggedIn
               ? () {
-                  ServiceUtils.push(context, "/");
+                  ServiceUtils.pushNamed(context, HomePage.name);
                 }
               : null,
           child: Center(child: Text(context.l10n.done)),

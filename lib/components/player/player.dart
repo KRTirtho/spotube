@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/player/player_actions.dart';
@@ -13,40 +12,44 @@ import 'package:spotube/components/player/player_queue.dart';
 import 'package:spotube/components/player/volume_slider.dart';
 import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
+import 'package:spotube/components/shared/links/artist_link.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
+import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/server/active_sourced_track.dart';
+import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PlayerView extends HookConsumerWidget {
   final PanelController panelController;
   final ScrollController scrollController;
   const PlayerView({
-    Key? key,
+    super.key,
     required this.panelController,
     required this.scrollController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final auth = ref.watch(AuthenticationNotifier.provider);
-    final currentTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
-      (value) => value.activeTrack,
-    ));
-    final isLocalTrack = ref.watch(ProxyPlaylistNotifier.provider.select(
-      (value) => value.activeTrack is LocalTrack,
-    ));
+    final auth = ref.watch(authenticationProvider);
+    final sourcedCurrentTrack = ref.watch(activeSourcedTrackProvider);
+    final currentActiveTrack =
+        ref.watch(proxyPlaylistProvider.select((s) => s.activeTrack));
+    final currentTrack = sourcedCurrentTrack ?? currentActiveTrack;
+    final isLocalTrack = currentTrack is LocalTrack;
     final mediaQuery = MediaQuery.of(context);
 
     useEffect(() {
@@ -59,8 +62,7 @@ class PlayerView extends HookConsumerWidget {
     }, [mediaQuery.lgAndUp]);
 
     String albumArt = useMemoized(
-      () => TypeConversionUtils.image_X_UrlString(
-        currentTrack?.album?.images,
+      () => (currentTrack?.album?.images).asUrlString(
         placeholder: ImagePlaceholder.albumArt,
       ),
       [currentTrack?.album?.images],
@@ -96,6 +98,7 @@ class PlayerView extends HookConsumerWidget {
 
     final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         await panelController.close();
@@ -149,7 +152,7 @@ class PlayerView extends HookConsumerWidget {
                           label: Text(context.l10n.song_link),
                           style: TextButton.styleFrom(
                             foregroundColor: bodyTextColor,
-                            padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                           ),
                           onPressed: () {
                             final url =
@@ -239,19 +242,15 @@ class PlayerView extends HookConsumerWidget {
                                 ),
                                 if (isLocalTrack)
                                   Text(
-                                    TypeConversionUtils.artists_X_String<
-                                        Artist>(
-                                      currentTrack?.artists ?? [],
-                                    ),
+                                    currentTrack.artists?.asString() ?? "",
                                     style: theme.textTheme.bodyMedium!.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: bodyTextColor,
                                     ),
                                   )
                                 else
-                                  TypeConversionUtils
-                                      .artists_X_ClickableArtists(
-                                    currentTrack?.artists ?? [],
+                                  ArtistLink(
+                                    artists: currentTrack?.artists ?? [],
                                     textStyle:
                                         theme.textTheme.bodyMedium!.copyWith(
                                       fontWeight: FontWeight.bold,
@@ -307,10 +306,24 @@ class PlayerView extends HookConsumerWidget {
                                                             .height *
                                                         .7,
                                               ),
-                                              builder: (context) {
-                                                return const PlayerQueue(
-                                                    floating: false);
-                                              },
+                                              builder: (context) => Consumer(
+                                                builder: (context, ref, _) {
+                                                  final playlist = ref.watch(
+                                                    proxyPlaylistProvider,
+                                                  );
+                                                  final playlistNotifier =
+                                                      ref.read(
+                                                    proxyPlaylistProvider
+                                                        .notifier,
+                                                  );
+                                                  return PlayerQueue
+                                                      .fromProxyPlaylistNotifier(
+                                                    floating: false,
+                                                    playlist: playlist,
+                                                    notifier: playlistNotifier,
+                                                  );
+                                                },
+                                              ),
                                             );
                                           }
                                         : null),
@@ -368,11 +381,21 @@ class PlayerView extends HookConsumerWidget {
                                 enabledThumbRadius: 8,
                               ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: VolumeSlider(
-                                fullWidth: true,
-                              ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Consumer(builder: (context, ref, _) {
+                                final volume = ref.watch(volumeProvider);
+                                return VolumeSlider(
+                                  fullWidth: true,
+                                  value: volume,
+                                  onChanged: (value) {
+                                    ref
+                                        .read(volumeProvider.notifier)
+                                        .setVolume(value);
+                                  },
+                                );
+                              }),
                             ),
                           ),
                         ],

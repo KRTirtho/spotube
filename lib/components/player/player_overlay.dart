@@ -19,16 +19,15 @@ class PlayerOverlay extends HookConsumerWidget {
 
   const PlayerOverlay({
     required this.albumArt,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final canShow = ref.watch(
-      ProxyPlaylistNotifier.provider.select((s) => s.active != null),
-    );
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
-    final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(proxyPlaylistProvider);
+    final canShow = playlist.activeTrack != null;
+
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
 
@@ -115,7 +114,7 @@ class PlayerOverlay extends HookConsumerWidget {
                                 width: double.infinity,
                                 color: Colors.transparent,
                                 child: PlayerTrackDetails(
-                                  albumArt: albumArt,
+                                  track: playlist.activeTrack,
                                   color: textColor,
                                 ),
                               ),

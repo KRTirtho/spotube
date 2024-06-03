@@ -12,12 +12,12 @@ class RecommendationAttributeFields extends HookWidget {
   final Map<String, RecommendationAttribute>? presets;
 
   const RecommendationAttributeFields({
-    Key? key,
+    super.key,
     required this.values,
     required this.onChanged,
     required this.title,
     this.presets,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

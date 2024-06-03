@@ -11,7 +11,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsAboutSection extends HookConsumerWidget {
-  const SettingsAboutSection({Key? key}) : super(key: key);
+  const SettingsAboutSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -43,10 +43,9 @@ class SettingsAboutSection extends HookConsumerWidget {
           ),
           trailing: (context, update) => FilledButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Colors.red[100]),
-              foregroundColor:
-                  const MaterialStatePropertyAll(Colors.pinkAccent),
-              padding: const MaterialStatePropertyAll(EdgeInsets.all(15)),
+              backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
+              foregroundColor: const WidgetStatePropertyAll(Colors.pinkAccent),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
             ),
             onPressed: () {
               launchUrlString(

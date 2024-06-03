@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
+  bonsoir_windows
   dart_discord_rpc
   file_selector_windows
   flutter_secure_storage_windows
@@ -13,6 +14,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   screen_retriever
   system_theme
   system_tray
+  tray_manager
   url_launcher_windows
   window_manager
   window_size

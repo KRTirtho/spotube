@@ -4,21 +4,34 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Search;
+import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/pages/connect/connect.dart';
+import 'package:spotube/pages/connect/control/control.dart';
 import 'package:spotube/pages/getting_started/getting_started.dart';
+import 'package:spotube/pages/home/feed/feed_section.dart';
 import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
+import 'package:spotube/pages/library/local_folder.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate_result.dart';
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/playlist/liked_playlist.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
+import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/pages/settings/blacklist.dart';
 import 'package:spotube/pages/settings/about.dart';
 import 'package:spotube/pages/settings/logs.dart';
+import 'package:spotube/pages/stats/albums/albums.dart';
+import 'package:spotube/pages/stats/artists/artists.dart';
+import 'package:spotube/pages/stats/fees/fees.dart';
+import 'package:spotube/pages/stats/minutes/minutes.dart';
+import 'package:spotube/pages/stats/playlists/playlists.dart';
+import 'package:spotube/pages/stats/stats.dart';
+import 'package:spotube/pages/stats/streams/streams.dart';
 import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
@@ -45,9 +58,9 @@ final routerProvider = Provider((ref) {
         routes: [
           GoRoute(
             path: "/",
+            name: HomePage.name,
             redirect: (context, state) async {
-              final authNotifier =
-                  ref.read(AuthenticationNotifier.provider.notifier);
+              final authNotifier = ref.read(authenticationProvider.notifier);
               final json = await authNotifier.box.get(authNotifier.cacheKey);
 
               if (json?["cookie"] == null &&
@@ -62,61 +75,88 @@ final routerProvider = Provider((ref) {
             routes: [
               GoRoute(
                 path: "genres",
+                name: GenrePage.name,
                 pageBuilder: (context, state) =>
                     const SpotubePage(child: GenrePage()),
               ),
               GoRoute(
                 path: "genre/:categoryId",
+                name: GenrePlaylistsPage.name,
                 pageBuilder: (context, state) => SpotubePage(
                   child: GenrePlaylistsPage(
                     category: state.extra as Category,
                   ),
                 ),
               ),
+              GoRoute(
+                path: "feeds/:feedId",
+                name: HomeFeedSectionPage.name,
+                pageBuilder: (context, state) => SpotubePage(
+                  child: HomeFeedSectionPage(
+                    sectionUri: state.pathParameters["feedId"] as String,
+                  ),
+                ),
+              )
             ],
           ),
           GoRoute(
             path: "/search",
-            name: "Search",
+            name: SearchPage.name,
             pageBuilder: (context, state) =>
                 const SpotubePage(child: SearchPage()),
           ),
           GoRoute(
               path: "/library",
-              name: "Library",
+              name: LibraryPage.name,
               pageBuilder: (context, state) =>
                   const SpotubePage(child: LibraryPage()),
               routes: [
                 GoRoute(
-                    path: "generate",
-                    pageBuilder: (context, state) =>
-                        const SpotubePage(child: PlaylistGeneratorPage()),
-                    routes: [
-                      GoRoute(
-                        path: "result",
-                        pageBuilder: (context, state) => SpotubePage(
-                          child: PlaylistGenerateResultPage(
-                            state:
-                                state.extra as PlaylistGenerateResultRouteState,
-                          ),
+                  path: "generate",
+                  name: PlaylistGeneratorPage.name,
+                  pageBuilder: (context, state) =>
+                      const SpotubePage(child: PlaylistGeneratorPage()),
+                  routes: [
+                    GoRoute(
+                      path: "result",
+                      name: PlaylistGenerateResultPage.name,
+                      pageBuilder: (context, state) => SpotubePage(
+                        child: PlaylistGenerateResultPage(
+                          state: state.extra as GeneratePlaylistProviderInput,
                         ),
                       ),
-                    ]),
+                    )
+                  ],
+                ),
+                GoRoute(
+                  path: "local",
+                  name: LocalLibraryPage.name,
+                  pageBuilder: (context, state) {
+                    assert(state.extra is String);
+                    return SpotubePage(
+                      child: LocalLibraryPage(state.extra as String,
+                          isDownloads:
+                              state.uri.queryParameters["downloads"] != null),
+                    );
+                  },
+                ),
               ]),
           GoRoute(
             path: "/lyrics",
-            name: "Lyrics",
+            name: LyricsPage.name,
             pageBuilder: (context, state) =>
                 const SpotubePage(child: LyricsPage()),
           ),
           GoRoute(
             path: "/settings",
+            name: SettingsPage.name,
             pageBuilder: (context, state) => const SpotubePage(
               child: SettingsPage(),
             ),
             routes: [
               GoRoute(
                 path: "blacklist",
+                name: BlackListPage.name,
                 pageBuilder: (context, state) => SpotubeSlidePage(
                   child: const BlackListPage(),
                 ),
@@ -124,12 +164,14 @@ final routerProvider = Provider((ref) {
               if (!kIsWeb)
                 GoRoute(
                   path: "logs",
+                  name: LogsPage.name,
                   pageBuilder: (context, state) => SpotubeSlidePage(
                     child: const LogsPage(),
                   ),
                 ),
               GoRoute(
                 path: "about",
+                name: AboutSpotube.name,
                 pageBuilder: (context, state) => SpotubeSlidePage(
                   child: const AboutSpotube(),
                 ),
@@ -138,6 +180,7 @@ final routerProvider = Provider((ref) {
           ),
           GoRoute(
             path: "/album/:id",
+            name: AlbumPage.name,
             pageBuilder: (context, state) {
               assert(state.extra is AlbumSimple);
               return SpotubePage(
@@ -147,6 +190,7 @@ final routerProvider = Provider((ref) {
           ),
           GoRoute(
             path: "/artist/:id",
+            name: ArtistPage.name,
             pageBuilder: (context, state) {
               assert(state.pathParameters["id"] != null);
               return SpotubePage(
@@ -155,6 +199,7 @@ final routerProvider = Provider((ref) {
           ),
           GoRoute(
             path: "/playlist/:id",
+            name: PlaylistPage.name,
             pageBuilder: (context, state) {
               assert(state.extra is PlaylistSimple);
               return SpotubePage(
@@ -166,6 +211,7 @@ final routerProvider = Provider((ref) {
           ),
           GoRoute(
             path: "/track/:id",
+            name: TrackPage.name,
             pageBuilder: (context, state) {
               final id = state.pathParameters["id"]!;
               return SpotubePage(
@@ -173,10 +219,86 @@ final routerProvider = Provider((ref) {
               );
             },
           ),
+          GoRoute(
+            path: "/connect",
+            name: ConnectPage.name,
+            pageBuilder: (context, state) => const SpotubePage(
+              child: ConnectPage(),
+            ),
+            routes: [
+              GoRoute(
+                path: "control",
+                name: ConnectControlPage.name,
+                pageBuilder: (context, state) {
+                  return const SpotubePage(
+                    child: ConnectControlPage(),
+                  );
+                },
+              )
+            ],
+          ),
+          GoRoute(
+            path: "/profile",
+            name: ProfilePage.name,
+            pageBuilder: (context, state) =>
+                const SpotubePage(child: ProfilePage()),
+          ),
+          GoRoute(
+            path: "/stats",
+            name: StatsPage.name,
+            pageBuilder: (context, state) => const SpotubePage(
+              child: StatsPage(),
+            ),
+            routes: [
+              GoRoute(
+                path: "minutes",
+                name: StatsMinutesPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsMinutesPage(),
+                ),
+              ),
+              GoRoute(
+                path: "streams",
+                name: StatsStreamsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsStreamsPage(),
+                ),
+              ),
+              GoRoute(
+                path: "fees",
+                name: StatsStreamFeesPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsStreamFeesPage(),
+                ),
+              ),
+              GoRoute(
+                path: "artists",
+                name: StatsArtistsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsArtistsPage(),
+                ),
+              ),
+              GoRoute(
+                path: "albums",
+                name: StatsAlbumsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsAlbumsPage(),
+                ),
+              ),
+              GoRoute(
+                path: "playlists",
+                name: StatsPlaylistsPage.name,
+                pageBuilder: (context, state) => const SpotubePage(
+                  child: StatsPlaylistsPage(),
+                ),
+              ),
+            ],
+          )
         ],
       ),
       GoRoute(
         path: "/mini-player",
+        name: MiniLyricsPage.name,
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => SpotubePage(
           child: MiniLyricsPage(prevSize: state.extra as Size),
@@ -184,6 +306,7 @@ final routerProvider = Provider((ref) {
       ),
       GoRoute(
         path: "/getting-started",
+        name: GettingStarting.name,
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => const SpotubePage(
           child: GettingStarting(),
@@ -191,6 +314,7 @@ final routerProvider = Provider((ref) {
       ),
       GoRoute(
         path: "/login",
+        name: WebViewLogin.name,
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => SpotubePage(
           child: kIsMobile ? const WebViewLogin() : const DesktopLoginPage(),
@@ -198,6 +322,7 @@ final routerProvider = Provider((ref) {
       ),
       GoRoute(
         path: "/login-tutorial",
+        name: LoginTutorial.name,
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => const SpotubePage(
           child: LoginTutorial(),
@@ -205,6 +330,7 @@ final routerProvider = Provider((ref) {
       ),
       GoRoute(
         path: "/lastfm-login",
+        name: LastFMLoginPage.name,
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) =>
             const SpotubePage(child: LastFMLoginPage()),

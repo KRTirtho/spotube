@@ -26,7 +26,7 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
   final SelectedItemDisplayType selectedItemDisplayType;
 
   const SeedsMultiAutocomplete({
-    Key? key,
+    super.key,
     required this.seeds,
     required this.fetchSeeds,
     required this.autocompleteOptionBuilder,
@@ -35,7 +35,7 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
     this.inputDecoration,
     this.enabled = true,
     this.selectedItemDisplayType = SelectedItemDisplayType.wrap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

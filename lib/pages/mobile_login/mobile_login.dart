@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,13 +7,12 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
 class WebViewLogin extends HookConsumerWidget {
-  const WebViewLogin({Key? key}) : super(key: key);
+  static const name = "login";
+  const WebViewLogin({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    final mounted = useIsMounted();
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
 
     if (kIsDesktop) {
       const Scaffold(
@@ -27,19 +25,17 @@ class WebViewLogin extends HookConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: InAppWebView(
-          initialOptions: InAppWebViewGroupOptions(
-            crossPlatform: InAppWebViewOptions(
-              userAgent:
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 afari/537.36",
-            ),
+          initialSettings: InAppWebViewSettings(
+            userAgent:
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 afari/537.36",
           ),
           initialUrlRequest: URLRequest(
-            url: Uri.parse("https://accounts.spotify.com/"),
+            url: WebUri("https://accounts.spotify.com/"),
           ),
-          androidOnPermissionRequest: (controller, origin, resources) async {
-            return PermissionRequestResponse(
-              resources: resources,
-              action: PermissionRequestResponseAction.GRANT,
+          onPermissionRequest: (controller, permissionRequest) async {
+            return PermissionResponse(
+              resources: permissionRequest.resources,
+              action: PermissionResponseAction.GRANT,
             );
           },
           onLoadStop: (controller, action) async {
@@ -60,7 +56,7 @@ class WebViewLogin extends HookConsumerWidget {
               authenticationNotifier.setCredentials(
                 await AuthenticationCredentials.fromCookie(cookieHeader),
               );
-              if (mounted()) {
+              if (context.mounted) {
                 // ignore: use_build_context_synchronously
                 GoRouter.of(context).go("/");
               }

@@ -97,7 +97,7 @@ class SourceTypeAdapter extends TypeAdapter<SourceType> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-SourceMatch _$SourceMatchFromJson(Map<String, dynamic> json) => SourceMatch(
+SourceMatch _$SourceMatchFromJson(Map json) => SourceMatch(
       id: json['id'] as String,
       sourceId: json['sourceId'] as String,
       sourceType: $enumDecode(_$SourceTypeEnumMap, json['sourceType']),

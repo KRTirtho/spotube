@@ -313,5 +313,17 @@
   "help_project_grow_description": "Spotubeはオープンソースプロジェクトです。プロジェクトに貢献したり、バグを報告したり、新しい機能を提案することで、このプロジェクトの成長に貢献できます。",
   "contribute_on_github": "GitHubで貢献する",
   "donate_on_open_collective": "Open Collectiveで寄付する",
-  "browse_anonymously": "匿名で閲覧する"
+  "browse_anonymously": "匿名で閲覧する",
+  "enable_connect": "接続を有効にする",
+  "enable_connect_description": "他のデバイスからSpotubeを制御する",
+  "devices": "デバイス",
+  "select": "選択する",
+  "connect_client_alert": "{client} によって操作されています",
+  "this_device": "このデバイス",
+  "remote": "リモート",
+  "local_library": "ローカルライブラリ",
+  "add_library_location": "ライブラリに追加",
+  "remove_library_location": "ライブラリから削除",
+  "local_tab": "ローカル",
+  "stats": "統計"
 }

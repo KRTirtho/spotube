@@ -1,7 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
@@ -14,12 +12,11 @@ class ProxyPlaylist {
 
   factory ProxyPlaylist.fromJson(
     Map<String, dynamic> json,
-    Ref ref,
   ) {
     return ProxyPlaylist(
       List.castFrom<dynamic, Map<String, dynamic>>(
         json['tracks'] ?? <Map<String, dynamic>>[],
-      ).map((t) => _makeAppropriateTrack(t, ref)).toSet(),
+      ).map((t) => _makeAppropriateTrack(t)).toSet(),
       json['active'] as int?,
       json['collections'] == null
           ? {}
@@ -27,20 +24,34 @@ class ProxyPlaylist {
     );
   }
 
+  factory ProxyPlaylist.fromJsonRaw(Map<String, dynamic> json) => ProxyPlaylist(
+        json['tracks'] == null
+            ? <Track>{}
+            : (json['tracks'] as List).map((t) => Track.fromJson(t)).toSet(),
+        json['active'] as int?,
+        json['collections'] == null
+            ? {}
+            : (json['collections'] as List).toSet().cast<String>(),
+      );
+
   Track? get activeTrack =>
       active == null || active == -1 ? null : tracks.elementAtOrNull(active!);
 
-  bool get isFetching =>
-      activeTrack != null &&
-      activeTrack is! SourcedTrack &&
-      activeTrack is! LocalTrack;
+  bool get isFetching => activeTrack == null && tracks.isNotEmpty;
 
   bool containsCollection(String collection) {
     return collections.contains(collection);
   }
 
   bool containsTrack(TrackSimple track) {
-    return tracks.firstWhereOrNull((element) => element.id == track.id) != null;
+    return tracks.firstWhereOrNull((element) {
+          if (element is LocalTrack && track is LocalTrack) {
+            return element.path == track.path;
+          }
+
+          return element.id == track.id;
+        }) !=
+        null;
   }
 
   bool containsTracks(Iterable<TrackSimple> tracks) {
@@ -48,10 +59,8 @@ class ProxyPlaylist {
     return tracks.every(containsTrack);
   }
 
-  static Track _makeAppropriateTrack(Map<String, dynamic> track, Ref ref) {
-    if (track.containsKey("ytUri")) {
-      return SourcedTrack.fromJson(track, ref: ref);
-    } else if (track.containsKey("path")) {
+  static Track _makeAppropriateTrack(Map<String, dynamic> track) {
+    if (track.containsKey("path")) {
       return LocalTrack.fromJson(track);
     } else {
       return Track.fromJson(track);
@@ -61,9 +70,11 @@ class ProxyPlaylist {
   /// To make sure proper instance method is used for JSON serialization
   /// Otherwise default super.toJson() is used
   static Map<String, dynamic> _makeAppropriateTrackJson(Track track) {
-    return switch (track.runtimeType) {
-      LocalTrack => track.toJson(),
-      SourcedTrack => track.toJson(),
+    return switch (track) {
+      // ignore: unnecessary_cast
+      LocalTrack() => (track as LocalTrack).toJson(),
+      // ignore: unnecessary_cast
+      SourcedTrack() => (track as SourcedTrack).toJson(),
       _ => track.toJson(),
     };
   }

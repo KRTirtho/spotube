@@ -17,20 +17,22 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
   final VoidCallback onFetchMore;
   final bool isLoadingNextPage;
   final bool hasNextPage;
+  final Widget? titleTrailing;
 
-  const HorizontalPlaybuttonCardView({
+  HorizontalPlaybuttonCardView({
     required this.title,
     required this.items,
     required this.hasNextPage,
     required this.onFetchMore,
     required this.isLoadingNextPage,
-    Key? key,
-  })  : assert(
-          items is List<PlaylistSimple> ||
-              items is List<Album> ||
-              items is List<Artist>,
-        ),
-        super(key: key);
+    this.titleTrailing,
+    super.key,
+  }) : assert(
+          items.every(
+            (item) =>
+                item is PlaylistSimple || item is Artist || item is AlbumSimple,
+          ),
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +51,15 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DefaultTextStyle(
-            style: textTheme.titleMedium!,
-            child: title,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              DefaultTextStyle(
+                style: textTheme.titleMedium!,
+                child: title,
+              ),
+              if (titleTrailing != null) titleTrailing!,
+            ],
           ),
           SizedBox(
             height: height,
@@ -85,11 +93,11 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                         itemBuilder: (context, index) {
                           final item = items[index];
 
-                          return switch (item.runtimeType) {
-                            PlaylistSimple =>
+                          return switch (item) {
+                            PlaylistSimple() =>
                               PlaylistCard(item as PlaylistSimple),
-                            Album => AlbumCard(item as Album),
-                            Artist => Padding(
+                            AlbumSimple() => AlbumCard(item as AlbumSimple),
+                            Artist() => Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12.0),
                                 child: ArtistCard(item as Artist),

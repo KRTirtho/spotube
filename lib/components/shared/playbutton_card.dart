@@ -43,8 +43,8 @@ class PlaybuttonCard extends HookWidget {
     this.onAddToQueuePressed,
     this.onTap,
     this.isOwner = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +53,10 @@ class PlaybuttonCard extends HookWidget {
     final mediaQuery = MediaQuery.of(context);
     final radius = BorderRadius.circular(15);
 
+    final bgColor = useBrightnessValue(
+      theme.colorScheme.surface,
+      theme.colorScheme.surfaceContainerHigh,
+    );
     final double size = useBreakpointValue<double>(
       xs: 130,
       sm: 130,
@@ -72,13 +76,9 @@ class PlaybuttonCard extends HookWidget {
       constraints: BoxConstraints(maxWidth: size),
       margin: margin,
       child: Material(
-        color: Color.lerp(
-          theme.colorScheme.surfaceVariant,
-          theme.colorScheme.surface,
-          useBrightnessValue(.9, .7),
-        ),
+        color: bgColor,
         borderRadius: radius,
-        shadowColor: theme.colorScheme.background,
+        shadowColor: theme.colorScheme.surface,
         elevation: 3,
         child: InkWell(
           mouseCursor: SystemMouseCursors.click,
@@ -158,7 +158,7 @@ class PlaybuttonCard extends HookWidget {
                           Skeleton.keep(
                             child: IconButton(
                               style: IconButton.styleFrom(
-                                backgroundColor: theme.colorScheme.background,
+                                backgroundColor: theme.colorScheme.surface,
                                 foregroundColor: theme.colorScheme.primary,
                                 minimumSize: const Size.square(10),
                               ),

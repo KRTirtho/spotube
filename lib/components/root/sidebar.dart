@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -8,31 +9,30 @@ import 'package:sidebarx/sidebarx.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/connect/connect_device.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/utils/use_brightness_value.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
+import 'package:spotube/pages/profile/profile.dart';
+import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
-import 'package:spotube/services/queries/queries.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class Sidebar extends HookConsumerWidget {
-  final int? selectedIndex;
-  final void Function(int) onSelectedIndexChanged;
   final Widget child;
 
   const Sidebar({
-    required this.selectedIndex,
-    required this.onSelectedIndexChanged,
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static Widget brandLogo() {
     return Container(
@@ -44,12 +44,9 @@ class Sidebar extends HookConsumerWidget {
     );
   }
 
-  static void goToSettings(BuildContext context) {
-    GoRouter.of(context).go("/settings");
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final routerState = GoRouterState.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
@@ -57,41 +54,22 @@ class Sidebar extends HookConsumerWidget {
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
-    final controller = useSidebarXController(
-      selectedIndex: selectedIndex ?? 0,
-      extended: mediaQuery.lgAndUp,
-    );
-
-    final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceVariant;
-
-    final bgColor = useBrightnessValue(
-      Color.lerp(bg, Colors.white, 0.7),
-      Color.lerp(bg, Colors.black, 0.45)!,
-    );
-
     final sidebarTileList = useMemoized(
       () => getSidebarTileList(context.l10n),
       [context.l10n],
     );
 
-    useEffect(() {
-      if (controller.selectedIndex != selectedIndex && selectedIndex != null) {
-        controller.selectIndex(selectedIndex!);
-      }
-      return null;
-    }, [selectedIndex]);
+    final selectedIndex = sidebarTileList.indexWhere(
+      (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
+    );
 
-    useEffect(() {
-      void listener() {
-        onSelectedIndexChanged(controller.selectedIndex);
-      }
+    final controller = useSidebarXController(
+      selectedIndex: selectedIndex,
+      extended: mediaQuery.lgAndUp,
+    );
 
-      controller.addListener(listener);
-      return () {
-        controller.removeListener(listener);
-      };
-    }, [controller]);
+    final theme = Theme.of(context);
+    final bg = theme.colorScheme.surfaceContainer;
 
     useEffect(() {
       if (!context.mounted) return;
@@ -102,6 +80,13 @@ class Sidebar extends HookConsumerWidget {
       }
       return null;
     }, [mediaQuery, controller]);
+
+    useEffect(() {
+      if (controller.selectedIndex != selectedIndex) {
+        controller.selectIndex(selectedIndex);
+      }
+      return null;
+    }, [selectedIndex]);
 
     if (layoutMode == LayoutMode.compact ||
         (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
@@ -116,23 +101,28 @@ class Sidebar extends HookConsumerWidget {
             items: sidebarTileList.mapIndexed(
               (index, e) {
                 return SidebarXItem(
-                  iconWidget: Badge(
-                    backgroundColor: theme.colorScheme.primary,
-                    isLabelVisible: e.title == "Library" && downloadCount > 0,
-                    label: Text(
-                      downloadCount.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
+                  onTap: () {
+                    context.goNamed(e.name);
+                  },
+                  iconBuilder: (selected, hovered) {
+                    return Badge(
+                      backgroundColor: theme.colorScheme.primary,
+                      isLabelVisible: e.title == "Library" && downloadCount > 0,
+                      label: Text(
+                        downloadCount.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
                       ),
-                    ),
-                    child: Icon(
-                      e.icon,
-                      color: selectedIndex == index
-                          ? theme.colorScheme.primary
-                          : null,
-                    ),
-                  ),
+                      child: Icon(
+                        e.icon,
+                        color: selected || hovered
+                            ? theme.colorScheme.primary
+                            : null,
+                      ),
+                    );
+                  },
                   label: e.title,
                 );
               },
@@ -163,7 +153,7 @@ class Sidebar extends HookConsumerWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(
-                color: bgColor?.withOpacity(0.8),
+                color: bg,
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomRight: Radius.circular(10),
@@ -195,7 +185,7 @@ class Sidebar extends HookConsumerWidget {
 }
 
 class SidebarHeader extends HookWidget {
-  const SidebarHeader({Key? key}) : super(key: key);
+  const SidebarHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -234,71 +224,83 @@ class SidebarHeader extends HookWidget {
 
 class SidebarFooter extends HookConsumerWidget {
   const SidebarFooter({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final me = useQueries.user.me(ref);
-    final data = me.data;
+    final me = ref.watch(meProvider);
+    final data = me.asData?.value;
 
-    final avatarImg = TypeConversionUtils.image_X_UrlString(
-      data?.images,
+    final avatarImg = (data?.images).asUrlString(
       index: (data?.images?.length ?? 1) - 1,
       placeholder: ImagePlaceholder.artist,
     );
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
     if (mediaQuery.mdAndDown) {
       return IconButton(
         icon: const Icon(SpotubeIcons.settings),
-        onPressed: () => Sidebar.goToSettings(context),
+        onPressed: () => ServiceUtils.navigateNamed(context, SettingsPage.name),
       );
     }
 
     return Container(
       padding: const EdgeInsets.only(left: 12),
       width: 250,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          if (auth != null && data == null)
-            const CircularProgressIndicator()
-          else if (data != null)
-            Flexible(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: UniversalImage.imageProvider(avatarImg),
-                    onBackgroundImageError: (exception, stackTrace) =>
-                        Assets.userPlaceholder.image(
-                      height: 16,
-                      width: 16,
+          const ConnectDeviceButton.sidebar(),
+          const Gap(10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (auth != null && data == null)
+                const CircularProgressIndicator()
+              else if (data != null)
+                Flexible(
+                  child: InkWell(
+                    onTap: () {
+                      ServiceUtils.pushNamed(context, ProfilePage.name);
+                    },
+                    borderRadius: BorderRadius.circular(30),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage:
+                              UniversalImage.imageProvider(avatarImg),
+                          onBackgroundImageError: (exception, stackTrace) =>
+                              Assets.userPlaceholder.image(
+                            height: 16,
+                            width: 16,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            data.displayName ?? context.l10n.guest,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Text(
-                      data.displayName ?? context.l10n.guest,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+                ),
+              IconButton(
+                icon: const Icon(SpotubeIcons.settings),
+                onPressed: () {
+                  ServiceUtils.pushNamed(context, SettingsPage.name);
+                },
               ),
-            ),
-          IconButton(
-            icon: const Icon(SpotubeIcons.settings),
-            onPressed: () {
-              Sidebar.goToSettings(context);
-            },
+            ],
           ),
         ],
       ),

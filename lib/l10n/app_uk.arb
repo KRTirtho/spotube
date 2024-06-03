@@ -313,5 +313,17 @@
   "help_project_grow_description": "Spotube - це проект з відкритим кодом. Ви можете допомогти цьому проекту зростати, вносячи свій внесок у проект, повідомляючи про помилки або пропонуючи нові функції.",
   "contribute_on_github": "Долучайтесь на GitHub",
   "donate_on_open_collective": "Пожертвуйте на Open Collective",
-  "browse_anonymously": "Анонімно переглядати"
+  "browse_anonymously": "Анонімно переглядати",
+  "enable_connect": "Увімкнути підключення",
+  "enable_connect_description": "Керуйте Spotube з інших пристроїв",
+  "devices": "Пристрої",
+  "select": "Вибрати",
+  "connect_client_alert": "Вас керує {client}",
+  "this_device": "Цей пристрій",
+  "remote": "Віддалений",
+  "local_library": "Місцева бібліотека",
+  "add_library_location": "Додати до бібліотеки",
+  "remove_library_location": "Видалити з бібліотеки",
+  "local_tab": "Місцевий",
+  "stats": "Статистика"
 }

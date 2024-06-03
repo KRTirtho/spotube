@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/palette_provider.dart';
+import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -15,6 +15,7 @@ import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:path/path.dart' as path;
+import 'package:window_manager/window_manager.dart';
 
 class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
   final Ref ref;
@@ -52,7 +53,7 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     if (!sync) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
-      ref.read(ProxyPlaylistNotifier.notifier).updatePalette();
+      ref.read(proxyPlaylistProvider.notifier).updatePalette();
     }
   }
 
@@ -67,6 +68,11 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
   void setDownloadLocation(String downloadDir) {
     if (downloadDir.isEmpty) return;
     state = state.copyWith(downloadLocation: downloadDir);
+  }
+
+  void setLocalLibraryLocation(List<String> localLibraryDirs) {
+    //if (localLibraryDir.isEmpty) return;
+    state = state.copyWith(localLibraryLocation: localLibraryDirs);
   }
 
   void setLayoutMode(LayoutMode mode) {
@@ -103,8 +109,8 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
 
   void setSystemTitleBar(bool isSystemTitleBar) {
     state = state.copyWith(systemTitleBar: isSystemTitleBar);
-    if (DesktopTools.platform.isDesktop) {
-      DesktopTools.window.setTitleBarStyle(
+    if (kIsDesktop) {
+      windowManager.setTitleBarStyle(
         isSystemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
       );
     }
@@ -127,6 +133,10 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
     state = state.copyWith(endlessPlayback: endless);
   }
 
+  void setEnableConnect(bool enable) {
+    state = state.copyWith(enableConnect: enable);
+  }
+
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
@@ -147,8 +157,8 @@ class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
       );
     }
 
-    if (DesktopTools.platform.isDesktop) {
-      await DesktopTools.window.setTitleBarStyle(
+    if (kIsDesktop) {
+      await windowManager.setTitleBarStyle(
         state.systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
       );
     }

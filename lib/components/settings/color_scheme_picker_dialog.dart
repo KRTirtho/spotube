@@ -8,9 +8,9 @@ import 'package:system_theme/system_theme.dart';
 class SpotubeColor extends Color {
   final String name;
 
-  const SpotubeColor(int color, {required this.name}) : super(color);
+  const SpotubeColor(super.color, {required this.name});
 
-  const SpotubeColor.from(int value, {required this.name}) : super(value);
+  const SpotubeColor.from(super.value, {required this.name});
 
   factory SpotubeColor.fromString(String string) {
     final slices = string.split(":");
@@ -44,7 +44,7 @@ final Set<SpotubeColor> colorsMap = {
 };
 
 class ColorSchemePickerDialog extends HookConsumerWidget {
-  const ColorSchemePickerDialog({Key? key}) : super(key: key);
+  const ColorSchemePickerDialog({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -119,8 +119,8 @@ class ColorTile extends StatelessWidget {
     this.onPressed,
     this.tooltip = "",
     this.isCompact = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   factory ColorTile.compact({
     required Color color,
@@ -179,9 +179,9 @@ class ColorTile extends StatelessWidget {
       colorScheme.primaryContainer,
       colorScheme.secondary,
       colorScheme.secondaryContainer,
-      colorScheme.background,
       colorScheme.surface,
-      colorScheme.surfaceVariant,
+      colorScheme.surface,
+      colorScheme.surfaceContainerHighest,
       colorScheme.onPrimary,
       colorScheme.onSurface,
     ];

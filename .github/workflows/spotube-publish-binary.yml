@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to publish (x.x.x)
-        default: 3.1.0
+        default: 3.7.0
         required: true
       dry_run:
         description: Dry run
@@ -66,7 +66,7 @@ jobs:
 
       - name: Release to AUR
         if: ${{ !inputs.dry_run }}
-        uses: KSXGitHub/github-actions-deploy-aur@v2.7.0
+        uses: KSXGitHub/github-actions-deploy-aur@v2.7.1
         with:
           pkgname: spotube-bin
           pkgbuild: aur-struct/PKGBUILD

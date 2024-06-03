@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://github.com/krtirtho/spotube/compare/v3.6.0...v3.7.0) (2024-06-03)
+
+
+### Features
+
+* local library folder cards ([fc5bfa0](https://github.com/krtirtho/spotube/commit/fc5bfa089ce2f46ab786565d6750564d704ee7e0))
+* Local music library ([#1479](https://github.com/krtirtho/spotube/issues/1479)) ([22caa81](https://github.com/krtirtho/spotube/commit/22caa818f4ac31626aaff6952e43512b42237d00))
+* personalized stats based on local music history ([#1522](https://github.com/krtirtho/spotube/issues/1522)) ([82307bc](https://github.com/krtirtho/spotube/commit/82307bc030035b03ab1b8d8ec7b24da19a866b12))
+* play initially available tracks of playlist/album immediately and fetch rest in background [#670](https://github.com/krtirtho/spotube/issues/670) ([02acbd9](https://github.com/krtirtho/spotube/commit/02acbd93271145dde365f6c547e0d9d902be65f1))
+* **player:** add volume slider floating label showing percentage ([#1445](https://github.com/krtirtho/spotube/issues/1445)) ([8fad225](https://github.com/krtirtho/spotube/commit/8fad2251b3536e9468e0fb193939ead98bad3bc6)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1171](https://github.com/krtirtho/spotube/issues/1171) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1082](https://github.com/krtirtho/spotube/issues/1082)
+* **translations:** add Basque translation ([#1493](https://github.com/krtirtho/spotube/issues/1493)) ([dbc1c45](https://github.com/krtirtho/spotube/commit/dbc1c452dd53153c61589f956ea9836cea7bf2bb))
+* **translations:** add Finnish translations ([#1449](https://github.com/krtirtho/spotube/issues/1449)) ([edc997e](https://github.com/krtirtho/spotube/commit/edc997e7470ce17f60c96b8198dc8851cbf21f18)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1171](https://github.com/krtirtho/spotube/issues/1171) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1082](https://github.com/krtirtho/spotube/issues/1082)
+* **translations:** add georgian language ([#1450](https://github.com/krtirtho/spotube/issues/1450)) ([1e7f0e1](https://github.com/krtirtho/spotube/commit/1e7f0e1fe71e0a8d86614fc884861f8791469112))
+* **translations:** add Indonesian translation ([#1426](https://github.com/krtirtho/spotube/issues/1426)) ([0280654](https://github.com/krtirtho/spotube/commit/0280654bb6bad373aee521f5a866228d2d38f038)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1171](https://github.com/krtirtho/spotube/issues/1171) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1082](https://github.com/krtirtho/spotube/issues/1082)
+* **translations:** Improve tr locales ([#1419](https://github.com/krtirtho/spotube/issues/1419)) ([bf45681](https://github.com/krtirtho/spotube/commit/bf45681deb951c772bf6ca05e213c949c04bded1)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1171](https://github.com/krtirtho/spotube/issues/1171) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1082](https://github.com/krtirtho/spotube/issues/1082)
+* upgrade to Flutter 3.22.0 ([71341ec](https://github.com/krtirtho/spotube/commit/71341ec0bda6ed985b43836712075b97a2cf8bac))
+
+
+### Bug Fixes
+
+* fallback to LRCLIB when lyrics line less than 6 lines [#1461](https://github.com/krtirtho/spotube/issues/1461) ([9aea354](https://github.com/krtirtho/spotube/commit/9aea35468fa7cd176ddc8810b37b90c2d8246931))
+* **linux:** tray icon not showing [#541](https://github.com/krtirtho/spotube/issues/541) ([7ac7917](https://github.com/krtirtho/spotube/commit/7ac791757abb30f40374c169c4211916287bb3f3))
+* local track not showing up in queue ([d82261c](https://github.com/krtirtho/spotube/commit/d82261cb25ece63f85af0e40216cf32dccdc9dd5))
+* **macos:** Logs directory not created by default [#1353](https://github.com/krtirtho/spotube/issues/1353) ([4ca8939](https://github.com/krtirtho/spotube/commit/4ca893950b07f678acf7db690112c47d21e54782))
+* **playback:** skipping tracks with unplayable sources instead of falling back [#1492](https://github.com/krtirtho/spotube/issues/1492) ([c607a33](https://github.com/krtirtho/spotube/commit/c607a330ed279dfbebe8d4bd325745ac6301a58f))
+* **search:** load more button not working [#1417](https://github.com/krtirtho/spotube/issues/1417) ([7e07c2e](https://github.com/krtirtho/spotube/commit/7e07c2e1985da7ccb96b1fac2ecd703720068d26))
+* some text are garbled in different parts of the app [#1463](https://github.com/krtirtho/spotube/issues/1463) [#1505](https://github.com/krtirtho/spotube/issues/1505) ([d2683c5](https://github.com/krtirtho/spotube/commit/d2683c52d81d807be6ff72f15b8e9eb18181e211))
+* spotify friends and user profile icon (mobile) showing when not authenticated [#1410](https://github.com/krtirtho/spotube/issues/1410) ([9bccbc9](https://github.com/krtirtho/spotube/commit/9bccbc93c63dd34f6e15ff68c276976ecd1d9a33))
+* **updater:** dead link ([#1408](https://github.com/krtirtho/spotube/issues/1408)) ([6907f9c](https://github.com/krtirtho/spotube/commit/6907f9c756d8f49aadb1b23a2a1dc8bf7d658dc0)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1171](https://github.com/krtirtho/spotube/issues/1171) [#1082](https://github.com/krtirtho/spotube/issues/1082) [#1082](https://github.com/krtirtho/spotube/issues/1082)
+* windows SSL Certificate error breaking login [#905](https://github.com/krtirtho/spotube/issues/905) ([#1474](https://github.com/krtirtho/spotube/issues/1474)) ([937a706](https://github.com/krtirtho/spotube/commit/937a706ac9c0e59943b2609e5cc398dcdbed2344)), closes [#1468](https://github.com/krtirtho/spotube/issues/1468)
+* **windows:** installer tries to install in current directory ([c3c9fc5](https://github.com/krtirtho/spotube/commit/c3c9fc544c68b3d897dd7241a61cab7a199b4539))
+
+## [3.6.0](https://github.com/krtirtho/spotube/compare/v3.5.0...v3.6.0) (2024-04-15)
+
+
+### Features
+
+* add Spotify homepage personalized recommendations ([#1402](https://github.com/krtirtho/spotube/issues/1402)) ([9e25c74](https://github.com/krtirtho/spotube/commit/9e25c742d4e43e4e10d2b48afb8e6d90288ffa11))
+* add user profile page ([39e97ee](https://github.com/krtirtho/spotube/commit/39e97eef34d87348a264843e145f31f82832d12e))
+* **android:** Filter Device To Force High Frame Rate ([#880](https://github.com/krtirtho/spotube/issues/880)) ([6e41b10](https://github.com/krtirtho/spotube/commit/6e41b106fa989adee393d3ce2535e75446ad3eea))
+* improved caching based on riverpod ([#1343](https://github.com/krtirtho/spotube/issues/1343)) ([6673e5a](https://github.com/krtirtho/spotube/commit/6673e5a8a86b9667cf9dbff9bb7c40ea6b7de771))
+* LAN connect a.k.a control remote Spotube playback and local output device selection ([#1355](https://github.com/krtirtho/spotube/issues/1355)) ([68374ef](https://github.com/krtirtho/spotube/commit/68374efd3ec556f31b937e5b96920787b54eec78))
+* **lyrics:** add LRCLIB lyrics provider as fallback ([5afe823](https://github.com/krtirtho/spotube/commit/5afe823abdb198340b55d138d8173d886a811632))
+* search history support [#1236](https://github.com/krtirtho/spotube/issues/1236) ([82b1cfa](https://github.com/krtirtho/spotube/commit/82b1cfa0d775e3958c666280943a893c9113d468))
+* **translations:** Add Czech translation ([#1401](https://github.com/krtirtho/spotube/issues/1401)) ([5a6b800](https://github.com/krtirtho/spotube/commit/5a6b80091259359bc38c4b91cd8cb496c4270fa4))
+* **translations:** add Thai Language ([#1319](https://github.com/krtirtho/spotube/issues/1319)) ([b70f250](https://github.com/krtirtho/spotube/commit/b70f250e8d5137fd990787ec9e3d058126cf14f3)), closes [#1310](https://github.com/krtirtho/spotube/issues/1310) [#1311](https://github.com/krtirtho/spotube/issues/1311)
+
+
+### Bug Fixes
+
+* instance of Artist bug [#1362](https://github.com/krtirtho/spotube/issues/1362) ([c8dd802](https://github.com/krtirtho/spotube/commit/c8dd8025ec96bd78ed77cae35f1429aa48c16fde))
+* **playback:** sponsor block skips and stutters in same position ([0d080b7](https://github.com/krtirtho/spotube/commit/0d080b77b72529c0be5ebc27ace1c52307511f73))
+
 ## [3.5.0](https://github.com/krtirtho/spotube/compare/v3.4.1...v3.5.0) (2024-03-08)
 
 

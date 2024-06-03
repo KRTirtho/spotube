@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -17,24 +18,21 @@ import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/utils/platform.dart';
 
 class UserPlaylists extends HookConsumerWidget {
-  const UserPlaylists({Key? key}) : super(key: key);
+  const UserPlaylists({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final searchText = useState('');
 
-    final auth = ref.watch(AuthenticationNotifier.provider);
+    final auth = ref.watch(authenticationProvider);
 
-    final playlistsQuery = useQueries.playlist.ofMine(ref);
-
-    final pagePlaylists = useMemoized(
-      () => playlistsQuery.pages
-          .expand((page) => page.items?.toList() ?? <PlaylistSimple>[]),
-      [playlistsQuery.pages],
-    );
+    final playlistsQuery = ref.watch(favoritePlaylistsProvider);
+    final playlistsQueryNotifier =
+        ref.watch(favoritePlaylistsProvider.notifier);
 
     final likedTracksPlaylist = useMemoized(
       () => PlaylistSimple()
@@ -58,12 +56,12 @@ class UserPlaylists extends HookConsumerWidget {
         if (searchText.value.isEmpty) {
           return [
             likedTracksPlaylist,
-            ...pagePlaylists,
+            ...?playlistsQuery.asData?.value.items,
           ];
         }
         return [
           likedTracksPlaylist,
-          ...pagePlaylists,
+          ...?playlistsQuery.asData?.value.items,
         ]
             .map((e) => (weightedRatio(e.name!, searchText.value), e))
             .sorted((a, b) => b.$1.compareTo(a.$1))
@@ -71,7 +69,7 @@ class UserPlaylists extends HookConsumerWidget {
             .map((e) => e.$2)
             .toList();
       },
-      [pagePlaylists, searchText.value],
+      [playlistsQuery, searchText.value],
     );
 
     final controller = useScrollController();
@@ -81,46 +79,46 @@ class UserPlaylists extends HookConsumerWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: playlistsQuery.refresh,
+      onRefresh: () async {
+        ref.invalidate(favoritePlaylistsProvider);
+      },
       child: SafeArea(
         child: InterScrollbar(
           controller: controller,
           child: CustomScrollView(
             controller: controller,
             slivers: [
-              SliverToBoxAdapter(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: SearchBar(
-                        onChanged: (value) => searchText.value = value,
-                        hintText: context.l10n.filter_playlists,
-                        leading: const Icon(SpotubeIcons.filter),
+              SliverAppBar(
+                floating: true,
+                flexibleSpace: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: SearchBar(
+                    onChanged: (value) => searchText.value = value,
+                    hintText: context.l10n.filter_playlists,
+                    leading: const Icon(SpotubeIcons.filter),
+                  ),
+                ),
+                bottom: PreferredSize(
+                  preferredSize:
+                      Size.fromHeight(kIsDesktop ? 35 : kToolbarHeight),
+                  child: Row(
+                    children: [
+                      const Gap(10),
+                      const PlaylistCreateDialogButton(),
+                      const Gap(10),
+                      ElevatedButton.icon(
+                        icon: const Icon(SpotubeIcons.magic),
+                        label: Text(context.l10n.generate_playlist),
+                        onPressed: () {
+                          GoRouter.of(context).push("/library/generate");
+                        },
                       ),
-                    ),
-                    Row(
-                      children: [
-                        const SizedBox(width: 10),
-                        const PlaylistCreateDialogButton(),
-                        const SizedBox(width: 10),
-                        ElevatedButton.icon(
-                          icon: const Icon(SpotubeIcons.magic),
-                          label: Text(context.l10n.generate_playlist),
-                          onPressed: () {
-                            GoRouter.of(context).push("/library/generate");
-                          },
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    ),
-                  ],
+                      const Gap(10),
+                    ],
+                  ),
                 ),
               ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 10),
-              ),
+              const SliverGap(10),
               SliverLayoutBuilder(builder: (context, constrains) {
                 return SliverGrid.builder(
                   itemCount: playlists.isEmpty ? 6 : playlists.length + 1,
@@ -132,14 +130,14 @@ class UserPlaylists extends HookConsumerWidget {
                   ),
                   itemBuilder: (context, index) {
                     if (playlists.isNotEmpty && index == playlists.length) {
-                      if (!playlistsQuery.hasNextPage) {
+                      if (playlistsQuery.asData?.value.hasMore != true) {
                         return const SizedBox.shrink();
                       }
 
                       return Waypoint(
                         controller: controller,
                         isGrid: true,
-                        onTouchEdge: playlistsQuery.fetchNext,
+                        onTouchEdge: playlistsQueryNotifier.fetchMore,
                         child: Skeletonizer(
                           enabled: true,
                           child: PlaylistCard(FakeData.playlistSimple),

@@ -11,14 +11,15 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 
 class BlackListPage extends HookConsumerWidget {
-  const BlackListPage({Key? key}) : super(key: key);
+  static const name = "blacklist";
+
+  const BlackListPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final controller = useScrollController();
-    final blacklist = ref.watch(BlackListNotifier.provider);
+    final blacklist = ref.watch(blacklistProvider);
     final searchText = useState("");
-
     final filteredBlacklist = useMemoized(
       () {
         if (searchText.value.isEmpty) {
@@ -74,7 +75,7 @@ class BlackListPage extends HookConsumerWidget {
                     icon: Icon(SpotubeIcons.trash, color: Colors.red[400]),
                     onPressed: () {
                       ref
-                          .read(BlackListNotifier.provider.notifier)
+                          .read(blacklistProvider.notifier)
                           .remove(filteredBlacklist.elementAt(index));
                     },
                   ),

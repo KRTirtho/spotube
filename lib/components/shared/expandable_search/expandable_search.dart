@@ -10,12 +10,12 @@ class ExpandableSearchField extends StatelessWidget {
   final FocusNode searchFocus;
 
   const ExpandableSearchField({
-    Key? key,
+    super.key,
     required this.isFiltering,
     required this.onChangeFiltering,
     required this.searchController,
     required this.searchFocus,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +60,12 @@ class ExpandableSearchButton extends StatelessWidget {
   final ValueChanged<bool>? onPressed;
 
   const ExpandableSearchButton({
-    Key? key,
+    super.key,
     required this.isFiltering,
     required this.searchFocus,
     this.icon = const Icon(SpotubeIcons.filter),
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

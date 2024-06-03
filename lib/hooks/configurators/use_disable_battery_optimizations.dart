@@ -1,12 +1,12 @@
 import 'package:disable_battery_optimization/disable_battery_optimization.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+
 import 'package:spotube/hooks/utils/use_async_effect.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
+import 'package:spotube/utils/platform.dart';
 
 void useDisableBatteryOptimizations() {
   useAsyncEffect(() async {
-    if (!DesktopTools.platform.isAndroid ||
-        KVStoreService.askedForBatteryOptimization) return;
+    if (!kIsAndroid || KVStoreService.askedForBatteryOptimization) return;
 
     await DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
 

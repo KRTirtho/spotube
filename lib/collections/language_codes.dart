@@ -81,10 +81,10 @@ abstract class LanguageLocals {
     //   name: "Bashkir",
     //   nativeName: "башҡорт теле",
     // ),
-    // "eu": const ISOLanguageName(
-    //   name: "Basque",
-    //   nativeName: "euskara,",
-    // ),
+    "eu": const ISOLanguageName(
+      name: "Basque",
+      nativeName: "euskara",
+    ),
     // "be": const ISOLanguageName(
     //   name: "Belarusian",
     //   nativeName: "Беларуская",
@@ -157,10 +157,10 @@ abstract class LanguageLocals {
     //   name: "Croatian",
     //   nativeName: "hrvatski",
     // ),
-    // "cs": const ISOLanguageName(
-    //   name: "Czech",
-    //   nativeName: "česky, čeština",
-    // ),
+    "cs": const ISOLanguageName(
+      name: "Czech",
+      nativeName: "česky, čeština",
+    ),
     // "da": const ISOLanguageName(
     //   name: "Danish",
     //   nativeName: "dansk",
@@ -197,10 +197,10 @@ abstract class LanguageLocals {
     //   name: "Fijian",
     //   nativeName: "vosa Vakaviti",
     // ),
-    // "fi": const ISOLanguageName(
-    //   name: "Finnish",
-    //   nativeName: "suomi",
-    // ),
+    "fi": const ISOLanguageName(
+      name: "Finnish",
+      nativeName: "suomi",
+    ),
     "fr": const ISOLanguageName(
       name: "French",
       nativeName: "français",
@@ -213,10 +213,10 @@ abstract class LanguageLocals {
     //   name: "Galician",
     //   nativeName: "Galego",
     // ),
-    // "ka": const ISOLanguageName(
-    //   name: "Georgian",
-    //   nativeName: "ქართული",
-    // ),
+    "ka": const ISOLanguageName(
+      name: "Georgian",
+      nativeName: "ქართული",
+    ),
     "de": const ISOLanguageName(
       name: "German",
       nativeName: "Deutsch",
@@ -265,10 +265,10 @@ abstract class LanguageLocals {
     //   name: "Interlingua",
     //   nativeName: "Interlingua",
     // ),
-    // "id": const ISOLanguageName(
-    //   name: "Indonesian",
-    //   nativeName: "Bahasa Indonesia",
-    // ),
+    "id": const ISOLanguageName(
+      name: "Indonesian",
+      nativeName: "Bahasa Indonesia",
+    ),
     // "ie": const ISOLanguageName(
     //   name: "Interlingue",
     //   nativeName: "Occidental",
@@ -637,10 +637,10 @@ abstract class LanguageLocals {
     //   name: "Tajik",
     //   nativeName: "тоҷикӣ, toğikī, تاجیکی‎",
     // ),
-    // "th": const ISOLanguageName(
-    //   name: "Thai",
-    //   nativeName: "ไทย",
-    // ),
+    "th": const ISOLanguageName(
+      name: "Thai",
+      nativeName: "ไทย",
+    ),
     // "ti": const ISOLanguageName(
     //   name: "Tigrinya",
     //   nativeName: "ትግርኛ",

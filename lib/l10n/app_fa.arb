@@ -313,5 +313,17 @@
   "help_project_grow_description": "Spotube یک پروژه متن باز است. شما می‌توانید با به پروژه کمک کردن، گزارش دادن اشکالات یا پیشنهاد ویژگی‌های جدید، به این پروژه کمک کنید.",
   "contribute_on_github": "مشارکت در GitHub",
   "donate_on_open_collective": "کمک مالی در Open Collective",
-  "browse_anonymously": "مرور به صورت ناشناس"
+  "browse_anonymously": "مرور به صورت ناشناس",
+  "enable_connect": "فعال‌سازی اتصال",
+  "enable_connect_description": "کنترل Spotube از دیگر دستگاه‌ها",
+  "devices": "دستگاه‌ها",
+  "select": "انتخاب",
+  "connect_client_alert": "شما توسط {client} کنترل می‌شوید",
+  "this_device": "این دستگاه",
+  "remote": "راه‌دور",
+  "local_library": "کتابخانه محلی",
+  "add_library_location": "اضافه کردن به کتابخانه",
+  "remove_library_location": "حذف از کتابخانه",
+  "local_tab": "محلی",
+  "stats": "آمار"
 }
