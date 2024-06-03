@@ -7,7 +7,7 @@
 /// TexturedPolak@github => Polish
 /// yuri-val@github => Ukrainian
 /// energywave@github, ncvescera@github, OpenCode@github => Italian
-/// mdksec@github, mikropsoft@github => Turkish
+/// mikropsoft@github => Turkish
 /// Stephan-P@github, SecularSteve@github => Dutch
 /// doannc2212@github => Vietnamese
 /// sappho192@github => Korean
@@ -28,11 +28,14 @@ class L10n {
     const Locale('de', 'GE'),
     const Locale('es', 'ES'),
     const Locale('fa', 'IR'),
+    const Locale('fi', 'FI'),
     const Locale('fr', 'FR'),
     const Locale('ne', 'NP'),
     const Locale('hi', 'IN'),
+    const Locale('id', 'ID'),
     const Locale('it', 'IT'),
     const Locale('ja', 'JP'),
+    const Locale('ka', 'GE'),
     const Locale('ko', 'KR'),
     const Locale('nl', 'NL'),
     const Locale('pl', 'PL'),
@@ -43,5 +46,6 @@ class L10n {
     const Locale('tr', 'TR'),
     const Locale('zh', 'CN'),
     const Locale('vi', 'VN'),
+    const Locale('eu', 'ES'),
   ];
 }

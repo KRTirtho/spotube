@@ -11,6 +11,8 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 
 class BlackListPage extends HookConsumerWidget {
+  static const name = "blacklist";
+
   const BlackListPage({super.key});
 
   @override
@@ -18,7 +20,6 @@ class BlackListPage extends HookConsumerWidget {
     final controller = useScrollController();
     final blacklist = ref.watch(blacklistProvider);
     final searchText = useState("");
-
     final filteredBlacklist = useMemoized(
       () {
         if (searchText.value.isEmpty) {

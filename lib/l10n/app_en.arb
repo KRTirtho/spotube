@@ -107,6 +107,9 @@
   "always_on_top": "Always on top",
   "exit_mini_player": "Exit Mini player",
   "download_location": "Download location",
+  "local_library": "Local library",
+  "add_library_location": "Add to library",
+  "remove_library_location": "Remove from library",
   "account": "Account",
   "login_with_spotify": "Login with your Spotify account",
   "connect_with_spotify": "Connect with Spotify",
@@ -295,6 +298,7 @@
   "delete_playlist": "Delete Playlist",
   "delete_playlist_confirmation": "Are you sure you want to delete this playlist?",
   "local_tracks": "Local Tracks",
+  "local_tab": "Local",
   "song_link": "Song Link",
   "skip_this_nonsense": "Skip this nonsense",
   "freedom_of_music": "“Freedom of Music”",
@@ -320,5 +324,6 @@
   "select": "Select",
   "connect_client_alert": "You're being controlled by {client}",
   "this_device": "This Device",
-  "remote": "Remote"
+  "remote": "Remote",
+  "stats": "Stats"
 }

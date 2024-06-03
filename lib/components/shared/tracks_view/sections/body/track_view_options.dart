@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/confirm_download_dialog.dart';
@@ -8,6 +9,7 @@ import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_provider.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
@@ -23,6 +25,7 @@ class TrackViewBodyOptions extends HookConsumerWidget {
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
     final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
     final audioSource =
         ref.watch(userPreferencesProvider.select((s) => s.audioSource));
 
@@ -72,6 +75,12 @@ class TrackViewBodyOptions extends HookConsumerWidget {
             {
               playlistNotifier.addTracksAtFirst(selectedTracks);
               playlistNotifier.addCollection(props.collectionId);
+              if (props.collection is AlbumSimple) {
+                historyNotifier.addAlbums([props.collection as AlbumSimple]);
+              } else {
+                historyNotifier
+                    .addPlaylists([props.collection as PlaylistSimple]);
+              }
               trackViewState.deselectAll();
               break;
             }
@@ -79,6 +88,12 @@ class TrackViewBodyOptions extends HookConsumerWidget {
             {
               playlistNotifier.addTracks(selectedTracks);
               playlistNotifier.addCollection(props.collectionId);
+              if (props.collection is AlbumSimple) {
+                historyNotifier.addAlbums([props.collection as AlbumSimple]);
+              } else {
+                historyNotifier
+                    .addPlaylists([props.collection as PlaylistSimple]);
+              }
               trackViewState.deselectAll();
               break;
             }

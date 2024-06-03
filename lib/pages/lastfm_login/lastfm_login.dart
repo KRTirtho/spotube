@@ -10,6 +10,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
 
 class LastFMLoginPage extends HookConsumerWidget {
+  static const name = "lastfm_login";
   const LastFMLoginPage({super.key});
 
   @override

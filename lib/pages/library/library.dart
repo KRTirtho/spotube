@@ -12,6 +12,8 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 
 class LibraryPage extends HookConsumerWidget {
+  static const name = "library";
+
   const LibraryPage({super.key});
   @override
   Widget build(BuildContext context, ref) {
@@ -27,7 +29,7 @@ class LibraryPage extends HookConsumerWidget {
             leading: ThemedButtonsTabBar(
               tabs: [
                 Tab(text: "  ${context.l10n.playlists}  "),
-                Tab(text: "  ${context.l10n.local_tracks}  "),
+                Tab(text: "  ${context.l10n.local_tab}  "),
                 Tab(
                   child: Badge(
                     isLabelVisible: downloadingCount > 0,

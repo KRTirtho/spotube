@@ -5,12 +5,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/provider/connect/connect.dart';
+import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -28,6 +30,7 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
     final props = InheritedTrackView.of(context);
     final playlist = ref.watch(proxyPlaylistProvider);
     final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
 
     final isActive = playlist.collections.contains(props.collectionId);
 
@@ -44,28 +47,45 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
       try {
         isLoading.value = true;
 
-        final allTracks = await props.pagination.onFetchAll();
-
+        final initialTracks = props.tracks;
         if (!context.mounted) return;
 
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
         if (isRemoteDevice) {
+          final allTracks = await props.pagination.onFetchAll();
           final remotePlayback = ref.read(connectProvider.notifier);
           await remotePlayback.load(
-            WebSocketLoadEventData(
-                tracks: allTracks,
-                collectionId: props.collectionId,
-                initialIndex: Random().nextInt(allTracks.length)),
+            props.collection is AlbumSimple
+                ? WebSocketLoadEventData.album(
+                    tracks: allTracks,
+                    collection: props.collection as AlbumSimple,
+                    initialIndex: Random().nextInt(allTracks.length))
+                : WebSocketLoadEventData.playlist(
+                    tracks: allTracks,
+                    collection: props.collection as PlaylistSimple,
+                    initialIndex: Random().nextInt(allTracks.length),
+                  ),
           );
           await remotePlayback.setShuffle(true);
         } else {
           await playlistNotifier.load(
-            allTracks,
+            initialTracks,
             autoPlay: true,
-            initialIndex: Random().nextInt(allTracks.length),
+            initialIndex: Random().nextInt(initialTracks.length),
           );
           await audioPlayer.setShuffle(true);
           playlistNotifier.addCollection(props.collectionId);
+          if (props.collection is AlbumSimple) {
+            historyNotifier.addAlbums([props.collection as AlbumSimple]);
+          } else {
+            historyNotifier.addPlaylists([props.collection as PlaylistSimple]);
+          }
+
+          final allTracks = await props.pagination.onFetchAll();
+
+          await playlistNotifier.addTracks(
+            allTracks.sublist(initialTracks.length),
+          );
         }
       } finally {
         isLoading.value = false;
@@ -76,22 +96,39 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
       try {
         isLoading.value = true;
 
-        final allTracks = await props.pagination.onFetchAll();
+        final initialTracks = props.tracks;
 
         if (!context.mounted) return;
 
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
         if (isRemoteDevice) {
+          final allTracks = await props.pagination.onFetchAll();
           final remotePlayback = ref.read(connectProvider.notifier);
           await remotePlayback.load(
-            WebSocketLoadEventData(
-              tracks: allTracks,
-              collectionId: props.collectionId,
-            ),
+            props.collection is AlbumSimple
+                ? WebSocketLoadEventData.album(
+                    tracks: allTracks,
+                    collection: props.collection as AlbumSimple,
+                  )
+                : WebSocketLoadEventData.playlist(
+                    tracks: allTracks,
+                    collection: props.collection as PlaylistSimple,
+                  ),
           );
         } else {
-          await playlistNotifier.load(allTracks, autoPlay: true);
+          await playlistNotifier.load(initialTracks, autoPlay: true);
           playlistNotifier.addCollection(props.collectionId);
+          if (props.collection is AlbumSimple) {
+            historyNotifier.addAlbums([props.collection as AlbumSimple]);
+          } else {
+            historyNotifier.addPlaylists([props.collection as PlaylistSimple]);
+          }
+
+          final allTracks = await props.pagination.onFetchAll();
+
+          await playlistNotifier.addTracks(
+            allTracks.sublist(initialTracks.length),
+          );
         }
       } finally {
         isLoading.value = false;

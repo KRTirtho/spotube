@@ -76,7 +76,7 @@ class SearchTracksSection extends HookConsumerWidget {
 
                     if (shouldPlay) {
                       await remotePlayback.load(
-                        WebSocketLoadEventData(
+                        WebSocketLoadEventData.playlist(
                           tracks: [track],
                         ),
                       );
@@ -113,7 +113,7 @@ class SearchTracksSection extends HookConsumerWidget {
             child: TextButton(
               onPressed: searchTrack.isLoadingNextPage
                   ? null
-                  : () => searchTrackNotifier.fetchMore,
+                  : searchTrackNotifier.fetchMore,
               child: searchTrack.isLoadingNextPage
                   ? const CircularProgressIndicator()
                   : Text(context.l10n.load_more),

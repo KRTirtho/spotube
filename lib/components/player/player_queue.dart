@@ -122,7 +122,8 @@ class PlayerQueue extends HookConsumerWidget {
                 top: 5.0,
               ),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                color:
+                    theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
                 borderRadius: borderRadius,
               ),
               child: CallbackShortcuts(

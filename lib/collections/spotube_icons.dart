@@ -121,4 +121,7 @@ abstract class SpotubeIcons {
   static const monitor = FeatherIcons.monitor;
   static const power = FeatherIcons.power;
   static const bluetooth = FeatherIcons.bluetooth;
+  static const chart = FeatherIcons.barChart2;
+  static const folderAdd = FeatherIcons.folderPlus;
+  static const folderRemove = FeatherIcons.folderMinus;
 }

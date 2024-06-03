@@ -1,10 +1,10 @@
 library spotify;
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
@@ -23,9 +23,9 @@ import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/wikipedia/wikipedia.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:wikipedia_api/wikipedia_api.dart';
 

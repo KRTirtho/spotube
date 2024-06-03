@@ -12,6 +12,8 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/themes/theme.dart';
 
 class GettingStarting extends HookConsumerWidget {
+  static const name = "getting_started";
+
   const GettingStarting({super.key});
 
   @override

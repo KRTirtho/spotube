@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
+import 'package:spotube/pages/home/feed/feed_section.dart';
 import 'package:spotube/provider/spotify/views/home.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -41,8 +42,13 @@ class HomePageFeedSection extends HookConsumerWidget {
             child: TextButton.icon(
               label: const Text("Browse More"),
               icon: const Icon(SpotubeIcons.angleRight),
-              onPressed: () =>
-                  ServiceUtils.push(context, "/feeds/${section.uri}"),
+              onPressed: () => ServiceUtils.pushNamed(
+                context,
+                HomeFeedSectionPage.name,
+                pathParameters: {
+                  "feedId": section.uri,
+                },
+              ),
             ),
           ),
         );

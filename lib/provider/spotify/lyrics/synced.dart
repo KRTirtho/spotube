@@ -9,29 +9,34 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
   Track get _track => arg!;
 
   Future<SubtitleSimple> getSpotifyLyrics(String? token) async {
-    final res = await http.get(
-        Uri.parse(
-          "https://spclient.wg.spotify.com/color-lyrics/v2/track/${_track.id}?format=json&market=from_token",
-        ),
+    final res = await globalDio.getUri(
+      Uri.parse(
+        "https://spclient.wg.spotify.com/color-lyrics/v2/track/${_track.id}?format=json&market=from_token",
+      ),
+      options: Options(
         headers: {
           "User-Agent":
               "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
           "App-platform": "WebPlayer",
           "authorization": "Bearer $token"
-        });
+        },
+        responseType: ResponseType.json,
+        validateStatus: (status) => true,
+      ),
+    );
 
     if (res.statusCode != 200) {
       return SubtitleSimple(
         lyrics: [],
         name: _track.name!,
-        uri: res.request!.url,
+        uri: res.realUri,
         rating: 0,
         provider: "Spotify",
       );
     }
-    final linesRaw = Map.castFrom<dynamic, dynamic, String, dynamic>(
-      jsonDecode(res.body),
-    )["lyrics"]?["lines"] as List?;
+    final linesRaw =
+        Map.castFrom<dynamic, dynamic, String, dynamic>(res.data)["lyrics"]
+            ?["lines"] as List?;
 
     final lines = linesRaw?.map((line) {
           return LyricSlice(
@@ -44,7 +49,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
     return SubtitleSimple(
       lyrics: lines,
       name: _track.name!,
-      uri: res.request!.url,
+      uri: res.realUri,
       rating: 100,
       provider: "Spotify",
     );
@@ -55,7 +60,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
   Future<SubtitleSimple> getLRCLibLyrics() async {
     final packageInfo = await PackageInfo.fromPlatform();
 
-    final res = await http.get(
+    final res = await globalDio.getUri(
       Uri(
         scheme: "https",
         host: "lrclib.net",
@@ -67,23 +72,26 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
           "duration": _track.duration?.inSeconds.toString(),
         },
       ),
-      headers: {
-        "User-Agent":
-            "Spotube v${packageInfo.version} (https://github.com/KRTirtho/spotube)"
-      },
+      options: Options(
+        headers: {
+          "User-Agent":
+              "Spotube v${packageInfo.version} (https://github.com/KRTirtho/spotube)"
+        },
+        responseType: ResponseType.json,
+      ),
     );
 
     if (res.statusCode != 200) {
       return SubtitleSimple(
         lyrics: [],
         name: _track.name!,
-        uri: res.request!.url,
+        uri: res.realUri,
         rating: 0,
         provider: "LRCLib",
       );
     }
 
-    final json = jsonDecode(res.body) as Map<String, dynamic>;
+    final json = res.data as Map<String, dynamic>;
 
     final syncedLyricsRaw = json["syncedLyrics"] as String?;
     final syncedLyrics = syncedLyricsRaw?.isNotEmpty == true
@@ -97,7 +105,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
       return SubtitleSimple(
         lyrics: syncedLyrics!,
         name: _track.name!,
-        uri: res.request!.url,
+        uri: res.realUri,
         rating: 100,
         provider: "LRCLib",
       );
@@ -111,7 +119,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
     return SubtitleSimple(
       lyrics: plainLyrics,
       name: _track.name!,
-      uri: res.request!.url,
+      uri: res.realUri,
       rating: 0,
       provider: "LRCLib",
     );
@@ -127,7 +135,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
       final token = await spotify.getCredentials();
       SubtitleSimple lyrics = await getSpotifyLyrics(token.accessToken);
 
-      if (lyrics.lyrics.isEmpty) {
+      if (lyrics.lyrics.isEmpty || lyrics.lyrics.length <= 5) {
         lyrics = await getLRCLibLyrics();
       }
 

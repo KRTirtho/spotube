@@ -23,6 +23,8 @@ import 'package:spotube/utils/platform.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class LyricsPage extends HookConsumerWidget {
+  static const name = "lyrics";
+
   final bool isModal;
   const LyricsPage({super.key, this.isModal = false});
 
@@ -98,7 +100,7 @@ class LyricsPage extends HookConsumerWidget {
             child: Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background.withOpacity(.4),
+                color: Theme.of(context).colorScheme.surface.withOpacity(.4),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10),
                   topRight: Radius.circular(10),

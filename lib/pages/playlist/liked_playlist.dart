@@ -3,9 +3,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/shared/tracks_view/track_view.dart';
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
+import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class LikedPlaylistPage extends HookConsumerWidget {
+  static const name = PlaylistPage.name;
+
   final PlaylistSimple playlist;
   const LikedPlaylistPage({
     super.key,
@@ -18,7 +21,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
     final tracks = likedTracks.asData?.value ?? <Track>[];
 
     return InheritedTrackView(
-      collectionId: playlist.id!,
+      collection: playlist,
       image: "assets/liked-tracks.jpg",
       pagination: PaginationProps(
         hasNextPage: false,

@@ -9,9 +9,11 @@ import 'package:shelf/shelf_io.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/connect/clients.dart';
+import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -32,6 +34,7 @@ final connectServerProvider = FutureProvider((ref) async {
   final resolvedService = await ref
       .watch(connectClientsProvider.selectAsync((s) => s.resolvedService));
   final playbackNotifier = ref.read(proxyPlaylistProvider.notifier);
+  final historyNotifier = ref.read(playbackHistoryProvider.notifier);
 
   if (!enabled || resolvedService != null) {
     return null;
@@ -79,7 +82,7 @@ final connectServerProvider = FutureProvider((ref) async {
                 .toJson(),
           );
           channel.sink.add(
-            WebSocketShuffleEvent(await audioPlayer.isShuffled).toJson(),
+            WebSocketShuffleEvent(audioPlayer.isShuffled).toJson(),
           );
           channel.sink.add(
             WebSocketLoopEvent(audioPlayer.loopMode).toJson(),
@@ -146,8 +149,14 @@ final connectServerProvider = FutureProvider((ref) async {
                       initialIndex: event.data.initialIndex ?? 0,
                     );
 
-                    if (event.data.collectionId != null) {
-                      playbackNotifier.addCollection(event.data.collectionId!);
+                    if (event.data.collectionId == null) return;
+                    playbackNotifier.addCollection(event.data.collectionId!);
+                    if (event.data.collection is AlbumSimple) {
+                      historyNotifier
+                          .addAlbums([event.data.collection as AlbumSimple]);
+                    } else {
+                      historyNotifier.addPlaylists(
+                          [event.data.collection as PlaylistSimple]);
                     }
                   });
 
