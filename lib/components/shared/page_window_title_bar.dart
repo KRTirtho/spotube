@@ -165,6 +165,10 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
             toolbarTextStyle: widget.toolbarTextStyle,
             titleTextStyle: widget.titleTextStyle,
             title: widget.title,
+            scrolledUnderElevation: 0,
+            shadowColor: Colors.transparent,
+            forceMaterialTransparency: true,
+            elevation: 0,
           ),
         ),
       );
