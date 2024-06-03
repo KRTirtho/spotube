@@ -320,5 +320,10 @@
   "select": "არჩევა",
   "connect_client_alert": "თქვენ კონტროლირებული ხართ {client} მოწყობილობით",
   "this_device": "ეს მოწყობილობა",
-  "remote": "დისტანციური"
+  "remote": "დისტანციური",
+  "local_library": "ადგილობრივი ბიბლიოთეკა",
+  "add_library_location": "ბიბლიოთეკაში დამატება",
+  "remove_library_location": "ბიბლიოთეკიდან წაშლა",
+  "local_tab": "ადგილობრივი",
+  "stats": "სტატისტიკა"
 }

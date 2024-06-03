@@ -320,5 +320,10 @@
   "select": "নির্বাচন করুন",
   "connect_client_alert": "আপনি {client} দ্বারা নিয়ন্ত্রিত হচ্ছেন",
   "this_device": "এই ডিভাইস",
-  "remote": "রিমোট"
+  "remote": "রিমোট",
+  "local_library": "স্থানীয় লাইব্রেরি",
+  "add_library_location": "লাইব্রেরিতে যোগ করুন",
+  "remove_library_location": "লাইব্রেরি থেকে সরান",
+  "local_tab": "স্থানীয়",
+  "stats": "পরিসংখ্যান"
 }

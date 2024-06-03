@@ -320,5 +320,10 @@
   "select": "選択する",
   "connect_client_alert": "{client} によって操作されています",
   "this_device": "このデバイス",
-  "remote": "リモート"
+  "remote": "リモート",
+  "local_library": "ローカルライブラリ",
+  "add_library_location": "ライブラリに追加",
+  "remove_library_location": "ライブラリから削除",
+  "local_tab": "ローカル",
+  "stats": "統計"
 }

@@ -320,5 +320,10 @@
   "select": "Sélectionner",
   "connect_client_alert": "Vous êtes contrôlé par {client}",
   "this_device": "Cet appareil",
-  "remote": "À distance"
+  "remote": "À distance",
+  "local_library": "Bibliothèque locale",
+  "add_library_location": "Ajouter à la bibliothèque",
+  "remove_library_location": "Retirer de la bibliothèque",
+  "local_tab": "Local",
+  "stats": "Statistiques"
 }

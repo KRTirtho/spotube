@@ -321,5 +321,10 @@
   "select": "Selecteren",
   "connect_client_alert": "Je wordt gecontroleerd door {client}",
   "this_device": "Dit apparaat",
-  "remote": "Afstandsbediening"
+  "remote": "Afstandsbediening",
+  "local_library": "Lokale bibliotheek",
+  "add_library_location": "Toevoegen aan bibliotheek",
+  "remove_library_location": "Verwijderen uit bibliotheek",
+  "local_tab": "Lokaal",
+  "stats": "Statistieken"
 }

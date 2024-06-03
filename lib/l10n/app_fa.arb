@@ -320,5 +320,10 @@
   "select": "انتخاب",
   "connect_client_alert": "شما توسط {client} کنترل می‌شوید",
   "this_device": "این دستگاه",
-  "remote": "راه‌دور"
+  "remote": "راه‌دور",
+  "local_library": "کتابخانه محلی",
+  "add_library_location": "اضافه کردن به کتابخانه",
+  "remove_library_location": "حذف از کتابخانه",
+  "local_tab": "محلی",
+  "stats": "آمار"
 }

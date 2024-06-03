@@ -320,5 +320,10 @@
   "select": "Valitse",
   "connect_client_alert": "{client} ohjaa sinua",
   "this_device": "Tämä laite",
-  "remote": "Etä"
+  "remote": "Etä",
+  "local_library": "Paikallinen kirjasto",
+  "add_library_location": "Lisää kirjastoon",
+  "remove_library_location": "Poista kirjastosta",
+  "local_tab": "Paikallinen",
+  "stats": "Tilastot"
 }

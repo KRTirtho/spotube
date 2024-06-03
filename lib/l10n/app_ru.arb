@@ -320,5 +320,10 @@
   "select": "Выбрать",
   "connect_client_alert": "Вас контролирует {client}",
   "this_device": "Это устройство",
-  "remote": "Дистанционное управление"
+  "remote": "Дистанционное управление",
+  "local_library": "Местная библиотека",
+  "add_library_location": "Добавить в библиотеку",
+  "remove_library_location": "Удалить из библиотеки",
+  "local_tab": "Местный",
+  "stats": "Статистика"
 }

@@ -321,5 +321,10 @@
   "select": "선택",
   "connect_client_alert": "{client}님에 의해 제어되고 있습니다",
   "this_device": "이 장치",
-  "remote": "원격"
+  "remote": "원격",
+  "local_library": "로컬 도서관",
+  "add_library_location": "도서관에 추가",
+  "remove_library_location": "도서관에서 제거",
+  "local_tab": "로컬",
+  "stats": "통계"
 }

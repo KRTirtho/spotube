@@ -320,5 +320,10 @@
   "select": "Chọn",
   "connect_client_alert": "Bạn đang được điều khiển bởi {client}",
   "this_device": "Thiết bị này",
-  "remote": "Từ xa"
+  "remote": "Từ xa",
+  "local_library": "Thư viện địa phương",
+  "add_library_location": "Thêm vào thư viện",
+  "remove_library_location": "Xóa khỏi thư viện",
+  "local_tab": "Địa phương",
+  "stats": "Thống kê"
 }

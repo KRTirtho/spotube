@@ -320,5 +320,10 @@
   "select": "Auswählen",
   "connect_client_alert": "Du wirst von {client} gesteuert",
   "this_device": "Dieses Gerät",
-  "remote": "Fernbedienung"
+  "remote": "Fernbedienung",
+  "local_library": "Lokale Bibliothek",
+  "add_library_location": "Zur Bibliothek hinzufügen",
+  "remove_library_location": "Aus der Bibliothek entfernen",
+  "local_tab": "Lokal",
+  "stats": "Statistiken"
 }
