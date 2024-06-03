@@ -29,7 +29,6 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
       scrolledUnderElevation: 0,
       shadowColor: Colors.transparent,
       elevation: 0,
-      backgroundColor: Colors.transparent,
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
