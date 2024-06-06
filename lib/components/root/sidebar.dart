@@ -26,6 +26,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
+import 'package:window_manager/window_manager.dart';
 
 class Sidebar extends HookConsumerWidget {
   final Widget child;
@@ -207,22 +208,24 @@ class SidebarHeader extends HookWidget {
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          if (kIsMacOS) const SizedBox(height: 25),
-          Row(
-            children: [
-              Sidebar.brandLogo(),
-              const SizedBox(width: 10),
-              Text(
-                "Spotube",
-                style: theme.textTheme.titleLarge,
-              ),
-            ],
-          ),
-        ],
+    return DragToMoveArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            if (kIsMacOS) const SizedBox(height: 25),
+            Row(
+              children: [
+                Sidebar.brandLogo(),
+                const SizedBox(width: 10),
+                Text(
+                  "Spotube",
+                  style: theme.textTheme.titleLarge,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

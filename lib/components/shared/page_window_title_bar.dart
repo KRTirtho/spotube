@@ -125,7 +125,10 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
               leadingWidth: widget.leadingWidth,
               toolbarTextStyle: widget.toolbarTextStyle,
               titleTextStyle: widget.titleTextStyle,
-              title: widget.title,
+              title: SizedBox(
+                width: double.infinity, // workaround to force dragging
+                child: widget.title ?? const Text(""),
+              ),
               pinned: widget.pinned,
               floating: widget.floating,
               snap: widget.snap,
@@ -164,7 +167,10 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
             leadingWidth: widget.leadingWidth,
             toolbarTextStyle: widget.toolbarTextStyle,
             titleTextStyle: widget.titleTextStyle,
-            title: widget.title,
+            title: SizedBox(
+              width: double.infinity, // workaround to force dragging
+              child: widget.title ?? const Text(""),
+            ),
             scrolledUnderElevation: 0,
             shadowColor: Colors.transparent,
             forceMaterialTransparency: true,
