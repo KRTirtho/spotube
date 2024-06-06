@@ -44,6 +44,7 @@ class WindowManagerTools with WidgetsBindingObserver {
         backgroundColor: Colors.transparent,
         minimumSize: Size(300, 700),
         titleBarStyle: TitleBarStyle.hidden,
+        center: true,
       ),
       () async {
         final savedSize = KVStoreService.windowSize;
