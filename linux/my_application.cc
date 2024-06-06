@@ -119,7 +119,7 @@ MyApplication* my_application_new() {
   // gchar based alternate MY_APPLICATION_ID
   const char* my_application_id = APPLICATION_ID;
 
-  if (!is_flatpak()) {
+  if (is_flatpak()) {
     my_application_id = "com.github.KRTirtho.Spotube";
   }
 
