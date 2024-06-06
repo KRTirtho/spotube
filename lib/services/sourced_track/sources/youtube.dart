@@ -221,7 +221,10 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final links = await SongLinkService.links(track.id!);
     final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
 
-    if (ytLink?.url != null) {
+    if (ytLink?.url != null
+        // allows to fetch siblings more results for already sourced track
+        &&
+        track is! SourcedTrack) {
       try {
         return [
           await toSiblingType(
