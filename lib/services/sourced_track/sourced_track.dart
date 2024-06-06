@@ -138,7 +138,7 @@ abstract class SourcedTrack extends Track {
         return await JioSaavnSourcedTrack.fetchFromTrack(
           track: track,
           ref: ref,
-          weakMatch: preferences.audioSource == AudioSource.jiosaavn,
+          weakMatch: true,
         );
       }
       rethrow;
