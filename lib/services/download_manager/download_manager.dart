@@ -80,6 +80,8 @@ class DownloadManager {
       logger.d("[DownloadManager] $url");
       final file = File(savePath.toString());
 
+      await Directory(path.dirname(savePath)).create(recursive: true);
+
       final tmpDirPath = await Directory(
         path.join(
           (await getTemporaryDirectory()).path,
