@@ -117,6 +117,7 @@ jobs:
     needs:
       - build_platform
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: Spotube-Release-Binaries
