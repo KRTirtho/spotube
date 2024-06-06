@@ -208,8 +208,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   : mediaQuery.size.height * .6,
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
-                color:
-                    theme.colorScheme.surfaceContainerHighest.withOpacity(.5),
+                color: theme.colorScheme.surfaceVariant.withOpacity(.5),
               ),
               child: Scaffold(
                 backgroundColor: Colors.transparent,

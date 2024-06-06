@@ -195,26 +195,19 @@ class TrackTile extends HookConsumerWidget {
                 children: [
                   Expanded(
                     flex: 6,
-                    child: switch (track) {
-                      LocalTrack() => Text(
-                          track.name!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      _ => LinkText(
-                          track.name!,
-                          "/track/${track.id}",
-                          push: true,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    },
+                    child: LinkText(
+                      track.name!,
+                      "/track/${track.id}",
+                      push: true,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   if (constrains.mdAndUp) ...[
                     const SizedBox(width: 8),
                     Expanded(
                       flex: 4,
-                      child: switch (track) {
+                      child: switch (track.runtimeType) {
                         LocalTrack() => Text(
                             track.album!.name!,
                             maxLines: 1,

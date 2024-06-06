@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart'
-    hide X509Certificate;
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
 import 'package:spotube/extensions/context.dart';
@@ -20,18 +18,6 @@ class AuthenticationCredentials {
 
   bool get isExpired => DateTime.now().isAfter(expiration);
 
-  static final Dio dio = () {
-    final dio = Dio();
-
-    (dio.httpClientAdapter as IOHttpClientAdapter)
-        .createHttpClient = () => HttpClient()
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) {
-        return host.endsWith("spotify.com") && port == 443;
-      };
-
-    return dio;
-  }();
-
   AuthenticationCredentials({
     required this.cookie,
     required this.accessToken,
@@ -44,29 +30,26 @@ class AuthenticationCredentials {
           .split("; ")
           .firstWhereOrNull((c) => c.trim().startsWith("sp_dc="))
           ?.trim();
-      final res = await dio.getUri(
+      final res = await get(
         Uri.parse(
           "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
         ),
-        options: Options(
-          headers: {
-            "Cookie": spDc ?? "",
-            "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-          },
-          validateStatus: (status) => true,
-        ),
+        headers: {
+          "Cookie": spDc ?? "",
+          "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+        },
       );
-      final body = res.data;
+      final body = jsonDecode(res.body);
 
-      if ((res.statusCode ?? 500) >= 400) {
+      if (res.statusCode >= 400) {
         throw Exception(
-          "Failed to get access token: ${body['error'] ?? res.statusMessage}",
+          "Failed to get access token: ${body['error'] ?? res.reasonPhrase}",
         );
       }
 
       return AuthenticationCredentials(
-        cookie: "${res.headers["set-cookie"]?.join(";")}; $spDc",
+        cookie: "${res.headers["set-cookie"]}; $spDc",
         accessToken: body['accessToken'],
         expiration: DateTime.fromMillisecondsSinceEpoch(
           body['accessTokenExpirationTimestampMs'],

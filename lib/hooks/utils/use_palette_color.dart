@@ -14,6 +14,7 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
   final context = useContext();
   final theme = Theme.of(context);
   final paletteColor = ref.watch(_paletteColorState);
+  final mounted = useIsMounted();
 
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -24,7 +25,7 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
           width: 50,
         ),
       );
-      if (!context.mounted) return;
+      if (!mounted()) return;
       final color = theme.brightness == Brightness.light
           ? palette.lightMutedColor ?? palette.lightVibrantColor
           : palette.darkMutedColor ?? palette.darkVibrantColor;
@@ -40,7 +41,7 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
 
 PaletteGenerator usePaletteGenerator(String imageUrl) {
   final palette = useState(PaletteGenerator.fromColors([]));
-  final context = useContext();
+  final mounted = useIsMounted();
 
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -51,7 +52,7 @@ PaletteGenerator usePaletteGenerator(String imageUrl) {
           width: 50,
         ),
       );
-      if (!context.mounted) return;
+      if (!mounted()) return;
 
       palette.value = newPalette;
     });

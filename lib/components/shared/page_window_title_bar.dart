@@ -7,8 +7,7 @@ import 'package:titlebar_buttons/titlebar_buttons.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
-
-import 'package:window_manager/window_manager.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 class PageWindowTitleBar extends StatefulHookConsumerWidget
     implements PreferredSizeWidget {
@@ -90,7 +89,7 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
     final systemTitleBar =
         ref.read(userPreferencesProvider.select((s) => s.systemTitleBar));
     if (kIsDesktop && !systemTitleBar) {
-      windowManager.startDragging();
+      DesktopTools.window.startDragging();
     }
   }
 
@@ -108,7 +107,11 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
 
           return SliverPadding(
             padding: EdgeInsets.only(
-              left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0,
+              left: DesktopTools.platform.isMacOS &&
+                      hasFullscreen &&
+                      hasLeadingOrCanPop
+                  ? 65
+                  : 0,
             ),
             sliver: SliverAppBar(
               leading: widget.leading,
@@ -146,7 +149,11 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
         onVerticalDragStart: onDrag,
         child: Padding(
           padding: EdgeInsets.only(
-            left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0,
+            left: DesktopTools.platform.isMacOS &&
+                    hasFullscreen &&
+                    hasLeadingOrCanPop
+                ? 65
+                : 0,
           ),
           child: AppBar(
             leading: widget.leading,
@@ -165,10 +172,6 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
             toolbarTextStyle: widget.toolbarTextStyle,
             titleTextStyle: widget.titleTextStyle,
             title: widget.title,
-            scrolledUnderElevation: 0,
-            shadowColor: Colors.transparent,
-            forceMaterialTransparency: true,
-            elevation: 0,
           ),
         ),
       );
@@ -190,12 +193,12 @@ class WindowTitleBarButtons extends HookConsumerWidget {
     const type = ThemeType.auto;
 
     Future<void> onClose() async {
-      await windowManager.close();
+      await DesktopTools.window.close();
     }
 
     useEffect(() {
       if (kIsDesktop) {
-        windowManager.isMaximized().then((value) {
+        DesktopTools.window.isMaximized().then((value) {
           isMaximized.value = value;
         });
       }
@@ -210,16 +213,16 @@ class WindowTitleBarButtons extends HookConsumerWidget {
       final theme = Theme.of(context);
       final colors = WindowButtonColors(
         normal: Colors.transparent,
-        iconNormal: foregroundColor ?? theme.colorScheme.onSurface,
-        mouseOver: theme.colorScheme.onSurface.withOpacity(0.1),
-        mouseDown: theme.colorScheme.onSurface.withOpacity(0.2),
-        iconMouseOver: theme.colorScheme.onSurface,
-        iconMouseDown: theme.colorScheme.onSurface,
+        iconNormal: foregroundColor ?? theme.colorScheme.onBackground,
+        mouseOver: theme.colorScheme.onBackground.withOpacity(0.1),
+        mouseDown: theme.colorScheme.onBackground.withOpacity(0.2),
+        iconMouseOver: theme.colorScheme.onBackground,
+        iconMouseDown: theme.colorScheme.onBackground,
       );
 
       final closeColors = WindowButtonColors(
         normal: Colors.transparent,
-        iconNormal: foregroundColor ?? theme.colorScheme.onSurface,
+        iconNormal: foregroundColor ?? theme.colorScheme.onBackground,
         mouseOver: Colors.red,
         mouseDown: Colors.red[800]!,
         iconMouseOver: Colors.white,
@@ -232,14 +235,14 @@ class WindowTitleBarButtons extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MinimizeWindowButton(
-              onPressed: windowManager.minimize,
+              onPressed: DesktopTools.window.minimize,
               colors: colors,
             ),
             if (isMaximized.value != true)
               MaximizeWindowButton(
                 colors: colors,
                 onPressed: () {
-                  windowManager.maximize();
+                  DesktopTools.window.maximize();
                   isMaximized.value = true;
                 },
               )
@@ -247,7 +250,7 @@ class WindowTitleBarButtons extends HookConsumerWidget {
               RestoreWindowButton(
                 colors: colors,
                 onPressed: () {
-                  windowManager.unmaximize();
+                  DesktopTools.window.unmaximize();
                   isMaximized.value = false;
                 },
               ),
@@ -267,16 +270,16 @@ class WindowTitleBarButtons extends HookConsumerWidget {
         children: [
           DecoratedMinimizeButton(
             type: type,
-            onPressed: windowManager.minimize,
+            onPressed: DesktopTools.window.minimize,
           ),
           DecoratedMaximizeButton(
             type: type,
             onPressed: () async {
-              if (await windowManager.isMaximized()) {
-                await windowManager.unmaximize();
+              if (await DesktopTools.window.isMaximized()) {
+                await DesktopTools.window.unmaximize();
                 isMaximized.value = false;
               } else {
-                await windowManager.maximize();
+                await DesktopTools.window.maximize();
                 isMaximized.value = true;
               }
             },

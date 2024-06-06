@@ -1,4 +1,3 @@
-import 'package:catcher_2/core/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -222,19 +221,14 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
 
     if (ytLink?.url != null) {
-      try {
-        return [
-          await toSiblingType(
-            0,
-            YoutubeVideoInfo.fromVideo(
-              await youtubeClient.videos.get(ytLink!.url!),
-            ),
-          )
-        ];
-      } on VideoUnplayableException catch (e, stack) {
-        // Ignore this error and continue with the search
-        Catcher2.reportCheckedError(e, stack);
-      }
+      return [
+        await toSiblingType(
+          0,
+          YoutubeVideoInfo.fromVideo(
+            await youtubeClient.videos.get(ytLink!.url!),
+          ),
+        )
+      ];
     }
 
     final query = SourcedTrack.getSearchTerm(track);

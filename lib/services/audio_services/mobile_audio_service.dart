@@ -11,7 +11,7 @@ class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
   final ProxyPlaylistNotifier playlistNotifier;
 
-  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+  // ignore: invalid_use_of_protected_member
   ProxyPlaylist get playlist => playlistNotifier.state;
 
   MobileAudioService(this.playlistNotifier) {
@@ -135,7 +135,7 @@ class MobileAudioService extends BaseAudioHandler {
       playing: audioPlayer.isPlaying,
       updatePosition: position,
       bufferedPosition: await audioPlayer.bufferedPosition ?? Duration.zero,
-      shuffleMode: audioPlayer.isShuffled == true
+      shuffleMode: await audioPlayer.isShuffled == true
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,
       repeatMode: (audioPlayer.loopMode).toAudioServiceRepeatMode(),

@@ -10,13 +10,10 @@ import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
-import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class PlaylistGenerateResultPage extends HookConsumerWidget {
-  static const name = "playlist_generate_result";
-
   final GeneratePlaylistProviderInput state;
 
   const PlaylistGenerateResultPage({
@@ -126,11 +123,8 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                 );
 
                                 if (playlist != null) {
-                                  router.goNamed(
-                                    PlaylistPage.name,
-                                    pathParameters: {
-                                      "id": playlist.id!,
-                                    },
+                                  router.go(
+                                    '/playlist/${playlist.id}',
                                     extra: playlist,
                                   );
                                 }

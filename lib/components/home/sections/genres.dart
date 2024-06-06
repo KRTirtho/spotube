@@ -13,8 +13,6 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/home/genres/genre_playlists.dart';
-import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomeGenresSection extends HookConsumerWidget {
@@ -52,11 +50,11 @@ class HomeGenresSection extends HookConsumerWidget {
                   textDirection: TextDirection.rtl,
                   child: TextButton.icon(
                     onPressed: () {
-                      context.pushNamed(GenrePage.name);
+                      context.push('/genres');
                     },
                     icon: const Icon(SpotubeIcons.angleRight),
                     label: Text(
-                      context.l10n.browse_all,
+                      "Browse All",
                       style: textTheme.bodyMedium?.copyWith(
                         color: colorScheme.secondary,
                       ),
@@ -112,13 +110,7 @@ class HomeGenresSection extends HookConsumerWidget {
 
                   return InkWell(
                     onTap: () {
-                      context.pushNamed(
-                        GenrePlaylistsPage.name,
-                        pathParameters: {
-                          "categoryId": category.id!,
-                        },
-                        extra: category,
-                      );
+                      context.push('/genre/${category.id}', extra: category);
                     },
                     borderRadius: BorderRadius.circular(8),
                     child: Ink(
@@ -134,7 +126,7 @@ class HomeGenresSection extends HookConsumerWidget {
                       child: Ink(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: colorScheme.surfaceContainerHighest,
+                          color: colorScheme.surfaceVariant,
                           gradient: categoriesQuery.isLoading ? null : gradient,
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16),

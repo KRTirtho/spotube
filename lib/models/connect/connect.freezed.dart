@@ -12,93 +12,20 @@ part of 'connect.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 WebSocketLoadEventData _$WebSocketLoadEventDataFromJson(
     Map<String, dynamic> json) {
-  switch (json['runtimeType']) {
-    case 'playlist':
-      return WebSocketLoadEventDataPlaylist.fromJson(json);
-    case 'album':
-      return WebSocketLoadEventDataAlbum.fromJson(json);
-
-    default:
-      throw CheckedFromJsonException(
-          json,
-          'runtimeType',
-          'WebSocketLoadEventData',
-          'Invalid union type "${json['runtimeType']}"!');
-  }
+  return _WebSocketLoadEventData.fromJson(json);
 }
 
 /// @nodoc
 mixin _$WebSocketLoadEventData {
   @JsonKey(name: 'tracks', toJson: _tracksJson)
   List<Track> get tracks => throw _privateConstructorUsedError;
-  Object? get collection => throw _privateConstructorUsedError;
+  String? get collectionId => throw _privateConstructorUsedError;
   int? get initialIndex => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)
-        playlist,
-    required TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)
-        album,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)?
-        playlist,
-    TResult? Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)?
-        album,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)?
-        playlist,
-    TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)?
-        album,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(WebSocketLoadEventDataPlaylist value) playlist,
-    required TResult Function(WebSocketLoadEventDataAlbum value) album,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(WebSocketLoadEventDataPlaylist value)? playlist,
-    TResult? Function(WebSocketLoadEventDataAlbum value)? album,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(WebSocketLoadEventDataPlaylist value)? playlist,
-    TResult Function(WebSocketLoadEventDataAlbum value)? album,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $WebSocketLoadEventDataCopyWith<WebSocketLoadEventData> get copyWith =>
@@ -113,6 +40,7 @@ abstract class $WebSocketLoadEventDataCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
+      String? collectionId,
       int? initialIndex});
 }
 
@@ -131,6 +59,7 @@ class _$WebSocketLoadEventDataCopyWithImpl<$Res,
   @override
   $Res call({
     Object? tracks = null,
+    Object? collectionId = freezed,
     Object? initialIndex = freezed,
   }) {
     return _then(_value.copyWith(
@@ -138,6 +67,10 @@ class _$WebSocketLoadEventDataCopyWithImpl<$Res,
           ? _value.tracks
           : tracks // ignore: cast_nullable_to_non_nullable
               as List<Track>,
+      collectionId: freezed == collectionId
+          ? _value.collectionId
+          : collectionId // ignore: cast_nullable_to_non_nullable
+              as String?,
       initialIndex: freezed == initialIndex
           ? _value.initialIndex
           : initialIndex // ignore: cast_nullable_to_non_nullable
@@ -147,46 +80,46 @@ class _$WebSocketLoadEventDataCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$WebSocketLoadEventDataPlaylistImplCopyWith<$Res>
+abstract class _$$WebSocketLoadEventDataImplCopyWith<$Res>
     implements $WebSocketLoadEventDataCopyWith<$Res> {
-  factory _$$WebSocketLoadEventDataPlaylistImplCopyWith(
-          _$WebSocketLoadEventDataPlaylistImpl value,
-          $Res Function(_$WebSocketLoadEventDataPlaylistImpl) then) =
-      __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<$Res>;
+  factory _$$WebSocketLoadEventDataImplCopyWith(
+          _$WebSocketLoadEventDataImpl value,
+          $Res Function(_$WebSocketLoadEventDataImpl) then) =
+      __$$WebSocketLoadEventDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
       {@JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-      PlaylistSimple? collection,
+      String? collectionId,
       int? initialIndex});
 }
 
 /// @nodoc
-class __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<$Res>
+class __$$WebSocketLoadEventDataImplCopyWithImpl<$Res>
     extends _$WebSocketLoadEventDataCopyWithImpl<$Res,
-        _$WebSocketLoadEventDataPlaylistImpl>
-    implements _$$WebSocketLoadEventDataPlaylistImplCopyWith<$Res> {
-  __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl(
-      _$WebSocketLoadEventDataPlaylistImpl _value,
-      $Res Function(_$WebSocketLoadEventDataPlaylistImpl) _then)
+        _$WebSocketLoadEventDataImpl>
+    implements _$$WebSocketLoadEventDataImplCopyWith<$Res> {
+  __$$WebSocketLoadEventDataImplCopyWithImpl(
+      _$WebSocketLoadEventDataImpl _value,
+      $Res Function(_$WebSocketLoadEventDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? tracks = null,
-    Object? collection = freezed,
+    Object? collectionId = freezed,
     Object? initialIndex = freezed,
   }) {
-    return _then(_$WebSocketLoadEventDataPlaylistImpl(
+    return _then(_$WebSocketLoadEventDataImpl(
       tracks: null == tracks
           ? _value._tracks
           : tracks // ignore: cast_nullable_to_non_nullable
               as List<Track>,
-      collection: freezed == collection
-          ? _value.collection
-          : collection // ignore: cast_nullable_to_non_nullable
-              as PlaylistSimple?,
+      collectionId: freezed == collectionId
+          ? _value.collectionId
+          : collectionId // ignore: cast_nullable_to_non_nullable
+              as String?,
       initialIndex: freezed == initialIndex
           ? _value.initialIndex
           : initialIndex // ignore: cast_nullable_to_non_nullable
@@ -197,21 +130,16 @@ class __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WebSocketLoadEventDataPlaylistImpl
-    extends WebSocketLoadEventDataPlaylist {
-  _$WebSocketLoadEventDataPlaylistImpl(
+class _$WebSocketLoadEventDataImpl implements _WebSocketLoadEventData {
+  _$WebSocketLoadEventDataImpl(
       {@JsonKey(name: 'tracks', toJson: _tracksJson)
       required final List<Track> tracks,
-      this.collection,
-      this.initialIndex,
-      final String? $type})
-      : _tracks = tracks,
-        $type = $type ?? 'playlist',
-        super._();
+      this.collectionId,
+      this.initialIndex})
+      : _tracks = tracks;
 
-  factory _$WebSocketLoadEventDataPlaylistImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$WebSocketLoadEventDataPlaylistImplFromJson(json);
+  factory _$WebSocketLoadEventDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$WebSocketLoadEventDataImplFromJson(json);
 
   final List<Track> _tracks;
   @override
@@ -223,26 +151,23 @@ class _$WebSocketLoadEventDataPlaylistImpl
   }
 
   @override
-  final PlaylistSimple? collection;
+  final String? collectionId;
   @override
   final int? initialIndex;
 
-  @JsonKey(name: 'runtimeType')
-  final String $type;
-
   @override
   String toString() {
-    return 'WebSocketLoadEventData.playlist(tracks: $tracks, collection: $collection, initialIndex: $initialIndex)';
+    return 'WebSocketLoadEventData(tracks: $tracks, collectionId: $collectionId, initialIndex: $initialIndex)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WebSocketLoadEventDataPlaylistImpl &&
+            other is _$WebSocketLoadEventDataImpl &&
             const DeepCollectionEquality().equals(other._tracks, _tracks) &&
-            (identical(other.collection, collection) ||
-                other.collection == collection) &&
+            (identical(other.collectionId, collectionId) ||
+                other.collectionId == collectionId) &&
             (identical(other.initialIndex, initialIndex) ||
                 other.initialIndex == initialIndex));
   }
@@ -250,361 +175,42 @@ class _$WebSocketLoadEventDataPlaylistImpl
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_tracks), collection, initialIndex);
+      const DeepCollectionEquality().hash(_tracks), collectionId, initialIndex);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$WebSocketLoadEventDataPlaylistImplCopyWith<
-          _$WebSocketLoadEventDataPlaylistImpl>
-      get copyWith => __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<
-          _$WebSocketLoadEventDataPlaylistImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)
-        playlist,
-    required TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)
-        album,
-  }) {
-    return playlist(tracks, collection, initialIndex);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)?
-        playlist,
-    TResult? Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)?
-        album,
-  }) {
-    return playlist?.call(tracks, collection, initialIndex);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)?
-        playlist,
-    TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)?
-        album,
-    required TResult orElse(),
-  }) {
-    if (playlist != null) {
-      return playlist(tracks, collection, initialIndex);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(WebSocketLoadEventDataPlaylist value) playlist,
-    required TResult Function(WebSocketLoadEventDataAlbum value) album,
-  }) {
-    return playlist(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(WebSocketLoadEventDataPlaylist value)? playlist,
-    TResult? Function(WebSocketLoadEventDataAlbum value)? album,
-  }) {
-    return playlist?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(WebSocketLoadEventDataPlaylist value)? playlist,
-    TResult Function(WebSocketLoadEventDataAlbum value)? album,
-    required TResult orElse(),
-  }) {
-    if (playlist != null) {
-      return playlist(this);
-    }
-    return orElse();
-  }
+  _$$WebSocketLoadEventDataImplCopyWith<_$WebSocketLoadEventDataImpl>
+      get copyWith => __$$WebSocketLoadEventDataImplCopyWithImpl<
+          _$WebSocketLoadEventDataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$WebSocketLoadEventDataPlaylistImplToJson(
+    return _$$WebSocketLoadEventDataImplToJson(
       this,
     );
   }
 }
 
-abstract class WebSocketLoadEventDataPlaylist extends WebSocketLoadEventData {
-  factory WebSocketLoadEventDataPlaylist(
+abstract class _WebSocketLoadEventData implements WebSocketLoadEventData {
+  factory _WebSocketLoadEventData(
       {@JsonKey(name: 'tracks', toJson: _tracksJson)
       required final List<Track> tracks,
-      final PlaylistSimple? collection,
-      final int? initialIndex}) = _$WebSocketLoadEventDataPlaylistImpl;
-  WebSocketLoadEventDataPlaylist._() : super._();
+      final String? collectionId,
+      final int? initialIndex}) = _$WebSocketLoadEventDataImpl;
 
-  factory WebSocketLoadEventDataPlaylist.fromJson(Map<String, dynamic> json) =
-      _$WebSocketLoadEventDataPlaylistImpl.fromJson;
+  factory _WebSocketLoadEventData.fromJson(Map<String, dynamic> json) =
+      _$WebSocketLoadEventDataImpl.fromJson;
 
   @override
   @JsonKey(name: 'tracks', toJson: _tracksJson)
   List<Track> get tracks;
   @override
-  PlaylistSimple? get collection;
+  String? get collectionId;
   @override
   int? get initialIndex;
   @override
   @JsonKey(ignore: true)
-  _$$WebSocketLoadEventDataPlaylistImplCopyWith<
-          _$WebSocketLoadEventDataPlaylistImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$WebSocketLoadEventDataAlbumImplCopyWith<$Res>
-    implements $WebSocketLoadEventDataCopyWith<$Res> {
-  factory _$$WebSocketLoadEventDataAlbumImplCopyWith(
-          _$WebSocketLoadEventDataAlbumImpl value,
-          $Res Function(_$WebSocketLoadEventDataAlbumImpl) then) =
-      __$$WebSocketLoadEventDataAlbumImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {@JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-      AlbumSimple? collection,
-      int? initialIndex});
-}
-
-/// @nodoc
-class __$$WebSocketLoadEventDataAlbumImplCopyWithImpl<$Res>
-    extends _$WebSocketLoadEventDataCopyWithImpl<$Res,
-        _$WebSocketLoadEventDataAlbumImpl>
-    implements _$$WebSocketLoadEventDataAlbumImplCopyWith<$Res> {
-  __$$WebSocketLoadEventDataAlbumImplCopyWithImpl(
-      _$WebSocketLoadEventDataAlbumImpl _value,
-      $Res Function(_$WebSocketLoadEventDataAlbumImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? tracks = null,
-    Object? collection = freezed,
-    Object? initialIndex = freezed,
-  }) {
-    return _then(_$WebSocketLoadEventDataAlbumImpl(
-      tracks: null == tracks
-          ? _value._tracks
-          : tracks // ignore: cast_nullable_to_non_nullable
-              as List<Track>,
-      collection: freezed == collection
-          ? _value.collection
-          : collection // ignore: cast_nullable_to_non_nullable
-              as AlbumSimple?,
-      initialIndex: freezed == initialIndex
-          ? _value.initialIndex
-          : initialIndex // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
-  _$WebSocketLoadEventDataAlbumImpl(
-      {@JsonKey(name: 'tracks', toJson: _tracksJson)
-      required final List<Track> tracks,
-      this.collection,
-      this.initialIndex,
-      final String? $type})
-      : _tracks = tracks,
-        $type = $type ?? 'album',
-        super._();
-
-  factory _$WebSocketLoadEventDataAlbumImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$WebSocketLoadEventDataAlbumImplFromJson(json);
-
-  final List<Track> _tracks;
-  @override
-  @JsonKey(name: 'tracks', toJson: _tracksJson)
-  List<Track> get tracks {
-    if (_tracks is EqualUnmodifiableListView) return _tracks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tracks);
-  }
-
-  @override
-  final AlbumSimple? collection;
-  @override
-  final int? initialIndex;
-
-  @JsonKey(name: 'runtimeType')
-  final String $type;
-
-  @override
-  String toString() {
-    return 'WebSocketLoadEventData.album(tracks: $tracks, collection: $collection, initialIndex: $initialIndex)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WebSocketLoadEventDataAlbumImpl &&
-            const DeepCollectionEquality().equals(other._tracks, _tracks) &&
-            (identical(other.collection, collection) ||
-                other.collection == collection) &&
-            (identical(other.initialIndex, initialIndex) ||
-                other.initialIndex == initialIndex));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_tracks), collection, initialIndex);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WebSocketLoadEventDataAlbumImplCopyWith<_$WebSocketLoadEventDataAlbumImpl>
-      get copyWith => __$$WebSocketLoadEventDataAlbumImplCopyWithImpl<
-          _$WebSocketLoadEventDataAlbumImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)
-        playlist,
-    required TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)
-        album,
-  }) {
-    return album(tracks, collection, initialIndex);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)?
-        playlist,
-    TResult? Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)?
-        album,
-  }) {
-    return album?.call(tracks, collection, initialIndex);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            PlaylistSimple? collection,
-            int? initialIndex)?
-        playlist,
-    TResult Function(
-            @JsonKey(name: 'tracks', toJson: _tracksJson) List<Track> tracks,
-            AlbumSimple? collection,
-            int? initialIndex)?
-        album,
-    required TResult orElse(),
-  }) {
-    if (album != null) {
-      return album(tracks, collection, initialIndex);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(WebSocketLoadEventDataPlaylist value) playlist,
-    required TResult Function(WebSocketLoadEventDataAlbum value) album,
-  }) {
-    return album(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(WebSocketLoadEventDataPlaylist value)? playlist,
-    TResult? Function(WebSocketLoadEventDataAlbum value)? album,
-  }) {
-    return album?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(WebSocketLoadEventDataPlaylist value)? playlist,
-    TResult Function(WebSocketLoadEventDataAlbum value)? album,
-    required TResult orElse(),
-  }) {
-    if (album != null) {
-      return album(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WebSocketLoadEventDataAlbumImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class WebSocketLoadEventDataAlbum extends WebSocketLoadEventData {
-  factory WebSocketLoadEventDataAlbum(
-      {@JsonKey(name: 'tracks', toJson: _tracksJson)
-      required final List<Track> tracks,
-      final AlbumSimple? collection,
-      final int? initialIndex}) = _$WebSocketLoadEventDataAlbumImpl;
-  WebSocketLoadEventDataAlbum._() : super._();
-
-  factory WebSocketLoadEventDataAlbum.fromJson(Map<String, dynamic> json) =
-      _$WebSocketLoadEventDataAlbumImpl.fromJson;
-
-  @override
-  @JsonKey(name: 'tracks', toJson: _tracksJson)
-  List<Track> get tracks;
-  @override
-  AlbumSimple? get collection;
-  @override
-  int? get initialIndex;
-  @override
-  @JsonKey(ignore: true)
-  _$$WebSocketLoadEventDataAlbumImplCopyWith<_$WebSocketLoadEventDataAlbumImpl>
+  _$$WebSocketLoadEventDataImplCopyWith<_$WebSocketLoadEventDataImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

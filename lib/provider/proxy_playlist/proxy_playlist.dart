@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
@@ -44,14 +45,7 @@ class ProxyPlaylist {
   }
 
   bool containsTrack(TrackSimple track) {
-    return tracks.firstWhereOrNull((element) {
-          if (element is LocalTrack && track is LocalTrack) {
-            return element.path == track.path;
-          }
-
-          return element.id == track.id;
-        }) !=
-        null;
+    return tracks.firstWhereOrNull((element) => element.id == track.id) != null;
   }
 
   bool containsTracks(Iterable<TrackSimple> tracks) {
@@ -70,11 +64,9 @@ class ProxyPlaylist {
   /// To make sure proper instance method is used for JSON serialization
   /// Otherwise default super.toJson() is used
   static Map<String, dynamic> _makeAppropriateTrackJson(Track track) {
-    return switch (track) {
-      // ignore: unnecessary_cast
-      LocalTrack() => (track as LocalTrack).toJson(),
-      // ignore: unnecessary_cast
-      SourcedTrack() => (track as SourcedTrack).toJson(),
+    return switch (track.runtimeType) {
+      LocalTrack() => track.toJson(),
+      SourcedTrack() => track.toJson(),
       _ => track.toJson(),
     };
   }

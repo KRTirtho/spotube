@@ -10,8 +10,6 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class PlaylistPage extends HookConsumerWidget {
-  static const name = "playlist";
-
   final PlaylistSimple playlist;
   const PlaylistPage({
     super.key,
@@ -31,7 +29,7 @@ class PlaylistPage extends HookConsumerWidget {
     final isUserPlaylist = useIsUserPlaylist(ref, playlist.id!);
 
     return InheritedTrackView(
-      collection: playlist,
+      collectionId: playlist.id!,
       image: playlist.images.asUrlString(
         placeholder: ImagePlaceholder.collection,
       ),

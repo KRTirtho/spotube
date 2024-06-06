@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/spotify/home_feed.dart';
 import 'package:spotube/models/spotify_friends.dart';
@@ -9,21 +9,9 @@ import 'package:timezone/timezone.dart' as tz;
 class CustomSpotifyEndpoints {
   static const _baseUrl = 'https://api.spotify.com/v1';
   final String accessToken;
-  final Dio _client;
+  final http.Client _client;
 
-  CustomSpotifyEndpoints(this.accessToken)
-      : _client = Dio(
-          BaseOptions(
-            baseUrl: _baseUrl,
-            responseType: ResponseType.json,
-            headers: {
-              "content-type": "application/json",
-              if (accessToken.isNotEmpty)
-                "authorization": "Bearer $accessToken",
-              "accept": "application/json",
-            },
-          ),
-        );
+  CustomSpotifyEndpoints(this.accessToken) : _client = http.Client();
 
   // views API
 
@@ -77,34 +65,44 @@ class CustomSpotifyEndpoints {
       if (country != null) 'country': country.name,
     }.entries.map((e) => '${e.key}=${e.value}').join('&');
 
-    final res = await _client.getUri(
+    final res = await _client.get(
       Uri.parse('$_baseUrl/views/$view?$queryParams'),
+      headers: {
+        "content-type": "application/json",
+        "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
     );
 
     if (res.statusCode == 200) {
-      return res.data;
+      return jsonDecode(res.body);
     } else {
       throw Exception(
         '[CustomSpotifyEndpoints.getView]: Failed to get view'
         '\nStatus code: ${res.statusCode}'
-        '\nBody: ${res.data}',
+        '\nBody: ${res.body}',
       );
     }
   }
 
   Future<List<String>> listGenreSeeds() async {
-    final res = await _client.getUri(
+    final res = await _client.get(
       Uri.parse("$_baseUrl/recommendations/available-genre-seeds"),
+      headers: {
+        "content-type": "application/json",
+        if (accessToken.isNotEmpty) "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
     );
 
     if (res.statusCode == 200) {
-      final body = res.data;
+      final body = jsonDecode(res.body);
       return List<String>.from(body["genres"] ?? []);
     } else {
       throw Exception(
         '[CustomSpotifyEndpoints.listGenreSeeds]: Failed to get genre seeds'
         '\nStatus code: ${res.statusCode}'
-        '\nBody: ${res.data}',
+        '\nBody: ${res.body}',
       );
     }
   }
@@ -154,18 +152,30 @@ class CustomSpotifyEndpoints {
     }
     final pathQuery =
         "$_baseUrl/recommendations?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}";
-    final res = await _client.getUri(Uri.parse(pathQuery));
-    final result = res.data;
+    final res = await _client.get(
+      Uri.parse(pathQuery),
+      headers: {
+        "content-type": "application/json",
+        if (accessToken.isNotEmpty) "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
+    );
+    final result = jsonDecode(res.body);
     return List.castFrom<dynamic, Track>(
       result["tracks"].map((track) => Track.fromJson(track)).toList(),
     );
   }
 
   Future<SpotifyFriends> getFriendActivity() async {
-    final res = await _client.getUri(
+    final res = await _client.get(
       Uri.parse("https://guc-spclient.spotify.com/presence-view/v1/buddylist"),
+      headers: {
+        "content-type": "application/json",
+        "authorization": "Bearer $accessToken",
+        "accept": "application/json",
+      },
     );
-    return SpotifyFriends.fromJson(res.data);
+    return SpotifyFriends.fromJson(jsonDecode(res.body));
   }
 
   Future<SpotifyHomeFeed> getHomeFeed({
@@ -180,7 +190,7 @@ class CustomSpotifyEndpoints {
       'origin': 'https://open.spotify.com',
       'referer': 'https://open.spotify.com/'
     };
-    final response = await _client.getUri(
+    final response = await http.get(
       Uri(
         scheme: "https",
         host: "api-partner.spotify.com",
@@ -209,11 +219,21 @@ class CustomSpotifyEndpoints {
           ),
         },
       ),
-      options: Options(headers: headers),
+      headers: headers,
     );
 
+    if (response.statusCode >= 400) {
+      throw Exception(
+        "[RequestException] "
+        "Status: ${response.statusCode}\n"
+        "Body: ${response.body}",
+      );
+    }
+
     final data = SpotifyHomeFeed.fromJson(
-      transformHomeFeedJsonMap(response.data),
+      transformHomeFeedJsonMap(
+        jsonDecode(response.body),
+      ),
     );
 
     return data;
@@ -232,7 +252,7 @@ class CustomSpotifyEndpoints {
       'origin': 'https://open.spotify.com',
       'referer': 'https://open.spotify.com/'
     };
-    final response = await _client.getUri(
+    final response = await http.get(
       Uri(
         scheme: "https",
         host: "api-partner.spotify.com",
@@ -260,12 +280,20 @@ class CustomSpotifyEndpoints {
           ),
         },
       ),
-      options: Options(headers: headers),
+      headers: headers,
     );
+
+    if (response.statusCode >= 400) {
+      throw Exception(
+        "[RequestException] "
+        "Status: ${response.statusCode}\n"
+        "Body: ${response.body}",
+      );
+    }
 
     final data = SpotifyHomeFeedSection.fromJson(
       transformSectionItemJsonMap(
-        response.data["data"]["homeSections"]["sections"][0],
+        jsonDecode(response.body)["data"]["homeSections"]["sections"][0],
       ),
     );
 

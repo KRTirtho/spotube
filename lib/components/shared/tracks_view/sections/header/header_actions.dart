@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/shared/heart_button.dart';
@@ -10,7 +9,6 @@ import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_
 import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 
 class TrackViewHeaderActions extends HookConsumerWidget {
@@ -22,7 +20,6 @@ class TrackViewHeaderActions extends HookConsumerWidget {
 
     final playlist = ref.watch(proxyPlaylistProvider);
     final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
-    final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
 
     final isActive = playlist.collections.contains(props.collectionId);
 
@@ -64,13 +61,6 @@ class TrackViewHeaderActions extends HookConsumerWidget {
                   final tracks = await props.pagination.onFetchAll();
                   await playlistNotifier.addTracks(tracks);
                   playlistNotifier.addCollection(props.collectionId);
-                  if (props.collection is AlbumSimple) {
-                    historyNotifier
-                        .addAlbums([props.collection as AlbumSimple]);
-                  } else {
-                    historyNotifier
-                        .addPlaylists([props.collection as PlaylistSimple]);
-                  }
                 },
         ),
         if (props.onHeart != null && auth != null)

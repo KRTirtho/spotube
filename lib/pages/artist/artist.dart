@@ -15,8 +15,6 @@ import 'package:spotube/pages/artist/section/top_tracks.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPage extends HookConsumerWidget {
-  static const name = "artist";
-
   final String artistId;
   final logger = getLogger(ArtistPage);
   ArtistPage(this.artistId, {super.key});

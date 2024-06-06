@@ -12,11 +12,9 @@ import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:collection/collection.dart';
-import 'package:spotube/utils/platform.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 
 class GenrePlaylistsPage extends HookConsumerWidget {
-  static const name = "genre_playlists";
-
   final Category category;
   const GenrePlaylistsPage({super.key, required this.category});
 
@@ -29,7 +27,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
     final scrollController = useScrollController();
 
     return Scaffold(
-      appBar: kIsDesktop
+      appBar: DesktopTools.platform.isDesktop
           ? const PageWindowTitleBar(
               leading: BackButton(color: Colors.white),
               backgroundColor: Colors.transparent,
@@ -55,12 +53,12 @@ class GenrePlaylistsPage extends HookConsumerWidget {
           controller: scrollController,
           slivers: [
             SliverAppBar(
-              automaticallyImplyLeading: kIsMobile,
+              automaticallyImplyLeading: DesktopTools.platform.isMobile,
               expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
               title: const Text(""),
               backgroundColor: Colors.transparent,
               flexibleSpace: FlexibleSpaceBar(
-                centerTitle: kIsDesktop,
+                centerTitle: DesktopTools.platform.isDesktop,
                 title: Text(
                   category.name!,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(

@@ -1,4 +1,5 @@
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/track.dart';
 
 class LocalTrack extends Track {
   final String path;
@@ -34,10 +35,9 @@ class LocalTrack extends Track {
     );
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
-      ...super.toJson(),
+      ...TrackExtensions.trackToJson(this),
       'path': path,
     };
   }

@@ -14,8 +14,6 @@ import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ProfilePage extends HookConsumerWidget {
-  static const name = "profile";
-
   const ProfilePage({super.key});
 
   @override

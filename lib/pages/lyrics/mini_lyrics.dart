@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -17,11 +18,8 @@ import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
 
 class MiniLyricsPage extends HookConsumerWidget {
-  static const name = "mini_lyrics";
-
   final Size prevSize;
   const MiniLyricsPage({super.key, required this.prevSize});
 
@@ -38,11 +36,9 @@ class MiniLyricsPage extends HookConsumerWidget {
     final showLyrics = useState(true);
 
     useEffect(() {
-      if (kIsDesktop) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          wasMaximized.value = await windowManager.isMaximized();
-        });
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        wasMaximized.value = await DesktopTools.window.isMaximized();
+      });
       return null;
     }, []);
 
@@ -107,7 +103,8 @@ class MiniLyricsPage extends HookConsumerWidget {
                           : const Icon(SpotubeIcons.lyricsOff),
                       style: ButtonStyle(
                         foregroundColor: showLyrics.value
-                            ? WidgetStateProperty.all(theme.colorScheme.primary)
+                            ? MaterialStateProperty.all(
+                                theme.colorScheme.primary)
                             : null,
                       ),
                       onPressed: () async {
@@ -115,13 +112,11 @@ class MiniLyricsPage extends HookConsumerWidget {
                         areaActive.value = true;
                         hoverMode.value = false;
 
-                        if (kIsDesktop) {
-                          await windowManager.setSize(
-                            showLyrics.value
-                                ? const Size(400, 500)
-                                : const Size(400, 150),
-                          );
-                        }
+                        await DesktopTools.window.setSize(
+                          showLyrics.value
+                              ? const Size(400, 500)
+                              : const Size(400, 150),
+                        );
                       },
                     ),
                     IconButton(
@@ -131,7 +126,8 @@ class MiniLyricsPage extends HookConsumerWidget {
                           : const Icon(SpotubeIcons.hoverOff),
                       style: ButtonStyle(
                         foregroundColor: hoverMode.value
-                            ? WidgetStateProperty.all(theme.colorScheme.primary)
+                            ? MaterialStateProperty.all(
+                                theme.colorScheme.primary)
                             : null,
                       ),
                       onPressed: () async {
@@ -139,34 +135,33 @@ class MiniLyricsPage extends HookConsumerWidget {
                         hoverMode.value = !hoverMode.value;
                       },
                     ),
-                    if (kIsDesktop)
-                      FutureBuilder(
-                        future: windowManager.isAlwaysOnTop(),
-                        builder: (context, snapshot) {
-                          return IconButton(
-                            tooltip: context.l10n.always_on_top,
-                            icon: Icon(
-                              snapshot.data == true
-                                  ? SpotubeIcons.pinOn
-                                  : SpotubeIcons.pinOff,
-                            ),
-                            style: ButtonStyle(
-                              foregroundColor: snapshot.data == true
-                                  ? WidgetStateProperty.all(
-                                      theme.colorScheme.primary)
-                                  : null,
-                            ),
-                            onPressed: snapshot.data == null
-                                ? null
-                                : () async {
-                                    await windowManager.setAlwaysOnTop(
-                                      snapshot.data == true ? false : true,
-                                    );
-                                    update();
-                                  },
-                          );
-                        },
-                      ),
+                    FutureBuilder(
+                      future: DesktopTools.window.isAlwaysOnTop(),
+                      builder: (context, snapshot) {
+                        return IconButton(
+                          tooltip: context.l10n.always_on_top,
+                          icon: Icon(
+                            snapshot.data == true
+                                ? SpotubeIcons.pinOn
+                                : SpotubeIcons.pinOff,
+                          ),
+                          style: ButtonStyle(
+                            foregroundColor: snapshot.data == true
+                                ? MaterialStateProperty.all(
+                                    theme.colorScheme.primary)
+                                : null,
+                          ),
+                          onPressed: snapshot.data == null
+                              ? null
+                              : () async {
+                                  await DesktopTools.window.setAlwaysOnTop(
+                                    snapshot.data == true ? false : true,
+                                  );
+                                  update();
+                                },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -184,12 +179,12 @@ class MiniLyricsPage extends HookConsumerWidget {
                   child: TabBarView(
                     children: [
                       SyncedLyrics(
-                        palette: PaletteColor(theme.colorScheme.surface, 0),
+                        palette: PaletteColor(theme.colorScheme.background, 0),
                         isModal: true,
                         defaultTextZoom: 65,
                       ),
                       PlainLyrics(
-                        palette: PaletteColor(theme.colorScheme.surface, 0),
+                        palette: PaletteColor(theme.colorScheme.background, 0),
                         isModal: true,
                         defaultTextZoom: 65,
                       ),
@@ -248,20 +243,19 @@ class MiniLyricsPage extends HookConsumerWidget {
                       tooltip: context.l10n.exit_mini_player,
                       icon: const Icon(SpotubeIcons.maximize),
                       onPressed: () async {
-                        if (!kIsDesktop) return;
-
                         try {
-                          await windowManager
+                          await DesktopTools.window
                               .setMinimumSize(const Size(300, 700));
-                          await windowManager.setAlwaysOnTop(false);
+                          await DesktopTools.window.setAlwaysOnTop(false);
                           if (wasMaximized.value) {
-                            await windowManager.maximize();
+                            await DesktopTools.window.maximize();
                           } else {
-                            await windowManager.setSize(prevSize);
+                            await DesktopTools.window.setSize(prevSize);
                           }
-                          await windowManager.setAlignment(Alignment.center);
+                          await DesktopTools.window
+                              .setAlignment(Alignment.center);
                           if (!kIsLinux) {
-                            await windowManager.setHasShadow(true);
+                            await DesktopTools.window.setHasShadow(true);
                           }
                           await Future.delayed(
                               const Duration(milliseconds: 200));

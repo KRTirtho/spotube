@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/connect/connect.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -23,7 +22,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
         width: double.infinity,
         child: TextButton(
           onPressed: () {
-            ServiceUtils.pushNamed(context, ConnectPage.name);
+            ServiceUtils.push(context, "/connect");
           },
           style: FilledButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -60,7 +59,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
                 clipBehavior: Clip.hardEdge,
                 child: InkWell(
                   onTap: () {
-                    ServiceUtils.pushNamed(context, ConnectPage.name);
+                    ServiceUtils.push(context, "/connect");
                   },
                   borderRadius: BorderRadius.circular(50),
                   child: Ink(
@@ -112,7 +111,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
                 foregroundColor: colorScheme.onPrimary,
               ),
               onPressed: () {
-                ServiceUtils.pushNamed(context, ConnectPage.name);
+                ServiceUtils.push(context, "/connect");
               },
             ),
           ),
