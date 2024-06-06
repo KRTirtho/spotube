@@ -29,7 +29,7 @@ class AnchorButton<T> extends HookWidget {
       onTapUp: (event) => tap.value = false,
       onTap: onTap,
       child: MouseRegion(
-        cursor: WidgetStateMouseCursor.clickable,
+        cursor: MaterialStateMouseCursor.clickable,
         child: Text(
           text,
           style: style.copyWith(

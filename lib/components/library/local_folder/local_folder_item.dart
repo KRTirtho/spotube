@@ -71,7 +71,7 @@ class LocalFolderItem extends HookConsumerWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: Color.lerp(
-            colorScheme.surfaceContainerHighest,
+            colorScheme.surfaceVariant,
             colorScheme.surface,
             lerpValue,
           ),

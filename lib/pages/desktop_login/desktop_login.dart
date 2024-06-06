@@ -17,7 +17,7 @@ class DesktopLoginPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final mediaQuery = MediaQuery.of(context);
     final theme = Theme.of(context);
-    final color = theme.colorScheme.surfaceContainerHighest.withOpacity(.3);
+    final color = theme.colorScheme.surfaceVariant.withOpacity(.3);
 
     return SafeArea(
       child: Scaffold(

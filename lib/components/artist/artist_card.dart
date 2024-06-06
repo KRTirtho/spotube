@@ -35,10 +35,6 @@ class ArtistCard extends HookConsumerWidget {
 
     final radius = BorderRadius.circular(15);
 
-    final bgColor = useBrightnessValue(
-      theme.colorScheme.surface,
-      theme.colorScheme.surfaceContainerHigh,
-    );
     final double size = useBreakpointValue<double>(
       xs: 130,
       sm: 130,
@@ -50,8 +46,12 @@ class ArtistCard extends HookConsumerWidget {
       width: size,
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Material(
-        shadowColor: theme.colorScheme.surface,
-        color: bgColor,
+        shadowColor: theme.colorScheme.background,
+        color: Color.lerp(
+          theme.colorScheme.surfaceVariant,
+          theme.colorScheme.surface,
+          useBrightnessValue(.9, .7),
+        ),
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: radius,

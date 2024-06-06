@@ -68,7 +68,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
             backgroundColor:
                 theme.colorScheme.secondaryContainer.withOpacity(0.72),
             buttonBackgroundColor: buttonColor,
-            color: theme.colorScheme.surface,
+            color: theme.colorScheme.background,
             height: panelHeight,
             animationDuration: const Duration(milliseconds: 350),
             items: navbarTileList.map(

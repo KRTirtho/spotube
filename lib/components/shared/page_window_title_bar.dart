@@ -210,16 +210,16 @@ class WindowTitleBarButtons extends HookConsumerWidget {
       final theme = Theme.of(context);
       final colors = WindowButtonColors(
         normal: Colors.transparent,
-        iconNormal: foregroundColor ?? theme.colorScheme.onSurface,
-        mouseOver: theme.colorScheme.onSurface.withOpacity(0.1),
-        mouseDown: theme.colorScheme.onSurface.withOpacity(0.2),
-        iconMouseOver: theme.colorScheme.onSurface,
-        iconMouseDown: theme.colorScheme.onSurface,
+        iconNormal: foregroundColor ?? theme.colorScheme.onBackground,
+        mouseOver: theme.colorScheme.onBackground.withOpacity(0.1),
+        mouseDown: theme.colorScheme.onBackground.withOpacity(0.2),
+        iconMouseOver: theme.colorScheme.onBackground,
+        iconMouseDown: theme.colorScheme.onBackground,
       );
 
       final closeColors = WindowButtonColors(
         normal: Colors.transparent,
-        iconNormal: foregroundColor ?? theme.colorScheme.onSurface,
+        iconNormal: foregroundColor ?? theme.colorScheme.onBackground,
         mouseOver: Colors.red,
         mouseDown: Colors.red[800]!,
         iconMouseOver: Colors.white,

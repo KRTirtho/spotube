@@ -20,6 +20,7 @@ class BlackListPage extends HookConsumerWidget {
     final controller = useScrollController();
     final blacklist = ref.watch(blacklistProvider);
     final searchText = useState("");
+
     final filteredBlacklist = useMemoized(
       () {
         if (searchText.value.isEmpty) {

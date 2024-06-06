@@ -107,7 +107,8 @@ class MiniLyricsPage extends HookConsumerWidget {
                           : const Icon(SpotubeIcons.lyricsOff),
                       style: ButtonStyle(
                         foregroundColor: showLyrics.value
-                            ? WidgetStateProperty.all(theme.colorScheme.primary)
+                            ? MaterialStateProperty.all(
+                                theme.colorScheme.primary)
                             : null,
                       ),
                       onPressed: () async {
@@ -131,7 +132,8 @@ class MiniLyricsPage extends HookConsumerWidget {
                           : const Icon(SpotubeIcons.hoverOff),
                       style: ButtonStyle(
                         foregroundColor: hoverMode.value
-                            ? WidgetStateProperty.all(theme.colorScheme.primary)
+                            ? MaterialStateProperty.all(
+                                theme.colorScheme.primary)
                             : null,
                       ),
                       onPressed: () async {
@@ -152,7 +154,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                             ),
                             style: ButtonStyle(
                               foregroundColor: snapshot.data == true
-                                  ? WidgetStateProperty.all(
+                                  ? MaterialStateProperty.all(
                                       theme.colorScheme.primary)
                                   : null,
                             ),
@@ -184,12 +186,12 @@ class MiniLyricsPage extends HookConsumerWidget {
                   child: TabBarView(
                     children: [
                       SyncedLyrics(
-                        palette: PaletteColor(theme.colorScheme.surface, 0),
+                        palette: PaletteColor(theme.colorScheme.background, 0),
                         isModal: true,
                         defaultTextZoom: 65,
                       ),
                       PlainLyrics(
-                        palette: PaletteColor(theme.colorScheme.surface, 0),
+                        palette: PaletteColor(theme.colorScheme.background, 0),
                         isModal: true,
                         defaultTextZoom: 65,
                       ),

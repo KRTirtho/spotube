@@ -71,7 +71,7 @@ class MultiSelectField<T> extends HookWidget {
                   : theme.colorScheme.onSurface.withOpacity(0.1),
             ),
           ),
-          mouseCursor: WidgetStateMouseCursor.textable,
+          mouseCursor: MaterialStateMouseCursor.textable,
           onPressed: !enabled
               ? null
               : () async {

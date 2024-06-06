@@ -134,7 +134,7 @@ class HomeGenresSection extends HookConsumerWidget {
                       child: Ink(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: colorScheme.surfaceContainerHighest,
+                          color: colorScheme.surfaceVariant,
                           gradient: categoriesQuery.isLoading ? null : gradient,
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16),

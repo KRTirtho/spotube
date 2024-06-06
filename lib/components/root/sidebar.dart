@@ -14,6 +14,7 @@ import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
 import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/settings/settings.dart';
@@ -69,7 +70,12 @@ class Sidebar extends HookConsumerWidget {
     );
 
     final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceContainer;
+    final bg = theme.colorScheme.surfaceVariant;
+
+    final bgColor = useBrightnessValue(
+      Color.lerp(bg, Colors.white, 0.7),
+      Color.lerp(bg, Colors.black, 0.45)!,
+    );
 
     useEffect(() {
       if (!context.mounted) return;
@@ -153,7 +159,7 @@ class Sidebar extends HookConsumerWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(
-                color: bg,
+                color: bgColor?.withOpacity(0.8),
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomRight: Radius.circular(10),

@@ -34,7 +34,7 @@ class ThemedButtonsTabBar extends HookWidget implements PreferredSizeWidget {
         ),
         borderWidth: 0,
         unselectedDecoration: BoxDecoration(
-          color: theme.colorScheme.surface,
+          color: theme.colorScheme.background,
           borderRadius: BorderRadius.circular(15),
         ),
         unselectedLabelStyle: theme.textTheme.labelLarge?.copyWith(
