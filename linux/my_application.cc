@@ -107,9 +107,26 @@ static void my_application_class_init(MyApplicationClass* klass) {
 
 static void my_application_init(MyApplication* self) {}
 
+bool is_flatpak(void) {
+  if (getenv("container") || getenv("FLATPAK_ID") || getenv("FLATPAK")) {
+    /* flatpak */
+    return true;
+  }
+  return false; /* No container detected */
+}
+
 MyApplication* my_application_new() {
+  // gchar based alternate MY_APPLICATION_ID
+  const char* my_application_id = APPLICATION_ID;
+
+  if (!is_flatpak()) {
+    my_application_id = "com.github.KRTirtho.Spotube";
+  }
+
+  g_print("Application ID: %s\n", my_application_id);
+
   return MY_APPLICATION(g_object_new(
-      my_application_get_type(), "application-id", APPLICATION_ID, "flags",
+      my_application_get_type(), "application-id", my_application_id, "flags",
       G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN,
       nullptr));
 }
