@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:flutter_broadcasts/flutter_broadcasts.dart';
@@ -7,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:audio_session/audio_session.dart';
 // ignore: implementation_imports
 import 'package:spotube/services/audio_player/playback_state.dart';
+import 'package:spotube/utils/platform.dart';
 
 /// MediaKit [Player] by default doesn't have a state stream.
 /// This class adds a state stream to the [Player] class.
@@ -54,7 +54,7 @@ class CustomPlayer extends Player {
     PackageInfo.fromPlatform().then((packageInfo) {
       _packageName = packageInfo.packageName;
     });
-    if (DesktopTools.platform.isAndroid) {
+    if (kIsAndroid) {
       _androidAudioManager = AndroidAudioManager();
       AudioSession.instance.then((s) async {
         _androidAudioSessionId =
@@ -71,7 +71,7 @@ class CustomPlayer extends Player {
   }
 
   Future<void> notifyAudioSessionUpdate(bool active) async {
-    if (DesktopTools.platform.isAndroid) {
+    if (kIsAndroid) {
       sendBroadcast(
         BroadcastMessage(
           name: active

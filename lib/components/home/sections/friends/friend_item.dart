@@ -6,6 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/models/spotify_friends.dart';
+import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/pages/artist/artist.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
 class FriendItem extends HookConsumerWidget {
@@ -57,7 +60,9 @@ class FriendItem extends HookConsumerWidget {
                       text: friend.track.name,
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.push("/track/${friend.track.id}");
+                          context.pushNamed(TrackPage.name, pathParameters: {
+                            "id": friend.track.id,
+                          });
                         },
                     ),
                     const TextSpan(text: " • "),
@@ -71,8 +76,12 @@ class FriendItem extends HookConsumerWidget {
                       text: " ${friend.track.artist.name}",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.push(
-                            "/artist/${friend.track.artist.id}",
+                          context.pushNamed(
+                            ArtistPage.name,
+                            pathParameters: {
+                              "id": friend.track.artist.id,
+                            },
+                            extra: friend.track.artist,
                           );
                         },
                     ),
@@ -105,8 +114,11 @@ class FriendItem extends HookConsumerWidget {
                           final album =
                               await spotify.albums.get(friend.track.album.id);
                           if (context.mounted) {
-                            context.push(
-                              "/album/${friend.track.album.id}",
+                            context.pushNamed(
+                              AlbumPage.name,
+                              pathParameters: {
+                                "id": friend.track.album.id,
+                              },
                               extra: album,
                             );
                           }

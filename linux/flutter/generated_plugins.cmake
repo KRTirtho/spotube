@@ -12,9 +12,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   screen_retriever
   system_theme
   system_tray
+  tray_manager
   url_launcher_linux
   window_manager
-  window_size
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

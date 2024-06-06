@@ -15,7 +15,12 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
       horizontalTitleGap: 5,
       iconColor: scheme.onSurface,
     ),
-    appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
+    appBarTheme: const AppBarTheme(
+      surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 0,
+      shadowColor: Colors.transparent,
+      elevation: 0,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),

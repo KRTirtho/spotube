@@ -8,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/library/user_local_tracks.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
@@ -23,6 +22,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
@@ -197,6 +197,8 @@ class TrackOptions extends HookConsumerWidget {
       return downloadManager.getProgressNotifier(spotubeTrack);
     });
 
+    final isLocalTrack = track is LocalTrack;
+
     final adaptivePopSheetList = AdaptivePopSheetList<TrackOptionValue>(
       onSelected: (value) async {
         switch (value) {
@@ -314,118 +316,120 @@ class TrackOptions extends HookConsumerWidget {
           ),
         ),
       ],
-      children: switch (track.runtimeType) {
-        LocalTrack() => [
-            PopSheetEntry(
-              value: TrackOptionValue.delete,
-              leading: const Icon(SpotubeIcons.trash),
-              title: Text(context.l10n.delete),
-            )
-          ],
-        _ => [
-            if (mediaQuery.smAndDown)
-              PopSheetEntry(
-                value: TrackOptionValue.album,
-                leading: const Icon(SpotubeIcons.album),
-                title: Text(context.l10n.go_to_album),
-                subtitle: Text(track.album!.name!),
-              ),
-            if (!playlist.containsTrack(track)) ...[
-              PopSheetEntry(
-                value: TrackOptionValue.addToQueue,
-                leading: const Icon(SpotubeIcons.queueAdd),
-                title: Text(context.l10n.add_to_queue),
-              ),
-              PopSheetEntry(
-                value: TrackOptionValue.playNext,
-                leading: const Icon(SpotubeIcons.lightning),
-                title: Text(context.l10n.play_next),
-              ),
-            ] else
-              PopSheetEntry(
-                value: TrackOptionValue.removeFromQueue,
-                enabled: playlist.activeTrack?.id != track.id,
-                leading: const Icon(SpotubeIcons.queueRemove),
-                title: Text(context.l10n.remove_from_queue),
-              ),
-            if (me.asData?.value != null)
-              PopSheetEntry(
-                value: TrackOptionValue.favorite,
-                leading: favorites.isLiked
-                    ? const Icon(
-                        SpotubeIcons.heartFilled,
-                        color: Colors.pink,
-                      )
-                    : const Icon(SpotubeIcons.heart),
-                title: Text(
-                  favorites.isLiked
-                      ? context.l10n.remove_from_favorites
-                      : context.l10n.save_as_favorite,
-                ),
-              ),
-            if (auth != null) ...[
-              PopSheetEntry(
-                value: TrackOptionValue.startRadio,
-                leading: const Icon(SpotubeIcons.radio),
-                title: Text(context.l10n.start_a_radio),
-              ),
-              PopSheetEntry(
-                value: TrackOptionValue.addToPlaylist,
-                leading: const Icon(SpotubeIcons.playlistAdd),
-                title: Text(context.l10n.add_to_playlist),
-              ),
-            ],
-            if (userPlaylist && auth != null)
-              PopSheetEntry(
-                value: TrackOptionValue.removeFromPlaylist,
-                leading: const Icon(SpotubeIcons.removeFilled),
-                title: Text(context.l10n.remove_from_playlist),
-              ),
-            PopSheetEntry(
-              value: TrackOptionValue.download,
-              enabled: !isInQueue,
-              leading: isInQueue
-                  ? HookBuilder(builder: (context) {
-                      final progress = useListenable(progressNotifier!);
-                      return CircularProgressIndicator(
-                        value: progress.value,
-                      );
-                    })
-                  : const Icon(SpotubeIcons.download),
-              title: Text(context.l10n.download_track),
+      children: [
+        if (isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.delete,
+            leading: const Icon(SpotubeIcons.trash),
+            title: Text(context.l10n.delete),
+          ),
+        if (mediaQuery.smAndDown)
+          PopSheetEntry(
+            value: TrackOptionValue.album,
+            leading: const Icon(SpotubeIcons.album),
+            title: Text(context.l10n.go_to_album),
+            subtitle: Text(track.album!.name!),
+          ),
+        if (!playlist.containsTrack(track)) ...[
+          PopSheetEntry(
+            value: TrackOptionValue.addToQueue,
+            leading: const Icon(SpotubeIcons.queueAdd),
+            title: Text(context.l10n.add_to_queue),
+          ),
+          PopSheetEntry(
+            value: TrackOptionValue.playNext,
+            leading: const Icon(SpotubeIcons.lightning),
+            title: Text(context.l10n.play_next),
+          ),
+        ] else
+          PopSheetEntry(
+            value: TrackOptionValue.removeFromQueue,
+            enabled: playlist.activeTrack?.id != track.id,
+            leading: const Icon(SpotubeIcons.queueRemove),
+            title: Text(context.l10n.remove_from_queue),
+          ),
+        if (me.asData?.value != null && !isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.favorite,
+            leading: favorites.isLiked
+                ? const Icon(
+                    SpotubeIcons.heartFilled,
+                    color: Colors.pink,
+                  )
+                : const Icon(SpotubeIcons.heart),
+            title: Text(
+              favorites.isLiked
+                  ? context.l10n.remove_from_favorites
+                  : context.l10n.save_as_favorite,
             ),
-            PopSheetEntry(
-              value: TrackOptionValue.blacklist,
-              leading: const Icon(SpotubeIcons.playlistRemove),
-              iconColor: !isBlackListed ? Colors.red[400] : null,
-              textColor: !isBlackListed ? Colors.red[400] : null,
-              title: Text(
-                isBlackListed
-                    ? context.l10n.remove_from_blacklist
-                    : context.l10n.add_to_blacklist,
-              ),
+          ),
+        if (auth != null && !isLocalTrack) ...[
+          PopSheetEntry(
+            value: TrackOptionValue.startRadio,
+            leading: const Icon(SpotubeIcons.radio),
+            title: Text(context.l10n.start_a_radio),
+          ),
+          PopSheetEntry(
+            value: TrackOptionValue.addToPlaylist,
+            leading: const Icon(SpotubeIcons.playlistAdd),
+            title: Text(context.l10n.add_to_playlist),
+          ),
+        ],
+        if (userPlaylist && auth != null && !isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.removeFromPlaylist,
+            leading: const Icon(SpotubeIcons.removeFilled),
+            title: Text(context.l10n.remove_from_playlist),
+          ),
+        if (!isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.download,
+            enabled: !isInQueue,
+            leading: isInQueue
+                ? HookBuilder(builder: (context) {
+                    final progress = useListenable(progressNotifier!);
+                    return CircularProgressIndicator(
+                      value: progress.value,
+                    );
+                  })
+                : const Icon(SpotubeIcons.download),
+            title: Text(context.l10n.download_track),
+          ),
+        if (!isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.blacklist,
+            leading: const Icon(SpotubeIcons.playlistRemove),
+            iconColor: !isBlackListed ? Colors.red[400] : null,
+            textColor: !isBlackListed ? Colors.red[400] : null,
+            title: Text(
+              isBlackListed
+                  ? context.l10n.remove_from_blacklist
+                  : context.l10n.add_to_blacklist,
             ),
-            PopSheetEntry(
-              value: TrackOptionValue.share,
-              leading: const Icon(SpotubeIcons.share),
-              title: Text(context.l10n.share),
+          ),
+        if (!isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.share,
+            leading: const Icon(SpotubeIcons.share),
+            title: Text(context.l10n.share),
+          ),
+        if (!isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.songlink,
+            leading: Assets.logos.songlinkTransparent.image(
+              width: 22,
+              height: 22,
+              color: colorScheme.onSurface.withOpacity(0.5),
             ),
-            PopSheetEntry(
-              value: TrackOptionValue.songlink,
-              leading: Assets.logos.songlinkTransparent.image(
-                width: 22,
-                height: 22,
-                color: colorScheme.onSurface.withOpacity(0.5),
-              ),
-              title: Text(context.l10n.song_link),
-            ),
-            PopSheetEntry(
-              value: TrackOptionValue.details,
-              leading: const Icon(SpotubeIcons.info),
-              title: Text(context.l10n.details),
-            ),
-          ]
-      },
+            title: Text(context.l10n.song_link),
+          ),
+        if (!isLocalTrack)
+          PopSheetEntry(
+            value: TrackOptionValue.details,
+            leading: const Icon(SpotubeIcons.info),
+            title: Text(context.l10n.details),
+          ),
+      ],
     );
 
     //! This is the most ANTI pattern I've ever done, but it works

@@ -10,6 +10,8 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/spotify/views/home_section.dart';
 
 class HomeFeedSectionPage extends HookConsumerWidget {
+  static const name = "home_feed_section";
+
   final String sectionUri;
   const HomeFeedSectionPage({super.key, required this.sectionUri});
 

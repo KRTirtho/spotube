@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/extensions/track.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class CurrentPlaylist {

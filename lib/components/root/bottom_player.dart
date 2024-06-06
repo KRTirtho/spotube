@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,6 +23,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:window_manager/window_manager.dart';
 
 class BottomPlayer extends HookConsumerWidget {
   BottomPlayer({super.key});
@@ -95,19 +95,19 @@ class BottomPlayer extends HookConsumerWidget {
                             tooltip: context.l10n.mini_player,
                             icon: const Icon(SpotubeIcons.miniPlayer),
                             onPressed: () async {
-                              final prevSize =
-                                  await DesktopTools.window.getSize();
-                              await DesktopTools.window.setMinimumSize(
+                              if (!kIsDesktop) return;
+
+                              final prevSize = await windowManager.getSize();
+                              await windowManager.setMinimumSize(
                                 const Size(300, 300),
                               );
-                              await DesktopTools.window.setAlwaysOnTop(true);
+                              await windowManager.setAlwaysOnTop(true);
                               if (!kIsLinux) {
-                                await DesktopTools.window.setHasShadow(false);
+                                await windowManager.setHasShadow(false);
                               }
-                              await DesktopTools.window
+                              await windowManager
                                   .setAlignment(Alignment.topRight);
-                              await DesktopTools.window
-                                  .setSize(const Size(400, 500));
+                              await windowManager.setSize(const Size(400, 500));
                               await Future.delayed(
                                 const Duration(milliseconds: 100),
                                 () async {

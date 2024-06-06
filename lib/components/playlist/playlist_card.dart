@@ -6,7 +6,9 @@ import 'package:spotube/components/shared/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/shared/playbutton_card.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/connect/connect.dart';
+import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -22,6 +24,8 @@ class PlaylistCard extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final playlistQueue = ref.watch(proxyPlaylistProvider);
     final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final historyNotifier = ref.read(playbackHistoryProvider.notifier);
+
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     bool isPlaylistPlaying = useMemoized(
@@ -32,12 +36,23 @@ class PlaylistCard extends HookConsumerWidget {
     final updating = useState(false);
     final me = ref.watch(meProvider);
 
-    Future<List<Track>> fetchAllTracks() async {
+    Future<List<Track>> fetchInitialTracks() async {
       if (playlist.id == 'user-liked-tracks') {
         return await ref.read(likedTracksProvider.future);
       }
 
-      await ref.read(playlistTracksProvider(playlist.id!).future);
+      final result =
+          await ref.read(playlistTracksProvider(playlist.id!).future);
+
+      return result.items;
+    }
+
+    Future<List<Track>> fetchAllTracks() async {
+      final initialTracks = await fetchInitialTracks();
+
+      if (playlist.id == 'user-liked-tracks') {
+        return initialTracks;
+      }
 
       return ref.read(playlistTracksProvider(playlist.id!).notifier).fetchAll();
     }
@@ -55,9 +70,12 @@ class PlaylistCard extends HookConsumerWidget {
       isOwner: playlist.owner?.id == me.asData?.value.id &&
           me.asData?.value.id != null,
       onTap: () {
-        ServiceUtils.push(
+        ServiceUtils.pushNamed(
           context,
-          "/playlist/${playlist.id}",
+          PlaylistPage.name,
+          pathParameters: {
+            "id": playlist.id!,
+          },
           extra: playlist,
         );
       },
@@ -70,22 +88,29 @@ class PlaylistCard extends HookConsumerWidget {
             return audioPlayer.resume();
           }
 
-          List<Track> fetchedTracks = await fetchAllTracks();
+          final fetchedInitialTracks = await fetchInitialTracks();
 
-          if (fetchedTracks.isEmpty || !context.mounted) return;
+          if (fetchedInitialTracks.isEmpty || !context.mounted) return;
 
           final isRemoteDevice = await showSelectDeviceDialog(context, ref);
           if (isRemoteDevice) {
             final remotePlayback = ref.read(connectProvider.notifier);
+            final allTracks = await fetchAllTracks();
             await remotePlayback.load(
-              WebSocketLoadEventData(
-                tracks: fetchedTracks,
-                collectionId: playlist.id!,
+              WebSocketLoadEventData.playlist(
+                tracks: allTracks,
+                collection: playlist,
               ),
             );
           } else {
-            await playlistNotifier.load(fetchedTracks, autoPlay: true);
+            await playlistNotifier.load(fetchedInitialTracks, autoPlay: true);
             playlistNotifier.addCollection(playlist.id!);
+            historyNotifier.addPlaylists([playlist]);
+
+            final allTracks = await fetchAllTracks();
+
+            await playlistNotifier
+                .addTracks(allTracks.sublist(fetchedInitialTracks.length));
           }
         } finally {
           if (context.mounted) {
@@ -98,20 +123,22 @@ class PlaylistCard extends HookConsumerWidget {
         try {
           if (isPlaylistPlaying) return;
 
-          final fetchedTracks = await fetchAllTracks();
+          final fetchedInitialTracks = await fetchAllTracks();
 
-          if (fetchedTracks.isEmpty) return;
+          if (fetchedInitialTracks.isEmpty) return;
 
-          playlistNotifier.addTracks(fetchedTracks);
+          playlistNotifier.addTracks(fetchedInitialTracks);
           playlistNotifier.addCollection(playlist.id!);
+          historyNotifier.addPlaylists([playlist]);
           if (context.mounted) {
             final snackbar = SnackBar(
-              content: Text("Added ${fetchedTracks.length} tracks to queue"),
+              content:
+                  Text("Added ${fetchedInitialTracks.length} tracks to queue"),
               action: SnackBarAction(
                 label: "Undo",
                 onPressed: () {
                   playlistNotifier
-                      .removeTracks(fetchedTracks.map((e) => e.id!));
+                      .removeTracks(fetchedInitialTracks.map((e) => e.id!));
                 },
               ),
             );

@@ -13,6 +13,8 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/home/genres/genre_playlists.dart';
+import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomeGenresSection extends HookConsumerWidget {
@@ -50,11 +52,11 @@ class HomeGenresSection extends HookConsumerWidget {
                   textDirection: TextDirection.rtl,
                   child: TextButton.icon(
                     onPressed: () {
-                      context.push('/genres');
+                      context.pushNamed(GenrePage.name);
                     },
                     icon: const Icon(SpotubeIcons.angleRight),
                     label: Text(
-                      "Browse All",
+                      context.l10n.browse_all,
                       style: textTheme.bodyMedium?.copyWith(
                         color: colorScheme.secondary,
                       ),
@@ -110,7 +112,13 @@ class HomeGenresSection extends HookConsumerWidget {
 
                   return InkWell(
                     onTap: () {
-                      context.push('/genre/${category.id}', extra: category);
+                      context.pushNamed(
+                        GenrePlaylistsPage.name,
+                        pathParameters: {
+                          "categoryId": category.id!,
+                        },
+                        extra: category,
+                      );
                     },
                     borderRadius: BorderRadius.circular(8),
                     child: Ink(

@@ -7,8 +7,10 @@ import 'package:spotube/components/desktop_login/login_form.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
 class DesktopLoginPage extends HookConsumerWidget {
+  static const name = WebViewLogin.name;
   const DesktopLoginPage({super.key});
 
   @override

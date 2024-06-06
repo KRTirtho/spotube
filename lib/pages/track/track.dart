@@ -21,6 +21,8 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/extensions/constrains.dart';
 
 class TrackPage extends HookConsumerWidget {
+  static const name = "track";
+
   final String trackId;
   const TrackPage({
     super.key,

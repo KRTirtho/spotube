@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
@@ -26,6 +27,8 @@ import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/utils/platform.dart';
 
 class SearchPage extends HookConsumerWidget {
+  static const name = "search";
+
   const SearchPage({super.key});
 
   @override
@@ -85,99 +88,117 @@ class SearchPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        appBar: kIsDesktop && !kIsMacOS ? const PageWindowTitleBar() : null,
+        appBar: kIsDesktop && !kIsMacOS
+            ? const PageWindowTitleBar(automaticallyImplyLeading: true)
+            : null,
         body: !authenticationNotifier.isLoggedIn
             ? const AnonymousFallback()
             : Column(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    color: theme.scaffoldBackgroundColor,
-                    child: SearchAnchor(
-                      searchController: controller,
-                      viewBuilder: (_) => HookBuilder(builder: (context) {
-                        final searchController = useListenable(controller);
-                        final update = useForceUpdate();
-                        final suggestions = searchController.text.isEmpty
-                            ? KVStoreService.recentSearches
-                            : KVStoreService.recentSearches
-                                .where(
-                                  (s) =>
-                                      weightedRatio(
-                                        s.toLowerCase(),
-                                        searchController.text.toLowerCase(),
-                                      ) >
-                                      50,
-                                )
-                                .toList();
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if ((kIsMobile || kIsMacOS) && context.canPop())
+                        const BackButton()
+                      else
+                        const Gap(20),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 20,
+                            top: 20,
+                            bottom: 20,
+                          ),
+                          child: SearchAnchor(
+                            searchController: controller,
+                            viewBuilder: (_) => HookBuilder(builder: (context) {
+                              final searchController =
+                                  useListenable(controller);
+                              final update = useForceUpdate();
+                              final suggestions = searchController.text.isEmpty
+                                  ? KVStoreService.recentSearches
+                                  : KVStoreService.recentSearches
+                                      .where(
+                                        (s) =>
+                                            weightedRatio(
+                                              s.toLowerCase(),
+                                              searchController.text
+                                                  .toLowerCase(),
+                                            ) >
+                                            50,
+                                      )
+                                      .toList();
 
-                        return ListView.builder(
-                          itemCount: suggestions.length,
-                          itemBuilder: (context, index) {
-                            final suggestion = suggestions[index];
+                              return ListView.builder(
+                                itemCount: suggestions.length,
+                                itemBuilder: (context, index) {
+                                  final suggestion = suggestions[index];
 
-                            return ListTile(
-                              leading: const Icon(SpotubeIcons.history),
-                              title: Text(suggestion),
-                              trailing: IconButton(
-                                icon: const Icon(SpotubeIcons.trash),
-                                onPressed: () {
-                                  KVStoreService.setRecentSearches(
-                                    KVStoreService.recentSearches
-                                        .where((s) => s != suggestion)
-                                        .toList(),
+                                  return ListTile(
+                                    leading: const Icon(SpotubeIcons.history),
+                                    title: Text(suggestion),
+                                    trailing: IconButton(
+                                      icon: const Icon(SpotubeIcons.trash),
+                                      onPressed: () {
+                                        KVStoreService.setRecentSearches(
+                                          KVStoreService.recentSearches
+                                              .where((s) => s != suggestion)
+                                              .toList(),
+                                        );
+                                        update();
+                                      },
+                                    ),
+                                    onTap: () {
+                                      controller.closeView(suggestion);
+                                      ref
+                                          .read(
+                                              searchTermStateProvider.notifier)
+                                          .state = suggestion;
+                                    },
                                   );
-                                  update();
                                 },
-                              ),
-                              onTap: () {
-                                controller.closeView(suggestion);
-                                ref
-                                    .read(searchTermStateProvider.notifier)
-                                    .state = suggestion;
-                              },
-                            );
-                          },
-                        );
-                      }),
-                      suggestionsBuilder: (context, controller) {
-                        return [];
-                      },
-                      viewOnSubmitted: (value) async {
-                        controller.closeView(value);
-                        Timer(
-                          const Duration(milliseconds: 50),
-                          () {
-                            ref.read(searchTermStateProvider.notifier).state =
-                                value;
-                            if (value.trim().isEmpty) {
-                              return;
-                            }
-                            KVStoreService.setRecentSearches(
-                              {
-                                value,
-                                ...KVStoreService.recentSearches,
-                              }.toList(),
-                            );
-                          },
-                        );
-                      },
-                      builder: (context, controller) {
-                        return SearchBar(
-                          autoFocus: queries.none((s) =>
-                                  s.asData?.value != null && !s.hasError) &&
-                              !kIsMobile,
-                          controller: controller,
-                          leading: const Icon(SpotubeIcons.search),
-                          hintText: "${context.l10n.search}...",
-                          onTap: controller.openView,
-                          onChanged: (_) => controller.openView(),
-                        );
-                      },
-                    ),
+                              );
+                            }),
+                            suggestionsBuilder: (context, controller) {
+                              return [];
+                            },
+                            viewOnSubmitted: (value) async {
+                              controller.closeView(value);
+                              Timer(
+                                const Duration(milliseconds: 50),
+                                () {
+                                  ref
+                                      .read(searchTermStateProvider.notifier)
+                                      .state = value;
+                                  if (value.trim().isEmpty) {
+                                    return;
+                                  }
+                                  KVStoreService.setRecentSearches(
+                                    {
+                                      value,
+                                      ...KVStoreService.recentSearches,
+                                    }.toList(),
+                                  );
+                                },
+                              );
+                            },
+                            builder: (context, controller) {
+                              return SearchBar(
+                                autoFocus: queries.none((s) =>
+                                        s.asData?.value != null &&
+                                        !s.hasError) &&
+                                    !kIsMobile,
+                                controller: controller,
+                                leading: const Icon(SpotubeIcons.search),
+                                hintText: "${context.l10n.search}...",
+                                onTap: controller.openView,
+                                onChanged: (_) => controller.openView(),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Expanded(
                     child: AnimatedSwitcher(

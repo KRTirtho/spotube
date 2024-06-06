@@ -39,7 +39,7 @@ class PaginationProps {
 }
 
 class InheritedTrackView extends InheritedWidget {
-  final String collectionId;
+  final Object collection;
   final String title;
   final String? description;
   final String image;
@@ -55,7 +55,7 @@ class InheritedTrackView extends InheritedWidget {
   const InheritedTrackView({
     super.key,
     required super.child,
-    required this.collectionId,
+    required this.collection,
     required this.title,
     this.description,
     required this.image,
@@ -65,7 +65,11 @@ class InheritedTrackView extends InheritedWidget {
     required this.shareUrl,
     this.isLiked = false,
     this.onHeart,
-  });
+  }) : assert(collection is AlbumSimple || collection is PlaylistSimple);
+
+  String get collectionId => collection is AlbumSimple
+      ? (collection as AlbumSimple).id!
+      : (collection as PlaylistSimple).id!;
 
   @override
   bool updateShouldNotify(InheritedTrackView oldWidget) {
@@ -78,7 +82,7 @@ class InheritedTrackView extends InheritedWidget {
         oldWidget.onHeart != onHeart ||
         oldWidget.shareUrl != shareUrl ||
         oldWidget.routePath != routePath ||
-        oldWidget.collectionId != collectionId ||
+        oldWidget.collection != collection ||
         oldWidget.child != child;
   }
 

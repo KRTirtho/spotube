@@ -9,6 +9,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
+import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -63,7 +64,13 @@ class ArtistCard extends HookConsumerWidget {
         ),
         child: InkWell(
             onTap: () {
-              ServiceUtils.push(context, "/artist/${artist.id}");
+              ServiceUtils.pushNamed(
+                context,
+                ArtistPage.name,
+                pathParameters: {
+                  "id": artist.id!,
+                },
+              );
             },
             borderRadius: radius,
             child: Padding(

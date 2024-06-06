@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
@@ -14,8 +13,11 @@ import 'package:spotube/pages/settings/sections/downloads.dart';
 import 'package:spotube/pages/settings/sections/language_region.dart';
 import 'package:spotube/pages/settings/sections/playback.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/utils/platform.dart';
 
 class SettingsPage extends HookConsumerWidget {
+  static const name = "settings";
+
   const SettingsPage({super.key});
 
   @override
@@ -29,6 +31,7 @@ class SettingsPage extends HookConsumerWidget {
         appBar: PageWindowTitleBar(
           title: Text(context.l10n.settings),
           centerTitle: true,
+          automaticallyImplyLeading: true,
         ),
         body: Scrollbar(
           controller: controller,
@@ -45,8 +48,7 @@ class SettingsPage extends HookConsumerWidget {
                     const SettingsAppearanceSection(),
                     const SettingsPlaybackSection(),
                     const SettingsDownloadsSection(),
-                    if (DesktopTools.platform.isDesktop)
-                      const SettingsDesktopSection(),
+                    if (kIsDesktop) const SettingsDesktopSection(),
                     if (!kIsWeb) const SettingsDevelopersSection(),
                     const SettingsAboutSection(),
                     Center(
