@@ -123,8 +123,6 @@ MyApplication* my_application_new() {
     my_application_id = "com.github.KRTirtho.Spotube";
   }
 
-  g_print("Application ID: %s\n", my_application_id);
-
   return MY_APPLICATION(g_object_new(
       my_application_get_type(), "application-id", my_application_id, "flags",
       G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN,
