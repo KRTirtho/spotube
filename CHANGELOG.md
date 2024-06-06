@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.1](https://github.com/krtirtho/spotube/compare/v3.7.1...v3.7.1) (2024-06-06)
+
+
+### Bug Fixes
+
+* alternative sources not showing up for SongLink matched results ([37d002d](https://github.com/krtirtho/spotube/commit/37d002d133cacb3a34884713ac8f6637694af57c))
+* **android:** Media Controls not working above Android 14 [#1561](https://github.com/krtirtho/spotube/issues/1561) ([3394c1b](https://github.com/krtirtho/spotube/commit/3394c1b0574e44dc624b2b2f0bf32f343ae9f049))
+* browse anonymously button takes to wrong route ([73c5b30](https://github.com/krtirtho/spotube/commit/73c5b30b63a4c82bb7ad5b52bc10c5594566a800))
+* **desktop:** titlebar drag to move not working ([5f280a1](https://github.com/krtirtho/spotube/commit/5f280a19f4d5f8882ae2ff60c6cc595ded7a5a1d))
+* **desktop:** window is not centered ([47f98b9](https://github.com/krtirtho/spotube/commit/47f98b98aafab9b426733ed44cab2be8a646a98e))
+* **ios:** download not working [#1575](https://github.com/krtirtho/spotube/issues/1575) ([6591ec0](https://github.com/krtirtho/spotube/commit/6591ec0e1b441dd8fd535eace19a58c7749389ca))
+* **linux:** application window not visible after launch ([8fc44ed](https://github.com/krtirtho/spotube/commit/8fc44ed6550e8b2b804991ff82df08afb1c94ca8))
+* local track not showing up in queue ([d82261c](https://github.com/krtirtho/spotube/commit/d82261cb25ece63f85af0e40216cf32dccdc9dd5))
+* use weak match for Jiosaavn fallback to improve matching ([6cb2986](https://github.com/krtirtho/spotube/commit/6cb29868d2030b5e9312863c17e8f24889942e24))
+* **windows:** media controls not showing up [#1542](https://github.com/krtirtho/spotube/issues/1542) ([d7d864f](https://github.com/krtirtho/spotube/commit/d7d864ff2bc937675a544a7edf645c5148ec836a))
+* **windows:** revert Flutter version to 3.19.6 to avoid distortion [#1553](https://github.com/krtirtho/spotube/issues/1553) ([982cf0b](https://github.com/krtirtho/spotube/commit/982cf0bd435638fa20f17ef527fe21d031b5ffaf))
+
 ## [3.7.0](https://github.com/krtirtho/spotube/compare/v3.6.0...v3.7.0) (2024-06-03)
 
 
