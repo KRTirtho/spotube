@@ -106,7 +106,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     onPressed: () async {
                       await KVStoreService.setDoneGettingStarted(true);
                       if (context.mounted) {
-                        context.go(HomePage.name);
+                        context.goNamed(HomePage.name);
                       }
                     },
                   ),
