@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/formatters.dart';
-import 'package:spotube/components/stats/summary/summary_card.dart';
+import 'package:spotube/modules/stats/summary/summary_card.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/pages/stats/albums/albums.dart';
 import 'package:spotube/pages/stats/artists/artists.dart';

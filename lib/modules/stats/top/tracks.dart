@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/formatters.dart';
-import 'package:spotube/components/stats/common/track_item.dart';
+import 'package:spotube/modules/stats/common/track_item.dart';
 import 'package:spotube/provider/history/top.dart';
 
 class TopTracks extends HookConsumerWidget {
