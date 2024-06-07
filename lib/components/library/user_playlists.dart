@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -17,9 +16,11 @@ import 'package:spotube/components/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class UserPlaylists extends HookConsumerWidget {
   const UserPlaylists({super.key});
@@ -110,7 +111,8 @@ class UserPlaylists extends HookConsumerWidget {
                         icon: const Icon(SpotubeIcons.magic),
                         label: Text(context.l10n.generate_playlist),
                         onPressed: () {
-                          GoRouter.of(context).push("/library/generate");
+                          ServiceUtils.pushNamed(
+                              context, PlaylistGeneratorPage.name);
                         },
                       ),
                       const Gap(10),
