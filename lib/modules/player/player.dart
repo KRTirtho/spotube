@@ -6,10 +6,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/player/player_actions.dart';
-import 'package:spotube/components/player/player_controls.dart';
-import 'package:spotube/components/player/player_queue.dart';
-import 'package:spotube/components/player/volume_slider.dart';
+import 'package:spotube/modules/player/player_actions.dart';
+import 'package:spotube/modules/player/player_controls.dart';
+import 'package:spotube/modules/player/player_queue.dart';
+import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/components/shared/animated_gradient.dart';
 import 'package:spotube/components/shared/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/shared/links/artist_link.dart';

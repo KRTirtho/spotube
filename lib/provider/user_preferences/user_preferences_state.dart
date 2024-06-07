@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 
 part 'user_preferences_state.g.dart';

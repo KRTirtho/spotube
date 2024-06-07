@@ -5,9 +5,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
-import 'package:spotube/components/album/album_card.dart';
-import 'package:spotube/components/artist/artist_card.dart';
-import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/modules/album/album_card.dart';
+import 'package:spotube/modules/artist/artist_card.dart';
+import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 

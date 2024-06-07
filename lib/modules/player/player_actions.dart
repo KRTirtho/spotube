@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/player/sibling_tracks_sheet.dart';
+import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/shared/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/shared/heart_button.dart';
 import 'package:spotube/extensions/artist_simple.dart';

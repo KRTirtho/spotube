@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/fake.dart';
-import 'package:spotube/components/playlist/playlist_card.dart';
+import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/shared/image/universal_image.dart';
 import 'package:spotube/components/shared/page_window_title_bar.dart';
 import 'package:spotube/components/shared/waypoint.dart';

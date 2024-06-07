@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/library/user_local_tracks.dart';
+import 'package:spotube/modules/library/user_local_tracks.dart';
 
 class TrackViewNotifier extends ChangeNotifier {
   List<Track> tracks;
