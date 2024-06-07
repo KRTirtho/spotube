@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/modules/player/player_track_details.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
-import 'package:spotube/components/shared/panels/sliding_up_panel.dart';
+import 'package:spotube/components/panels/sliding_up_panel.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/modules/player/use_progress.dart';

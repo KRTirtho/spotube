@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/shared/playbutton_card.dart';
-import 'package:spotube/components/shared/tracks_view/sections/header/header_actions.dart';
-import 'package:spotube/components/shared/tracks_view/sections/header/header_buttons.dart';
-import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
+import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/playbutton_card.dart';
+import 'package:spotube/components/tracks_view/sections/header/header_actions.dart';
+import 'package:spotube/components/tracks_view/sections/header/header_buttons.dart';
+import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:gap/gap.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';

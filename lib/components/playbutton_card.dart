@@ -5,8 +5,8 @@ import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/hover_builder.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/hover_builder.dart';
+import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';

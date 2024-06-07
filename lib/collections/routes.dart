@@ -36,7 +36,7 @@ import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/components/shared/spotube_page_route.dart';
+import 'package:spotube/components/spotube_page_route.dart';
 import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/desktop_login/login_tutorial.dart';

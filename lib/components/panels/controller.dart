@@ -1,4 +1,4 @@
-part of './sliding_up_panel.dart';
+part of 'sliding_up_panel.dart';
 
 class PanelController extends ChangeNotifier {
   SlidingUpPanelState? _panelState;

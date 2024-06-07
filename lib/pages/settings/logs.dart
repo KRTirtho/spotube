@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/page_window_title_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';
 

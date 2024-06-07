@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/shared/links/artist_link.dart';
+import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/utils/service_utils.dart';

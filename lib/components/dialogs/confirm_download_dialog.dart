@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 

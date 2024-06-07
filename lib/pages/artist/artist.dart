@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/page_window_title_bar.dart';
 import 'package:spotube/modules/artist/artist_album_list.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/logger.dart';

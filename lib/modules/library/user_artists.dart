@@ -8,10 +8,10 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
+import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/waypoint.dart';
+import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';

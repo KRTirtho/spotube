@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/player/player_queue.dart';
-import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
+import 'package:spotube/components/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/modules/root/bottom_player.dart';
 import 'package:spotube/modules/root/sidebar.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';

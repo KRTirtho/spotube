@@ -8,7 +8,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     hide X509Certificate;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/routes.dart';
-import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
+import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';

@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/pages/album/album.dart';
 import 'package:spotube/pages/artist/artist.dart';

@@ -10,7 +10,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';

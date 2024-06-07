@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:spotube/collections/formatters.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/page_window_title_bar.dart';
 import 'package:spotube/modules/stats/common/artist_item.dart';
 import 'package:spotube/provider/history/state.dart';
 import 'package:spotube/provider/history/top.dart';

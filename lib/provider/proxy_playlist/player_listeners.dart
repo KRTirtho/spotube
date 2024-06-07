@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:catcher_2/catcher_2.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/palette_provider.dart';

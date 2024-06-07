@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
+import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';

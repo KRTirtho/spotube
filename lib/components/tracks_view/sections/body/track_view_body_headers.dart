@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
-import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
-import 'package:spotube/components/shared/tracks_view/sections/body/track_view_options.dart';
-import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
-import 'package:spotube/components/shared/tracks_view/track_view_provider.dart';
+import 'package:spotube/components/expandable_search/expandable_search.dart';
+import 'package:spotube/components/sort_tracks_dropdown.dart';
+import 'package:spotube/components/tracks_view/sections/body/track_view_options.dart';
+import 'package:spotube/components/tracks_view/track_view_props.dart';
+import 'package:spotube/components/tracks_view/track_view_provider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
