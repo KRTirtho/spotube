@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,34 +17,38 @@ class AppLogger {
     log = Logger(
       level: kDebugMode || (verbose && kReleaseMode) ? Level.all : Level.info,
     );
-
-    getLogsPath().then((value) => logFile = value);
   }
 
   static R? runZoned<R>(R Function() body) {
-    FlutterError.onError = (details) {
-      reportError(details.exception, details.stack ?? StackTrace.current);
-    };
-
-    PlatformDispatcher.instance.onError = (error, stackTrace) {
-      reportError(error, stackTrace);
-      return true;
-    };
-
-    if (!kIsWeb) {
-      Isolate.current.addErrorListener(
-        RawReceivePort((pair) async {
-          final isolateError = pair as List<dynamic>;
-          reportError(
-            isolateError.first.toString(),
-            isolateError.last,
-          );
-        }).sendPort,
-      );
-    }
-
     return runZonedGuarded<R>(
-      body,
+      () {
+        WidgetsFlutterBinding.ensureInitialized();
+
+        FlutterError.onError = (details) {
+          reportError(details.exception, details.stack ?? StackTrace.current);
+        };
+
+        PlatformDispatcher.instance.onError = (error, stackTrace) {
+          reportError(error, stackTrace);
+          return true;
+        };
+
+        if (!kIsWeb) {
+          Isolate.current.addErrorListener(
+            RawReceivePort((pair) async {
+              final isolateError = pair as List<dynamic>;
+              reportError(
+                isolateError.first.toString(),
+                isolateError.last,
+              );
+            }).sendPort,
+          );
+        }
+
+        getLogsPath().then((value) => logFile = value);
+
+        return body();
+      },
       (error, stackTrace) {
         reportError(error, stackTrace);
       },
