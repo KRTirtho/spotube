@@ -48,6 +48,9 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       color: scheme.surface,
       elevation: 4,
+      labelTextStyle: MaterialStatePropertyAll(
+        TextStyle(color: scheme.onSurface),
+      ),
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,

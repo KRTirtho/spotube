@@ -226,7 +226,10 @@ class _AdaptivePopSheetListItem<T> extends StatelessWidget {
             },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: IgnorePointer(child: item),
+        child: IconTheme.merge(
+          data: const IconThemeData(opacity: 1),
+          child: IgnorePointer(child: item),
+        ),
       ),
     );
   }
