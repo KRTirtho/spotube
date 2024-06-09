@@ -12,7 +12,7 @@ import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/dialogs/track_details_dialog.dart';
-import 'package:spotube/components/heart_button.dart';
+import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';

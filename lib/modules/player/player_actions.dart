@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
-import 'package:spotube/components/heart_button.dart';
+import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';

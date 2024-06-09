@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
-import 'package:spotube/components/heart_button.dart';
+import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/tracks_view/sections/body/use_is_user_playlist.dart';
 import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';

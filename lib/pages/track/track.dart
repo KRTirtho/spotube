@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/heart_button.dart';
+import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';

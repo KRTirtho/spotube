@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/scrobbler_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class HeartButton extends HookConsumerWidget {
@@ -53,38 +52,6 @@ class HeartButton extends HookConsumerWidget {
       onPressed: onPressed,
     );
   }
-}
-
-typedef UseTrackToggleLike = ({
-  bool isLiked,
-  Future<void> Function(Track track) toggleTrackLike,
-});
-
-UseTrackToggleLike useTrackToggleLike(Track track, WidgetRef ref) {
-  final savedTracks = ref.watch(likedTracksProvider);
-  final savedTracksNotifier = ref.watch(likedTracksProvider.notifier);
-
-  final isLiked = useMemoized(
-    () =>
-        savedTracks.asData?.value.any((element) => element.id == track.id) ??
-        false,
-    [savedTracks.asData?.value, track.id],
-  );
-
-  final scrobblerNotifier = ref.read(scrobblerProvider.notifier);
-
-  return (
-    isLiked: isLiked,
-    toggleTrackLike: (track) async {
-      await savedTracksNotifier.toggleFavorite(track);
-
-      if (!isLiked) {
-        await scrobblerNotifier.love(track);
-      } else {
-        await scrobblerNotifier.unlove(track);
-      }
-    },
-  );
 }
 
 class TrackHeartButton extends HookConsumerWidget {

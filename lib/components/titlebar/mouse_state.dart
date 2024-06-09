@@ -33,39 +33,41 @@ class _MouseStateBuilderState extends State<MouseStateBuilder> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-        onEnter: (event) {
+      onEnter: (event) {
+        setState(() {
+          _mouseState.isMouseOver = true;
+        });
+      },
+      onExit: (event) {
+        setState(() {
+          _mouseState.isMouseOver = false;
+        });
+      },
+      child: GestureDetector(
+        onTapDown: (_) {
           setState(() {
-            _mouseState.isMouseOver = true;
+            _mouseState.isMouseDown = true;
           });
         },
-        onExit: (event) {
+        onTapCancel: () {
           setState(() {
+            _mouseState.isMouseDown = false;
+          });
+        },
+        onTap: () {
+          setState(() {
+            _mouseState.isMouseDown = false;
             _mouseState.isMouseOver = false;
           });
+          _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((_) {
+            if (widget.onPressed != null) {
+              widget.onPressed!();
+            }
+          });
         },
-        child: GestureDetector(
-            onTapDown: (_) {
-              setState(() {
-                _mouseState.isMouseDown = true;
-              });
-            },
-            onTapCancel: () {
-              setState(() {
-                _mouseState.isMouseDown = false;
-              });
-            },
-            onTap: () {
-              setState(() {
-                _mouseState.isMouseDown = false;
-                _mouseState.isMouseOver = false;
-              });
-              _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((_) {
-                if (widget.onPressed != null) {
-                  widget.onPressed!();
-                }
-              });
-            },
-            onTapUp: (_) {},
-            child: widget.builder(context, _mouseState)));
+        onTapUp: (_) {},
+        child: widget.builder(context, _mouseState),
+      ),
+    );
   }
 }
