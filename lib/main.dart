@@ -1,4 +1,5 @@
-import 'package:catcher_2/catcher_2.dart';
+import 'dart:async';
+
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,6 @@ import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.da
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
 import 'package:spotube/l10n/l10n.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/connect/clients.dart';
@@ -30,6 +30,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
@@ -44,98 +45,73 @@ import 'package:window_manager/window_manager.dart';
 
 Future<void> main(List<String> rawArgs) async {
   final arguments = await startCLI(rawArgs);
+  AppLogger.initialize(arguments["verbose"]);
 
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  AppLogger.runZoned(() async {
+    final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  await registerWindowsScheme("spotify");
+    await registerWindowsScheme("spotify");
 
-  tz.initializeTimeZones();
+    tz.initializeTimeZones();
 
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  MediaKit.ensureInitialized();
+    MediaKit.ensureInitialized();
 
-  // force High Refresh Rate on some Android devices (like One Plus)
-  if (kIsAndroid) {
-    await FlutterDisplayMode.setHighRefreshRate();
-  }
+    // force High Refresh Rate on some Android devices (like One Plus)
+    if (kIsAndroid) {
+      await FlutterDisplayMode.setHighRefreshRate();
+    }
 
-  if (kIsDesktop) {
-    await windowManager.setPreventClose(true);
-  }
+    if (kIsDesktop) {
+      await windowManager.setPreventClose(true);
+    }
 
-  await SystemTheme.accentColor.load();
+    await SystemTheme.accentColor.load();
 
-  if (!kIsWeb) {
-    MetadataGod.initialize();
-  }
+    if (!kIsWeb) {
+      MetadataGod.initialize();
+    }
 
-  if (kIsWindows || kIsLinux) {
-    DiscordRPC.initialize();
-  }
+    if (kIsWindows || kIsLinux) {
+      DiscordRPC.initialize();
+    }
 
-  await KVStoreService.initialize();
+    await KVStoreService.initialize();
 
-  final hiveCacheDir =
-      kIsWeb ? null : (await getApplicationSupportDirectory()).path;
+    final hiveCacheDir =
+        kIsWeb ? null : (await getApplicationSupportDirectory()).path;
 
-  Hive.init(hiveCacheDir);
+    Hive.init(hiveCacheDir);
 
-  Hive.registerAdapter(SkipSegmentAdapter());
+    Hive.registerAdapter(SkipSegmentAdapter());
 
-  Hive.registerAdapter(SourceMatchAdapter());
-  Hive.registerAdapter(SourceTypeAdapter());
+    Hive.registerAdapter(SourceMatchAdapter());
+    Hive.registerAdapter(SourceTypeAdapter());
 
-  // Cache versioning entities with Adapter
-  SourceMatch.version = 'v1';
-  SkipSegment.version = 'v1';
+    // Cache versioning entities with Adapter
+    SourceMatch.version = 'v1';
+    SkipSegment.version = 'v1';
 
-  await Hive.openLazyBox<SourceMatch>(
-    SourceMatch.boxName,
-    path: hiveCacheDir,
-  );
-  await Hive.openLazyBox(
-    SkipSegment.boxName,
-    path: hiveCacheDir,
-  );
-  await PersistedStateNotifier.initializeBoxes(
-    path: hiveCacheDir,
-  );
+    await Hive.openLazyBox<SourceMatch>(
+      SourceMatch.boxName,
+      path: hiveCacheDir,
+    );
+    await Hive.openLazyBox(
+      SkipSegment.boxName,
+      path: hiveCacheDir,
+    );
+    await PersistedStateNotifier.initializeBoxes(
+      path: hiveCacheDir,
+    );
 
-  if (kIsDesktop) {
-    await localNotifier.setup(appName: "Spotube");
-    await WindowManagerTools.initialize();
-  }
+    if (kIsDesktop) {
+      await localNotifier.setup(appName: "Spotube");
+      await WindowManagerTools.initialize();
+    }
 
-  Catcher2(
-    enableLogger: arguments["verbose"],
-    debugConfig: Catcher2Options(
-      SilentReportMode(),
-      [
-        ConsoleHandler(
-          enableDeviceParameters: false,
-          enableApplicationParameters: false,
-        ),
-        if (!kIsWeb) FileHandler(await getLogsPath(), printLogs: false),
-      ],
-    ),
-    releaseConfig: Catcher2Options(
-      SilentReportMode(),
-      [
-        if (arguments["verbose"] ?? false) ConsoleHandler(),
-        if (!kIsWeb)
-          FileHandler(
-            await getLogsPath(),
-            printLogs: false,
-          ),
-      ],
-    ),
-    runAppFunction: () {
-      runApp(
-        const ProviderScope(child: Spotube()),
-      );
-    },
-  );
+    runApp(const ProviderScope(child: Spotube()));
+  });
 }
 
 class Spotube extends HookConsumerWidget {
@@ -166,6 +142,7 @@ class Spotube extends HookConsumerWidget {
 
     useEffect(() {
       FlutterNativeSplash.remove();
+
       return () {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;

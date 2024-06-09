@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
@@ -86,7 +86,7 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
         history.addTrack(playlist.activeTrack!);
         lastScrobbled = uid;
       } catch (e, stack) {
-        Catcher2.reportCheckedError(e, stack);
+        AppLogger.reportError(e, stack);
       }
     });
   }

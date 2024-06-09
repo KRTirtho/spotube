@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
@@ -56,7 +56,7 @@ final localTracksProvider =
         try {
           entities.addAll(Directory(location).listSync(recursive: true));
         } catch (e, stack) {
-          Catcher2.reportCheckedError(e, stack);
+          AppLogger.reportError(e, stack);
         }
       }
 
@@ -92,7 +92,7 @@ final localTracksProvider =
               if (e is FfiException) {
                 return {"file": file};
               }
-              Catcher2.reportCheckedError(e, stack);
+              AppLogger.reportError(e, stack);
               return {};
             }
           },
@@ -119,7 +119,7 @@ final localTracksProvider =
     }
     return tracks;
   } catch (e, stack) {
-    Catcher2.reportCheckedError(e, stack);
+    AppLogger.reportError(e, stack);
     return {};
   }
 });

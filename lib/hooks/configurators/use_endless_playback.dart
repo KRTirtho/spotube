@@ -1,4 +1,4 @@
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -62,7 +62,7 @@ void useEndlessPlayback(WidgetRef ref) {
               }),
           );
         } catch (e, stack) {
-          Catcher2.reportCheckedError(e, stack);
+          AppLogger.reportError(e, stack);
         }
       }
 

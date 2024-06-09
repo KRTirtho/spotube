@@ -2,7 +2,7 @@ library song_link;
 
 import 'dart:convert';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:html/parser.dart';
@@ -47,7 +47,7 @@ abstract class SongLinkService {
       return songLinks?.map((link) => SongLink.fromJson(link)).toList() ??
           <SongLink>[];
     } catch (e, stackTrace) {
-      Catcher2.reportCheckedError(e, stackTrace);
+      AppLogger.reportError(e, stackTrace);
       return <SongLink>[];
     }
   }

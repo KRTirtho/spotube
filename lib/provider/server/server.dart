@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -108,7 +108,7 @@ class PlaybackServer {
         headers: res.headers.map,
       );
     } catch (e, stack) {
-      Catcher2.reportCheckedError(e, stack);
+      AppLogger.reportError(e, stack);
       return Response.internalServerError();
     }
   }

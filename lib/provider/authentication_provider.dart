@@ -73,10 +73,10 @@ class AuthenticationCredentials {
         ),
       );
     } catch (e) {
-      if (rootNavigatorKey?.currentContext != null) {
+      if (rootNavigatorKey.currentContext != null) {
         showPromptDialog(
-          context: rootNavigatorKey!.currentContext!,
-          title: rootNavigatorKey!.currentContext!.l10n
+          context: rootNavigatorKey.currentContext!,
+          title: rootNavigatorKey.currentContext!.l10n
               .error("Authentication Failure"),
           message: e.toString(),
           cancelText: null,

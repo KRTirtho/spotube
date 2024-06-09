@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
@@ -57,7 +57,7 @@ abstract class AudioPlayerInterface {
           ),
         ) {
     _mkPlayer.stream.error.listen((event) {
-      Catcher2.reportCheckedError(event, StackTrace.current);
+      AppLogger.reportError(event, StackTrace.current);
     });
   }
 

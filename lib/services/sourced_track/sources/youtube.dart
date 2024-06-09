@@ -1,9 +1,9 @@
-import 'package:catcher_2/core/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/source_match.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/song_link/song_link.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
@@ -236,7 +236,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
         ];
       } on VideoUnplayableException catch (e, stack) {
         // Ignore this error and continue with the search
-        Catcher2.reportCheckedError(e, stack);
+        AppLogger.reportError(e, stack);
       }
     }
 

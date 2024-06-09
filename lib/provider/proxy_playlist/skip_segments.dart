@@ -1,4 +1,4 @@
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/skip_segment.dart';
@@ -71,7 +71,7 @@ Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
     return List.castFrom<dynamic, SkipSegment>(segments);
   } catch (e, stack) {
     await SkipSegment.box.put(id, []);
-    Catcher2.reportCheckedError(e, stack);
+    AppLogger.reportError(e, stack);
     return List.castFrom<dynamic, SkipSegment>([]);
   }
 }

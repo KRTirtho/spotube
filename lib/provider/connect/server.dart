@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -215,7 +215,7 @@ final connectServerProvider = FutureProvider((ref) async {
                     ref.read(volumeProvider.notifier).setVolume(event.data);
                   });
                 } catch (e, stackTrace) {
-                  Catcher2.reportCheckedError(e, stackTrace);
+                  AppLogger.reportError(e, stackTrace);
                   channel.sink.add(WebSocketErrorEvent(e.toString()).toJson());
                 }
               },
