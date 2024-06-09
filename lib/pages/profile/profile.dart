@@ -8,7 +8,7 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:url_launcher/url_launcher_string.dart';

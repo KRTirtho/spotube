@@ -7,7 +7,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/pages/playlist/playlist.dart';

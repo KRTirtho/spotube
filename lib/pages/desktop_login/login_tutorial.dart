@@ -6,7 +6,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/modules/desktop_login/login_form.dart';
 import 'package:spotube/components/links/hyper_link.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/authentication_provider.dart';

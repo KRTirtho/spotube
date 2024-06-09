@@ -13,7 +13,7 @@ import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/components/animated_gradient.dart';
 import 'package:spotube/components/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/links/artist_link.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/panels/sliding_up_panel.dart';
 import 'package:spotube/extensions/artist_simple.dart';

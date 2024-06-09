@@ -4,7 +4,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/hyper_link.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_package_info.dart';
 

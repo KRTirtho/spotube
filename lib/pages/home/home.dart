@@ -12,7 +12,7 @@ import 'package:spotube/modules/home/sections/genres.dart';
 import 'package:spotube/modules/home/sections/made_for_user.dart';
 import 'package:spotube/modules/home/sections/new_releases.dart';
 import 'package:spotube/modules/home/sections/recent.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/utils/platform.dart';

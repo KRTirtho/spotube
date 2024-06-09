@@ -7,7 +7,7 @@ import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/spotify/spotify.dart';

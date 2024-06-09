@@ -9,7 +9,7 @@ import 'package:spotube/modules/player/player_controls.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/root/sidebar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_force_update.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';

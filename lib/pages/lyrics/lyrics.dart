@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/themed_button_tab_bar.dart';
 import 'package:spotube/extensions/constrains.dart';

@@ -12,7 +12,7 @@ import 'package:spotube/modules/library/playlist_generate/recommendation_attribu
 import 'package:spotube/modules/library/playlist_generate/seeds_multi_autocomplete.dart';
 import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';

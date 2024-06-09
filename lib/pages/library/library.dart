@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Image;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/modules/library/user_local_tracks.dart';
-import 'package:spotube/components/page_window_title_bar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/library/user_albums.dart';
 import 'package:spotube/modules/library/user_artists.dart';
 import 'package:spotube/modules/library/user_downloads.dart';
