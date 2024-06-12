@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';
 import 'dart:async';
 
@@ -27,7 +27,7 @@ class SpotubeMedia extends mk.Media {
   }) : super(
           track is LocalTrack
               ? track.path
-              : "http://${InternetAddress.loopbackIPv4.address}:${PlaybackServer.port}/stream/${track.id}",
+              : "http://${InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}",
           extras: {
             ...?extras,
             "track": switch (track) {

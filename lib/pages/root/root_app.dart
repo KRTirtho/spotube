@@ -15,9 +15,9 @@ import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/pages/home/home.dart';
-import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/server/routes/connect.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
@@ -36,6 +36,7 @@ class RootApp extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final theme = Theme.of(context);
+    final connectRoutes = ref.watch(serverConnectRoutesProvider);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -90,7 +91,7 @@ class RootApp extends HookConsumerWidget {
             );
           }
         }),
-        connectClientStream.listen((clientOrigin) {
+        connectRoutes.connectClientStream.listen((clientOrigin) {
           scaffoldMessenger.showSnackBar(
             SnackBar(
               backgroundColor: Colors.yellow[600],
