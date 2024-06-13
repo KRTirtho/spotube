@@ -145,7 +145,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
 
       return lyrics;
     } catch (e, stackTrace) {
-      Catcher2.reportCheckedError(e, stackTrace);
+      AppLogger.reportError(e, stackTrace);
       rethrow;
     }
   }

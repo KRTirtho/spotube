@@ -7,17 +7,17 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/player/player_queue.dart';
-import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
-import 'package:spotube/components/root/bottom_player.dart';
-import 'package:spotube/components/root/sidebar.dart';
-import 'package:spotube/components/root/spotube_navigation_bar.dart';
+import 'package:spotube/modules/player/player_queue.dart';
+import 'package:spotube/components/dialogs/replace_downloaded_dialog.dart';
+import 'package:spotube/modules/root/bottom_player.dart';
+import 'package:spotube/modules/root/sidebar.dart';
+import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/pages/home/home.dart';
-import 'package:spotube/provider/connect/server.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/server/routes/connect.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
@@ -36,6 +36,7 @@ class RootApp extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final theme = Theme.of(context);
+    final connectRoutes = ref.watch(serverConnectRoutesProvider);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -90,7 +91,7 @@ class RootApp extends HookConsumerWidget {
             );
           }
         }),
-        connectClientStream.listen((clientOrigin) {
+        connectRoutes.connectClientStream.listen((clientOrigin) {
           scaffoldMessenger.showSnackBar(
             SnackBar(
               backgroundColor: Colors.yellow[600],

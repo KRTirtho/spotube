@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:flutter_broadcasts/flutter_broadcasts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -48,7 +48,7 @@ class CustomPlayer extends Player {
         }
       }),
       stream.error.listen((event) {
-        Catcher2.reportCheckedError('[MediaKitError] \n$event', null);
+        AppLogger.reportError('[MediaKitError] \n$event', StackTrace.current);
       }),
     ];
     PackageInfo.fromPlatform().then((packageInfo) {

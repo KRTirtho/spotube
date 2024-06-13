@@ -24,7 +24,7 @@ final generatePlaylistProvider = FutureProvider.autoDispose
           ?.cast<String, num>(),
     )
         .catchError((e, stackTrace) {
-      Catcher2.reportCheckedError(e, stackTrace);
+      AppLogger.reportError(e, stackTrace);
       return Recommendations();
     });
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/connect/connect.dart';
@@ -99,10 +99,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
           });
         },
         onError: (error) {
-          Catcher2.reportCheckedError(
-            error,
-            StackTrace.current,
-          );
+          AppLogger.reportError(error, StackTrace.current);
         },
       );
 
@@ -113,7 +110,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
 
       return channel;
     } catch (e, stack) {
-      Catcher2.reportCheckedError(e, stack);
+      AppLogger.reportError(e, stack);
       rethrow;
     }
   }

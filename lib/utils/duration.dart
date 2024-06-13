@@ -1,4 +1,4 @@
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 /// Parses duration string formatted by Duration.toString() to [Duration].
 /// The string should be of form hours:minutes:seconds.microseconds
@@ -51,7 +51,7 @@ Duration? tryParseDuration(String input) {
   try {
     return parseDuration(input);
   } catch (e, stack) {
-    Catcher2.reportCheckedError(e, stack);
+    AppLogger.reportError(e, stack);
     return null;
   }
 }

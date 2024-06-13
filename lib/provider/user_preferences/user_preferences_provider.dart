@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';

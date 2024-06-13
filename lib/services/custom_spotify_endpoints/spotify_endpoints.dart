@@ -109,58 +109,6 @@ class CustomSpotifyEndpoints {
     }
   }
 
-  void _addList(
-      Map<String, String> parameters, String key, Iterable<String> paramList) {
-    if (paramList.isNotEmpty) {
-      parameters[key] = paramList.join(',');
-    }
-  }
-
-  void _addTunableTrackMap(
-      Map<String, String> parameters, Map<String, num>? tunableTrackMap) {
-    if (tunableTrackMap != null) {
-      parameters.addAll(tunableTrackMap.map<String, String>((k, v) =>
-          MapEntry(k, v is int ? v.toString() : v.toStringAsFixed(2))));
-    }
-  }
-
-  Future<List<Track>> getRecommendations({
-    Iterable<String>? seedArtists,
-    Iterable<String>? seedGenres,
-    Iterable<String>? seedTracks,
-    int limit = 20,
-    Market? market,
-    Map<String, num>? max,
-    Map<String, num>? min,
-    Map<String, num>? target,
-  }) async {
-    assert(limit >= 1 && limit <= 100, 'limit should be 1 <= limit <= 100');
-    final seedsNum = (seedArtists?.length ?? 0) +
-        (seedGenres?.length ?? 0) +
-        (seedTracks?.length ?? 0);
-    assert(
-        seedsNum >= 1 && seedsNum <= 5,
-        'Up to 5 seed values may be provided in any combination of seed_artists,'
-        ' seed_tracks and seed_genres.');
-    final parameters = <String, String>{'limit': limit.toString()};
-    final _ = {
-      'seed_artists': seedArtists,
-      'seed_genres': seedGenres,
-      'seed_tracks': seedTracks
-    }.forEach((key, list) => _addList(parameters, key, list!));
-    if (market != null) parameters['market'] = market.name;
-    for (var map in [min, max, target]) {
-      _addTunableTrackMap(parameters, map);
-    }
-    final pathQuery =
-        "$_baseUrl/recommendations?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}";
-    final res = await _client.getUri(Uri.parse(pathQuery));
-    final result = res.data;
-    return List.castFrom<dynamic, Track>(
-      result["tracks"].map((track) => Track.fromJson(track)).toList(),
-    );
-  }
-
   Future<SpotifyFriends> getFriendActivity() async {
     final res = await _client.getUri(
       Uri.parse("https://guc-spclient.spotify.com/presence-view/v1/buddylist"),

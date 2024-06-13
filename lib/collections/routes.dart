@@ -1,4 +1,3 @@
-import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -36,7 +35,7 @@ import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/components/shared/spotube_page_route.dart';
+import 'package:spotube/components/spotube_page_route.dart';
 import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/desktop_login/login_tutorial.dart';
@@ -46,7 +45,7 @@ import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
-final rootNavigatorKey = Catcher2.navigatorKey;
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
 final routerProvider = Provider((ref) {
   return GoRouter(

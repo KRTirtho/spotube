@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart' hide Page;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
-import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_playlist.dart';
-import 'package:spotube/components/shared/tracks_view/track_view.dart';
-import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
+import 'package:spotube/components/dialogs/prompt_dialog.dart';
+import 'package:spotube/components/tracks_view/sections/body/use_is_user_playlist.dart';
+import 'package:spotube/components/tracks_view/track_view.dart';
+import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';

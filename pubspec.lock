@@ -213,10 +213,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "3ac61a79bfb6f6cc11f693591063a7f19a7af628dc52f141743edac5c16e8c22"
+      sha256: "644dc98a0f179b872f612d3eb627924b578897c629788e858157fa5e704ca0c7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.9"
+    version: "2.4.11"
   build_runner_core:
     dependency: transitive
     description:
@@ -273,14 +273,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  catcher_2:
-    dependency: "direct main"
-    description:
-      name: catcher_2
-      sha256: "3c8f6cedc8c5eab61192830096d4f303900a5d0bddbf96a07ff9f7a8d5ff8fcd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.4"
   change_case:
     dependency: transitive
     description:
@@ -370,7 +362,7 @@ packages:
     source: hosted
     version: "0.3.4+1"
   crypto:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: crypto
       sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
@@ -850,14 +842,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_mailer:
-    dependency: transitive
-    description:
-      name: flutter_mailer
-      sha256: "4fffaa35e911ff5ec2e5a4ebbca62c372e99a154eb3bb2c0bf79f09adf6ecf4c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.2"
   flutter_native_splash:
     dependency: "direct main"
     description:
@@ -964,14 +948,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  fluttertoast:
-    dependency: transitive
-    description:
-      name: fluttertoast
-      sha256: "81b68579e23fcbcada2db3d50302813d2371664afe6165bc78148050ab94bf66"
-      url: "https://pub.dev"
-    source: hosted
-    version: "8.2.5"
   form_validator:
     dependency: "direct main"
     description:
@@ -1358,14 +1334,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  mailer:
-    dependency: transitive
-    description:
-      name: mailer
-      sha256: d25d89555c1031abacb448f07b801d7c01b4c21d4558e944b12b64394c84a3cb
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.0"
   matcher:
     dependency: transitive
     description:
@@ -1711,7 +1679,7 @@ packages:
     source: hosted
     version: "0.14.2"
   pub_api_client:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: pub_api_client
       sha256: cc3d2c93df3823553de6a3e7d3ac09a3f43f8c271af4f43c2795266090ac9625
@@ -1735,7 +1703,7 @@ packages:
     source: hosted
     version: "2.3.0"
   pubspec_parse:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: pubspec_parse
       sha256: c63b2876e58e194e4b0828fcb080ad0e06d051cb607a6be51a9e084f47cb9367
@@ -1767,7 +1735,7 @@ packages:
     source: hosted
     version: "4.1.0"
   riverpod:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: riverpod
       sha256: f21b32ffd26a36555e501b04f4a5dca43ed59e16343f1a30c13632b2351dfa4d
@@ -1831,14 +1799,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  sentry:
-    dependency: transitive
-    description:
-      name: sentry
-      sha256: "19a267774906ca3a3c4677fc7e9582ea9da79ae9a28f84bbe4885dac2c269b70"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.20.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1951,14 +1911,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.1.3"
-  skeleton_text:
-    dependency: "direct main"
-    description:
-      name: skeleton_text
-      sha256: bacd536bf0664efe1cae53bcbd78c3d4040a120f300f69dc85d83f358471cc6c
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
   skeletonizer:
     dependency: "direct main"
     description:
@@ -2455,5 +2407,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=3.3.0 <4.0.0"
+  dart: ">=3.4.0 <4.0.0"
   flutter: ">=3.19.2"

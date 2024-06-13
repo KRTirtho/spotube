@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/language_codes.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/getting_started/blur_card.dart';
+import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';

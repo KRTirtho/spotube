@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrobblenaut/scrobblenaut.dart';
 import 'package:spotify/spotify.dart';
@@ -52,7 +52,7 @@ class ScrobblerNotifier extends PersistedStateNotifier<ScrobblerState?> {
           trackNumber: track.trackNumber,
         );
       } catch (e, stackTrace) {
-        Catcher2.reportCheckedError(e, stackTrace);
+        AppLogger.reportError(e, stackTrace);
       }
     });
   }
