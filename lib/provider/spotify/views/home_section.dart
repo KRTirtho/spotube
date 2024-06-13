@@ -8,7 +8,7 @@ final homeSectionViewProvider =
     FutureProvider.family<SpotifyHomeFeedSection?, String>(
         (ref, sectionUri) async {
   final country = ref.watch(
-    userPreferencesProvider.select((s) => s.recommendationMarket),
+    userPreferencesProvider.select((s) => s.market),
   );
   final spTCookie = ref.watch(
     authenticationProvider.select((s) => s?.getCookie("sp_t")),

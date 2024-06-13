@@ -1,10 +1,11 @@
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+
 import 'package:spotube/services/dio/dio.dart';
 
 class SourcedSegments {

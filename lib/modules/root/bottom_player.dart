@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/player/player_actions.dart';
 import 'package:spotube/modules/player/player_overlay.dart';
 import 'package:spotube/modules/player/player_track_details.dart';
@@ -20,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';

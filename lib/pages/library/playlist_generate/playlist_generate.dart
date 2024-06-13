@@ -39,7 +39,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     final genresCollection = ref.watch(categoryGenresProvider);
 
     final limit = useValueNotifier<int>(10);
-    final market = useValueNotifier<Market>(preferences.recommendationMarket);
+    final market = useValueNotifier<Market>(preferences.market);
 
     final genres = useState<List<String>>([]);
     final artists = useState<List<Artist>>([]);

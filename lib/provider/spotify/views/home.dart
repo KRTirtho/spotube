@@ -5,7 +5,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 
 final homeViewProvider = FutureProvider((ref) async {
   final country = ref.watch(
-    userPreferencesProvider.select((s) => s.recommendationMarket),
+    userPreferencesProvider.select((s) => s.market),
   );
   final spTCookie = ref.watch(
     authenticationProvider.select((s) => s?.getCookie("sp_t")),

@@ -9,6 +9,7 @@ import 'package:sidebarx/sidebarx.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -23,7 +24,7 @@ import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:window_manager/window_manager.dart';
