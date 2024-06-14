@@ -1204,16 +1204,608 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   }
 }
 
+class $SourceMatchTableTable extends SourceMatchTable
+    with TableInfo<$SourceMatchTableTable, SourceMatchTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SourceMatchTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _trackIdMeta =
+      const VerificationMeta('trackId');
+  @override
+  late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
+      'track_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sourceIdMeta =
+      const VerificationMeta('sourceId');
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+      'source_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sourceTypeMeta =
+      const VerificationMeta('sourceType');
+  @override
+  late final GeneratedColumnWithTypeConverter<SourceType, String> sourceType =
+      GeneratedColumn<String>('source_type', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(SourceType.youtube.name))
+          .withConverter<SourceType>(
+              $SourceMatchTableTable.$convertersourceType);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, trackId, sourceId, sourceType, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'source_match_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<SourceMatchTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(_trackIdMeta,
+          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(_sourceIdMeta,
+          sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta));
+    } else if (isInserting) {
+      context.missing(_sourceIdMeta);
+    }
+    context.handle(_sourceTypeMeta, const VerificationResult.success());
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SourceMatchTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SourceMatchTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      trackId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}track_id'])!,
+      sourceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}source_id'])!,
+      sourceType: $SourceMatchTableTable.$convertersourceType.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}source_type'])!),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $SourceMatchTableTable createAlias(String alias) {
+    return $SourceMatchTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SourceType, String, String> $convertersourceType =
+      const EnumNameConverter<SourceType>(SourceType.values);
+}
+
+class SourceMatchTableData extends DataClass
+    implements Insertable<SourceMatchTableData> {
+  final int id;
+  final String trackId;
+  final String sourceId;
+  final SourceType sourceType;
+  final DateTime createdAt;
+  const SourceMatchTableData(
+      {required this.id,
+      required this.trackId,
+      required this.sourceId,
+      required this.sourceType,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['track_id'] = Variable<String>(trackId);
+    map['source_id'] = Variable<String>(sourceId);
+    {
+      map['source_type'] = Variable<String>(
+          $SourceMatchTableTable.$convertersourceType.toSql(sourceType));
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SourceMatchTableCompanion toCompanion(bool nullToAbsent) {
+    return SourceMatchTableCompanion(
+      id: Value(id),
+      trackId: Value(trackId),
+      sourceId: Value(sourceId),
+      sourceType: Value(sourceType),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SourceMatchTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SourceMatchTableData(
+      id: serializer.fromJson<int>(json['id']),
+      trackId: serializer.fromJson<String>(json['trackId']),
+      sourceId: serializer.fromJson<String>(json['sourceId']),
+      sourceType: $SourceMatchTableTable.$convertersourceType
+          .fromJson(serializer.fromJson<String>(json['sourceType'])),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trackId': serializer.toJson<String>(trackId),
+      'sourceId': serializer.toJson<String>(sourceId),
+      'sourceType': serializer.toJson<String>(
+          $SourceMatchTableTable.$convertersourceType.toJson(sourceType)),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SourceMatchTableData copyWith(
+          {int? id,
+          String? trackId,
+          String? sourceId,
+          SourceType? sourceType,
+          DateTime? createdAt}) =>
+      SourceMatchTableData(
+        id: id ?? this.id,
+        trackId: trackId ?? this.trackId,
+        sourceId: sourceId ?? this.sourceId,
+        sourceType: sourceType ?? this.sourceType,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SourceMatchTableData(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('sourceType: $sourceType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, trackId, sourceId, sourceType, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SourceMatchTableData &&
+          other.id == this.id &&
+          other.trackId == this.trackId &&
+          other.sourceId == this.sourceId &&
+          other.sourceType == this.sourceType &&
+          other.createdAt == this.createdAt);
+}
+
+class SourceMatchTableCompanion extends UpdateCompanion<SourceMatchTableData> {
+  final Value<int> id;
+  final Value<String> trackId;
+  final Value<String> sourceId;
+  final Value<SourceType> sourceType;
+  final Value<DateTime> createdAt;
+  const SourceMatchTableCompanion({
+    this.id = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.sourceId = const Value.absent(),
+    this.sourceType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  SourceMatchTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String trackId,
+    required String sourceId,
+    this.sourceType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  })  : trackId = Value(trackId),
+        sourceId = Value(sourceId);
+  static Insertable<SourceMatchTableData> custom({
+    Expression<int>? id,
+    Expression<String>? trackId,
+    Expression<String>? sourceId,
+    Expression<String>? sourceType,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trackId != null) 'track_id': trackId,
+      if (sourceId != null) 'source_id': sourceId,
+      if (sourceType != null) 'source_type': sourceType,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  SourceMatchTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? trackId,
+      Value<String>? sourceId,
+      Value<SourceType>? sourceType,
+      Value<DateTime>? createdAt}) {
+    return SourceMatchTableCompanion(
+      id: id ?? this.id,
+      trackId: trackId ?? this.trackId,
+      sourceId: sourceId ?? this.sourceId,
+      sourceType: sourceType ?? this.sourceType,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<String>(trackId.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
+    if (sourceType.present) {
+      map['source_type'] = Variable<String>(
+          $SourceMatchTableTable.$convertersourceType.toSql(sourceType.value));
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SourceMatchTableCompanion(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('sourceType: $sourceType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SkipSegmentTableTable extends SkipSegmentTable
+    with TableInfo<$SkipSegmentTableTable, SkipSegmentTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SkipSegmentTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _startMeta = const VerificationMeta('start');
+  @override
+  late final GeneratedColumn<int> start = GeneratedColumn<int>(
+      'start', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _endMeta = const VerificationMeta('end');
+  @override
+  late final GeneratedColumn<int> end = GeneratedColumn<int>(
+      'end', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _trackIdMeta =
+      const VerificationMeta('trackId');
+  @override
+  late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
+      'track_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns => [id, start, end, trackId, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'skip_segment_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<SkipSegmentTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('start')) {
+      context.handle(
+          _startMeta, start.isAcceptableOrUnknown(data['start']!, _startMeta));
+    } else if (isInserting) {
+      context.missing(_startMeta);
+    }
+    if (data.containsKey('end')) {
+      context.handle(
+          _endMeta, end.isAcceptableOrUnknown(data['end']!, _endMeta));
+    } else if (isInserting) {
+      context.missing(_endMeta);
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(_trackIdMeta,
+          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SkipSegmentTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SkipSegmentTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      start: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}start'])!,
+      end: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}end'])!,
+      trackId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}track_id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $SkipSegmentTableTable createAlias(String alias) {
+    return $SkipSegmentTableTable(attachedDatabase, alias);
+  }
+}
+
+class SkipSegmentTableData extends DataClass
+    implements Insertable<SkipSegmentTableData> {
+  final int id;
+  final int start;
+  final int end;
+  final String trackId;
+  final DateTime createdAt;
+  const SkipSegmentTableData(
+      {required this.id,
+      required this.start,
+      required this.end,
+      required this.trackId,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['start'] = Variable<int>(start);
+    map['end'] = Variable<int>(end);
+    map['track_id'] = Variable<String>(trackId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SkipSegmentTableCompanion toCompanion(bool nullToAbsent) {
+    return SkipSegmentTableCompanion(
+      id: Value(id),
+      start: Value(start),
+      end: Value(end),
+      trackId: Value(trackId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SkipSegmentTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SkipSegmentTableData(
+      id: serializer.fromJson<int>(json['id']),
+      start: serializer.fromJson<int>(json['start']),
+      end: serializer.fromJson<int>(json['end']),
+      trackId: serializer.fromJson<String>(json['trackId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'start': serializer.toJson<int>(start),
+      'end': serializer.toJson<int>(end),
+      'trackId': serializer.toJson<String>(trackId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SkipSegmentTableData copyWith(
+          {int? id,
+          int? start,
+          int? end,
+          String? trackId,
+          DateTime? createdAt}) =>
+      SkipSegmentTableData(
+        id: id ?? this.id,
+        start: start ?? this.start,
+        end: end ?? this.end,
+        trackId: trackId ?? this.trackId,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SkipSegmentTableData(')
+          ..write('id: $id, ')
+          ..write('start: $start, ')
+          ..write('end: $end, ')
+          ..write('trackId: $trackId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, start, end, trackId, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SkipSegmentTableData &&
+          other.id == this.id &&
+          other.start == this.start &&
+          other.end == this.end &&
+          other.trackId == this.trackId &&
+          other.createdAt == this.createdAt);
+}
+
+class SkipSegmentTableCompanion extends UpdateCompanion<SkipSegmentTableData> {
+  final Value<int> id;
+  final Value<int> start;
+  final Value<int> end;
+  final Value<String> trackId;
+  final Value<DateTime> createdAt;
+  const SkipSegmentTableCompanion({
+    this.id = const Value.absent(),
+    this.start = const Value.absent(),
+    this.end = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  SkipSegmentTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int start,
+    required int end,
+    required String trackId,
+    this.createdAt = const Value.absent(),
+  })  : start = Value(start),
+        end = Value(end),
+        trackId = Value(trackId);
+  static Insertable<SkipSegmentTableData> custom({
+    Expression<int>? id,
+    Expression<int>? start,
+    Expression<int>? end,
+    Expression<String>? trackId,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (start != null) 'start': start,
+      if (end != null) 'end': end,
+      if (trackId != null) 'track_id': trackId,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  SkipSegmentTableCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? start,
+      Value<int>? end,
+      Value<String>? trackId,
+      Value<DateTime>? createdAt}) {
+    return SkipSegmentTableCompanion(
+      id: id ?? this.id,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      trackId: trackId ?? this.trackId,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (start.present) {
+      map['start'] = Variable<int>(start.value);
+    }
+    if (end.present) {
+      map['end'] = Variable<int>(end.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<String>(trackId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SkipSegmentTableCompanion(')
+          ..write('id: $id, ')
+          ..write('start: $start, ')
+          ..write('end: $end, ')
+          ..write('trackId: $trackId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
   late final $PreferencesTableTable preferencesTable =
       $PreferencesTableTable(this);
+  late final $SourceMatchTableTable sourceMatchTable =
+      $SourceMatchTableTable(this);
+  late final $SkipSegmentTableTable skipSegmentTable =
+      $SkipSegmentTableTable(this);
+  late final Index uniqTrackMatch = Index('uniq_track_match',
+      'CREATE UNIQUE INDEX uniq_track_match ON source_match_table (track_id, source_id, source_type)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [preferencesTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [preferencesTable, sourceMatchTable, skipSegmentTable, uniqTrackMatch];
 }
 
 typedef $$PreferencesTableTableInsertCompanionBuilder
@@ -1699,9 +2291,293 @@ class $$PreferencesTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$SourceMatchTableTableInsertCompanionBuilder
+    = SourceMatchTableCompanion Function({
+  Value<int> id,
+  required String trackId,
+  required String sourceId,
+  Value<SourceType> sourceType,
+  Value<DateTime> createdAt,
+});
+typedef $$SourceMatchTableTableUpdateCompanionBuilder
+    = SourceMatchTableCompanion Function({
+  Value<int> id,
+  Value<String> trackId,
+  Value<String> sourceId,
+  Value<SourceType> sourceType,
+  Value<DateTime> createdAt,
+});
+
+class $$SourceMatchTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SourceMatchTableTable,
+    SourceMatchTableData,
+    $$SourceMatchTableTableFilterComposer,
+    $$SourceMatchTableTableOrderingComposer,
+    $$SourceMatchTableTableProcessedTableManager,
+    $$SourceMatchTableTableInsertCompanionBuilder,
+    $$SourceMatchTableTableUpdateCompanionBuilder> {
+  $$SourceMatchTableTableTableManager(
+      _$AppDatabase db, $SourceMatchTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SourceMatchTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$SourceMatchTableTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$SourceMatchTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> trackId = const Value.absent(),
+            Value<String> sourceId = const Value.absent(),
+            Value<SourceType> sourceType = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SourceMatchTableCompanion(
+            id: id,
+            trackId: trackId,
+            sourceId: sourceId,
+            sourceType: sourceType,
+            createdAt: createdAt,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required String trackId,
+            required String sourceId,
+            Value<SourceType> sourceType = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SourceMatchTableCompanion.insert(
+            id: id,
+            trackId: trackId,
+            sourceId: sourceId,
+            sourceType: sourceType,
+            createdAt: createdAt,
+          ),
+        ));
+}
+
+class $$SourceMatchTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $SourceMatchTableTable,
+        SourceMatchTableData,
+        $$SourceMatchTableTableFilterComposer,
+        $$SourceMatchTableTableOrderingComposer,
+        $$SourceMatchTableTableProcessedTableManager,
+        $$SourceMatchTableTableInsertCompanionBuilder,
+        $$SourceMatchTableTableUpdateCompanionBuilder> {
+  $$SourceMatchTableTableProcessedTableManager(super.$state);
+}
+
+class $$SourceMatchTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $SourceMatchTableTable> {
+  $$SourceMatchTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get sourceId => $state.composableBuilder(
+      column: $state.table.sourceId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<SourceType, SourceType, String>
+      get sourceType => $state.composableBuilder(
+          column: $state.table.sourceType,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$SourceMatchTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $SourceMatchTableTable> {
+  $$SourceMatchTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get sourceId => $state.composableBuilder(
+      column: $state.table.sourceId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get sourceType => $state.composableBuilder(
+      column: $state.table.sourceType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$SkipSegmentTableTableInsertCompanionBuilder
+    = SkipSegmentTableCompanion Function({
+  Value<int> id,
+  required int start,
+  required int end,
+  required String trackId,
+  Value<DateTime> createdAt,
+});
+typedef $$SkipSegmentTableTableUpdateCompanionBuilder
+    = SkipSegmentTableCompanion Function({
+  Value<int> id,
+  Value<int> start,
+  Value<int> end,
+  Value<String> trackId,
+  Value<DateTime> createdAt,
+});
+
+class $$SkipSegmentTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SkipSegmentTableTable,
+    SkipSegmentTableData,
+    $$SkipSegmentTableTableFilterComposer,
+    $$SkipSegmentTableTableOrderingComposer,
+    $$SkipSegmentTableTableProcessedTableManager,
+    $$SkipSegmentTableTableInsertCompanionBuilder,
+    $$SkipSegmentTableTableUpdateCompanionBuilder> {
+  $$SkipSegmentTableTableTableManager(
+      _$AppDatabase db, $SkipSegmentTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SkipSegmentTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$SkipSegmentTableTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$SkipSegmentTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<int> start = const Value.absent(),
+            Value<int> end = const Value.absent(),
+            Value<String> trackId = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SkipSegmentTableCompanion(
+            id: id,
+            start: start,
+            end: end,
+            trackId: trackId,
+            createdAt: createdAt,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required int start,
+            required int end,
+            required String trackId,
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SkipSegmentTableCompanion.insert(
+            id: id,
+            start: start,
+            end: end,
+            trackId: trackId,
+            createdAt: createdAt,
+          ),
+        ));
+}
+
+class $$SkipSegmentTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $SkipSegmentTableTable,
+        SkipSegmentTableData,
+        $$SkipSegmentTableTableFilterComposer,
+        $$SkipSegmentTableTableOrderingComposer,
+        $$SkipSegmentTableTableProcessedTableManager,
+        $$SkipSegmentTableTableInsertCompanionBuilder,
+        $$SkipSegmentTableTableUpdateCompanionBuilder> {
+  $$SkipSegmentTableTableProcessedTableManager(super.$state);
+}
+
+class $$SkipSegmentTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $SkipSegmentTableTable> {
+  $$SkipSegmentTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get start => $state.composableBuilder(
+      column: $state.table.start,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get end => $state.composableBuilder(
+      column: $state.table.end,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$SkipSegmentTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $SkipSegmentTableTable> {
+  $$SkipSegmentTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get start => $state.composableBuilder(
+      column: $state.table.start,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get end => $state.composableBuilder(
+      column: $state.table.end,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get trackId => $state.composableBuilder(
+      column: $state.table.trackId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class _$AppDatabaseManager {
   final _$AppDatabase _db;
   _$AppDatabaseManager(this._db);
   $$PreferencesTableTableTableManager get preferencesTable =>
       $$PreferencesTableTableTableManager(_db, _db.preferencesTable);
+  $$SourceMatchTableTableTableManager get sourceMatchTable =>
+      $$SourceMatchTableTableTableManager(_db, _db.sourceMatchTable);
+  $$SkipSegmentTableTableTableManager get skipSegmentTable =>
+      $$SkipSegmentTableTableTableManager(_db, _db.skipSegmentTable);
 }

@@ -22,8 +22,6 @@ import 'package:spotube/provider/server/bonsoir.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
 import 'package:spotube/l10n/l10n.dart';
-import 'package:spotube/models/skip_segment.dart';
-import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -84,23 +82,6 @@ Future<void> main(List<String> rawArgs) async {
 
     Hive.init(hiveCacheDir);
 
-    Hive.registerAdapter(SkipSegmentAdapter());
-
-    Hive.registerAdapter(SourceMatchAdapter());
-    Hive.registerAdapter(SourceTypeAdapter());
-
-    // Cache versioning entities with Adapter
-    SourceMatch.version = 'v1';
-    SkipSegment.version = 'v1';
-
-    await Hive.openLazyBox<SourceMatch>(
-      SourceMatch.boxName,
-      path: hiveCacheDir,
-    );
-    await Hive.openLazyBox(
-      SkipSegment.boxName,
-      path: hiveCacheDir,
-    );
     await PersistedStateNotifier.initializeBoxes(
       path: hiveCacheDir,
     );

@@ -17,11 +17,14 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 part 'database.g.dart';
 
 part 'tables/preferences.dart';
+part 'tables/source_match.dart';
+part 'tables/skip_segment.dart';
+
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
 part 'typeconverters/string_list.dart';
 
-@DriftDatabase(tables: [PreferencesTable])
+@DriftDatabase(tables: [PreferencesTable, SourceMatchTable, SkipSegmentTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
