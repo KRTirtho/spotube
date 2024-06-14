@@ -19,12 +19,20 @@ part 'database.g.dart';
 part 'tables/preferences.dart';
 part 'tables/source_match.dart';
 part 'tables/skip_segment.dart';
+part 'tables/blacklist.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
 part 'typeconverters/string_list.dart';
 
-@DriftDatabase(tables: [PreferencesTable, SourceMatchTable, SkipSegmentTable])
+@DriftDatabase(
+  tables: [
+    PreferencesTable,
+    SourceMatchTable,
+    SkipSegmentTable,
+    BlacklistTable,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

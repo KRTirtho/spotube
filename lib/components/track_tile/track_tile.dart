@@ -53,14 +53,10 @@ class TrackTile extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     final blacklist = ref.watch(blacklistProvider);
+    final blacklistNotifier = ref.watch(blacklistProvider.notifier);
 
     final isBlackListed = useMemoized(
-      () => blacklist.contains(
-        BlacklistedElement.track(
-          track.id!,
-          track.name!,
-        ),
-      ),
+      () => blacklistNotifier.contains(track),
       [blacklist, track],
     );
 

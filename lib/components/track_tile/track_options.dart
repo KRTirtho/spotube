@@ -18,6 +18,7 @@ import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -170,11 +171,8 @@ class TrackOptions extends HookConsumerWidget {
     final favorites = useTrackToggleLike(track, ref);
 
     final isBlackListed = useMemoized(
-      () => blacklist.contains(
-        BlacklistedElement.track(
-          track.id!,
-          track.name!,
-        ),
+      () => blacklist.asData?.value.any(
+        (element) => element.elementId == track.id,
       ),
       [blacklist, track],
     );
@@ -258,13 +256,16 @@ class TrackOptions extends HookConsumerWidget {
                 .removeTracks(playlistId ?? "", [track.id!]);
             break;
           case TrackOptionValue.blacklist:
-            if (isBlackListed) {
-              ref.read(blacklistProvider.notifier).remove(
-                    BlacklistedElement.track(track.id!, track.name!),
-                  );
+            if (isBlackListed == null) break;
+            if (isBlackListed == true) {
+              await ref.read(blacklistProvider.notifier).remove(track.id!);
             } else {
-              ref.read(blacklistProvider.notifier).add(
-                    BlacklistedElement.track(track.id!, track.name!),
+              await ref.read(blacklistProvider.notifier).add(
+                    BlacklistTableCompanion.insert(
+                      name: track.name!,
+                      elementId: track.id!,
+                      elementType: BlacklistedType.track,
+                    ),
                   );
             }
             break;
@@ -399,10 +400,10 @@ class TrackOptions extends HookConsumerWidget {
           PopSheetEntry(
             value: TrackOptionValue.blacklist,
             leading: const Icon(SpotubeIcons.playlistRemove),
-            iconColor: !isBlackListed ? Colors.red[400] : null,
-            textColor: !isBlackListed ? Colors.red[400] : null,
+            iconColor: isBlackListed != true ? Colors.red[400] : null,
+            textColor: isBlackListed != true ? Colors.red[400] : null,
             title: Text(
-              isBlackListed
+              isBlackListed == true
                   ? context.l10n.remove_from_blacklist
                   : context.l10n.add_to_blacklist,
             ),

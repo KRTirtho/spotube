@@ -1789,6 +1789,266 @@ class SkipSegmentTableCompanion extends UpdateCompanion<SkipSegmentTableData> {
   }
 }
 
+class $BlacklistTableTable extends BlacklistTable
+    with TableInfo<$BlacklistTableTable, BlacklistTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BlacklistTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _elementTypeMeta =
+      const VerificationMeta('elementType');
+  @override
+  late final GeneratedColumnWithTypeConverter<BlacklistedType, String>
+      elementType = GeneratedColumn<String>('element_type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<BlacklistedType>(
+              $BlacklistTableTable.$converterelementType);
+  static const VerificationMeta _elementIdMeta =
+      const VerificationMeta('elementId');
+  @override
+  late final GeneratedColumn<String> elementId = GeneratedColumn<String>(
+      'element_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, elementType, elementId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'blacklist_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<BlacklistTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    context.handle(_elementTypeMeta, const VerificationResult.success());
+    if (data.containsKey('element_id')) {
+      context.handle(_elementIdMeta,
+          elementId.isAcceptableOrUnknown(data['element_id']!, _elementIdMeta));
+    } else if (isInserting) {
+      context.missing(_elementIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BlacklistTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BlacklistTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      elementType: $BlacklistTableTable.$converterelementType.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}element_type'])!),
+      elementId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}element_id'])!,
+    );
+  }
+
+  @override
+  $BlacklistTableTable createAlias(String alias) {
+    return $BlacklistTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BlacklistedType, String, String>
+      $converterelementType =
+      const EnumNameConverter<BlacklistedType>(BlacklistedType.values);
+}
+
+class BlacklistTableData extends DataClass
+    implements Insertable<BlacklistTableData> {
+  final int id;
+  final String name;
+  final BlacklistedType elementType;
+  final String elementId;
+  const BlacklistTableData(
+      {required this.id,
+      required this.name,
+      required this.elementType,
+      required this.elementId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    {
+      map['element_type'] = Variable<String>(
+          $BlacklistTableTable.$converterelementType.toSql(elementType));
+    }
+    map['element_id'] = Variable<String>(elementId);
+    return map;
+  }
+
+  BlacklistTableCompanion toCompanion(bool nullToAbsent) {
+    return BlacklistTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      elementType: Value(elementType),
+      elementId: Value(elementId),
+    );
+  }
+
+  factory BlacklistTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BlacklistTableData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      elementType: $BlacklistTableTable.$converterelementType
+          .fromJson(serializer.fromJson<String>(json['elementType'])),
+      elementId: serializer.fromJson<String>(json['elementId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'elementType': serializer.toJson<String>(
+          $BlacklistTableTable.$converterelementType.toJson(elementType)),
+      'elementId': serializer.toJson<String>(elementId),
+    };
+  }
+
+  BlacklistTableData copyWith(
+          {int? id,
+          String? name,
+          BlacklistedType? elementType,
+          String? elementId}) =>
+      BlacklistTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        elementType: elementType ?? this.elementType,
+        elementId: elementId ?? this.elementId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('BlacklistTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('elementType: $elementType, ')
+          ..write('elementId: $elementId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, elementType, elementId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BlacklistTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.elementType == this.elementType &&
+          other.elementId == this.elementId);
+}
+
+class BlacklistTableCompanion extends UpdateCompanion<BlacklistTableData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<BlacklistedType> elementType;
+  final Value<String> elementId;
+  const BlacklistTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.elementType = const Value.absent(),
+    this.elementId = const Value.absent(),
+  });
+  BlacklistTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required BlacklistedType elementType,
+    required String elementId,
+  })  : name = Value(name),
+        elementType = Value(elementType),
+        elementId = Value(elementId);
+  static Insertable<BlacklistTableData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? elementType,
+    Expression<String>? elementId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (elementType != null) 'element_type': elementType,
+      if (elementId != null) 'element_id': elementId,
+    });
+  }
+
+  BlacklistTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<BlacklistedType>? elementType,
+      Value<String>? elementId}) {
+    return BlacklistTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      elementType: elementType ?? this.elementType,
+      elementId: elementId ?? this.elementId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (elementType.present) {
+      map['element_type'] = Variable<String>(
+          $BlacklistTableTable.$converterelementType.toSql(elementType.value));
+    }
+    if (elementId.present) {
+      map['element_id'] = Variable<String>(elementId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BlacklistTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('elementType: $elementType, ')
+          ..write('elementId: $elementId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
@@ -1798,14 +2058,23 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $SourceMatchTableTable(this);
   late final $SkipSegmentTableTable skipSegmentTable =
       $SkipSegmentTableTable(this);
+  late final $BlacklistTableTable blacklistTable = $BlacklistTableTable(this);
   late final Index uniqTrackMatch = Index('uniq_track_match',
       'CREATE UNIQUE INDEX uniq_track_match ON source_match_table (track_id, source_id, source_type)');
+  late final Index uniqueBlacklist = Index('unique_blacklist',
+      'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [preferencesTable, sourceMatchTable, skipSegmentTable, uniqTrackMatch];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        preferencesTable,
+        sourceMatchTable,
+        skipSegmentTable,
+        blacklistTable,
+        uniqTrackMatch,
+        uniqueBlacklist
+      ];
 }
 
 typedef $$PreferencesTableTableInsertCompanionBuilder
@@ -2571,6 +2840,130 @@ class $$SkipSegmentTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$BlacklistTableTableInsertCompanionBuilder = BlacklistTableCompanion
+    Function({
+  Value<int> id,
+  required String name,
+  required BlacklistedType elementType,
+  required String elementId,
+});
+typedef $$BlacklistTableTableUpdateCompanionBuilder = BlacklistTableCompanion
+    Function({
+  Value<int> id,
+  Value<String> name,
+  Value<BlacklistedType> elementType,
+  Value<String> elementId,
+});
+
+class $$BlacklistTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $BlacklistTableTable,
+    BlacklistTableData,
+    $$BlacklistTableTableFilterComposer,
+    $$BlacklistTableTableOrderingComposer,
+    $$BlacklistTableTableProcessedTableManager,
+    $$BlacklistTableTableInsertCompanionBuilder,
+    $$BlacklistTableTableUpdateCompanionBuilder> {
+  $$BlacklistTableTableTableManager(
+      _$AppDatabase db, $BlacklistTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$BlacklistTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$BlacklistTableTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$BlacklistTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<BlacklistedType> elementType = const Value.absent(),
+            Value<String> elementId = const Value.absent(),
+          }) =>
+              BlacklistTableCompanion(
+            id: id,
+            name: name,
+            elementType: elementType,
+            elementId: elementId,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required BlacklistedType elementType,
+            required String elementId,
+          }) =>
+              BlacklistTableCompanion.insert(
+            id: id,
+            name: name,
+            elementType: elementType,
+            elementId: elementId,
+          ),
+        ));
+}
+
+class $$BlacklistTableTableProcessedTableManager extends ProcessedTableManager<
+    _$AppDatabase,
+    $BlacklistTableTable,
+    BlacklistTableData,
+    $$BlacklistTableTableFilterComposer,
+    $$BlacklistTableTableOrderingComposer,
+    $$BlacklistTableTableProcessedTableManager,
+    $$BlacklistTableTableInsertCompanionBuilder,
+    $$BlacklistTableTableUpdateCompanionBuilder> {
+  $$BlacklistTableTableProcessedTableManager(super.$state);
+}
+
+class $$BlacklistTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $BlacklistTableTable> {
+  $$BlacklistTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<BlacklistedType, BlacklistedType, String>
+      get elementType => $state.composableBuilder(
+          column: $state.table.elementType,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get elementId => $state.composableBuilder(
+      column: $state.table.elementId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$BlacklistTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $BlacklistTableTable> {
+  $$BlacklistTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get elementType => $state.composableBuilder(
+      column: $state.table.elementType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get elementId => $state.composableBuilder(
+      column: $state.table.elementId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class _$AppDatabaseManager {
   final _$AppDatabase _db;
   _$AppDatabaseManager(this._db);
@@ -2580,4 +2973,6 @@ class _$AppDatabaseManager {
       $$SourceMatchTableTableTableManager(_db, _db.sourceMatchTable);
   $$SkipSegmentTableTableTableManager get skipSegmentTable =>
       $$SkipSegmentTableTableTableManager(_db, _db.skipSegmentTable);
+  $$BlacklistTableTableTableManager get blacklistTable =>
+      $$BlacklistTableTableTableManager(_db, _db.blacklistTable);
 }

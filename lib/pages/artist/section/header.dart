@@ -10,6 +10,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/authentication_provider.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
@@ -39,10 +40,9 @@ class ArtistPageHeader extends HookConsumerWidget {
     );
 
     final auth = ref.watch(authenticationProvider);
-    final blacklist = ref.watch(blacklistProvider);
-    final isBlackListed = blacklist.contains(
-      BlacklistedElement.artist(artistId, artist.name!),
-    );
+    ref.watch(blacklistProvider);
+    final blacklistNotifier = ref.watch(blacklistProvider.notifier);
+    final isBlackListed = blacklistNotifier.containsArtist(artist);
 
     final image = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
@@ -187,14 +187,16 @@ class ArtistPageHeader extends HookConsumerWidget {
                           ),
                           onPressed: () async {
                             if (isBlackListed) {
-                              ref.read(blacklistProvider.notifier).remove(
-                                    BlacklistedElement.artist(
-                                        artist.id!, artist.name!),
-                                  );
+                              await ref
+                                  .read(blacklistProvider.notifier)
+                                  .remove(artist.id!);
                             } else {
-                              ref.read(blacklistProvider.notifier).add(
-                                    BlacklistedElement.artist(
-                                        artist.id!, artist.name!),
+                              await ref.read(blacklistProvider.notifier).add(
+                                    BlacklistTableCompanion.insert(
+                                      name: artist.name!,
+                                      elementId: artist.id!,
+                                      elementType: BlacklistedType.artist,
+                                    ),
                                   );
                             }
                           },
