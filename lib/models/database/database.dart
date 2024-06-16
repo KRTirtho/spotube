@@ -19,10 +19,11 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'database.g.dart';
 
-part 'tables/preferences.dart';
-part 'tables/source_match.dart';
-part 'tables/skip_segment.dart';
+part 'tables/authentication.dart';
 part 'tables/blacklist.dart';
+part 'tables/preferences.dart';
+part 'tables/skip_segment.dart';
+part 'tables/source_match.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
@@ -31,10 +32,11 @@ part 'typeconverters/encrypted_text.dart';
 
 @DriftDatabase(
   tables: [
-    PreferencesTable,
-    SourceMatchTable,
-    SkipSegmentTable,
+    AuthenticationTable,
     BlacklistTable,
+    PreferencesTable,
+    SkipSegmentTable,
+    SourceMatchTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {

@@ -8,7 +8,7 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/modules/home/sections/friends/friend_item.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/models/spotify_friends.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomePageFriendsSection extends HookConsumerWidget {
@@ -59,7 +59,7 @@ class HomePageFriendsSection extends HookConsumerWidget {
 
     if (friendsQuery.isLoading ||
         friendsQuery.asData?.value.friends.isEmpty == true ||
-        auth == null) {
+        auth.asData?.value == null) {
       return const SliverToBoxAdapter(
         child: SizedBox.shrink(),
       );

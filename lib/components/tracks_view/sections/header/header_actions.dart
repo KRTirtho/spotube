@@ -9,7 +9,7 @@ import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/tracks_view/sections/body/use_is_user_playlist.dart';
 import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 

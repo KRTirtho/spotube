@@ -46,7 +46,7 @@ class LocalFolderItem extends HookConsumerWidget {
             ...pathSegments.skip(pathSegments.length - 3).toList()
               ..removeLast(),
           ]
-        : pathSegments.take(pathSegments.length - 1).toList();
+        : pathSegments.take(max(pathSegments.length - 1, 0)).toList();
 
     final trackSnapshot = ref.watch(
       localTracksProvider.select(

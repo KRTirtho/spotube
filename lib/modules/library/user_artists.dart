@@ -14,7 +14,7 @@ import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class UserArtists extends HookConsumerWidget {
@@ -48,7 +48,7 @@ class UserArtists extends HookConsumerWidget {
 
     final controller = useScrollController();
 
-    if (auth == null) {
+    if (auth.asData?.value == null) {
       return const AnonymousFallback();
     }
 

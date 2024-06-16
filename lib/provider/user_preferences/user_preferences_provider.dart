@@ -134,8 +134,11 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setLocalLibraryLocation(List<String> localLibraryDirs) {
     //if (localLibraryDir.isEmpty) return;
-    setData(PreferencesTableCompanion(
-        localLibraryLocation: Value(localLibraryDirs)));
+    setData(
+      PreferencesTableCompanion(
+        localLibraryLocation: Value(localLibraryDirs),
+      ),
+    );
   }
 
   void setLayoutMode(LayoutMode mode) {

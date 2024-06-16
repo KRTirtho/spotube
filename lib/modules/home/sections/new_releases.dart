@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomeNewReleasesSection extends HookConsumerWidget {
@@ -18,7 +18,7 @@ class HomeNewReleasesSection extends HookConsumerWidget {
 
     final albums = ref.watch(userArtistAlbumReleasesProvider);
 
-    if (auth == null ||
+    if (auth.asData?.value == null ||
         newReleases.isLoading ||
         newReleases.asData?.value.items.isEmpty == true) {
       return const SizedBox.shrink();

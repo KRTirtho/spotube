@@ -9,7 +9,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/pages/profile/profile.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/scrobbler_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -35,7 +35,7 @@ class SettingsAccountSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.account,
       children: [
-        if (auth != null)
+        if (auth.asData?.value != null)
           ListTile(
             leading: const Icon(SpotubeIcons.user),
             title: const Text("User Profile"),
@@ -53,7 +53,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               ServiceUtils.pushNamed(context, ProfilePage.name);
             },
           ),
-        if (auth == null)
+        if (auth.asData?.value == null)
           LayoutBuilder(builder: (context, constrains) {
             return ListTile(
               leading: Icon(

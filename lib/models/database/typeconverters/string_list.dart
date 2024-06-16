@@ -5,7 +5,7 @@ class StringListConverter extends TypeConverter<List<String>, String> {
 
   @override
   List<String> fromSql(String fromDb) {
-    return fromDb.split(",");
+    return fromDb.split(",").where((e) => e.isNotEmpty).toList();
   }
 
   @override

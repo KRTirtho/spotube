@@ -17,7 +17,7 @@ import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -75,7 +75,7 @@ class UserPlaylists extends HookConsumerWidget {
 
     final controller = useScrollController();
 
-    if (auth == null) {
+    if (auth.asData?.value == null) {
       return const AnonymousFallback();
     }
 

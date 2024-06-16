@@ -14,7 +14,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_force_update.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
@@ -48,7 +48,7 @@ class MiniLyricsPage extends HookConsumerWidget {
 
     final auth = ref.watch(authenticationProvider);
 
-    if (auth == null) {
+    if (auth.asData?.value == null) {
       return const Scaffold(
         appBar: PageWindowTitleBar(),
         body: AnonymousFallback(),

@@ -20,7 +20,7 @@ import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
 import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -269,7 +269,7 @@ class SidebarFooter extends HookConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (auth != null && data == null)
+              if (auth.asData?.value != null && data == null)
                 const CircularProgressIndicator()
               else if (data != null)
                 Flexible(

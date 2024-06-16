@@ -32,7 +32,7 @@ import 'package:spotube/pages/stats/playlists/playlists.dart';
 import 'package:spotube/pages/stats/stats.dart';
 import 'package:spotube/pages/stats/streams/streams.dart';
 import 'package:spotube/pages/track/track.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/spotube_page_route.dart';
@@ -59,11 +59,9 @@ final routerProvider = Provider((ref) {
             path: "/",
             name: HomePage.name,
             redirect: (context, state) async {
-              final authNotifier = ref.read(authenticationProvider.notifier);
-              final json = await authNotifier.box.get(authNotifier.cacheKey);
+              final auth = await ref.read(authenticationProvider.future);
 
-              if (json?["cookie"] == null &&
-                  !KVStoreService.doneGettingStarted) {
+              if (auth == null && !KVStoreService.doneGettingStarted) {
                 return "/getting-started";
               }
 
