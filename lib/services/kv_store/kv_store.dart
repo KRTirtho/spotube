@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:encrypt/encrypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class KVStoreService {
   static SharedPreferences? _sharedPreferences;
@@ -43,4 +45,37 @@ abstract class KVStoreService {
           value.toJson(),
         ),
       );
+
+  static String get encryptionKey {
+    final value = sharedPreferences.getString('encryption');
+
+    final key = const Uuid().v4();
+    if (value == null) {
+      setEncryptionKey(key);
+      return key;
+    }
+
+    return value;
+  }
+
+  static Future<void> setEncryptionKey(String key) async {
+    await sharedPreferences.setString('encryption', key);
+  }
+
+  static IV get ivKey {
+    final iv = sharedPreferences.getString('iv');
+    final value = IV.fromSecureRandom(8);
+
+    if (iv == null) {
+      setIVKey(value);
+
+      return value;
+    }
+
+    return IV.fromBase64(iv);
+  }
+
+  static Future<void> setIVKey(IV iv) async {
+    await sharedPreferences.setString('iv', iv.base64);
+  }
 }

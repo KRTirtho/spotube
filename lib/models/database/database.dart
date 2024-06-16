@@ -4,11 +4,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
-import 'package:flutter/material.dart' hide Table;
+import 'package:flutter/material.dart' hide Table, Key;
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -24,6 +27,7 @@ part 'tables/blacklist.dart';
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
 part 'typeconverters/string_list.dart';
+part 'typeconverters/encrypted_text.dart';
 
 @DriftDatabase(
   tables: [

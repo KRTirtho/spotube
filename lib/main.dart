@@ -27,6 +27,7 @@ import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
+import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
@@ -76,6 +77,7 @@ Future<void> main(List<String> rawArgs) async {
     }
 
     await KVStoreService.initialize();
+    await EncryptedKvStoreService.initialize();
 
     final hiveCacheDir =
         kIsWeb ? null : (await getApplicationSupportDirectory()).path;

@@ -124,6 +124,7 @@ dependencies:
   drift: ^2.18.0
   sqlite3_flutter_libs: ^0.5.23
   sqlite3: ^2.4.3
+  encrypt: ^5.0.3
 
 dev_dependencies:
   build_runner: ^2.4.11
