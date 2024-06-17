@@ -1,7 +1,7 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/provider/scrobbler_provider.dart';
+import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 typedef UseTrackToggleLike = ({

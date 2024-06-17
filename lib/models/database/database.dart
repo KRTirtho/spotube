@@ -22,6 +22,7 @@ part 'database.g.dart';
 part 'tables/authentication.dart';
 part 'tables/blacklist.dart';
 part 'tables/preferences.dart';
+part 'tables/scrobbler.dart';
 part 'tables/skip_segment.dart';
 part 'tables/source_match.dart';
 
@@ -35,6 +36,7 @@ part 'typeconverters/encrypted_text.dart';
     AuthenticationTable,
     BlacklistTable,
     PreferencesTable,
+    ScrobblerTable,
     SkipSegmentTable,
     SourceMatchTable,
   ],

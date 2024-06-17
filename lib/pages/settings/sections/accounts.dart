@@ -10,7 +10,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/scrobbler_provider.dart';
+import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -119,7 +119,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               ),
             );
           }),
-        if (scrobbler == null)
+        if (scrobbler.asData?.value == null)
           ListTile(
             leading: const Icon(SpotubeIcons.lastFm),
             title: Text(context.l10n.login_with_lastfm),

@@ -1731,6 +1731,260 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   }
 }
 
+class $ScrobblerTableTable extends ScrobblerTable
+    with TableInfo<$ScrobblerTableTable, ScrobblerTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ScrobblerTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _usernameMeta =
+      const VerificationMeta('username');
+  @override
+  late final GeneratedColumn<String> username = GeneratedColumn<String>(
+      'username', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _passwordHashMeta =
+      const VerificationMeta('passwordHash');
+  @override
+  late final GeneratedColumn<String> passwordHash = GeneratedColumn<String>(
+      'password_hash', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdAt, username, passwordHash];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scrobbler_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<ScrobblerTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('username')) {
+      context.handle(_usernameMeta,
+          username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
+    }
+    if (data.containsKey('password_hash')) {
+      context.handle(
+          _passwordHashMeta,
+          passwordHash.isAcceptableOrUnknown(
+              data['password_hash']!, _passwordHashMeta));
+    } else if (isInserting) {
+      context.missing(_passwordHashMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ScrobblerTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ScrobblerTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      username: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+      passwordHash: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}password_hash'])!,
+    );
+  }
+
+  @override
+  $ScrobblerTableTable createAlias(String alias) {
+    return $ScrobblerTableTable(attachedDatabase, alias);
+  }
+}
+
+class ScrobblerTableData extends DataClass
+    implements Insertable<ScrobblerTableData> {
+  final int id;
+  final DateTime createdAt;
+  final String username;
+  final String passwordHash;
+  const ScrobblerTableData(
+      {required this.id,
+      required this.createdAt,
+      required this.username,
+      required this.passwordHash});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['username'] = Variable<String>(username);
+    map['password_hash'] = Variable<String>(passwordHash);
+    return map;
+  }
+
+  ScrobblerTableCompanion toCompanion(bool nullToAbsent) {
+    return ScrobblerTableCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      username: Value(username),
+      passwordHash: Value(passwordHash),
+    );
+  }
+
+  factory ScrobblerTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ScrobblerTableData(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      username: serializer.fromJson<String>(json['username']),
+      passwordHash: serializer.fromJson<String>(json['passwordHash']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'username': serializer.toJson<String>(username),
+      'passwordHash': serializer.toJson<String>(passwordHash),
+    };
+  }
+
+  ScrobblerTableData copyWith(
+          {int? id,
+          DateTime? createdAt,
+          String? username,
+          String? passwordHash}) =>
+      ScrobblerTableData(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        username: username ?? this.username,
+        passwordHash: passwordHash ?? this.passwordHash,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ScrobblerTableData(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('username: $username, ')
+          ..write('passwordHash: $passwordHash')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, createdAt, username, passwordHash);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ScrobblerTableData &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.username == this.username &&
+          other.passwordHash == this.passwordHash);
+}
+
+class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<String> username;
+  final Value<String> passwordHash;
+  const ScrobblerTableCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.username = const Value.absent(),
+    this.passwordHash = const Value.absent(),
+  });
+  ScrobblerTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required String username,
+    required String passwordHash,
+  })  : username = Value(username),
+        passwordHash = Value(passwordHash);
+  static Insertable<ScrobblerTableData> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<String>? username,
+    Expression<String>? passwordHash,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (username != null) 'username': username,
+      if (passwordHash != null) 'password_hash': passwordHash,
+    });
+  }
+
+  ScrobblerTableCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? createdAt,
+      Value<String>? username,
+      Value<String>? passwordHash}) {
+    return ScrobblerTableCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      username: username ?? this.username,
+      passwordHash: passwordHash ?? this.passwordHash,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (username.present) {
+      map['username'] = Variable<String>(username.value);
+    }
+    if (passwordHash.present) {
+      map['password_hash'] = Variable<String>(passwordHash.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScrobblerTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('username: $username, ')
+          ..write('passwordHash: $passwordHash')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SkipSegmentTableTable extends SkipSegmentTable
     with TableInfo<$SkipSegmentTableTable, SkipSegmentTableData> {
   @override
@@ -2324,6 +2578,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BlacklistTableTable blacklistTable = $BlacklistTableTable(this);
   late final $PreferencesTableTable preferencesTable =
       $PreferencesTableTable(this);
+  late final $ScrobblerTableTable scrobblerTable = $ScrobblerTableTable(this);
   late final $SkipSegmentTableTable skipSegmentTable =
       $SkipSegmentTableTable(this);
   late final $SourceMatchTableTable sourceMatchTable =
@@ -2340,6 +2595,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         authenticationTable,
         blacklistTable,
         preferencesTable,
+        scrobblerTable,
         skipSegmentTable,
         sourceMatchTable,
         uniqueBlacklist,
@@ -3081,6 +3337,128 @@ class $$PreferencesTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$ScrobblerTableTableInsertCompanionBuilder = ScrobblerTableCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  required String username,
+  required String passwordHash,
+});
+typedef $$ScrobblerTableTableUpdateCompanionBuilder = ScrobblerTableCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<String> username,
+  Value<String> passwordHash,
+});
+
+class $$ScrobblerTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ScrobblerTableTable,
+    ScrobblerTableData,
+    $$ScrobblerTableTableFilterComposer,
+    $$ScrobblerTableTableOrderingComposer,
+    $$ScrobblerTableTableProcessedTableManager,
+    $$ScrobblerTableTableInsertCompanionBuilder,
+    $$ScrobblerTableTableUpdateCompanionBuilder> {
+  $$ScrobblerTableTableTableManager(
+      _$AppDatabase db, $ScrobblerTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ScrobblerTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ScrobblerTableTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$ScrobblerTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<String> username = const Value.absent(),
+            Value<String> passwordHash = const Value.absent(),
+          }) =>
+              ScrobblerTableCompanion(
+            id: id,
+            createdAt: createdAt,
+            username: username,
+            passwordHash: passwordHash,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            required String username,
+            required String passwordHash,
+          }) =>
+              ScrobblerTableCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            username: username,
+            passwordHash: passwordHash,
+          ),
+        ));
+}
+
+class $$ScrobblerTableTableProcessedTableManager extends ProcessedTableManager<
+    _$AppDatabase,
+    $ScrobblerTableTable,
+    ScrobblerTableData,
+    $$ScrobblerTableTableFilterComposer,
+    $$ScrobblerTableTableOrderingComposer,
+    $$ScrobblerTableTableProcessedTableManager,
+    $$ScrobblerTableTableInsertCompanionBuilder,
+    $$ScrobblerTableTableUpdateCompanionBuilder> {
+  $$ScrobblerTableTableProcessedTableManager(super.$state);
+}
+
+class $$ScrobblerTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $ScrobblerTableTable> {
+  $$ScrobblerTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get username => $state.composableBuilder(
+      column: $state.table.username,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get passwordHash => $state.composableBuilder(
+      column: $state.table.passwordHash,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$ScrobblerTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $ScrobblerTableTable> {
+  $$ScrobblerTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get username => $state.composableBuilder(
+      column: $state.table.username,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get passwordHash => $state.composableBuilder(
+      column: $state.table.passwordHash,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 typedef $$SkipSegmentTableTableInsertCompanionBuilder
     = SkipSegmentTableCompanion Function({
   Value<int> id,
@@ -3370,6 +3748,8 @@ class _$AppDatabaseManager {
       $$BlacklistTableTableTableManager(_db, _db.blacklistTable);
   $$PreferencesTableTableTableManager get preferencesTable =>
       $$PreferencesTableTableTableManager(_db, _db.preferencesTable);
+  $$ScrobblerTableTableTableManager get scrobblerTable =>
+      $$ScrobblerTableTableTableManager(_db, _db.scrobblerTable);
   $$SkipSegmentTableTableTableManager get skipSegmentTable =>
       $$SkipSegmentTableTableTableManager(_db, _db.skipSegmentTable);
   $$SourceMatchTableTableTableManager get sourceMatchTable =>

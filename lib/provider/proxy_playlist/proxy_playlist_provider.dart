@@ -11,7 +11,7 @@ import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/scrobbler_provider.dart';
+import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 

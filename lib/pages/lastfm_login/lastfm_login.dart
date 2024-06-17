@@ -7,7 +7,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/scrobbler_provider.dart';
+import 'package:spotube/provider/scrobbler/scrobbler.dart';
 
 class LastFMLoginPage extends HookConsumerWidget {
   static const name = "lastfm_login";
