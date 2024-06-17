@@ -78,4 +78,8 @@ abstract class KVStoreService {
   static Future<void> setIVKey(IV iv) async {
     await sharedPreferences.setString('iv', iv.base64);
   }
+
+  static double get volume => sharedPreferences.getDouble('volume') ?? 1.0;
+  static Future<void> setVolume(double value) async =>
+      await sharedPreferences.setDouble('volume', value);
 }
