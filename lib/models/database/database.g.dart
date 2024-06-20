@@ -1763,9 +1763,12 @@ class $ScrobblerTableTable extends ScrobblerTable
   static const VerificationMeta _passwordHashMeta =
       const VerificationMeta('passwordHash');
   @override
-  late final GeneratedColumn<String> passwordHash = GeneratedColumn<String>(
-      'password_hash', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumnWithTypeConverter<DecryptedText, String>
+      passwordHash = GeneratedColumn<String>(
+              'password_hash', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<DecryptedText>(
+              $ScrobblerTableTable.$converterpasswordHash);
   @override
   List<GeneratedColumn> get $columns => [id, createdAt, username, passwordHash];
   @override
@@ -1791,14 +1794,7 @@ class $ScrobblerTableTable extends ScrobblerTable
     } else if (isInserting) {
       context.missing(_usernameMeta);
     }
-    if (data.containsKey('password_hash')) {
-      context.handle(
-          _passwordHashMeta,
-          passwordHash.isAcceptableOrUnknown(
-              data['password_hash']!, _passwordHashMeta));
-    } else if (isInserting) {
-      context.missing(_passwordHashMeta);
-    }
+    context.handle(_passwordHashMeta, const VerificationResult.success());
     return context;
   }
 
@@ -1814,8 +1810,9 @@ class $ScrobblerTableTable extends ScrobblerTable
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       username: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
-      passwordHash: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}password_hash'])!,
+      passwordHash: $ScrobblerTableTable.$converterpasswordHash.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}password_hash'])!),
     );
   }
 
@@ -1823,6 +1820,9 @@ class $ScrobblerTableTable extends ScrobblerTable
   $ScrobblerTableTable createAlias(String alias) {
     return $ScrobblerTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<DecryptedText, String> $converterpasswordHash =
+      EncryptedTextConverter();
 }
 
 class ScrobblerTableData extends DataClass
@@ -1830,7 +1830,7 @@ class ScrobblerTableData extends DataClass
   final int id;
   final DateTime createdAt;
   final String username;
-  final String passwordHash;
+  final DecryptedText passwordHash;
   const ScrobblerTableData(
       {required this.id,
       required this.createdAt,
@@ -1842,7 +1842,10 @@ class ScrobblerTableData extends DataClass
     map['id'] = Variable<int>(id);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['username'] = Variable<String>(username);
-    map['password_hash'] = Variable<String>(passwordHash);
+    {
+      map['password_hash'] = Variable<String>(
+          $ScrobblerTableTable.$converterpasswordHash.toSql(passwordHash));
+    }
     return map;
   }
 
@@ -1862,7 +1865,7 @@ class ScrobblerTableData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       username: serializer.fromJson<String>(json['username']),
-      passwordHash: serializer.fromJson<String>(json['passwordHash']),
+      passwordHash: serializer.fromJson<DecryptedText>(json['passwordHash']),
     );
   }
   @override
@@ -1872,7 +1875,7 @@ class ScrobblerTableData extends DataClass
       'id': serializer.toJson<int>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'username': serializer.toJson<String>(username),
-      'passwordHash': serializer.toJson<String>(passwordHash),
+      'passwordHash': serializer.toJson<DecryptedText>(passwordHash),
     };
   }
 
@@ -1880,7 +1883,7 @@ class ScrobblerTableData extends DataClass
           {int? id,
           DateTime? createdAt,
           String? username,
-          String? passwordHash}) =>
+          DecryptedText? passwordHash}) =>
       ScrobblerTableData(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -1914,7 +1917,7 @@ class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
   final Value<int> id;
   final Value<DateTime> createdAt;
   final Value<String> username;
-  final Value<String> passwordHash;
+  final Value<DecryptedText> passwordHash;
   const ScrobblerTableCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -1925,7 +1928,7 @@ class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     required String username,
-    required String passwordHash,
+    required DecryptedText passwordHash,
   })  : username = Value(username),
         passwordHash = Value(passwordHash);
   static Insertable<ScrobblerTableData> custom({
@@ -1946,7 +1949,7 @@ class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
       {Value<int>? id,
       Value<DateTime>? createdAt,
       Value<String>? username,
-      Value<String>? passwordHash}) {
+      Value<DecryptedText>? passwordHash}) {
     return ScrobblerTableCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
@@ -1968,7 +1971,9 @@ class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
       map['username'] = Variable<String>(username.value);
     }
     if (passwordHash.present) {
-      map['password_hash'] = Variable<String>(passwordHash.value);
+      map['password_hash'] = Variable<String>($ScrobblerTableTable
+          .$converterpasswordHash
+          .toSql(passwordHash.value));
     }
     return map;
   }
@@ -3342,14 +3347,14 @@ typedef $$ScrobblerTableTableInsertCompanionBuilder = ScrobblerTableCompanion
   Value<int> id,
   Value<DateTime> createdAt,
   required String username,
-  required String passwordHash,
+  required DecryptedText passwordHash,
 });
 typedef $$ScrobblerTableTableUpdateCompanionBuilder = ScrobblerTableCompanion
     Function({
   Value<int> id,
   Value<DateTime> createdAt,
   Value<String> username,
-  Value<String> passwordHash,
+  Value<DecryptedText> passwordHash,
 });
 
 class $$ScrobblerTableTableTableManager extends RootTableManager<
@@ -3376,7 +3381,7 @@ class $$ScrobblerTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<String> username = const Value.absent(),
-            Value<String> passwordHash = const Value.absent(),
+            Value<DecryptedText> passwordHash = const Value.absent(),
           }) =>
               ScrobblerTableCompanion(
             id: id,
@@ -3388,7 +3393,7 @@ class $$ScrobblerTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             required String username,
-            required String passwordHash,
+            required DecryptedText passwordHash,
           }) =>
               ScrobblerTableCompanion.insert(
             id: id,
@@ -3429,10 +3434,12 @@ class $$ScrobblerTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<String> get passwordHash => $state.composableBuilder(
-      column: $state.table.passwordHash,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnWithTypeConverterFilters<DecryptedText, DecryptedText, String>
+      get passwordHash => $state.composableBuilder(
+          column: $state.table.passwordHash,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 }
 
 class $$ScrobblerTableTableOrderingComposer

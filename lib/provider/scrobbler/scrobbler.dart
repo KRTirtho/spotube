@@ -30,7 +30,7 @@ class ScrobblerNotifier extends AsyncNotifier<Scrobblenaut?> {
               apiKey: Env.lastFmApiKey,
               apiSecret: Env.lastFmApiSecret,
               username: event.first.username,
-              passwordHash: event.first.passwordHash,
+              passwordHash: event.first.passwordHash.value,
             ),
           ),
         );
@@ -70,7 +70,7 @@ class ScrobblerNotifier extends AsyncNotifier<Scrobblenaut?> {
         apiKey: Env.lastFmApiKey,
         apiSecret: Env.lastFmApiSecret,
         username: loginInfo.username,
-        passwordHash: loginInfo.passwordHash,
+        passwordHash: loginInfo.passwordHash.value,
       ),
     );
   }
@@ -94,7 +94,7 @@ class ScrobblerNotifier extends AsyncNotifier<Scrobblenaut?> {
           ScrobblerTableCompanion.insert(
             id: const Value(0),
             username: username,
-            passwordHash: lastFm.passwordHash!,
+            passwordHash: DecryptedText(lastFm.passwordHash!),
           ),
         );
   }
