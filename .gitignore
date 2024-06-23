@@ -78,3 +78,5 @@ android/key.properties
 **/pb_data
 
 tm.json
+.local-chrome
+.vs

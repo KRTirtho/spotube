@@ -325,5 +325,6 @@
   "add_library_location": "Añadir a la biblioteca",
   "remove_library_location": "Eliminar de la biblioteca",
   "local_tab": "Local",
-  "stats": "Estadísticas"
+  "stats": "Estadísticas",
+  "continue_in_browser": "Continuar en el navegador"
 }
