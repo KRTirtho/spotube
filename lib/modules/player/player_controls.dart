@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
@@ -12,7 +13,6 @@ import 'package:spotube/modules/player/use_progress.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/audio_player/loop_mode.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final PaletteGenerator? palette;
@@ -234,38 +234,29 @@ class PlayerControls extends HookConsumerWidget {
                         ? null
                         : playlistNotifier.next,
                   ),
-                  StreamBuilder<PlaybackLoopMode>(
+                  StreamBuilder<PlaylistMode>(
                       stream: audioPlayer.loopModeStream,
                       builder: (context, snapshot) {
-                        final loopMode = snapshot.data ?? PlaybackLoopMode.none;
+                        final loopMode = snapshot.data ?? PlaylistMode.none;
                         return IconButton(
-                          tooltip: loopMode == PlaybackLoopMode.one
+                          tooltip: loopMode == PlaylistMode.single
                               ? context.l10n.loop_track
-                              : loopMode == PlaybackLoopMode.all
+                              : loopMode == PlaylistMode.loop
                                   ? context.l10n.repeat_playlist
                                   : null,
                           icon: Icon(
-                            loopMode == PlaybackLoopMode.one
+                            loopMode == PlaylistMode.single
                                 ? SpotubeIcons.repeatOne
                                 : SpotubeIcons.repeat,
                           ),
-                          style: loopMode == PlaybackLoopMode.one ||
-                                  loopMode == PlaybackLoopMode.all
+                          style: loopMode == PlaylistMode.single ||
+                                  loopMode == PlaylistMode.loop
                               ? activeButtonStyle
                               : buttonStyle,
                           onPressed: playlist.isFetching == true
                               ? null
                               : () async {
-                                  audioPlayer.setLoopMode(
-                                    switch (loopMode) {
-                                      PlaybackLoopMode.all =>
-                                        PlaybackLoopMode.one,
-                                      PlaybackLoopMode.one =>
-                                        PlaybackLoopMode.none,
-                                      PlaybackLoopMode.none =>
-                                        PlaybackLoopMode.all,
-                                    },
-                                  );
+                                  await audioPlayer.setLoopMode(loopMode);
                                 },
                         );
                       }),

@@ -5,7 +5,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/audio_player/loop_mode.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
 
 class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
@@ -91,9 +91,13 @@ class MobileAudioService extends BaseAudioHandler {
   @override
   Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
     super.setRepeatMode(repeatMode);
-    audioPlayer.setLoopMode(
-      PlaybackLoopMode.fromAudioServiceRepeatMode(repeatMode),
-    );
+    audioPlayer.setLoopMode(switch (repeatMode) {
+      AudioServiceRepeatMode.all ||
+      AudioServiceRepeatMode.group =>
+        PlaylistMode.loop,
+      AudioServiceRepeatMode.one => PlaylistMode.single,
+      _ => PlaylistMode.none,
+    });
   }
 
   @override
@@ -120,7 +124,6 @@ class MobileAudioService extends BaseAudioHandler {
   }
 
   Future<PlaybackState> _transformEvent() async {
-    final position = (await audioPlayer.position) ?? Duration.zero;
     return PlaybackState(
       controls: [
         MediaControl.skipToPrevious,
@@ -133,12 +136,16 @@ class MobileAudioService extends BaseAudioHandler {
       },
       androidCompactActionIndices: const [0, 1, 2],
       playing: audioPlayer.isPlaying,
-      updatePosition: position,
-      bufferedPosition: await audioPlayer.bufferedPosition ?? Duration.zero,
+      updatePosition: audioPlayer.position,
+      bufferedPosition: audioPlayer.bufferedPosition,
       shuffleMode: audioPlayer.isShuffled == true
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,
-      repeatMode: (audioPlayer.loopMode).toAudioServiceRepeatMode(),
+      repeatMode: switch (audioPlayer.loopMode) {
+        PlaylistMode.loop => AudioServiceRepeatMode.all,
+        PlaylistMode.single => AudioServiceRepeatMode.one,
+        _ => AudioServiceRepeatMode.none,
+      },
       processingState: playlist.isFetching == true
           ? AudioProcessingState.loading
           : AudioProcessingState.ready,

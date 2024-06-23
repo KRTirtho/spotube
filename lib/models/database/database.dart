@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
@@ -25,11 +26,13 @@ part 'tables/preferences.dart';
 part 'tables/scrobbler.dart';
 part 'tables/skip_segment.dart';
 part 'tables/source_match.dart';
+part 'tables/audio_player_state.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
 part 'typeconverters/string_list.dart';
 part 'typeconverters/encrypted_text.dart';
+part 'typeconverters/map.dart';
 
 @DriftDatabase(
   tables: [
@@ -39,6 +42,9 @@ part 'typeconverters/encrypted_text.dart';
     ScrobblerTable,
     SkipSegmentTable,
     SourceMatchTable,
+    AudioPlayerStateTable,
+    PlaylistTable,
+    PlaylistMediaTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {

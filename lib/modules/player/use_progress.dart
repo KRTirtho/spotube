@@ -1,4 +1,3 @@
-import 'package:async/async.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -19,26 +18,13 @@ import 'package:spotube/services/audio_player/audio_player.dart';
   final sliderValue = position.value.inSeconds;
 
   useEffect(() {
-    final durationOperation =
-        CancelableOperation.fromFuture(audioPlayer.duration);
-    durationOperation.then((value) {
-      if (value != null) {
-        duration.value = value;
-      }
-    });
+    duration.value = audioPlayer.duration;
 
     final durationSubscription = audioPlayer.durationStream.listen((event) {
       duration.value = event;
     });
 
-    final positionOperation =
-        CancelableOperation.fromFuture(audioPlayer.position);
-
-    positionOperation.then((value) {
-      if (value != null) {
-        position.value = value;
-      }
-    });
+    position.value = audioPlayer.position;
 
     var lastPosition = position.value;
 
@@ -54,9 +40,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
     });
 
     return () {
-      positionOperation.cancel();
       positionSubscription.cancel();
-      durationOperation.cancel();
       durationSubscription.cancel();
     };
   }, []);

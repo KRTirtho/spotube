@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/audio_player/loop_mode.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
-final audioPlayerLoopMode = StreamProvider<PlaybackLoopMode>((ref) {
+final audioPlayerLoopMode = StreamProvider<PlaylistMode>((ref) {
   return audioPlayer.loopModeStream;
 });
 
@@ -23,7 +23,7 @@ final trayMenuProvider = Provider((ref) {
   final isPlaybackPlaying =
       ref.watch(proxyPlaylistProvider.select((s) => s.activeTrack != null));
   final isLoopOne =
-      ref.watch(audioPlayerLoopMode).asData?.value == PlaybackLoopMode.one;
+      ref.watch(audioPlayerLoopMode).asData?.value == PlaylistMode.single;
   final isShuffled = ref.watch(audioPlayerShuffleMode).asData?.value ?? false;
   final isPlaying = ref.watch(audioPlayerPlaying).asData?.value ?? false;
 
@@ -75,7 +75,7 @@ final trayMenuProvider = Provider((ref) {
               checked: isLoopOne,
               onClick: (menuItem) {
                 audioPlayer.setLoopMode(
-                  isLoopOne ? PlaybackLoopMode.none : PlaybackLoopMode.one,
+                  isLoopOne ? PlaylistMode.none : PlaylistMode.single,
                 );
               },
             ),

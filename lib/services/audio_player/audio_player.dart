@@ -1,16 +1,16 @@
 import 'dart:io';
 
+import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';
 import 'dart:async';
 
 import 'package:media_kit/media_kit.dart' as mk;
 
-import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
@@ -66,15 +66,19 @@ abstract class AudioPlayerInterface {
 
   bool get mkSupportedPlatform => _mkSupportedPlatform;
 
-  Future<Duration?> get duration async {
+  Duration get duration {
     return _mkPlayer.state.duration;
   }
 
-  Future<Duration?> get position async {
+  Playlist get playlist {
+    return _mkPlayer.state.playlist;
+  }
+
+  Duration get position {
     return _mkPlayer.state.position;
   }
 
-  Future<Duration?> get bufferedPosition async {
+  Duration get bufferedPosition {
     return _mkPlayer.state.buffer;
   }
 
@@ -111,8 +115,8 @@ abstract class AudioPlayerInterface {
     return _mkPlayer.shuffled;
   }
 
-  PlaybackLoopMode get loopMode {
-    return PlaybackLoopMode.fromPlaylistMode(_mkPlayer.state.playlistMode);
+  PlaylistMode get loopMode {
+    return _mkPlayer.state.playlistMode;
   }
 
   /// Returns the current volume of the player, between 0 and 1
