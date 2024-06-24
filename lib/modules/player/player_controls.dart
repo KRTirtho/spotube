@@ -11,6 +11,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/modules/player/use_progress.dart';
 import 'package:spotube/models/logger.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -232,32 +233,38 @@ class PlayerControls extends HookConsumerWidget {
                     onPressed:
                         isFetchingActiveTrack ? null : audioPlayer.skipToNext,
                   ),
-                  StreamBuilder<PlaylistMode>(
-                      stream: audioPlayer.loopModeStream,
-                      builder: (context, snapshot) {
-                        final loopMode = snapshot.data ?? PlaylistMode.none;
-                        return IconButton(
-                          tooltip: loopMode == PlaylistMode.single
-                              ? context.l10n.loop_track
-                              : loopMode == PlaylistMode.loop
-                                  ? context.l10n.repeat_playlist
-                                  : null,
-                          icon: Icon(
-                            loopMode == PlaylistMode.single
-                                ? SpotubeIcons.repeatOne
-                                : SpotubeIcons.repeat,
-                          ),
-                          style: loopMode == PlaylistMode.single ||
-                                  loopMode == PlaylistMode.loop
-                              ? activeButtonStyle
-                              : buttonStyle,
-                          onPressed: isFetchingActiveTrack
-                              ? null
-                              : () async {
-                                  await audioPlayer.setLoopMode(loopMode);
+                  Consumer(builder: (context, ref, _) {
+                    final loopMode = ref
+                        .watch(audioPlayerProvider.select((s) => s.loopMode));
+
+                    return IconButton(
+                      tooltip: loopMode == PlaylistMode.single
+                          ? context.l10n.loop_track
+                          : loopMode == PlaylistMode.loop
+                              ? context.l10n.repeat_playlist
+                              : null,
+                      icon: Icon(
+                        loopMode == PlaylistMode.single
+                            ? SpotubeIcons.repeatOne
+                            : SpotubeIcons.repeat,
+                      ),
+                      style: loopMode == PlaylistMode.single ||
+                              loopMode == PlaylistMode.loop
+                          ? activeButtonStyle
+                          : buttonStyle,
+                      onPressed: isFetchingActiveTrack
+                          ? null
+                          : () async {
+                              await audioPlayer.setLoopMode(
+                                switch (loopMode) {
+                                  PlaylistMode.loop => PlaylistMode.single,
+                                  PlaylistMode.single => PlaylistMode.none,
+                                  PlaylistMode.none => PlaylistMode.loop,
                                 },
-                        );
-                      }),
+                              );
+                            },
+                    );
+                  }),
                 ],
               ),
               const SizedBox(height: 5)

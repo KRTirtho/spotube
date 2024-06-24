@@ -131,13 +131,13 @@ class SiblingTracksSheet extends HookConsumerWidget {
     ]);
 
     final siblings = useMemoized(
-      () => isFetchingActiveTrack
+      () => !isFetchingActiveTrack
           ? [
               (activeTrack as SourcedTrack).sourceInfo,
               ...activeTrack.siblings,
             ]
           : <SourceInfo>[],
-      [activeTrack],
+      [activeTrack, isFetchingActiveTrack],
     );
 
     final borderRadius = floating
