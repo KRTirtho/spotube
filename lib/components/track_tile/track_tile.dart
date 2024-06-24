@@ -17,7 +17,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 
@@ -84,191 +84,190 @@ class TrackTile extends HookConsumerWidget {
         },
         child: HoverBuilder(
           permanentState: isSelected || constrains.smAndDown ? true : null,
-          builder: (context, isHovering) {
-            return ListTile(
-              selected: isSelected,
-              onTap: () async {
-                try {
-                  isLoading.value = true;
-                  await onTap?.call();
-                } finally {
-                  if (context.mounted) {
-                    isLoading.value = false;
-                  }
+          builder: (context, isHovering) => ListTile(
+            selected: isSelected,
+            onTap: () async {
+              try {
+                isLoading.value = true;
+                await onTap?.call();
+              } finally {
+                if (context.mounted) {
+                  isLoading.value = false;
                 }
-              },
-              onLongPress: onLongPress,
-              enabled: !isBlackListed,
-              contentPadding: EdgeInsets.zero,
-              tileColor:
-                  isBlackListed ? theme.colorScheme.errorContainer : null,
-              horizontalTitleGap: 12,
-              leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
-              leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...?leadingActions,
-                  if (index != null && onChanged == null && constrains.mdAndUp)
-                    SizedBox(
-                      width: 50,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: Text(
-                          '${(index ?? 0) + 1}',
-                          maxLines: 1,
-                          style: theme.textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
+              }
+            },
+            onLongPress: onLongPress,
+            enabled: !isBlackListed,
+            contentPadding: EdgeInsets.zero,
+            tileColor: isBlackListed ? theme.colorScheme.errorContainer : null,
+            horizontalTitleGap: 12,
+            leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...?leadingActions,
+                if (index != null && onChanged == null && constrains.mdAndUp)
+                  SizedBox(
+                    width: 50,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Text(
+                        '${(index ?? 0) + 1}',
+                        maxLines: 1,
+                        style: theme.textTheme.bodySmall,
+                        textAlign: TextAlign.center,
                       ),
-                    )
-                  else if (constrains.smAndDown)
-                    const SizedBox(width: 16),
-                  if (onChanged != null)
-                    Checkbox(
-                      value: selected,
-                      onChanged: onChanged,
                     ),
-                  Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: UniversalImage(
-                            path: (track.album?.images).asUrlString(
-                              placeholder: ImagePlaceholder.albumArt,
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: isHovering
-                                ? Colors.black.withOpacity(0.4)
-                                : Colors.transparent,
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Center(
-                          child: IconTheme(
-                            data: theme.iconTheme
-                                .copyWith(size: 26, color: Colors.white),
-                            child: Skeleton.ignore(
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                child: (isPlaying &&
-                                            ref
-                                                .watch(audioPlayerProvider
-                                                    .notifier)
-                                                .isFetching()) ||
-                                        isLoading.value
-                                    ? const SizedBox(
-                                        width: 26,
-                                        height: 26,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 1.5,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : isPlaying
-                                        ? Icon(
-                                            SpotubeIcons.pause,
-                                            color: theme.colorScheme.primary,
-                                          )
-                                        : !isHovering
-                                            ? const SizedBox.shrink()
-                                            : const Icon(SpotubeIcons.play),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  )
+                else if (constrains.smAndDown)
+                  const SizedBox(width: 16),
+                if (onChanged != null)
+                  Checkbox(
+                    value: selected,
+                    onChanged: onChanged,
                   ),
-                ],
-              ),
-              title: Row(
-                children: [
-                  Expanded(
-                    flex: 6,
-                    child: switch (track) {
-                      LocalTrack() => Text(
-                          track.name!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      _ => LinkText(
-                          track.name!,
-                          "/track/${track.id}",
-                          push: true,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    },
-                  ),
-                  if (constrains.mdAndUp) ...[
-                    const SizedBox(width: 8),
-                    Expanded(
-                      flex: 4,
-                      child: switch (track) {
-                        LocalTrack() => Text(
-                            track.album!.name!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: UniversalImage(
+                          path: (track.album?.images).asUrlString(
+                            placeholder: ImagePlaceholder.albumArt,
                           ),
-                        _ => Align(
-                            alignment: Alignment.centerLeft,
-                            child: LinkText(
-                              track.album!.name!,
-                              "/album/${track.album?.id}",
-                              extra: track.album,
-                              push: true,
-                              overflow: TextOverflow.ellipsis,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: isHovering
+                              ? Colors.black.withOpacity(0.4)
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Center(
+                        child: IconTheme(
+                          data: theme.iconTheme
+                              .copyWith(size: 26, color: Colors.white),
+                          child: Skeleton.ignore(
+                            child: Consumer(
+                              builder: (context, ref, _) {
+                                final isFetchingActiveTrack =
+                                    ref.watch(queryingTrackInfoProvider);
+                                return AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: (isPlaying && isFetchingActiveTrack) ||
+                                          isLoading.value
+                                      ? const SizedBox(
+                                          width: 26,
+                                          height: 26,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 1.5,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : isPlaying
+                                          ? Icon(
+                                              SpotubeIcons.pause,
+                                              color: theme.colorScheme.primary,
+                                            )
+                                          : !isHovering
+                                              ? const SizedBox.shrink()
+                                              : const Icon(SpotubeIcons.play),
+                                );
+                              },
                             ),
-                          )
-                      },
+                          ),
+                        ),
+                      ),
                     ),
                   ],
-                ],
-              ),
-              subtitle: Align(
-                alignment: Alignment.centerLeft,
-                child: track is LocalTrack
-                    ? Text(
-                        track.artists?.asString() ?? '',
-                      )
-                    : ClipRect(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 40),
-                          child: ArtistLink(artists: track.artists ?? []),
-                        ),
+                ),
+              ],
+            ),
+            title: Row(
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: switch (track) {
+                    LocalTrack() => Text(
+                        track.name!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+                    _ => LinkText(
+                        track.name!,
+                        "/track/${track.id}",
+                        push: true,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                  },
+                ),
+                if (constrains.mdAndUp) ...[
                   const SizedBox(width: 8),
-                  Text(
-                    Duration(milliseconds: track.durationMs ?? 0)
-                        .toHumanReadableString(padZero: false),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  TrackOptions(
-                    track: track,
-                    playlistId: playlistId,
-                    userPlaylist: userPlaylist,
-                    showMenuCbRef: showOptionCbRef,
+                  Expanded(
+                    flex: 4,
+                    child: switch (track) {
+                      LocalTrack() => Text(
+                          track.album!.name!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      _ => Align(
+                          alignment: Alignment.centerLeft,
+                          child: LinkText(
+                            track.album!.name!,
+                            "/album/${track.album?.id}",
+                            extra: track.album,
+                            push: true,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                    },
                   ),
                 ],
-              ),
-            );
-          },
+              ],
+            ),
+            subtitle: Align(
+              alignment: Alignment.centerLeft,
+              child: track is LocalTrack
+                  ? Text(
+                      track.artists?.asString() ?? '',
+                    )
+                  : ClipRect(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 40),
+                        child: ArtistLink(artists: track.artists ?? []),
+                      ),
+                    ),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: 8),
+                Text(
+                  Duration(milliseconds: track.durationMs ?? 0)
+                      .toHumanReadableString(padZero: false),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                TrackOptions(
+                  track: track,
+                  playlistId: playlistId,
+                  userPlaylist: userPlaylist,
+                  showMenuCbRef: showOptionCbRef,
+                ),
+              ],
+            ),
+          ),
         ),
       );
     });

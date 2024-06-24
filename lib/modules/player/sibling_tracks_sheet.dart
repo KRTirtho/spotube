@@ -16,6 +16,7 @@ import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -54,7 +55,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final playlist = ref.watch(audioPlayerProvider);
-    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
     final preferences = ref.watch(userPreferencesProvider);
 
     final isSearching = useState(false);
@@ -130,7 +131,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     ]);
 
     final siblings = useMemoized(
-      () => playlistNotifier.isFetching()
+      () => isFetchingActiveTrack
           ? [
               (activeTrack as SourcedTrack).sourceInfo,
               ...activeTrack.siblings,
@@ -176,12 +177,12 @@ class SiblingTracksSheet extends HookConsumerWidget {
               Text(" • ${sourceInfo.artist}"),
             ],
           ),
-          enabled: !playlistNotifier.isFetching(),
-          selected: !playlistNotifier.isFetching() &&
+          enabled: !isFetchingActiveTrack,
+          selected: !isFetchingActiveTrack &&
               sourceInfo.id == (activeTrack as SourcedTrack).sourceInfo.id,
           selectedTileColor: theme.popupMenuTheme.color,
           onTap: () {
-            if (!playlistNotifier.isFetching() &&
+            if (!isFetchingActiveTrack &&
                 sourceInfo.id != (activeTrack as SourcedTrack).sourceInfo.id) {
               activeTrackNotifier.swapSibling(sourceInfo);
               Navigator.of(context).pop();

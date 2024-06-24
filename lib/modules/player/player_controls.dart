@@ -11,7 +11,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/modules/player/use_progress.dart';
 import 'package:spotube/models/logger.dart';
-import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 class PlayerControls extends HookConsumerWidget {
@@ -43,8 +43,7 @@ class PlayerControls extends HookConsumerWidget {
               SeekIntent: SeekAction(),
             },
         []);
-    ref.watch(audioPlayerProvider);
-    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
 
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
@@ -132,7 +131,7 @@ class PlayerControls extends HookConsumerWidget {
                             // than total duration. Keeping it resolved
                             value: progress.value.toDouble(),
                             secondaryTrackValue: bufferProgress,
-                            onChanged: playlistNotifier.isFetching()
+                            onChanged: isFetchingActiveTrack
                                 ? null
                                 : (v) {
                                     progress.value = v;
@@ -183,7 +182,7 @@ class PlayerControls extends HookConsumerWidget {
                               : context.l10n.shuffle_playlist,
                           icon: const Icon(SpotubeIcons.shuffle),
                           style: shuffled ? activeButtonStyle : buttonStyle,
-                          onPressed: playlistNotifier.isFetching()
+                          onPressed: isFetchingActiveTrack
                               ? null
                               : () {
                                   if (shuffled) {
@@ -198,7 +197,7 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: context.l10n.previous_track,
                     icon: const Icon(SpotubeIcons.skipBack),
                     style: buttonStyle,
-                    onPressed: playlistNotifier.isFetching()
+                    onPressed: isFetchingActiveTrack
                         ? null
                         : audioPlayer.skipToPrevious,
                   ),
@@ -206,7 +205,7 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: playing
                         ? context.l10n.pause_playback
                         : context.l10n.resume_playback,
-                    icon: playlistNotifier.isFetching()
+                    icon: isFetchingActiveTrack
                         ? SizedBox(
                             height: 20,
                             width: 20,
@@ -219,7 +218,7 @@ class PlayerControls extends HookConsumerWidget {
                             playing ? SpotubeIcons.pause : SpotubeIcons.play,
                           ),
                     style: resumePauseStyle,
-                    onPressed: playlistNotifier.isFetching()
+                    onPressed: isFetchingActiveTrack
                         ? null
                         : Actions.handler<PlayPauseIntent>(
                             context,
@@ -230,9 +229,8 @@ class PlayerControls extends HookConsumerWidget {
                     tooltip: context.l10n.next_track,
                     icon: const Icon(SpotubeIcons.skipForward),
                     style: buttonStyle,
-                    onPressed: playlistNotifier.isFetching()
-                        ? null
-                        : audioPlayer.skipToNext,
+                    onPressed:
+                        isFetchingActiveTrack ? null : audioPlayer.skipToNext,
                   ),
                   StreamBuilder<PlaylistMode>(
                       stream: audioPlayer.loopModeStream,
@@ -253,7 +251,7 @@ class PlayerControls extends HookConsumerWidget {
                                   loopMode == PlaylistMode.loop
                               ? activeButtonStyle
                               : buttonStyle,
-                          onPressed: playlistNotifier.isFetching()
+                          onPressed: isFetchingActiveTrack
                               ? null
                               : () async {
                                   await audioPlayer.setLoopMode(loopMode);

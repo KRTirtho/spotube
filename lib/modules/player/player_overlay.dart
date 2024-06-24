@@ -12,6 +12,7 @@ import 'package:spotube/collections/intents.dart';
 import 'package:spotube/modules/player/use_progress.dart';
 import 'package:spotube/modules/player/player.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 class PlayerOverlay extends HookConsumerWidget {
@@ -24,7 +25,7 @@ class PlayerOverlay extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
     final playlist = ref.watch(audioPlayerProvider);
     final canShow = playlist.activeTrack != null;
 
@@ -127,14 +128,14 @@ class PlayerOverlay extends HookConsumerWidget {
                                   SpotubeIcons.skipBack,
                                   color: textColor,
                                 ),
-                                onPressed: playlistNotifier.isFetching()
+                                onPressed: isFetchingActiveTrack
                                     ? null
                                     : audioPlayer.skipToPrevious,
                               ),
                               Consumer(
                                 builder: (context, ref, _) {
                                   return IconButton(
-                                    icon: playlistNotifier.isFetching()
+                                    icon: isFetchingActiveTrack
                                         ? const SizedBox(
                                             height: 20,
                                             width: 20,
@@ -158,7 +159,7 @@ class PlayerOverlay extends HookConsumerWidget {
                                   SpotubeIcons.skipForward,
                                   color: textColor,
                                 ),
-                                onPressed: playlistNotifier.isFetching()
+                                onPressed: isFetchingActiveTrack
                                     ? null
                                     : audioPlayer.skipToNext,
                               ),

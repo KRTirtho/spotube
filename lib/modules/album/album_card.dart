@@ -10,6 +10,7 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -35,6 +36,7 @@ class AlbumCard extends HookConsumerWidget {
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
     final historyNotifier = ref.read(playbackHistoryProvider.notifier);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
 
     bool isPlaylistPlaying = useMemoized(
       () => playlist.containsCollection(album.id!),
@@ -59,8 +61,8 @@ class AlbumCard extends HookConsumerWidget {
         ),
         margin: const EdgeInsets.symmetric(horizontal: 10),
         isPlaying: isPlaylistPlaying,
-        isLoading: (isPlaylistPlaying && playlistNotifier.isFetching()) ||
-            updating.value,
+        isLoading:
+            (isPlaylistPlaying && isFetchingActiveTrack) || updating.value,
         title: album.name!,
         description:
             "${album.albumType?.formatted} • ${album.artists?.asString() ?? ""}",

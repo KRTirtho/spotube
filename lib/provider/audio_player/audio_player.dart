@@ -299,11 +299,6 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     await audioPlayer.moveTrack(oldIndex, newIndex);
   }
 
-  bool isFetching() {
-    if (state.activeTrack == null) return false;
-    return ref.read(sourcedTrackProvider(state.activeTrack!)).isLoading;
-  }
-
   Future<void> stop() async {
     await audioPlayer.stop();
     ref.read(discordProvider.notifier).clear();
