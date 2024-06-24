@@ -15,7 +15,7 @@ import 'package:spotube/hooks/utils/use_force_update.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -31,7 +31,7 @@ class MiniLyricsPage extends HookConsumerWidget {
     final update = useForceUpdate();
     final wasMaximized = useRef<bool>(false);
 
-    final playlistQueue = ref.watch(proxyPlaylistProvider);
+    final playlistQueue = ref.watch(audioPlayerProvider);
 
     final areaActive = useState(false);
     final hoverMode = useState(true);
@@ -230,14 +230,13 @@ class MiniLyricsPage extends HookConsumerWidget {
                                 builder: (context) {
                                   return Consumer(builder: (context, ref, _) {
                                     final playlist =
-                                        ref.watch(proxyPlaylistProvider);
+                                        ref.watch(audioPlayerProvider);
 
-                                    return PlayerQueue
-                                        .fromProxyPlaylistNotifier(
+                                    return PlayerQueue.fromAudioPlayerNotifier(
                                       floating: true,
                                       playlist: playlist,
                                       notifier: ref
-                                          .read(proxyPlaylistProvider.notifier),
+                                          .read(audioPlayerProvider.notifier),
                                     );
                                   });
                                 },

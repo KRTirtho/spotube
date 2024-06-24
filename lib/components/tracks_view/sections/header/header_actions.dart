@@ -11,7 +11,7 @@ import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 
 class TrackViewHeaderActions extends HookConsumerWidget {
   const TrackViewHeaderActions({super.key});
@@ -20,8 +20,8 @@ class TrackViewHeaderActions extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final props = InheritedTrackView.of(context);
 
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
     final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
 
     final isActive = playlist.collections.contains(props.collectionId);
@@ -73,7 +73,7 @@ class TrackViewHeaderActions extends HookConsumerWidget {
                   }
                 },
         ),
-        if (props.onHeart != null && auth != null)
+        if (props.onHeart != null && auth.asData?.value != null)
           HeartButton(
             isLiked: props.isLiked,
             icon: isUserPlaylist ? SpotubeIcons.trash : null,

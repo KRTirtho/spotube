@@ -3,9 +3,9 @@ part of '../database.dart';
 class AudioPlayerStateTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   BoolColumn get playing => boolean()();
-  RealColumn get volume => real()();
   TextColumn get loopMode => textEnum<PlaylistMode>()();
   BoolColumn get shuffled => boolean()();
+  TextColumn get collections => text().map(const StringListConverter())();
 }
 
 class PlaylistTable extends Table {

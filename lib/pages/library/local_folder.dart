@@ -17,7 +17,7 @@ import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LocalLibraryPage extends HookConsumerWidget {
@@ -32,8 +32,8 @@ class LocalLibraryPage extends HookConsumerWidget {
     List<LocalTrack> tracks, {
     LocalTrack? currentTrack,
   }) async {
-    final playlist = ref.read(proxyPlaylistProvider);
-    final playback = ref.read(proxyPlaylistProvider.notifier);
+    final playlist = ref.read(audioPlayerProvider);
+    final playback = ref.read(audioPlayerProvider.notifier);
     currentTrack ??= tracks.first;
     final isPlaylistPlaying = playlist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
@@ -52,7 +52,7 @@ class LocalLibraryPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying = playlist.containsTracks(
         trackSnapshot.asData?.value.values.flattened.toList() ?? []);

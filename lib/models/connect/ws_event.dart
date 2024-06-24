@@ -325,12 +325,12 @@ class WebSocketErrorEvent extends WebSocketEvent<String> {
   WebSocketErrorEvent(String data) : super(WsEvent.error, data);
 }
 
-class WebSocketQueueEvent extends WebSocketEvent<ProxyPlaylist> {
-  WebSocketQueueEvent(ProxyPlaylist data) : super(WsEvent.queue, data);
+class WebSocketQueueEvent extends WebSocketEvent<AudioPlayerState> {
+  WebSocketQueueEvent(AudioPlayerState data) : super(WsEvent.queue, data);
 
   factory WebSocketQueueEvent.fromJson(Map<String, dynamic> json) =>
       WebSocketQueueEvent(
-        ProxyPlaylist.fromJsonRaw(json),
+        AudioPlayerState.fromJson(json),
       );
 }
 

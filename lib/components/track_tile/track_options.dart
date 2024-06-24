@@ -24,7 +24,7 @@ import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
@@ -96,8 +96,8 @@ class TrackOptions extends HookConsumerWidget {
     WidgetRef ref,
     Track track,
   ) async {
-    final playback = ref.read(proxyPlaylistProvider.notifier);
-    final playlist = ref.read(proxyPlaylistProvider);
+    final playback = ref.read(audioPlayerProvider.notifier);
+    final playlist = ref.read(audioPlayerProvider);
     final spotify = ref.read(spotifyProvider);
     final query = "${track.name} Radio";
     final pages =
@@ -160,8 +160,8 @@ class TrackOptions extends HookConsumerWidget {
     final router = GoRouter.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
 
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final playback = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
+    final playback = ref.watch(audioPlayerProvider.notifier);
     final auth = ref.watch(authenticationProvider);
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
@@ -364,7 +364,7 @@ class TrackOptions extends HookConsumerWidget {
                   : context.l10n.save_as_favorite,
             ),
           ),
-        if (auth != null && !isLocalTrack) ...[
+        if (auth.asData?.value != null && !isLocalTrack) ...[
           PopSheetEntry(
             value: TrackOptionValue.startRadio,
             leading: const Icon(SpotubeIcons.radio),
@@ -376,7 +376,7 @@ class TrackOptions extends HookConsumerWidget {
             title: Text(context.l10n.add_to_playlist),
           ),
         ],
-        if (userPlaylist && auth != null && !isLocalTrack)
+        if (userPlaylist && auth.asData?.value != null && !isLocalTrack)
           PopSheetEntry(
             value: TrackOptionValue.removeFromPlaylist,
             leading: const Icon(SpotubeIcons.removeFilled),

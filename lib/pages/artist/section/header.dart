@@ -135,7 +135,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (auth != null)
+                        if (auth.asData?.value != null)
                           Consumer(
                             builder: (context, ref, _) {
                               final isFollowingQuery = ref

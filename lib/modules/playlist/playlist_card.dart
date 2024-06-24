@@ -9,7 +9,7 @@ import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -22,8 +22,8 @@ class PlaylistCard extends HookConsumerWidget {
   });
   @override
   Widget build(BuildContext context, ref) {
-    final playlistQueue = ref.watch(proxyPlaylistProvider);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlistQueue = ref.watch(audioPlayerProvider);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
     final historyNotifier = ref.read(playbackHistoryProvider.notifier);
 
     final playing =
@@ -65,8 +65,8 @@ class PlaylistCard extends HookConsumerWidget {
         placeholder: ImagePlaceholder.collection,
       ),
       isPlaying: isPlaylistPlaying,
-      isLoading:
-          (isPlaylistPlaying && playlistQueue.isFetching) || updating.value,
+      isLoading: (isPlaylistPlaying && playlistNotifier.isFetching()) ||
+          updating.value,
       isOwner: playlist.owner?.id == me.asData?.value.id &&
           me.asData?.value.id != null,
       onTap: () {

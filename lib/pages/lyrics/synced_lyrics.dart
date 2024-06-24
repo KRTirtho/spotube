@@ -12,7 +12,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
 import 'package:spotube/modules/lyrics/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -32,7 +32,7 @@ class SyncedLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
 
     final mediaQuery = MediaQuery.of(context);
     final controller = useAutoScrollController();
@@ -54,7 +54,7 @@ class SyncedLyrics extends HookConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     ref.listen(
-      proxyPlaylistProvider.select((s) => s.activeTrack),
+      audioPlayerProvider.select((s) => s.activeTrack),
       (previous, next) {
         controller.scrollToIndex(0);
         ref.read(syncedLyricsDelayProvider.notifier).state = 0;

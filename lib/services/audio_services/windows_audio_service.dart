@@ -5,18 +5,18 @@ import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
 
 class WindowsAudioService {
   final SMTCWindows smtc;
   final Ref ref;
-  final ProxyPlaylistNotifier playlistNotifier;
+  final AudioPlayerNotifier audioPlayerNotifier;
 
   final subscriptions = <StreamSubscription>[];
 
-  WindowsAudioService(this.ref, this.playlistNotifier)
+  WindowsAudioService(this.ref, this.audioPlayerNotifier)
       : smtc = SMTCWindows(enabled: false) {
     smtc.setPlaybackStatus(PlaybackStatus.Stopped);
     final buttonStream = smtc.buttonPressStream.listen((event) {
@@ -28,13 +28,13 @@ class WindowsAudioService {
           audioPlayer.pause();
           break;
         case PressedButton.next:
-          playlistNotifier.next();
+          audioPlayer.skipToNext();
           break;
         case PressedButton.previous:
-          playlistNotifier.previous();
+          audioPlayer.skipToPrevious();
           break;
         case PressedButton.stop:
-          playlistNotifier.stop();
+          audioPlayerNotifier.stop();
           break;
         default:
           break;

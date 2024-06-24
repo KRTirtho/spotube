@@ -18,12 +18,12 @@ import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/state.dart';
 
 class PlayerQueue extends HookConsumerWidget {
   final bool floating;
-  final ProxyPlaylist playlist;
+  final AudioPlayerState playlist;
 
   final Future<void> Function(Track track) onJump;
   final Future<void> Function(String trackId) onRemove;
@@ -40,10 +40,10 @@ class PlayerQueue extends HookConsumerWidget {
     super.key,
   });
 
-  PlayerQueue.fromProxyPlaylistNotifier({
+  PlayerQueue.fromAudioPlayerNotifier({
     this.floating = true,
     required this.playlist,
-    required ProxyPlaylistNotifier notifier,
+    required AudioPlayerNotifier notifier,
     super.key,
   })  : onJump = notifier.jumpToTrack,
         onRemove = notifier.removeTrack,
@@ -93,11 +93,10 @@ class PlayerQueue extends HookConsumerWidget {
     );
 
     useEffect(() {
-      if (playlist.active == null) return null;
+      if (playlist.activeTrack == null) return null;
 
-      if (playlist.active! < 0) return;
       controller.scrollToIndex(
-        playlist.active!,
+        playlist.playlist.index,
         preferPosition: AutoScrollPosition.middle,
       );
       return null;

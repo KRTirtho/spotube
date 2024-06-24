@@ -6,10 +6,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/palette_provider.dart';
-import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/platform.dart';
@@ -115,7 +114,7 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     if (!sync) {
       ref.read(paletteProvider.notifier).state = null;
     } else {
-      ref.read(proxyPlaylistProvider.notifier).updatePalette();
+      ref.read(audioPlayerStreamListenersProvider).updatePalette();
     }
   }
 

@@ -1,19 +1,53 @@
-// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-
 import 'dart:async';
 
-import 'package:spotube/services/logger/logger.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/state.dart';
+import 'package:spotube/provider/discord_provider.dart';
+import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/palette_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/proxy_playlist/skip_segments.dart';
+import 'package:spotube/provider/skip_segments/skip_segments.dart';
+import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_services/audio_services.dart';
+import 'package:spotube/services/logger/logger.dart';
 
-extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
+class AudioPlayerStreamListeners {
+  final Ref ref;
+  late final AudioServices notificationService;
+  AudioPlayerStreamListeners(this.ref) {
+    AudioServices.create(ref, ref.read(audioPlayerProvider.notifier)).then(
+      (value) => notificationService = value,
+    );
+
+    final subscriptions = [
+      subscribeToPlaylist(),
+      subscribeToSkipSponsor(),
+      subscribeToScrobbleChanged(),
+      subscribeToPosition(),
+      subscribeToPlayerError(),
+    ];
+
+    ref.onDispose(() {
+      for (final subscription in subscriptions) {
+        subscription.cancel();
+      }
+    });
+  }
+
+  ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
+  UserPreferences get preferences => ref.read(userPreferencesProvider);
+  Discord get discord => ref.read(discordProvider);
+  AudioPlayerState get audioPlayerState => ref.read(audioPlayerProvider);
+  PlaybackHistoryNotifier get history =>
+      ref.read(playbackHistoryProvider.notifier);
+
   Future<void> updatePalette() async {
     final palette = ref.read(paletteProvider);
     if (!preferences.albumColorSync) {
@@ -21,11 +55,12 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
       return;
     }
     return Future.microtask(() async {
-      if (playlist.activeTrack == null) return;
+      final activeTrack = ref.read(audioPlayerProvider).activeTrack;
+      if (activeTrack == null) return;
 
       final palette = await PaletteGenerator.fromImageProvider(
         UniversalImage.imageProvider(
-          (playlist.activeTrack?.album?.images).asUrlString(
+          (activeTrack.album?.images).asUrlString(
             placeholder: ImagePlaceholder.albumArt,
           ),
           height: 50,
@@ -38,15 +73,8 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
 
   StreamSubscription subscribeToPlaylist() {
     return audioPlayer.playlistStream.listen((mpvPlaylist) {
-      state = playlist.copyWith(
-        tracks: mpvPlaylist.medias
-            .map((media) => SpotubeMedia.fromMedia(media).track)
-            .toSet(),
-        active: mpvPlaylist.index,
-      );
-
-      notificationService.addTrack(playlist.activeTrack!);
-      discord.updatePresence(playlist.activeTrack!);
+      notificationService.addTrack(audioPlayerState.activeTrack!);
+      discord.updatePresence(audioPlayerState.activeTrack!);
       updatePalette();
     });
   }
@@ -72,18 +100,18 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
     String? lastScrobbled;
     return audioPlayer.positionStream.listen((position) {
       try {
-        final uid = playlist.activeTrack is LocalTrack
-            ? (playlist.activeTrack as LocalTrack).path
-            : playlist.activeTrack?.id;
+        final uid = audioPlayerState.activeTrack is LocalTrack
+            ? (audioPlayerState.activeTrack as LocalTrack).path
+            : audioPlayerState.activeTrack?.id;
 
-        if (playlist.activeTrack == null ||
+        if (audioPlayerState.activeTrack == null ||
             lastScrobbled == uid ||
             position.inSeconds < 30) {
           return;
         }
 
-        scrobbler.scrobble(playlist.activeTrack!);
-        history.addTrack(playlist.activeTrack!);
+        scrobbler.scrobble(audioPlayerState.activeTrack!);
+        history.addTrack(audioPlayerState.activeTrack!);
         lastScrobbled = uid;
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
@@ -95,9 +123,13 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
     String lastTrack = ""; // used to prevent multiple calls to the same track
     return audioPlayer.positionStream.listen((event) async {
       if (event < const Duration(seconds: 3) ||
-          playlist.active == null ||
-          playlist.active == playlist.tracks.length - 1) return;
-      final nextTrack = playlist.tracks.elementAt(playlist.active! + 1);
+          audioPlayerState.playlist.index == -1 ||
+          audioPlayerState.playlist.index ==
+              audioPlayerState.tracks.length - 1) {
+        return;
+      }
+      final nextTrack = audioPlayerState.tracks
+          .elementAt(audioPlayerState.playlist.index + 1);
 
       if (lastTrack == nextTrack.id || nextTrack is LocalTrack) return;
 
@@ -113,3 +145,6 @@ extension ProxyPlaylistListeners on ProxyPlaylistNotifier {
     return audioPlayer.errorStream.listen((event) {});
   }
 }
+
+final audioPlayerStreamListenersProvider =
+    Provider<AudioPlayerStreamListeners>(AudioPlayerStreamListeners.new);

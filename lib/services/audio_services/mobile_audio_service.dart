@@ -2,19 +2,19 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 
 class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
-  final ProxyPlaylistNotifier playlistNotifier;
+  final AudioPlayerNotifier audioPlayerNotifier;
 
   // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-  ProxyPlaylist get playlist => playlistNotifier.state;
+  AudioPlayerState get playlist => audioPlayerNotifier.state;
 
-  MobileAudioService(this.playlistNotifier) {
+  MobileAudioService(this.audioPlayerNotifier) {
     AudioSession.instance.then((s) {
       session = s;
       session?.configure(const AudioSessionConfiguration.music());
@@ -102,24 +102,24 @@ class MobileAudioService extends BaseAudioHandler {
 
   @override
   Future<void> stop() async {
-    await playlistNotifier.stop();
+    await audioPlayerNotifier.stop();
   }
 
   @override
   Future<void> skipToNext() async {
-    await playlistNotifier.next();
+    await audioPlayer.skipToNext();
     await super.skipToNext();
   }
 
   @override
   Future<void> skipToPrevious() async {
-    await playlistNotifier.previous();
+    await audioPlayer.skipToPrevious();
     await super.skipToPrevious();
   }
 
   @override
   Future<void> onTaskRemoved() async {
-    await playlistNotifier.stop();
+    await audioPlayerNotifier.stop();
     return super.onTaskRemoved();
   }
 
@@ -146,7 +146,7 @@ class MobileAudioService extends BaseAudioHandler {
         PlaylistMode.single => AudioServiceRepeatMode.one,
         _ => AudioServiceRepeatMode.none,
       },
-      processingState: playlist.isFetching == true
+      processingState: audioPlayer.isBuffering
           ? AudioProcessingState.loading
           : AudioProcessingState.ready,
     );

@@ -17,8 +17,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
@@ -30,7 +31,7 @@ class TrackTile extends HookConsumerWidget {
   final VoidCallback? onLongPress;
   final bool userPlaylist;
   final String? playlistId;
-  final ProxyPlaylist playlist;
+  final AudioPlayerState playlist;
 
   final List<Widget>? leadingActions;
 
@@ -160,7 +161,11 @@ class TrackTile extends HookConsumerWidget {
                             child: Skeleton.ignore(
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 300),
-                                child: (isPlaying && playlist.isFetching) ||
+                                child: (isPlaying &&
+                                            ref
+                                                .watch(audioPlayerProvider
+                                                    .notifier)
+                                                .isFetching()) ||
                                         isLoading.value
                                     ? const SizedBox(
                                         width: 26,

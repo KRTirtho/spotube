@@ -2599,11 +2599,6 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("playing" IN (0, 1))'));
-  static const VerificationMeta _volumeMeta = const VerificationMeta('volume');
-  @override
-  late final GeneratedColumn<double> volume = GeneratedColumn<double>(
-      'volume', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _loopModeMeta =
       const VerificationMeta('loopMode');
   @override
@@ -2621,9 +2616,17 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("shuffled" IN (0, 1))'));
+  static const VerificationMeta _collectionsMeta =
+      const VerificationMeta('collections');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      collections = GeneratedColumn<String>('collections', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<String>>(
+              $AudioPlayerStateTableTable.$convertercollections);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, playing, volume, loopMode, shuffled];
+      [id, playing, loopMode, shuffled, collections];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2644,12 +2647,6 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
     } else if (isInserting) {
       context.missing(_playingMeta);
     }
-    if (data.containsKey('volume')) {
-      context.handle(_volumeMeta,
-          volume.isAcceptableOrUnknown(data['volume']!, _volumeMeta));
-    } else if (isInserting) {
-      context.missing(_volumeMeta);
-    }
     context.handle(_loopModeMeta, const VerificationResult.success());
     if (data.containsKey('shuffled')) {
       context.handle(_shuffledMeta,
@@ -2657,6 +2654,7 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
     } else if (isInserting) {
       context.missing(_shuffledMeta);
     }
+    context.handle(_collectionsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2671,13 +2669,14 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       playing: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}playing'])!,
-      volume: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}volume'])!,
       loopMode: $AudioPlayerStateTableTable.$converterloopMode.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.string, data['${effectivePrefix}loop_mode'])!),
       shuffled: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}shuffled'])!,
+      collections: $AudioPlayerStateTableTable.$convertercollections.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}collections'])!),
     );
   }
 
@@ -2688,32 +2687,37 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
 
   static JsonTypeConverter2<PlaylistMode, String, String> $converterloopMode =
       const EnumNameConverter<PlaylistMode>(PlaylistMode.values);
+  static TypeConverter<List<String>, String> $convertercollections =
+      const StringListConverter();
 }
 
 class AudioPlayerStateTableData extends DataClass
     implements Insertable<AudioPlayerStateTableData> {
   final int id;
   final bool playing;
-  final double volume;
   final PlaylistMode loopMode;
   final bool shuffled;
+  final List<String> collections;
   const AudioPlayerStateTableData(
       {required this.id,
       required this.playing,
-      required this.volume,
       required this.loopMode,
-      required this.shuffled});
+      required this.shuffled,
+      required this.collections});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['playing'] = Variable<bool>(playing);
-    map['volume'] = Variable<double>(volume);
     {
       map['loop_mode'] = Variable<String>(
           $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode));
     }
     map['shuffled'] = Variable<bool>(shuffled);
+    {
+      map['collections'] = Variable<String>(
+          $AudioPlayerStateTableTable.$convertercollections.toSql(collections));
+    }
     return map;
   }
 
@@ -2721,9 +2725,9 @@ class AudioPlayerStateTableData extends DataClass
     return AudioPlayerStateTableCompanion(
       id: Value(id),
       playing: Value(playing),
-      volume: Value(volume),
       loopMode: Value(loopMode),
       shuffled: Value(shuffled),
+      collections: Value(collections),
     );
   }
 
@@ -2733,10 +2737,10 @@ class AudioPlayerStateTableData extends DataClass
     return AudioPlayerStateTableData(
       id: serializer.fromJson<int>(json['id']),
       playing: serializer.fromJson<bool>(json['playing']),
-      volume: serializer.fromJson<double>(json['volume']),
       loopMode: $AudioPlayerStateTableTable.$converterloopMode
           .fromJson(serializer.fromJson<String>(json['loopMode'])),
       shuffled: serializer.fromJson<bool>(json['shuffled']),
+      collections: serializer.fromJson<List<String>>(json['collections']),
     );
   }
   @override
@@ -2745,103 +2749,103 @@ class AudioPlayerStateTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'playing': serializer.toJson<bool>(playing),
-      'volume': serializer.toJson<double>(volume),
       'loopMode': serializer.toJson<String>(
           $AudioPlayerStateTableTable.$converterloopMode.toJson(loopMode)),
       'shuffled': serializer.toJson<bool>(shuffled),
+      'collections': serializer.toJson<List<String>>(collections),
     };
   }
 
   AudioPlayerStateTableData copyWith(
           {int? id,
           bool? playing,
-          double? volume,
           PlaylistMode? loopMode,
-          bool? shuffled}) =>
+          bool? shuffled,
+          List<String>? collections}) =>
       AudioPlayerStateTableData(
         id: id ?? this.id,
         playing: playing ?? this.playing,
-        volume: volume ?? this.volume,
         loopMode: loopMode ?? this.loopMode,
         shuffled: shuffled ?? this.shuffled,
+        collections: collections ?? this.collections,
       );
   @override
   String toString() {
     return (StringBuffer('AudioPlayerStateTableData(')
           ..write('id: $id, ')
           ..write('playing: $playing, ')
-          ..write('volume: $volume, ')
           ..write('loopMode: $loopMode, ')
-          ..write('shuffled: $shuffled')
+          ..write('shuffled: $shuffled, ')
+          ..write('collections: $collections')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, playing, volume, loopMode, shuffled);
+  int get hashCode => Object.hash(id, playing, loopMode, shuffled, collections);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is AudioPlayerStateTableData &&
           other.id == this.id &&
           other.playing == this.playing &&
-          other.volume == this.volume &&
           other.loopMode == this.loopMode &&
-          other.shuffled == this.shuffled);
+          other.shuffled == this.shuffled &&
+          other.collections == this.collections);
 }
 
 class AudioPlayerStateTableCompanion
     extends UpdateCompanion<AudioPlayerStateTableData> {
   final Value<int> id;
   final Value<bool> playing;
-  final Value<double> volume;
   final Value<PlaylistMode> loopMode;
   final Value<bool> shuffled;
+  final Value<List<String>> collections;
   const AudioPlayerStateTableCompanion({
     this.id = const Value.absent(),
     this.playing = const Value.absent(),
-    this.volume = const Value.absent(),
     this.loopMode = const Value.absent(),
     this.shuffled = const Value.absent(),
+    this.collections = const Value.absent(),
   });
   AudioPlayerStateTableCompanion.insert({
     this.id = const Value.absent(),
     required bool playing,
-    required double volume,
     required PlaylistMode loopMode,
     required bool shuffled,
+    required List<String> collections,
   })  : playing = Value(playing),
-        volume = Value(volume),
         loopMode = Value(loopMode),
-        shuffled = Value(shuffled);
+        shuffled = Value(shuffled),
+        collections = Value(collections);
   static Insertable<AudioPlayerStateTableData> custom({
     Expression<int>? id,
     Expression<bool>? playing,
-    Expression<double>? volume,
     Expression<String>? loopMode,
     Expression<bool>? shuffled,
+    Expression<String>? collections,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (playing != null) 'playing': playing,
-      if (volume != null) 'volume': volume,
       if (loopMode != null) 'loop_mode': loopMode,
       if (shuffled != null) 'shuffled': shuffled,
+      if (collections != null) 'collections': collections,
     });
   }
 
   AudioPlayerStateTableCompanion copyWith(
       {Value<int>? id,
       Value<bool>? playing,
-      Value<double>? volume,
       Value<PlaylistMode>? loopMode,
-      Value<bool>? shuffled}) {
+      Value<bool>? shuffled,
+      Value<List<String>>? collections}) {
     return AudioPlayerStateTableCompanion(
       id: id ?? this.id,
       playing: playing ?? this.playing,
-      volume: volume ?? this.volume,
       loopMode: loopMode ?? this.loopMode,
       shuffled: shuffled ?? this.shuffled,
+      collections: collections ?? this.collections,
     );
   }
 
@@ -2854,15 +2858,17 @@ class AudioPlayerStateTableCompanion
     if (playing.present) {
       map['playing'] = Variable<bool>(playing.value);
     }
-    if (volume.present) {
-      map['volume'] = Variable<double>(volume.value);
-    }
     if (loopMode.present) {
       map['loop_mode'] = Variable<String>(
           $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode.value));
     }
     if (shuffled.present) {
       map['shuffled'] = Variable<bool>(shuffled.value);
+    }
+    if (collections.present) {
+      map['collections'] = Variable<String>($AudioPlayerStateTableTable
+          .$convertercollections
+          .toSql(collections.value));
     }
     return map;
   }
@@ -2872,9 +2878,9 @@ class AudioPlayerStateTableCompanion
     return (StringBuffer('AudioPlayerStateTableCompanion(')
           ..write('id: $id, ')
           ..write('playing: $playing, ')
-          ..write('volume: $volume, ')
           ..write('loopMode: $loopMode, ')
-          ..write('shuffled: $shuffled')
+          ..write('shuffled: $shuffled, ')
+          ..write('collections: $collections')
           ..write(')'))
         .toString();
   }
@@ -4591,17 +4597,17 @@ typedef $$AudioPlayerStateTableTableInsertCompanionBuilder
     = AudioPlayerStateTableCompanion Function({
   Value<int> id,
   required bool playing,
-  required double volume,
   required PlaylistMode loopMode,
   required bool shuffled,
+  required List<String> collections,
 });
 typedef $$AudioPlayerStateTableTableUpdateCompanionBuilder
     = AudioPlayerStateTableCompanion Function({
   Value<int> id,
   Value<bool> playing,
-  Value<double> volume,
   Value<PlaylistMode> loopMode,
   Value<bool> shuffled,
+  Value<List<String>> collections,
 });
 
 class $$AudioPlayerStateTableTableTableManager extends RootTableManager<
@@ -4627,30 +4633,30 @@ class $$AudioPlayerStateTableTableTableManager extends RootTableManager<
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<bool> playing = const Value.absent(),
-            Value<double> volume = const Value.absent(),
             Value<PlaylistMode> loopMode = const Value.absent(),
             Value<bool> shuffled = const Value.absent(),
+            Value<List<String>> collections = const Value.absent(),
           }) =>
               AudioPlayerStateTableCompanion(
             id: id,
             playing: playing,
-            volume: volume,
             loopMode: loopMode,
             shuffled: shuffled,
+            collections: collections,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             required bool playing,
-            required double volume,
             required PlaylistMode loopMode,
             required bool shuffled,
+            required List<String> collections,
           }) =>
               AudioPlayerStateTableCompanion.insert(
             id: id,
             playing: playing,
-            volume: volume,
             loopMode: loopMode,
             shuffled: shuffled,
+            collections: collections,
           ),
         ));
 }
@@ -4681,11 +4687,6 @@ class $$AudioPlayerStateTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<double> get volume => $state.composableBuilder(
-      column: $state.table.volume,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
   ColumnWithTypeConverterFilters<PlaylistMode, PlaylistMode, String>
       get loopMode => $state.composableBuilder(
           column: $state.table.loopMode,
@@ -4697,6 +4698,13 @@ class $$AudioPlayerStateTableTableFilterComposer
       column: $state.table.shuffled,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get collections => $state.composableBuilder(
+          column: $state.table.collections,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 
   ComposableFilter playlistTableRefs(
       ComposableFilter Function($$PlaylistTableTableFilterComposer f) f) {
@@ -4725,11 +4733,6 @@ class $$AudioPlayerStateTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<double> get volume => $state.composableBuilder(
-      column: $state.table.volume,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
   ColumnOrderings<String> get loopMode => $state.composableBuilder(
       column: $state.table.loopMode,
       builder: (column, joinBuilders) =>
@@ -4737,6 +4740,11 @@ class $$AudioPlayerStateTableTableOrderingComposer
 
   ColumnOrderings<bool> get shuffled => $state.composableBuilder(
       column: $state.table.shuffled,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get collections => $state.composableBuilder(
+      column: $state.table.collections,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
