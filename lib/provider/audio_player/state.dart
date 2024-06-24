@@ -33,11 +33,13 @@ class AudioPlayerState {
       shuffled: json['shuffled'],
       playlist: Playlist(
         json['playlist']['medias']
-            .map((media) => Media(
-                  media['uri'],
-                  extras: media['extras'],
-                  httpHeaders: media['httpHeaders'],
-                ))
+            .map(
+              (media) => SpotubeMedia.fromMedia(Media(
+                media['uri'],
+                extras: media['extras'],
+                httpHeaders: media['httpHeaders'],
+              )),
+            )
             .toList(),
         index: json['playlist']['index'],
       ),

@@ -72,14 +72,18 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
           ],
         );
       });
-    } else {
+    } else if (medias.isNotEmpty) {
       await audioPlayer.openPlaylist(
         medias
-            .map((media) => Media(
+            .map(
+              (media) => SpotubeMedia.fromMedia(
+                Media(
                   media.uri,
                   extras: media.extras,
                   httpHeaders: media.httpHeaders,
-                ))
+                ),
+              ),
+            )
             .toList(),
         initialIndex: playlist.index,
       );

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
@@ -20,9 +19,11 @@ part 'audio_player_impl.dart';
 class SpotubeMedia extends mk.Media {
   final Track track;
 
+  static int serverPort = 0;
+
   SpotubeMedia(
     this.track, {
-    Map<String, String>? extras,
+    Map<String, dynamic>? extras,
     super.httpHeaders,
   }) : super(
           track is LocalTrack
@@ -38,11 +39,20 @@ class SpotubeMedia extends mk.Media {
           },
         );
 
+  @override
+  String get uri => track is LocalTrack
+      ? (track as LocalTrack).path
+      : "http://${InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}";
+
   factory SpotubeMedia.fromMedia(mk.Media media) {
     final track = media.uri.startsWith("http")
         ? Track.fromJson(media.extras?["track"])
         : LocalTrack.fromJson(media.extras?["track"]);
-    return SpotubeMedia(track);
+    return SpotubeMedia(
+      track,
+      extras: media.extras,
+      httpHeaders: media.httpHeaders,
+    );
   }
 }
 

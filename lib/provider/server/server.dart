@@ -5,15 +5,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:spotube/provider/server/pipeline.dart';
 import 'package:spotube/provider/server/router.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 
-int serverPort = 0;
 final serverProvider = FutureProvider(
   (ref) async {
     final pipeline = ref.watch(pipelineProvider);
     final router = ref.watch(serverRouterProvider);
+    final port = Random().nextInt(17500) + 5000;
 
-    final port = Random().nextInt(17000) + 1500;
+    SpotubeMedia.serverPort = port;
 
     final server = await serve(
       pipeline.addHandler(router.call),
@@ -27,8 +28,6 @@ final serverProvider = FutureProvider(
     ref.onDispose(() {
       server.close();
     });
-
-    serverPort = port;
 
     return (server: server, port: port);
   },
