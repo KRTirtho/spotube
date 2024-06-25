@@ -9,6 +9,7 @@ class VolumeProvider extends Notifier<double> {
 
   @override
   build() {
+    audioPlayer.setVolume(KVStoreService.volume);
     return KVStoreService.volume;
   }
 
