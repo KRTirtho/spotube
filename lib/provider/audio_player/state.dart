@@ -88,6 +88,11 @@ class AudioPlayerState {
     return tracks.elementAtOrNull(playlist.index);
   }
 
+  Media? get activeMedia {
+    if (playlist.index == -1 || playlist.medias.isEmpty) return null;
+    return playlist.medias.elementAt(playlist.index);
+  }
+
   bool containsTrack(Track track) {
     return tracks.any((t) => t.id == track.id);
   }

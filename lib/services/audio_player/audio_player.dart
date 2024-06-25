@@ -54,6 +54,21 @@ class SpotubeMedia extends mk.Media {
       httpHeaders: media.httpHeaders,
     );
   }
+
+  @override
+  operator ==(Object other) {
+    if (other is! SpotubeMedia) return false;
+
+    final isLocal = track is LocalTrack && other.track is LocalTrack;
+    return isLocal
+        ? (other.track as LocalTrack).path == (track as LocalTrack).path
+        : other.track.id == track.id;
+  }
+
+  @override
+  int get hashCode => track is LocalTrack
+      ? (track as LocalTrack).path.hashCode
+      : track.id.hashCode;
 }
 
 abstract class AudioPlayerInterface {

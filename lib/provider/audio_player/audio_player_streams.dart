@@ -128,15 +128,17 @@ class AudioPlayerStreamListeners {
               audioPlayerState.tracks.length - 1) {
         return;
       }
-      final nextTrack = audioPlayerState.tracks
-          .elementAt(audioPlayerState.playlist.index + 1);
+      final nextTrack = SpotubeMedia.fromMedia(audioPlayerState.playlist.medias
+          .elementAt(audioPlayerState.playlist.index + 1));
 
-      if (lastTrack == nextTrack.id || nextTrack is LocalTrack) return;
+      if (lastTrack == nextTrack.track.id || nextTrack.track is LocalTrack) {
+        return;
+      }
 
       try {
         await ref.read(sourcedTrackProvider(nextTrack).future);
       } finally {
-        lastTrack = nextTrack.id!;
+        lastTrack = nextTrack.track.id!;
       }
     });
   }

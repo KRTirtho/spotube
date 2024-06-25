@@ -7,6 +7,7 @@ import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 
 class ServerPlaybackRoutes {
@@ -25,7 +26,7 @@ class ServerPlaybackRoutes {
       final activeSourcedTrack = ref.read(activeSourcedTrackProvider);
       final sourcedTrack = activeSourcedTrack?.id == track.id
           ? activeSourcedTrack
-          : await ref.read(sourcedTrackProvider(track).future);
+          : await ref.read(sourcedTrackProvider(SpotubeMedia(track)).future);
 
       ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
 

@@ -86,6 +86,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
             )
             .toList(),
         initialIndex: playlist.index,
+        autoPlay: false,
       );
     }
   }
@@ -270,17 +271,18 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     int initialIndex = 0,
     bool autoPlay = false,
   }) async {
-    tracks = _blacklist.filter(tracks).toList() as List<Track>;
+    final medias =
+        (_blacklist.filter(tracks).toList() as List<Track>).asMediaList();
 
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout
-    final intendedActiveTrack = tracks.elementAt(initialIndex);
+    final intendedActiveTrack = medias.elementAt(initialIndex);
     if (intendedActiveTrack is! LocalTrack) {
       await ref.read(sourcedTrackProvider(intendedActiveTrack).future);
     }
 
     await audioPlayer.openPlaylist(
-      tracks.asMediaList(),
+      medias,
       initialIndex: initialIndex,
       autoPlay: autoPlay,
     );

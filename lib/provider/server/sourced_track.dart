@@ -1,12 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 final sourcedTrackProvider =
-    FutureProvider.family<SourcedTrack?, Track?>((ref, track) async {
+    FutureProvider.family<SourcedTrack?, SpotubeMedia?>((ref, media) async {
+  final track = media?.track;
   if (track == null || track is LocalTrack) {
     return null;
   }

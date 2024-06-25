@@ -4,17 +4,21 @@ import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 final queryingTrackInfoProvider = Provider<bool>((ref) {
-  final media = audioPlayer.playlist.index == -1
+  final media = audioPlayer.playlist.index == -1 ||
+          audioPlayer.playlist.medias.isEmpty
       ? null
       : audioPlayer.playlist.medias.elementAtOrNull(audioPlayer.playlist.index);
   final audioPlayerActiveTrack =
-      media == null ? null : SpotubeMedia.fromMedia(media).track;
+      media == null ? null : SpotubeMedia.fromMedia(media);
 
-  final activeTrack =
-      ref.watch(audioPlayerProvider.select((s) => s.activeTrack)) ??
-          audioPlayerActiveTrack;
+  final activeMedia = ref.watch(audioPlayerProvider.select(
+        (s) => s.activeMedia == null
+            ? null
+            : SpotubeMedia.fromMedia(s.activeMedia!),
+      )) ??
+      audioPlayerActiveTrack;
 
-  if (activeTrack == null) return false;
+  if (activeMedia == null) return false;
 
-  return ref.watch(sourcedTrackProvider(activeTrack)).isLoading;
+  return ref.watch(sourcedTrackProvider(activeMedia)).isLoading;
 });
