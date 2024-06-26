@@ -90,18 +90,20 @@ class TokenLoginForm extends HookConsumerWidget {
                       onPressed: isLoading.value
                           ? null
                           : () async {
-                              final browser =
-                                  await puppeteer.launch(headless: false);
-                              try {
-                                List<Cookie> cookies = [];
-                                final page = await browser.newPage();
+                              final browser = await puppeteer.launch(
+                                headless: false,
+                                ignoreDefaultArgs: ["--enable-automation"],
+                                args: ["--test-type=gpu"],
+                              );
 
+                              try {
+                                final page = await browser.newPage();
                                 await page.goto(
                                     'https://accounts.spotify.com/en/login',
                                     wait: Until.domContentLoaded);
 
                                 while (browser.isConnected) {
-                                  cookies = await page.cookies();
+                                  final cookies = await page.cookies();
                                   for (final cookie in cookies) {
                                     if (cookie.name == "sp_dc") {
                                       await browser.close();
