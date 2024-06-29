@@ -40,8 +40,8 @@ class ServerConnectRoutes {
 
   AudioPlayerNotifier get audioPlayerNotifier =>
       ref.read(audioPlayerProvider.notifier);
-  PlaybackHistoryNotifier get historyNotifier =>
-      ref.read(playbackHistoryProvider.notifier);
+  PlaybackHistoryActions get historyNotifier =>
+      ref.read(playbackHistoryActionsProvider);
   Stream<String> get connectClientStream =>
       _connectClientStreamController.stream;
 

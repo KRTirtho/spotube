@@ -22,7 +22,7 @@ class TrackViewHeaderActions extends HookConsumerWidget {
 
     final playlist = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
-    final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
+    final historyNotifier = ref.watch(playbackHistoryActionsProvider);
 
     final isActive = playlist.collections.contains(props.collectionId);
 

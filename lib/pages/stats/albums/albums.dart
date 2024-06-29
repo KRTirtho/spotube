@@ -12,10 +12,10 @@ class StatsAlbumsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final albums = ref.watch(
-      playbackHistoryTopProvider(HistoryDuration.allTime)
-          .select((s) => s.albums),
-    );
+    final albums = ref.watch(playbackHistoryTopProvider(HistoryDuration.allTime)
+        .select((value) => value.whenData((s) => s.albums)));
+
+    final albumsData = albums.asData?.value ?? [];
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
@@ -24,9 +24,9 @@ class StatsAlbumsPage extends HookConsumerWidget {
         title: Text("Albums"),
       ),
       body: ListView.builder(
-        itemCount: albums.length,
+        itemCount: albumsData.length,
         itemBuilder: (context, index) {
-          final album = albums[index];
+          final album = albumsData[index];
           return StatsAlbumItem(
             album: album.album,
             info: Text("${compactNumberFormatter.format(album.count)} plays"),

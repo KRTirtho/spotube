@@ -30,7 +30,7 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
     final props = InheritedTrackView.of(context);
     final playlist = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
-    final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
+    final historyNotifier = ref.watch(playbackHistoryActionsProvider);
 
     final isActive = playlist.collections.contains(props.collectionId);
 

@@ -12,13 +12,15 @@ class TopTracks extends HookConsumerWidget {
     final historyDuration = ref.watch(playbackHistoryTopDurationProvider);
     final tracks = ref.watch(
       playbackHistoryTopProvider(historyDuration)
-          .select((value) => value.tracks),
+          .select((value) => value.whenData((s) => s.tracks)),
     );
 
+    final tracksData = tracks.asData?.value ?? [];
+
     return SliverList.builder(
-      itemCount: tracks.length,
+      itemCount: tracksData.length,
       itemBuilder: (context, index) {
-        final track = tracks[index];
+        final track = tracksData[index];
         return StatsTrackItem(
           track: track.track,
           info: Text(

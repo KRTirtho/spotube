@@ -45,8 +45,8 @@ class AudioPlayerStreamListeners {
   UserPreferences get preferences => ref.read(userPreferencesProvider);
   Discord get discord => ref.read(discordProvider);
   AudioPlayerState get audioPlayerState => ref.read(audioPlayerProvider);
-  PlaybackHistoryNotifier get history =>
-      ref.read(playbackHistoryProvider.notifier);
+  PlaybackHistoryActions get history =>
+      ref.read(playbackHistoryActionsProvider);
 
   Future<void> updatePalette() async {
     final palette = ref.read(paletteProvider);

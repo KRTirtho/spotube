@@ -26,7 +26,7 @@ class PlaylistCard extends HookConsumerWidget {
     final playlistQueue = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
-    final historyNotifier = ref.read(playbackHistoryProvider.notifier);
+    final historyNotifier = ref.read(playbackHistoryActionsProvider);
 
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;

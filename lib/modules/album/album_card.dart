@@ -35,7 +35,7 @@ class AlbumCard extends HookConsumerWidget {
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
-    final historyNotifier = ref.read(playbackHistoryProvider.notifier);
+    final historyNotifier = ref.read(playbackHistoryActionsProvider);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
 
     bool isPlaylistPlaying = useMemoized(

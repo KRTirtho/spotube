@@ -11,12 +11,14 @@ class TopArtists extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final historyDuration = ref.watch(playbackHistoryTopDurationProvider);
     final artists = ref.watch(playbackHistoryTopProvider(historyDuration)
-        .select((value) => value.artists));
+        .select((value) => value.whenData((s) => s.artists)));
+
+    final artistsData = artists.asData?.value ?? [];
 
     return SliverList.builder(
-      itemCount: artists.length,
+      itemCount: artistsData.length,
       itemBuilder: (context, index) {
-        final artist = artists[index];
+        final artist = artistsData[index];
         return StatsArtistItem(
           artist: artist.artist,
           info: Text("${compactNumberFormatter.format(artist.count)} plays"),

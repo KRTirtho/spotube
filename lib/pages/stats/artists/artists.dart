@@ -14,8 +14,10 @@ class StatsArtistsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final artists = ref.watch(
       playbackHistoryTopProvider(HistoryDuration.allTime)
-          .select((s) => s.artists),
+          .select((s) => s.whenData((s) => s.artists)),
     );
+
+    final artistsData = artists.asData?.value ?? [];
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
@@ -24,9 +26,9 @@ class StatsArtistsPage extends HookConsumerWidget {
         title: Text("Artists"),
       ),
       body: ListView.builder(
-        itemCount: artists.length,
+        itemCount: artistsData.length,
         itemBuilder: (context, index) {
-          final artist = artists[index];
+          final artist = artistsData[index];
           return StatsArtistItem(
             artist: artist.artist,
             info: Text("${compactNumberFormatter.format(artist.count)} plays"),

@@ -1,129 +1,68 @@
-import 'dart:async';
-
-import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/provider/history/state.dart';
-import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/database/database.dart';
 
-class PlaybackHistoryState {
-  final List<PlaybackHistoryItem> items;
-  const PlaybackHistoryState({this.items = const []});
-
-  factory PlaybackHistoryState.fromJson(Map<String, dynamic> json) {
-    return PlaybackHistoryState(
-      items: json["items"]
-              ?.map(
-                (json) => PlaybackHistoryItem.fromJson(json),
-              )
-              .toList()
-              .cast<PlaybackHistoryItem>() ??
-          <PlaybackHistoryItem>[],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      "items": items.map((s) => s.toJson()).toList(),
-    };
-  }
-
-  PlaybackHistoryState copyWith({
-    List<PlaybackHistoryItem>? items,
-  }) {
-    return PlaybackHistoryState(items: items ?? this.items);
-  }
-}
-
-class PlaybackHistoryNotifier
-    extends PersistedStateNotifier<PlaybackHistoryState> {
+class PlaybackHistoryActions {
   final Ref ref;
-  PlaybackHistoryNotifier(this.ref)
-      : super(const PlaybackHistoryState(), "playback_history");
+  AppDatabase get _db => ref.read(databaseProvider);
 
-  SpotifyApi get spotify => ref.read(spotifyProvider);
+  PlaybackHistoryActions(this.ref);
 
-  @override
-  FutureOr<PlaybackHistoryState> fromJson(Map<String, dynamic> json) =>
-      PlaybackHistoryState.fromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return state.toJson();
+  Future<void> _batchInsertHistoryEntries(
+      List<HistoryTableCompanion> entries) async {
+    await _db.batch((batch) {
+      batch.insertAll(_db.historyTable, entries);
+    });
   }
 
-  void addPlaylists(List<PlaylistSimple> playlists) {
-    state = state.copyWith(
-      items: [
-        ...state.items,
-        for (final playlist in playlists)
-          PlaybackHistoryItem.playlist(
-              date: DateTime.now(), playlist: playlist),
-      ],
-    );
+  Future<void> addPlaylists(List<PlaylistSimple> playlists) async {
+    await _batchInsertHistoryEntries([
+      for (final playlist in playlists)
+        HistoryTableCompanion.insert(
+          type: HistoryEntryType.playlist,
+          itemId: playlist.id!,
+          data: playlist.toJson(),
+        ),
+    ]);
   }
 
-  void addAlbums(List<AlbumSimple> albums) {
-    state = state.copyWith(
-      items: [
-        ...state.items,
-        for (final album in albums)
-          PlaybackHistoryItem.album(date: DateTime.now(), album: album),
-      ],
-    );
+  Future<void> addAlbums(List<AlbumSimple> albums) async {
+    await _batchInsertHistoryEntries([
+      for (final albums in albums)
+        HistoryTableCompanion.insert(
+          type: HistoryEntryType.album,
+          itemId: albums.id!,
+          data: albums.toJson(),
+        ),
+    ]);
   }
 
-  void addTrack(Track track) async {
-    // For some reason Track's artists images are `null`
-    // so we need to fetch them from the API
-    final artists =
-        await spotify.artists.list(track.artists!.map((e) => e.id!).toList());
-
-    track.artists = artists.toList();
-
-    state = state.copyWith(
-      items: [
-        ...state.items,
-        PlaybackHistoryItem.track(date: DateTime.now(), track: track),
-      ],
-    );
+  Future<void> addTracks(List<Track> tracks) async {
+    await _batchInsertHistoryEntries([
+      for (final track in tracks)
+        HistoryTableCompanion.insert(
+          type: HistoryEntryType.track,
+          itemId: track.id!,
+          data: track.toJson(),
+        ),
+    ]);
   }
 
-  void clear() {
-    state = state.copyWith(items: []);
+  Future<void> addTrack(Track track) async {
+    await _db.into(_db.historyTable).insert(
+          HistoryTableCompanion.insert(
+            type: HistoryEntryType.track,
+            itemId: track.id!,
+            data: track.toJson(),
+          ),
+        );
+  }
+
+  Future<void> clear() async {
+    _db.delete(_db.historyTable).go();
   }
 }
 
-final playbackHistoryProvider =
-    StateNotifierProvider<PlaybackHistoryNotifier, PlaybackHistoryState>(
-  (ref) => PlaybackHistoryNotifier(ref),
-);
-
-typedef PlaybackHistoryGrouped = ({
-  List<PlaybackHistoryTrack> tracks,
-  List<PlaybackHistoryAlbum> albums,
-  List<PlaybackHistoryPlaylist> playlists,
-});
-
-final playbackHistoryGroupedProvider = Provider<PlaybackHistoryGrouped>((ref) {
-  final history = ref.watch(playbackHistoryProvider);
-  final tracks = history.items
-      .whereType<PlaybackHistoryTrack>()
-      .sorted((a, b) => b.date.compareTo(a.date))
-      .toList();
-  final albums = history.items
-      .whereType<PlaybackHistoryAlbum>()
-      .sorted((a, b) => b.date.compareTo(a.date))
-      .toList();
-  final playlists = history.items
-      .whereType<PlaybackHistoryPlaylist>()
-      .sorted((a, b) => b.date.compareTo(a.date))
-      .toList();
-
-  return (
-    tracks: tracks,
-    albums: albums,
-    playlists: playlists,
-  );
-});
+final playbackHistoryActionsProvider =
+    Provider((ref) => PlaybackHistoryActions(ref));

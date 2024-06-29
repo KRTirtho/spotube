@@ -16,8 +16,10 @@ class StatsStreamsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final topTracks = ref.watch(
       playbackHistoryTopProvider(HistoryDuration.allTime)
-          .select((s) => s.tracks),
+          .select((s) => s.whenData((s) => s.tracks)),
     );
+
+    final topTracksData = topTracks.asData?.value ?? [];
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
@@ -27,9 +29,9 @@ class StatsStreamsPage extends HookConsumerWidget {
       ),
       body: ListView.separated(
         separatorBuilder: (context, index) => const Gap(8),
-        itemCount: topTracks.length,
+        itemCount: topTracksData.length,
         itemBuilder: (context, index) {
-          final (:track, :count) = topTracks[index];
+          final (:track, :count) = topTracksData[index];
 
           return StatsTrackItem(
             track: track,

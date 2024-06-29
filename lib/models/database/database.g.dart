@@ -3414,6 +3414,301 @@ class PlaylistMediaTableCompanion
   }
 }
 
+class $HistoryTableTable extends HistoryTable
+    with TableInfo<$HistoryTableTable, HistoryTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HistoryTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumnWithTypeConverter<HistoryEntryType, String> type =
+      GeneratedColumn<String>('type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<HistoryEntryType>($HistoryTableTable.$convertertype);
+  static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
+  @override
+  late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
+      'item_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>, String>
+      data = GeneratedColumn<String>('data', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<Map<String, dynamic>>(
+              $HistoryTableTable.$converterdata);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdAt, type, itemId, data];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'history_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<HistoryTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    context.handle(_typeMeta, const VerificationResult.success());
+    if (data.containsKey('item_id')) {
+      context.handle(_itemIdMeta,
+          itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
+    } else if (isInserting) {
+      context.missing(_itemIdMeta);
+    }
+    context.handle(_dataMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HistoryTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HistoryTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      type: $HistoryTableTable.$convertertype.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
+      itemId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}item_id'])!,
+      data: $HistoryTableTable.$converterdata.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}data'])!),
+    );
+  }
+
+  @override
+  $HistoryTableTable createAlias(String alias) {
+    return $HistoryTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<HistoryEntryType, String, String> $convertertype =
+      const EnumNameConverter<HistoryEntryType>(HistoryEntryType.values);
+  static TypeConverter<Map<String, dynamic>, String> $converterdata =
+      const MapTypeConverter();
+}
+
+class HistoryTableData extends DataClass
+    implements Insertable<HistoryTableData> {
+  final int id;
+  final DateTime createdAt;
+  final HistoryEntryType type;
+  final String itemId;
+  final Map<String, dynamic> data;
+  const HistoryTableData(
+      {required this.id,
+      required this.createdAt,
+      required this.type,
+      required this.itemId,
+      required this.data});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    {
+      map['type'] =
+          Variable<String>($HistoryTableTable.$convertertype.toSql(type));
+    }
+    map['item_id'] = Variable<String>(itemId);
+    {
+      map['data'] =
+          Variable<String>($HistoryTableTable.$converterdata.toSql(data));
+    }
+    return map;
+  }
+
+  HistoryTableCompanion toCompanion(bool nullToAbsent) {
+    return HistoryTableCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      type: Value(type),
+      itemId: Value(itemId),
+      data: Value(data),
+    );
+  }
+
+  factory HistoryTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HistoryTableData(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      type: $HistoryTableTable.$convertertype
+          .fromJson(serializer.fromJson<String>(json['type'])),
+      itemId: serializer.fromJson<String>(json['itemId']),
+      data: serializer.fromJson<Map<String, dynamic>>(json['data']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'type': serializer
+          .toJson<String>($HistoryTableTable.$convertertype.toJson(type)),
+      'itemId': serializer.toJson<String>(itemId),
+      'data': serializer.toJson<Map<String, dynamic>>(data),
+    };
+  }
+
+  HistoryTableData copyWith(
+          {int? id,
+          DateTime? createdAt,
+          HistoryEntryType? type,
+          String? itemId,
+          Map<String, dynamic>? data}) =>
+      HistoryTableData(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        type: type ?? this.type,
+        itemId: itemId ?? this.itemId,
+        data: data ?? this.data,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('HistoryTableData(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('type: $type, ')
+          ..write('itemId: $itemId, ')
+          ..write('data: $data')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, createdAt, type, itemId, data);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HistoryTableData &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.type == this.type &&
+          other.itemId == this.itemId &&
+          other.data == this.data);
+}
+
+class HistoryTableCompanion extends UpdateCompanion<HistoryTableData> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<HistoryEntryType> type;
+  final Value<String> itemId;
+  final Value<Map<String, dynamic>> data;
+  const HistoryTableCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.type = const Value.absent(),
+    this.itemId = const Value.absent(),
+    this.data = const Value.absent(),
+  });
+  HistoryTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required HistoryEntryType type,
+    required String itemId,
+    required Map<String, dynamic> data,
+  })  : type = Value(type),
+        itemId = Value(itemId),
+        data = Value(data);
+  static Insertable<HistoryTableData> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<String>? type,
+    Expression<String>? itemId,
+    Expression<String>? data,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (type != null) 'type': type,
+      if (itemId != null) 'item_id': itemId,
+      if (data != null) 'data': data,
+    });
+  }
+
+  HistoryTableCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? createdAt,
+      Value<HistoryEntryType>? type,
+      Value<String>? itemId,
+      Value<Map<String, dynamic>>? data}) {
+    return HistoryTableCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      type: type ?? this.type,
+      itemId: itemId ?? this.itemId,
+      data: data ?? this.data,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (type.present) {
+      map['type'] =
+          Variable<String>($HistoryTableTable.$convertertype.toSql(type.value));
+    }
+    if (itemId.present) {
+      map['item_id'] = Variable<String>(itemId.value);
+    }
+    if (data.present) {
+      map['data'] =
+          Variable<String>($HistoryTableTable.$converterdata.toSql(data.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HistoryTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('type: $type, ')
+          ..write('itemId: $itemId, ')
+          ..write('data: $data')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
@@ -3432,6 +3727,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PlaylistTableTable playlistTable = $PlaylistTableTable(this);
   late final $PlaylistMediaTableTable playlistMediaTable =
       $PlaylistMediaTableTable(this);
+  late final $HistoryTableTable historyTable = $HistoryTableTable(this);
   late final Index uniqueBlacklist = Index('unique_blacklist',
       'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)');
   late final Index uniqTrackMatch = Index('uniq_track_match',
@@ -3450,6 +3746,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         audioPlayerStateTable,
         playlistTable,
         playlistMediaTable,
+        historyTable,
         uniqueBlacklist,
         uniqTrackMatch
       ];
@@ -5053,6 +5350,148 @@ class $$PlaylistMediaTableTableOrderingComposer
   }
 }
 
+typedef $$HistoryTableTableInsertCompanionBuilder = HistoryTableCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  required HistoryEntryType type,
+  required String itemId,
+  required Map<String, dynamic> data,
+});
+typedef $$HistoryTableTableUpdateCompanionBuilder = HistoryTableCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<HistoryEntryType> type,
+  Value<String> itemId,
+  Value<Map<String, dynamic>> data,
+});
+
+class $$HistoryTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HistoryTableTable,
+    HistoryTableData,
+    $$HistoryTableTableFilterComposer,
+    $$HistoryTableTableOrderingComposer,
+    $$HistoryTableTableProcessedTableManager,
+    $$HistoryTableTableInsertCompanionBuilder,
+    $$HistoryTableTableUpdateCompanionBuilder> {
+  $$HistoryTableTableTableManager(_$AppDatabase db, $HistoryTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$HistoryTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$HistoryTableTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$HistoryTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<HistoryEntryType> type = const Value.absent(),
+            Value<String> itemId = const Value.absent(),
+            Value<Map<String, dynamic>> data = const Value.absent(),
+          }) =>
+              HistoryTableCompanion(
+            id: id,
+            createdAt: createdAt,
+            type: type,
+            itemId: itemId,
+            data: data,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            required HistoryEntryType type,
+            required String itemId,
+            required Map<String, dynamic> data,
+          }) =>
+              HistoryTableCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            type: type,
+            itemId: itemId,
+            data: data,
+          ),
+        ));
+}
+
+class $$HistoryTableTableProcessedTableManager extends ProcessedTableManager<
+    _$AppDatabase,
+    $HistoryTableTable,
+    HistoryTableData,
+    $$HistoryTableTableFilterComposer,
+    $$HistoryTableTableOrderingComposer,
+    $$HistoryTableTableProcessedTableManager,
+    $$HistoryTableTableInsertCompanionBuilder,
+    $$HistoryTableTableUpdateCompanionBuilder> {
+  $$HistoryTableTableProcessedTableManager(super.$state);
+}
+
+class $$HistoryTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $HistoryTableTable> {
+  $$HistoryTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<HistoryEntryType, HistoryEntryType, String>
+      get type => $state.composableBuilder(
+          column: $state.table.type,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get itemId => $state.composableBuilder(
+      column: $state.table.itemId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>, Map<String, dynamic>,
+          String>
+      get data => $state.composableBuilder(
+          column: $state.table.data,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$HistoryTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $HistoryTableTable> {
+  $$HistoryTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get type => $state.composableBuilder(
+      column: $state.table.type,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get itemId => $state.composableBuilder(
+      column: $state.table.itemId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get data => $state.composableBuilder(
+      column: $state.table.data,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class _$AppDatabaseManager {
   final _$AppDatabase _db;
   _$AppDatabaseManager(this._db);
@@ -5074,4 +5513,6 @@ class _$AppDatabaseManager {
       $$PlaylistTableTableTableManager(_db, _db.playlistTable);
   $$PlaylistMediaTableTableTableManager get playlistMediaTable =>
       $$PlaylistMediaTableTableTableManager(_db, _db.playlistMediaTable);
+  $$HistoryTableTableTableManager get historyTable =>
+      $$HistoryTableTableTableManager(_db, _db.historyTable);
 }

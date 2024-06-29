@@ -18,8 +18,10 @@ class StatsStreamFeesPage extends HookConsumerWidget {
 
     final artists = ref.watch(
       playbackHistoryTopProvider(HistoryDuration.days30)
-          .select((value) => value.artists),
+          .select((value) => value.whenData((s) => s.artists)),
     );
+
+    final artistsData = artists.asData?.value ?? [];
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
@@ -49,9 +51,9 @@ class StatsStreamFeesPage extends HookConsumerWidget {
             ),
           ),
           SliverList.builder(
-            itemCount: artists.length,
+            itemCount: artistsData.length,
             itemBuilder: (context, index) {
-              final artist = artists[index];
+              final artist = artistsData[index];
               return StatsArtistItem(
                 artist: artist.artist,
                 info: Text(usdFormatter.format(artist.count * 0.005)),

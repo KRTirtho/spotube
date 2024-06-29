@@ -139,14 +139,12 @@ class SyncedLyrics extends HookConsumerWidget {
                                 textAlign: TextAlign.center,
                                 child: InkWell(
                                   onTap: () async {
-                                    final duration =
-                                        await audioPlayer.duration ??
-                                            Duration.zero;
                                     final time = Duration(
                                       seconds:
                                           lyricSlice.time.inSeconds - delay,
                                     );
-                                    if (time > duration || time.isNegative) {
+                                    if (time > audioPlayer.duration ||
+                                        time.isNegative) {
                                       return;
                                     }
                                     audioPlayer.seek(time);

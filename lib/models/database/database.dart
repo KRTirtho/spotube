@@ -5,10 +5,10 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:media_kit/media_kit.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -27,6 +27,7 @@ part 'tables/scrobbler.dart';
 part 'tables/skip_segment.dart';
 part 'tables/source_match.dart';
 part 'tables/audio_player_state.dart';
+part 'tables/history.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
@@ -45,6 +46,7 @@ part 'typeconverters/map.dart';
     AudioPlayerStateTable,
     PlaylistTable,
     PlaylistMediaTable,
+    HistoryTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
