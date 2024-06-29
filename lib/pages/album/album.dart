@@ -46,7 +46,8 @@ class AlbumPage extends HookConsumerWidget {
         },
       ),
       routePath: "/album/${album.id}",
-      shareUrl: album.externalUrls!.spotify!,
+      shareUrl: album.externalUrls?.spotify ??
+          "https://open.spotify.com/album/${album.id}",
       isLiked: isSavedAlbum.asData?.value ?? false,
       onHeart: isSavedAlbum.asData?.value == null
           ? null
