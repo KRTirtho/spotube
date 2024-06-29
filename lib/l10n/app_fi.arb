@@ -161,7 +161,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Lisenssi",
   "add_spotify_credentials": "Lisää Spotify-tunnuksesi aloittaaksesi",
-  "credentials_will_not_be_shared_disclaimer": "Älä huoli, tunnuksiasi ei talleteta tai jaeta kenenkään kanssa",
+  "credentials_will_not_be_shared_disclaimer": "Älä huoli, mitään kirjautumistietojasi ei kerätä tai jaeta kenenkään kanssa",
   "know_how_to_login": "Etkö tiedä miten tehdä tämä?",
   "follow_step_by_step_guide": "Seuraa askel askeleelta opasta",
   "spotify_cookie": "Spotify {name} Keksi",

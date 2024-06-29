@@ -158,7 +158,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "ライセンス",
   "add_spotify_credentials": "Spotify のログイン情報を追加してはじめましょう",
-  "credentials_will_not_be_shared_disclaimer": "心配ありません。個人情報を収集したり、共有されることはありません",
+  "credentials_will_not_be_shared_disclaimer": "心配しないでください。あなたの認証情報が収集されたり、誰かと共有されたりすることはありません。",
   "know_how_to_login": "やり方が分からないですか？",
   "follow_step_by_step_guide": "やり方の説明を見る",
   "spotify_cookie": "Spotify {name} Cookies",

@@ -160,7 +160,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Giấy phép",
   "add_spotify_credentials": "Điền thông tin đăng nhập Spotify của bạn",
-  "credentials_will_not_be_shared_disclaimer": "Đừng lo, thông tin đăng nhập của bạn sẽ không được thu thập hoặc chia sẻ với bất kỳ ai",
+  "credentials_will_not_be_shared_disclaimer": "Đừng lo lắng, không có thông tin đăng nhập nào của bạn sẽ được thu thập hoặc chia sẻ với bất kỳ ai",
   "know_how_to_login": "Không biết cách lấy thông tin đăng nhập?",
   "follow_step_by_step_guide": "Các bước lấy thông tin đăng nhập",
   "spotify_cookie": "Cookie Spotify {name}",

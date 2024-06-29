@@ -161,7 +161,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Lisensi",
   "add_spotify_credentials": "Tambahkan kredensial Spotify Anda untuk memulai",
-  "credentials_will_not_be_shared_disclaimer": "Jangan khawatir, kredensial Anda tidak akan dikumpulkan atau dibagikan kepada siapa pun",
+  "credentials_will_not_be_shared_disclaimer": "Jangan khawatir, tidak ada kredensial Anda yang akan dikumpulkan atau dibagikan kepada siapa pun",
   "know_how_to_login": "Tidak tahu bagaimana melakukan ini?",
   "follow_step_by_step_guide": "Ikuti panduan Langkah demi Langkah",
   "spotify_cookie": "Spotify {name} Cookie",
