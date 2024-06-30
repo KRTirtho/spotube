@@ -89,6 +89,12 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         autoPlay: false,
       );
     }
+
+    if (playerState.collections.isNotEmpty) {
+      state = state.copyWith(
+        collections: playerState.collections,
+      );
+    }
   }
 
   Future<void> _updatePlayerState(

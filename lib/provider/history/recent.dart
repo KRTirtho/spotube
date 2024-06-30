@@ -9,28 +9,31 @@ class RecentlyPlayedItemNotifier extends AsyncNotifier<List<HistoryTableData>> {
   build() async {
     final database = ref.watch(databaseProvider);
 
-    final uniqueItemIds =
-        await (database.selectOnly(database.historyTable, distinct: true)
-              ..addColumns([database.historyTable.itemId])
-              ..where(
-                database.historyTable.type.isIn([
-                  HistoryEntryType.playlist.name,
-                  HistoryEntryType.album.name,
-                ]),
-              )
-              ..limit(10))
-            .map((row) => row.read(database.historyTable.itemId))
-            .get()
-            .then((value) => value.whereNotNull().toList());
+    final uniqueItemIds = await (database.selectOnly(database.historyTable,
+            distinct: true)
+          ..addColumns([database.historyTable.itemId, database.historyTable.id])
+          ..where(
+            database.historyTable.type.isIn([
+              HistoryEntryType.playlist.name,
+              HistoryEntryType.album.name,
+            ]),
+          )
+          ..limit(10)
+          ..orderBy([
+            OrderingTerm(
+              expression: database.historyTable.createdAt,
+              mode: OrderingMode.desc,
+            ),
+          ]))
+        .map(
+          (row) => row.read(database.historyTable.id),
+        )
+        .get()
+        .then((value) => value.whereNotNull().toList());
 
     final query = database.select(database.historyTable)
       ..where(
-        (tbl) =>
-            tbl.type.isIn([
-              HistoryEntryType.playlist.name,
-              HistoryEntryType.album.name,
-            ]) &
-            tbl.itemId.isIn(uniqueItemIds),
+        (tbl) => tbl.id.isIn(uniqueItemIds),
       )
       ..orderBy([
         (tbl) => OrderingTerm(
@@ -45,7 +48,9 @@ class RecentlyPlayedItemNotifier extends AsyncNotifier<List<HistoryTableData>> {
 
     ref.onDispose(() => subscription.cancel());
 
-    return await query.get();
+    final items = await query.get();
+
+    return items;
   }
 }
 
