@@ -33,7 +33,6 @@ import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/themes/theme.dart';
-import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -84,10 +83,6 @@ Future<void> main(List<String> rawArgs) async {
         kIsWeb ? null : (await getApplicationSupportDirectory()).path;
 
     Hive.init(hiveCacheDir);
-
-    await PersistedStateNotifier.initializeBoxes(
-      path: hiveCacheDir,
-    );
 
     if (kIsDesktop) {
       await localNotifier.setup(appName: "Spotube");

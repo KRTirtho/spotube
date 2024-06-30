@@ -9,6 +9,7 @@ import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -28,12 +29,14 @@ part 'tables/skip_segment.dart';
 part 'tables/source_match.dart';
 part 'tables/audio_player_state.dart';
 part 'tables/history.dart';
+part 'tables/lyrics.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
 part 'typeconverters/string_list.dart';
 part 'typeconverters/encrypted_text.dart';
 part 'typeconverters/map.dart';
+part 'typeconverters/subtitle.dart';
 
 @DriftDatabase(
   tables: [
@@ -47,6 +50,7 @@ part 'typeconverters/map.dart';
     PlaylistTable,
     PlaylistMediaTable,
     HistoryTable,
+    LyricsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {

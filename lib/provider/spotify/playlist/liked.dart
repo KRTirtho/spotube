@@ -1,10 +1,6 @@
 part of '../spotify.dart';
 
-class LikedTracksNotifier extends AsyncNotifier<List<Track>> with Persistence {
-  LikedTracksNotifier() {
-    load();
-  }
-
+class LikedTracksNotifier extends AsyncNotifier<List<Track>> {
   @override
   FutureOr<List<Track>> build() async {
     final spotify = ref.watch(spotifyProvider);
@@ -28,18 +24,6 @@ class LikedTracksNotifier extends AsyncNotifier<List<Track>> with Persistence {
         return [track, ...tracks];
       }
     });
-  }
-
-  @override
-  FutureOr<List<Track>> fromJson(Map<String, dynamic> json) {
-    return (json['tracks'] as List).map((e) => Track.fromJson(e)).toList();
-  }
-
-  @override
-  Map<String, dynamic> toJson(List<Track> data) {
-    return {
-      'tracks': data.map((e) => e.toJson()).toList(),
-    };
   }
 }
 

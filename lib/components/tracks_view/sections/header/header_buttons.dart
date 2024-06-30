@@ -131,7 +131,9 @@ class TrackViewHeaderButtons extends HookConsumerWidget {
           );
         }
       } finally {
-        isLoading.value = false;
+        if (context.mounted) {
+          isLoading.value = false;
+        }
       }
     }
 
