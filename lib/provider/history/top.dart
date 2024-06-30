@@ -8,20 +8,24 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';
 
 enum HistoryDuration {
-  allTime,
-  days7,
-  days30,
-  months6,
-  year,
-  years2,
+  allTime(Duration(days: 365 * 2003)),
+  days7(Duration(days: 7)),
+  days30(Duration(days: 30)),
+  months6(Duration(days: 30 * 6)),
+  year(Duration(days: 365)),
+  years2(Duration(days: 365 * 2));
+
+  final Duration duration;
+
+  const HistoryDuration(this.duration);
 }
 
 final playbackHistoryTopDurationProvider =
     StateProvider((ref) => HistoryDuration.days30);
 
-typedef PlaybackHistoryTrack = ({int count, Track track});
 typedef PlaybackHistoryAlbum = ({int count, AlbumSimple album});
 typedef PlaybackHistoryPlaylist = ({int count, PlaylistSimple playlist});
+typedef PlaybackHistoryTrack = ({int count, Track track});
 typedef PlaybackHistoryArtist = ({int count, Artist artist});
 
 class PlaybackHistoryTopState {
@@ -58,14 +62,7 @@ class PlaybackHistoryTopNotifier
   build(arg) async {
     final database = ref.watch(databaseProvider);
 
-    final duration = switch (arg) {
-      HistoryDuration.allTime => const Duration(days: 365 * 2003),
-      HistoryDuration.days7 => const Duration(days: 7),
-      HistoryDuration.days30 => const Duration(days: 30),
-      HistoryDuration.months6 => const Duration(days: 30 * 6),
-      HistoryDuration.year => const Duration(days: 365),
-      HistoryDuration.years2 => const Duration(days: 365 * 2),
-    };
+    final duration = arg.duration;
 
     final tracksQuery = (database.select(database.historyTable)
       ..where(
