@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:drift/extensions/json1.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
@@ -13,7 +14,7 @@ import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
-import 'package:flutter/material.dart' hide Table, Key;
+import 'package:flutter/material.dart' hide Table, Key, View;
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
 import 'package:sqlite3/sqlite3.dart';

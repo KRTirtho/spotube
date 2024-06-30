@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/common/album_item.dart';
 
 import 'package:spotube/provider/history/top.dart';
+import 'package:spotube/provider/history/top/albums.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class StatsAlbumsPage extends HookConsumerWidget {
   static const name = "stats_albums";
@@ -12,10 +16,12 @@ class StatsAlbumsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final albums = ref.watch(playbackHistoryTopProvider(HistoryDuration.allTime)
-        .select((value) => value.whenData((s) => s.albums)));
+    final topAlbums =
+        ref.watch(historyTopAlbumsProvider(HistoryDuration.allTime));
+    final topAlbumsNotifier =
+        ref.watch(historyTopAlbumsProvider(HistoryDuration.allTime).notifier);
 
-    final albumsData = albums.asData?.value ?? [];
+    final albumsData = topAlbums.asData?.value.items ?? [];
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
@@ -23,15 +29,26 @@ class StatsAlbumsPage extends HookConsumerWidget {
         centerTitle: false,
         title: Text("Albums"),
       ),
-      body: ListView.builder(
-        itemCount: albumsData.length,
-        itemBuilder: (context, index) {
-          final album = albumsData[index];
-          return StatsAlbumItem(
-            album: album.album,
-            info: Text("${compactNumberFormatter.format(album.count)} plays"),
-          );
-        },
+      body: Skeletonizer(
+        enabled: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
+        child: InfiniteList(
+          onFetchData: () async {
+            await topAlbumsNotifier.fetchMore();
+          },
+          hasError: topAlbums.hasError,
+          isLoading: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
+          hasReachedMax: topAlbums.asData?.value.hasMore ?? true,
+          itemCount: albumsData.length,
+          itemBuilder: (context, index) {
+            final album = albumsData[index];
+            return StatsAlbumItem(
+              album: album.album,
+              info: Text(
+                "${compactNumberFormatter.format(album.count)} plays",
+              ),
+            );
+          },
+        ),
       ),
     );
   }
