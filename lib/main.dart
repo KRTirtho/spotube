@@ -18,7 +18,9 @@ import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/server/bonsoir.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
@@ -33,6 +35,7 @@ import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/themes/theme.dart';
+import 'package:spotube/utils/migrations/hive.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -84,12 +87,23 @@ Future<void> main(List<String> rawArgs) async {
 
     Hive.init(hiveCacheDir);
 
+    final database = AppDatabase();
+
+    await migrateFromHiveToDrift(database);
+
     if (kIsDesktop) {
       await localNotifier.setup(appName: "Spotube");
       await WindowManagerTools.initialize();
     }
 
-    runApp(const ProviderScope(child: Spotube()));
+    runApp(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWith((ref) => database),
+        ],
+        child: const Spotube(),
+      ),
+    );
   });
 }
 

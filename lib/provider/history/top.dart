@@ -6,7 +6,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';
-import 'package:spotube/provider/history/state.dart';
+
+enum HistoryDuration {
+  allTime,
+  days7,
+  days30,
+  months6,
+  year,
+  years2,
+}
 
 final playbackHistoryTopDurationProvider =
     StateProvider((ref) => HistoryDuration.days30);

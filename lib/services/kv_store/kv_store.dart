@@ -82,4 +82,9 @@ abstract class KVStoreService {
   static double get volume => sharedPreferences.getDouble('volume') ?? 1.0;
   static Future<void> setVolume(double value) async =>
       await sharedPreferences.setDouble('volume', value);
+
+  static bool get hasMigratedToDrift =>
+      sharedPreferences.getBool('hasMigratedToDrift') ?? false;
+  static Future<void> setHasMigratedToDrift(bool value) async =>
+      await sharedPreferences.setBool('hasMigratedToDrift', value);
 }

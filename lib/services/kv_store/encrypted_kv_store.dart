@@ -10,6 +10,8 @@ abstract class EncryptedKvStoreService {
     ),
   );
 
+  static FlutterSecureStorage get storage => _storage;
+
   static String? _encryptionKeySync;
 
   static Future<void> initialize() async {
