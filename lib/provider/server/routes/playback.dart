@@ -23,6 +23,7 @@ class ServerPlaybackRoutes {
     try {
       final track =
           playlist.tracks.firstWhere((element) => element.id == trackId);
+
       final activeSourcedTrack = ref.read(activeSourcedTrackProvider);
       final sourcedTrack = activeSourcedTrack?.id == track.id
           ? activeSourcedTrack
