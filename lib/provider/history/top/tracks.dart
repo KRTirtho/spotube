@@ -62,9 +62,26 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
       ..where(
         (tbl) =>
             tbl.type.equalsValue(HistoryEntryType.track) &
-            tbl.createdAt.isBiggerOrEqualValue(
-              DateTime.now().subtract(arg.duration),
-            ),
+            tbl.createdAt.isBiggerOrEqualValue(switch (arg) {
+              HistoryDuration.allTime => DateTime(1970),
+              // from start of the week
+              HistoryDuration.days7 => DateTime.now()
+                  .subtract(Duration(days: DateTime.now().weekday - 1)),
+              // from start of the month
+              HistoryDuration.days30 =>
+                DateTime.now().subtract(Duration(days: DateTime.now().day - 1)),
+              // from start of the 6th month
+              HistoryDuration.months6 => DateTime.now()
+                  .subtract(Duration(days: DateTime.now().day - 1))
+                  .subtract(const Duration(days: 30 * 6)),
+              // from start of the year
+              HistoryDuration.year => DateTime.now()
+                  .subtract(Duration(days: DateTime.now().day - 1))
+                  .subtract(const Duration(days: 30 * 12)),
+              HistoryDuration.years2 => DateTime.now()
+                  .subtract(Duration(days: DateTime.now().day - 1))
+                  .subtract(const Duration(days: 30 * 12 * 2)),
+            }),
       );
   }
 

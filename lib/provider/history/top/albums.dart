@@ -46,9 +46,10 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
       HistoryDuration.days7 => "strftime('%s', 'now', 'weekday 0', '-7 days')",
       HistoryDuration.days30 => "strftime('%s', 'now', 'start of month')",
       HistoryDuration.months6 =>
-        "strftime('%s', 'start of month', '-5 months')",
-      HistoryDuration.year => "strftime('%s', 'start of year')",
-      HistoryDuration.years2 => "strftime('%s', 'start of year', '-1 year')",
+        "strftime('%s', date('now', '-5 months', 'start of month'))",
+      HistoryDuration.year => "strftime('%s', date('now', 'start of year'))",
+      HistoryDuration.years2 =>
+        "strftime('%s', date('now', '-1 years', 'start of year'))",
     };
 
     return database.customSelect(
@@ -59,7 +60,7 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
       r"""
             json_extract(history_table.data, '$.album') as data,
             json_extract(history_table.data, '$.album.id') as item_id,
-            json_extract(history_table.data, '$.album.type') as type
+            'album' as type
         """
       """
         FROM history_table 

@@ -20,15 +20,24 @@ class StatsStreamFeesPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme, :hintColor) = Theme.of(context);
+    final duration = useState<HistoryDuration>(HistoryDuration.days30);
 
     final topTracks = ref.watch(
-      historyTopTracksProvider(HistoryDuration.allTime),
+      historyTopTracksProvider(duration.value),
     );
     final topTracksNotifier =
-        ref.watch(historyTopTracksProvider(HistoryDuration.allTime).notifier);
+        ref.watch(historyTopTracksProvider(duration.value).notifier);
 
     final artistsData = useMemoized(
         () => topTracks.asData?.value.artists ?? [], [topTracks.asData?.value]);
+
+    final total = useMemoized(
+      () => artistsData.fold<double>(
+        0,
+        (previousValue, element) => previousValue + element.count * 0.005,
+      ),
+      [artistsData],
+    );
 
     return Scaffold(
       appBar: const PageWindowTitleBar(
@@ -57,23 +66,72 @@ class StatsStreamFeesPage extends HookConsumerWidget {
               ),
             ),
           ),
-          Skeletonizer.sliver(
-            enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
-            child: SliverInfiniteList(
-              onFetchData: () async {
-                await topTracksNotifier.fetchMore();
-              },
-              hasError: topTracks.hasError,
-              isLoading: topTracks.isLoading && !topTracks.isLoadingNextPage,
-              hasReachedMax: topTracks.asData?.value.hasMore ?? true,
-              itemCount: artistsData.length,
-              itemBuilder: (context, index) {
-                final artist = artistsData[index];
-                return StatsArtistItem(
-                  artist: artist.artist,
-                  info: Text(usdFormatter.format(artist.count * 0.005)),
-                );
-              },
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Total ${usdFormatter.format(total)}",
+                    style: textTheme.titleLarge,
+                  ),
+                  DropdownButton<HistoryDuration>(
+                    value: duration.value,
+                    onChanged: (value) {
+                      if (value == null) return;
+                      duration.value = value;
+                    },
+                    items: const [
+                      DropdownMenuItem(
+                        value: HistoryDuration.days7,
+                        child: Text("This week"),
+                      ),
+                      DropdownMenuItem(
+                        value: HistoryDuration.days30,
+                        child: Text("This month"),
+                      ),
+                      DropdownMenuItem(
+                        value: HistoryDuration.months6,
+                        child: Text("Last 6 months"),
+                      ),
+                      DropdownMenuItem(
+                        value: HistoryDuration.year,
+                        child: Text("This year"),
+                      ),
+                      DropdownMenuItem(
+                        value: HistoryDuration.years2,
+                        child: Text("Last 2 years"),
+                      ),
+                      DropdownMenuItem(
+                        value: HistoryDuration.allTime,
+                        child: Text("All time"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverSafeArea(
+            sliver: Skeletonizer.sliver(
+              enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
+              child: SliverInfiniteList(
+                onFetchData: () async {
+                  await topTracksNotifier.fetchMore();
+                },
+                hasError: topTracks.hasError,
+                isLoading: topTracks.isLoading && !topTracks.isLoadingNextPage,
+                hasReachedMax: topTracks.asData?.value.hasMore ?? true,
+                itemCount: artistsData.length,
+                itemBuilder: (context, index) {
+                  final artist = artistsData[index];
+                  return StatsArtistItem(
+                    artist: artist.artist,
+                    info: Text(usdFormatter.format(artist.count * 0.005)),
+                  );
+                },
+              ),
             ),
           ),
         ],
