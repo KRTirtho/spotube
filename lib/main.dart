@@ -47,6 +47,12 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main(List<String> rawArgs) async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (runWebViewTitleBarWidget(rawArgs)) {
+    return;
+  }
+
   final arguments = await startCLI(rawArgs);
   AppLogger.initialize(arguments["verbose"]);
 

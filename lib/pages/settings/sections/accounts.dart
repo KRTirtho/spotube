@@ -46,6 +46,7 @@ class SettingsAccountSection extends HookConsumerWidget {
         return;
       }
 
+      final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
       final applicationSupportDir = await getApplicationSupportDirectory();
       final userDataFolder = Directory(
           join(applicationSupportDir.path, "webview_window_Webview2"));
@@ -55,30 +56,33 @@ class SettingsAccountSection extends HookConsumerWidget {
       }
 
       final webview = await WebviewWindow.create(
-        configuration:
-            CreateConfiguration(userDataFolderWindows: userDataFolder.path),
+        configuration: CreateConfiguration(
+          title: "Spotify Login",
+          titleBarTopPadding: kIsMacOS ? 20 : 0,
+          windowHeight: 720,
+          windowWidth: 1280,
+          userDataFolderWindows: userDataFolder.path,
+        ),
       );
+      webview
+        ..setBrightness(theme.colorScheme.brightness)
+        ..launch("https://accounts.spotify.com/")
+        ..setOnUrlRequestCallback((url) {
+          if (exp.hasMatch(url)) {
+            webview.getAllCookies().then((cookies) async {
+              final cookieHeader =
+                  "sp_dc=${cookies.firstWhere((element) => element.name.contains("sp_dc")).value.replaceAll("\u0000", "")}";
 
-      webview.setOnUrlRequestCallback((url) {
-        final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
+              await authNotifier.login(cookieHeader);
+              webview.close();
+              if (context.mounted) {
+                context.go("/");
+              }
+            });
+          }
 
-        if (exp.hasMatch(url)) {
-          webview.getAllCookies().then((cookies) async {
-            final cookieHeader =
-                "sp_dc=${cookies.firstWhere((element) => element.name == "sp_dc").value}";
-
-            await authNotifier.login(cookieHeader);
-            webview.close();
-            if (context.mounted) {
-              context.go("/");
-            }
-          });
           return true;
-        }
-        return false;
-      });
-
-      webview.launch("https://accounts.spotify.com/");
+        });
     }
 
     return SectionCardWithHeading(
