@@ -12,6 +12,7 @@ import 'package:media_kit/media_kit.dart' as mk;
 
 import 'package:spotube/services/audio_player/playback_state.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/utils/platform.dart';
 
 part 'audio_players_streams_mixin.dart';
 part 'audio_player_impl.dart';
@@ -28,7 +29,7 @@ class SpotubeMedia extends mk.Media {
   }) : super(
           track is LocalTrack
               ? track.path
-              : "http://${InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}",
+              : "http://${kIsWindows ? "localhost" : InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}",
           extras: {
             ...?extras,
             "track": switch (track) {
@@ -42,7 +43,7 @@ class SpotubeMedia extends mk.Media {
   @override
   String get uri => track is LocalTrack
       ? (track as LocalTrack).path
-      : "http://${InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}";
+      : "http://${kIsWindows ? "localhost" : InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}";
 
   factory SpotubeMedia.fromMedia(mk.Media media) {
     final track = media.uri.startsWith("http")
