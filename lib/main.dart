@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,7 +66,7 @@ Future<void> main(List<String> rawArgs) async {
       await FlutterDisplayMode.setHighRefreshRate();
     }
 
-    if (kIsDesktop && !kIsMacOS) {
+    if (kIsDesktop) {
       await windowManager.setPreventClose(true);
     }
 

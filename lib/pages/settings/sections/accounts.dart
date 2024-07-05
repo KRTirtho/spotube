@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/image/universal_image.dart';
@@ -42,7 +46,18 @@ class SettingsAccountSection extends HookConsumerWidget {
         return;
       }
 
-      final webview = await WebviewWindow.create();
+      final applicationSupportDir = await getApplicationSupportDirectory();
+      final userDataFolder = Directory(
+          join(applicationSupportDir.path, "webview_window_Webview2"));
+
+      if (!await userDataFolder.exists()) {
+        await userDataFolder.create();
+      }
+
+      final webview = await WebviewWindow.create(
+        configuration:
+            CreateConfiguration(userDataFolderWindows: userDataFolder.path),
+      );
 
       webview.setOnUrlRequestCallback((url) {
         final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
