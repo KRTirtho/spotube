@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,10 +9,12 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/pages/mobile_login/mobile_login.dart';
 import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class SettingsAccountSection extends HookConsumerWidget {
@@ -23,6 +26,7 @@ class SettingsAccountSection extends HookConsumerWidget {
     final router = GoRouter.of(context);
 
     final auth = ref.watch(authenticationProvider);
+    final authNotifier = ref.watch(authenticationProvider.notifier);
     final scrobbler = ref.watch(scrobblerProvider);
     final me = ref.watch(meProvider);
     final meData = me.asData?.value;
@@ -31,6 +35,36 @@ class SettingsAccountSection extends HookConsumerWidget {
       backgroundColor: Colors.red,
       foregroundColor: Colors.white,
     );
+
+    void onLogin() async {
+      if (kIsMobile) {
+        router.pushNamed(WebViewLogin.name);
+        return;
+      }
+
+      final webview = await WebviewWindow.create();
+
+      webview.setOnUrlRequestCallback((url) {
+        final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
+
+        if (exp.hasMatch(url)) {
+          webview.getAllCookies().then((cookies) async {
+            final cookieHeader =
+                "sp_dc=${cookies.firstWhere((element) => element.name == "sp_dc").value}";
+
+            await authNotifier.login(cookieHeader);
+            webview.close();
+            if (context.mounted) {
+              context.go("/");
+            }
+          });
+          return true;
+        }
+        return false;
+      });
+
+      webview.launch("https://accounts.spotify.com/");
+    }
 
     return SectionCardWithHeading(
       heading: context.l10n.account,
@@ -70,17 +104,11 @@ class SettingsAccountSection extends HookConsumerWidget {
                   ),
                 ),
               ),
-              onTap: constrains.mdAndUp
-                  ? null
-                  : () {
-                      router.push("/login");
-                    },
+              onTap: constrains.mdAndUp ? null : onLogin,
               trailing: constrains.smAndDown
                   ? null
                   : FilledButton(
-                      onPressed: () {
-                        router.push("/login");
-                      },
+                      onPressed: onLogin,
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(

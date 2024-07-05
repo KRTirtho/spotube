@@ -65,7 +65,7 @@ Future<void> main(List<String> rawArgs) async {
       await FlutterDisplayMode.setHighRefreshRate();
     }
 
-    if (kIsDesktop) {
+    if (kIsDesktop && !kIsMacOS) {
       await windowManager.setPreventClose(true);
     }
 
