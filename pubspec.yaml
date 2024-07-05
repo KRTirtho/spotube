@@ -132,7 +132,7 @@ dependencies:
   encrypt: ^5.0.3
 
 dev_dependencies:
-  build_runner: ^2.4.11
+  build_runner: ^2.4.9
   crypto: ^3.0.3
   envied_generator: ^0.5.4+1
   flutter_gen_runner: ^5.4.0
