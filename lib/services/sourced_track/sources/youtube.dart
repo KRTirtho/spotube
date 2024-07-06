@@ -50,8 +50,14 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }) async {
     final database = ref.read(databaseProvider);
     final cachedSource = await (database.select(database.sourceMatchTable)
-          ..where((s) => s.trackId.equals(track.id!)))
-        .getSingleOrNull();
+          ..where((s) => s.trackId.equals(track.id!))
+          ..limit(1)
+          ..orderBy([
+            (s) =>
+                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
+          ]))
+        .get()
+        .then((s) => s.firstOrNull);
 
     if (cachedSource == null || cachedSource.sourceType != SourceType.youtube) {
       final siblings = await fetchSiblings(ref: ref, track: track);
@@ -287,12 +293,17 @@ class YoutubeSourcedTrack extends SourcedTrack {
         );
 
     final database = ref.read(databaseProvider);
+
     await database.into(database.sourceMatchTable).insert(
           SourceMatchTableCompanion.insert(
             trackId: id!,
             sourceId: newSourceInfo.id,
             sourceType: const Value(SourceType.youtube),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
           ),
+          mode: InsertMode.replace,
         );
 
     return YoutubeSourcedTrack(
