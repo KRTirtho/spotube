@@ -8,7 +8,7 @@ import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/logger.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 class LogsPage extends HookWidget {
   static const name = "logs";
@@ -61,7 +61,7 @@ class LogsPage extends HookWidget {
 
     useEffect(() {
       final timer = Timer.periodic(const Duration(seconds: 5), (t) async {
-        path.value ??= await getLogsPath();
+        path.value ??= await AppLogger.getLogsPath();
         final raw = await path.value!.readAsString();
         final hasChanged = rawLogs.value != raw;
         rawLogs.value = raw;

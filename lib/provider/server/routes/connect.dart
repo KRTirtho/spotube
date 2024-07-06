@@ -7,7 +7,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/connect/connect.dart';
-import 'package:spotube/models/logger.dart';
+
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/volume_provider.dart';
@@ -25,11 +25,9 @@ class ServerConnectRoutes {
   final Ref ref;
   final StreamController<String> _connectClientStreamController;
   final List<StreamSubscription> subscriptions;
-  final SpotubeLogger logger;
   ServerConnectRoutes(this.ref)
       : _connectClientStreamController = StreamController<String>.broadcast(),
-        subscriptions = [],
-        logger = getLogger('ConnectServer') {
+        subscriptions = [] {
     ref.onDispose(() {
       _connectClientStreamController.close();
       for (final subscription in subscriptions) {
@@ -193,7 +191,7 @@ class ServerConnectRoutes {
               }
             },
             onDone: () {
-              logger.i('Connection closed');
+              AppLogger.log.i('Connection closed');
             },
           ),
         ]);

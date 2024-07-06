@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/modules/player/player_controls.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
@@ -21,8 +20,6 @@ class PlayPauseIntent extends Intent {
 }
 
 class PlayPauseAction extends Action<PlayPauseIntent> {
-  final logger = getLogger(PlayPauseAction);
-
   @override
   invoke(intent) async {
     if (PlayerControls.focusNode.canRequestFocus) {

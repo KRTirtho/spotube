@@ -7,7 +7,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/connect/connect.dart';
-import 'package:spotube/models/logger.dart';
+
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
@@ -46,8 +46,6 @@ final volumeProvider = StateProvider<double>(
   (ref) => 1.0,
 );
 
-final logger = getLogger('ConnectNotifier');
-
 class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
   @override
   build() async {
@@ -58,7 +56,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
 
       final service = connectClients.asData!.value.resolvedService!;
 
-      logger.t(
+      AppLogger.log.t(
         '♾️ Connecting to ${service.name}: ws://${service.host}:${service.port}/ws',
       );
 
@@ -68,7 +66,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
 
       await channel.ready;
 
-      logger.t(
+      AppLogger.log.t(
         '✅ Connected to ${service.name}: ws://${service.host}:${service.port}/ws',
       );
 

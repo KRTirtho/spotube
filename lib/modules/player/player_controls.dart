@@ -10,7 +10,6 @@ import 'package:spotube/collections/intents.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/modules/player/use_progress.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -19,13 +18,11 @@ class PlayerControls extends HookConsumerWidget {
   final PaletteGenerator? palette;
   final bool compact;
 
-  PlayerControls({
+  const PlayerControls({
     this.palette,
     this.compact = false,
     super.key,
   });
-
-  final logger = getLogger(PlayerControls);
 
   static FocusNode focusNode = FocusNode();
 

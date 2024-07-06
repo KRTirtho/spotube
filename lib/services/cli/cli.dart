@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:spotube/models/logger.dart';
 
 Future<ArgResults> startCLI(List<String> args) async {
   final parser = ArgParser();
@@ -15,13 +14,6 @@ Future<ArgResults> startCLI(List<String> args) async {
     abbr: 'v',
     help: 'Verbose mode',
     defaultsTo: !kReleaseMode,
-    callback: (verbose) {
-      if (verbose) {
-        logEnv['VERBOSE'] = 'true';
-        logEnv['DEBUG'] = 'true';
-        logEnv['ERROR'] = 'true';
-      }
-    },
   );
   parser.addFlag(
     "version",

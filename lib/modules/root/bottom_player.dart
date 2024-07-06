@@ -16,7 +16,6 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -27,9 +26,8 @@ import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
 class BottomPlayer extends HookConsumerWidget {
-  BottomPlayer({super.key});
+  const BottomPlayer({super.key});
 
-  final logger = getLogger(BottomPlayer);
   @override
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(authenticationProvider);

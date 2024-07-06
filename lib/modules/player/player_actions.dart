@@ -11,7 +11,6 @@ import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -22,14 +21,14 @@ class PlayerActions extends HookConsumerWidget {
   final bool floatingQueue;
   final bool showQueue;
   final List<Widget>? extraActions;
-  PlayerActions({
+
+  const PlayerActions({
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.floatingQueue = true,
     this.showQueue = true,
     this.extraActions,
     super.key,
   });
-  final logger = getLogger(PlayerActions);
 
   @override
   Widget build(BuildContext context, ref) {

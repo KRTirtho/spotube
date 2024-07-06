@@ -3,17 +3,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistAlbumList extends HookConsumerWidget {
   final String artistId;
-  ArtistAlbumList(
+
+  const ArtistAlbumList(
     this.artistId, {
     super.key,
   });
-
-  final logger = getLogger(ArtistAlbumList);
 
   @override
   Widget build(BuildContext context, ref) {
