@@ -71,12 +71,12 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     // }
   }
 
-  Stream<PlaybackLoopMode> get loopModeStream {
+  Stream<PlaylistMode> get loopModeStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.stream.playlistMode.map(PlaybackLoopMode.fromPlaylistMode);
+    return _mkPlayer.stream.playlistMode;
     // } else {
     //   return _justAudio!.loopModeStream
-    //       .map(PlaybackLoopMode.fromLoopMode)
+    //       .map(PlaylistMode.fromLoopMode)
     //       ;
     // }
   }

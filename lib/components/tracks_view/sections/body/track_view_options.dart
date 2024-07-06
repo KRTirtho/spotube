@@ -8,11 +8,11 @@ import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/components/tracks_view/track_view_provider.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 
 class TrackViewBodyOptions extends HookConsumerWidget {
   const TrackViewBodyOptions({super.key});
@@ -24,8 +24,8 @@ class TrackViewBodyOptions extends HookConsumerWidget {
 
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
-    final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final historyNotifier = ref.watch(playbackHistoryActionsProvider);
     final audioSource =
         ref.watch(userPreferencesProvider.select((s) => s.audioSource));
 

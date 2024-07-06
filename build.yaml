@@ -8,3 +8,10 @@ targets:
         options:
           any_map: true
           explicit_to_json: true
+      drift_dev:
+        options:
+          sql:
+            dialect: sqlite
+            options:
+              modules:
+                - json1

@@ -1,32 +1,30 @@
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/models/skip_segment.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+
 import 'package:spotube/services/dio/dio.dart';
 
 class SourcedSegments {
   final String source;
-  final List<SkipSegment> segments;
+  final List<SkipSegmentTableData> segments;
 
   SourcedSegments({required this.source, required this.segments});
 }
 
-Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
+Future<List<SkipSegmentTableData>> getAndCacheSkipSegments(
+    String id, Ref ref) async {
+  final database = ref.read(databaseProvider);
   try {
-    final cached = await SkipSegment.box.get(id) as List?;
-    if (cached != null && cached.isNotEmpty) {
-      return List.castFrom<dynamic, SkipSegment>(
-        cached
-            .map(
-              (json) => SkipSegment.fromJson(
-                Map.castFrom<dynamic, dynamic, String, dynamic>(json),
-              ),
-            )
-            .toList(),
-      );
+    final cached = await (database.select(database.skipSegmentTable)
+          ..where((s) => s.trackId.equals(id)))
+        .get();
+
+    if (cached.isNotEmpty) {
+      return cached;
     }
 
     final res = await globalDio.getUri(
@@ -54,25 +52,30 @@ Future<List<SkipSegment>> getAndCacheSkipSegments(String id) async {
     );
 
     if (res.data == "Not Found") {
-      return List.castFrom<dynamic, SkipSegment>([]);
+      return List.castFrom<dynamic, SkipSegmentTableData>([]);
     }
 
     final data = res.data as List;
     final segments = data.map((obj) {
       final start = obj["segment"].first.toInt();
       final end = obj["segment"].last.toInt();
-      return SkipSegment(start, end);
+      return SkipSegmentTableCompanion.insert(
+        trackId: id,
+        start: start,
+        end: end,
+      );
     }).toList();
 
-    await SkipSegment.box.put(
-      id,
-      segments.map((e) => e.toJson()).toList(),
-    );
-    return List.castFrom<dynamic, SkipSegment>(segments);
+    await database.batch((b) {
+      b.insertAll(database.skipSegmentTable, segments);
+    });
+
+    return await (database.select(database.skipSegmentTable)
+          ..where((s) => s.trackId.equals(id)))
+        .get();
   } catch (e, stack) {
-    await SkipSegment.box.put(id, []);
     AppLogger.reportError(e, stack);
-    return List.castFrom<dynamic, SkipSegment>([]);
+    return List.castFrom<dynamic, SkipSegmentTableData>([]);
   }
 }
 
@@ -99,7 +102,7 @@ final segmentProvider = FutureProvider<SourcedSegments?>(
       );
     }
 
-    final segments = await getAndCacheSkipSegments(track.sourceInfo.id);
+    final segments = await getAndCacheSkipSegments(track.sourceInfo.id, ref);
 
     return SourcedSegments(
       source: track.sourceInfo.id,

@@ -24,8 +24,8 @@ import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
@@ -47,7 +47,7 @@ class PlayerView extends HookConsumerWidget {
     final auth = ref.watch(authenticationProvider);
     final sourcedCurrentTrack = ref.watch(activeSourcedTrackProvider);
     final currentActiveTrack =
-        ref.watch(proxyPlaylistProvider.select((s) => s.activeTrack));
+        ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
     final currentTrack = sourcedCurrentTrack ?? currentActiveTrack;
     final isLocalTrack = currentTrack is LocalTrack;
     final mediaQuery = MediaQuery.of(context);
@@ -309,15 +309,13 @@ class PlayerView extends HookConsumerWidget {
                                               builder: (context) => Consumer(
                                                 builder: (context, ref, _) {
                                                   final playlist = ref.watch(
-                                                    proxyPlaylistProvider,
+                                                    audioPlayerProvider,
                                                   );
-                                                  final playlistNotifier =
-                                                      ref.read(
-                                                    proxyPlaylistProvider
-                                                        .notifier,
-                                                  );
+                                                  final playlistNotifier = ref
+                                                      .read(audioPlayerProvider
+                                                          .notifier);
                                                   return PlayerQueue
-                                                      .fromProxyPlaylistNotifier(
+                                                      .fromAudioPlayerNotifier(
                                                     floating: false,
                                                     playlist: playlist,
                                                     notifier: playlistNotifier,
@@ -328,8 +326,9 @@ class PlayerView extends HookConsumerWidget {
                                           }
                                         : null),
                               ),
-                              if (auth != null) const SizedBox(width: 10),
-                              if (auth != null)
+                              if (auth.asData?.value != null)
+                                const SizedBox(width: 10),
+                              if (auth.asData?.value != null)
                                 Expanded(
                                   child: OutlinedButton.icon(
                                     label: Text(context.l10n.lyrics),

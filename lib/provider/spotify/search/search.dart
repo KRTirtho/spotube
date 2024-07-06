@@ -42,7 +42,7 @@ class SearchNotifier<Y> extends AutoDisposeFamilyPaginatedAsyncNotifier<Y,
         .get(
           ref.read(searchTermStateProvider),
           types: [arg],
-          market: ref.read(userPreferencesProvider).recommendationMarket,
+          market: ref.read(userPreferencesProvider).market,
         )
         .getPage(limit, offset);
 
@@ -56,7 +56,7 @@ class SearchNotifier<Y> extends AutoDisposeFamilyPaginatedAsyncNotifier<Y,
     ref.watch(searchTermStateProvider);
     ref.watch(spotifyProvider);
     ref.watch(
-      userPreferencesProvider.select((value) => value.recommendationMarket),
+      userPreferencesProvider.select((value) => value.market),
     );
 
     final results = await fetch(arg, 0, 10);

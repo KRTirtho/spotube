@@ -1,11 +1,6 @@
 part of '../spotify.dart';
 
-class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
-    with Persistence<SubtitleSimple> {
-  SyncedLyricsNotifier() {
-    load();
-  }
-
+class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
   Track get _track => arg!;
 
   Future<SubtitleSimple> getSpotifyLyrics(String? token) async {
@@ -128,12 +123,25 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
   @override
   FutureOr<SubtitleSimple> build(track) async {
     try {
+      final database = ref.watch(databaseProvider);
       final spotify = ref.watch(spotifyProvider);
+
       if (track == null) {
         throw "No track currently";
       }
+
+      final cachedLyrics = await (database.select(database.lyricsTable)
+            ..where((tbl) => tbl.trackId.equals(track.id!)))
+          .map((row) => row.data)
+          .getSingleOrNull();
+
+      SubtitleSimple? lyrics = cachedLyrics;
+
       final token = await spotify.getCredentials();
-      SubtitleSimple lyrics = await getSpotifyLyrics(token.accessToken);
+
+      if (lyrics == null || lyrics.lyrics.isEmpty) {
+        lyrics = await getSpotifyLyrics(token.accessToken);
+      }
 
       if (lyrics.lyrics.isEmpty || lyrics.lyrics.length <= 5) {
         lyrics = await getLRCLibLyrics();
@@ -143,19 +151,21 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?>
         throw Exception("Unable to find lyrics");
       }
 
+      if (cachedLyrics == null || cachedLyrics.lyrics.isEmpty) {
+        await database.into(database.lyricsTable).insertOnConflictUpdate(
+              LyricsTableCompanion.insert(
+                trackId: track.id!,
+                data: lyrics,
+              ),
+            );
+      }
+
       return lyrics;
     } catch (e, stackTrace) {
       AppLogger.reportError(e, stackTrace);
       rethrow;
     }
   }
-
-  @override
-  FutureOr<SubtitleSimple> fromJson(Map<String, dynamic> json) =>
-      SubtitleSimple.fromJson(json.castKeyDeep<String>());
-
-  @override
-  Map<String, dynamic> toJson(SubtitleSimple data) => data.toJson();
 }
 
 final syncedLyricsDelayProvider = StateProvider<int>((ref) => 0);

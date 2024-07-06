@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/components/dialogs/replace_downloaded_dialog.dart';
@@ -16,10 +15,9 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/routes/connect.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
-import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -41,13 +39,6 @@ class RootApp extends HookConsumerWidget {
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         ServiceUtils.checkForUpdates(context, ref);
-
-        final sharedPreferences = await SharedPreferences.getInstance();
-
-        if (sharedPreferences.getBool(kIsUsingEncryption) == false &&
-            context.mounted) {
-          await PersistedStateNotifier.showNoEncryptionDialog(context);
-        }
       });
 
       final subscriptions = [
@@ -201,11 +192,11 @@ class RootApp extends HookConsumerWidget {
                 ),
                 child: Consumer(
                   builder: (context, ref, _) {
-                    final playlist = ref.watch(proxyPlaylistProvider);
+                    final playlist = ref.watch(audioPlayerProvider);
                     final playlistNotifier =
-                        ref.read(proxyPlaylistProvider.notifier);
+                        ref.read(audioPlayerProvider.notifier);
 
-                    return PlayerQueue.fromProxyPlaylistNotifier(
+                    return PlayerQueue.fromAudioPlayerNotifier(
                       floating: true,
                       playlist: playlist,
                       notifier: playlistNotifier,

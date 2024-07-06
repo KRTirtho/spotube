@@ -16,7 +16,7 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/connect/connect.dart';
-import 'package:spotube/services/audio_player/loop_mode.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotube/utils/service_utils.dart';
 
 class RemotePlayerQueue extends ConsumerWidget {
@@ -244,18 +244,18 @@ class ConnectControlPage extends HookConsumerWidget {
                                 : connectNotifier.next,
                           ),
                           IconButton(
-                            tooltip: loopMode == PlaybackLoopMode.one
+                            tooltip: loopMode == PlaylistMode.single
                                 ? context.l10n.loop_track
-                                : loopMode == PlaybackLoopMode.all
+                                : loopMode == PlaylistMode.loop
                                     ? context.l10n.repeat_playlist
                                     : null,
                             icon: Icon(
-                              loopMode == PlaybackLoopMode.one
+                              loopMode == PlaylistMode.single
                                   ? SpotubeIcons.repeatOne
                                   : SpotubeIcons.repeat,
                             ),
-                            style: loopMode == PlaybackLoopMode.one ||
-                                    loopMode == PlaybackLoopMode.all
+                            style: loopMode == PlaylistMode.single ||
+                                    loopMode == PlaylistMode.loop
                                 ? activeButtonStyle
                                 : buttonStyle,
                             onPressed: playlist.activeTrack == null
@@ -263,12 +263,11 @@ class ConnectControlPage extends HookConsumerWidget {
                                 : () async {
                                     connectNotifier.setLoopMode(
                                       switch (loopMode) {
-                                        PlaybackLoopMode.all =>
-                                          PlaybackLoopMode.one,
-                                        PlaybackLoopMode.one =>
-                                          PlaybackLoopMode.none,
-                                        PlaybackLoopMode.none =>
-                                          PlaybackLoopMode.all,
+                                        PlaylistMode.loop =>
+                                          PlaylistMode.single,
+                                        PlaylistMode.single =>
+                                          PlaylistMode.none,
+                                        PlaylistMode.none => PlaylistMode.loop,
                                       },
                                     );
                                   },

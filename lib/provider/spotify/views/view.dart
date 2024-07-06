@@ -4,7 +4,7 @@ final viewProvider = FutureProvider.family<Map<String, dynamic>, String>(
   (ref, viewName) async {
     final customSpotify = ref.watch(customSpotifyEndpointProvider);
     final market = ref.watch(
-      userPreferencesProvider.select((s) => s.recommendationMarket),
+      userPreferencesProvider.select((s) => s.market),
     );
     final locale = ref.watch(
       userPreferencesProvider.select((s) => s.locale),

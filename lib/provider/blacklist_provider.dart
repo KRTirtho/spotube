@@ -2,67 +2,57 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/current_playlist.dart';
-import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/database/database.dart';
 
-enum BlacklistedType {
-  artist,
-  track;
-
-  static BlacklistedType fromName(String name) =>
-      BlacklistedType.values.firstWhere((e) => e.name == name);
-}
-
-class BlacklistedElement {
-  final String id;
-  final String name;
-  final BlacklistedType type;
-
-  BlacklistedElement.artist(this.id, this.name) : type = BlacklistedType.artist;
-
-  BlacklistedElement.track(this.id, this.name) : type = BlacklistedType.track;
-
-  BlacklistedElement.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        type = BlacklistedType.fromName(json['type']);
-
-  Map<String, dynamic> toJson() => {'id': id, 'type': type.name, 'name': name};
-
+class BlackListNotifier extends AsyncNotifier<List<BlacklistTableData>> {
   @override
-  operator ==(other) =>
-      other is BlacklistedElement &&
-      other.id == id &&
-      other.type == type &&
-      other.name == name;
+  build() async {
+    final database = ref.watch(databaseProvider);
 
-  @override
-  int get hashCode => id.hashCode ^ type.hashCode ^ name.hashCode;
-}
+    final subscription = database
+        .select(database.blacklistTable)
+        .watch()
+        .listen((event) => state = AsyncData(event));
 
-class BlackListNotifier
-    extends PersistedStateNotifier<Set<BlacklistedElement>> {
-  BlackListNotifier() : super({}, "blacklist");
+    ref.onDispose(() {
+      subscription.cancel();
+    });
 
-  void add(BlacklistedElement element) {
-    state = state.union({element});
+    return await database.select(database.blacklistTable).get();
   }
 
-  void remove(BlacklistedElement element) {
-    state = state.difference({element});
+  AppDatabase get _database => ref.read(databaseProvider);
+
+  Future<void> add(BlacklistTableCompanion element) async {
+    _database.into(_database.blacklistTable).insert(element);
+  }
+
+  Future<void> remove(String elementId) async {
+    await (_database.delete(_database.blacklistTable)
+          ..where((tbl) => tbl.elementId.equals(elementId)))
+        .go();
   }
 
   bool contains(TrackSimple track) {
     final containsTrack =
-        state.contains(BlacklistedElement.track(track.id!, track.name!));
+        state.asData?.value.any((element) => element.elementId == track.id) ??
+            false;
 
     final containsTrackArtists = track.artists?.any(
-          (artist) => state.contains(
-            BlacklistedElement.artist(artist.id!, artist.name ?? "Spotify"),
-          ),
+          (artist) =>
+              state.asData?.value.any((el) => el.elementId == artist.id) ??
+              false,
         ) ??
         false;
 
     return containsTrack || containsTrackArtists;
+  }
+
+  bool containsArtist(ArtistSimple artist) {
+    return state.asData?.value
+            .any((element) => element.elementId == artist.id) ??
+        false;
   }
 
   /// Filters the non blacklisted tracks from the given [tracks]
@@ -75,34 +65,12 @@ class BlackListNotifier
       id: playlist.id,
       name: playlist.name,
       thumbnail: playlist.thumbnail,
-      tracks: playlist.tracks.where(
-        (track) {
-          return !state
-                  .contains(BlacklistedElement.track(track.id!, track.name!)) &&
-              !(track.artists ?? []).any(
-                (artist) => state.contains(
-                  BlacklistedElement.artist(artist.id!, artist.name!),
-                ),
-              );
-        },
-      ).toList(),
+      tracks: playlist.tracks.where((track) => !contains(track)).toList(),
     );
-  }
-
-  @override
-  Set<BlacklistedElement> fromJson(Map<String, dynamic> json) {
-    return json['blacklist']
-        .map<BlacklistedElement>((e) => BlacklistedElement.fromJson(e))
-        .toSet();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {'blacklist': state.map((e) => e.toJson()).toList()};
   }
 }
 
 final blacklistProvider =
-    StateNotifierProvider<BlackListNotifier, Set<BlacklistedElement>>((ref) {
-  return BlackListNotifier();
-});
+    AsyncNotifierProvider<BlackListNotifier, List<BlacklistTableData>>(
+  () => BlackListNotifier(),
+);

@@ -18,12 +18,13 @@ import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
@@ -95,8 +96,8 @@ class TrackOptions extends HookConsumerWidget {
     WidgetRef ref,
     Track track,
   ) async {
-    final playback = ref.read(proxyPlaylistProvider.notifier);
-    final playlist = ref.read(proxyPlaylistProvider);
+    final playback = ref.read(audioPlayerProvider.notifier);
+    final playlist = ref.read(audioPlayerProvider);
     final spotify = ref.read(spotifyProvider);
     final query = "${track.name} Radio";
     final pages =
@@ -159,8 +160,8 @@ class TrackOptions extends HookConsumerWidget {
     final router = GoRouter.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
 
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final playback = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
+    final playback = ref.watch(audioPlayerProvider.notifier);
     final auth = ref.watch(authenticationProvider);
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
@@ -170,11 +171,8 @@ class TrackOptions extends HookConsumerWidget {
     final favorites = useTrackToggleLike(track, ref);
 
     final isBlackListed = useMemoized(
-      () => blacklist.contains(
-        BlacklistedElement.track(
-          track.id!,
-          track.name!,
-        ),
+      () => blacklist.asData?.value.any(
+        (element) => element.elementId == track.id,
       ),
       [blacklist, track],
     );
@@ -258,13 +256,16 @@ class TrackOptions extends HookConsumerWidget {
                 .removeTracks(playlistId ?? "", [track.id!]);
             break;
           case TrackOptionValue.blacklist:
-            if (isBlackListed) {
-              ref.read(blacklistProvider.notifier).remove(
-                    BlacklistedElement.track(track.id!, track.name!),
-                  );
+            if (isBlackListed == null) break;
+            if (isBlackListed == true) {
+              await ref.read(blacklistProvider.notifier).remove(track.id!);
             } else {
-              ref.read(blacklistProvider.notifier).add(
-                    BlacklistedElement.track(track.id!, track.name!),
+              await ref.read(blacklistProvider.notifier).add(
+                    BlacklistTableCompanion.insert(
+                      name: track.name!,
+                      elementId: track.id!,
+                      elementType: BlacklistedType.track,
+                    ),
                   );
             }
             break;
@@ -363,7 +364,7 @@ class TrackOptions extends HookConsumerWidget {
                   : context.l10n.save_as_favorite,
             ),
           ),
-        if (auth != null && !isLocalTrack) ...[
+        if (auth.asData?.value != null && !isLocalTrack) ...[
           PopSheetEntry(
             value: TrackOptionValue.startRadio,
             leading: const Icon(SpotubeIcons.radio),
@@ -375,7 +376,7 @@ class TrackOptions extends HookConsumerWidget {
             title: Text(context.l10n.add_to_playlist),
           ),
         ],
-        if (userPlaylist && auth != null && !isLocalTrack)
+        if (userPlaylist && auth.asData?.value != null && !isLocalTrack)
           PopSheetEntry(
             value: TrackOptionValue.removeFromPlaylist,
             leading: const Icon(SpotubeIcons.removeFilled),
@@ -399,10 +400,10 @@ class TrackOptions extends HookConsumerWidget {
           PopSheetEntry(
             value: TrackOptionValue.blacklist,
             leading: const Icon(SpotubeIcons.playlistRemove),
-            iconColor: !isBlackListed ? Colors.red[400] : null,
-            textColor: !isBlackListed ? Colors.red[400] : null,
+            iconColor: isBlackListed != true ? Colors.red[400] : null,
+            textColor: isBlackListed != true ? Colors.red[400] : null,
             title: Text(
-              isBlackListed
+              isBlackListed == true
                   ? context.l10n.remove_from_blacklist
                   : context.l10n.add_to_blacklist,
             ),

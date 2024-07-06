@@ -2,18 +2,18 @@ import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shelf/shelf.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 
 class ServerPlaybackRoutes {
   final Ref ref;
   UserPreferences get userPreferences => ref.read(userPreferencesProvider);
-  ProxyPlaylist get playlist => ref.read(proxyPlaylistProvider);
+  AudioPlayerState get playlist => ref.read(audioPlayerProvider);
   final Dio dio;
 
   ServerPlaybackRoutes(this.ref) : dio = Dio();
@@ -23,10 +23,11 @@ class ServerPlaybackRoutes {
     try {
       final track =
           playlist.tracks.firstWhere((element) => element.id == trackId);
+
       final activeSourcedTrack = ref.read(activeSourcedTrackProvider);
       final sourcedTrack = activeSourcedTrack?.id == track.id
           ? activeSourcedTrack
-          : await ref.read(sourcedTrackProvider(track).future);
+          : await ref.read(sourcedTrackProvider(SpotubeMedia(track)).future);
 
       ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
 

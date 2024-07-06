@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/player/player_actions.dart';
 import 'package:spotube/modules/player/player_overlay.dart';
 import 'package:spotube/modules/player/player_track_details.dart';
@@ -17,10 +18,10 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
@@ -32,7 +33,7 @@ class BottomPlayer extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(authenticationProvider);
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
@@ -90,7 +91,7 @@ class BottomPlayer extends HookConsumerWidget {
                   children: [
                     PlayerActions(
                       extraActions: [
-                        if (auth != null)
+                        if (auth.asData?.value != null)
                           IconButton(
                             tooltip: context.l10n.mini_player,
                             icon: const Icon(SpotubeIcons.miniPlayer),

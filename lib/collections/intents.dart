@@ -11,7 +11,7 @@ import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/library/library.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 
@@ -96,8 +96,8 @@ class SeekIntent extends Intent {
 class SeekAction extends Action<SeekIntent> {
   @override
   invoke(intent) async {
-    final playlist = intent.ref.read(proxyPlaylistProvider);
-    if (playlist.isFetching) {
+    final isFetchingActiveTrack = intent.ref.read(queryingTrackInfoProvider);
+    if (isFetchingActiveTrack) {
       DirectionalFocusAction().invoke(
         DirectionalFocusIntent(
           intent.forward ? TraversalDirection.right : TraversalDirection.left,
@@ -105,7 +105,7 @@ class SeekAction extends Action<SeekIntent> {
       );
       return null;
     }
-    final position = (await audioPlayer.position ?? Duration.zero).inSeconds;
+    final position = audioPlayer.position.inSeconds;
     await audioPlayer.seek(
       Duration(
         seconds: intent.forward ? position + 5 : position - 5,

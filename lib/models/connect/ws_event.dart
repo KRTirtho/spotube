@@ -183,7 +183,7 @@ class WebSocketEvent<T> {
     if (type == WsEvent.loop) {
       await callback(
         WebSocketLoopEvent(
-          PlaybackLoopMode.fromString(data as String),
+          PlaylistMode.values.firstWhere((e) => e.name == data as String),
         ),
       );
     }
@@ -224,12 +224,16 @@ class WebSocketEvent<T> {
   }
 }
 
-class WebSocketLoopEvent extends WebSocketEvent<PlaybackLoopMode> {
-  WebSocketLoopEvent(PlaybackLoopMode data) : super(WsEvent.loop, data);
+class WebSocketLoopEvent extends WebSocketEvent<PlaylistMode> {
+  WebSocketLoopEvent(PlaylistMode data) : super(WsEvent.loop, data);
 
   WebSocketLoopEvent.fromJson(Map<String, dynamic> json)
       : super(
-            WsEvent.loop, PlaybackLoopMode.fromString(json["data"] as String));
+          WsEvent.loop,
+          PlaylistMode.values.firstWhere(
+            (e) => e.name == json["data"] as String,
+          ),
+        );
 
   @override
   String toJson() {
@@ -321,12 +325,12 @@ class WebSocketErrorEvent extends WebSocketEvent<String> {
   WebSocketErrorEvent(String data) : super(WsEvent.error, data);
 }
 
-class WebSocketQueueEvent extends WebSocketEvent<ProxyPlaylist> {
-  WebSocketQueueEvent(ProxyPlaylist data) : super(WsEvent.queue, data);
+class WebSocketQueueEvent extends WebSocketEvent<AudioPlayerState> {
+  WebSocketQueueEvent(AudioPlayerState data) : super(WsEvent.queue, data);
 
   factory WebSocketQueueEvent.fromJson(Map<String, dynamic> json) =>
       WebSocketQueueEvent(
-        ProxyPlaylist.fromJsonRaw(json),
+        AudioPlayerState.fromJson(json),
       );
 }
 

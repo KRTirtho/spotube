@@ -10,9 +10,10 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/pages/album/album.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -30,11 +31,12 @@ class AlbumCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
-    final historyNotifier = ref.read(playbackHistoryProvider.notifier);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final historyNotifier = ref.read(playbackHistoryActionsProvider);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
 
     bool isPlaylistPlaying = useMemoized(
       () => playlist.containsCollection(album.id!),
@@ -59,8 +61,8 @@ class AlbumCard extends HookConsumerWidget {
         ),
         margin: const EdgeInsets.symmetric(horizontal: 10),
         isPlaying: isPlaylistPlaying,
-        isLoading: (isPlaylistPlaying && playlist.isFetching == true) ||
-            updating.value,
+        isLoading:
+            (isPlaylistPlaying && isFetchingActiveTrack) || updating.value,
         title: album.name!,
         description:
             "${album.albumType?.formatted} • ${album.artists?.asString() ?? ""}",

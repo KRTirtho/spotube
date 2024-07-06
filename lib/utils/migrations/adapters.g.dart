@@ -1,10 +1,174 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_preferences_state.dart';
+part of 'adapters.dart';
+
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class SkipSegmentAdapter extends TypeAdapter<SkipSegment> {
+  @override
+  final int typeId = 2;
+
+  @override
+  SkipSegment read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SkipSegment(
+      fields[0] as int,
+      fields[1] as int,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SkipSegment obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.start)
+      ..writeByte(1)
+      ..write(obj.end);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SkipSegmentAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SourceMatchAdapter extends TypeAdapter<SourceMatch> {
+  @override
+  final int typeId = 6;
+
+  @override
+  SourceMatch read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SourceMatch(
+      id: fields[0] as String,
+      sourceId: fields[1] as String,
+      sourceType: fields[2] as SourceType,
+      createdAt: fields[3] as DateTime,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, SourceMatch obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.sourceId)
+      ..writeByte(2)
+      ..write(obj.sourceType)
+      ..writeByte(3)
+      ..write(obj.createdAt);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SourceMatchAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class SourceTypeAdapter extends TypeAdapter<SourceType> {
+  @override
+  final int typeId = 5;
+
+  @override
+  SourceType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return SourceType.youtube;
+      case 1:
+        return SourceType.youtubeMusic;
+      case 2:
+        return SourceType.jiosaavn;
+      default:
+        return SourceType.youtube;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, SourceType obj) {
+    switch (obj) {
+      case SourceType.youtube:
+        writer.writeByte(0);
+        break;
+      case SourceType.youtubeMusic:
+        writer.writeByte(1);
+        break;
+      case SourceType.jiosaavn:
+        writer.writeByte(2);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SourceTypeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
+
+SourceMatch _$SourceMatchFromJson(Map json) => SourceMatch(
+      id: json['id'] as String,
+      sourceId: json['sourceId'] as String,
+      sourceType: $enumDecode(_$SourceTypeEnumMap, json['sourceType']),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
+
+Map<String, dynamic> _$SourceMatchToJson(SourceMatch instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'sourceId': instance.sourceId,
+      'sourceType': _$SourceTypeEnumMap[instance.sourceType]!,
+      'createdAt': instance.createdAt.toIso8601String(),
+    };
+
+const _$SourceTypeEnumMap = {
+  SourceType.youtube: 'youtube',
+  SourceType.youtubeMusic: 'youtubeMusic',
+  SourceType.jiosaavn: 'jiosaavn',
+};
+
+AuthenticationCredentials _$AuthenticationCredentialsFromJson(Map json) =>
+    AuthenticationCredentials(
+      cookie: json['cookie'] as String,
+      accessToken: json['accessToken'] as String,
+      expiration: DateTime.parse(json['expiration'] as String),
+    );
+
+Map<String, dynamic> _$AuthenticationCredentialsToJson(
+        AuthenticationCredentials instance) =>
+    <String, dynamic>{
+      'cookie': instance.cookie,
+      'accessToken': instance.accessToken,
+      'expiration': instance.expiration.toIso8601String(),
+    };
 
 _$UserPreferencesImpl _$$UserPreferencesImplFromJson(Map json) =>
     _$UserPreferencesImpl(
@@ -386,3 +550,51 @@ const _$SourceCodecsEnumMap = {
   SourceCodecs.m4a: 'm4a',
   SourceCodecs.weba: 'weba',
 };
+
+_$PlaybackHistoryPlaylistImpl _$$PlaybackHistoryPlaylistImplFromJson(
+        Map json) =>
+    _$PlaybackHistoryPlaylistImpl(
+      date: DateTime.parse(json['date'] as String),
+      playlist: PlaylistSimple.fromJson(
+          Map<String, dynamic>.from(json['playlist'] as Map)),
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$$PlaybackHistoryPlaylistImplToJson(
+        _$PlaybackHistoryPlaylistImpl instance) =>
+    <String, dynamic>{
+      'date': instance.date.toIso8601String(),
+      'playlist': instance.playlist.toJson(),
+      'runtimeType': instance.$type,
+    };
+
+_$PlaybackHistoryAlbumImpl _$$PlaybackHistoryAlbumImplFromJson(Map json) =>
+    _$PlaybackHistoryAlbumImpl(
+      date: DateTime.parse(json['date'] as String),
+      album:
+          AlbumSimple.fromJson(Map<String, dynamic>.from(json['album'] as Map)),
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$$PlaybackHistoryAlbumImplToJson(
+        _$PlaybackHistoryAlbumImpl instance) =>
+    <String, dynamic>{
+      'date': instance.date.toIso8601String(),
+      'album': instance.album.toJson(),
+      'runtimeType': instance.$type,
+    };
+
+_$PlaybackHistoryTrackImpl _$$PlaybackHistoryTrackImplFromJson(Map json) =>
+    _$PlaybackHistoryTrackImpl(
+      date: DateTime.parse(json['date'] as String),
+      track: Track.fromJson(Map<String, dynamic>.from(json['track'] as Map)),
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$$PlaybackHistoryTrackImplToJson(
+        _$PlaybackHistoryTrackImpl instance) =>
+    <String, dynamic>{
+      'date': instance.date.toIso8601String(),
+      'track': instance.track.toJson(),
+      'runtimeType': instance.$type,
+    };

@@ -11,7 +11,8 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
 import 'package:spotube/modules/player/use_progress.dart';
 import 'package:spotube/modules/player/player.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 class PlayerOverlay extends HookConsumerWidget {
@@ -24,8 +25,8 @@ class PlayerOverlay extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final canShow = playlist.activeTrack != null;
 
     final playing =
@@ -127,14 +128,14 @@ class PlayerOverlay extends HookConsumerWidget {
                                   SpotubeIcons.skipBack,
                                   color: textColor,
                                 ),
-                                onPressed: playlist.isFetching
+                                onPressed: isFetchingActiveTrack
                                     ? null
-                                    : playlistNotifier.previous,
+                                    : audioPlayer.skipToPrevious,
                               ),
                               Consumer(
                                 builder: (context, ref, _) {
                                   return IconButton(
-                                    icon: playlist.isFetching
+                                    icon: isFetchingActiveTrack
                                         ? const SizedBox(
                                             height: 20,
                                             width: 20,
@@ -158,9 +159,9 @@ class PlayerOverlay extends HookConsumerWidget {
                                   SpotubeIcons.skipForward,
                                   color: textColor,
                                 ),
-                                onPressed: playlist.isFetching
+                                onPressed: isFetchingActiveTrack
                                     ? null
-                                    : playlistNotifier.next,
+                                    : audioPlayer.skipToNext,
                               ),
                             ],
                           ),

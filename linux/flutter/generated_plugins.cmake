@@ -10,6 +10,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   local_notifier
   media_kit_libs_linux
   screen_retriever
+  sqlite3_flutter_libs
   system_theme
   system_tray
   tray_manager

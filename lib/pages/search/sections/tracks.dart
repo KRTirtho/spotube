@@ -8,7 +8,7 @@ import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/provider/connect/connect.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class SearchTracksSection extends HookConsumerWidget {
@@ -24,8 +24,8 @@ class SearchTracksSection extends HookConsumerWidget {
         ref.watch(searchProvider(SearchType.track).notifier);
 
     final tracks = searchTrack.asData?.value.items.cast<Track>() ?? [];
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
     final theme = Theme.of(context);
 
     return Column(

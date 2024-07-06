@@ -33,7 +33,7 @@ class StatsAlbumItem extends StatelessWidget {
           Text("${album.albumType?.formatted} • "),
           Flexible(
             child: ArtistLink(
-              artists: album.artists!,
+              artists: album.artists ?? [],
               mainAxisAlignment: WrapAlignment.start,
             ),
           ),

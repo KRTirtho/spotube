@@ -14,7 +14,7 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/track_tile/track_options.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -34,8 +34,8 @@ class TrackPage extends HookConsumerWidget {
     final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
 
     final isActive = playlist.activeTrack?.id == trackId;
 

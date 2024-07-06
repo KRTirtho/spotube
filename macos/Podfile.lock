@@ -39,6 +39,21 @@ PODS:
   - sqflite (0.0.3):
     - Flutter
     - FlutterMacOS
+  - sqlite3 (3.46.0):
+    - sqlite3/common (= 3.46.0)
+  - sqlite3/common (3.46.0)
+  - sqlite3/fts5 (3.46.0):
+    - sqlite3/common
+  - sqlite3/perf-threadsafe (3.46.0):
+    - sqlite3/common
+  - sqlite3/rtree (3.46.0):
+    - sqlite3/common
+  - sqlite3_flutter_libs (0.0.1):
+    - FlutterMacOS
+    - sqlite3 (~> 3.46.0)
+    - sqlite3/fts5
+    - sqlite3/perf-threadsafe
+    - sqlite3/rtree
   - system_theme (0.0.1):
     - FlutterMacOS
   - system_tray (0.0.1):
@@ -69,6 +84,7 @@ DEPENDENCIES:
   - screen_retriever (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/darwin`)
+  - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos`)
   - system_theme (from `Flutter/ephemeral/.symlinks/plugins/system_theme/macos`)
   - system_tray (from `Flutter/ephemeral/.symlinks/plugins/system_tray/macos`)
   - tray_manager (from `Flutter/ephemeral/.symlinks/plugins/tray_manager/macos`)
@@ -78,6 +94,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - OrderedSet
+    - sqlite3
 
 EXTERNAL SOURCES:
   app_links:
@@ -116,6 +133,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   sqflite:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite/darwin
+  sqlite3_flutter_libs:
+    :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos
   system_theme:
     :path: Flutter/ephemeral/.symlinks/plugins/system_theme/macos
   system_tray:
@@ -147,6 +166,8 @@ SPEC CHECKSUMS:
   screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
+  sqlite3: 154b084339ede06960a5b3c8160066adc9176b7d
+  sqlite3_flutter_libs: 1be4459672f8168ded2d8667599b8e3ca5e72b83
   system_theme: c7b9f6659a5caa26c9bc2284da096781e9a6fcbc
   system_tray: e53c972838c69589ff2e77d6d3abfd71332f9e5d
   tray_manager: 9064e219c56d75c476e46b9a21182087930baf90

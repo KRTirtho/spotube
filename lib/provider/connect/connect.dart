@@ -1,13 +1,14 @@
 import 'dart:convert';
 
+import 'package:media_kit/media_kit.dart' hide Track;
+import 'package:spotube/provider/audio_player/state.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/connect/clients.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/services/audio_player/loop_mode.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
@@ -27,12 +28,18 @@ final shuffleProvider = StateProvider<bool>(
   (ref) => false,
 );
 
-final loopModeProvider = StateProvider<PlaybackLoopMode>(
-  (ref) => PlaybackLoopMode.none,
+final loopModeProvider = StateProvider<PlaylistMode>(
+  (ref) => PlaylistMode.none,
 );
 
-final queueProvider = StateProvider<ProxyPlaylist>(
-  (ref) => ProxyPlaylist({}),
+final queueProvider = StateProvider<AudioPlayerState>(
+  (ref) => AudioPlayerState(
+    playing: audioPlayer.isPlaying,
+    loopMode: audioPlayer.loopMode,
+    shuffled: audioPlayer.isShuffled,
+    playlist: audioPlayer.playlist,
+    collections: [],
+  ),
 );
 
 final volumeProvider = StateProvider<double>(
@@ -158,7 +165,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
     emit(WebSocketShuffleEvent(value));
   }
 
-  Future<void> setLoopMode(PlaybackLoopMode value) async {
+  Future<void> setLoopMode(PlaylistMode value) async {
     emit(WebSocketLoopEvent(value));
   }
 

@@ -30,7 +30,7 @@ class AlbumReleasesNotifier
 
   @override
   fetch(int offset, int limit) async {
-    final market = ref.read(userPreferencesProvider).recommendationMarket;
+    final market = ref.read(userPreferencesProvider).market;
 
     final albums = await spotify.browse
         .newReleases(country: market)
@@ -43,7 +43,7 @@ class AlbumReleasesNotifier
   build() async {
     ref.watch(spotifyProvider);
     ref.watch(
-      userPreferencesProvider.select((s) => s.recommendationMarket),
+      userPreferencesProvider.select((s) => s.market),
     );
     ref.watch(allFollowedArtistsProvider);
 

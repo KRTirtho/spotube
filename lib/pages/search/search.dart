@@ -20,7 +20,7 @@ import 'package:spotube/pages/search/sections/albums.dart';
 import 'package:spotube/pages/search/sections/artists.dart';
 import 'package:spotube/pages/search/sections/playlists.dart';
 import 'package:spotube/pages/search/sections/tracks.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 
@@ -37,8 +37,7 @@ class SearchPage extends HookConsumerWidget {
     final searchTerm = ref.watch(searchTermStateProvider);
     final controller = useSearchController();
 
-    ref.watch(authenticationProvider);
-    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
+    final auth = ref.watch(authenticationProvider);
     final mediaQuery = MediaQuery.of(context);
 
     final searchTrack = ref.watch(searchProvider(SearchType.track));
@@ -91,7 +90,7 @@ class SearchPage extends HookConsumerWidget {
         appBar: kIsDesktop && !kIsMacOS
             ? const PageWindowTitleBar(automaticallyImplyLeading: true)
             : null,
-        body: !authenticationNotifier.isLoggedIn
+        body: auth.asData?.value == null
             ? const AnonymousFallback()
             : Column(
                 children: [

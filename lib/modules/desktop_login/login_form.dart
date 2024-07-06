@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/extensions/context.dart';
 
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 
 class TokenLoginForm extends HookConsumerWidget {
   final void Function()? onDone;
@@ -52,10 +52,7 @@ class TokenLoginForm extends HookConsumerWidget {
                       final cookieHeader =
                           "sp_dc=${directCodeController.text.trim()}";
 
-                      authenticationNotifier.setCredentials(
-                        await AuthenticationCredentials.fromCookie(
-                            cookieHeader),
-                      );
+                      await authenticationNotifier.login(cookieHeader);
                       if (context.mounted) {
                         onDone?.call();
                       }

@@ -14,10 +14,12 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/hooks/utils/use_debounce.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
@@ -52,7 +54,8 @@ class SiblingTracksSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
     final preferences = ref.watch(userPreferencesProvider);
 
     final isSearching = useState(false);
@@ -128,13 +131,13 @@ class SiblingTracksSheet extends HookConsumerWidget {
     ]);
 
     final siblings = useMemoized(
-      () => playlist.isFetching == false
+      () => !isFetchingActiveTrack
           ? [
               (activeTrack as SourcedTrack).sourceInfo,
               ...activeTrack.siblings,
             ]
           : <SourceInfo>[],
-      [playlist.isFetching, activeTrack],
+      [activeTrack, isFetchingActiveTrack],
     );
 
     final borderRadius = floating
@@ -174,12 +177,12 @@ class SiblingTracksSheet extends HookConsumerWidget {
               Text(" • ${sourceInfo.artist}"),
             ],
           ),
-          enabled: playlist.isFetching != true,
-          selected: playlist.isFetching != true &&
+          enabled: !isFetchingActiveTrack,
+          selected: !isFetchingActiveTrack &&
               sourceInfo.id == (activeTrack as SourcedTrack).sourceInfo.id,
           selectedTileColor: theme.popupMenuTheme.color,
           onTap: () {
-            if (playlist.isFetching == false &&
+            if (!isFetchingActiveTrack &&
                 sourceInfo.id != (activeTrack as SourcedTrack).sourceInfo.id) {
               activeTrackNotifier.swapSibling(sourceInfo);
               Navigator.of(context).pop();
@@ -187,7 +190,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
           },
         );
       },
-      [playlist.isFetching, activeTrack, siblings],
+      [activeTrack, siblings],
     );
 
     final mediaQuery = MediaQuery.of(context);

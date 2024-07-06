@@ -6,6 +6,7 @@ import 'package:spotube/modules/library/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/models/lyrics.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
@@ -20,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotube/collections/env.dart';
 
-import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:version/version.dart';
 
 abstract class ServiceUtils {
@@ -392,7 +392,14 @@ abstract class ServiceUtils {
     WidgetRef ref,
   ) async {
     if (!Env.enableUpdateChecker) return;
-    if (!ref.read(userPreferencesProvider.select((s) => s.checkUpdate))) return;
+    final database = ref.read(databaseProvider);
+    final checkUpdate = await (database.selectOnly(database.preferencesTable)
+          ..addColumns([database.preferencesTable.checkUpdate])
+          ..where(database.preferencesTable.id.equals(0)))
+        .map((row) => row.read(database.preferencesTable.checkUpdate))
+        .getSingleOrNull();
+
+    if (checkUpdate == false) return;
     final packageInfo = await PackageInfo.fromPlatform();
 
     if (Env.releaseChannel == ReleaseChannel.nightly) {

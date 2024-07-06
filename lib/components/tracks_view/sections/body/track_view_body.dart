@@ -18,7 +18,7 @@ import 'package:spotube/components/tracks_view/track_view_provider.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
@@ -27,9 +27,9 @@ class TrackViewBodySection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
-    final historyNotifier = ref.watch(playbackHistoryProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final historyNotifier = ref.watch(playbackHistoryActionsProvider);
     final props = InheritedTrackView.of(context);
     final trackViewState = ref.watch(trackViewProvider(props.tracks));
 

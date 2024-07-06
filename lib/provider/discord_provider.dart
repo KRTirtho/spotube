@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/extensions/artist_simple.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
@@ -55,7 +55,7 @@ final discordProvider = ChangeNotifierProvider(
   (ref) {
     final isEnabled =
         ref.watch(userPreferencesProvider.select((s) => s.discordPresence));
-    final playback = ref.read(proxyPlaylistProvider);
+    final playback = ref.read(audioPlayerProvider);
     final discord = Discord(isEnabled);
 
     if (playback.activeTrack != null) {

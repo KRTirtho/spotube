@@ -3,7 +3,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/utils/platform.dart';
 
 class WebViewLogin extends HookConsumerWidget {
@@ -53,9 +53,7 @@ class WebViewLogin extends HookConsumerWidget {
               final cookieHeader =
                   "sp_dc=${cookies.firstWhere((element) => element.name == "sp_dc").value}";
 
-              authenticationNotifier.setCredentials(
-                await AuthenticationCredentials.fromCookie(cookieHeader),
-              );
+              await authenticationNotifier.login(cookieHeader);
               if (context.mounted) {
                 // ignore: use_build_context_synchronously
                 GoRouter.of(context).go("/");

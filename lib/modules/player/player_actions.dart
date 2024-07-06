@@ -13,8 +13,8 @@ import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/sleep_timer_provider.dart';
 
 class PlayerActions extends HookConsumerWidget {
@@ -33,7 +33,7 @@ class PlayerActions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final isLocalTrack = playlist.activeTrack is LocalTrack;
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
@@ -129,7 +129,9 @@ class PlayerActions extends HookConsumerWidget {
                   ? () => downloader.addToQueue(playlist.activeTrack!)
                   : null,
             ),
-        if (playlist.activeTrack != null && !isLocalTrack && auth != null)
+        if (playlist.activeTrack != null &&
+            !isLocalTrack &&
+            auth.asData?.value != null)
           TrackHeartButton(track: playlist.activeTrack!),
         AdaptivePopSheetList(
           offset: Offset(0, -50 * (sleepTimerEntries.values.length + 2)),

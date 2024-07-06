@@ -1,183 +1,208 @@
-import 'dart:async';
-
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/provider/audio_player/audio_player_streams.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/palette_provider.dart';
-import 'package:spotube/provider/proxy_playlist/player_listeners.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
-
-import 'package:spotube/utils/persisted_state_notifier.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:path/path.dart' as path;
 import 'package:window_manager/window_manager.dart';
 
-class UserPreferencesNotifier extends PersistedStateNotifier<UserPreferences> {
-  final Ref ref;
+typedef UserPreferences = PreferencesTableData;
 
-  UserPreferencesNotifier(this.ref)
-      : super(UserPreferences.withDefaults(), "preferences");
+class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
+  @override
+  build() {
+    final db = ref.watch(databaseProvider);
 
-  void reset() {
-    state = UserPreferences.withDefaults();
-  }
+    (db.select(db.preferencesTable)..where((tbl) => tbl.id.equals(0)))
+        .getSingleOrNull()
+        .then((result) async {
+      if (result == null) {
+        await db.into(db.preferencesTable).insert(
+              PreferencesTableCompanion.insert(
+                id: const Value(0),
+                downloadLocation: Value(await _getDefaultDownloadDirectory()),
+              ),
+            );
+      }
 
-  void setStreamMusicCodec(SourceCodecs codec) {
-    state = state.copyWith(streamMusicCodec: codec);
-  }
+      state = await (db.select(db.preferencesTable)
+            ..where((tbl) => tbl.id.equals(0)))
+          .getSingle();
 
-  void setDownloadMusicCodec(SourceCodecs codec) {
-    state = state.copyWith(downloadMusicCodec: codec);
-  }
+      final subscription = (db.select(db.preferencesTable)
+            ..where((tbl) => tbl.id.equals(0)))
+          .watchSingle()
+          .listen((event) async {
+        state = event;
 
-  void setThemeMode(ThemeMode mode) {
-    state = state.copyWith(themeMode: mode);
-  }
+        if (kIsDesktop) {
+          await windowManager.setTitleBarStyle(
+            state.systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+          );
+        }
 
-  void setRecommendationMarket(Market country) {
-    state = state.copyWith(recommendationMarket: country);
-  }
+        await audioPlayer.setAudioNormalization(state.normalizeAudio);
+      });
 
-  void setAccentColorScheme(SpotubeColor color) {
-    state = state.copyWith(accentColorScheme: color);
-  }
+      ref.onDispose(() {
+        subscription.cancel();
+      });
+    });
 
-  void setAlbumColorSync(bool sync) {
-    state = state.copyWith(albumColorSync: sync);
-
-    if (!sync) {
-      ref.read(paletteProvider.notifier).state = null;
-    } else {
-      ref.read(proxyPlaylistProvider.notifier).updatePalette();
-    }
-  }
-
-  void setCheckUpdate(bool check) {
-    state = state.copyWith(checkUpdate: check);
-  }
-
-  void setAudioQuality(SourceQualities quality) {
-    state = state.copyWith(audioQuality: quality);
-  }
-
-  void setDownloadLocation(String downloadDir) {
-    if (downloadDir.isEmpty) return;
-    state = state.copyWith(downloadLocation: downloadDir);
-  }
-
-  void setLocalLibraryLocation(List<String> localLibraryDirs) {
-    //if (localLibraryDir.isEmpty) return;
-    state = state.copyWith(localLibraryLocation: localLibraryDirs);
-  }
-
-  void setLayoutMode(LayoutMode mode) {
-    state = state.copyWith(layoutMode: mode);
-  }
-
-  void setCloseBehavior(CloseBehavior behavior) {
-    state = state.copyWith(closeBehavior: behavior);
-  }
-
-  void setShowSystemTrayIcon(bool show) {
-    state = state.copyWith(showSystemTrayIcon: show);
-  }
-
-  void setLocale(Locale locale) {
-    state = state.copyWith(locale: locale);
-  }
-
-  void setPipedInstance(String instance) {
-    state = state.copyWith(pipedInstance: instance);
-  }
-
-  void setSearchMode(SearchMode mode) {
-    state = state.copyWith(searchMode: mode);
-  }
-
-  void setSkipNonMusic(bool skip) {
-    state = state.copyWith(skipNonMusic: skip);
-  }
-
-  void setAudioSource(AudioSource type) {
-    state = state.copyWith(audioSource: type);
-  }
-
-  void setSystemTitleBar(bool isSystemTitleBar) {
-    state = state.copyWith(systemTitleBar: isSystemTitleBar);
-    if (kIsDesktop) {
-      windowManager.setTitleBarStyle(
-        isSystemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-      );
-    }
-  }
-
-  void setDiscordPresence(bool discordPresence) {
-    state = state.copyWith(discordPresence: discordPresence);
-  }
-
-  void setAmoledDarkTheme(bool isAmoled) {
-    state = state.copyWith(amoledDarkTheme: isAmoled);
-  }
-
-  void setNormalizeAudio(bool normalize) {
-    state = state.copyWith(normalizeAudio: normalize);
-    audioPlayer.setAudioNormalization(normalize);
-  }
-
-  void setEndlessPlayback(bool endless) {
-    state = state.copyWith(endlessPlayback: endless);
-  }
-
-  void setEnableConnect(bool enable) {
-    state = state.copyWith(enableConnect: enable);
+    return PreferencesTable.defaults();
   }
 
   Future<String> _getDefaultDownloadDirectory() async {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
     if (kIsMacOS) {
-      return path.join((await getLibraryDirectory()).path, "Caches");
+      return join((await getLibraryDirectory()).path, "Caches");
     }
 
     return getDownloadsDirectory().then((dir) {
-      return path.join(dir!.path, "Spotube");
+      return join(dir!.path, "Spotube");
     });
   }
 
-  @override
-  FutureOr<void> onInit() async {
-    if (state.downloadLocation.isEmpty) {
-      state = state.copyWith(
-        downloadLocation: await _getDefaultDownloadDirectory(),
-      );
-    }
+  Future<void> setData(PreferencesTableCompanion data) async {
+    final db = ref.read(databaseProvider);
 
-    if (kIsDesktop) {
-      await windowManager.setTitleBarStyle(
-        state.systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-      );
-    }
+    final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
 
-    await audioPlayer.setAudioNormalization(state.normalizeAudio);
+    await query.write(data);
   }
 
-  @override
-  FutureOr<UserPreferences> fromJson(Map<String, dynamic> json) {
-    return UserPreferences.fromJson(json);
+  Future<void> reset() async {
+    final db = ref.read(databaseProvider);
+
+    final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
+
+    await query.replace(PreferencesTableCompanion.insert());
   }
 
-  @override
-  Map<String, dynamic> toJson() {
-    return state.toJson();
+  void setStreamMusicCodec(SourceCodecs codec) {
+    setData(PreferencesTableCompanion(streamMusicCodec: Value(codec)));
+  }
+
+  void setDownloadMusicCodec(SourceCodecs codec) {
+    setData(PreferencesTableCompanion(downloadMusicCodec: Value(codec)));
+  }
+
+  void setThemeMode(ThemeMode mode) {
+    setData(PreferencesTableCompanion(themeMode: Value(mode)));
+  }
+
+  void setRecommendationMarket(Market country) {
+    setData(PreferencesTableCompanion(market: Value(country)));
+  }
+
+  void setAccentColorScheme(SpotubeColor color) {
+    setData(PreferencesTableCompanion(accentColorScheme: Value(color)));
+  }
+
+  void setAlbumColorSync(bool sync) {
+    setData(PreferencesTableCompanion(albumColorSync: Value(sync)));
+
+    if (!sync) {
+      ref.read(paletteProvider.notifier).state = null;
+    } else {
+      ref.read(audioPlayerStreamListenersProvider).updatePalette();
+    }
+  }
+
+  void setCheckUpdate(bool check) {
+    setData(PreferencesTableCompanion(checkUpdate: Value(check)));
+  }
+
+  void setAudioQuality(SourceQualities quality) {
+    setData(PreferencesTableCompanion(audioQuality: Value(quality)));
+  }
+
+  void setDownloadLocation(String downloadDir) {
+    if (downloadDir.isEmpty) return;
+    setData(PreferencesTableCompanion(downloadLocation: Value(downloadDir)));
+  }
+
+  void setLocalLibraryLocation(List<String> localLibraryDirs) {
+    //if (localLibraryDir.isEmpty) return;
+    setData(
+      PreferencesTableCompanion(
+        localLibraryLocation: Value(localLibraryDirs),
+      ),
+    );
+  }
+
+  void setLayoutMode(LayoutMode mode) {
+    setData(PreferencesTableCompanion(layoutMode: Value(mode)));
+  }
+
+  void setCloseBehavior(CloseBehavior behavior) {
+    setData(PreferencesTableCompanion(closeBehavior: Value(behavior)));
+  }
+
+  void setShowSystemTrayIcon(bool show) {
+    setData(PreferencesTableCompanion(showSystemTrayIcon: Value(show)));
+  }
+
+  void setLocale(Locale locale) {
+    setData(PreferencesTableCompanion(locale: Value(locale)));
+  }
+
+  void setPipedInstance(String instance) {
+    setData(PreferencesTableCompanion(pipedInstance: Value(instance)));
+  }
+
+  void setSearchMode(SearchMode mode) {
+    setData(PreferencesTableCompanion(searchMode: Value(mode)));
+  }
+
+  void setSkipNonMusic(bool skip) {
+    setData(PreferencesTableCompanion(skipNonMusic: Value(skip)));
+  }
+
+  void setAudioSource(AudioSource type) {
+    setData(PreferencesTableCompanion(audioSource: Value(type)));
+  }
+
+  void setSystemTitleBar(bool isSystemTitleBar) {
+    setData(
+      PreferencesTableCompanion(
+        systemTitleBar: Value(isSystemTitleBar),
+      ),
+    );
+  }
+
+  void setDiscordPresence(bool discordPresence) {
+    setData(PreferencesTableCompanion(discordPresence: Value(discordPresence)));
+  }
+
+  void setAmoledDarkTheme(bool isAmoled) {
+    setData(PreferencesTableCompanion(amoledDarkTheme: Value(isAmoled)));
+  }
+
+  void setNormalizeAudio(bool normalize) {
+    setData(PreferencesTableCompanion(normalizeAudio: Value(normalize)));
+    audioPlayer.setAudioNormalization(normalize);
+  }
+
+  void setEndlessPlayback(bool endless) {
+    setData(PreferencesTableCompanion(endlessPlayback: Value(endless)));
+  }
+
+  void setEnableConnect(bool enable) {
+    setData(PreferencesTableCompanion(enableConnect: Value(enable)));
   }
 }
 
 final userPreferencesProvider =
-    StateNotifierProvider<UserPreferencesNotifier, UserPreferences>(
-  (ref) => UserPreferencesNotifier(ref),
+    NotifierProvider<UserPreferencesNotifier, PreferencesTableData>(
+  () => UserPreferencesNotifier(),
 );

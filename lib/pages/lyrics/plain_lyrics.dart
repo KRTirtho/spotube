@@ -11,7 +11,7 @@ import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class PlainLyrics extends HookConsumerWidget {
@@ -27,7 +27,7 @@ class PlainLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final lyricsQuery = ref.watch(syncedLyricsProvider(playlist.activeTrack));
     final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;

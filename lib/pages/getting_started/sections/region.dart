@@ -55,14 +55,14 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                   ),
                   const Gap(16),
                   DropdownMenu(
-                    initialSelection: preferences.recommendationMarket,
+                    initialSelection: preferences.market,
                     onSelected: (value) {
                       if (value == null) return;
                       ref
                           .read(userPreferencesProvider.notifier)
                           .setRecommendationMarket(value);
                     },
-                    hintText: preferences.recommendationMarket.name,
+                    hintText: preferences.market.name,
                     label: Text(context.l10n.market_place_region),
                     inputDecorationTheme:
                         const InputDecorationTheme(isDense: true),

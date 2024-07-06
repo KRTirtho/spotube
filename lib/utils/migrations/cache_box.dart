@@ -1,61 +1,31 @@
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/components/dialogs/prompt_dialog.dart';
-import 'package:spotube/extensions/context.dart';
+import 'package:spotube/provider/spotify/utils/json_cast.dart';
+import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-
-const secureStorage = FlutterSecureStorage(
-  aOptions: AndroidOptions(
-    encryptedSharedPreferences: true,
-  ),
-);
 
 const kKeyBoxName = "spotube_box_name";
 const kNoEncryptionWarningShownKey = "showedNoEncryptionWarning";
 const kIsUsingEncryption = "isUsingEncryption";
 String getBoxKey(String boxName) => "spotube_box_$boxName";
 
-abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
-  final String cacheKey;
-  final bool encrypted;
-
-  FutureOr<void> onInit() {}
-
-  PersistedStateNotifier(
-    super.state,
-    this.cacheKey, {
-    this.encrypted = false,
-  }) {
-    _load().then((_) => onInit());
-  }
-
+class PersistenceCacheBox<T> {
   static late LazyBox _box;
   static late LazyBox _encryptedBox;
 
-  static Future<void> showNoEncryptionDialog(BuildContext context) async {
-    final localStorage = await SharedPreferences.getInstance();
-    final wasShownAlready =
-        localStorage.getBool(kNoEncryptionWarningShownKey) == true;
+  final String cacheKey;
+  final bool encrypted;
 
-    if (wasShownAlready || !context.mounted) {
-      return;
-    }
+  final T Function(Map<String, dynamic>) fromJson;
 
-    await showPromptDialog(
-      context: context,
-      title: context.l10n.failed_to_encrypt,
-      message: context.l10n.encryption_failed_warning,
-      cancelText: null,
-    );
-    await localStorage.setBool(kNoEncryptionWarningShownKey, true);
-  }
+  PersistenceCacheBox(
+    this.cacheKey, {
+    required this.fromJson,
+    this.encrypted = false,
+  });
 
   static Future<String?> read(String key) async {
     final localStorage = await SharedPreferences.getInstance();
@@ -65,7 +35,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
 
     try {
       await localStorage.setBool(kIsUsingEncryption, true);
-      return await secureStorage.read(key: key);
+      return await EncryptedKvStoreService.storage.read(key: key);
     } catch (e) {
       await localStorage.setBool(kIsUsingEncryption, false);
       return localStorage.getString(key);
@@ -81,7 +51,7 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
 
     try {
       await localStorage.setBool(kIsUsingEncryption, true);
-      await secureStorage.write(key: key, value: value);
+      await EncryptedKvStoreService.storage.write(key: key, value: value);
     } catch (e) {
       await localStorage.setBool(kIsUsingEncryption, false);
       await localStorage.setString(key, value);
@@ -116,49 +86,15 @@ abstract class PersistedStateNotifier<T> extends StateNotifier<T> {
 
   LazyBox get box => encrypted ? _encryptedBox : _box;
 
-  Future<void> _load() async {
+  Future<T?> getData() async {
     final json = await box.get(cacheKey);
 
     if (json != null ||
         (json is Map && json.entries.isNotEmpty) ||
         (json is List && json.isNotEmpty)) {
-      state = await fromJson(castNestedJson(json));
+      return fromJson(castNestedJson(json));
     }
-  }
 
-  static Map<String, dynamic> castNestedJson(Map map) {
-    return Map.castFrom<dynamic, dynamic, String, dynamic>(
-      map.map((key, value) {
-        if (value is Map) {
-          return MapEntry(
-            key,
-            castNestedJson(value),
-          );
-        } else if (value is Iterable) {
-          return MapEntry(
-            key,
-            value.map((e) {
-              if (e is Map) return castNestedJson(e);
-              return e;
-            }).toList(),
-          );
-        }
-        return MapEntry(key, value);
-      }),
-    );
-  }
-
-  void save() async {
-    await box.put(cacheKey, toJson());
-  }
-
-  FutureOr<T> fromJson(Map<String, dynamic> json);
-  Map<String, dynamic> toJson();
-
-  @override
-  set state(T value) {
-    if (state == value) return;
-    super.state = value;
-    save();
+    return null;
   }
 }

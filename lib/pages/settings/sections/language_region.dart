@@ -57,7 +57,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
           secondary: const Icon(SpotubeIcons.shoppingBag),
           title: Text(context.l10n.market_place_region),
           subtitle: Text(context.l10n.recommendation_country),
-          value: preferences.recommendationMarket,
+          value: preferences.market,
           onChanged: (value) {
             if (value == null) return;
             preferencesNotifier.setRecommendationMarket(value);

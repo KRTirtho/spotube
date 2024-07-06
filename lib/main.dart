@@ -18,22 +18,24 @@ import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/audio_player/audio_player_streams.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/server/bonsoir.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
 import 'package:spotube/l10n/l10n.dart';
-import 'package:spotube/models/skip_segment.dart';
-import 'package:spotube/models/source_match.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
+import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/themes/theme.dart';
-import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:spotube/utils/migrations/hive.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -78,39 +80,30 @@ Future<void> main(List<String> rawArgs) async {
     }
 
     await KVStoreService.initialize();
+    await EncryptedKvStoreService.initialize();
 
     final hiveCacheDir =
         kIsWeb ? null : (await getApplicationSupportDirectory()).path;
 
     Hive.init(hiveCacheDir);
 
-    Hive.registerAdapter(SkipSegmentAdapter());
+    final database = AppDatabase();
 
-    Hive.registerAdapter(SourceMatchAdapter());
-    Hive.registerAdapter(SourceTypeAdapter());
-
-    // Cache versioning entities with Adapter
-    SourceMatch.version = 'v1';
-    SkipSegment.version = 'v1';
-
-    await Hive.openLazyBox<SourceMatch>(
-      SourceMatch.boxName,
-      path: hiveCacheDir,
-    );
-    await Hive.openLazyBox(
-      SkipSegment.boxName,
-      path: hiveCacheDir,
-    );
-    await PersistedStateNotifier.initializeBoxes(
-      path: hiveCacheDir,
-    );
+    await migrateFromHiveToDrift(database);
 
     if (kIsDesktop) {
       await localNotifier.setup(appName: "Spotube");
       await WindowManagerTools.initialize();
     }
 
-    runApp(const ProviderScope(child: Spotube()));
+    runApp(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWith((ref) => database),
+        ],
+        child: const Spotube(),
+      ),
+    );
   });
 }
 
@@ -130,9 +123,10 @@ class Spotube extends HookConsumerWidget {
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
     final router = ref.watch(routerProvider);
 
-    ref.listen(serverProvider, (_, __) {});
+    ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
     ref.listen(bonsoirProvider, (_, __) {});
     ref.listen(connectClientsProvider, (_, __) {});
+    ref.listen(serverProvider, (_, __) {});
     ref.listen(trayManagerProvider, (_, __) {});
 
     useDisableBatteryOptimizations();

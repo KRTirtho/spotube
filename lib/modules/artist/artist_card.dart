@@ -27,8 +27,8 @@ class ArtistCard extends HookConsumerWidget {
     );
     final isBlackListed = ref.watch(
       blacklistProvider.select(
-        (blacklist) => blacklist.contains(
-          BlacklistedElement.artist(artist.id!, artist.name!),
+        (blacklist) => blacklist.asData?.value.any(
+          (element) => element.elementId == artist.id,
         ),
       ),
     );
@@ -55,7 +55,7 @@ class ArtistCard extends HookConsumerWidget {
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: radius,
-          side: isBlackListed
+          side: isBlackListed == true
               ? const BorderSide(
                   color: Colors.red,
                   width: 2,

@@ -9,7 +9,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/models/logger.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
@@ -38,10 +38,10 @@ class ServerConnectRoutes {
     });
   }
 
-  ProxyPlaylistNotifier get playbackNotifier =>
-      ref.read(proxyPlaylistProvider.notifier);
-  PlaybackHistoryNotifier get historyNotifier =>
-      ref.read(playbackHistoryProvider.notifier);
+  AudioPlayerNotifier get audioPlayerNotifier =>
+      ref.read(audioPlayerProvider.notifier);
+  PlaybackHistoryActions get historyNotifier =>
+      ref.read(playbackHistoryActionsProvider);
   Stream<String> get connectClientStream =>
       _connectClientStreamController.stream;
 
@@ -57,7 +57,7 @@ class ServerConnectRoutes {
         _connectClientStreamController.add(origin);
 
         ref.listen(
-          proxyPlaylistProvider,
+          audioPlayerProvider,
           (previous, next) {
             channel.sink.addEvent(WebSocketQueueEvent(next));
           },
@@ -67,10 +67,10 @@ class ServerConnectRoutes {
         // because audioPlayer events doesn't fireImmediately
         channel.sink.addEvent(WebSocketPlayingEvent(audioPlayer.isPlaying));
         channel.sink.addEvent(
-          WebSocketPositionEvent(await audioPlayer.position ?? Duration.zero),
+          WebSocketPositionEvent(audioPlayer.position),
         );
         channel.sink.addEvent(
-          WebSocketDurationEvent(await audioPlayer.duration ?? Duration.zero),
+          WebSocketDurationEvent(audioPlayer.duration),
         );
         channel.sink.addEvent(WebSocketShuffleEvent(audioPlayer.isShuffled));
         channel.sink.addEvent(WebSocketLoopEvent(audioPlayer.loopMode));
@@ -116,14 +116,14 @@ class ServerConnectRoutes {
                 );
 
                 event.onLoad((event) async {
-                  await playbackNotifier.load(
+                  await audioPlayerNotifier.load(
                     event.data.tracks,
                     autoPlay: true,
                     initialIndex: event.data.initialIndex ?? 0,
                   );
 
                   if (event.data.collectionId == null) return;
-                  playbackNotifier.addCollection(event.data.collectionId!);
+                  audioPlayerNotifier.addCollection(event.data.collectionId!);
                   if (event.data.collection is AlbumSimple) {
                     historyNotifier
                         .addAlbums([event.data.collection as AlbumSimple]);
@@ -146,15 +146,15 @@ class ServerConnectRoutes {
                 });
 
                 event.onNext((event) async {
-                  await playbackNotifier.next();
+                  await audioPlayer.skipToNext();
                 });
 
                 event.onPrevious((event) async {
-                  await playbackNotifier.previous();
+                  await audioPlayer.skipToPrevious();
                 });
 
                 event.onJump((event) async {
-                  await playbackNotifier.jumpTo(event.data);
+                  await audioPlayer.jumpTo(event.data);
                 });
 
                 event.onSeek((event) async {
@@ -170,15 +170,15 @@ class ServerConnectRoutes {
                 });
 
                 event.onAddTrack((event) async {
-                  await playbackNotifier.addTrack(event.data);
+                  await audioPlayerNotifier.addTrack(event.data);
                 });
 
                 event.onRemoveTrack((event) async {
-                  await playbackNotifier.removeTrack(event.data);
+                  await audioPlayerNotifier.removeTrack(event.data);
                 });
 
                 event.onReorder((event) async {
-                  await playbackNotifier.moveTrack(
+                  await audioPlayerNotifier.moveTrack(
                     event.data.oldIndex,
                     event.data.newIndex,
                   );
