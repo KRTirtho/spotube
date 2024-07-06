@@ -97,7 +97,7 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
 
     await database
         .into(database.authenticationTable)
-        .insertOnConflictUpdate(refreshedCredentials);
+        .insert(refreshedCredentials, mode: InsertMode.replace);
   }
 
   Future<AuthenticationTableCompanion> credentialsFromCookie(

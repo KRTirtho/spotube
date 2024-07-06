@@ -35,13 +35,14 @@ Future<void> migrateAuthenticationInfo() async {
 
   if (credentials == null) return;
 
-  await _database.into(_database.authenticationTable).insertOnConflictUpdate(
+  await _database.into(_database.authenticationTable).insert(
         AuthenticationTableCompanion.insert(
           accessToken: DecryptedText(credentials.accessToken),
           cookie: DecryptedText(credentials.cookie),
           expiration: credentials.expiration,
           id: const Value(0),
         ),
+        mode: InsertMode.insertOrReplace,
       );
 
   AppLogger.log.i("✅ Migrated authentication info");
@@ -58,7 +59,7 @@ Future<void> migratePreferences() async {
 
   if (preferences == null) return;
 
-  await _database.into(_database.preferencesTable).insertOnConflictUpdate(
+  await _database.into(_database.preferencesTable).insert(
         PreferencesTableCompanion.insert(
           id: const Value(0),
           accentColorScheme: Value(preferences.accentColorScheme),
@@ -108,6 +109,7 @@ Future<void> migratePreferences() async {
           systemTitleBar: Value(preferences.systemTitleBar),
           themeMode: Value(preferences.themeMode),
         ),
+        mode: InsertMode.replace,
       );
 
   AppLogger.log.i("✅ Migrated preferences");
@@ -235,12 +237,13 @@ Future<void> migrateLastFmCredentials() async {
 
   if (data == null) return;
 
-  await _database.into(_database.scrobblerTable).insertOnConflictUpdate(
+  await _database.into(_database.scrobblerTable).insert(
         ScrobblerTableCompanion.insert(
           id: const Value(0),
           passwordHash: DecryptedText(data.passwordHash),
           username: data.username,
         ),
+        mode: InsertMode.replace,
       );
 
   AppLogger.log.i("✅ Migrated Last.fm credentials");
