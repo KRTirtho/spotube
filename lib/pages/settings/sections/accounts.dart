@@ -74,6 +74,7 @@ class SettingsAccountSection extends HookConsumerWidget {
                   "sp_dc=${cookies.firstWhere((element) => element.name.contains("sp_dc")).value.replaceAll("\u0000", "")}";
 
               await authNotifier.login(cookieHeader);
+
               webview.close();
               if (context.mounted) {
                 context.go("/");
