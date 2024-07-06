@@ -287,6 +287,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       await ref.read(sourcedTrackProvider(intendedActiveTrack).future);
     }
 
+    if(medias.isEmpty) return;
+
+    await removeCollections(state.collections);
+
     await audioPlayer.openPlaylist(
       medias,
       initialIndex: initialIndex,
