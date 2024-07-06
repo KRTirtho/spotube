@@ -31,7 +31,7 @@ class UserDownloads extends HookConsumerWidget {
                   context.l10n
                       .currently_downloading(downloadManager.$downloadCount),
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
               const SizedBox(width: 10),
