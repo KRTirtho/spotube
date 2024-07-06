@@ -152,11 +152,12 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
       }
 
       if (cachedLyrics == null || cachedLyrics.lyrics.isEmpty) {
-        await database.into(database.lyricsTable).insertOnConflictUpdate(
+        await database.into(database.lyricsTable).insert(
               LyricsTableCompanion.insert(
                 trackId: track.id!,
                 data: lyrics,
               ),
+              mode: InsertMode.replace,
             );
       }
 

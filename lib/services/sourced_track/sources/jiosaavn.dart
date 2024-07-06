@@ -43,7 +43,12 @@ class JioSaavnSourcedTrack extends SourcedTrack {
   }) async {
     final database = ref.read(databaseProvider);
     final cachedSource = await (database.select(database.sourceMatchTable)
-          ..where((s) => s.trackId.equals(track.id!)))
+          ..where((s) => s.trackId.equals(track.id!))
+          ..limit(1)
+          ..orderBy([
+            (s) =>
+                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
+          ]))
         .getSingleOrNull();
 
     if (cachedSource == null ||
@@ -215,7 +220,11 @@ class JioSaavnSourcedTrack extends SourcedTrack {
             trackId: id!,
             sourceId: info.id,
             sourceType: const Value(SourceType.jiosaavn),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
           ),
+          mode: InsertMode.replace,
         );
 
     return JioSaavnSourcedTrack(

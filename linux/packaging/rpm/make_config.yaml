@@ -16,6 +16,8 @@ requires:
   - avahi
   - mdns-scan
   - nss-mdns
+  - webkit2gtk4.1
+  - libsoup3
 
 display_name: Spotube
 

@@ -34,12 +34,9 @@ import 'package:spotube/pages/stats/streams/streams.dart';
 import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/components/spotube_page_route.dart';
 import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/pages/library/library.dart';
-import 'package:spotube/pages/desktop_login/login_tutorial.dart';
-import 'package:spotube/pages/desktop_login/desktop_login.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/root/root_app.dart';
 import 'package:spotube/pages/settings/settings.dart';
@@ -313,16 +310,8 @@ final routerProvider = Provider((ref) {
         path: "/login",
         name: WebViewLogin.name,
         parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => SpotubePage(
-          child: kIsMobile ? const WebViewLogin() : const DesktopLoginPage(),
-        ),
-      ),
-      GoRoute(
-        path: "/login-tutorial",
-        name: LoginTutorial.name,
-        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => const SpotubePage(
-          child: LoginTutorial(),
+          child: WebViewLogin(),
         ),
       ),
       GoRoute(

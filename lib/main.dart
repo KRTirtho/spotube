@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dart_discord_rpc/dart_discord_rpc.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +47,12 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main(List<String> rawArgs) async {
+  if (rawArgs.contains("web_view_title_bar")) {
+    WidgetsFlutterBinding.ensureInitialized();
+    if (runWebViewTitleBarWidget(rawArgs)) {
+      return;
+    }
+  }
   final arguments = await startCLI(rawArgs);
   AppLogger.initialize(arguments["verbose"]);
 

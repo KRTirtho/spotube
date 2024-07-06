@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:drift/drift.dart';
@@ -96,7 +97,7 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
 
     await database
         .into(database.authenticationTable)
-        .insert(refreshedCredentials);
+        .insert(refreshedCredentials, mode: InsertMode.replace);
   }
 
   Future<AuthenticationTableCompanion> credentialsFromCookie(
@@ -159,6 +160,9 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
     if (kIsMobile) {
       WebStorageManager.instance().deleteAllData();
       CookieManager.instance().deleteAllCookies();
+    }
+    if (kIsDesktop) {
+      await WebviewWindow.clearAll();
     }
   }
 }
