@@ -99,11 +99,11 @@ class AppLogger {
     // See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
     // TODO: Use path_provider once it supports XDG_STATE_HOME
     if (const bool.hasEnvironment("XDG_STATE_HOME")) {
-      String xdgStateHomeRaw = const String.fromEnvironment("XDG_STATE_HOME");
+      String xdgStateHomeRaw = Platform.environment["XDG_STATE_HOME"] ?? "";
       if (xdgStateHomeRaw.isNotEmpty) {
         return xdgStateHomeRaw;
       }
     }
-    return join(const String.fromEnvironment("HOME"), ".local", "state");
+    return join(Platform.environment["HOME"] ?? "", ".local", "state");
   }
 }
