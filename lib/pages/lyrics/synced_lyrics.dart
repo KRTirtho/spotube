@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -56,7 +58,11 @@ class SyncedLyrics extends HookConsumerWidget {
     ref.listen(
       audioPlayerProvider.select((s) => s.activeTrack),
       (previous, next) {
-        controller.scrollToIndex(0);
+        controller.animateTo(
+          0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
         ref.read(syncedLyricsDelayProvider.notifier).state = 0;
       },
     );
@@ -69,6 +75,23 @@ class SyncedLyrics extends HookConsumerWidget {
     final bodyTextTheme = textTheme.bodyLarge?.copyWith(
       color: palette.bodyTextColor,
     );
+
+    useEffect(() {
+      StreamSubscription? subscription;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        subscription = audioPlayer.positionStream.listen((event) {
+          if (event > Duration.zero) return;
+          controller.animateTo(
+            0,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        });
+      });
+
+      return subscription?.cancel;
+    }, [controller]);
+
     return Stack(
       children: [
         CustomScrollView(
