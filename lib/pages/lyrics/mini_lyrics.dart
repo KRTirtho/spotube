@@ -81,12 +81,13 @@ class MiniLyricsPage extends HookConsumerWidget {
               firstChild: DragToMoveArea(
                 child: Row(
                   children: [
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: Sidebar.brandLogo(),
-                    ),
+                    const Gap(10),
+                    if (!kIsMacOS)
+                      SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: Sidebar.brandLogo(),
+                      ),
                     const Spacer(),
                     if (showLyrics.value)
                       SizedBox(
