@@ -40,6 +40,7 @@ class AudioPlayerState {
                 httpHeaders: media['httpHeaders'],
               )),
             )
+            .cast<Media>()
             .toList(),
         index: json['playlist']['index'],
       ),
