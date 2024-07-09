@@ -33,6 +33,13 @@ class StatsTrackItem extends StatelessWidget {
       subtitle: ArtistLink(
         artists: track.artists!,
         mainAxisAlignment: WrapAlignment.start,
+        onOverflowArtistClick: () => ServiceUtils.pushNamed(
+          context,
+          TrackPage.name,
+          pathParameters: {
+            "id": track.id!,
+          },
+        ),
       ),
       trailing: info,
       onTap: () {

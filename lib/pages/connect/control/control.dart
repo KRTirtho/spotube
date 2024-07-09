@@ -144,6 +144,14 @@ class ConnectControlPage extends HookConsumerWidget {
                               artists: playlist.activeTrack?.artists ?? [],
                               textStyle: textTheme.bodyMedium!,
                               mainAxisAlignment: WrapAlignment.start,
+                              onOverflowArtistClick: () =>
+                                  ServiceUtils.pushNamed(
+                                context,
+                                TrackPage.name,
+                                pathParameters: {
+                                  "id": playlist.activeTrack!.id!,
+                                },
+                              ),
                             ),
                           ),
                         ],

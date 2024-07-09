@@ -17,9 +17,11 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
@@ -245,7 +247,16 @@ class TrackTile extends HookConsumerWidget {
                   : ClipRect(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 40),
-                        child: ArtistLink(artists: track.artists ?? []),
+                        child: ArtistLink(
+                          artists: track.artists ?? [],
+                          onOverflowArtistClick: () => ServiceUtils.pushNamed(
+                            context,
+                            TrackPage.name,
+                            pathParameters: {
+                              "id": track.id!,
+                            },
+                          ),
+                        ),
                       ),
                     ),
             ),

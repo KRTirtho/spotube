@@ -7,9 +7,11 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class DownloadItem extends HookConsumerWidget {
   final Track track;
@@ -62,6 +64,13 @@ class DownloadItem extends HookConsumerWidget {
       subtitle: ArtistLink(
         artists: track.artists ?? <Artist>[],
         mainAxisAlignment: WrapAlignment.start,
+        onOverflowArtistClick: () => ServiceUtils.pushNamed(
+          context,
+          TrackPage.name,
+          pathParameters: {
+            "id": track.id!,
+          },
+        ),
       ),
       trailing: isQueryingSourceInfo
           ? Text(

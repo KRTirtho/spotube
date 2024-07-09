@@ -35,6 +35,13 @@ class StatsAlbumItem extends StatelessWidget {
             child: ArtistLink(
               artists: album.artists ?? [],
               mainAxisAlignment: WrapAlignment.start,
+              onOverflowArtistClick: () => ServiceUtils.pushNamed(
+                context,
+                AlbumPage.name,
+                pathParameters: {
+                  "id": album.id!,
+                },
+              ),
             ),
           ),
         ],

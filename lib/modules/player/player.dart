@@ -24,11 +24,13 @@ import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -260,6 +262,14 @@ class PlayerView extends HookConsumerWidget {
                                       panelController.close();
                                       GoRouter.of(context).push(route);
                                     },
+                                    onOverflowArtistClick: () =>
+                                        ServiceUtils.pushNamed(
+                                      context,
+                                      TrackPage.name,
+                                      pathParameters: {
+                                        "id": currentTrack!.id!,
+                                      },
+                                    ),
                                   ),
                               ],
                             ),

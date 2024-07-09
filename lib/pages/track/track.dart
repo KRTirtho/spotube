@@ -148,7 +148,12 @@ class TrackPage extends HookConsumerWidget {
                                 children: [
                                   const Icon(SpotubeIcons.artist),
                                   const Gap(5),
-                                  ArtistLink(artists: track.artists!),
+                                  Flexible(
+                                    child: ArtistLink(
+                                      artists: track.artists!,
+                                      hideOverflowArtist: false,
+                                    ),
+                                  ),
                                 ],
                               ),
                               const Gap(10),

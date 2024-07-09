@@ -9,6 +9,7 @@ import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -81,6 +82,13 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   onRouteChange: (route) {
                     ServiceUtils.push(context, route);
                   },
+                  onOverflowArtistClick: () => ServiceUtils.pushNamed(
+                    context,
+                    TrackPage.name,
+                    pathParameters: {
+                      "id": track!.id!,
+                    },
+                  ),
                 )
               ],
             ),

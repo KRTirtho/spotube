@@ -325,5 +325,6 @@
   "connect_client_alert": "You're being controlled by {client}",
   "this_device": "This Device",
   "remote": "Remote",
-  "stats": "Stats"
+  "stats": "Stats",
+  "and_n_more": "and {count} more"
 }

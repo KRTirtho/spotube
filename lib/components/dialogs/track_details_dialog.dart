@@ -28,6 +28,7 @@ class TrackDetailsDialog extends HookWidget {
         artists: track.artists ?? <Artist>[],
         mainAxisAlignment: WrapAlignment.start,
         textStyle: const TextStyle(color: Colors.blue),
+        hideOverflowArtist: false,
       ),
       context.l10n.album: LinkText(
         track.album!.name!,
