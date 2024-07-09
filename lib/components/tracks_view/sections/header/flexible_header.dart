@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/components/playbutton_card.dart';
 import 'package:spotube/components/tracks_view/sections/header/header_actions.dart';
 import 'package:spotube/components/tracks_view/sections/header/header_buttons.dart';
 import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:gap/gap.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/string.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/utils/platform.dart';
 
@@ -23,8 +23,6 @@ class TrackViewFlexHeader extends HookConsumerWidget {
     final ThemeData(:colorScheme, :textTheme, :iconTheme) = Theme.of(context);
     final defaultTextStyle = DefaultTextStyle.of(context);
     final mediaQuery = MediaQuery.of(context);
-
-    final description = useDescription(props.description);
 
     final palette = usePaletteColor(props.image, ref);
 
@@ -127,10 +125,10 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         const SizedBox(height: 10),
-                                        if (description != null &&
-                                            description.isNotEmpty)
+                                        if (props.description != null &&
+                                            props.description!.isNotEmpty)
                                           Text(
-                                            description,
+                                            props.description!.unescapeHtml(),
                                             style:
                                                 defaultTextStyle.style.copyWith(
                                               color: palette.bodyTextColor,

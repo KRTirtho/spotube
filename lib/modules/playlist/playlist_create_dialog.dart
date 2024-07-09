@@ -15,6 +15,7 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/extensions/string.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 
@@ -54,7 +55,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
             text: updatingPlaylist?.name,
           );
           final description = useTextEditingController(
-            text: updatingPlaylist?.description,
+            text: updatingPlaylist?.description?.unescapeHtml(),
           );
           final public = useState(
             updatingPlaylist?.public ?? false,

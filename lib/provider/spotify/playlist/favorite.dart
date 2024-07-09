@@ -51,6 +51,20 @@ class FavoritePlaylistsNotifier
     );
   }
 
+  void updatePlaylist(PlaylistSimple playlist) {
+    if (state.value == null) return;
+
+    if (state.value!.items.none((e) => e.id == playlist.id)) return;
+
+    state = AsyncData(
+      state.value!.copyWith(
+        items: state.value!.items
+            .map((element) => element.id == playlist.id ? playlist : element)
+            .toList(),
+      ),
+    );
+  }
+
   Future<void> addFavorite(PlaylistSimple playlist) async {
     await update((state) async {
       await spotify.playlists.followPlaylist(playlist.id!);

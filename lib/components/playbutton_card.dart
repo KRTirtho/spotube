@@ -8,17 +8,9 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/hover_builder.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/string.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
-
-final htmlTagRegexp = RegExp(r"<[^>]*>", caseSensitive: true);
-
-String? useDescription(String? description) {
-  return useMemoized(() {
-    if (description == null) return null;
-    return description.replaceAll(htmlTagRegexp, '');
-  }, [description]);
-}
 
 class PlaybuttonCard extends HookWidget {
   final void Function()? onTap;
@@ -66,8 +58,7 @@ class PlaybuttonCard extends HookWidget {
       others: 15,
     );
 
-    final cleanDescription = useDescription(description);
-
+    var unescapeHtml = description?.unescapeHtml();
     return Container(
       constraints: BoxConstraints(maxWidth: size),
       margin: margin,
@@ -205,11 +196,11 @@ class PlaybuttonCard extends HookWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (cleanDescription != null)
+                  if (description != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: AutoSizeText(
-                        cleanDescription,
+                        unescapeHtml!,
                         maxLines: 2,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurface.withOpacity(.5),

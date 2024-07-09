@@ -7,7 +7,7 @@ extension UnescapeHtml on String {
 }
 
 extension NullableUnescapeHtml on String? {
-  String? unescapeHtml() => this == null ? null : htmlEscape.convert(this!);
+  String? unescapeHtml() => this?.unescapeHtml();
 }
 
 extension StringExtension on String {

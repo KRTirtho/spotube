@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -12,19 +13,33 @@ import 'package:spotube/provider/spotify/spotify.dart';
 class PlaylistPage extends HookConsumerWidget {
   static const name = "playlist";
 
-  final PlaylistSimple playlist;
+  final PlaylistSimple _playlist;
   const PlaylistPage({
     super.key,
-    required this.playlist,
-  });
+    required PlaylistSimple playlist,
+  }) : _playlist = playlist;
 
   @override
   Widget build(BuildContext context, ref) {
+    final playlist = ref
+            .watch(
+              favoritePlaylistsProvider.select(
+                (value) => value.whenData(
+                  (value) =>
+                      value.items.firstWhereOrNull((s) => s.id == _playlist.id),
+                ),
+              ),
+            )
+            .asData
+            ?.value ??
+        _playlist;
+
     final tracks = ref.watch(playlistTracksProvider(playlist.id!));
     final tracksNotifier =
         ref.watch(playlistTracksProvider(playlist.id!).notifier);
     final isFavoritePlaylist =
         ref.watch(isFavoritePlaylistProvider(playlist.id!));
+
     final favoritePlaylistsNotifier =
         ref.watch(favoritePlaylistsProvider.notifier);
 
