@@ -66,7 +66,8 @@ class PlaylistPage extends HookConsumerWidget {
       tracks: tracks.asData?.value.items ?? [],
       routePath: '/playlist/${playlist.id}',
       isLiked: isFavoritePlaylist.asData?.value ?? false,
-      shareUrl: playlist.externalUrls?.spotify ?? "",
+      shareUrl: playlist.externalUrls?.spotify ??
+          "https://open.spotify.com/playlist/${playlist.id}",
       onHeart: isFavoritePlaylist.asData?.value == null
           ? null
           : () async {

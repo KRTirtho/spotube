@@ -287,7 +287,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       await ref.read(sourcedTrackProvider(intendedActiveTrack).future);
     }
 
-    if(medias.isEmpty) return;
+    if (medias.isEmpty) return;
 
     await removeCollections(state.collections);
 
@@ -317,6 +317,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
   Future<void> stop() async {
     await audioPlayer.stop();
+    await removeCollections(state.collections);
     ref.read(discordProvider.notifier).clear();
   }
 }
