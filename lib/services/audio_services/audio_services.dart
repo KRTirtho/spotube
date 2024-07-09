@@ -22,8 +22,9 @@ class AudioServices {
     final mobile = kIsMobile || kIsMacOS || kIsLinux
         ? await AudioService.init(
             builder: () => MobileAudioService(playback),
-            config: const AudioServiceConfig(
-              androidNotificationChannelId: 'com.krtirtho.Spotube',
+            config: AudioServiceConfig(
+              androidNotificationChannelId:
+                  kIsLinux ? 'spotube' : 'com.krtirtho.Spotube',
               androidNotificationChannelName: 'Spotube',
               androidNotificationOngoing: true,
             ),
