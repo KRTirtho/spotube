@@ -38,6 +38,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/migrations/hive.dart';
+import 'package:spotube/utils/migrations/sandbox.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -67,6 +68,8 @@ Future<void> main(List<String> rawArgs) async {
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     MediaKit.ensureInitialized();
+
+    await migrateMacOsFromSandboxToNoSandbox();
 
     // force High Refresh Rate on some Android devices (like One Plus)
     if (kIsAndroid) {
