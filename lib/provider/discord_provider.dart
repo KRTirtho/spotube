@@ -11,8 +11,8 @@ import 'package:spotube/utils/platform.dart';
 class DiscordNotifier extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() async {
-    final enabled =
-        ref.read(userPreferencesProvider.select((s) => s.discordPresence && kIsDesktop));
+    final enabled = ref.watch(
+        userPreferencesProvider.select((s) => s.discordPresence && kIsDesktop));
     final playback = ref.read(audioPlayerProvider);
 
     final subscription =
@@ -29,6 +29,7 @@ class DiscordNotifier extends AsyncNotifier<void> {
     });
 
     if (!enabled && FlutterDiscordRPC.instance.isConnected) {
+      await clear();
       await close();
     } else {
       await FlutterDiscordRPC.instance.connect(autoRetry: true);
