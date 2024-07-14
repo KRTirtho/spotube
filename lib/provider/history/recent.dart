@@ -9,13 +9,15 @@ class RecentlyPlayedItemNotifier extends AsyncNotifier<List<HistoryTableData>> {
   build() async {
     final database = ref.watch(databaseProvider);
 
-    final uniqueItemIds = await (database.selectOnly(database.historyTable,
-            distinct: true)
+    final uniqueItemIds = await (database.selectOnly(
+      database.historyTable,
+      distinct: true,
+    )
           ..addColumns([database.historyTable.itemId, database.historyTable.id])
           ..where(
-            database.historyTable.type.isIn([
-              HistoryEntryType.playlist.name,
-              HistoryEntryType.album.name,
+            database.historyTable.type.isInValues([
+              HistoryEntryType.playlist,
+              HistoryEntryType.album,
             ]),
           )
           ..limit(10)
