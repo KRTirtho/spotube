@@ -43,7 +43,7 @@ class AudioPlayerStreamListeners {
 
   ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
   UserPreferences get preferences => ref.read(userPreferencesProvider);
-  Discord get discord => ref.read(discordProvider);
+  DiscordNotifier get discord => ref.read(discordProvider.notifier);
   AudioPlayerState get audioPlayerState => ref.read(audioPlayerProvider);
   PlaybackHistoryActions get history =>
       ref.read(playbackHistoryActionsProvider);
