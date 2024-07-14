@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:dart_discord_rpc/dart_discord_rpc.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/initializers.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
@@ -37,6 +38,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/themes/theme.dart';
 import 'package:spotube/utils/migrations/hive.dart';
+import 'package:spotube/utils/migrations/sandbox.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:path_provider/path_provider.dart';
@@ -67,6 +69,8 @@ Future<void> main(List<String> rawArgs) async {
 
     MediaKit.ensureInitialized();
 
+    await migrateMacOsFromSandboxToNoSandbox();
+
     // force High Refresh Rate on some Android devices (like One Plus)
     if (kIsAndroid) {
       await FlutterDisplayMode.setHighRefreshRate();
@@ -82,8 +86,8 @@ Future<void> main(List<String> rawArgs) async {
       MetadataGod.initialize();
     }
 
-    if (kIsWindows || kIsLinux) {
-      DiscordRPC.initialize();
+    if (kIsDesktop) {
+      await FlutterDiscordRPC.initialize(Env.discordAppId);
     }
 
     await KVStoreService.initialize();
@@ -107,6 +111,9 @@ Future<void> main(List<String> rawArgs) async {
       ProviderScope(
         overrides: [
           databaseProvider.overrideWith((ref) => database),
+        ],
+        observers: const [
+          AppLoggerProviderObserver(),
         ],
         child: const Spotube(),
       ),

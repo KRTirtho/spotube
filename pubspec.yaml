@@ -100,9 +100,7 @@ dependencies:
   very_good_infinite_list: ^0.7.1
   gap: ^3.0.1
   sliver_tools: ^0.2.12
-  dart_discord_rpc:
-    git:
-      url: https://github.com/Tommypop2/dart_discord_rpc.git
+  flutter_discord_rpc: ^0.1.0+1
   html_unescape: ^2.0.0
   wikipedia_api: ^0.1.0
   skeletonizer: ^1.1.1
@@ -130,6 +128,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.23
   sqlite3: ^2.4.3
   encrypt: ^5.0.3
+  retry: ^3.1.2
 
 dev_dependencies:
   build_runner: ^2.4.9

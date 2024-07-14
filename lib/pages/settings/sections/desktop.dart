@@ -8,8 +8,6 @@ import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
-import 'package:spotube/utils/platform.dart';
-
 class SettingsDesktopSection extends HookConsumerWidget {
   const SettingsDesktopSection({super.key});
 
@@ -54,13 +52,12 @@ class SettingsDesktopSection extends HookConsumerWidget {
           value: preferences.systemTitleBar,
           onChanged: preferencesNotifier.setSystemTitleBar,
         ),
-        if (!kIsMacOS)
-          SwitchListTile(
-            secondary: const Icon(SpotubeIcons.discord),
-            title: Text(context.l10n.discord_rich_presence),
-            value: preferences.discordPresence,
-            onChanged: preferencesNotifier.setDiscordPresence,
-          ),
+        SwitchListTile(
+          secondary: const Icon(SpotubeIcons.discord),
+          title: Text(context.l10n.discord_rich_presence),
+          value: preferences.discordPresence,
+          onChanged: preferencesNotifier.setDiscordPresence,
+        ),
       ],
     );
   }

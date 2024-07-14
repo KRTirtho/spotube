@@ -221,10 +221,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "644dc98a0f179b872f612d3eb627924b578897c629788e858157fa5e704ca0c7"
+      sha256: "3ac61a79bfb6f6cc11f693591063a7f19a7af628dc52f141743edac5c16e8c22"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.11"
+    version: "2.4.9"
   build_runner_core:
     dependency: transitive
     description:
@@ -433,15 +433,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  dart_discord_rpc:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "4d05017838ebeadcdb832e1893fabad1506fddba"
-      url: "https://github.com/Tommypop2/dart_discord_rpc.git"
-    source: git
-    version: "0.0.3"
   dart_mappable:
     dependency: transitive
     description:
@@ -721,6 +712,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.1"
+  flutter_discord_rpc:
+    dependency: "direct main"
+    description:
+      name: flutter_discord_rpc
+      sha256: "290c0d91c8ef24c3acb84cb6fcc5c5fed652fe4871b59896c8d180d5eae5d647"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0+1"
   flutter_displaymode:
     dependency: "direct main"
     description:
@@ -1791,6 +1790,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  retry:
+    dependency: "direct main"
+    description:
+      name: retry
+      sha256: "822e118d5b3aafed083109c72d5f484c6dc66707885e07c0fbcb8b986bba7efc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   riverpod:
     dependency: "direct main"
     description:
@@ -2488,5 +2495,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=3.4.0 <4.0.0"
+  dart: ">=3.3.0 <4.0.0"
   flutter: ">=3.19.2"
