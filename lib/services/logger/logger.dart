@@ -65,6 +65,11 @@ class AppLogger {
     if (kIsMacOS) {
       dir = join((await getLibraryDirectory()).path, "Logs");
     }
+
+    if (kIsLinux) {
+      dir = join(_getXdgStateHome(), "spotube");
+    }
+
     final file = File(join(dir, ".spotube_logs"));
     if (!await file.exists()) {
       await file.create(recursive: true);
@@ -87,6 +92,20 @@ class AppLogger {
         mode: FileMode.writeOnlyAppend,
       );
     }
+  }
+
+  static String _getXdgStateHome() {
+    // path_provider seems does not support XDG_STATE_HOME,
+    // which is the specification to store application logs on Linux.
+    // See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+    // TODO: Use path_provider once it supports XDG_STATE_HOME
+    if (const bool.hasEnvironment("XDG_STATE_HOME")) {
+      String xdgStateHomeRaw = Platform.environment["XDG_STATE_HOME"] ?? "";
+      if (xdgStateHomeRaw.isNotEmpty) {
+        return xdgStateHomeRaw;
+      }
+    }
+    return join(Platform.environment["HOME"] ?? "", ".local", "state");
   }
 }
 
