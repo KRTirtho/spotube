@@ -103,7 +103,7 @@ class SyncedLyrics extends HookConsumerWidget {
                 backgroundColor: Colors.transparent,
                 centerTitle: true,
                 title: Text(
-                  playlist.activeTrack?.name ?? "Not Playing",
+                  playlist.activeTrack?.name ?? context.l10n.not_playing,
                   style: headlineTextStyle,
                 ),
                 bottom: PreferredSize(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spotube/components/links/anchor_button.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:version/version.dart';
 
 class RootAppUpdateDialog extends StatelessWidget {
@@ -16,10 +17,10 @@ class RootAppUpdateDialog extends StatelessWidget {
     const url = "https://spotube.krtirtho.dev/downloads";
     const nightlyUrl = "https://spotube.krtirtho.dev/downloads/nightly";
     return AlertDialog(
-      title: const Text("Spotube has an update"),
+      title: Text(context.l10n.spotube_has_an_update),
       actions: [
         FilledButton(
-          child: const Text("Download Now"),
+          child: Text(context.l10n.download_now),
           onPressed: () => launchUrlString(
             nightlyBuildNum != null ? nightlyUrl : url,
             mode: LaunchMode.externalApplication,
@@ -31,16 +32,16 @@ class RootAppUpdateDialog extends StatelessWidget {
         children: [
           Text(
             nightlyBuildNum != null
-                ? "Spotube Nightly $nightlyBuildNum has been released"
-                : "Spotube v$version has been released",
+                ? context.l10n.nightly_version(nightlyBuildNum!)
+                : context.l10n.release_version(version!),
           ),
           if (nightlyBuildNum == null)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Read the latest "),
+                Text(context.l10n.read_the_latest),
                 AnchorButton(
-                  "release notes",
+                  context.l10n.release_notes,
                   style: const TextStyle(color: Colors.blue),
                   onTap: () => launchUrlString(
                     url,

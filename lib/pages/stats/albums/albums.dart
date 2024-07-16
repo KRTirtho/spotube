@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/common/album_item.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/albums.dart';
@@ -24,10 +25,10 @@ class StatsAlbumsPage extends HookConsumerWidget {
     final albumsData = topAlbums.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(
+      appBar: PageWindowTitleBar(
         automaticallyImplyLeading: true,
         centerTitle: false,
-        title: Text("Albums"),
+        title: Text(context.l10n.albums),
       ),
       body: Skeletonizer(
         enabled: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
@@ -43,9 +44,8 @@ class StatsAlbumsPage extends HookConsumerWidget {
             final album = albumsData[index];
             return StatsAlbumItem(
               album: album.album,
-              info: Text(
-                "${compactNumberFormatter.format(album.count)} plays",
-              ),
+              info: Text(context.l10n
+                  .count_plays(compactNumberFormatter.format(album.count))),
             );
           },
         ),

@@ -76,7 +76,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
               scaffold.showSnackBar(
                 SnackBar(
                   content: Text(
-                    l10n.error(error.message ?? "Epic failure!"),
+                    l10n.error(error.message ?? context.l10n.epic_failure),
                     style: theme.textTheme.bodyMedium!.copyWith(
                       color: theme.colorScheme.onError,
                     ),

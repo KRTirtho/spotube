@@ -6,6 +6,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/common/artist_item.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/tracks.dart';
@@ -40,10 +41,10 @@ class StatsStreamFeesPage extends HookConsumerWidget {
     );
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(
+      appBar: PageWindowTitleBar(
         automaticallyImplyLeading: true,
         centerTitle: false,
-        title: Text("Streaming fees (hypothetical)"),
+        title: Text(context.l10n.streaming_fees_hypothetical),
       ),
       body: CustomScrollView(
         slivers: [
@@ -54,11 +55,7 @@ class StatsStreamFeesPage extends HookConsumerWidget {
               padding: const EdgeInsets.all(16.0),
               sliver: SliverToBoxAdapter(
                 child: Text(
-                  "*This is calculated based on Spotify's per stream "
-                  "payout of \$0.003 to \$0.005. This is a hypothetical "
-                  "calculation to give user insight about how much they "
-                  "would have paid to the artists if they were to listen "
-                  "their song in Spotify.",
+                  context.l10n.spotify_hipotetical_calculation,
                   style: textTheme.bodySmall?.copyWith(
                     color: hintColor,
                   ),

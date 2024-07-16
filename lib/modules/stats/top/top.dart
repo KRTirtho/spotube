@@ -5,6 +5,7 @@ import 'package:spotube/components/themed_button_tab_bar.dart';
 import 'package:spotube/modules/stats/top/albums.dart';
 import 'package:spotube/modules/stats/top/artists.dart';
 import 'package:spotube/modules/stats/top/tracks.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 
@@ -24,23 +25,23 @@ class StatsPageTopSection extends HookConsumerWidget {
           floating: true,
           flexibleSpace: ThemedButtonsTabBar(
             controller: tabController,
-            tabs: const [
+            tabs: [
               Tab(
                 child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Text("Top Tracks"),
+                  padding: const EdgeInsets.all(5),
+                  child: Text(context.l10n.top_tracks),
                 ),
               ),
               Tab(
                 child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Text("Top Artists"),
+                  padding: const EdgeInsets.all(5),
+                  child: Text(context.l10n.top_artists),
                 ),
               ),
               Tab(
                 child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Text("Top Albums"),
+                  padding: const EdgeInsets.all(5),
+                  child: Text(context.l10n.top_albums),
                 ),
               ),
             ],
@@ -61,30 +62,30 @@ class StatsPageTopSection extends HookConsumerWidget {
                 historyDurationNotifier.update((_) => value);
               },
               icon: const Icon(Icons.arrow_drop_down),
-              items: const [
+              items: [
                 DropdownMenuItem(
                   value: HistoryDuration.days7,
-                  child: Text("This week"),
+                  child: Text(context.l10n.this_week),
                 ),
                 DropdownMenuItem(
                   value: HistoryDuration.days30,
-                  child: Text("This month"),
+                  child: Text(context.l10n.this_month),
                 ),
                 DropdownMenuItem(
                   value: HistoryDuration.months6,
-                  child: Text("Last 6 months"),
+                  child: Text(context.l10n.last_6_months),
                 ),
                 DropdownMenuItem(
                   value: HistoryDuration.year,
-                  child: Text("This year"),
+                  child: Text(context.l10n.this_year),
                 ),
                 DropdownMenuItem(
                   value: HistoryDuration.years2,
-                  child: Text("Last 2 years"),
+                  child: Text(context.l10n.last_2_years),
                 ),
                 DropdownMenuItem(
                   value: HistoryDuration.allTime,
-                  child: Text("All time"),
+                  child: Text(context.l10n.all_time),
                 ),
               ],
             ),

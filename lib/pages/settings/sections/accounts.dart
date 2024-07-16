@@ -92,7 +92,7 @@ class SettingsAccountSection extends HookConsumerWidget {
         if (auth.asData?.value != null)
           ListTile(
             leading: const Icon(SpotubeIcons.user),
-            title: const Text("User Profile"),
+            title: Text(context.l10n.user_profile),
             trailing: Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(

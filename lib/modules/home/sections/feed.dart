@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/home/feed/feed_section.dart';
 import 'package:spotube/provider/spotify/views/home.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -33,14 +34,14 @@ class HomePageFeedSection extends HookConsumerWidget {
               else if (item.playlist != null)
                 item.playlist!.asPlaylist
           ],
-          title: Text(section.title ?? "No Titel"),
+          title: Text(section.title ?? context.l10n.no_title),
           hasNextPage: false,
           isLoadingNextPage: false,
           onFetchMore: () {},
           titleTrailing: Directionality(
             textDirection: TextDirection.rtl,
             child: TextButton.icon(
-              label: const Text("Browse More"),
+              label: Text(context.l10n.browse_more),
               icon: const Icon(SpotubeIcons.angleRight),
               onPressed: () => ServiceUtils.pushNamed(
                 context,

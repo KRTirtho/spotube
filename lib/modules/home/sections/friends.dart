@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/modules/home/sections/friends/friend_item.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
@@ -73,7 +74,7 @@ class HomePageFriendsSection extends HookConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Friends',
+                context.l10n.friends,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),

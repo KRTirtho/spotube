@@ -32,6 +32,9 @@ class TrackViewHeaderActions extends HookConsumerWidget {
 
     final auth = ref.watch(authenticationProvider);
 
+    final copiedText =
+        context.l10n.copied_shareurl_to_clipboard(props.shareUrl);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -48,7 +51,7 @@ class TrackViewHeaderActions extends HookConsumerWidget {
                 width: 300,
                 behavior: SnackBarBehavior.floating,
                 content: Text(
-                  "Copied ${props.shareUrl} to clipboard",
+                  copiedText,
                   textAlign: TextAlign.center,
                 ),
               ),
