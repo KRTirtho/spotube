@@ -335,7 +335,7 @@ class TrackOptions extends HookConsumerWidget {
             leading: const Icon(SpotubeIcons.trash),
             title: Text(context.l10n.delete),
           ),
-        if (mediaQuery.smAndDown)
+        if (mediaQuery.smAndDown && !isLocalTrack)
           PopSheetEntry(
             value: TrackOptionValue.album,
             leading: const Icon(SpotubeIcons.album),
