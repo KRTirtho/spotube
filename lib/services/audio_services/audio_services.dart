@@ -29,7 +29,7 @@ class AudioServices with WidgetsBindingObserver {
               androidNotificationChannelId:
                   kIsLinux ? 'spotube' : 'com.krtirtho.Spotube',
               androidNotificationChannelName: 'Spotube',
-              androidNotificationOngoing: true,
+              androidNotificationOngoing: false,
               androidNotificationIcon: "drawable/ic_launcher_monochrome",
               androidStopForegroundOnPause: false,
               androidNotificationChannelDescription: "Spotube Media Controls",

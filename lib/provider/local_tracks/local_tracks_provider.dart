@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:spotube/services/logger/logger.dart';
@@ -49,7 +50,7 @@ final localTracksProvider =
       userPreferencesProvider.select((s) => s.localLibraryLocation),
     );
 
-    for (var location in [downloadLocation, ...localLibraryLocations]) {
+    for (final location in [downloadLocation, ...localLibraryLocations]) {
       if (location.isEmpty) continue;
       final entities = <FileSystemEntity>[];
       if (await Directory(location).exists()) {
@@ -67,7 +68,8 @@ final localTracksProvider =
         }).map(
           (file) async {
             try {
-              final metadata = await MetadataGod.readMetadata(file: file.path);
+              final metadata = await MetadataGod.readMetadata(file: file.path)
+                  .timeout(const Duration(seconds: 10));
 
               final imageFile = File(join(
                 (await getTemporaryDirectory()).path,
@@ -89,7 +91,7 @@ final localTracksProvider =
                 "art": imageFile.path
               };
             } catch (e, stack) {
-              if (e is FfiException) {
+              if (e case FfiException() || TimeoutException()) {
                 return {"file": file};
               }
               AppLogger.reportError(e, stack);
