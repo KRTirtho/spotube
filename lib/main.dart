@@ -18,6 +18,7 @@ import 'package:spotube/collections/intents.dart';
 import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
+import 'package:spotube/hooks/configurators/use_fix_window_stretching.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
@@ -134,6 +135,7 @@ class Spotube extends HookConsumerWidget {
     ref.listen(serverProvider, (_, __) {});
     ref.listen(trayManagerProvider, (_, __) {});
 
+    useFixWindowStretching();
     useDisableBatteryOptimizations();
     useDeepLinking(ref);
     useCloseBehavior(ref);
