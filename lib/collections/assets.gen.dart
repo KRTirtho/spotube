@@ -43,6 +43,7 @@ class $AssetsTutorialGen {
 class Assets {
   Assets._();
 
+  static const String license = 'LICENSE';
   static const AssetGenImage albumPlaceholder =
       AssetGenImage('assets/album-placeholder.png');
   static const AssetGenImage bengaliPatternsBg =
@@ -89,6 +90,7 @@ class Assets {
 
   /// List of all assets
   static List<dynamic> get values => [
+        license,
         albumPlaceholder,
         bengaliPatternsBg,
         branding,
@@ -117,9 +119,16 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  });
 
   final String _assetName;
+
+  final Size? size;
+  final Set<String> flavors;
 
   Image image({
     Key? key,

@@ -48,7 +48,7 @@ dependencies:
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
   fuzzywuzzy: ^1.1.6
-  go_router: 12.1.3 # Stuck on this https://github.com/flutter/flutter/issues/140869
+  go_router: ^14.2.1 # Stuck on this https://github.com/flutter/flutter/issues/140869
   google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -63,7 +63,7 @@ dependencies:
   media_kit_libs_audio: ^1.0.4
   metadata_god: ^0.5.2+1
   mime: ^1.0.2
-  package_info_plus: ^6.0.0
+  package_info_plus: ^8.0.1
   palette_generator: ^0.3.3
   path: ^1.8.0
   path_provider: ^2.1.3
@@ -80,7 +80,7 @@ dependencies:
   skeleton_text: ^3.0.1
   smtc_windows: ^0.1.3
   stroke_text: ^0.0.2
-  system_theme: ^2.1.0
+  system_theme: ^3.0.0
   titlebar_buttons: ^1.0.0
   url_launcher: ^6.2.6
   uuid: ^4.4.0
@@ -103,7 +103,7 @@ dependencies:
   html_unescape: ^2.0.0
   wikipedia_api: ^0.1.0
   skeletonizer: ^1.1.1
-  app_links: ^4.0.1
+  app_links: ^6.1.4
   win32_registry: ^1.1.3
   flutter_sharing_intent: ^1.1.0
   flutter_broadcasts: ^0.4.0
@@ -131,7 +131,7 @@ dev_dependencies:
   envied_generator: ^0.5.4+1
   flutter_gen_runner: ^5.4.0
   flutter_launcher_icons: ^0.13.1
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
   integration_test:
@@ -141,7 +141,7 @@ dev_dependencies:
   freezed: ^2.5.2
   custom_lint: ^0.6.4
   riverpod_lint: ^2.3.10
-  process_run: ^0.14.2
+  process_run: ^1.1.0
   xml: ^6.5.0
   io: ^1.0.4
 
