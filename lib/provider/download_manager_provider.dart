@@ -70,7 +70,7 @@ class DownloadManagerProvider extends ChangeNotifier {
         trackNumber: track.trackNumber,
         discNumber: track.discNumber,
         durationMs: track.durationMs?.toDouble() ?? 0.0,
-        fileSize: await file.length(),
+        fileSize: BigInt.from(await file.length()),
         trackTotal: track.album?.tracks?.length ?? 0,
         picture: imageBytes != null
             ? Picture(

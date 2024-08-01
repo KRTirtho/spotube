@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
+import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/initializers.dart';
 import 'package:spotube/collections/routes.dart';
@@ -89,6 +90,10 @@ Future<void> main(List<String> rawArgs) async {
 
     if (kIsDesktop) {
       await FlutterDiscordRPC.initialize(Env.discordAppId);
+    }
+
+    if(kIsWindows){
+      await SMTCWindows.initialize();
     }
 
     await KVStoreService.initialize();

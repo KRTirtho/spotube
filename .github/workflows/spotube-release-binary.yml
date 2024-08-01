@@ -82,6 +82,10 @@ jobs:
       - name: Set up Docker Buildx
         if: ${{matrix.platform == 'linux_arm'}}
         uses: docker/setup-buildx-action@v3
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
 
       - name: Install ${{matrix.platform}} dependencies
         run: |
