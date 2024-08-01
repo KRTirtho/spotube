@@ -1,6 +1,6 @@
 ARG FLUTTER_VERSION
 
-FROM --platform=linux/arm64 krtirtho/flutter_distributor_arm64:${FLUTTER_VERSION}
+FROM --platform=linux/arm64 krtirtho/flutter_distributor:${FLUTTER_VERSION}
 
 ARG BUILD_VERSION
 
