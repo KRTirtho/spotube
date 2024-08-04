@@ -10,6 +10,8 @@ COPY . .
 
 RUN chown -R $(whoami) /app
 
+RUN rustup target add aarch64-unknown-linux-gnu
+
 RUN flutter pub get
 
 RUN alias dpkg-deb="dpkg-deb --Zxz" &&\
