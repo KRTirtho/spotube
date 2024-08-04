@@ -715,9 +715,11 @@ packages:
   flutter_discord_rpc:
     dependency: "direct main"
     description:
-      path: "../frb_plugins/packages/flutter_discord_rpc"
-      relative: true
-    source: path
+      path: "packages/flutter_discord_rpc"
+      ref: cargokit
+      resolved-ref: "7ca0bbb786d8ce0e4bf8341b673b6c709ba69146"
+      url: "https://github.com/KRTirtho/frb_plugins.git"
+    source: git
     version: "0.1.0+1"
   flutter_displaymode:
     dependency: "direct main"
@@ -1480,9 +1482,11 @@ packages:
   metadata_god:
     dependency: "direct main"
     description:
-      path: "../frb_plugins/packages/metadata_god"
-      relative: true
-    source: path
+      path: "packages/metadata_god"
+      ref: cargokit
+      resolved-ref: "7ca0bbb786d8ce0e4bf8341b673b6c709ba69146"
+      url: "https://github.com/KRTirtho/frb_plugins.git"
+    source: git
     version: "0.5.3"
   mime:
     dependency: "direct main"
@@ -1981,9 +1985,11 @@ packages:
   smtc_windows:
     dependency: "direct main"
     description:
-      path: "../frb_plugins/packages/smtc_windows"
-      relative: true
-    source: path
+      path: "packages/smtc_windows"
+      ref: cargokit
+      resolved-ref: "7ca0bbb786d8ce0e4bf8341b673b6c709ba69146"
+      url: "https://github.com/KRTirtho/frb_plugins.git"
+    source: git
     version: "0.1.3"
   source_gen:
     dependency: transitive
