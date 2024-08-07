@@ -717,7 +717,7 @@ packages:
     description:
       path: "packages/flutter_discord_rpc"
       ref: cargokit
-      resolved-ref: ed8d0d67fae7a23acc9b58c84f01d02abd8d8515
+      resolved-ref: "1b839bf02afd5dfa56b0dc25f60af04aa9bfc7c3"
       url: "https://github.com/KRTirtho/frb_plugins.git"
     source: git
     version: "0.1.0+1"
@@ -1484,7 +1484,7 @@ packages:
     description:
       path: "packages/metadata_god"
       ref: cargokit
-      resolved-ref: ed8d0d67fae7a23acc9b58c84f01d02abd8d8515
+      resolved-ref: "1b839bf02afd5dfa56b0dc25f60af04aa9bfc7c3"
       url: "https://github.com/KRTirtho/frb_plugins.git"
     source: git
     version: "0.5.3"
@@ -1987,7 +1987,7 @@ packages:
     description:
       path: "packages/smtc_windows"
       ref: cargokit
-      resolved-ref: ed8d0d67fae7a23acc9b58c84f01d02abd8d8515
+      resolved-ref: "1b839bf02afd5dfa56b0dc25f60af04aa9bfc7c3"
       url: "https://github.com/KRTirtho/frb_plugins.git"
     source: git
     version: "0.1.3"
