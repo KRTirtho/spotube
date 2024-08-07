@@ -37,9 +37,10 @@ class LocalLibraryPage extends HookConsumerWidget {
     currentTrack ??= tracks.first;
     final isPlaylistPlaying = playlist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
+      var indexWhere = tracks.indexWhere((s) => s.id == currentTrack?.id);
       await playback.load(
         tracks,
-        initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
+        initialIndex: indexWhere,
         autoPlay: true,
       );
     } else if (isPlaylistPlaying &&

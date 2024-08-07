@@ -164,17 +164,6 @@ dev_dependencies:
 
 dependency_overrides:
   uuid: ^4.4.0
-  system_tray:
-    # TODO: remove this when flutter_desktop_tools gets updated
-    # to use [MenuItemBase] instead of [MenuItem]
-    git:
-      url: https://github.com/antler119/system_tray
-      ref: dc7ef410d5cfec897edf060c1c4baff69f7c181c
-  # media_kit_native_event_loop: # to fix "macro name must be an identifier"
-  #   git:
-  #     url: https://github.com/media-kit/media-kit
-  #     path: media_kit_native_event_loop
-  #     ref: main
 
 flutter:
   generate: true

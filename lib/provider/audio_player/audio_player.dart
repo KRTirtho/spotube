@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
@@ -11,6 +12,7 @@ import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/discord_provider.dart';
+import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -283,7 +285,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout
     final intendedActiveTrack = medias.elementAt(initialIndex);
-    if (intendedActiveTrack is! LocalTrack) {
+    if (intendedActiveTrack.track is! LocalTrack) {
       await ref.read(sourcedTrackProvider(intendedActiveTrack).future);
     }
 
@@ -292,7 +294,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     await removeCollections(state.collections);
 
     await audioPlayer.openPlaylist(
-      medias,
+      medias.map((s) => s as Media).toList(),
       initialIndex: initialIndex,
       autoPlay: autoPlay,
     );
