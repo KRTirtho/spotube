@@ -58,6 +58,11 @@ class InstallDependenciesCommand extends Command {
         );
         break;
       case "ios":
+        await shell.run(
+          """
+          rustup target add aarch64-apple-ios
+          """,
+        );
         break;
       case "android":
         await shell.run(

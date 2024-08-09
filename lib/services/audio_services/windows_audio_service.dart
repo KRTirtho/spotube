@@ -18,7 +18,7 @@ class WindowsAudioService {
 
   WindowsAudioService(this.ref, this.audioPlayerNotifier)
       : smtc = SMTCWindows(enabled: false) {
-    smtc.setPlaybackStatus(PlaybackStatus.Stopped);
+    smtc.setPlaybackStatus(PlaybackStatus.stopped);
     final buttonStream = smtc.buttonPressStream.listen((event) {
       switch (event) {
         case PressedButton.play:
@@ -45,16 +45,16 @@ class WindowsAudioService {
         audioPlayer.playerStateStream.listen((state) async {
       switch (state) {
         case AudioPlaybackState.playing:
-          await smtc.setPlaybackStatus(PlaybackStatus.Playing);
+          await smtc.setPlaybackStatus(PlaybackStatus.playing);
           break;
         case AudioPlaybackState.paused:
-          await smtc.setPlaybackStatus(PlaybackStatus.Paused);
+          await smtc.setPlaybackStatus(PlaybackStatus.paused);
           break;
         case AudioPlaybackState.stopped:
-          await smtc.setPlaybackStatus(PlaybackStatus.Stopped);
+          await smtc.setPlaybackStatus(PlaybackStatus.stopped);
           break;
         case AudioPlaybackState.completed:
-          await smtc.setPlaybackStatus(PlaybackStatus.Changing);
+          await smtc.setPlaybackStatus(PlaybackStatus.changing);
           break;
         default:
           break;

@@ -41,9 +41,16 @@ class SpotubeMedia extends mk.Media {
         );
 
   @override
-  String get uri => track is LocalTrack
-      ? (track as LocalTrack).path
-      : "http://${kIsWindows ? "localhost" : InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}";
+  String get uri {
+    return switch (track) {
+      /// [super.uri] must be used instead of [track.path] to prevent wrong
+      /// path format exceptions in Windows causing [extras] to be null
+      LocalTrack() => super.uri,
+      _ =>
+        "http://${kIsWindows ? "localhost" : InternetAddress.anyIPv4.address}:"
+            "$serverPort/stream/${track.id}",
+    };
+  }
 
   factory SpotubeMedia.fromMedia(mk.Media media) {
     final track = media.uri.startsWith("http")
@@ -56,20 +63,20 @@ class SpotubeMedia extends mk.Media {
     );
   }
 
-  @override
-  operator ==(Object other) {
-    if (other is! SpotubeMedia) return false;
+  // @override
+  // operator ==(Object other) {
+  //   if (other is! SpotubeMedia) return false;
 
-    final isLocal = track is LocalTrack && other.track is LocalTrack;
-    return isLocal
-        ? (other.track as LocalTrack).path == (track as LocalTrack).path
-        : other.track.id == track.id;
-  }
+  //   final isLocal = track is LocalTrack && other.track is LocalTrack;
+  //   return isLocal
+  //       ? (other.track as LocalTrack).path == (track as LocalTrack).path
+  //       : other.track.id == track.id;
+  // }
 
-  @override
-  int get hashCode => track is LocalTrack
-      ? (track as LocalTrack).path.hashCode
-      : track.id.hashCode;
+  // @override
+  // int get hashCode => track is LocalTrack
+  //     ? (track as LocalTrack).path.hashCode
+  //     : track.id.hashCode;
 }
 
 abstract class AudioPlayerInterface {

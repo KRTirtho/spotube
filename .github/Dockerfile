@@ -1,6 +1,6 @@
 ARG FLUTTER_VERSION
 
-FROM --platform=linux/arm64 krtirtho/flutter_distributor_arm64:${FLUTTER_VERSION}
+FROM --platform=linux/arm64 krtirtho/flutter_distributor:${FLUTTER_VERSION}
 
 ARG BUILD_VERSION
 
@@ -9,6 +9,8 @@ WORKDIR /app
 COPY . .
 
 RUN chown -R $(whoami) /app
+
+RUN rustup target add aarch64-unknown-linux-gnu
 
 RUN flutter pub get
 
