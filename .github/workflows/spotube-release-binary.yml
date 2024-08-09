@@ -99,6 +99,11 @@ jobs:
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
           echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
       
+      - name: Unessary hosted tools
+        if: ${{matrix.platform == 'linux_arm'}}
+        run: |
+          sudo rm -rf /usr/share/dotnet
+      
       - name: Build ${{matrix.platform}} binaries
         run: dart cli/cli.dart build ${{matrix.platform}}
         env:
