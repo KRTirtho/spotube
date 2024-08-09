@@ -122,7 +122,7 @@ dependencies:
   flutter_broadcasts: ^0.4.0
   freezed_annotation: ^2.4.1
   spotify: ^0.13.7
-  bonsoir: ^5.1.9
+  bonsoir: ^5.1.10
   shelf: ^1.4.1
   shelf_router: ^1.1.4
   shelf_web_socket: ^1.0.4
