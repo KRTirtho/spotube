@@ -43,10 +43,9 @@ class SettingsAboutSection extends HookConsumerWidget {
           ),
           trailing: (context, update) => FilledButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Colors.red[100]),
-              foregroundColor:
-                  const MaterialStatePropertyAll(Colors.pinkAccent),
-              padding: const MaterialStatePropertyAll(EdgeInsets.all(15)),
+              backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
+              foregroundColor: const WidgetStatePropertyAll(Colors.pinkAccent),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
             ),
             onPressed: () {
               launchUrlString(

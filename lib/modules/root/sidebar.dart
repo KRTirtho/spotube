@@ -72,7 +72,7 @@ class Sidebar extends HookConsumerWidget {
     );
 
     final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceVariant;
+    final bg = theme.colorScheme.surfaceContainerHighest;
 
     final bgColor = useBrightnessValue(
       Color.lerp(bg, Colors.white, 0.7),

@@ -108,8 +108,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                           : const Icon(SpotubeIcons.lyricsOff),
                       style: ButtonStyle(
                         foregroundColor: showLyrics.value
-                            ? MaterialStateProperty.all(
-                                theme.colorScheme.primary)
+                            ? WidgetStateProperty.all(theme.colorScheme.primary)
                             : null,
                       ),
                       onPressed: () async {
@@ -133,8 +132,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                           : const Icon(SpotubeIcons.hoverOff),
                       style: ButtonStyle(
                         foregroundColor: hoverMode.value
-                            ? MaterialStateProperty.all(
-                                theme.colorScheme.primary)
+                            ? WidgetStateProperty.all(theme.colorScheme.primary)
                             : null,
                       ),
                       onPressed: () async {
@@ -155,7 +153,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                             ),
                             style: ButtonStyle(
                               foregroundColor: snapshot.data == true
-                                  ? MaterialStateProperty.all(
+                                  ? WidgetStateProperty.all(
                                       theme.colorScheme.primary)
                                   : null,
                             ),
@@ -187,12 +185,12 @@ class MiniLyricsPage extends HookConsumerWidget {
                   child: TabBarView(
                     children: [
                       SyncedLyrics(
-                        palette: PaletteColor(theme.colorScheme.background, 0),
+                        palette: PaletteColor(theme.colorScheme.surface, 0),
                         isModal: true,
                         defaultTextZoom: 65,
                       ),
                       PlainLyrics(
-                        palette: PaletteColor(theme.colorScheme.background, 0),
+                        palette: PaletteColor(theme.colorScheme.surface, 0),
                         isModal: true,
                         defaultTextZoom: 65,
                       ),
@@ -245,7 +243,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                             }
                           : null,
                     ),
-                    Flexible(child: PlayerControls(compact: true)),
+                    const Flexible(child: PlayerControls(compact: true)),
                     IconButton(
                       tooltip: context.l10n.exit_mini_player,
                       icon: const Icon(SpotubeIcons.maximize),

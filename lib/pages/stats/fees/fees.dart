@@ -70,7 +70,7 @@ class StatsStreamFeesPage extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Total ${usdFormatter.format(total)}",
+                    context.l10n.total_money(usdFormatter.format(total)),
                     style: textTheme.titleLarge,
                   ),
                   DropdownButton<HistoryDuration>(
@@ -79,30 +79,30 @@ class StatsStreamFeesPage extends HookConsumerWidget {
                       if (value == null) return;
                       duration.value = value;
                     },
-                    items: const [
+                    items: [
                       DropdownMenuItem(
                         value: HistoryDuration.days7,
-                        child: Text("This week"),
+                        child: Text(context.l10n.this_week),
                       ),
                       DropdownMenuItem(
                         value: HistoryDuration.days30,
-                        child: Text("This month"),
+                        child: Text(context.l10n.this_month),
                       ),
                       DropdownMenuItem(
                         value: HistoryDuration.months6,
-                        child: Text("Last 6 months"),
+                        child: Text(context.l10n.last_6_months),
                       ),
                       DropdownMenuItem(
                         value: HistoryDuration.year,
-                        child: Text("This year"),
+                        child: Text(context.l10n.this_year),
                       ),
                       DropdownMenuItem(
                         value: HistoryDuration.years2,
-                        child: Text("Last 2 years"),
+                        child: Text(context.l10n.last_2_years),
                       ),
                       DropdownMenuItem(
                         value: HistoryDuration.allTime,
-                        child: Text("All time"),
+                        child: Text(context.l10n.all_time),
                       ),
                     ],
                   ),

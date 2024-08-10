@@ -30,7 +30,7 @@ class FriendItem extends HookConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant.withOpacity(0.3),
+        color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
         borderRadius: BorderRadius.circular(15),
       ),
       constraints: const BoxConstraints(

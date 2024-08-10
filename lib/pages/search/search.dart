@@ -211,7 +211,7 @@ class SearchPage extends HookConsumerWidget {
                                 Icon(
                                   SpotubeIcons.web,
                                   size: 120,
-                                  color: theme.colorScheme.onBackground
+                                  color: theme.colorScheme.onSurface
                                       .withOpacity(0.7),
                                 ),
                                 const SizedBox(height: 20),
@@ -219,7 +219,7 @@ class SearchPage extends HookConsumerWidget {
                                   context.l10n.search_to_get_results,
                                   style: theme.textTheme.titleLarge?.copyWith(
                                     fontWeight: FontWeight.w900,
-                                    color: theme.colorScheme.onBackground
+                                    color: theme.colorScheme.onSurface
                                         .withOpacity(0.5),
                                   ),
                                 ),
@@ -245,7 +245,7 @@ class SearchPage extends HookConsumerWidget {
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w900,
-                                          color: theme.colorScheme.onBackground
+                                          color: theme.colorScheme.onSurface
                                               .withOpacity(0.7),
                                         ),
                                       ),

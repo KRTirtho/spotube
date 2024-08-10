@@ -15,9 +15,13 @@ class AnonymousFallback extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final isLoggedIn = ref.watch(authenticationProvider) != null;
+    final isLoggedIn = ref.watch(authenticationProvider);
 
-    if (isLoggedIn && child != null) return child!;
+    if (isLoggedIn.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (isLoggedIn.asData?.value != null && child != null) return child!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

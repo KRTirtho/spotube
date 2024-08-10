@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/links/anchor_button.dart';
 import 'package:spotube/extensions/context.dart';

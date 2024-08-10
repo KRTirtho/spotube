@@ -278,7 +278,7 @@ class PlayerView extends HookConsumerWidget {
                           const SizedBox(height: 10),
                           PlayerControls(palette: palette),
                           const SizedBox(height: 25),
-                          PlayerActions(
+                          const PlayerActions(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             showQueue: false,
                           ),

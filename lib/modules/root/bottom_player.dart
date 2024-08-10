@@ -48,7 +48,7 @@ class BottomPlayer extends HookConsumerWidget {
     );
 
     final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceVariant;
+    final bg = theme.colorScheme.surfaceContainerHighest;
 
     final bgColor = useBrightnessValue(
       Color.lerp(bg, Colors.white, 0.7),
@@ -77,10 +77,10 @@ class BottomPlayer extends HookConsumerWidget {
                   child: PlayerTrackDetails(track: playlist.activeTrack),
                 ),
                 // controls
-                Flexible(
+                const Flexible(
                   flex: 3,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 5),
+                    padding: EdgeInsets.only(top: 5),
                     child: PlayerControls(),
                   ),
                 ),

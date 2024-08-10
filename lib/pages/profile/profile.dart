@@ -120,7 +120,7 @@ class ProfilePage extends HookConsumerWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(6),
                                     child: Text(
-                                      '$key',
+                                      key,
                                       style: textTheme.titleSmall,
                                     ),
                                   ),

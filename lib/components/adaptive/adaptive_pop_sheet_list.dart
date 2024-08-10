@@ -187,7 +187,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       icon: icon ?? const Icon(SpotubeIcons.moreVertical),
       tooltip: tooltip,
       style: theme.iconButtonTheme.style?.copyWith(
-        shape: MaterialStatePropertyAll(
+        shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: borderRadius,
           ),

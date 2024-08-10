@@ -345,7 +345,6 @@
   "multiple_device_connected": "There are multiple device connected.\nChoose the device you want this action to take place",
   "nothing_found": "Nothing found",
   "the_box_is_empty": "The box is empty",
-  "top_tracks": "Top Tracks",
   "top_artists": "Top Artists",
   "top_albums": "Top Albums",
   "this_week": "This week",
@@ -358,7 +357,6 @@
   "email": "Email",
   "profile_followers": "Followers",
   "birthday": "Birthday",
-  "country": "Country",
   "subscription": "Subscription",
   "not_born": "Not born",
   "hacker": "Hacker",
@@ -385,5 +383,6 @@
   "summary_full_albums": "full albums",
   "summary_got_your_love": "Got your love",
   "summary_playlists": "playlists",
-  "summary_were_on_repeat": "Were on repeat"
+  "summary_were_on_repeat": "Were on repeat",
+  "total_money": "Total {money}"
 }

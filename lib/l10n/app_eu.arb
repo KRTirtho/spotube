@@ -345,7 +345,6 @@
   "multiple_device_connected": "Hainbat gailu daude konektatuta.\nAukeratu zein gailutan aplikatu nahi duzun ekintza hau",
   "nothing_found": "Ezer ez da aurkitu",
   "the_box_is_empty": "Kaxa hutsik dago",
-  "top_tracks": "Top Kantak",
   "top_artists": "Top Artistak",
   "top_albums": "Top Albumak",
   "this_week": "Aste honetan",
@@ -358,7 +357,6 @@
   "email": "Email",
   "profile_followers": "Jarraitzaileak",
   "birthday": "Jaiotze-data",
-  "country": "Herrialdea",
   "subscription": "Harpidetzak",
   "not_born": "Jaio gabe",
   "hacker": "Hacker",
@@ -385,5 +383,6 @@
   "summary_full_albums": "album osok",
   "summary_got_your_love": "Izan dute zure maitasuna",
   "summary_playlists": "zerrenda",
-  "summary_were_on_repeat": "Dituzu errepikatze moduan"
+  "summary_were_on_repeat": "Dituzu errepikatze moduan",
+  "total_money": "Guztira {money}"
 }

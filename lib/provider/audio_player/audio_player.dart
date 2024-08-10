@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
@@ -12,7 +11,6 @@ import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/discord_provider.dart';
-import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 

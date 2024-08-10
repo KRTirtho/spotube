@@ -205,11 +205,11 @@ class RootApp extends HookConsumerWidget {
                 ),
               )
             : null,
-        bottomNavigationBar: Column(
+        bottomNavigationBar: const Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             BottomPlayer(),
-            const SpotubeNavigationBar(),
+            SpotubeNavigationBar(),
           ],
         ),
       ),

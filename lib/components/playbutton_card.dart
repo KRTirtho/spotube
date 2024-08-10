@@ -64,12 +64,12 @@ class PlaybuttonCard extends HookWidget {
       margin: margin,
       child: Material(
         color: Color.lerp(
-          theme.colorScheme.surfaceVariant,
+          theme.colorScheme.surfaceContainerHighest,
           theme.colorScheme.surface,
           useBrightnessValue(.9, .7),
         ),
         borderRadius: radius,
-        shadowColor: theme.colorScheme.background,
+        shadowColor: theme.colorScheme.surface,
         elevation: 3,
         child: InkWell(
           mouseCursor: SystemMouseCursors.click,
@@ -149,7 +149,7 @@ class PlaybuttonCard extends HookWidget {
                           Skeleton.keep(
                             child: IconButton(
                               style: IconButton.styleFrom(
-                                backgroundColor: theme.colorScheme.background,
+                                backgroundColor: theme.colorScheme.surface,
                                 foregroundColor: theme.colorScheme.primary,
                                 minimumSize: const Size.square(10),
                               ),

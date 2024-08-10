@@ -130,7 +130,7 @@ class SettingsAccountSection extends HookConsumerWidget {
                   : FilledButton(
                       onPressed: onLogin,
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25.0),
                           ),

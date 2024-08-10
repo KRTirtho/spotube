@@ -46,9 +46,9 @@ class ArtistCard extends HookConsumerWidget {
       width: size,
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Material(
-        shadowColor: theme.colorScheme.background,
+        shadowColor: theme.colorScheme.surface,
         color: Color.lerp(
-          theme.colorScheme.surfaceVariant,
+          theme.colorScheme.surfaceContainerHighest,
           theme.colorScheme.surface,
           useBrightnessValue(.9, .7),
         ),
