@@ -15,15 +15,12 @@ class SelectDeviceDialog extends HookConsumerWidget {
     final remoteService = connectClients.asData!.value.resolvedService!;
 
     return AlertDialog(
-      title: const Text("Choose the device:"),
+      title: Text(context.l10n.choose_the_device),
       insetPadding: const EdgeInsets.all(16),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            "There are multiple device connected.\n"
-            "Choose the device you want this action to take place",
-          ),
+          Text(context.l10n.multiple_device_connected),
           RadioListTile.adaptive(
             title: Text(remoteService.name),
             value: true,
@@ -33,7 +30,7 @@ class SelectDeviceDialog extends HookConsumerWidget {
             },
           ),
           RadioListTile.adaptive(
-            title: const Text("This Device"),
+            title: Text(context.l10n.this_device),
             value: false,
             groupValue: isRemoteService.value,
             onChanged: (value) {

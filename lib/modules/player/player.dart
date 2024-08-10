@@ -233,7 +233,8 @@ class PlayerView extends HookConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 AutoSizeText(
-                                  currentTrack?.name ?? "Not playing",
+                                  currentTrack?.name ??
+                                      context.l10n.not_playing,
                                   style: TextStyle(
                                     color: titleTextColor,
                                     fontSize: 22,

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/history/recent.dart';
 
@@ -22,7 +23,7 @@ class HomeRecentlyPlayedSection extends HookConsumerWidget {
     return Skeletonizer(
       enabled: history.isLoading,
       child: HorizontalPlaybuttonCardView(
-        title: const Text('Recently Played'),
+        title: Text(context.l10n.recently_played),
         items: [
           for (final item in historyData)
             if (item.playlist != null)

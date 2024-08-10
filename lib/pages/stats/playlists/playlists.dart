@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/common/playlist_item.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/playlists.dart';
@@ -25,10 +26,10 @@ class StatsPlaylistsPage extends HookConsumerWidget {
     final playlistsData = topPlaylists.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(
+      appBar: PageWindowTitleBar(
         automaticallyImplyLeading: true,
         centerTitle: false,
-        title: Text("Playlists"),
+        title: Text(context.l10n.playlists),
       ),
       body: Skeletonizer(
         enabled: topPlaylists.isLoading && !topPlaylists.isLoadingNextPage,
@@ -45,7 +46,9 @@ class StatsPlaylistsPage extends HookConsumerWidget {
             return StatsPlaylistItem(
               playlist: playlist.playlist,
               info: Text(
-                  "${compactNumberFormatter.format(playlist.count)} plays"),
+                context.l10n
+                    .count_plays(compactNumberFormatter.format(playlist.count)),
+              ),
             );
           },
         ),

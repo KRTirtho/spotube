@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/modules/stats/common/album_item.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/albums.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
@@ -35,7 +36,8 @@ class TopAlbums extends HookConsumerWidget {
           return StatsAlbumItem(
             album: album.album,
             info: Text(
-              "${compactNumberFormatter.format(album.count)} plays",
+              context.l10n
+                  .count_plays(compactNumberFormatter.format(album.count)),
             ),
           );
         },

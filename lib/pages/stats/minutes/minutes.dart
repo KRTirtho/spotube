@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/common/track_item.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/tracks.dart';
@@ -27,8 +28,8 @@ class StatsMinutesPage extends HookConsumerWidget {
     final tracksData = topTracks.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(
-        title: Text("Minutes listened"),
+      appBar: PageWindowTitleBar(
+        title: Text(context.l10n.minutes_listened),
         centerTitle: false,
         automaticallyImplyLeading: true,
       ),
@@ -48,7 +49,8 @@ class StatsMinutesPage extends HookConsumerWidget {
             return StatsTrackItem(
               track: track.track,
               info: Text(
-                "${compactNumberFormatter.format(track.count)} plays",
+                context.l10n
+                    .count_plays(compactNumberFormatter.format(track.count)),
               ),
             );
           },

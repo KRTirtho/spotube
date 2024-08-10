@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/extensions/context.dart';
 
 class NotFound extends StatelessWidget {
   final bool vertical;
@@ -18,9 +19,9 @@ class NotFound extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Nothing found", style: theme.textTheme.titleLarge),
+          Text(context.l10n.nothing_found, style: theme.textTheme.titleLarge),
           Text(
-            "The box is empty",
+            context.l10n.the_box_is_empty,
             style: theme.textTheme.titleMedium,
           ),
         ],

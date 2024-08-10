@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/common/artist_item.dart';
+import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/tracks.dart';
@@ -27,10 +28,10 @@ class StatsArtistsPage extends HookConsumerWidget {
         () => topTracks.asData?.value.artists ?? [], [topTracks.asData?.value]);
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(
+      appBar: PageWindowTitleBar(
         automaticallyImplyLeading: true,
         centerTitle: false,
-        title: Text("Artists"),
+        title: Text(context.l10n.artists),
       ),
       body: Skeletonizer(
         enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
@@ -46,8 +47,8 @@ class StatsArtistsPage extends HookConsumerWidget {
             final artist = artistsData[index];
             return StatsArtistItem(
               artist: artist.artist,
-              info:
-                  Text("${compactNumberFormatter.format(artist.count)} plays"),
+              info: Text(context.l10n
+                  .count_plays(compactNumberFormatter.format(artist.count))),
             );
           },
         ),

@@ -5,6 +5,7 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/modules/stats/summary/summary_card.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/stats/albums/albums.dart';
 import 'package:spotube/pages/stats/artists/artists.dart';
 import 'package:spotube/pages/stats/fees/fees.dart';
@@ -45,8 +46,8 @@ class StatsPageSummarySection extends HookConsumerWidget {
             delegate: SliverChildListDelegate([
               SummaryCard(
                 title: summaryData.duration.inMinutes.toDouble(),
-                unit: "minutes",
-                description: 'Listened to music',
+                unit: context.l10n.summary_minutes,
+                description: context.l10n.summary_listened_to_music,
                 color: Colors.purple,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsMinutesPage.name);
@@ -54,8 +55,8 @@ class StatsPageSummarySection extends HookConsumerWidget {
               ),
               SummaryCard(
                 title: summaryData.tracks.toDouble(),
-                unit: "songs",
-                description: 'Streamed overall',
+                unit: context.l10n.summary_songs,
+                description: context.l10n.summary_streamed_overall,
                 color: Colors.lightBlue,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsStreamsPage.name);
@@ -64,7 +65,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
               SummaryCard.unformatted(
                 title: usdFormatter.format(summaryData.fees.toDouble()),
                 unit: "",
-                description: 'Owed to artists\nthis month',
+                description: context.l10n.summary_owed_to_artists,
                 color: Colors.green,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsStreamFeesPage.name);
@@ -72,8 +73,8 @@ class StatsPageSummarySection extends HookConsumerWidget {
               ),
               SummaryCard(
                 title: summaryData.artists.toDouble(),
-                unit: "artist's",
-                description: 'Music reached you',
+                unit: context.l10n.summary_artists,
+                description: context.l10n.summary_music_reached_you,
                 color: Colors.yellow,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsArtistsPage.name);
@@ -81,8 +82,8 @@ class StatsPageSummarySection extends HookConsumerWidget {
               ),
               SummaryCard(
                 title: summaryData.albums.toDouble(),
-                unit: "full albums",
-                description: 'Got your love',
+                unit: context.l10n.summary_full_albums,
+                description: context.l10n.summary_got_your_love,
                 color: Colors.pink,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsAlbumsPage.name);
@@ -90,8 +91,8 @@ class StatsPageSummarySection extends HookConsumerWidget {
               ),
               SummaryCard(
                 title: summaryData.playlists.toDouble(),
-                unit: "playlists",
-                description: 'Were on repeat',
+                unit: context.l10n.summary_playlists,
+                description: context.l10n.summary_were_on_repeat,
                 color: Colors.teal,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsPlaylistsPage.name);
