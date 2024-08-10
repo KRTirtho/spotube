@@ -75,7 +75,7 @@ class Sidebar extends HookConsumerWidget {
     final bg = theme.colorScheme.surfaceContainerHighest;
 
     final bgColor = useBrightnessValue(
-      Color.lerp(bg, Colors.white, 0.7),
+      Color.lerp(bg, Colors.white, 0.6),
       Color.lerp(bg, Colors.black, 0.45)!,
     );
 
