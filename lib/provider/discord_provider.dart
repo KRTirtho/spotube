@@ -17,31 +17,30 @@ class DiscordNotifier extends AsyncNotifier<void> {
 
     var lastPosition = audioPlayer.position;
 
-    final subscriptions =
-        [
-          FlutterDiscordRPC.instance.isConnectedStream.listen((connected) async {
-            final playback = ref.read(audioPlayerProvider);
-            if (connected && playback.activeTrack != null) {
-              await updatePresence(playback.activeTrack!);
-            }
-          }),
-          audioPlayer.playerStateStream.listen((state) async {
-            final playback = ref.read(audioPlayerProvider);
-            if (playback.activeTrack == null) return;
+    final subscriptions = [
+      FlutterDiscordRPC.instance.isConnectedStream.listen((connected) async {
+        final playback = ref.read(audioPlayerProvider);
+        if (connected && playback.activeTrack != null) {
+          await updatePresence(playback.activeTrack!);
+        }
+      }),
+      audioPlayer.playerStateStream.listen((state) async {
+        final playback = ref.read(audioPlayerProvider);
+        if (playback.activeTrack == null) return;
 
+        await updatePresence(ref.read(audioPlayerProvider).activeTrack!);
+      }),
+      audioPlayer.positionStream.listen((position) async {
+        final playback = ref.read(audioPlayerProvider);
+        if (playback.activeTrack != null) {
+          final diff = position.inMilliseconds - lastPosition.inMilliseconds;
+          if (diff > 500 || diff < -500) {
             await updatePresence(ref.read(audioPlayerProvider).activeTrack!);
-          }),
-          audioPlayer.positionStream.listen((position) async {
-            final playback = ref.read(audioPlayerProvider);
-            if (playback.activeTrack != null) {
-              final diff = position.inMilliseconds - lastPosition.inMilliseconds;
-              if (diff > 500 || diff < -500) {
-                await updatePresence(ref.read(audioPlayerProvider).activeTrack!);
-              }
-            }
-            lastPosition = position;
-          })
-        ];
+          }
+        }
+        lastPosition = position;
+      })
+    ];
 
     ref.onDispose(() async {
       for (final subscription in subscriptions) {
@@ -83,8 +82,11 @@ class DiscordNotifier extends AsyncNotifier<void> {
           ),
         ],
         timestamps: RPCTimestamps(
-          start: isPlaying ? DateTime.now().millisecondsSinceEpoch - position.inMilliseconds : null,
+          start: isPlaying
+              ? DateTime.now().millisecondsSinceEpoch - position.inMilliseconds
+              : null,
         ),
+        activityType: ActivityType.listening,
       ),
     );
   }
