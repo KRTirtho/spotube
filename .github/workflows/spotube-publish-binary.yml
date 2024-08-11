@@ -115,7 +115,7 @@ jobs:
       - uses: robinraju/release-downloader@main
         with:
           repository: KRTirtho/spotube
-          tag: ${{ env.TAG_NAME }}
+          tag: v${{ env.TAG_NAME }}
           tarBall: false
           zipBall: false
           out-file-path: dist
