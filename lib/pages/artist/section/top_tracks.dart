@@ -4,12 +4,12 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/dialogs/select_device_dialog.dart';
-import 'package:spotube/components/shared/track_tile/track_tile.dart';
+import 'package:spotube/components/dialogs/select_device_dialog.dart';
+import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/provider/connect/connect.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPageTopTracks extends HookConsumerWidget {
@@ -21,8 +21,8 @@ class ArtistPageTopTracks extends HookConsumerWidget {
     final theme = Theme.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
     final topTracksQuery = ref.watch(artistTopTracksProvider(artistId));
 
     final isPlaylistPlaying = playlist.containsTracks(

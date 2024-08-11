@@ -5,8 +5,8 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/language_codes.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/settings/section_card_with_heading.dart';
-import 'package:spotube/components/shared/adaptive/adaptive_select_tile.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
+import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
@@ -57,7 +57,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
           secondary: const Icon(SpotubeIcons.shoppingBag),
           title: Text(context.l10n.market_place_region),
           subtitle: Text(context.l10n.recommendation_country),
-          value: preferences.recommendationMarket,
+          value: preferences.market,
           onChanged: (value) {
             if (value == null) return;
             preferencesNotifier.setRecommendationMarket(value);

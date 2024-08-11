@@ -30,7 +30,7 @@ class ArtistAlbumsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
 
   @override
   fetch(arg, offset, limit) async {
-    final market = ref.read(userPreferencesProvider).recommendationMarket;
+    final market = ref.read(userPreferencesProvider).market;
     final albums = await spotify.artists
         .albums(arg, country: market)
         .getPage(limit, offset);
@@ -44,7 +44,7 @@ class ArtistAlbumsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
 
     ref.watch(spotifyProvider);
     ref.watch(
-      userPreferencesProvider.select((s) => s.recommendationMarket),
+      userPreferencesProvider.select((s) => s.market),
     );
     final albums = await fetch(arg, 0, 20);
     return ArtistAlbumsState(

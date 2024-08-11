@@ -1,6 +1,8 @@
 import 'package:spotify/spotify.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/spotify/home_feed.dart';
 import 'package:spotube/models/spotify_friends.dart';
+import 'package:spotube/provider/history/summary.dart';
 
 abstract class FakeData {
   static final Image image = Image()
@@ -221,5 +223,37 @@ abstract class FakeData {
           ),
         )
     ],
+  );
+
+  static const historySummary = PlaybackHistorySummary(
+    albums: 1,
+    artists: 1,
+    duration: Duration(seconds: 1),
+    playlists: 1,
+    tracks: 1,
+    fees: 1,
+  );
+
+  static final historyRecentlyPlayedPlaylist = HistoryTableData(
+    id: 0,
+    type: HistoryEntryType.track,
+    createdAt: DateTime.now(),
+    itemId: "1",
+    data: playlist.toJson(),
+  );
+
+  static final historyRecentlyPlayedAlbum = HistoryTableData(
+    id: 0,
+    type: HistoryEntryType.track,
+    createdAt: DateTime.now(),
+    itemId: "1",
+    data: album.toJson(),
+  );
+
+  static final historyRecentlyPlayedItems = List.generate(
+    10,
+    (index) => index % 2 == 0
+        ? historyRecentlyPlayedPlaylist
+        : historyRecentlyPlayedAlbum,
   );
 }

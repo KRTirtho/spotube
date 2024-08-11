@@ -1,9 +1,11 @@
-import 'package:catcher_2/core/catcher_2.dart';
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/source_match.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/song_link/song_link.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
@@ -46,7 +48,16 @@ class YoutubeSourcedTrack extends SourcedTrack {
     required Track track,
     required Ref ref,
   }) async {
-    final cachedSource = await SourceMatch.box.get(track.id);
+    final database = ref.read(databaseProvider);
+    final cachedSource = await (database.select(database.sourceMatchTable)
+          ..where((s) => s.trackId.equals(track.id!))
+          ..limit(1)
+          ..orderBy([
+            (s) =>
+                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
+          ]))
+        .get()
+        .then((s) => s.firstOrNull);
 
     if (cachedSource == null || cachedSource.sourceType != SourceType.youtube) {
       final siblings = await fetchSiblings(ref: ref, track: track);
@@ -54,15 +65,13 @@ class YoutubeSourcedTrack extends SourcedTrack {
         throw TrackNotFoundError(track);
       }
 
-      await SourceMatch.box.put(
-        track.id!,
-        SourceMatch(
-          id: track.id!,
-          sourceType: SourceType.youtube,
-          createdAt: DateTime.now(),
-          sourceId: siblings.first.info.id,
-        ),
-      );
+      await database.into(database.sourceMatchTable).insert(
+            SourceMatchTableCompanion.insert(
+              trackId: track.id!,
+              sourceId: siblings.first.info.id,
+              sourceType: const Value(SourceType.youtube),
+            ),
+          );
 
       return YoutubeSourcedTrack(
         ref: ref,
@@ -236,7 +245,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
         ];
       } on VideoUnplayableException catch (e, stack) {
         // Ignore this error and continue with the search
-        Catcher2.reportCheckedError(e, stack);
+        AppLogger.reportError(e, stack);
       }
     }
 
@@ -283,15 +292,19 @@ class YoutubeSourcedTrack extends SourcedTrack {
           onTimeout: () => throw ClientException("Timeout"),
         );
 
-    await SourceMatch.box.put(
-      id!,
-      SourceMatch(
-        id: id!,
-        sourceType: SourceType.jiosaavn,
-        createdAt: DateTime.now(),
-        sourceId: newSourceInfo.id,
-      ),
-    );
+    final database = ref.read(databaseProvider);
+
+    await database.into(database.sourceMatchTable).insert(
+          SourceMatchTableCompanion.insert(
+            trackId: id!,
+            sourceId: newSourceInfo.id,
+            sourceType: const Value(SourceType.youtube),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
+          ),
+          mode: InsertMode.replace,
+        );
 
     return YoutubeSourcedTrack(
       ref: ref,

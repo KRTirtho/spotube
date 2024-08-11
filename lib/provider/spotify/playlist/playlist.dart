@@ -71,16 +71,32 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
             state.id!,
             input.base64Image!,
           );
+
+          final playlist = await spotify.playlists.get(state.id!);
+
+          ref.read(favoritePlaylistsProvider.notifier).updatePlaylist(playlist);
+          return playlist;
         }
 
-        return spotify.playlists.get(state.id!);
-      } catch (e) {
+        final playlist = Playlist.fromJson(
+          {
+            ...state.toJson(),
+            'name': input.playlistName,
+            'collaborative': input.collaborative,
+            'description': input.description,
+            'public': input.public,
+          },
+        );
+
+        ref.read(favoritePlaylistsProvider.notifier).updatePlaylist(playlist);
+
+        return playlist;
+      } catch (e, stack) {
         onError?.call(e);
+        AppLogger.reportError(e, stack);
         rethrow;
       }
     });
-
-    ref.invalidate(favoritePlaylistsProvider);
   }
 }
 

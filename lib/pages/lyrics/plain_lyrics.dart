@@ -5,13 +5,13 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/lyrics/zoom_controls.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
+import 'package:spotube/modules/lyrics/zoom_controls.dart';
+import 'package:spotube/components/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class PlainLyrics extends HookConsumerWidget {
@@ -27,7 +27,7 @@ class PlainLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final lyricsQuery = ref.watch(syncedLyricsProvider(playlist.activeTrack));
     final mediaQuery = MediaQuery.of(context);
     final textTheme = Theme.of(context).textTheme;

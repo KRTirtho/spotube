@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/settings/section_card_with_heading.dart';
-import 'package:spotube/components/shared/adaptive/adaptive_select_tile.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
+import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
-import 'package:spotube/utils/platform.dart';
 
 class SettingsDesktopSection extends HookConsumerWidget {
   const SettingsDesktopSection({super.key});
@@ -53,13 +52,12 @@ class SettingsDesktopSection extends HookConsumerWidget {
           value: preferences.systemTitleBar,
           onChanged: preferencesNotifier.setSystemTitleBar,
         ),
-        if (!kIsMacOS)
-          SwitchListTile(
-            secondary: const Icon(SpotubeIcons.discord),
-            title: Text(context.l10n.discord_rich_presence),
-            value: preferences.discordPresence,
-            onChanged: preferencesNotifier.setDiscordPresence,
-          ),
+        SwitchListTile(
+          secondary: const Icon(SpotubeIcons.discord),
+          title: Text(context.l10n.discord_rich_presence),
+          value: preferences.discordPresence,
+          onChanged: preferencesNotifier.setDiscordPresence,
+        ),
       ],
     );
   }

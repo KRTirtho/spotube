@@ -10,9 +10,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/fallbacks/anonymous_fallback.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_force_update.dart';
@@ -20,7 +20,7 @@ import 'package:spotube/pages/search/sections/albums.dart';
 import 'package:spotube/pages/search/sections/artists.dart';
 import 'package:spotube/pages/search/sections/playlists.dart';
 import 'package:spotube/pages/search/sections/tracks.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 
@@ -37,8 +37,7 @@ class SearchPage extends HookConsumerWidget {
     final searchTerm = ref.watch(searchTermStateProvider);
     final controller = useSearchController();
 
-    ref.watch(authenticationProvider);
-    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
+    final auth = ref.watch(authenticationProvider);
     final mediaQuery = MediaQuery.of(context);
 
     final searchTrack = ref.watch(searchProvider(SearchType.track));
@@ -91,7 +90,7 @@ class SearchPage extends HookConsumerWidget {
         appBar: kIsDesktop && !kIsMacOS
             ? const PageWindowTitleBar(automaticallyImplyLeading: true)
             : null,
-        body: !authenticationNotifier.isLoggedIn
+        body: auth.asData?.value == null
             ? const AnonymousFallback()
             : Column(
                 children: [
@@ -212,7 +211,7 @@ class SearchPage extends HookConsumerWidget {
                                 Icon(
                                   SpotubeIcons.web,
                                   size: 120,
-                                  color: theme.colorScheme.onBackground
+                                  color: theme.colorScheme.onSurface
                                       .withOpacity(0.7),
                                 ),
                                 const SizedBox(height: 20),
@@ -220,7 +219,7 @@ class SearchPage extends HookConsumerWidget {
                                   context.l10n.search_to_get_results,
                                   style: theme.textTheme.titleLarge?.copyWith(
                                     fontWeight: FontWeight.w900,
-                                    color: theme.colorScheme.onBackground
+                                    color: theme.colorScheme.onSurface
                                         .withOpacity(0.5),
                                   ),
                                 ),
@@ -246,7 +245,7 @@ class SearchPage extends HookConsumerWidget {
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w900,
-                                          color: theme.colorScheme.onBackground
+                                          color: theme.colorScheme.onSurface
                                               .withOpacity(0.7),
                                         ),
                                       ),

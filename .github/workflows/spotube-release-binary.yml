@@ -20,7 +20,7 @@ on:
         description: Dry run without uploading to release
 
 env:
-  FLUTTER_VERSION: 3.19.6
+  FLUTTER_VERSION: 3.22.3
 
 permissions:
   contents: write
@@ -82,6 +82,11 @@ jobs:
       - name: Set up Docker Buildx
         if: ${{matrix.platform == 'linux_arm'}}
         uses: docker/setup-buildx-action@v3
+      - name: Setup Rust toolchain
+        if: ${{matrix.platform != 'linux_arm'}}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
 
       - name: Install ${{matrix.platform}} dependencies
         run: |
@@ -93,6 +98,11 @@ jobs:
         run: |
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
           echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
+      
+      - name: Unessary hosted tools
+        if: ${{matrix.platform == 'linux_arm'}}
+        run: |
+          sudo rm -rf /usr/share/dotnet
       
       - name: Build ${{matrix.platform}} binaries
         run: dart cli/cli.dart build ${{matrix.platform}}

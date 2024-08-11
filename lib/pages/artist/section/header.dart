@@ -5,12 +5,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/primitive_utils.dart';
@@ -39,10 +40,9 @@ class ArtistPageHeader extends HookConsumerWidget {
     );
 
     final auth = ref.watch(authenticationProvider);
-    final blacklist = ref.watch(blacklistProvider);
-    final isBlackListed = blacklist.contains(
-      BlacklistedElement.artist(artistId, artist.name!),
-    );
+    ref.watch(blacklistProvider);
+    final blacklistNotifier = ref.watch(blacklistProvider.notifier);
+    final isBlackListed = blacklistNotifier.containsArtist(artist);
 
     final image = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
@@ -135,7 +135,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (auth != null)
+                        if (auth.asData?.value != null)
                           Consumer(
                             builder: (context, ref, _) {
                               final isFollowingQuery = ref
@@ -187,14 +187,16 @@ class ArtistPageHeader extends HookConsumerWidget {
                           ),
                           onPressed: () async {
                             if (isBlackListed) {
-                              ref.read(blacklistProvider.notifier).remove(
-                                    BlacklistedElement.artist(
-                                        artist.id!, artist.name!),
-                                  );
+                              await ref
+                                  .read(blacklistProvider.notifier)
+                                  .remove(artist.id!);
                             } else {
-                              ref.read(blacklistProvider.notifier).add(
-                                    BlacklistedElement.artist(
-                                        artist.id!, artist.name!),
+                              await ref.read(blacklistProvider.notifier).add(
+                                    BlacklistTableCompanion.insert(
+                                      name: artist.name!,
+                                      elementId: artist.id!,
+                                      elementType: BlacklistedType.artist,
+                                    ),
                                   );
                             }
                           },

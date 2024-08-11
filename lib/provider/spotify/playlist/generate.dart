@@ -5,7 +5,7 @@ final generatePlaylistProvider = FutureProvider.autoDispose
   (ref, input) async {
     final spotify = ref.watch(spotifyProvider);
     final market = ref.watch(
-      userPreferencesProvider.select((s) => s.recommendationMarket),
+      userPreferencesProvider.select((s) => s.market),
     );
 
     final recommendation = await spotify.recommendations
@@ -24,7 +24,7 @@ final generatePlaylistProvider = FutureProvider.autoDispose
           ?.cast<String, num>(),
     )
         .catchError((e, stackTrace) {
-      Catcher2.reportCheckedError(e, stackTrace);
+      AppLogger.reportError(e, stackTrace);
       return Recommendations();
     });
 

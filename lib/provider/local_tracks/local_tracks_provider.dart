@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
@@ -13,7 +14,7 @@ import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 // ignore: depend_on_referenced_packages
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FfiException;
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FrbException;
 
 const supportedAudioTypes = [
   "audio/webm",
@@ -36,7 +37,7 @@ final localTracksProvider =
     FutureProvider<Map<String, List<LocalTrack>>>((ref) async {
   try {
     if (kIsWeb) return {};
-    final Map<String, List<LocalTrack>> tracks = {};
+    final Map<String, List<LocalTrack>> libraryToTracks = {};
 
     final downloadLocation = ref.watch(
       userPreferencesProvider.select((s) => s.downloadLocation),
@@ -49,60 +50,63 @@ final localTracksProvider =
       userPreferencesProvider.select((s) => s.localLibraryLocation),
     );
 
-    for (var location in [downloadLocation, ...localLibraryLocations]) {
+    for (final location in [downloadLocation, ...localLibraryLocations]) {
       if (location.isEmpty) continue;
-      final entities = <FileSystemEntity>[];
+      final entities = <File>[];
       if (await Directory(location).exists()) {
         try {
-          entities.addAll(Directory(location).listSync(recursive: true));
+          final dirEntities =
+              await Directory(location).list(recursive: true).toList();
+
+          entities.addAll(
+            dirEntities
+                .where(
+                  (e) =>
+                      e is File &&
+                      supportedAudioTypes.contains(lookupMimeType(e.path)),
+                )
+                .cast<File>(),
+          );
         } catch (e, stack) {
-          Catcher2.reportCheckedError(e, stack);
+          AppLogger.reportError(e, stack);
         }
       }
 
-      final filesWithMetadata = (await Future.wait(
-        entities.map((e) => File(e.path)).where((file) {
-          final mimetype = lookupMimeType(file.path);
-          return mimetype != null && supportedAudioTypes.contains(mimetype);
-        }).map(
-          (file) async {
-            try {
-              final metadata = await MetadataGod.readMetadata(file: file.path);
+      final List<Map<dynamic, dynamic>> filesWithMetadata = [];
 
-              final imageFile = File(join(
-                (await getTemporaryDirectory()).path,
-                "spotube",
-                basenameWithoutExtension(file.path) +
-                    imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
-              ));
-              if (!await imageFile.exists() && metadata.picture != null) {
-                await imageFile.create(recursive: true);
-                await imageFile.writeAsBytes(
-                  metadata.picture?.data ?? [],
-                  mode: FileMode.writeOnly,
-                );
-              }
+      for (final file in entities) {
+        try {
+          final metadata = await MetadataGod.readMetadata(file: file.path);
 
-              return {
-                "metadata": metadata,
-                "file": file,
-                "art": imageFile.path
-              };
-            } catch (e, stack) {
-              if (e is FfiException) {
-                return {"file": file};
-              }
-              Catcher2.reportCheckedError(e, stack);
-              return {};
-            }
-          },
-        ),
-      ))
-          .where((e) => e.isNotEmpty)
-          .toList();
+          await Future.delayed(const Duration(milliseconds: 50));
 
-      // ignore: no_leading_underscores_for_local_identifiers
-      final _tracks = filesWithMetadata
+          final imageFile = File(join(
+            (await getTemporaryDirectory()).path,
+            "spotube",
+            basenameWithoutExtension(file.path) +
+                imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
+          ));
+          if (!await imageFile.exists() && metadata.picture != null) {
+            await imageFile.create(recursive: true);
+            await imageFile.writeAsBytes(
+              metadata.picture?.data ?? [],
+              mode: FileMode.writeOnly,
+            );
+          }
+
+          filesWithMetadata.add(
+            {"metadata": metadata, "file": file, "art": imageFile.path},
+          );
+        } catch (e, stack) {
+          if (e case FrbException() || TimeoutException()) {
+            filesWithMetadata.add({"file": file});
+          }
+          AppLogger.reportError(e, stack);
+          continue;
+        }
+      }
+
+      final tracksFromMetadata = filesWithMetadata
           .map(
             (fileWithMetadata) => LocalTrack.fromTrack(
               track: Track().fromFile(
@@ -115,11 +119,11 @@ final localTracksProvider =
           )
           .toList();
 
-      tracks[location] = _tracks;
+      libraryToTracks[location] = tracksFromMetadata;
     }
-    return tracks;
+    return libraryToTracks;
   } catch (e, stack) {
-    Catcher2.reportCheckedError(e, stack);
+    AppLogger.reportError(e, stack);
     return {};
   }
 });

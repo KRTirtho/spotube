@@ -12,25 +12,35 @@ void useGetStoragePermissions(WidgetRef ref) {
 
   useAsyncEffect(
     () async {
-      if (!kIsMobile) return;
+      if (kIsAndroid) {
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
 
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
+        final hasNoStoragePerm = androidInfo.version.sdkInt < 33 &&
+            !await Permission.storage.isGranted &&
+            !await Permission.storage.isLimited;
 
-      final hasNoStoragePerm = androidInfo.version.sdkInt < 33 &&
-          !await Permission.storage.isGranted &&
-          !await Permission.storage.isLimited;
+        final hasNoAudioPerm = androidInfo.version.sdkInt >= 33 &&
+            !await Permission.audio.isGranted &&
+            !await Permission.audio.isLimited;
 
-      final hasNoAudioPerm = androidInfo.version.sdkInt >= 33 &&
-          !await Permission.audio.isGranted &&
-          !await Permission.audio.isLimited;
-
-      if (hasNoStoragePerm) {
-        await Permission.storage.request();
-        if (context.mounted) ref.invalidate(localTracksProvider);
+        if (hasNoStoragePerm) {
+          await Permission.storage.request();
+          if (context.mounted) ref.invalidate(localTracksProvider);
+        }
+        if (hasNoAudioPerm) {
+          await Permission.audio.request();
+          if (context.mounted) ref.invalidate(localTracksProvider);
+        }
       }
-      if (hasNoAudioPerm) {
-        await Permission.audio.request();
-        if (context.mounted) ref.invalidate(localTracksProvider);
+
+      if (kIsIOS) {
+        final hasStoragePerm = await Permission.storage.isGranted ||
+            await Permission.storage.isLimited;
+
+        if (!hasStoragePerm) {
+          await Permission.storage.request();
+          if (context.mounted) ref.invalidate(localTracksProvider);
+        }
       }
     },
     null,

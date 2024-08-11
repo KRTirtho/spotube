@@ -3,12 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/components/settings/section_card_with_heading.dart';
-import 'package:spotube/components/shared/adaptive/adaptive_select_tile.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
+import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
 
 class SettingsAppearanceSection extends HookConsumerWidget {
   final bool isGettingStarted;

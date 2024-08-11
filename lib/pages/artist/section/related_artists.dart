@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/artist/artist_card.dart';
+import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPageRelatedArtists extends ConsumerWidget {

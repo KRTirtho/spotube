@@ -4,7 +4,6 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
   final scheme = ColorScheme.fromSeed(
     seedColor: seed,
     shadow: Colors.black12,
-    background: isAmoled ? Colors.black : null,
     surface: isAmoled ? Colors.black : null,
     brightness: brightness,
   );
@@ -30,7 +29,7 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
     navigationBarTheme: const NavigationBarThemeData(
       labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
       height: 50,
-      iconTheme: MaterialStatePropertyAll(
+      iconTheme: WidgetStatePropertyAll(
         IconThemeData(size: 18),
       ),
     ),
@@ -48,6 +47,9 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       color: scheme.surface,
       elevation: 4,
+      labelTextStyle: WidgetStatePropertyAll(
+        TextStyle(color: scheme.onSurface),
+      ),
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
@@ -57,25 +59,25 @@ ThemeData theme(Color seed, Brightness brightness, bool isAmoled) {
     ),
     sliderTheme: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
     searchBarTheme: SearchBarThemeData(
-      textStyle: const MaterialStatePropertyAll(TextStyle(fontSize: 15)),
+      textStyle: const WidgetStatePropertyAll(TextStyle(fontSize: 15)),
       constraints: const BoxConstraints(maxWidth: double.infinity),
-      padding: const MaterialStatePropertyAll(EdgeInsets.all(8)),
-      backgroundColor: MaterialStatePropertyAll(
+      padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
+      backgroundColor: WidgetStatePropertyAll(
         Color.lerp(
-          scheme.surfaceVariant,
+          scheme.surfaceContainerHighest,
           scheme.surface,
           brightness == Brightness.light ? .9 : .7,
         ),
       ),
-      elevation: const MaterialStatePropertyAll(0),
-      shape: MaterialStatePropertyAll(
+      elevation: const WidgetStatePropertyAll(0),
+      shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
     ),
     scrollbarTheme: const ScrollbarThemeData(
-      thickness: MaterialStatePropertyAll(14),
+      thickness: WidgetStatePropertyAll(14),
     ),
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

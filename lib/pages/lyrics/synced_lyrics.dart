@@ -1,18 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/lyrics/zoom_controls.dart';
-import 'package:spotube/components/shared/shimmers/shimmer_lyrics.dart';
+import 'package:spotube/modules/lyrics/zoom_controls.dart';
+import 'package:spotube/components/shimmers/shimmer_lyrics.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
-import 'package:spotube/components/lyrics/use_synced_lyrics.dart';
+import 'package:spotube/modules/lyrics/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -32,7 +34,7 @@ class SyncedLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
 
     final mediaQuery = MediaQuery.of(context);
     final controller = useAutoScrollController();
@@ -54,9 +56,13 @@ class SyncedLyrics extends HookConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     ref.listen(
-      proxyPlaylistProvider.select((s) => s.activeTrack),
+      audioPlayerProvider.select((s) => s.activeTrack),
       (previous, next) {
-        controller.scrollToIndex(0);
+        controller.animateTo(
+          0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
         ref.read(syncedLyricsDelayProvider.notifier).state = 0;
       },
     );
@@ -69,6 +75,23 @@ class SyncedLyrics extends HookConsumerWidget {
     final bodyTextTheme = textTheme.bodyLarge?.copyWith(
       color: palette.bodyTextColor,
     );
+
+    useEffect(() {
+      StreamSubscription? subscription;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        subscription = audioPlayer.positionStream.listen((event) {
+          if (event > Duration.zero) return;
+          controller.animateTo(
+            0,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        });
+      });
+
+      return subscription?.cancel;
+    }, [controller]);
+
     return Stack(
       children: [
         CustomScrollView(
@@ -80,7 +103,7 @@ class SyncedLyrics extends HookConsumerWidget {
                 backgroundColor: Colors.transparent,
                 centerTitle: true,
                 title: Text(
-                  playlist.activeTrack?.name ?? "Not Playing",
+                  playlist.activeTrack?.name ?? context.l10n.not_playing,
                   style: headlineTextStyle,
                 ),
                 bottom: PreferredSize(
@@ -139,14 +162,12 @@ class SyncedLyrics extends HookConsumerWidget {
                                 textAlign: TextAlign.center,
                                 child: InkWell(
                                   onTap: () async {
-                                    final duration =
-                                        await audioPlayer.duration ??
-                                            Duration.zero;
                                     final time = Duration(
                                       seconds:
                                           lyricSlice.time.inSeconds - delay,
                                     );
-                                    if (time > duration || time.isNegative) {
+                                    if (time > audioPlayer.duration ||
+                                        time.isNegative) {
                                       return;
                                     }
                                     audioPlayer.seek(time);

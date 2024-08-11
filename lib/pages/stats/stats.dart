@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/stats/summary/summary.dart';
-import 'package:spotube/components/stats/top/top.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/modules/stats/summary/summary.dart';
+import 'package:spotube/modules/stats/top/top.dart';
 import 'package:spotube/utils/platform.dart';
 
 class StatsPage extends HookConsumerWidget {

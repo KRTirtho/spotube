@@ -4,14 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/library/playlist_generate/simple_track_tile.dart';
-import 'package:spotube/components/playlist/playlist_create_dialog.dart';
-import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
+import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
+import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class PlaylistGenerateResultPage extends HookConsumerWidget {
@@ -28,7 +28,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final router = GoRouter.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
 
     final generatedPlaylist = ref.watch(generatePlaylistProvider(state));
 
@@ -81,9 +81,12 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                             ? null
                             : () async {
                                 await playlistNotifier.load(
-                                  generatedPlaylist.asData!.value.where(
-                                    (e) => selectedTracks.value.contains(e.id!),
-                                  ),
+                                  generatedPlaylist.asData!.value
+                                      .where(
+                                        (e) => selectedTracks.value
+                                            .contains(e.id!),
+                                      )
+                                      .toList(),
                                   autoPlay: true,
                                 );
                               },

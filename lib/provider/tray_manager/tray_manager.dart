@@ -24,7 +24,7 @@ class SystemTrayManager with TrayListener {
         kIsWindows
             ? 'assets/spotube-logo.ico'
             : kIsFlatpak
-                ? 'com.github.KRTirtho.Spotube.png'
+                ? 'com.github.KRTirtho.Spotube'
                 : 'assets/spotube-logo.png',
       );
       trayManager.addListener(this);

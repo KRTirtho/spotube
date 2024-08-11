@@ -1,40 +1,44 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/mobile_audio_service.dart';
 import 'package:spotube/services/audio_services/windows_audio_service.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/platform.dart';
 
-class AudioServices {
+class AudioServices with WidgetsBindingObserver {
   final MobileAudioService? mobile;
   final WindowsAudioService? smtc;
 
-  AudioServices(this.mobile, this.smtc);
+  AudioServices(this.mobile, this.smtc) {
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   static Future<AudioServices> create(
     Ref ref,
-    ProxyPlaylistNotifier playback,
+    AudioPlayerNotifier playback,
   ) async {
     final mobile = kIsMobile || kIsMacOS || kIsLinux
         ? await AudioService.init(
             builder: () => MobileAudioService(playback),
-            config: const AudioServiceConfig(
-              androidNotificationChannelId: 'com.krtirtho.Spotube',
+            config: AudioServiceConfig(
+              androidNotificationChannelId:
+                  kIsLinux ? 'spotube' : 'com.krtirtho.Spotube',
               androidNotificationChannelName: 'Spotube',
-              androidNotificationOngoing: true,
+              androidNotificationOngoing: false,
+              androidNotificationIcon: "drawable/ic_launcher_monochrome",
+              androidStopForegroundOnPause: false,
+              androidNotificationChannelDescription: "Spotube Media Controls",
             ),
           )
         : null;
     final smtc = kIsWindows ? WindowsAudioService(ref, playback) : null;
 
-    return AudioServices(
-      mobile,
-      smtc,
-    );
+    return AudioServices(mobile, smtc);
   }
 
   Future<void> addTrack(Track track) async {
@@ -64,7 +68,20 @@ class AudioServices {
     mobile?.session?.setActive(false);
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.detached:
+        deactivateSession();
+        mobile?.stop();
+        break;
+      default:
+        break;
+    }
+  }
+
   void dispose() {
     smtc?.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 }

@@ -65,7 +65,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   }
 
   String? get nextSource {
-    if (loopMode == PlaybackLoopMode.all &&
+    if (loopMode == PlaylistMode.loop &&
         _mkPlayer.state.playlist.index ==
             _mkPlayer.state.playlist.medias.length - 1) {
       return sources.first;
@@ -77,8 +77,7 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   }
 
   String? get previousSource {
-    if (loopMode == PlaybackLoopMode.all &&
-        _mkPlayer.state.playlist.index == 0) {
+    if (loopMode == PlaylistMode.loop && _mkPlayer.state.playlist.index == 0) {
       return sources.last;
     }
 
@@ -125,8 +124,8 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
     await _mkPlayer.setShuffle(shuffle);
   }
 
-  Future<void> setLoopMode(PlaybackLoopMode loop) async {
-    await _mkPlayer.setPlaylistMode(loop.toPlaylistMode());
+  Future<void> setLoopMode(PlaylistMode loop) async {
+    await _mkPlayer.setPlaylistMode(loop);
   }
 
   Future<void> setAudioNormalization(bool normalize) async {

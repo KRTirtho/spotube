@@ -33,7 +33,7 @@ class CategoryPlaylistsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
     final preferences = ref.read(userPreferencesProvider);
     final playlists = await Pages<PlaylistSimple?>(
       spotify,
-      "v1/browse/categories/$arg/playlists?country=${preferences.recommendationMarket.name}&locale=${preferences.locale}",
+      "v1/browse/categories/$arg/playlists?country=${preferences.market.name}&locale=${preferences.locale}",
       (json) => json == null ? null : PlaylistSimple.fromJson(json),
       'playlists',
       (json) => PlaylistsFeatured.fromJson(json),
@@ -48,7 +48,7 @@ class CategoryPlaylistsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
 
     ref.watch(spotifyProvider);
     ref.watch(userPreferencesProvider.select((s) => s.locale));
-    ref.watch(userPreferencesProvider.select((s) => s.recommendationMarket));
+    ref.watch(userPreferencesProvider.select((s) => s.market));
 
     final playlists = await fetch(arg, 0, 8);
 

@@ -1,40 +1,62 @@
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/history/state.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/database/database.dart';
 
-final recentlyPlayedItems = Provider((ref) {
-  return ref.watch(
-    playbackHistoryProvider.select(
-      (s) => s.items
-          .toSet()
-          // unique items
-          .whereIndexed(
-            (index, item) =>
-                index ==
-                s.items.lastIndexWhere(
-                  (e) => switch ((e, item)) {
-                    (
-                      PlaybackHistoryPlaylist(:final playlist),
-                      PlaybackHistoryPlaylist(playlist: final playlist2)
-                    ) =>
-                      playlist.id == playlist2.id,
-                    (
-                      PlaybackHistoryAlbum(:final album),
-                      PlaybackHistoryAlbum(album: final album2)
-                    ) =>
-                      album.id == album2.id,
-                    _ => false,
-                  },
-                ),
+class RecentlyPlayedItemNotifier extends AsyncNotifier<List<HistoryTableData>> {
+  @override
+  build() async {
+    final database = ref.watch(databaseProvider);
+
+    final uniqueItemIds = await (database.selectOnly(
+      database.historyTable,
+      distinct: true,
+    )
+          ..addColumns([database.historyTable.itemId, database.historyTable.id])
+          ..where(
+            database.historyTable.type.isInValues([
+              HistoryEntryType.playlist,
+              HistoryEntryType.album,
+            ]),
           )
-          .where(
-            (s) => s is PlaybackHistoryPlaylist || s is PlaybackHistoryAlbum,
-          )
-          .take(10)
-          .sortedBy((s) => s.date)
-          .reversed
-          .toList(),
-    ),
-  );
-});
+          ..limit(10)
+          ..orderBy([
+            OrderingTerm(
+              expression: database.historyTable.createdAt,
+              mode: OrderingMode.desc,
+            ),
+          ]))
+        .map(
+          (row) => row.read(database.historyTable.id),
+        )
+        .get()
+        .then((value) => value.whereNotNull().toList());
+
+    final query = database.select(database.historyTable)
+      ..where(
+        (tbl) => tbl.id.isIn(uniqueItemIds),
+      )
+      ..orderBy([
+        (tbl) => OrderingTerm(
+              expression: tbl.createdAt,
+              mode: OrderingMode.desc,
+            ),
+      ]);
+
+    final subscription = query.watch().listen((event) {
+      state = AsyncData(event);
+    });
+
+    ref.onDispose(() => subscription.cancel());
+
+    final items = await query.get();
+
+    return items;
+  }
+}
+
+final recentlyPlayedItems =
+    AsyncNotifierProvider<RecentlyPlayedItemNotifier, List<HistoryTableData>>(
+  () => RecentlyPlayedItemNotifier(),
+);

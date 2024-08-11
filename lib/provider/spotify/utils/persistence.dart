@@ -16,7 +16,7 @@ mixin Persistence<T> on BuildlessAsyncNotifier<T> {
         (json is List && json.isNotEmpty)) {
       state = AsyncData(
         await fromJson(
-          PersistedStateNotifier.castNestedJson(json),
+          castNestedJson(json),
         ),
       );
     }

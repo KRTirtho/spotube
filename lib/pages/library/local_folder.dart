@@ -6,18 +6,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/library/user_local_tracks.dart';
-import 'package:spotube/components/shared/expandable_search/expandable_search.dart';
-import 'package:spotube/components/shared/fallbacks/not_found.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/shared/sort_tracks_dropdown.dart';
-import 'package:spotube/components/shared/track_tile/track_tile.dart';
+import 'package:spotube/modules/library/user_local_tracks.dart';
+import 'package:spotube/components/expandable_search/expandable_search.dart';
+import 'package:spotube/components/fallbacks/not_found.dart';
+import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/components/sort_tracks_dropdown.dart';
+import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class LocalLibraryPage extends HookConsumerWidget {
@@ -32,14 +32,15 @@ class LocalLibraryPage extends HookConsumerWidget {
     List<LocalTrack> tracks, {
     LocalTrack? currentTrack,
   }) async {
-    final playlist = ref.read(proxyPlaylistProvider);
-    final playback = ref.read(proxyPlaylistProvider.notifier);
+    final playlist = ref.read(audioPlayerProvider);
+    final playback = ref.read(audioPlayerProvider.notifier);
     currentTrack ??= tracks.first;
     final isPlaylistPlaying = playlist.containsTracks(tracks);
     if (!isPlaylistPlaying) {
+      var indexWhere = tracks.indexWhere((s) => s.id == currentTrack?.id);
       await playback.load(
         tracks,
-        initialIndex: tracks.indexWhere((s) => s.id == currentTrack?.id),
+        initialIndex: indexWhere,
         autoPlay: true,
       );
     } else if (isPlaylistPlaying &&
@@ -52,7 +53,7 @@ class LocalLibraryPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final sortBy = useState<SortBy>(SortBy.none);
-    final playlist = ref.watch(proxyPlaylistProvider);
+    final playlist = ref.watch(audioPlayerProvider);
     final trackSnapshot = ref.watch(localTracksProvider);
     final isPlaylistPlaying = playlist.containsTracks(
         trackSnapshot.asData?.value.values.flattened.toList() ?? []);

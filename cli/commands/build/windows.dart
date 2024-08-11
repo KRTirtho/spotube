@@ -41,6 +41,25 @@ class WindowsBuildCommand extends Command with BuildCommandCommonSteps {
     await bootstrap();
     await innoDependInstall();
 
+    final runnerRCFile = File(
+      join(cwd.path, "windows", "runner", "Runner.rc"),
+    );
+
+    runnerRCFile.writeAsStringSync(
+      runnerRCFile
+          .readAsStringSync()
+          .replaceAll("%{{SPOTUBE_VERSION}}%", versionWithoutBuildNumber)
+          .replaceAll(
+            "%{{SPOTUBE_VERSION_AS_NUMBER}}%",
+            [
+              pubspec.version!.major,
+              pubspec.version!.minor,
+              pubspec.version!.patch,
+              0
+            ].join(","),
+          ),
+    );
+
     await shell.run(
       "flutter_distributor package --platform=windows --targets=exe --skip-clean",
     );

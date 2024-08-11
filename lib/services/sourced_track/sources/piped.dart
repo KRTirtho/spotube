@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/source_match.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_state.dart';
+
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
@@ -48,7 +50,15 @@ class PipedSourcedTrack extends SourcedTrack {
     required Track track,
     required Ref ref,
   }) async {
-    final cachedSource = await SourceMatch.box.get(track.id);
+    final database = ref.read(databaseProvider);
+    final cachedSource = await (database.select(database.sourceMatchTable)
+          ..where((s) => s.trackId.equals(track.id!))
+          ..limit(1)
+          ..orderBy([
+            (s) =>
+                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
+          ]))
+        .getSingleOrNull();
     final preferences = ref.read(userPreferencesProvider);
     final pipedClient = ref.read(pipedProvider);
 
@@ -58,17 +68,17 @@ class PipedSourcedTrack extends SourcedTrack {
         throw TrackNotFoundError(track);
       }
 
-      await SourceMatch.box.put(
-        track.id!,
-        SourceMatch(
-          id: track.id!,
-          sourceType: preferences.searchMode == SearchMode.youtube
-              ? SourceType.youtube
-              : SourceType.youtubeMusic,
-          createdAt: DateTime.now(),
-          sourceId: siblings.first.info.id,
-        ),
-      );
+      await database.into(database.sourceMatchTable).insert(
+            SourceMatchTableCompanion.insert(
+              trackId: track.id!,
+              sourceId: siblings.first.info.id,
+              sourceType: Value(
+                preferences.searchMode == SearchMode.youtube
+                    ? SourceType.youtube
+                    : SourceType.youtubeMusic,
+              ),
+            ),
+          );
 
       return PipedSourcedTrack(
         ref: ref,
@@ -267,15 +277,18 @@ class PipedSourcedTrack extends SourcedTrack {
 
     final manifest = await pipedClient.streams(newSourceInfo.id);
 
-    await SourceMatch.box.put(
-      id!,
-      SourceMatch(
-        id: id!,
-        sourceType: SourceType.jiosaavn,
-        createdAt: DateTime.now(),
-        sourceId: newSourceInfo.id,
-      ),
-    );
+    final database = ref.read(databaseProvider);
+    await database.into(database.sourceMatchTable).insert(
+          SourceMatchTableCompanion.insert(
+            trackId: id!,
+            sourceId: newSourceInfo.id,
+            sourceType: const Value(SourceType.youtube),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
+          ),
+          mode: InsertMode.replace,
+        );
 
     return PipedSourcedTrack(
       ref: ref,

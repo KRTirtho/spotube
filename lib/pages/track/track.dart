@@ -6,15 +6,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/heart_button.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/shared/links/artist_link.dart';
-import 'package:spotube/components/shared/links/link_text.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/shared/track_tile/track_options.dart';
+import 'package:spotube/components/heart_button/heart_button.dart';
+import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/links/artist_link.dart';
+import 'package:spotube/components/links/link_text.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/components/track_tile/track_options.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -34,8 +34,8 @@ class TrackPage extends HookConsumerWidget {
     final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final playlist = ref.watch(proxyPlaylistProvider);
-    final playlistNotifier = ref.watch(proxyPlaylistProvider.notifier);
+    final playlist = ref.watch(audioPlayerProvider);
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
 
     final isActive = playlist.activeTrack?.id == trackId;
 
@@ -148,7 +148,12 @@ class TrackPage extends HookConsumerWidget {
                                 children: [
                                   const Icon(SpotubeIcons.artist),
                                   const Gap(5),
-                                  ArtistLink(artists: track.artists!),
+                                  Flexible(
+                                    child: ArtistLink(
+                                      artists: track.artists!,
+                                      hideOverflowArtist: false,
+                                    ),
+                                  ),
                                 ],
                               ),
                               const Gap(10),

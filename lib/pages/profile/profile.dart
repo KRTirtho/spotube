@@ -7,8 +7,9 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -27,21 +28,22 @@ class ProfilePage extends HookConsumerWidget {
 
     final userProperties = useMemoized(
       () => {
-        "Email": meData.email ?? "N/A",
-        "Followers": meData.followers?.total.toString() ?? "N/A",
-        "Birthday": meData.birthdate ?? "Not born",
-        "Country": spotifyMarkets
+        context.l10n.email: meData.email ?? "N/A",
+        context.l10n.profile_followers:
+            meData.followers?.total.toString() ?? "N/A",
+        context.l10n.birthday: meData.birthdate ?? context.l10n.not_born,
+        context.l10n.country: spotifyMarkets
             .firstWhere((market) => market.$1 == meData.country)
             .$2,
-        "Subscription": meData.product ?? "Hacker",
+        context.l10n.subscription: meData.product ?? context.l10n.hacker,
       },
       [meData],
     );
 
     return SafeArea(
       child: Scaffold(
-        appBar: const PageWindowTitleBar(
-          title: Text("Profile"),
+        appBar: PageWindowTitleBar(
+          title: Text(context.l10n.profile),
           titleSpacing: 0,
           automaticallyImplyLeading: true,
           centerTitle: false,
@@ -72,7 +74,7 @@ class ProfilePage extends HookConsumerWidget {
               const SliverGap(10),
               SliverToBoxAdapter(
                 child: Text(
-                  meData.displayName ?? "No Name",
+                  meData.displayName ?? context.l10n.no_name,
                   style: textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
@@ -85,7 +87,7 @@ class ProfilePage extends HookConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton.icon(
-                        label: const Text("Edit"),
+                        label: Text(context.l10n.edit),
                         icon: const Icon(SpotubeIcons.edit),
                         onPressed: () {
                           launchUrlString(

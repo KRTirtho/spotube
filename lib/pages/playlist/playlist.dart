@@ -1,10 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
-import 'package:spotube/components/shared/tracks_view/sections/body/use_is_user_playlist.dart';
-import 'package:spotube/components/shared/tracks_view/track_view.dart';
-import 'package:spotube/components/shared/tracks_view/track_view_props.dart';
+import 'package:spotube/components/dialogs/prompt_dialog.dart';
+import 'package:spotube/components/tracks_view/sections/body/use_is_user_playlist.dart';
+import 'package:spotube/components/tracks_view/track_view.dart';
+import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
@@ -12,19 +13,33 @@ import 'package:spotube/provider/spotify/spotify.dart';
 class PlaylistPage extends HookConsumerWidget {
   static const name = "playlist";
 
-  final PlaylistSimple playlist;
+  final PlaylistSimple _playlist;
   const PlaylistPage({
     super.key,
-    required this.playlist,
-  });
+    required PlaylistSimple playlist,
+  }) : _playlist = playlist;
 
   @override
   Widget build(BuildContext context, ref) {
+    final playlist = ref
+            .watch(
+              favoritePlaylistsProvider.select(
+                (value) => value.whenData(
+                  (value) =>
+                      value.items.firstWhereOrNull((s) => s.id == _playlist.id),
+                ),
+              ),
+            )
+            .asData
+            ?.value ??
+        _playlist;
+
     final tracks = ref.watch(playlistTracksProvider(playlist.id!));
     final tracksNotifier =
         ref.watch(playlistTracksProvider(playlist.id!).notifier);
     final isFavoritePlaylist =
         ref.watch(isFavoritePlaylistProvider(playlist.id!));
+
     final favoritePlaylistsNotifier =
         ref.watch(favoritePlaylistsProvider.notifier);
 
@@ -51,7 +66,8 @@ class PlaylistPage extends HookConsumerWidget {
       tracks: tracks.asData?.value.items ?? [],
       routePath: '/playlist/${playlist.id}',
       isLiked: isFavoritePlaylist.asData?.value ?? false,
-      shareUrl: playlist.externalUrls?.spotify ?? "",
+      shareUrl: playlist.externalUrls?.spotify ??
+          "https://open.spotify.com/playlist/${playlist.id}",
       onHeart: isFavoritePlaylist.asData?.value == null
           ? null
           : () async {

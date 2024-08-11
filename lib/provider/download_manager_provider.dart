@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -70,7 +70,7 @@ class DownloadManagerProvider extends ChangeNotifier {
         trackNumber: track.trackNumber,
         discNumber: track.discNumber,
         durationMs: track.durationMs?.toDouble() ?? 0.0,
-        fileSize: await file.length(),
+        fileSize: BigInt.from(await file.length()),
         trackTotal: track.album?.tracks?.length ?? 0,
         picture: imageBytes != null
             ? Picture(
@@ -130,7 +130,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
       return Uint8List.fromList(bytes);
     } catch (e, stackTrace) {
-      Catcher2.reportCheckedError(e, stackTrace);
+      AppLogger.reportError(e, stackTrace);
       return null;
     }
   }
@@ -216,7 +216,7 @@ class DownloadManagerProvider extends ChangeNotifier {
           );
         }
       } catch (e) {
-        Catcher2.reportCheckedError(e, StackTrace.current);
+        AppLogger.reportError(e, StackTrace.current);
         continue;
       }
     }

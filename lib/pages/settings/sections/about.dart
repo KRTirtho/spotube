@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/settings/section_card_with_heading.dart';
-import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
+import 'package:spotube/components/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -43,10 +43,9 @@ class SettingsAboutSection extends HookConsumerWidget {
           ),
           trailing: (context, update) => FilledButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Colors.red[100]),
-              foregroundColor:
-                  const MaterialStatePropertyAll(Colors.pinkAccent),
-              padding: const MaterialStatePropertyAll(EdgeInsets.all(15)),
+              backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
+              foregroundColor: const WidgetStatePropertyAll(Colors.pinkAccent),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
             ),
             onPressed: () {
               launchUrlString(

@@ -83,7 +83,7 @@ abstract class LanguageLocals {
     // ),
     "eu": const ISOLanguageName(
       name: "Basque",
-      nativeName: "euskara",
+      nativeName: "Euskara",
     ),
     // "be": const ISOLanguageName(
     //   name: "Belarusian",
@@ -354,8 +354,8 @@ abstract class LanguageLocals {
     //   nativeName: "KiKongo",
     // ),
     "ko": const ISOLanguageName(
-     name: "Korean",
-     nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
+      name: "Korean",
+      nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
     ),
     // "ku": const ISOLanguageName(
     //   name: "Kurdish",
