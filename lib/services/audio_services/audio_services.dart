@@ -74,7 +74,7 @@ class AudioServices with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.detached:
         deactivateSession();
-        mobile?.stop();
+        audioPlayer.pause();
         break;
       default:
         break;
