@@ -23,68 +23,72 @@ class DownloadManagerProvider extends ChangeNotifier {
         $backHistory = <Track>{},
         dl = DownloadManager() {
     dl.statusStream.listen((event) async {
-      final (:request, :status) = event;
+      try {
+        final (:request, :status) = event;
 
-      final track = $history.firstWhereOrNull(
-        (element) => element.getUrlOfCodec(downloadCodec) == request.url,
-      );
-      if (track == null) return;
+        final track = $history.firstWhereOrNull(
+          (element) => element.getUrlOfCodec(downloadCodec) == request.url,
+        );
+        if (track == null) return;
 
-      final savePath = getTrackFileUrl(track);
-      // related to onFileExists
-      final oldFile = File("$savePath.old");
+        final savePath = getTrackFileUrl(track);
+        // related to onFileExists
+        final oldFile = File("$savePath.old");
 
-      // if download failed and old file exists, rename it back
-      if ((status == DownloadStatus.failed ||
-              status == DownloadStatus.canceled) &&
-          await oldFile.exists()) {
-        await oldFile.rename(savePath);
+        // if download failed and old file exists, rename it back
+        if ((status == DownloadStatus.failed ||
+                status == DownloadStatus.canceled) &&
+            await oldFile.exists()) {
+          await oldFile.rename(savePath);
+        }
+        if (status != DownloadStatus.completed ||
+            //? WebA audiotagging is not supported yet
+            //? Although in future by converting weba to opus & then tagging it
+            //? is possible using vorbis comments
+            downloadCodec == SourceCodecs.weba) return;
+
+        final file = File(request.path);
+
+        if (await oldFile.exists()) {
+          await oldFile.delete();
+        }
+
+        final imageBytes = await downloadImage(
+          (track.album?.images).asUrlString(
+            placeholder: ImagePlaceholder.albumArt,
+            index: 1,
+          ),
+        );
+
+        final metadata = Metadata(
+          title: track.name,
+          artist: track.artists?.map((a) => a.name).join(", "),
+          album: track.album?.name,
+          albumArtist: track.artists?.map((a) => a.name).join(", "),
+          year: track.album?.releaseDate != null
+              ? int.tryParse(track.album!.releaseDate!.split("-").first) ?? 1969
+              : 1969,
+          trackNumber: track.trackNumber,
+          discNumber: track.discNumber,
+          durationMs: track.durationMs?.toDouble() ?? 0.0,
+          fileSize: BigInt.from(await file.length()),
+          trackTotal: track.album?.tracks?.length ?? 0,
+          picture: imageBytes != null
+              ? Picture(
+                  data: imageBytes,
+                  // Spotify images are always JPEGs
+                  mimeType: 'image/jpeg',
+                )
+              : null,
+        );
+
+        await MetadataGod.writeMetadata(
+          file: file.path,
+          metadata: metadata,
+        );
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
-      if (status != DownloadStatus.completed ||
-          //? WebA audiotagging is not supported yet
-          //? Although in future by converting weba to opus & then tagging it
-          //? is possible using vorbis comments
-          downloadCodec == SourceCodecs.weba) return;
-
-      final file = File(request.path);
-
-      if (await oldFile.exists()) {
-        await oldFile.delete();
-      }
-
-      final imageBytes = await downloadImage(
-        (track.album?.images).asUrlString(
-          placeholder: ImagePlaceholder.albumArt,
-          index: 1,
-        ),
-      );
-
-      final metadata = Metadata(
-        title: track.name,
-        artist: track.artists?.map((a) => a.name).join(", "),
-        album: track.album?.name,
-        albumArtist: track.artists?.map((a) => a.name).join(", "),
-        year: track.album?.releaseDate != null
-            ? int.tryParse(track.album!.releaseDate!.split("-").first) ?? 1969
-            : 1969,
-        trackNumber: track.trackNumber,
-        discNumber: track.discNumber,
-        durationMs: track.durationMs?.toDouble() ?? 0.0,
-        fileSize: BigInt.from(await file.length()),
-        trackTotal: track.album?.tracks?.length ?? 0,
-        picture: imageBytes != null
-            ? Picture(
-                data: imageBytes,
-                // Spotify images are always JPEGs
-                mimeType: 'image/jpeg',
-              )
-            : null,
-      );
-
-      await MetadataGod.writeMetadata(
-        file: file.path,
-        metadata: metadata,
-      );
     });
   }
 

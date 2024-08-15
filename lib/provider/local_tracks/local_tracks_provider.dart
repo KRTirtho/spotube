@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -72,39 +73,35 @@ final localTracksProvider =
         }
       }
 
-      final List<Map<dynamic, dynamic>> filesWithMetadata = [];
+      final List<Map<dynamic, dynamic>> filesWithMetadata = await Future.wait(
+        entities.map((file) async {
+          try {
+            final metadata = await MetadataGod.readMetadata(file: file.path);
 
-      for (final file in entities) {
-        try {
-          final metadata = await MetadataGod.readMetadata(file: file.path);
+            final imageFile = File(join(
+              (await getTemporaryDirectory()).path,
+              "spotube",
+              basenameWithoutExtension(file.path) +
+                  imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
+            ));
+            if (!await imageFile.exists() && metadata.picture != null) {
+              await imageFile.create(recursive: true);
+              await imageFile.writeAsBytes(
+                metadata.picture?.data ?? [],
+                mode: FileMode.writeOnly,
+              );
+            }
 
-          await Future.delayed(const Duration(milliseconds: 50));
-
-          final imageFile = File(join(
-            (await getTemporaryDirectory()).path,
-            "spotube",
-            basenameWithoutExtension(file.path) +
-                imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
-          ));
-          if (!await imageFile.exists() && metadata.picture != null) {
-            await imageFile.create(recursive: true);
-            await imageFile.writeAsBytes(
-              metadata.picture?.data ?? [],
-              mode: FileMode.writeOnly,
-            );
+            return {"metadata": metadata, "file": file, "art": imageFile.path};
+          } catch (e, stack) {
+            if (e case FrbException() || TimeoutException()) {
+              return {"file": file};
+            }
+            AppLogger.reportError(e, stack);
+            return null;
           }
-
-          filesWithMetadata.add(
-            {"metadata": metadata, "file": file, "art": imageFile.path},
-          );
-        } catch (e, stack) {
-          if (e case FrbException() || TimeoutException()) {
-            filesWithMetadata.add({"file": file});
-          }
-          AppLogger.reportError(e, stack);
-          continue;
-        }
-      }
+        }),
+      ).then((value) => value.whereNotNull().toList());
 
       final tracksFromMetadata = filesWithMetadata
           .map(

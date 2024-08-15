@@ -73,25 +73,33 @@ class AudioPlayerStreamListeners {
 
   StreamSubscription subscribeToPlaylist() {
     return audioPlayer.playlistStream.listen((mpvPlaylist) {
-      notificationService.addTrack(audioPlayerState.activeTrack!);
-      discord.updatePresence(audioPlayerState.activeTrack!);
-      updatePalette();
+      try {
+        notificationService.addTrack(audioPlayerState.activeTrack!);
+        discord.updatePresence(audioPlayerState.activeTrack!);
+        updatePalette();
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
+      }
     });
   }
 
   StreamSubscription subscribeToSkipSponsor() {
     return audioPlayer.positionStream.listen((position) async {
-      final currentSegments = await ref.read(segmentProvider.future);
+      try {
+        final currentSegments = await ref.read(segmentProvider.future);
 
-      if (currentSegments?.segments.isNotEmpty != true ||
-          position < const Duration(seconds: 3)) return;
+        if (currentSegments?.segments.isNotEmpty != true ||
+            position < const Duration(seconds: 3)) return;
 
-      for (final segment in currentSegments!.segments) {
-        final seconds = position.inSeconds;
+        for (final segment in currentSegments!.segments) {
+          final seconds = position.inSeconds;
 
-        if (seconds < segment.start || seconds >= segment.end) continue;
+          if (seconds < segment.start || seconds >= segment.end) continue;
 
-        await audioPlayer.seek(Duration(seconds: segment.end + 1));
+          await audioPlayer.seek(Duration(seconds: segment.end + 1));
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
   }
@@ -122,23 +130,28 @@ class AudioPlayerStreamListeners {
   StreamSubscription subscribeToPosition() {
     String lastTrack = ""; // used to prevent multiple calls to the same track
     return audioPlayer.positionStream.listen((event) async {
-      if (event < const Duration(seconds: 3) ||
-          audioPlayerState.playlist.index == -1 ||
-          audioPlayerState.playlist.index ==
-              audioPlayerState.tracks.length - 1) {
-        return;
-      }
-      final nextTrack = SpotubeMedia.fromMedia(audioPlayerState.playlist.medias
-          .elementAt(audioPlayerState.playlist.index + 1));
-
-      if (lastTrack == nextTrack.track.id || nextTrack.track is LocalTrack) {
-        return;
-      }
-
       try {
-        await ref.read(sourcedTrackProvider(nextTrack).future);
-      } finally {
-        lastTrack = nextTrack.track.id!;
+        if (event < const Duration(seconds: 3) ||
+            audioPlayerState.playlist.index == -1 ||
+            audioPlayerState.playlist.index ==
+                audioPlayerState.tracks.length - 1) {
+          return;
+        }
+        final nextTrack = SpotubeMedia.fromMedia(audioPlayerState
+            .playlist.medias
+            .elementAt(audioPlayerState.playlist.index + 1));
+
+        if (lastTrack == nextTrack.track.id || nextTrack.track is LocalTrack) {
+          return;
+        }
+
+        try {
+          await ref.read(sourcedTrackProvider(nextTrack).future);
+        } finally {
+          lastTrack = nextTrack.track.id!;
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
   }

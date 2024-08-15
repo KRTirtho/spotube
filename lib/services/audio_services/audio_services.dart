@@ -5,6 +5,7 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/mobile_audio_service.dart';
 import 'package:spotube/services/audio_services/windows_audio_service.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
@@ -30,8 +31,8 @@ class AudioServices with WidgetsBindingObserver {
                   kIsLinux ? 'spotube' : 'com.krtirtho.Spotube',
               androidNotificationChannelName: 'Spotube',
               androidNotificationOngoing: false,
-              androidNotificationIcon: "drawable/ic_launcher_monochrome",
               androidStopForegroundOnPause: false,
+              androidNotificationIcon: "drawable/ic_launcher_monochrome",
               androidNotificationChannelDescription: "Spotube Media Controls",
             ),
           )

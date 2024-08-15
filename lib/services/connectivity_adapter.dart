@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 class ConnectionCheckerService with WidgetsBindingObserver {
   final _connectionStreamController = StreamController<bool>.broadcast();
@@ -16,17 +17,21 @@ class ConnectionCheckerService with WidgetsBindingObserver {
     Timer? timer;
 
     onConnectivityChanged.listen((connected) {
-      if (!connected && timer == null) {
-        timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
-          if (WidgetsBinding.instance.lifecycleState ==
-              AppLifecycleState.paused) {
-            return;
-          }
-          await isConnected;
-        });
-      } else {
-        timer?.cancel();
-        timer = null;
+      try {
+        if (!connected && timer == null) {
+          timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+            if (WidgetsBinding.instance.lifecycleState ==
+                AppLifecycleState.paused) {
+              return;
+            }
+            await isConnected;
+          });
+        } else {
+          timer?.cancel();
+          timer = null;
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
   }

@@ -7,6 +7,7 @@ import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/logs/logs_provider.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 class LogsPage extends HookConsumerWidget {
   static const name = "logs";
@@ -40,6 +41,17 @@ class LogsPage extends HookConsumerWidget {
               }
             },
           ),
+          IconButton(
+            icon: const Icon(SpotubeIcons.trash),
+            iconSize: 16,
+            onPressed: () async {
+              ref.invalidate(logsProvider);
+
+              final logsFile = await AppLogger.getLogsPath();
+
+              await logsFile.writeAsString("");
+            },
+          )
         ],
       ),
       body: SafeArea(

@@ -7,6 +7,7 @@ import 'package:spotube/collections/routes.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 
 final appLinks = AppLinks();
@@ -61,30 +62,34 @@ void useDeepLinking(WidgetRef ref) {
     }
 
     final subscription = linkStream.listen((uri) async {
-      final startSegment = uri.split(":").take(2).join(":");
-      final endSegment = uri.split(":").last;
+      try {
+        final startSegment = uri.split(":").take(2).join(":");
+        final endSegment = uri.split(":").last;
 
-      switch (startSegment) {
-        case "spotify:album":
-          await router.push(
-            "/album/$endSegment",
-            extra: await spotify.albums.get(endSegment),
-          );
-          break;
-        case "spotify:artist":
-          await router.push("/artist/$endSegment");
-          break;
-        case "spotify:track":
-          await router.push("/track/$endSegment");
-          break;
-        case "spotify:playlist":
-          await router.push(
-            "/playlist/$endSegment",
-            extra: await spotify.playlists.get(endSegment),
-          );
-          break;
-        default:
-          break;
+        switch (startSegment) {
+          case "spotify:album":
+            await router.push(
+              "/album/$endSegment",
+              extra: await spotify.albums.get(endSegment),
+            );
+            break;
+          case "spotify:artist":
+            await router.push("/artist/$endSegment");
+            break;
+          case "spotify:track":
+            await router.push("/track/$endSegment");
+            break;
+          case "spotify:playlist":
+            await router.push(
+              "/playlist/$endSegment",
+              extra: await spotify.playlists.get(endSegment),
+            );
+            break;
+          default:
+            break;
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
 

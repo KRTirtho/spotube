@@ -17,6 +17,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 import 'package:stroke_text/stroke_text.dart';
 
@@ -80,12 +81,16 @@ class SyncedLyrics extends HookConsumerWidget {
       StreamSubscription? subscription;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         subscription = audioPlayer.positionStream.listen((event) {
-          if (event > Duration.zero) return;
-          controller.animateTo(
-            0,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
+          try {
+            if (event > Duration.zero) return;
+            controller.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          } catch (e, stack) {
+            AppLogger.reportError(e, stack);
+          }
         });
       });
 

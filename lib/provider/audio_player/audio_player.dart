@@ -13,6 +13,7 @@ import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   BlackListNotifier get _blacklist => ref.read(blacklistProvider.notifier);
@@ -141,36 +142,52 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   build() {
     final subscriptions = [
       audioPlayer.playingStream.listen((playing) async {
-        state = state.copyWith(playing: playing);
+        try {
+          state = state.copyWith(playing: playing);
 
-        await _updatePlayerState(
-          AudioPlayerStateTableCompanion(
-            playing: Value(playing),
-          ),
-        );
+          await _updatePlayerState(
+            AudioPlayerStateTableCompanion(
+              playing: Value(playing),
+            ),
+          );
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
       audioPlayer.loopModeStream.listen((loopMode) async {
-        state = state.copyWith(loopMode: loopMode);
+        try {
+          state = state.copyWith(loopMode: loopMode);
 
-        await _updatePlayerState(
-          AudioPlayerStateTableCompanion(
-            loopMode: Value(loopMode),
-          ),
-        );
+          await _updatePlayerState(
+            AudioPlayerStateTableCompanion(
+              loopMode: Value(loopMode),
+            ),
+          );
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
       audioPlayer.shuffledStream.listen((shuffled) async {
-        state = state.copyWith(shuffled: shuffled);
+        try {
+          state = state.copyWith(shuffled: shuffled);
 
-        await _updatePlayerState(
-          AudioPlayerStateTableCompanion(
-            shuffled: Value(shuffled),
-          ),
-        );
+          await _updatePlayerState(
+            AudioPlayerStateTableCompanion(
+              shuffled: Value(shuffled),
+            ),
+          );
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
       audioPlayer.playlistStream.listen((playlist) async {
-        state = state.copyWith(playlist: playlist);
+        try {
+          state = state.copyWith(playlist: playlist);
 
-        await _updatePlaylist(playlist);
+          await _updatePlaylist(playlist);
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
     ];
 
