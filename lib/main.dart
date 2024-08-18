@@ -22,6 +22,7 @@ import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_fix_window_stretching.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
+import 'package:spotube/hooks/configurators/use_pointer_devices.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
@@ -92,7 +93,7 @@ Future<void> main(List<String> rawArgs) async {
       await FlutterDiscordRPC.initialize(Env.discordAppId);
     }
 
-    if(kIsWindows){
+    if (kIsWindows) {
       await SMTCWindows.initialize();
     }
 
@@ -142,6 +143,7 @@ class Spotube extends HookConsumerWidget {
     final paletteColor =
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
     final router = ref.watch(routerProvider);
+    final pointerDevices = usePointerDevices();
 
     ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
     ref.listen(bonsoirProvider, (_, __) {});
@@ -179,6 +181,10 @@ class Spotube extends HookConsumerWidget {
     );
 
     return MaterialApp.router(
+      scrollBehavior: const MaterialScrollBehavior()
+        ..copyWith(
+          dragDevices: pointerDevices,
+        ),
       supportedLocales: L10n.all,
       locale: locale.languageCode == "system" ? null : locale,
       localizationsDelegates: const [
