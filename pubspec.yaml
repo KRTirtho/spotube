@@ -23,7 +23,6 @@ dependencies:
   cached_network_image: ^3.3.1
   collection: ^1.15.0
   curved_navigation_bar: ^1.0.3
-  dbus: ^0.7.8
   desktop_webview_window:
     git:
       url: https://github.com/KRTirtho/flutter-plugins.git
@@ -60,7 +59,6 @@ dependencies:
   html: ^0.15.1
   image_picker: ^1.1.0
   intl: any
-  introduction_screen: ^3.1.14
   json_annotation: ^4.8.1
   logger: ^2.0.2
   media_kit: ^1.1.10+1
@@ -137,7 +135,6 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.23
   sqlite3: ^2.4.3
   encrypt: ^5.0.3
-  retry: ^3.1.2
 
 dev_dependencies:
   build_runner: ^2.4.9
