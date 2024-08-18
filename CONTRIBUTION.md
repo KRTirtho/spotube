@@ -128,7 +128,7 @@ Do the following:
     - Use `libjsoncpp1` instead of `libjsoncpp25` (for Ubuntu < 22.04)
   - Arch/Manjaro
     ```bash
-    yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify avahi nss-mdns mdns-scan webkit2gtk-4.1 libsoup3
+    yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify avahi nss-mdns mdns-scan webkit2gtk libsoup3
     ```
   - Fedora
     ```bash
