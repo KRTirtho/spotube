@@ -101,8 +101,15 @@ jobs:
       
       - name: Unessary hosted tools
         if: ${{matrix.platform == 'linux_arm'}}
-        run: |
-          sudo rm -rf /usr/share/dotnet
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          swap-storage: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
       
       - name: Build ${{matrix.platform}} binaries
         run: dart cli/cli.dart build ${{matrix.platform}}
