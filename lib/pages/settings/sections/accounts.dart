@@ -1,24 +1,18 @@
-import 'dart:io';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/mobile_login/mobile_login.dart';
 import 'package:spotube/pages/profile/profile.dart';
+import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 class SettingsAccountSection extends HookConsumerWidget {
@@ -30,7 +24,6 @@ class SettingsAccountSection extends HookConsumerWidget {
     final router = GoRouter.of(context);
 
     final auth = ref.watch(authenticationProvider);
-    final authNotifier = ref.watch(authenticationProvider.notifier);
     final scrobbler = ref.watch(scrobblerProvider);
     final me = ref.watch(meProvider);
     final meData = me.asData?.value;
@@ -40,51 +33,7 @@ class SettingsAccountSection extends HookConsumerWidget {
       foregroundColor: Colors.white,
     );
 
-    void onLogin() async {
-      if (kIsMobile) {
-        router.pushNamed(WebViewLogin.name);
-        return;
-      }
-
-      final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
-      final applicationSupportDir = await getApplicationSupportDirectory();
-      final userDataFolder = Directory(
-          join(applicationSupportDir.path, "webview_window_Webview2"));
-
-      if (!await userDataFolder.exists()) {
-        await userDataFolder.create();
-      }
-
-      final webview = await WebviewWindow.create(
-        configuration: CreateConfiguration(
-          title: "Spotify Login",
-          titleBarTopPadding: kIsMacOS ? 20 : 0,
-          windowHeight: 720,
-          windowWidth: 1280,
-          userDataFolderWindows: userDataFolder.path,
-        ),
-      );
-      webview
-        ..setBrightness(theme.colorScheme.brightness)
-        ..launch("https://accounts.spotify.com/")
-        ..setOnUrlRequestCallback((url) {
-          if (exp.hasMatch(url)) {
-            webview.getAllCookies().then((cookies) async {
-              final cookieHeader =
-                  "sp_dc=${cookies.firstWhere((element) => element.name.contains("sp_dc")).value.replaceAll("\u0000", "")}";
-
-              await authNotifier.login(cookieHeader);
-
-              webview.close();
-              if (context.mounted) {
-                context.go("/");
-              }
-            });
-          }
-
-          return true;
-        });
-    }
+    final onLogin = useLoginCallback(ref);
 
     return SectionCardWithHeading(
       heading: context.l10n.account,

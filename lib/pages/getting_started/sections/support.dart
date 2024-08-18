@@ -6,7 +6,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/home/home.dart';
-import 'package:spotube/pages/mobile_login/mobile_login.dart';
+import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -16,6 +16,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
+    final onLogin = useLoginCallback(ref);
 
     return Center(
       child: Column(
@@ -121,9 +122,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                   ),
                   onPressed: () async {
                     await KVStoreService.setDoneGettingStarted(true);
-                    if (context.mounted) {
-                      context.pushNamed(WebViewLogin.name);
-                    }
+                    await onLogin();
                   },
                 ),
               ],
