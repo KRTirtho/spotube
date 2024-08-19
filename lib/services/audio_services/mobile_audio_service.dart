@@ -122,7 +122,7 @@ class MobileAudioService extends BaseAudioHandler {
 
   @override
   Future<void> onTaskRemoved() async {
-    await audioPlayerNotifier.stop();
+    await audioPlayer.pause();
     if (kIsAndroid) exit(0);
   }
 
