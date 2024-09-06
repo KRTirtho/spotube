@@ -27,7 +27,7 @@ class WebViewLogin extends HookConsumerWidget {
         child: InAppWebView(
           initialSettings: InAppWebViewSettings(
             userAgent:
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 afari/537.36",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 safari/537.36",
           ),
           initialUrlRequest: URLRequest(
             url: WebUri("https://accounts.spotify.com/"),
