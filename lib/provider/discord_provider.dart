@@ -61,6 +61,7 @@ class DiscordNotifier extends AsyncNotifier<void> {
       for (final subscription in subscriptions) {
         subscription.cancel();
       }
+      await clear();
       await close();
       await FlutterDiscordRPC.instance.dispose();
     });
@@ -68,7 +69,7 @@ class DiscordNotifier extends AsyncNotifier<void> {
     if (!enabled && FlutterDiscordRPC.instance.isConnected) {
       await clear();
       await close();
-    } else {
+    } else if (enabled) {
       await FlutterDiscordRPC.instance.connect(autoRetry: true);
     }
   }
