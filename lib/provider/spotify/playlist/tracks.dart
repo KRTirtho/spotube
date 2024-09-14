@@ -36,10 +36,16 @@ class PlaylistTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
 
     /// Filter out tracks with null id because some personal playlists
     /// may contain local tracks that are not available in the Spotify catalog
-    return tracks.items
+    final items = tracks.items
             ?.where((track) => track.id != null && track.type == "track")
             .toList() ??
         <Track>[];
+
+    return (
+      items: items,
+      hasMore: !tracks.isLast,
+      nextOffset: tracks.nextOffset,
+    );
   }
 
   @override
@@ -47,13 +53,13 @@ class PlaylistTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
     ref.cacheFor();
 
     ref.watch(spotifyProvider);
-    final tracks = await fetch(arg, 0, 20);
+    final (items: tracks, :hasMore, :nextOffset) = await fetch(arg, 0, 20);
 
     return PlaylistTracksState(
       items: tracks,
-      offset: 0,
+      offset: nextOffset,
       limit: 20,
-      hasMore: tracks.length == 20,
+      hasMore: hasMore,
     );
   }
 }

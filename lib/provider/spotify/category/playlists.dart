@@ -39,7 +39,13 @@ class CategoryPlaylistsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
       (json) => PlaylistsFeatured.fromJson(json),
     ).getPage(limit, offset);
 
-    return playlists.items?.whereNotNull().toList() ?? [];
+    final items = playlists.items?.whereNotNull().toList() ?? [];
+
+    return (
+      items: items,
+      hasMore: !playlists.isLast,
+      nextOffset: playlists.nextOffset,
+    );
   }
 
   @override
@@ -50,13 +56,13 @@ class CategoryPlaylistsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
     ref.watch(userPreferencesProvider.select((s) => s.locale));
     ref.watch(userPreferencesProvider.select((s) => s.market));
 
-    final playlists = await fetch(arg, 0, 8);
+    final (:items, :hasMore, :nextOffset) = await fetch(arg, 0, 8);
 
     return CategoryPlaylistsState(
-      items: playlists,
-      offset: 0,
+      items: items,
+      offset: nextOffset,
       limit: 8,
-      hasMore: playlists.length == 8,
+      hasMore: hasMore,
     );
   }
 }

@@ -31,7 +31,13 @@ class AlbumTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<Track,
   @override
   fetch(arg, offset, limit) async {
     final tracks = await spotify.albums.tracks(arg.id!).getPage(limit, offset);
-    return tracks.items?.map((e) => e.asTrack(arg)).toList() ?? [];
+    final items = tracks.items?.map((e) => e.asTrack(arg)).toList() ?? [];
+
+    return (
+      items: items,
+      hasMore: !tracks.isLast,
+      nextOffset: tracks.nextOffset,
+    );
   }
 
   @override
@@ -39,12 +45,12 @@ class AlbumTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<Track,
     ref.cacheFor();
 
     ref.watch(spotifyProvider);
-    final tracks = await fetch(arg, 0, 20);
+    final (:items, :nextOffset, :hasMore) = await fetch(arg, 0, 20);
     return AlbumTracksState(
-      items: tracks,
-      offset: 0,
+      items: items,
+      offset: nextOffset,
       limit: 20,
-      hasMore: tracks.length == 20,
+      hasMore: hasMore,
     );
   }
 }

@@ -1,10 +1,16 @@
 part of '../../spotify.dart';
 
+typedef PseudoPaginatedProps<T> = ({
+  List<T> items,
+  int nextOffset,
+  bool hasMore,
+});
+
 abstract class FamilyPaginatedAsyncNotifier<
     K,
     T extends BasePaginatedState<K, dynamic>,
     A> extends FamilyAsyncNotifier<T, A> with SpotifyMixin<T> {
-  Future<List<K>> fetch(A arg, int offset, int limit);
+  Future<PseudoPaginatedProps<K>> fetch(A arg, int offset, int limit);
 
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
@@ -13,18 +19,18 @@ abstract class FamilyPaginatedAsyncNotifier<
 
     state = await AsyncValue.guard(
       () async {
-        final items = await fetch(
+        final (:items, :hasMore, :nextOffset) = await fetch(
           arg,
-          state.value!.offset + state.value!.limit,
+          state.value!.offset,
           state.value!.limit,
         );
         return state.value!.copyWith(
-          hasMore: items.length == state.value!.limit,
+          hasMore: hasMore,
           items: [
             ...state.value!.items,
             ...items,
           ],
-          offset: state.value!.offset + state.value!.limit,
+          offset: nextOffset,
         ) as T;
       },
     );
@@ -37,16 +43,16 @@ abstract class FamilyPaginatedAsyncNotifier<
     bool hasMore = true;
     while (hasMore) {
       await update((state) async {
-        final items = await fetch(
+        final res = await fetch(
           arg,
-          state.offset + state.limit,
+          state.offset,
           state.limit,
         );
 
-        hasMore = items.length == state.limit;
+        hasMore = res.hasMore;
         return state.copyWith(
-          items: [...state.items, ...items],
-          offset: state.offset + state.limit,
+          items: [...state.items, ...res.items],
+          offset: res.nextOffset,
           hasMore: hasMore,
         ) as T;
       });
@@ -60,7 +66,7 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<
     K,
     T extends BasePaginatedState<K, dynamic>,
     A> extends AutoDisposeFamilyAsyncNotifier<T, A> with SpotifyMixin<T> {
-  Future<List<K>> fetch(A arg, int offset, int limit);
+  Future<PseudoPaginatedProps<K>> fetch(A arg, int offset, int limit);
 
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
@@ -69,18 +75,19 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<
 
     state = await AsyncValue.guard(
       () async {
-        final items = await fetch(
+        final (:items, :hasMore, :nextOffset) = await fetch(
           arg,
-          state.value!.offset + state.value!.limit,
+          state.value!.offset,
           state.value!.limit,
         );
+
         return state.value!.copyWith(
-          hasMore: items.length == state.value!.limit,
+          hasMore: hasMore,
           items: [
             ...state.value!.items,
             ...items,
           ],
-          offset: state.value!.offset + state.value!.limit,
+          offset: nextOffset,
         ) as T;
       },
     );
@@ -93,16 +100,16 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<
     bool hasMore = true;
     while (hasMore) {
       await update((state) async {
-        final items = await fetch(
+        final res = await fetch(
           arg,
-          state.offset + state.limit,
+          state.offset,
           state.limit,
         );
 
-        hasMore = items.length == state.limit;
+        hasMore = res.hasMore;
         return state.copyWith(
-          items: [...state.items, ...items],
-          offset: state.offset + state.limit,
+          items: [...state.items, ...res.items],
+          offset: res.nextOffset,
           hasMore: hasMore,
         ) as T;
       });
