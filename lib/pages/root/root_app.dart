@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/framework/app_pop_scope.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/components/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/modules/root/bottom_player.dart';
@@ -30,10 +31,12 @@ class RootApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
+    final routerState = GoRouterState.of(context);
+
     final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final theme = Theme.of(context);
     final connectRoutes = ref.watch(serverConnectRoutesProvider);
 
     useEffect(() {
@@ -164,15 +167,17 @@ class RootApp extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    // ignore: deprecated_member_use
-    return WillPopScope(
-      onWillPop: () async {
+    return AppPopScope(
+      // Only allow to pop when in root screen
+      canPop: routerState.namedLocation(HomePage.name) ==
+          routerState.matchedLocation,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+
         final routerState = GoRouterState.of(context);
         if (routerState.matchedLocation != "/") {
           context.goNamed(HomePage.name);
-          return false;
         }
-        return true;
       },
       child: Scaffold(
         body: Sidebar(child: child),
