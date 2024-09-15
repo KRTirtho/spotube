@@ -49,8 +49,8 @@ class StatsStreamsPage extends HookConsumerWidget {
             return StatsTrackItem(
               track: track.track,
               info: Text(
-                context.l10n.count_mins(compactNumberFormatter
-                    .format(track.count * track.track.duration!.inMinutes)),
+                context.l10n
+                    .count_plays(compactNumberFormatter.format(track.count)),
               ),
             );
           },
