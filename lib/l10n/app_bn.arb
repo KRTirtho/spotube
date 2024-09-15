@@ -384,5 +384,8 @@
   "summary_got_your_love": "আপনার ভালোবাসা পেয়েছে",
   "summary_playlists": "প্লেলিস্ট",
   "summary_were_on_repeat": "পুনরাবৃত্তিতে ছিল",
-  "total_money": "মোট {money}"
+  "total_money": "মোট {money}",
+  "webview_not_found": "ওয়েবভিউ পাওয়া যায়নি",
+  "webview_not_found_description": "আপনার ডিভাইসে কোনো ওয়েবভিউ রানটাইম ইনস্টল করা নেই।\nযদি ইনস্টল থাকে, তা নিশ্চিত করুন যে এটি environment PATH এ রয়েছে\n\nইনস্টল করার পর, অ্যাপটি পুনরায় চালু করুন",
+  "unsupported_platform": "সমর্থিত প্ল্যাটফর্ম নয়"
 }

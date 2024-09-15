@@ -1,6 +1,7 @@
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/services/device_info/device_info.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 class ConnectClientsState {
   final List<BonsoirService> services;
@@ -37,42 +38,47 @@ class ConnectClientsNotifier extends AsyncNotifier<ConnectClientsState> {
 
     final subscription = discovery.eventStream?.listen((event) {
       // ignore device itself
-      if (event.service?.attributes["deviceId"] == deviceId) {
-        return;
-      }
+      try {
+        if (event.service?.attributes["deviceId"] == deviceId) {
+          return;
+        }
 
-      switch (event.type) {
-        case BonsoirDiscoveryEventType.discoveryServiceFound:
-          state = AsyncData(state.value!.copyWith(
-            services: [
-              ...?state.value?.services,
-              event.service!,
-            ],
-          ));
-          break;
-        case BonsoirDiscoveryEventType.discoveryServiceResolved:
-          state = AsyncData(
-            state.value!.copyWith(
-              resolvedService: event.service as ResolvedBonsoirService,
-            ),
-          );
-          break;
-        case BonsoirDiscoveryEventType.discoveryServiceLost:
-          state = AsyncData(
-            ConnectClientsState(
-              services: state.value!.services
-                  .where((s) => s.name != event.service!.name)
-                  .toList(),
-              discovery: state.value!.discovery,
-              resolvedService: state.value?.resolvedService != null &&
-                      event.service?.name == state.value?.resolvedService?.name
-                  ? null
-                  : state.value!.resolvedService,
-            ),
-          );
-          break;
-        default:
-          break;
+        switch (event.type) {
+          case BonsoirDiscoveryEventType.discoveryServiceFound:
+            state = AsyncData(state.value!.copyWith(
+              services: [
+                ...?state.value?.services,
+                event.service!,
+              ],
+            ));
+            break;
+          case BonsoirDiscoveryEventType.discoveryServiceResolved:
+            state = AsyncData(
+              state.value!.copyWith(
+                resolvedService: event.service as ResolvedBonsoirService,
+              ),
+            );
+            break;
+          case BonsoirDiscoveryEventType.discoveryServiceLost:
+            state = AsyncData(
+              ConnectClientsState(
+                services: state.value!.services
+                    .where((s) => s.name != event.service!.name)
+                    .toList(),
+                discovery: state.value!.discovery,
+                resolvedService: state.value?.resolvedService != null &&
+                        event.service?.name ==
+                            state.value?.resolvedService?.name
+                    ? null
+                    : state.value!.resolvedService,
+              ),
+            );
+            break;
+          default:
+            break;
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
 

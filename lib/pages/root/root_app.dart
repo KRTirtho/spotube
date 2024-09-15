@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/framework/app_pop_scope.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/components/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/modules/root/bottom_player.dart';
@@ -30,10 +32,11 @@ class RootApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
+
     final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final theme = Theme.of(context);
     final connectRoutes = ref.watch(serverConnectRoutesProvider);
 
     useEffect(() {
@@ -164,55 +167,69 @@ class RootApp extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
-    // ignore: deprecated_member_use
-    return WillPopScope(
-      onWillPop: () async {
-        final routerState = GoRouterState.of(context);
-        if (routerState.matchedLocation != "/") {
-          context.goNamed(HomePage.name);
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        body: Sidebar(child: child),
-        extendBody: true,
-        drawerScrimColor: Colors.transparent,
-        endDrawer: kIsDesktop
-            ? Container(
-                constraints: const BoxConstraints(maxWidth: 800),
-                decoration: BoxDecoration(
-                  boxShadow: theme.brightness == Brightness.light
-                      ? null
-                      : kElevationToShadow[8],
-                ),
-                margin: const EdgeInsets.only(
-                  top: 40,
-                  bottom: 100,
-                ),
-                child: Consumer(
-                  builder: (context, ref, _) {
-                    final playlist = ref.watch(audioPlayerProvider);
-                    final playlistNotifier =
-                        ref.read(audioPlayerProvider.notifier);
+    final navTileNames = useMemoized(() {
+      return getSidebarTileList(context.l10n).map((s) => s.name).toList();
+    }, []);
 
-                    return PlayerQueue.fromAudioPlayerNotifier(
-                      floating: true,
-                      playlist: playlist,
-                      notifier: playlistNotifier,
-                    );
-                  },
-                ),
-              )
-            : null,
-        bottomNavigationBar: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BottomPlayer(),
-            SpotubeNavigationBar(),
-          ],
-        ),
+    final scaffold = Scaffold(
+      body: Sidebar(child: child),
+      extendBody: true,
+      drawerScrimColor: Colors.transparent,
+      endDrawer: kIsDesktop
+          ? Container(
+              constraints: const BoxConstraints(maxWidth: 800),
+              decoration: BoxDecoration(
+                boxShadow: theme.brightness == Brightness.light
+                    ? null
+                    : kElevationToShadow[8],
+              ),
+              margin: const EdgeInsets.only(
+                top: 40,
+                bottom: 100,
+              ),
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final playlist = ref.watch(audioPlayerProvider);
+                  final playlistNotifier =
+                      ref.read(audioPlayerProvider.notifier);
+
+                  return PlayerQueue.fromAudioPlayerNotifier(
+                    floating: true,
+                    playlist: playlist,
+                    notifier: playlistNotifier,
+                  );
+                },
+              ),
+            )
+          : null,
+      bottomNavigationBar: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BottomPlayer(),
+          SpotubeNavigationBar(),
+        ],
       ),
+    );
+
+    if (!kIsAndroid) {
+      return scaffold;
+    }
+
+    final topRoute = GoRouterState.of(context).topRoute;
+    final canPop = topRoute != null && !navTileNames.contains(topRoute.name);
+
+    return AppPopScope(
+      canPop: canPop,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        if (topRoute?.name == HomePage.name) {
+          SystemNavigator.pop();
+        } else {
+          context.goNamed(HomePage.name);
+        }
+      },
+      child: scaffold,
     );
   }
 }

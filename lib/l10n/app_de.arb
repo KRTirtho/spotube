@@ -384,5 +384,8 @@
   "summary_got_your_love": "Hat Ihre Liebe gewonnen",
   "summary_playlists": "Wiedergabelisten",
   "summary_were_on_repeat": "Wurden wiederholt",
-  "total_money": "Gesamt {money}"
+  "total_money": "Gesamt {money}",
+  "webview_not_found": "Webview nicht gefunden",
+  "webview_not_found_description": "Es ist keine Webview-Laufzeitumgebung auf Ihrem Gerät installiert.\nFalls installiert, stellen Sie sicher, dass es im environment PATH ist\n\nNach der Installation starten Sie die App neu",
+  "unsupported_platform": "Nicht unterstützte Plattform"
 }

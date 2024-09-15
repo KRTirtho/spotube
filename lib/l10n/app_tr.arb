@@ -384,5 +384,8 @@
   "count_streams": "{count} yayın",
   "owned_by_you": "Sahip olduğunuz",
   "copied_shareurl_to_clipboard": "{shareUrl} panoya kopyalandı",
-  "spotify_hipotetical_calculation": "*Bu, Spotify'ın her yayın başına ödemenin\n$0.003 ile $0.005 arasında olduğu varsayımıyla hesaplanmıştır. Bu\nhipotetik bir hesaplamadır, kullanıcıya şarkılarını Spotify'da dinlediklerinde\nsanatçılara ne kadar ödeme yapacaklarını gösterir."
+  "spotify_hipotetical_calculation": "*Bu, Spotify'ın her yayın başına ödemenin\n$0.003 ile $0.005 arasında olduğu varsayımıyla hesaplanmıştır. Bu\nhipotetik bir hesaplamadır, kullanıcıya şarkılarını Spotify'da dinlediklerinde\nsanatçılara ne kadar ödeme yapacaklarını gösterir.",
+  "webview_not_found": "Webview bulunamadı",
+  "webview_not_found_description": "Cihazınızda herhangi bir Webview çalışma zamanı yüklü değil.\nEğer kuruluysa, ortam YOLUNDA olduğundan emin olun\n\nKurulumdan sonra uygulamayı yeniden başlatın",
+  "unsupported_platform": "Desteklenmeyen platform"
 }

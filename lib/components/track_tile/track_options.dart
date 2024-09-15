@@ -105,7 +105,9 @@ class TrackOptions extends HookConsumerWidget {
     final pages =
         await spotify.search.get(query, types: [SearchType.playlist]).first();
 
-    final radios = pages.map((e) => e.items).toList().cast<PlaylistSimple>();
+    final radios = pages
+        .expand((e) => e.items?.cast<PlaylistSimple>().toList() ?? [])
+        .toList();
 
     final artists = track.artists!.map((e) => e.name);
 

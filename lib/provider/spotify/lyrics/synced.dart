@@ -125,6 +125,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
     try {
       final database = ref.watch(databaseProvider);
       final spotify = ref.watch(spotifyProvider);
+      final auth = await ref.watch(authenticationProvider.future);
 
       if (track == null) {
         throw "No track currently";
@@ -139,11 +140,13 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
 
       final token = await spotify.getCredentials();
 
-      if (lyrics == null || lyrics.lyrics.isEmpty) {
+      if ((lyrics == null || lyrics.lyrics.isEmpty) && auth != null) {
         lyrics = await getSpotifyLyrics(token.accessToken);
       }
 
-      if (lyrics.lyrics.isEmpty || lyrics.lyrics.length <= 5) {
+      if (lyrics == null ||
+          lyrics.lyrics.isEmpty ||
+          lyrics.lyrics.length <= 5) {
         lyrics = await getLRCLibLyrics();
       }
 

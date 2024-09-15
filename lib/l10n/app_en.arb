@@ -384,5 +384,8 @@
   "summary_got_your_love": "Got your love",
   "summary_playlists": "playlists",
   "summary_were_on_repeat": "Were on repeat",
-  "total_money": "Total {money}"
+  "total_money": "Total {money}",
+  "webview_not_found": "Webview not found",
+  "webview_not_found_description": "No webview runtime is installed in your device.\nIf it's installed make sure it's in the Environment PATH\n\nAfter installing, restart the app",
+  "unsupported_platform": "Unsupported platform"
 }

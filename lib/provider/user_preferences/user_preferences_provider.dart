@@ -10,6 +10,7 @@ import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
@@ -41,15 +42,21 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
             ..where((tbl) => tbl.id.equals(0)))
           .watchSingle()
           .listen((event) async {
-        state = event;
+        try {
+          state = event;
 
-        if (kIsDesktop) {
-          await windowManager.setTitleBarStyle(
-            state.systemTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-          );
+          if (kIsDesktop) {
+            await windowManager.setTitleBarStyle(
+              state.systemTitleBar
+                  ? TitleBarStyle.normal
+                  : TitleBarStyle.hidden,
+            );
+          }
+
+          await audioPlayer.setAudioNormalization(state.normalizeAudio);
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
         }
-
-        await audioPlayer.setAudioNormalization(state.normalizeAudio);
       });
 
       ref.onDispose(() {

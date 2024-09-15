@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.1](https://github.com/krtirtho/spotube/compare/v3.8.0...v3.8.1) (2024-09-15)
+
+## Changes
+
+### Bug Fixes
+
+- **translations**: correct some basque incorrect translations (#1815)
+- **lyrics**: LRCLIB lyrics should be usable without logging in #1803
+- playlist displaying descriptions unescaped html #1784
+- **android**: pressing back while the player is open doesn't take to previous page
+- handle dublicated items in playback queue correctly #1852
+- **desktop**: scrollbar overlapping with more options of tracks and playlists
+- **discord**: stop discord rpc from try update presence when not connected
+- **stats**: minutes page shows plays and streams page shows minutes which should be the opposite #1880
+- **android**: clears queue upon swiping away notification
+- **player**: shuffle button state resets after closing page #1657
+- getting started page login page exception #1800
+- **mobile**: queue doesn't persist
+- local tracks takes time to load
+- start radio not working #1629
+
+### Features
+
+- **desktop**: show error dialog if webview is not found on login #1871
+- manually detect and define touch behavior #1763
+
+
 ## [3.8.0](https://github.com/krtirtho/spotube/compare/v3.7.1...v3.8.0) (2024-06-06)
 
 ### Features

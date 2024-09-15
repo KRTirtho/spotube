@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:drift/drift.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/spotify/utils/json_cast.dart';
 import 'package:spotube/services/logger/logger.dart';

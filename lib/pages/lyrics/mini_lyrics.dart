@@ -8,13 +8,10 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/player/player_controls.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/root/sidebar.dart';
-import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
-import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_force_update.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
@@ -46,14 +43,7 @@ class MiniLyricsPage extends HookConsumerWidget {
       return null;
     }, []);
 
-    final auth = ref.watch(authenticationProvider);
-
-    if (auth.asData?.value == null) {
-      return const Scaffold(
-        appBar: PageWindowTitleBar(),
-        body: AnonymousFallback(),
-      );
-    }
+  
 
     return MouseRegion(
       onEnter: !hoverMode.value

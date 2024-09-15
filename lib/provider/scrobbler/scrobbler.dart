@@ -23,19 +23,23 @@ class ScrobblerNotifier extends AsyncNotifier<Scrobblenaut?> {
 
     final subscription =
         database.select(database.scrobblerTable).watch().listen((event) async {
-      if (event.isNotEmpty) {
-        state = await AsyncValue.guard(
-          () async => Scrobblenaut(
-            lastFM: await LastFM.authenticateWithPasswordHash(
-              apiKey: Env.lastFmApiKey,
-              apiSecret: Env.lastFmApiSecret,
-              username: event.first.username,
-              passwordHash: event.first.passwordHash.value,
+      try {
+        if (event.isNotEmpty) {
+          state = await AsyncValue.guard(
+            () async => Scrobblenaut(
+              lastFM: await LastFM.authenticateWithPasswordHash(
+                apiKey: Env.lastFmApiKey,
+                apiSecret: Env.lastFmApiSecret,
+                username: event.first.username,
+                passwordHash: event.first.passwordHash.value,
+              ),
             ),
-          ),
-        );
-      } else {
-        state = const AsyncValue.data(null);
+          );
+        } else {
+          state = const AsyncValue.data(null);
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
 

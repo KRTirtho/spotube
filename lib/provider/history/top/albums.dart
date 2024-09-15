@@ -90,12 +90,18 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
   fetch(arg, offset, limit) async {
     final albumsQuery = createAlbumsQuery(limit: limit, offset: offset);
 
-    return getAlbumsWithCount(await albumsQuery.get());
+    final items = getAlbumsWithCount(await albumsQuery.get());
+
+    return (
+      items: items,
+      hasMore: items.length == limit,
+      nextOffset: offset + limit,
+    );
   }
 
   @override
   build(arg) async {
-    final albums = await fetch(arg, 0, 20);
+    final (items: albums, :hasMore, :nextOffset) = await fetch(arg, 0, 20);
 
     final subscription = createAlbumsQuery().watch().listen((event) {
       if (state.asData == null) return;
@@ -111,9 +117,9 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
 
     return HistoryTopAlbumsState(
       items: albums,
-      offset: albums.length,
+      offset: nextOffset,
       limit: 20,
-      hasMore: true,
+      hasMore: hasMore,
     );
   }
 

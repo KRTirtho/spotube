@@ -15,6 +15,7 @@ import 'package:spotube/components/tracks_view/sections/body/track_view_body_hea
 import 'package:spotube/components/tracks_view/sections/body/use_is_user_playlist.dart';
 import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/components/tracks_view/track_view_provider.dart';
+import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
@@ -64,6 +65,56 @@ class TrackViewBodySection extends HookConsumerWidget {
     final isUserPlaylist = useIsUserPlaylist(ref, props.collectionId);
 
     final isActive = playlist.collections.contains(props.collectionId);
+
+    final onTapTrackTile = useCallback((Track track, int index) async {
+      if (trackViewState.isSelecting) {
+        trackViewState.toggleTrackSelection(track.id!);
+        return;
+      }
+
+      final isRemoteDevice = await showSelectDeviceDialog(context, ref);
+
+      if (isRemoteDevice) {
+        final remotePlayback = ref.read(connectProvider.notifier);
+        final remoteQueue = ref.read(queueProvider);
+        if (remoteQueue.collections.contains(props.collectionId) ||
+            remoteQueue.tracks.any((s) => s.id == track.id)) {
+          await playlistNotifier.jumpToTrack(track);
+        } else {
+          final tracks = await props.pagination.onFetchAll();
+          await remotePlayback.load(
+            props.collection is AlbumSimple
+                ? WebSocketLoadEventData.album(
+                    tracks: tracks,
+                    collection: props.collection as AlbumSimple,
+                    initialIndex: index,
+                  )
+                : WebSocketLoadEventData.playlist(
+                    tracks: tracks,
+                    collection: props.collection as PlaylistSimple,
+                    initialIndex: index,
+                  ),
+          );
+        }
+      } else {
+        if (isActive || playlist.tracks.containsBy(track, (a) => a.id)) {
+          await playlistNotifier.jumpToTrack(track);
+        } else {
+          final tracks = await props.pagination.onFetchAll();
+          await playlistNotifier.load(
+            tracks,
+            initialIndex: index,
+            autoPlay: true,
+          );
+          playlistNotifier.addCollection(props.collectionId);
+          if (props.collection is AlbumSimple) {
+            historyNotifier.addAlbums([props.collection as AlbumSimple]);
+          } else {
+            historyNotifier.addPlaylists([props.collection as PlaylistSimple]);
+          }
+        }
+      }
+    }, [isActive, playlist, props, playlistNotifier, historyNotifier]);
 
     return SliverMainAxisGroup(
       slivers: [
@@ -130,58 +181,7 @@ class TrackViewBodySection extends HookConsumerWidget {
                   trackViewState.selectTrack(track.id!);
                   HapticFeedback.selectionClick();
                 },
-                onTap: () async {
-                  if (trackViewState.isSelecting) {
-                    trackViewState.toggleTrackSelection(track.id!);
-                    return;
-                  }
-
-                  final isRemoteDevice =
-                      await showSelectDeviceDialog(context, ref);
-
-                  if (isRemoteDevice) {
-                    final remotePlayback = ref.read(connectProvider.notifier);
-                    final remoteQueue = ref.read(queueProvider);
-                    if (remoteQueue.collections.contains(props.collectionId) ||
-                        remoteQueue.tracks.any((s) => s.id == track.id)) {
-                      await playlistNotifier.jumpToTrack(track);
-                    } else {
-                      final tracks = await props.pagination.onFetchAll();
-                      await remotePlayback.load(
-                        props.collection is AlbumSimple
-                            ? WebSocketLoadEventData.album(
-                                tracks: tracks,
-                                collection: props.collection as AlbumSimple,
-                                initialIndex: index,
-                              )
-                            : WebSocketLoadEventData.playlist(
-                                tracks: tracks,
-                                collection: props.collection as PlaylistSimple,
-                                initialIndex: index,
-                              ),
-                      );
-                    }
-                  } else {
-                    if (isActive || playlist.tracks.contains(track)) {
-                      await playlistNotifier.jumpToTrack(track);
-                    } else {
-                      final tracks = await props.pagination.onFetchAll();
-                      await playlistNotifier.load(
-                        tracks,
-                        initialIndex: index,
-                        autoPlay: true,
-                      );
-                      playlistNotifier.addCollection(props.collectionId);
-                      if (props.collection is AlbumSimple) {
-                        historyNotifier
-                            .addAlbums([props.collection as AlbumSimple]);
-                      } else {
-                        historyNotifier
-                            .addPlaylists([props.collection as PlaylistSimple]);
-                      }
-                    }
-                  }
-                },
+                onTap: () => onTapTrackTile(track, index),
               );
             },
           ),

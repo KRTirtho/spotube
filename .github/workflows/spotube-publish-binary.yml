@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to publish (x.x.x)
-        default: 3.8.0
+        default: 3.8.1
         required: true
       dry_run:
         description: Dry run
@@ -76,12 +76,12 @@ jobs:
           commit_message: Updated to v${{ inputs.version }}
 
   winget:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     if: contains(inputs.jobs, 'winget')
     steps:
       - name: Release winget package
         if: ${{ !inputs.dry_run }}
-        uses: vedantmgoyal2009/winget-releaser@v2
+        uses: vedantmgoyal9/winget-releaser@main
         with:
           version: ${{ inputs.version }}
           release-tag: v${{ inputs.version }}

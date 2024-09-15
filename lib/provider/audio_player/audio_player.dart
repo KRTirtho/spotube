@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/extensions/list.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/local_track.dart';
@@ -13,6 +14,7 @@ import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   BlackListNotifier get _blacklist => ref.read(blacklistProvider.notifier);
@@ -141,36 +143,52 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   build() {
     final subscriptions = [
       audioPlayer.playingStream.listen((playing) async {
-        state = state.copyWith(playing: playing);
+        try {
+          state = state.copyWith(playing: playing);
 
-        await _updatePlayerState(
-          AudioPlayerStateTableCompanion(
-            playing: Value(playing),
-          ),
-        );
+          await _updatePlayerState(
+            AudioPlayerStateTableCompanion(
+              playing: Value(playing),
+            ),
+          );
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
       audioPlayer.loopModeStream.listen((loopMode) async {
-        state = state.copyWith(loopMode: loopMode);
+        try {
+          state = state.copyWith(loopMode: loopMode);
 
-        await _updatePlayerState(
-          AudioPlayerStateTableCompanion(
-            loopMode: Value(loopMode),
-          ),
-        );
+          await _updatePlayerState(
+            AudioPlayerStateTableCompanion(
+              loopMode: Value(loopMode),
+            ),
+          );
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
       audioPlayer.shuffledStream.listen((shuffled) async {
-        state = state.copyWith(shuffled: shuffled);
+        try {
+          state = state.copyWith(shuffled: shuffled);
 
-        await _updatePlayerState(
-          AudioPlayerStateTableCompanion(
-            shuffled: Value(shuffled),
-          ),
-        );
+          await _updatePlayerState(
+            AudioPlayerStateTableCompanion(
+              shuffled: Value(shuffled),
+            ),
+          );
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
       audioPlayer.playlistStream.listen((playlist) async {
-        state = state.copyWith(playlist: playlist);
+        try {
+          state = state.copyWith(playlist: playlist);
 
-        await _updatePlaylist(playlist);
+          await _updatePlaylist(playlist);
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
       }),
     ];
 
@@ -239,6 +257,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     for (int i = 0; i < tracks.length; i++) {
       final track = tracks.elementAt(i);
 
+      if (state.tracks.any((element) => _compareTracks(element, track))) {
+        continue;
+      }
+
       await audioPlayer.addTrackAt(
         SpotubeMedia(track),
         max(state.playlist.index, 0) + i + 1,
@@ -248,6 +270,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
   Future<void> addTrack(Track track) async {
     if (_blacklist.contains(track)) return;
+    if (state.tracks.any((element) => _compareTracks(element, track))) return;
     await audioPlayer.addTrack(SpotubeMedia(track));
   }
 
@@ -272,13 +295,23 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     }
   }
 
+  bool _compareTracks(Track a, Track b) {
+    if ((a is LocalTrack && b is! LocalTrack) ||
+        (a is! LocalTrack && b is LocalTrack)) return false;
+
+    return a is LocalTrack && b is LocalTrack
+        ? (a).path == (b).path
+        : a.id == b.id;
+  }
+
   Future<void> load(
     List<Track> tracks, {
     int initialIndex = 0,
     bool autoPlay = false,
   }) async {
-    final medias =
-        (_blacklist.filter(tracks).toList() as List<Track>).asMediaList();
+    final medias = (_blacklist.filter(tracks).toList() as List<Track>)
+        .asMediaList()
+        .unique((a, b) => _compareTracks(a.track, b.track));
 
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout

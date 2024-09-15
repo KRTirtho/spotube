@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,7 @@ import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
 import 'package:spotube/hooks/configurators/use_fix_window_stretching.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
+import 'package:spotube/hooks/configurators/use_has_touch.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
@@ -92,7 +94,7 @@ Future<void> main(List<String> rawArgs) async {
       await FlutterDiscordRPC.initialize(Env.discordAppId);
     }
 
-    if(kIsWindows){
+    if (kIsWindows) {
       await SMTCWindows.initialize();
     }
 
@@ -142,6 +144,7 @@ class Spotube extends HookConsumerWidget {
     final paletteColor =
         ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
     final router = ref.watch(routerProvider);
+    final hasTouchSupport = useHasTouch();
 
     ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
     ref.listen(bonsoirProvider, (_, __) {});
@@ -191,8 +194,22 @@ class Spotube extends HookConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       builder: (context, child) {
-        if (kIsDesktop && !kIsMacOS) return DragToResizeArea(child: child!);
-        return child!;
+        child = ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: hasTouchSupport
+                ? {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.stylus,
+                    PointerDeviceKind.invertedStylus,
+                  }
+                : null,
+          ),
+          child: child!,
+        );
+
+        if (kIsDesktop && !kIsMacOS) child = DragToResizeArea(child: child);
+
+        return child;
       },
       themeMode: themeMode,
       theme: lightTheme,

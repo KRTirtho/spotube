@@ -41,29 +41,33 @@ class PanelController extends ChangeNotifier {
   bool get isAttached => _panelState != null;
 
   /// Closes the sliding panel to its collapsed state (i.e. to the  minHeight)
-  Future<void> close() {
+  Future<void> close() async {
     assert(isAttached, "PanelController must be attached to a SlidingUpPanel");
-    return _panelState!._close();
+    await _panelState!._close();
+    notifyListeners();
   }
 
   /// Opens the sliding panel fully
   /// (i.e. to the maxHeight)
-  Future<void> open() {
+  Future<void> open() async {
     assert(isAttached, "PanelController must be attached to a SlidingUpPanel");
-    return _panelState!._open();
+    await _panelState!._open();
+    notifyListeners();
   }
 
   /// Hides the sliding panel (i.e. is invisible)
-  Future<void> hide() {
+  Future<void> hide() async {
     assert(isAttached, "PanelController must be attached to a SlidingUpPanel");
-    return _panelState!._hide();
+    await _panelState!._hide();
+    notifyListeners();
   }
 
   /// Shows the sliding panel in its collapsed state
   /// (i.e. "un-hide" the sliding panel)
-  Future<void> show() {
+  Future<void> show() async {
     assert(isAttached, "PanelController must be attached to a SlidingUpPanel");
-    return _panelState!._show();
+    await _panelState!._show();
+    notifyListeners();
   }
 
   /// Animates the panel position to the value.

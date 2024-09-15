@@ -128,7 +128,9 @@ class TrackViewFlexHeader extends HookConsumerWidget {
                                         if (props.description != null &&
                                             props.description!.isNotEmpty)
                                           Text(
-                                            props.description!.unescapeHtml(),
+                                            props.description!
+                                                .unescapeHtml()
+                                                .cleanHtml(),
                                             style:
                                                 defaultTextStyle.style.copyWith(
                                               color: palette.bodyTextColor,

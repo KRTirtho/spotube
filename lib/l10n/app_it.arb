@@ -385,5 +385,8 @@
   "summary_got_your_love": "Ha ricevuto il tuo amore",
   "summary_playlists": "playlist",
   "summary_were_on_repeat": "Erano in ripetizione",
-  "total_money": "Totale {money}"
+  "total_money": "Totale {money}",
+  "webview_not_found": "Webview non trovato",
+  "webview_not_found_description": "Nessun runtime Webview installato nel tuo dispositivo.\nSe è installato, assicurati che sia nel environment PATH\n\nDopo l'installazione, riavvia l'app",
+  "unsupported_platform": "Piattaforma non supportata"
 }

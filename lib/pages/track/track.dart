@@ -14,6 +14,7 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/track_tile/track_options.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/extensions/list.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -167,7 +168,8 @@ class TrackPage extends HookConsumerWidget {
                                   children: [
                                     const Gap(5),
                                     if (!isActive &&
-                                        !playlist.tracks.contains(track))
+                                        !playlist.tracks
+                                            .containsBy(track, (t) => t.id))
                                       OutlinedButton.icon(
                                         icon: const Icon(SpotubeIcons.queueAdd),
                                         label: Text(context.l10n.queue),
@@ -177,7 +179,8 @@ class TrackPage extends HookConsumerWidget {
                                       ),
                                     const Gap(5),
                                     if (!isActive &&
-                                        !playlist.tracks.contains(track))
+                                        !playlist.tracks
+                                            .containsBy(track, (t) => t.id))
                                       IconButton.outlined(
                                         icon:
                                             const Icon(SpotubeIcons.lightning),

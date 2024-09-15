@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/framework/app_pop_scope.dart';
 import 'package:spotube/modules/player/player_actions.dart';
 import 'package:spotube/modules/player/player_controls.dart';
 import 'package:spotube/modules/player/player_queue.dart';
@@ -100,11 +101,10 @@ class PlayerView extends HookConsumerWidget {
 
     final topPadding = MediaQueryData.fromView(View.of(context)).padding.top;
 
-    // ignore: deprecated_member_use
-    return WillPopScope(
-      onWillPop: () async {
+    return AppPopScope(
+      canPop: context.canPop(),
+      onPopInvoked: (didPop) async {
         await panelController.close();
-        return false;
       },
       child: IconTheme(
         data: theme.iconTheme.copyWith(color: bodyTextColor),

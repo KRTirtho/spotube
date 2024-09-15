@@ -384,5 +384,8 @@
   "summary_got_your_love": "ha aconseguit el teu amor",
   "summary_playlists": "llistes de reproducció",
   "summary_were_on_repeat": "estaven en repetició",
-  "total_money": "total {money}"
+  "total_money": "total {money}",
+  "webview_not_found": "No s'ha trobat el Webview",
+  "webview_not_found_description": "No hi ha cap temps d'execució de Webview instal·lat al dispositiu.\nSi està instal·lat, assegureu-vos que estigui en el environment PATH\n\nDesprés d'instal·lar-lo, reinicieu l'aplicació",
+  "unsupported_platform": "Plataforma no compatible"
 }

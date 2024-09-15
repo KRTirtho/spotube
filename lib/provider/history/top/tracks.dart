@@ -89,12 +89,18 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
   fetch(arg, offset, limit) async {
     final tracksQuery = createTracksQuery()..limit(limit, offset: offset);
 
-    return getTracksWithCount(await tracksQuery.get());
+    final items = getTracksWithCount(await tracksQuery.get());
+
+    return (
+      items: items,
+      hasMore: items.length == limit,
+      nextOffset: offset + limit,
+    );
   }
 
   @override
   build(arg) async {
-    final tracks = await fetch(arg, 0, 20);
+    final (items: tracks, :hasMore, :nextOffset) = await fetch(arg, 0, 20);
 
     final subscription = createTracksQuery().watch().listen((event) {
       if (state.asData == null) return;
@@ -110,9 +116,9 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
 
     return HistoryTopTracksState(
       items: tracks,
-      offset: tracks.length,
+      offset: nextOffset,
       limit: 20,
-      hasMore: true,
+      hasMore: hasMore,
     );
   }
 

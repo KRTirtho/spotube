@@ -170,27 +170,26 @@ class PlayerControls extends HookConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  StreamBuilder<bool>(
-                      stream: audioPlayer.shuffledStream,
-                      builder: (context, snapshot) {
-                        final shuffled = snapshot.data ?? false;
-                        return IconButton(
-                          tooltip: shuffled
-                              ? context.l10n.unshuffle_playlist
-                              : context.l10n.shuffle_playlist,
-                          icon: const Icon(SpotubeIcons.shuffle),
-                          style: shuffled ? activeButtonStyle : buttonStyle,
-                          onPressed: isFetchingActiveTrack
-                              ? null
-                              : () {
-                                  if (shuffled) {
-                                    audioPlayer.setShuffle(false);
-                                  } else {
-                                    audioPlayer.setShuffle(true);
-                                  }
-                                },
-                        );
-                      }),
+                  Consumer(builder: (context, ref, _) {
+                    final shuffled = ref
+                        .watch(audioPlayerProvider.select((s) => s.shuffled));
+                    return IconButton(
+                      tooltip: shuffled
+                          ? context.l10n.unshuffle_playlist
+                          : context.l10n.shuffle_playlist,
+                      icon: const Icon(SpotubeIcons.shuffle),
+                      style: shuffled ? activeButtonStyle : buttonStyle,
+                      onPressed: isFetchingActiveTrack
+                          ? null
+                          : () {
+                              if (shuffled) {
+                                audioPlayer.setShuffle(false);
+                              } else {
+                                audioPlayer.setShuffle(true);
+                              }
+                            },
+                    );
+                  }),
                   IconButton(
                     tooltip: context.l10n.previous_track,
                     icon: const Icon(SpotubeIcons.skipBack),

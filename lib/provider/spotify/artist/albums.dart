@@ -35,7 +35,13 @@ class ArtistAlbumsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
         .albums(arg, country: market)
         .getPage(limit, offset);
 
-    return albums.items?.toList() ?? [];
+    final items = albums.items?.toList() ?? [];
+
+    return (
+      items: items,
+      hasMore: !albums.isLast,
+      nextOffset: albums.nextOffset,
+    );
   }
 
   @override
@@ -46,12 +52,12 @@ class ArtistAlbumsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
     ref.watch(
       userPreferencesProvider.select((s) => s.market),
     );
-    final albums = await fetch(arg, 0, 20);
+    final (:items, :hasMore, :nextOffset) = await fetch(arg, 0, 20);
     return ArtistAlbumsState(
-      items: albums,
-      offset: 0,
+      items: items,
+      offset: nextOffset,
       limit: 20,
-      hasMore: albums.length == 20,
+      hasMore: hasMore,
     );
   }
 }

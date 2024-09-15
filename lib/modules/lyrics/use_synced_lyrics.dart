@@ -1,6 +1,7 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 int useSyncedLyrics(
   WidgetRef ref,
@@ -13,8 +14,12 @@ int useSyncedLyrics(
 
   useEffect(() {
     return stream.listen((pos) {
-      if (lyricsMap.containsKey(pos.inSeconds + delay)) {
-        currentTime.value = pos.inSeconds + delay;
+      try {
+        if (lyricsMap.containsKey(pos.inSeconds + delay)) {
+          currentTime.value = pos.inSeconds + delay;
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     }).cancel;
   }, [lyricsMap, delay]);
