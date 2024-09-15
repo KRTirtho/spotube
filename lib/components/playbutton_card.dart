@@ -58,7 +58,7 @@ class PlaybuttonCard extends HookWidget {
       others: 15,
     );
 
-    var unescapeHtml = description?.unescapeHtml();
+    final unescapeHtml = description?.unescapeHtml().cleanHtml();
     return Container(
       constraints: BoxConstraints(maxWidth: size),
       margin: margin,
