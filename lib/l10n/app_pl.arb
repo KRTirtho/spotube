@@ -384,5 +384,8 @@
   "count_streams": "{count} strumieni",
   "owned_by_you": "Własność Twoja",
   "copied_shareurl_to_clipboard": "{shareUrl} skopiowano do schowka",
-  "spotify_hipotetical_calculation": "*Obliczone na podstawie płatności Spotify za strumień\nw zakresie od $0.003 do $0.005. Jest to hipotetyczne\nobliczenie mające na celu pokazanie użytkownikowi, ile\nzapłaciliby artystom, gdyby słuchali ich utworów na Spotify."
+  "spotify_hipotetical_calculation": "*Obliczone na podstawie płatności Spotify za strumień\nw zakresie od $0.003 do $0.005. Jest to hipotetyczne\nobliczenie mające na celu pokazanie użytkownikowi, ile\nzapłaciliby artystom, gdyby słuchali ich utworów na Spotify.",
+  "webview_not_found": "Nie znaleziono Webview",
+  "webview_not_found_description": "Na twoim urządzeniu nie zainstalowano środowiska uruchomieniowego Webview.\nJeśli jest zainstalowany, upewnij się, że jest w environment PATH\n\nPo instalacji uruchom ponownie aplikację",
+  "unsupported_platform": "Nieobsługiwana platforma"
 }

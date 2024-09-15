@@ -385,5 +385,8 @@
   "count_streams": "{count} สตรีม",
   "owned_by_you": "เป็นเจ้าของโดยคุณ",
   "copied_shareurl_to_clipboard": "{shareUrl} คัดลอกไปที่คลิปบอร์ดแล้ว",
-  "spotify_hipotetical_calculation": "*คำนวณตามการจ่ายต่อสตรีมของ Spotify\nซึ่งอยู่ในช่วง $0.003 ถึง $0.005 นี่เป็นการคำนวณสมมุติ\nเพื่อให้ผู้ใช้ทราบว่าพวกเขาจะจ่ายเงินให้ศิลปินเท่าไหร่\nหากพวกเขาฟังเพลงของพวกเขาใน Spotify."
+  "spotify_hipotetical_calculation": "*คำนวณตามการจ่ายต่อสตรีมของ Spotify\nซึ่งอยู่ในช่วง $0.003 ถึง $0.005 นี่เป็นการคำนวณสมมุติ\nเพื่อให้ผู้ใช้ทราบว่าพวกเขาจะจ่ายเงินให้ศิลปินเท่าไหร่\nหากพวกเขาฟังเพลงของพวกเขาใน Spotify.",
+  "webview_not_found": "ไม่พบ Webview",
+  "webview_not_found_description": "ไม่พบ runtime ของ Webview บนอุปกรณ์ของคุณ\nหากติดตั้งแล้วตรวจสอบให้แน่ใจว่าอยู่ใน environment PATH\n\nหลังจากติดตั้งแล้ว ให้รีสตาร์ทแอป",
+  "unsupported_platform": "แพลตฟอร์มไม่รองรับ"
 }

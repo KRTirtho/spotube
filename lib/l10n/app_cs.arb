@@ -384,5 +384,8 @@
   "summary_got_your_love": "Získal vaši lásku",
   "summary_playlists": "playlisty",
   "summary_were_on_repeat": "Byly na opakování",
-  "total_money": "Celkem {money}"
+  "total_money": "Celkem {money}",
+  "webview_not_found": "Webview nebyl nalezen",
+  "webview_not_found_description": "Na vašem zařízení není nainstalováno žádné runtime prostředí Webview.\nPokud je nainstalováno, ujistěte se, že je v environment PATH\n\nPo instalaci restartujte aplikaci",
+  "unsupported_platform": "Nepodporovaná platforma"
 }

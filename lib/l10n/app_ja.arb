@@ -384,5 +384,8 @@
   "count_streams": "{count} 回のストリーム",
   "owned_by_you": "あなたが所有",
   "copied_shareurl_to_clipboard": "{shareUrl} をクリップボードにコピーしました",
-  "spotify_hipotetical_calculation": "*これは、Spotifyのストリームごとの支払い\nが $0.003 から $0.005 の範囲で計算されています。これは仮想的な\n計算で、Spotify で曲を聴いた場合に、アーティストに\nどれくらい支払ったかをユーザーに示すためのものです。"
+  "spotify_hipotetical_calculation": "*これは、Spotifyのストリームごとの支払い\nが $0.003 から $0.005 の範囲で計算されています。これは仮想的な\n計算で、Spotify で曲を聴いた場合に、アーティストに\nどれくらい支払ったかをユーザーに示すためのものです。",
+  "webview_not_found": "Webviewが見つかりません",
+  "webview_not_found_description": "デバイスにWebviewランタイムがインストールされていません。\nインストールされている場合は、environment PATHにあることを確認してください\n\nインストール後、アプリを再起動してください",
+  "unsupported_platform": "サポートされていないプラットフォーム"
 }

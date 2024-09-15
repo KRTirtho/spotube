@@ -384,5 +384,8 @@
   "summary_got_your_love": "A obtenu votre amour",
   "summary_playlists": "playlists",
   "summary_were_on_repeat": "Était en répétition",
-  "total_money": "Total {money}"
+  "total_money": "Total {money}",
+  "webview_not_found": "Webview non trouvé",
+  "webview_not_found_description": "Aucun environnement d'exécution Webview installé sur votre appareil.\nSi c'est installé, assurez-vous qu'il soit dans le environment PATH\n\nAprès l'installation, redémarrez l'application",
+  "unsupported_platform": "Plateforme non prise en charge"
 }

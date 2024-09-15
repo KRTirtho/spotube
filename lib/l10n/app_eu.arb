@@ -384,5 +384,8 @@
   "summary_got_your_love": "Izan dute zure maitasuna",
   "summary_playlists": "zerrenda",
   "summary_were_on_repeat": "Dituzu errepikatze moduan",
-  "total_money": "Guztira {money}"
+  "total_money": "Guztira {money}",
+  "webview_not_found": "Ez da Webview aurkitu",
+  "webview_not_found_description": "Ez dago Webview abiarazte denbora-instalaziorik zure gailuan.\nInstalatuta badago, ziurtatu environment PATH-an dagoela\n\nInstalatu ondoren, berrabiarazi aplikazioa",
+  "unsupported_platform": "Plataforma ez onartua"
 }

@@ -384,5 +384,8 @@
   "summary_got_your_love": "Mendapatkan cinta Anda",
   "summary_playlists": "daftar putar",
   "summary_were_on_repeat": "Sedang diulang",
-  "total_money": "Total {money}"
+  "total_money": "Total {money}",
+  "webview_not_found": "Webview tidak ditemukan",
+  "webview_not_found_description": "Tidak ada runtime Webview yang diinstal di perangkat Anda.\nJika sudah diinstal, pastikan itu ada di environment PATH\n\nSetelah diinstal, restart aplikasi",
+  "unsupported_platform": "Platform tidak didukung"
 }

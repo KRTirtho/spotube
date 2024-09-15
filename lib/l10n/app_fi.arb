@@ -384,5 +384,8 @@
   "summary_got_your_love": "Sai rakkautesi",
   "summary_playlists": "soittolistat",
   "summary_were_on_repeat": "Olivat toistossa",
-  "total_money": "Yhteensä {money}"
+  "total_money": "Yhteensä {money}",
+  "webview_not_found": "Webview ei löydy",
+  "webview_not_found_description": "Laitteellasi ei ole asennettua Webview-ajonaikaa.\nJos se on asennettu, varmista, että se on environment PATH:ssa\n\nAsennuksen jälkeen käynnistä sovellus uudelleen",
+  "unsupported_platform": "Ei tuettu alusta"
 }

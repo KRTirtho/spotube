@@ -384,5 +384,8 @@
   "count_streams": "{count} streams",
   "owned_by_you": "De sua propriedade",
   "copied_shareurl_to_clipboard": "{shareUrl} copiado para a área de transferência",
-  "spotify_hipotetical_calculation": "*Isso é calculado com base no pagamento por stream do Spotify\nque varia de $0.003 a $0.005. Esta é uma cálculo hipotético\npara dar ao usuário uma visão de quanto teriam pago aos artistas\nse eles ouvissem suas músicas no Spotify."
+  "spotify_hipotetical_calculation": "*Isso é calculado com base no pagamento por stream do Spotify\nque varia de $0.003 a $0.005. Esta é uma cálculo hipotético\npara dar ao usuário uma visão de quanto teriam pago aos artistas\nse eles ouvissem suas músicas no Spotify.",
+  "webview_not_found": "Webview não encontrado",
+  "webview_not_found_description": "Nenhum runtime Webview está instalado no seu dispositivo.\nSe estiver instalado, certifique-se de que está no environment PATH\n\nApós a instalação, reinicie o aplicativo",
+  "unsupported_platform": "Plataforma não suportada"
 }

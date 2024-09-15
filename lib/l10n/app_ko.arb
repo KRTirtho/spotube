@@ -385,5 +385,8 @@
   "count_streams": "{count} 스트림",
   "owned_by_you": "당신이 소유",
   "copied_shareurl_to_clipboard": "{shareUrl}를 클립보드에 복사했습니다",
-  "spotify_hipotetical_calculation": "*Spotify의 스트림당 지불금 $0.003에서 $0.005까지의\n기준으로 계산되었습니다. 이는 사용자가 Spotify에서\n곡을 들을 때 아티스트에게 얼마를 지불했을지를\n알려주기 위한 가상의 계산입니다."
+  "spotify_hipotetical_calculation": "*Spotify의 스트림당 지불금 $0.003에서 $0.005까지의\n기준으로 계산되었습니다. 이는 사용자가 Spotify에서\n곡을 들을 때 아티스트에게 얼마를 지불했을지를\n알려주기 위한 가상의 계산입니다.",
+  "webview_not_found": "웹뷰를 찾을 수 없음",
+  "webview_not_found_description": "기기에 웹뷰 런타임이 설치되지 않았습니다.\n설치되어 있으면 environment PATH에 있는지 확인하십시오\n\n설치 후 앱을 다시 시작하세요",
+  "unsupported_platform": "지원되지 않는 플랫폼"
 }

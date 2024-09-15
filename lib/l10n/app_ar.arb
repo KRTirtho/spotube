@@ -384,5 +384,8 @@
   "summary_got_your_love": "حصلت على حبك",
   "summary_playlists": "قوائم التشغيل",
   "summary_were_on_repeat": "كانت على التكرار",
-  "total_money": "المجموع {money}"
+  "total_money": "المجموع {money}",
+  "webview_not_found": "لم يتم العثور على Webview",
+  "webview_not_found_description": "لم يتم تثبيت بيئة تشغيل Webview على جهازك.\nإذا كانت مثبتة، تأكد من وجودها في environment PATH\n\nبعد التثبيت، أعد تشغيل التطبيق",
+  "unsupported_platform": "المنصة غير مدعومة"
 }

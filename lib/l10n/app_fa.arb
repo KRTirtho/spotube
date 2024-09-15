@@ -384,5 +384,8 @@
   "summary_got_your_love": "عشق شما را به دست آورد",
   "summary_playlists": "لیست‌های پخش",
   "summary_were_on_repeat": "در تکرار بودند",
-  "total_money": "مجموع {money}"
+  "total_money": "مجموع {money}",
+  "webview_not_found": "وب‌ویو پیدا نشد",
+  "webview_not_found_description": "هیچ اجرای وب‌ویو روی دستگاه شما نصب نشده است.\nدر صورت نصب، مطمئن شوید که در environment PATH قرار دارد\n\nپس از نصب، برنامه را مجدداً راه‌اندازی کنید",
+  "unsupported_platform": "پلتفرم پشتیبانی نمی‌شود"
 }

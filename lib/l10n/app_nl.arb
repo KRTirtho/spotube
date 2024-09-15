@@ -385,5 +385,8 @@
   "count_streams": "{count} streams",
   "owned_by_you": "Bezit door jou",
   "copied_shareurl_to_clipboard": "{shareUrl} gekopieerd naar klembord",
-  "spotify_hipotetical_calculation": "*Dit is berekend op basis van Spotify's betaling per stream\nvan $0.003 tot $0.005. Dit is een hypothetische\nberekening om de gebruiker inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun liedjes op Spotify\nzouden luisteren."
+  "spotify_hipotetical_calculation": "*Dit is berekend op basis van Spotify's betaling per stream\nvan $0.003 tot $0.005. Dit is een hypothetische\nberekening om de gebruiker inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun liedjes op Spotify\nzouden luisteren.",
+  "webview_not_found": "Webview niet gevonden",
+  "webview_not_found_description": "Er is geen Webview-runtime geïnstalleerd op uw apparaat.\nAls het is geïnstalleerd, zorg ervoor dat het in het environment PATH staat\n\nHerstart de app na installatie",
+  "unsupported_platform": "Niet ondersteund platform"
 }
