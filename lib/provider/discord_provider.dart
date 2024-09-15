@@ -76,6 +76,7 @@ class DiscordNotifier extends AsyncNotifier<void> {
 
   Future<void> updatePresence(Track track) async {
     if (!kIsDesktop) return;
+    if (FlutterDiscordRPC.instance.isConnected == false) return;
     final artistNames = track.artists?.asString();
     final isPlaying = audioPlayer.isPlaying;
     final position = audioPlayer.position;
