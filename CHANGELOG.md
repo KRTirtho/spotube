@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
+- **translations**: correct some basque incorrect translations (#1815)
 - **lyrics**: LRCLIB lyrics should be usable without logging in #1803
 - playlist displaying descriptions unescaped html #1784
 - **android**: pressing back while the player is open doesn't take to previous page
