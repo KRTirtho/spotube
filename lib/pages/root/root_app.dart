@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/framework/app_pop_scope.dart';
 import 'package:spotube/modules/player/player_queue.dart';
@@ -32,7 +33,6 @@ class RootApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final routerState = GoRouterState.of(context);
 
     final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider);
@@ -167,57 +167,69 @@ class RootApp extends HookConsumerWidget {
       return null;
     }, [backgroundColor]);
 
+    final navTileNames = useMemoized(() {
+      return getSidebarTileList(context.l10n).map((s) => s.name).toList();
+    }, []);
+
+    final scaffold = Scaffold(
+      body: Sidebar(child: child),
+      extendBody: true,
+      drawerScrimColor: Colors.transparent,
+      endDrawer: kIsDesktop
+          ? Container(
+              constraints: const BoxConstraints(maxWidth: 800),
+              decoration: BoxDecoration(
+                boxShadow: theme.brightness == Brightness.light
+                    ? null
+                    : kElevationToShadow[8],
+              ),
+              margin: const EdgeInsets.only(
+                top: 40,
+                bottom: 100,
+              ),
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final playlist = ref.watch(audioPlayerProvider);
+                  final playlistNotifier =
+                      ref.read(audioPlayerProvider.notifier);
+
+                  return PlayerQueue.fromAudioPlayerNotifier(
+                    floating: true,
+                    playlist: playlist,
+                    notifier: playlistNotifier,
+                  );
+                },
+              ),
+            )
+          : null,
+      bottomNavigationBar: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BottomPlayer(),
+          SpotubeNavigationBar(),
+        ],
+      ),
+    );
+
+    if (!kIsAndroid) {
+      return scaffold;
+    }
+
+    final topRoute = GoRouterState.of(context).topRoute;
+    final canPop = topRoute != null && !navTileNames.contains(topRoute.name);
+
     return AppPopScope(
-      // Only allow to pop when in root screen
-      canPop: routerState.namedLocation(HomePage.name) ==
-          routerState.matchedLocation,
-      onPopInvoked: (didPop) async {
+      canPop: canPop,
+      onPopInvoked: (didPop) {
         if (didPop) return;
 
-        final routerState = GoRouterState.of(context);
-        if (routerState.matchedLocation != "/") {
+        if (topRoute?.name == HomePage.name) {
+          SystemNavigator.pop();
+        } else {
           context.goNamed(HomePage.name);
         }
       },
-      child: Scaffold(
-        body: Sidebar(child: child),
-        extendBody: true,
-        drawerScrimColor: Colors.transparent,
-        endDrawer: kIsDesktop
-            ? Container(
-                constraints: const BoxConstraints(maxWidth: 800),
-                decoration: BoxDecoration(
-                  boxShadow: theme.brightness == Brightness.light
-                      ? null
-                      : kElevationToShadow[8],
-                ),
-                margin: const EdgeInsets.only(
-                  top: 40,
-                  bottom: 100,
-                ),
-                child: Consumer(
-                  builder: (context, ref, _) {
-                    final playlist = ref.watch(audioPlayerProvider);
-                    final playlistNotifier =
-                        ref.read(audioPlayerProvider.notifier);
-
-                    return PlayerQueue.fromAudioPlayerNotifier(
-                      floating: true,
-                      playlist: playlist,
-                      notifier: playlistNotifier,
-                    );
-                  },
-                ),
-              )
-            : null,
-        bottomNavigationBar: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BottomPlayer(),
-            SpotubeNavigationBar(),
-          ],
-        ),
-      ),
+      child: scaffold,
     );
   }
 }

@@ -104,7 +104,6 @@ class PlayerView extends HookConsumerWidget {
     return AppPopScope(
       canPop: context.canPop(),
       onPopInvoked: (didPop) async {
-        if (didPop) return;
         await panelController.close();
       },
       child: IconTheme(
