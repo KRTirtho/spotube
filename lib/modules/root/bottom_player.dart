@@ -17,7 +17,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:flutter/material.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -30,7 +29,6 @@ class BottomPlayer extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authenticationProvider);
     final playlist = ref.watch(audioPlayerProvider);
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
@@ -89,35 +87,34 @@ class BottomPlayer extends HookConsumerWidget {
                   children: [
                     PlayerActions(
                       extraActions: [
-                        if (auth.asData?.value != null)
-                          IconButton(
-                            tooltip: context.l10n.mini_player,
-                            icon: const Icon(SpotubeIcons.miniPlayer),
-                            onPressed: () async {
-                              if (!kIsDesktop) return;
+                        IconButton(
+                          tooltip: context.l10n.mini_player,
+                          icon: const Icon(SpotubeIcons.miniPlayer),
+                          onPressed: () async {
+                            if (!kIsDesktop) return;
 
-                              final prevSize = await windowManager.getSize();
-                              await windowManager.setMinimumSize(
-                                const Size(300, 300),
-                              );
-                              await windowManager.setAlwaysOnTop(true);
-                              if (!kIsLinux) {
-                                await windowManager.setHasShadow(false);
-                              }
-                              await windowManager
-                                  .setAlignment(Alignment.topRight);
-                              await windowManager.setSize(const Size(400, 500));
-                              await Future.delayed(
-                                const Duration(milliseconds: 100),
-                                () async {
-                                  GoRouter.of(context).go(
-                                    '/mini-player',
-                                    extra: prevSize,
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                            final prevSize = await windowManager.getSize();
+                            await windowManager.setMinimumSize(
+                              const Size(300, 300),
+                            );
+                            await windowManager.setAlwaysOnTop(true);
+                            if (!kIsLinux) {
+                              await windowManager.setHasShadow(false);
+                            }
+                            await windowManager
+                                .setAlignment(Alignment.topRight);
+                            await windowManager.setSize(const Size(400, 500));
+                            await Future.delayed(
+                              const Duration(milliseconds: 100),
+                              () async {
+                                GoRouter.of(context).go(
+                                  '/mini-player',
+                                  extra: prevSize,
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ],
                     ),
                     Container(

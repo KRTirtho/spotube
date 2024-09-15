@@ -82,7 +82,7 @@ class SyncedLyrics extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         subscription = audioPlayer.positionStream.listen((event) {
           try {
-            if (event > Duration.zero) return;
+            if (event > Duration.zero || !controller.hasClients) return;
             controller.animateTo(
               0,
               duration: const Duration(milliseconds: 500),
