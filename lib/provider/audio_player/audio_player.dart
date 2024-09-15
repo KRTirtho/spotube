@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/extensions/list.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/local_track.dart';
@@ -256,6 +257,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     for (int i = 0; i < tracks.length; i++) {
       final track = tracks.elementAt(i);
 
+      if (state.tracks.any((element) => _compareTracks(element, track))) {
+        continue;
+      }
+
       await audioPlayer.addTrackAt(
         SpotubeMedia(track),
         max(state.playlist.index, 0) + i + 1,
@@ -265,6 +270,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
   Future<void> addTrack(Track track) async {
     if (_blacklist.contains(track)) return;
+    if (state.tracks.any((element) => _compareTracks(element, track))) return;
     await audioPlayer.addTrack(SpotubeMedia(track));
   }
 
@@ -289,13 +295,23 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     }
   }
 
+  bool _compareTracks(Track a, Track b) {
+    if ((a is LocalTrack && b is! LocalTrack) ||
+        (a is! LocalTrack && b is LocalTrack)) return false;
+
+    return a is LocalTrack && b is LocalTrack
+        ? (a).path == (b).path
+        : a.id == b.id;
+  }
+
   Future<void> load(
     List<Track> tracks, {
     int initialIndex = 0,
     bool autoPlay = false,
   }) async {
-    final medias =
-        (_blacklist.filter(tracks).toList() as List<Track>).asMediaList();
+    final medias = (_blacklist.filter(tracks).toList() as List<Track>)
+        .asMediaList()
+        .unique((a, b) => _compareTracks(a.track, b.track));
 
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout

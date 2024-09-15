@@ -758,14 +758,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.5"
-  flutter_hooks_lint:
-    dependency: "direct dev"
-    description:
-      name: flutter_hooks_lint
-      sha256: fc6e18505b597737e5d620656e340ac60e7a58980cca29e18c1216bd15083674
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   flutter_inappwebview:
     dependency: "direct main"
     description:

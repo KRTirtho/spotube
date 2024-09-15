@@ -158,7 +158,6 @@ dev_dependencies:
   xml: ^6.5.0
   io: ^1.0.4
   drift_dev: ^2.18.0
-  flutter_hooks_lint: ^1.2.0
 
 dependency_overrides:
   uuid: ^4.4.0

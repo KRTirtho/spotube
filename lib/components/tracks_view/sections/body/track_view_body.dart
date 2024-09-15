@@ -15,6 +15,7 @@ import 'package:spotube/components/tracks_view/sections/body/track_view_body_hea
 import 'package:spotube/components/tracks_view/sections/body/use_is_user_playlist.dart';
 import 'package:spotube/components/tracks_view/track_view_props.dart';
 import 'package:spotube/components/tracks_view/track_view_provider.dart';
+import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
@@ -96,7 +97,7 @@ class TrackViewBodySection extends HookConsumerWidget {
           );
         }
       } else {
-        if (isActive || playlist.tracks.contains(track)) {
+        if (isActive || playlist.tracks.containsBy(track, (a) => a.id)) {
           await playlistNotifier.jumpToTrack(track);
         } else {
           final tracks = await props.pagination.onFetchAll();
