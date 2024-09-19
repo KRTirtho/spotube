@@ -50,6 +50,7 @@ body:
       value: |
         <details>
         <summary>Logs</summary>
+        
         ```
         <Replace this line by pasting your logs here>
         ```
