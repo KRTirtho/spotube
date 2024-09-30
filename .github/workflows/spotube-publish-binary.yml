@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to publish (x.x.x)
-        default: 3.8.1
+        default: 3.8.2
         required: true
       dry_run:
         description: Dry run
