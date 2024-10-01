@@ -161,6 +161,13 @@ brew install --cask spotube
       <p><code>winget install --id KRTirtho.Spotube</code></p>
     </td>
   </tr>
+    <tr>
+        <td>IOS - <a href="https://github.com/KRTirtho/spotube/releases/download/nightly/Spotube-iOS.ipa">IOS</a>
+                </td>
+                <td>
+                    <p>IOS Install Spotube</p>
+                </td>
+            </tr>
 </table>
 
 ### 🔄 Nightly Builds
