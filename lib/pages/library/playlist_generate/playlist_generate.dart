@@ -199,7 +199,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       label: Text(context.l10n.add_genres),
       helperText: context.l10n.select_up_to_count_type(
         leftSeedCount,
-        context.l10n.genre,
+        context.l10n.genres,
       ),
       enabled: enabled,
     );
