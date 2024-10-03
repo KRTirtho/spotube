@@ -196,7 +196,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
         genres.value = value;
       },
       dialogTitle: Text(context.l10n.select_genres),
-      label: Text(context.l10n.add_genres),
+      label: Text(context.l10n.genres),
       helperText: context.l10n.select_up_to_count_type(
         leftSeedCount,
         context.l10n.genres,
