@@ -2427,10 +2427,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: "133a65907e6cf839ac7643d92dc5c56b37fcebe4f0a8f0e67716dffa500c0ef0"
+      sha256: "28dca07fefb4b6518beab95f0c1ef81031f921ed0fe87ebcd9c51378546edfee"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.2"
+    version: "2.2.3"
 sdks:
   dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.24.0"
