@@ -160,7 +160,7 @@
   "copyright": "© 2021-{current_year} किङ्कोर राय तिर्थो",
   "license": "लाइसेन्स",
   "add_spotify_credentials": "सुरु हुनका लागि तपाईंको स्पटिफाई क्रेडेन्शियल थप्नुहोस्",
-  "credentials_will_not_be_shared_disclaimer": "चिन्ता नगर्नुहोस्, तपाईंको कुनै पनि क्रेडेन्शियलहरूले कसैले संग्रह वा साझा गर्नेछैन",
+  "credentials_will_not_be_shared_disclaimer": "चिन्ता नगर्नुहोस्, तपाईंको कुनै पनि प्रमाणहरू सङ्कलन वा कसैसँग साझेदारी गरिने छैन",
   "know_how_to_login": "कसरी लगिन गर्ने भन्ने थाहा छैन?",
   "follow_step_by_step_guide": "चरणबद्ध मार्गदर्शनमा साथी बनाउनुहोस्",
   "spotify_cookie": "Spotify {name} कुकी",

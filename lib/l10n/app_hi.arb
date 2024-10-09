@@ -158,7 +158,7 @@
   "copyright": "© 2021-{current_year} किंगकोर रॉय तिर्थो",
   "license": "लाइसेंस",
   "add_spotify_credentials": "शुरू होने के लिए अपने स्पॉटिफाई क्रेडेंशियल जोड़ें",
-  "credentials_will_not_be_shared_disclaimer": "चिंता न करें, आपके क्रेडेंशियल किसी भी तरह से नहीं एकत्रित या साझा किए जाएंगे",
+  "credentials_will_not_be_shared_disclaimer": "चिंता न करें, आपका कोई भी क्रेडेंशियल एकत्र या किसी के साथ साझा नहीं किया जाएगा",
   "know_how_to_login": "इसे कैसे करें पता नहीं?",
   "follow_step_by_step_guide": "कदम से कदम गाइड के साथ चलें",
   "spotify_cookie": "स्पॉटिफाई {name} कुकी",

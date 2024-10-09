@@ -161,7 +161,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "ใบอนุญาต",
   "add_spotify_credentials": "เพิ่มข้อมูลรับรอง Spotify ของคุณเพื่อเริ่มต้น",
-  "credentials_will_not_be_shared_disclaimer": "ไม่ต้องกังวล ข้อมูลรับรองใดๆ ของคุณจะไม่ถูกเก็บรวบรวมหรือแชร์กับใคร",
+  "credentials_will_not_be_shared_disclaimer": "ไม่ต้องกังวล ข้อมูลประจำตัวของคุณจะไม่ถูกรวบรวมหรือแบ่งปันกับใคร",
   "know_how_to_login": "ไม่รู้จักวิธีดำเนินการนี้ใช่ไหม",
   "follow_step_by_step_guide": "ทำตามคู่มือทีละขั้น",
   "spotify_cookie": "คุกกี้ Spotify {name}",
