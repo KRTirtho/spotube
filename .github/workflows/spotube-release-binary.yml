@@ -20,7 +20,7 @@ on:
         description: Dry run without uploading to release
 
 env:
-  FLUTTER_VERSION: 3.22.3
+  FLUTTER_VERSION: 3.24.3
 
 permissions:
   contents: write
