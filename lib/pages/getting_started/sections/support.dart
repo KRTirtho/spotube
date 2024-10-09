@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
@@ -62,21 +63,23 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                         );
                       },
                     ),
-                    const Gap(16),
-                    FilledButton.icon(
-                      icon: const Icon(SpotubeIcons.openCollective),
-                      label: Text(context.l10n.donate_on_open_collective),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xff4cb7f6),
-                        foregroundColor: Colors.white,
+                    if (!Env.hideDonations) ...[
+                      const Gap(16),
+                      FilledButton.icon(
+                        icon: const Icon(SpotubeIcons.openCollective),
+                        label: Text(context.l10n.donate_on_open_collective),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xff4cb7f6),
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () async {
+                          await launchUrlString(
+                            "https://opencollective.com/spotube",
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
                       ),
-                      onPressed: () async {
-                        await launchUrlString(
-                          "https://opencollective.com/spotube",
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                    ),
+                    ]
                   ],
                 ),
               ],

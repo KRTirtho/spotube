@@ -19,6 +19,11 @@ abstract class Env {
   @EnviedField(varName: 'LASTFM_API_SECRET')
   static final String lastFmApiSecret = _Env.lastFmApiSecret;
 
+  @EnviedField(varName: 'HIDE_DONATIONS', defaultValue: "0")
+  static final int _hideDonations = _Env._hideDonations;
+
+  static bool get hideDonations => _hideDonations == 1;
+
   static final spotifySecrets = rawSpotifySecrets.split(',').map((e) {
     final secrets = e.trim().split(":").map((e) => e.trim());
     return {

@@ -21,48 +21,50 @@ class SettingsAboutSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.about,
       children: [
-        AdaptiveListTile(
-          leading: const Icon(
-            SpotubeIcons.heart,
-            color: Colors.pink,
-          ),
-          title: SizedBox(
-            height: 50,
-            width: 200,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: AutoSizeText(
-                context.l10n.u_love_spotube,
-                maxLines: 1,
-                style: const TextStyle(
-                  color: Colors.pink,
-                  fontWeight: FontWeight.bold,
+        if (!Env.hideDonations)
+          AdaptiveListTile(
+            leading: const Icon(
+              SpotubeIcons.heart,
+              color: Colors.pink,
+            ),
+            title: SizedBox(
+              height: 50,
+              width: 200,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: AutoSizeText(
+                  context.l10n.u_love_spotube,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    color: Colors.pink,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          trailing: (context, update) => FilledButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
-              foregroundColor: const WidgetStatePropertyAll(Colors.pinkAccent),
-              padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
+            trailing: (context, update) => FilledButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
+                foregroundColor:
+                    const WidgetStatePropertyAll(Colors.pinkAccent),
+                padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
+              ),
+              onPressed: () {
+                launchUrlString(
+                  "https://opencollective.com/spotube",
+                  mode: LaunchMode.externalApplication,
+                );
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(SpotubeIcons.heart),
+                  const SizedBox(width: 5),
+                  Text(context.l10n.please_sponsor),
+                ],
+              ),
             ),
-            onPressed: () {
-              launchUrlString(
-                "https://opencollective.com/spotube",
-                mode: LaunchMode.externalApplication,
-              );
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(SpotubeIcons.heart),
-                const SizedBox(width: 5),
-                Text(context.l10n.please_sponsor),
-              ],
-            ),
           ),
-        ),
         if (Env.enableUpdateChecker)
           SwitchListTile(
             secondary: const Icon(SpotubeIcons.update),
