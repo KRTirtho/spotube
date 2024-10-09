@@ -25,7 +25,8 @@ class AndroidBuildCommand extends Command with BuildCommandCommonSteps {
     );
 
     await dotEnvFile.writeAsString(
-      "\nENABLE_UPDATE_CHECK=0",
+      "\nENABLE_UPDATE_CHECK=0"
+      "\nHIDE_DONATIONS=1",
       mode: FileMode.append,
     );
 
