@@ -19,7 +19,7 @@ Future<void> Function() useLoginCallback(WidgetRef ref) {
   final authNotifier = ref.read(authenticationProvider.notifier);
 
   return useCallback(() async {
-    if (kIsMobile) {
+    if (kIsMobile || kIsMacOS) {
       context.pushNamed(WebViewLogin.name);
       return;
     }
