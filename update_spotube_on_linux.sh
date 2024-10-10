@@ -2,17 +2,13 @@
 # Script to update Spotube on Linux (direct binaries via tar.xz)
 # For letting it run in a crontab or manually
 
-# arch possibilities: either aarch64 or x86_6
-# path and tmpf (temp file for .tar.xz) whatever you choose
-
 # less sophisticated, old oneliner: arch="aarch64";p="/usr/share/spotube-bin"; a=$(curl -s https://api.github.com/repos/krtirtho/spotube/releases/latest | sed 's/[()",{}]/ /g; s/ /\n/g' | grep "https.*releases/download.*tar.xz" | grep "$arch"); wget "$a" -O "$p/test.tar.xz" && tar -xJf "$p/test.tar.xz"  && rm "$p/test.tar.xz" && echo "$(date -I'seconds')|$a" >> "$p/lastupdate.txt"
 
-
 p="/usr/share/spotube-bin" # Path where the tar.xz should be downloaded and unpacked
-tmpf="$p/test.tar.xz"
+tmpf="$p/test.tar.xz" # temporary .tar.xz name and location (within Path p)
 repo="krtirtho/spotube" # define repo path
+arch="x86_64" # arch? either aarch64 or x86_64
 url="https://api.github.com/repos/$repo/releases/latest"
-arch="x86_64" # arch?
 
 # check if running as root
 if [ $(id -u) -ne 0 ]; then
