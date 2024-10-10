@@ -10,7 +10,7 @@ symlinkpath="/usr/bin/spotube"
 p="/usr/share/spotube-bin" # Path where the tar.xz should be downloaded and unpacked
 tmpf="$p/test.tar.xz" # temporary .tar.xz name and location (within Path p)
 repo="krtirtho/spotube" # define repo path
-arch="x86_64" # arch? either aarch64 or x86_64
+arch="aarch64" # arch? either aarch64 or x86_64
 url="https://api.github.com/repos/$repo/releases/latest"
 u="root" # who is the owner of /usr/share/spotube-bin/
 
@@ -63,4 +63,4 @@ echo "$(date -I'seconds')|$a" >> "$p/lastupdate.txt" # add datetime and tar.xz l
 chmod 0400 "$p/lastupdate.txt"
 echo "[+] UPDATE LOOKS SUCCESSFUL. CHECK BY RUNNING $p/spotube"
 echo "[+] updated symlink of /usr/bin/spotube to '$p'/spotube "
-ln -sfn "$p/spotube" "$symlinkpath"
+ln -sfn "$p/spotube" "$symlinkpath"  # force update or creation of symlink
