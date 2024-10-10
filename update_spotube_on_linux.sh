@@ -11,6 +11,7 @@ tmpf="$p/test.tar.xz" # temporary .tar.xz name and location (within Path p)
 repo="krtirtho/spotube" # define repo path
 arch="x86_64" # arch? either aarch64 or x86_64
 url="https://api.github.com/repos/$repo/releases/latest"
+user="dnr"
 
 # check if running as root
 if [ $(id -u) -ne 0 ]; then
@@ -32,9 +33,15 @@ fi
 # rm "$p/*" -r # optionally remove everything in the folder before (avoiding left overs and other issues)
 
 # creating $p dir, downloading & saving, unpacking tmpf/tar.xz
-mkdir -p "$p" # add directory if not yet existing (including subtree)
-curl -L -s -o "$p/test.tar.xz" "$a"  # download, save tar.xz (tmpf)
+mkdir "$p" # add directory if not yet existing (including subtree)
+chown "$user":"$user" "$p" -R # permissions fix
+
+cd "$p" # avoid the does not get unpacked bug by joining dir
+
+curl -L -s -o "$tmpf" "$a"  # download, save tar.xz (tmpf)
 tar -xJf "$tmpf" # unpack tar.xz (tmpf)
+
+chown "$user":"$user" "$p" -R # permissions fix
 
 if [ ! -f "$tmpf" ]; then
   echo "[ERROR]: UPDATE FAILED temporary file: '$tmpf' not found! Looks like it was not downloaded from repo.";
