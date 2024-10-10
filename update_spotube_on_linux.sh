@@ -1,4 +1,6 @@
 #!/bin/bash
+# Written 10. Okt. 2024 4pm Berlin Time (CEST)
+
 # Script to update Spotube on Linux (direct binaries via tar.xz)
 # For letting it run in a crontab or manually
 
