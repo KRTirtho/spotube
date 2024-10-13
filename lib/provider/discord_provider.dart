@@ -1,70 +1,124 @@
-import 'package:dart_discord_rpc/dart_discord_rpc.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'dart:async';
+
+import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/collections/env.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/utils/platform.dart';
 
-class Discord extends ChangeNotifier {
-  final DiscordRPC? discordRPC;
-  final bool isEnabled;
+class DiscordNotifier extends AsyncNotifier<void> {
+  @override
+  FutureOr<void> build() async {
+    if (!kIsDesktop) return;
 
-  Discord(this.isEnabled)
-      : discordRPC = (DesktopTools.platform.isWindows ||
-                    DesktopTools.platform.isLinux) &&
-                isEnabled
-            ? DiscordRPC(applicationId: Env.discordAppId)
-            : null {
-    discordRPC?.start(autoRegister: true);
+    final enabled = ref.watch(
+        userPreferencesProvider.select((s) => s.discordPresence && kIsDesktop));
+
+    var lastPosition = audioPlayer.position;
+
+    final subscriptions = [
+      FlutterDiscordRPC.instance.isConnectedStream.listen((connected) async {
+        try {
+          final playback = ref.read(audioPlayerProvider);
+          if (connected && playback.activeTrack != null) {
+            await updatePresence(playback.activeTrack!);
+          }
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
+      }),
+      audioPlayer.playerStateStream.listen((state) async {
+        try {
+          final playback = ref.read(audioPlayerProvider);
+          if (playback.activeTrack == null) return;
+
+          await updatePresence(ref.read(audioPlayerProvider).activeTrack!);
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
+      }),
+      audioPlayer.positionStream.listen((position) async {
+        try {
+          final playback = ref.read(audioPlayerProvider);
+          if (playback.activeTrack != null) {
+            final diff = position.inMilliseconds - lastPosition.inMilliseconds;
+            if (diff > 500 || diff < -500) {
+              await updatePresence(ref.read(audioPlayerProvider).activeTrack!);
+            }
+          }
+          lastPosition = position;
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
+      })
+    ];
+
+    ref.onDispose(() async {
+      for (final subscription in subscriptions) {
+        subscription.cancel();
+      }
+      await clear();
+      await close();
+      await FlutterDiscordRPC.instance.dispose();
+    });
+
+    if (!enabled && FlutterDiscordRPC.instance.isConnected) {
+      await clear();
+      await close();
+    } else if (enabled) {
+      await FlutterDiscordRPC.instance.connect(autoRetry: true);
+    }
   }
 
-  void updatePresence(Track track) {
-    clear();
-    final artistNames =
-        TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[]);
-    discordRPC?.updatePresence(
-      DiscordPresence(
-        details: "Song: ${track.name} by $artistNames",
-        state: "Vibing in Music",
-        startTimeStamp: DateTime.now().millisecondsSinceEpoch,
-        largeImageKey: "spotube-logo-foreground",
-        largeImageText: "Spotube",
-        smallImageKey: "spotube-logo-foreground",
-        smallImageText: "Spotube",
+  Future<void> updatePresence(Track track) async {
+    if (!kIsDesktop) return;
+    if (FlutterDiscordRPC.instance.isConnected == false) return;
+    final artistNames = track.artists?.asString();
+    final isPlaying = audioPlayer.isPlaying;
+    final position = audioPlayer.position;
+
+    await FlutterDiscordRPC.instance.setActivity(
+      activity: RPCActivity(
+        details: track.name,
+        state: artistNames != null ? "by $artistNames" : null,
+        assets: RPCAssets(
+          largeImage:
+              track.album?.images?.first.url ?? "spotube-logo-foreground",
+          largeText: track.album?.name ?? "Unknown album",
+          smallImage: "spotube-logo-foreground",
+          smallText: "Spotube",
+        ),
+        buttons: [
+          RPCButton(
+            label: "Listen on Spotify",
+            url: track.externalUrls?.spotify ??
+                "https://open.spotify.com/tracks/${track.id}",
+          ),
+        ],
+        timestamps: RPCTimestamps(
+          start: isPlaying
+              ? DateTime.now().millisecondsSinceEpoch - position.inMilliseconds
+              : null,
+        ),
+        activityType: ActivityType.listening,
       ),
     );
   }
 
-  void clear() {
-    discordRPC?.clearPresence();
+  Future<void> clear() async {
+    if (!kIsDesktop) return;
+    await FlutterDiscordRPC.instance.clearActivity();
   }
 
-  void shutdown() {
-    discordRPC?.shutDown();
-  }
-
-  @override
-  void dispose() {
-    clear();
-    shutdown();
-    super.dispose();
+  Future<void> close() async {
+    if (!kIsDesktop) return;
+    await FlutterDiscordRPC.instance.disconnect();
   }
 }
 
-final discordProvider = ChangeNotifierProvider(
-  (ref) {
-    final isEnabled =
-        ref.watch(userPreferencesProvider.select((s) => s.discordPresence));
-    final playback = ref.read(ProxyPlaylistNotifier.provider);
-    final discord = Discord(isEnabled);
-
-    if (playback.activeTrack != null) {
-      discord.updatePresence(playback.activeTrack!);
-    }
-
-    return discord;
-  },
-);
+final discordProvider =
+    AsyncNotifierProvider<DiscordNotifier, void>(() => DiscordNotifier());

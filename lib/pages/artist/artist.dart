@@ -4,27 +4,28 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/artist/artist_album_list.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/modules/artist/artist_album_list.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/logger.dart';
+
 import 'package:spotube/pages/artist/section/footer.dart';
 import 'package:spotube/pages/artist/section/header.dart';
 import 'package:spotube/pages/artist/section/related_artists.dart';
 import 'package:spotube/pages/artist/section/top_tracks.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPage extends HookConsumerWidget {
+  static const name = "artist";
+
   final String artistId;
-  final logger = getLogger(ArtistPage);
-  ArtistPage(this.artistId, {Key? key}) : super(key: key);
+  const ArtistPage(this.artistId, {super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
     final theme = Theme.of(context);
 
-    final artistQuery = useQueries.artist.get(ref, artistId);
+    final artistQuery = ref.watch(artistProvider(artistId));
 
     return SafeArea(
       bottom: false,
@@ -35,7 +36,7 @@ class ArtistPage extends HookConsumerWidget {
         ),
         extendBodyBehindAppBar: true,
         body: Builder(builder: (context) {
-          if (artistQuery.hasError && artistQuery.data == null) {
+          if (artistQuery.hasError && artistQuery.asData?.value == null) {
             return Center(child: Text(artistQuery.error.toString()));
           }
           return Skeletonizer(
@@ -66,11 +67,12 @@ class ArtistPage extends HookConsumerWidget {
                 SliverSafeArea(
                   sliver: ArtistPageRelatedArtists(artistId: artistId),
                 ),
-                if (artistQuery.data != null)
+                if (artistQuery.asData?.value != null)
                   SliverSafeArea(
                     top: false,
                     sliver: SliverToBoxAdapter(
-                      child: ArtistPageFooter(artist: artistQuery.data!),
+                      child:
+                          ArtistPageFooter(artist: artistQuery.asData!.value),
                     ),
                   ),
               ],

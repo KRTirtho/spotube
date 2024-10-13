@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/getting_started/blur_card.dart';
+import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/home/home.dart';
+import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -14,6 +17,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
+    final onLogin = useLoginCallback(ref);
 
     return Center(
       child: Column(
@@ -59,21 +63,23 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                         );
                       },
                     ),
-                    const Gap(16),
-                    FilledButton.icon(
-                      icon: const Icon(SpotubeIcons.openCollective),
-                      label: Text(context.l10n.donate_on_open_collective),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xff4cb7f6),
-                        foregroundColor: Colors.white,
+                    if (!Env.hideDonations) ...[
+                      const Gap(16),
+                      FilledButton.icon(
+                        icon: const Icon(SpotubeIcons.openCollective),
+                        label: Text(context.l10n.donate_on_open_collective),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xff4cb7f6),
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () async {
+                          await launchUrlString(
+                            "https://opencollective.com/spotube",
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
                       ),
-                      onPressed: () async {
-                        await launchUrlString(
-                          "https://opencollective.com/spotube",
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                    ),
+                    ]
                   ],
                 ),
               ],
@@ -101,9 +107,11 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: () {
-                      KVStoreService.doneGettingStarted = true;
-                      context.go("/");
+                    onPressed: () async {
+                      await KVStoreService.setDoneGettingStarted(true);
+                      if (context.mounted) {
+                        context.goNamed(HomePage.name);
+                      }
                     },
                   ),
                 ),
@@ -115,9 +123,9 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     backgroundColor: const Color(0xff1db954),
                     foregroundColor: Colors.white,
                   ),
-                  onPressed: () {
-                    KVStoreService.doneGettingStarted = true;
-                    context.push("/login");
+                  onPressed: () async {
+                    await KVStoreService.setDoneGettingStarted(true);
+                    await onLogin();
                   },
                 ),
               ],

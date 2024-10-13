@@ -5,36 +5,40 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 
 class BlackListPage extends HookConsumerWidget {
-  const BlackListPage({Key? key}) : super(key: key);
+  static const name = "blacklist";
+
+  const BlackListPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final controller = useScrollController();
-    final blacklist = ref.watch(BlackListNotifier.provider);
+    final blacklist = ref.watch(blacklistProvider);
     final searchText = useState("");
 
     final filteredBlacklist = useMemoized(
       () {
         if (searchText.value.isEmpty) {
-          return blacklist;
+          return blacklist.asData?.value ?? [];
         }
-        return blacklist
-            .map(
-              (e) => (
-                weightedRatio("${e.name} ${e.type.name}", searchText.value),
-                e,
-              ),
-            )
-            .sorted((a, b) => b.$1.compareTo(a.$1))
-            .where((e) => e.$1 > 50)
-            .map((e) => e.$2)
-            .toList();
+        return blacklist.asData?.value
+                .map(
+                  (e) => (
+                    weightedRatio(
+                        "${e.name} ${e.elementType.name}", searchText.value),
+                    e,
+                  ),
+                )
+                .sorted((a, b) => b.$1.compareTo(a.$1))
+                .where((e) => e.$1 > 50)
+                .map((e) => e.$2)
+                .toList() ??
+            [];
       },
       [blacklist, searchText.value],
     );
@@ -68,14 +72,14 @@ class BlackListPage extends HookConsumerWidget {
                 final item = filteredBlacklist.elementAt(index);
                 return ListTile(
                   leading: Text("${index + 1}."),
-                  title: Text("${item.name} (${item.type.name})"),
-                  subtitle: Text(item.id),
+                  title: Text("${item.name} (${item.elementType.name})"),
+                  subtitle: Text(item.elementId),
                   trailing: IconButton(
                     icon: Icon(SpotubeIcons.trash, color: Colors.red[400]),
                     onPressed: () {
                       ref
-                          .read(BlackListNotifier.provider.notifier)
-                          .remove(filteredBlacklist.elementAt(index));
+                          .read(blacklistProvider.notifier)
+                          .remove(filteredBlacklist.elementAt(index).elementId);
                     },
                   ),
                 );

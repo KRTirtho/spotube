@@ -1,22 +1,29 @@
-import 'dart:convert';
-
-import 'package:flutter/widgets.dart' hide Element;
+import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
-import 'package:html/dom.dart';
+import 'package:html/dom.dart' hide Text;
 import 'package:spotify/spotify.dart';
-import 'package:spotube/components/library/user_local_tracks.dart';
-import 'package:spotube/models/logger.dart';
-import 'package:http/http.dart' as http;
+import 'package:spotube/modules/library/user_local_tracks.dart';
+import 'package:spotube/modules/root/update_dialog.dart';
+
 import 'package:spotube/models/lyrics.dart';
+import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:html/parser.dart' as parser;
 
-abstract class ServiceUtils {
-  static final logger = getLogger("ServiceUtils");
+import 'dart:async';
 
+import 'package:flutter/material.dart' hide Element;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:spotube/collections/env.dart';
+
+import 'package:version/version.dart';
+
+abstract class ServiceUtils {
   static final _englishMatcherRegex = RegExp(
     "^[a-zA-Z0-9\\s!\"#\$%&\\'()*+,-.\\/:;<=>?@\\[\\]^_`{|}~]*\$",
   );
@@ -60,9 +67,12 @@ abstract class ServiceUtils {
   }
 
   static Future<String?> extractLyrics(Uri url) async {
-    final response = await http.get(url);
+    final response = await globalDio.getUri(
+      url,
+      options: Options(responseType: ResponseType.plain),
+    );
 
-    Document document = parser.parse(response.body);
+    Document document = parser.parse(response.data);
     String? lyrics = document.querySelector('div.lyrics')?.text.trim();
     if (lyrics == null) {
       lyrics = "";
@@ -101,11 +111,14 @@ abstract class ServiceUtils {
 
     String reqUrl = "$searchUrl${Uri.encodeComponent(song)}";
     Map<String, String> headers = {"Authorization": 'Bearer $apiKey'};
-    final response = await http.get(
+    final response = await globalDio.getUri(
       Uri.parse(authHeader ? reqUrl : "$reqUrl&access_token=$apiKey"),
-      headers: authHeader ? headers : null,
+      options: Options(
+        headers: authHeader ? headers : null,
+        responseType: ResponseType.json,
+      ),
     );
-    Map data = jsonDecode(response.body)["response"];
+    Map data = response.data["response"];
     if (data["hits"]?.length == 0) return null;
     List results = data["hits"]?.map((val) {
       return <String, dynamic>{
@@ -179,14 +192,15 @@ abstract class ServiceUtils {
       artists: artistNames,
     );
 
-    logger.v("[Searching Subtitle] $query");
-
     final searchUri = Uri.parse("$baseUri/subtitles4songs.aspx").replace(
       queryParameters: {"q": query},
     );
 
-    final res = await http.get(searchUri);
-    final document = parser.parse(res.body);
+    final res = await globalDio.getUri(
+      searchUri,
+      options: Options(responseType: ResponseType.plain),
+    );
+    final document = parser.parse(res.data);
     final results =
         document.querySelectorAll("#tablecontainer table tbody tr td a");
 
@@ -209,7 +223,6 @@ abstract class ServiceUtils {
 
     // not result was found at all
     if (rateSortedResults.first["points"] == 0) {
-      logger.e("[Subtitle not found] ${track.name}");
       return Future.error("Subtitle lookup failed", StackTrace.current);
     }
 
@@ -217,9 +230,11 @@ abstract class ServiceUtils {
     final subtitleUri =
         Uri.parse("$baseUri/${topResult.attributes["href"]}&type=lrc");
 
-    logger.v("[Selected subtitle] ${topResult.text} | $subtitleUri");
-
-    final lrcDocument = parser.parse((await http.get(subtitleUri)).body);
+    final lrcDocument = parser.parse((await globalDio.getUri(
+      subtitleUri,
+      options: Options(responseType: ResponseType.plain),
+    ))
+        .data);
     final lrcList = lrcDocument
             .querySelector("#ctl00_ContentPlaceHolder1_lbllyrics")
             ?.innerHtml
@@ -251,6 +266,7 @@ abstract class ServiceUtils {
       uri: subtitleUri,
       lyrics: lrcList,
       rating: rateSortedResults.first["points"] as int,
+      provider: "Rent An Adviser",
     );
 
     return subtitle;
@@ -259,6 +275,22 @@ abstract class ServiceUtils {
   static void navigate(BuildContext context, String location, {Object? extra}) {
     if (GoRouterState.of(context).matchedLocation == location) return;
     GoRouter.of(context).go(location, extra: extra);
+  }
+
+  static void navigateNamed(
+    BuildContext context,
+    String name, {
+    Object? extra,
+    Map<String, String>? pathParameters,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    if (GoRouterState.of(context).matchedLocation == name) return;
+    GoRouter.of(context).goNamed(
+      name,
+      pathParameters: pathParameters ?? const {},
+      queryParameters: queryParameters ?? const {},
+      extra: extra,
+    );
   }
 
   static void push(BuildContext context, String location, {Object? extra}) {
@@ -270,6 +302,36 @@ abstract class ServiceUtils {
     if (routerState.matchedLocation == location ||
         routerStack.contains(location)) return;
     router.push(location, extra: extra);
+  }
+
+  static void pushNamed(
+    BuildContext context,
+    String name, {
+    Object? extra,
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+  }) {
+    final router = GoRouter.of(context);
+    final routerState = GoRouterState.of(context);
+    final routerStack = router.routerDelegate.currentConfiguration.matches
+        .map((e) => e.matchedLocation);
+
+    final nameLocation = routerState.namedLocation(
+      name,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+    );
+
+    if (routerState.matchedLocation == nameLocation ||
+        routerStack.contains(nameLocation)) {
+      return;
+    }
+    router.pushNamed(
+      name,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      extra: extra,
+    );
   }
 
   static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
@@ -307,12 +369,84 @@ abstract class ServiceUtils {
           case SortBy.duration:
             return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
           case SortBy.artist:
-            return a.artists?.first.name?.compareTo(b.artists?.first.name ?? "") ?? 0;
+            return a.artists?.first.name
+                    ?.compareTo(b.artists?.first.name ?? "") ??
+                0;
           case SortBy.album:
             return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
           default:
             return 0;
         }
       });
+  }
+
+  static Future<void> checkForUpdates(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    if (!Env.enableUpdateChecker) return;
+    final database = ref.read(databaseProvider);
+    final checkUpdate = await (database.selectOnly(database.preferencesTable)
+          ..addColumns([database.preferencesTable.checkUpdate])
+          ..where(database.preferencesTable.id.equals(0)))
+        .map((row) => row.read(database.preferencesTable.checkUpdate))
+        .getSingleOrNull();
+
+    if (checkUpdate == false) return;
+    final packageInfo = await PackageInfo.fromPlatform();
+
+    if (Env.releaseChannel == ReleaseChannel.nightly) {
+      final value = await globalDio.getUri(
+        Uri.parse(
+          "https://api.github.com/repos/KRTirtho/spotube/actions/workflows/spotube-release-binary.yml/runs?status=success&per_page=1",
+        ),
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      final buildNum = value.data["workflow_runs"][0]["run_number"] as int;
+
+      if (buildNum <= int.parse(packageInfo.buildNumber) || !context.mounted) {
+        return;
+      }
+
+      await showDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierColor: Colors.black26,
+        builder: (context) {
+          return RootAppUpdateDialog.nightly(nightlyBuildNum: buildNum);
+        },
+      );
+    } else {
+      final value = await globalDio.getUri(
+        Uri.parse(
+          "https://api.github.com/repos/KRTirtho/spotube/releases/latest",
+        ),
+      );
+      final tagName = (value.data["tag_name"] as String).replaceAll("v", "");
+      final currentVersion = packageInfo.version == "Unknown"
+          ? null
+          : Version.parse(packageInfo.version);
+      final latestVersion =
+          tagName == "nightly" ? null : Version.parse(tagName);
+
+      if (currentVersion == null ||
+          latestVersion == null ||
+          (latestVersion.isPreRelease && !currentVersion.isPreRelease) ||
+          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) return;
+
+      if (latestVersion <= currentVersion || !context.mounted) return;
+
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierColor: Colors.black26,
+        builder: (context) {
+          return RootAppUpdateDialog(version: latestVersion);
+        },
+      );
+    }
   }
 }

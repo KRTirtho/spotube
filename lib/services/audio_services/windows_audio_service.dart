@@ -3,21 +3,22 @@ import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/image.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/playback_state.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
 
 class WindowsAudioService {
   final SMTCWindows smtc;
   final Ref ref;
-  final ProxyPlaylistNotifier playlistNotifier;
+  final AudioPlayerNotifier audioPlayerNotifier;
 
   final subscriptions = <StreamSubscription>[];
 
-  WindowsAudioService(this.ref, this.playlistNotifier)
+  WindowsAudioService(this.ref, this.audioPlayerNotifier)
       : smtc = SMTCWindows(enabled: false) {
-    smtc.setPlaybackStatus(PlaybackStatus.Stopped);
+    smtc.setPlaybackStatus(PlaybackStatus.stopped);
     final buttonStream = smtc.buttonPressStream.listen((event) {
       switch (event) {
         case PressedButton.play:
@@ -27,13 +28,13 @@ class WindowsAudioService {
           audioPlayer.pause();
           break;
         case PressedButton.next:
-          playlistNotifier.next();
+          audioPlayer.skipToNext();
           break;
         case PressedButton.previous:
-          playlistNotifier.previous();
+          audioPlayer.skipToPrevious();
           break;
         case PressedButton.stop:
-          playlistNotifier.stop();
+          audioPlayerNotifier.stop();
           break;
         default:
           break;
@@ -44,16 +45,16 @@ class WindowsAudioService {
         audioPlayer.playerStateStream.listen((state) async {
       switch (state) {
         case AudioPlaybackState.playing:
-          await smtc.setPlaybackStatus(PlaybackStatus.Playing);
+          await smtc.setPlaybackStatus(PlaybackStatus.playing);
           break;
         case AudioPlaybackState.paused:
-          await smtc.setPlaybackStatus(PlaybackStatus.Paused);
+          await smtc.setPlaybackStatus(PlaybackStatus.paused);
           break;
         case AudioPlaybackState.stopped:
-          await smtc.setPlaybackStatus(PlaybackStatus.Stopped);
+          await smtc.setPlaybackStatus(PlaybackStatus.stopped);
           break;
         case AudioPlaybackState.completed:
-          await smtc.setPlaybackStatus(PlaybackStatus.Changing);
+          await smtc.setPlaybackStatus(PlaybackStatus.changing);
           break;
         default:
           break;
@@ -80,16 +81,17 @@ class WindowsAudioService {
     if (!smtc.enabled) {
       await smtc.enableSmtc();
     }
-    await smtc.updateMetadata(MusicMetadata(
-      title: track.name!,
-      albumArtist: track.artists?.firstOrNull?.name ?? "Unknown",
-      artist: TypeConversionUtils.artists_X_String<Artist>(track.artists ?? []),
-      album: track.album?.name ?? "Unknown",
-      thumbnail: TypeConversionUtils.image_X_UrlString(
-        track.album?.images ?? [],
-        placeholder: ImagePlaceholder.albumArt,
+    await smtc.updateMetadata(
+      MusicMetadata(
+        title: track.name!,
+        albumArtist: track.artists?.firstOrNull?.name ?? "Unknown",
+        artist: track.artists?.asString() ?? "Unknown",
+        album: track.album?.name ?? "Unknown",
+        thumbnail: (track.album?.images).asUrlString(
+          placeholder: ImagePlaceholder.albumArt,
+        ),
       ),
-    ));
+    );
   }
 
   void dispose() {

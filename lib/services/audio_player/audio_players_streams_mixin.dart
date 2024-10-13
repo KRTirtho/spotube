@@ -45,12 +45,9 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
   Stream<int> percentCompletedStream(double percent) {
     return positionStream
         .asyncMap(
-          (position) async => (await duration)?.inSeconds == 0
+          (position) async => duration == Duration.zero
               ? 0
-              : (position.inSeconds /
-                      ((await duration)?.inSeconds ?? 100) *
-                      100)
-                  .toInt(),
+              : (position.inSeconds / duration.inSeconds * 100).toInt(),
         )
         .where((event) => event >= percent);
   }
@@ -71,12 +68,12 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     // }
   }
 
-  Stream<PlaybackLoopMode> get loopModeStream {
+  Stream<PlaylistMode> get loopModeStream {
     // if (mkSupportedPlatform) {
-    return _mkPlayer.loopModeStream.map(PlaybackLoopMode.fromPlaylistMode);
+    return _mkPlayer.stream.playlistMode;
     // } else {
     //   return _justAudio!.loopModeStream
-    //       .map(PlaybackLoopMode.fromLoopMode)
+    //       .map(PlaylistMode.fromLoopMode)
     //       ;
     // }
   }
@@ -127,7 +124,7 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     // if (mkSupportedPlatform) {
     return _mkPlayer.indexChangeStream
         .map((event) {
-          return _mkPlayer.playlist.medias.elementAtOrNull(event)?.uri;
+          return _mkPlayer.state.playlist.medias.elementAtOrNull(event)?.uri;
         })
         .where((event) => event != null)
         .cast<String>();
@@ -140,4 +137,16 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
     //       .cast<String>();
     // }
   }
+
+  Stream<List<mk.AudioDevice>> get devicesStream =>
+      _mkPlayer.stream.audioDevices.asBroadcastStream();
+
+  Stream<mk.AudioDevice> get selectedDeviceStream =>
+      _mkPlayer.stream.audioDevice.asBroadcastStream();
+
+  Stream<String> get errorStream => _mkPlayer.stream.error;
+
+  Stream<mk.Playlist> get playlistStream => _mkPlayer.stream.playlist.map((s) {
+        return s;
+      });
 }

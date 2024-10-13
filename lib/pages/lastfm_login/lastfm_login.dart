@@ -4,13 +4,14 @@ import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/shared/dialogs/prompt_dialog.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/dialogs/prompt_dialog.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/scrobbler_provider.dart';
+import 'package:spotube/provider/scrobbler/scrobbler.dart';
 
 class LastFMLoginPage extends HookConsumerWidget {
-  const LastFMLoginPage({Key? key}) : super(key: key);
+  static const name = "lastfm_login";
+  const LastFMLoginPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

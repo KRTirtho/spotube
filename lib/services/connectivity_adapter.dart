@@ -2,31 +2,36 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fl_query/fl_query.dart';
 import 'package:flutter/widgets.dart';
+import 'package:spotube/services/logger/logger.dart';
 
-class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
-    with WidgetsBindingObserver {
+class ConnectionCheckerService with WidgetsBindingObserver {
   final _connectionStreamController = StreamController<bool>.broadcast();
   final Dio dio;
 
-  FlQueryInternetConnectionCheckerAdapter()
-      : dio = Dio(),
-        super() {
+  static final _instance = ConnectionCheckerService._();
+
+  static ConnectionCheckerService get instance => _instance;
+
+  ConnectionCheckerService._() : dio = Dio() {
     Timer? timer;
 
     onConnectivityChanged.listen((connected) {
-      if (!connected && timer == null) {
-        timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
-          if (WidgetsBinding.instance.lifecycleState ==
-              AppLifecycleState.paused) {
-            return;
-          }
-          await isConnected;
-        });
-      } else {
-        timer?.cancel();
-        timer = null;
+      try {
+        if (!connected && timer == null) {
+          timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+            if (WidgetsBinding.instance.lifecycleState ==
+                AppLifecycleState.paused) {
+              return;
+            }
+            await isConnected;
+          });
+        } else {
+          timer?.cancel();
+          timer = null;
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
   }
@@ -100,15 +105,16 @@ class FlQueryInternetConnectionCheckerAdapter extends ConnectivityAdapter
         await isVpnActive(); // when VPN is active that means we are connected
   }
 
-  @override
+  bool isConnectedSync = false;
+
   Future<bool> get isConnected async {
     final connected = await _isConnected();
+    isConnectedSync = connected;
     if (connected != isConnectedSync /*previous value*/) {
       _connectionStreamController.add(connected);
     }
     return connected;
   }
 
-  @override
   Stream<bool> get onConnectivityChanged => _connectionStreamController.stream;
 }

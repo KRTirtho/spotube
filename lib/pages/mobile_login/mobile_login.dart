@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 
-import 'package:spotube/provider/authentication_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/utils/platform.dart';
 
 class WebViewLogin extends HookConsumerWidget {
-  const WebViewLogin({Key? key}) : super(key: key);
+  static const name = "login";
+  const WebViewLogin({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    final mounted = useIsMounted();
-    final authenticationNotifier =
-        ref.watch(AuthenticationNotifier.provider.notifier);
+    final authenticationNotifier = ref.watch(authenticationProvider.notifier);
 
     if (kIsDesktop) {
       const Scaffold(
@@ -25,48 +24,47 @@ class WebViewLogin extends HookConsumerWidget {
     }
 
     return Scaffold(
-      body: SafeArea(
-        child: InAppWebView(
-          initialOptions: InAppWebViewGroupOptions(
-            crossPlatform: InAppWebViewOptions(
-              userAgent:
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 afari/537.36",
-            ),
-          ),
-          initialUrlRequest: URLRequest(
-            url: Uri.parse("https://accounts.spotify.com/"),
-          ),
-          androidOnPermissionRequest: (controller, origin, resources) async {
-            return PermissionRequestResponse(
-              resources: resources,
-              action: PermissionRequestResponseAction.GRANT,
-            );
-          },
-          onLoadStop: (controller, action) async {
-            if (action == null) return;
-            String url = action.toString();
-            if (url.endsWith("/")) {
-              url = url.substring(0, url.length - 1);
-            }
-
-            final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
-
-            if (exp.hasMatch(url)) {
-              final cookies =
-                  await CookieManager.instance().getCookies(url: action);
-              final cookieHeader =
-                  "sp_dc=${cookies.firstWhere((element) => element.name == "sp_dc").value}";
-
-              authenticationNotifier.setCredentials(
-                await AuthenticationCredentials.fromCookie(cookieHeader),
-              );
-              if (mounted()) {
-                // ignore: use_build_context_synchronously
-                GoRouter.of(context).go("/");
-              }
-            }
-          },
+      appBar: const PageWindowTitleBar(
+        leading: BackButton(color: Colors.white),
+        backgroundColor: Colors.transparent,
+      ),
+      extendBodyBehindAppBar: true,
+      body: InAppWebView(
+        initialSettings: InAppWebViewSettings(
+          userAgent:
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 safari/537.36",
         ),
+        initialUrlRequest: URLRequest(
+          url: WebUri("https://accounts.spotify.com/"),
+        ),
+        onPermissionRequest: (controller, permissionRequest) async {
+          return PermissionResponse(
+            resources: permissionRequest.resources,
+            action: PermissionResponseAction.GRANT,
+          );
+        },
+        onLoadStop: (controller, action) async {
+          if (action == null) return;
+          String url = action.toString();
+          if (url.endsWith("/")) {
+            url = url.substring(0, url.length - 1);
+          }
+
+          final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
+
+          if (exp.hasMatch(url)) {
+            final cookies =
+                await CookieManager.instance().getCookies(url: action);
+            final cookieHeader =
+                "sp_dc=${cookies.firstWhere((element) => element.name == "sp_dc").value}";
+
+            await authenticationNotifier.login(cookieHeader);
+            if (context.mounted) {
+              // ignore: use_build_context_synchronously
+              GoRouter.of(context).go("/");
+            }
+          }
+        },
       ),
     );
   }

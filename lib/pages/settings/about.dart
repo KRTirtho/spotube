@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spotube/collections/assets.gen.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/shared/links/hyper_link.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/collections/env.dart';
+import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/links/hyper_link.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_package_info.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,7 +16,9 @@ final _licenseProvider = FutureProvider<String>((ref) async {
 });
 
 class AboutSpotube extends HookConsumerWidget {
-  const AboutSpotube({Key? key}) : super(key: key);
+  static const name = "about";
+
+  const AboutSpotube({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -74,6 +76,13 @@ class AboutSpotube extends HookConsumerWidget {
                         ),
                         TableRow(
                           children: [
+                            Text(context.l10n.channel),
+                            colon,
+                            Text(Env.releaseChannel.name)
+                          ],
+                        ),
+                        TableRow(
+                          children: [
                             Text(context.l10n.build_number),
                             colon,
                             Text(packageInfo.buildNumber.replaceAll(".", " "))
@@ -127,63 +136,6 @@ class AboutSpotube extends HookConsumerWidget {
                         "https://discord.com/api/guilds/1012234096237350943/widget.png?style=banner2",
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Wrap(
-                runSpacing: 20,
-                spacing: 20,
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                runAlignment: WrapAlignment.center,
-                children: [
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        launchUrl(
-                          Uri.parse("https://www.buymeacoffee.com/krtirtho"),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: SvgPicture.network(
-                        "https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=krtirtho&button_colour=FF5F5F&font_colour=ffffff&font_family=Inter&outline_colour=000000&coffee_colour=FFDD00",
-                        height: 45,
-                      ),
-                    ),
-                  ),
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        launchUrl(
-                          Uri.parse(
-                            "https://opencollective.com/spotube",
-                          ),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: Image.network(
-                        "https://opencollective.com/spotube/donate/button.png?color=blue",
-                        height: 45,
-                      ),
-                    ),
-                  ),
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        launchUrl(
-                          Uri.parse("https://patreon.com/krtirtho"),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: Image.network(
-                        "https://user-images.githubusercontent.com/61944859/180249027-678b01b8-c336-451e-b147-6d84a5b9d0e7.png",
-                        height: 45,
-                      ),
-                    ),
-                  ),
-                ],
               ),
               const SizedBox(height: 20),
               Text(

@@ -6,60 +6,55 @@ part of 'spotify_friends.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SpotifyFriend _$SpotifyFriendFromJson(Map<String, dynamic> json) =>
-    SpotifyFriend(
+SpotifyFriend _$SpotifyFriendFromJson(Map json) => SpotifyFriend(
       uri: json['uri'] as String,
       name: json['name'] as String,
       imageUrl: json['imageUrl'] as String,
     );
 
-SpotifyActivityArtist _$SpotifyActivityArtistFromJson(
-        Map<String, dynamic> json) =>
+SpotifyActivityArtist _$SpotifyActivityArtistFromJson(Map json) =>
     SpotifyActivityArtist(
       uri: json['uri'] as String,
       name: json['name'] as String,
     );
 
-SpotifyActivityAlbum _$SpotifyActivityAlbumFromJson(
-        Map<String, dynamic> json) =>
+SpotifyActivityAlbum _$SpotifyActivityAlbumFromJson(Map json) =>
     SpotifyActivityAlbum(
       uri: json['uri'] as String,
       name: json['name'] as String,
     );
 
-SpotifyActivityContext _$SpotifyActivityContextFromJson(
-        Map<String, dynamic> json) =>
+SpotifyActivityContext _$SpotifyActivityContextFromJson(Map json) =>
     SpotifyActivityContext(
       uri: json['uri'] as String,
       name: json['name'] as String,
       index: json['index'] as num,
     );
 
-SpotifyActivityTrack _$SpotifyActivityTrackFromJson(
-        Map<String, dynamic> json) =>
+SpotifyActivityTrack _$SpotifyActivityTrackFromJson(Map json) =>
     SpotifyActivityTrack(
       uri: json['uri'] as String,
       name: json['name'] as String,
       imageUrl: json['imageUrl'] as String,
       artist: SpotifyActivityArtist.fromJson(
-          json['artist'] as Map<String, dynamic>),
-      album:
-          SpotifyActivityAlbum.fromJson(json['album'] as Map<String, dynamic>),
+          Map<String, dynamic>.from(json['artist'] as Map)),
+      album: SpotifyActivityAlbum.fromJson(
+          Map<String, dynamic>.from(json['album'] as Map)),
       context: SpotifyActivityContext.fromJson(
-          json['context'] as Map<String, dynamic>),
+          Map<String, dynamic>.from(json['context'] as Map)),
     );
 
-SpotifyFriendActivity _$SpotifyFriendActivityFromJson(
-        Map<String, dynamic> json) =>
+SpotifyFriendActivity _$SpotifyFriendActivityFromJson(Map json) =>
     SpotifyFriendActivity(
-      user: SpotifyFriend.fromJson(json['user'] as Map<String, dynamic>),
-      track:
-          SpotifyActivityTrack.fromJson(json['track'] as Map<String, dynamic>),
+      user: SpotifyFriend.fromJson(
+          Map<String, dynamic>.from(json['user'] as Map)),
+      track: SpotifyActivityTrack.fromJson(
+          Map<String, dynamic>.from(json['track'] as Map)),
     );
 
-SpotifyFriends _$SpotifyFriendsFromJson(Map<String, dynamic> json) =>
-    SpotifyFriends(
+SpotifyFriends _$SpotifyFriendsFromJson(Map json) => SpotifyFriends(
       friends: (json['friends'] as List<dynamic>)
-          .map((e) => SpotifyFriendActivity.fromJson(e as Map<String, dynamic>))
+          .map((e) => SpotifyFriendActivity.fromJson(
+              Map<String, dynamic>.from(e as Map)))
           .toList(),
     );

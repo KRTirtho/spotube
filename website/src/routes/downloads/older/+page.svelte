@@ -102,7 +102,7 @@
 							</h5>
 							<div class="flex flex-wrap gap-4">
 								{#each assets as asset}
-									<a href={release.assets_url}>
+									<a href={asset.browser_download_url}>
 										<button class="btn variant-glass-primary rounded p-0 flex flex-col gap-2">
 											<span class="bg-primary-500 rounded-t p-3 w-full">
 												<Fa class="inline" icon={getIcon(asset.browser_download_url)} />

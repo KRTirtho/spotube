@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart' hide Image;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:spotube/components/library/user_local_tracks.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
-import 'package:spotube/components/library/user_albums.dart';
-import 'package:spotube/components/library/user_artists.dart';
-import 'package:spotube/components/library/user_downloads.dart';
-import 'package:spotube/components/library/user_playlists.dart';
-import 'package:spotube/components/shared/themed_button_tab_bar.dart';
+import 'package:spotube/modules/library/user_local_tracks.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/modules/library/user_albums.dart';
+import 'package:spotube/modules/library/user_artists.dart';
+import 'package:spotube/modules/library/user_downloads.dart';
+import 'package:spotube/modules/library/user_playlists.dart';
+import 'package:spotube/components/themed_button_tab_bar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 
 class LibraryPage extends HookConsumerWidget {
-  const LibraryPage({Key? key}) : super(key: key);
+  static const name = "library";
+
+  const LibraryPage({super.key});
   @override
   Widget build(BuildContext context, ref) {
     final downloadingCount = ref.watch(downloadManagerProvider).$downloadCount;
@@ -27,7 +29,7 @@ class LibraryPage extends HookConsumerWidget {
             leading: ThemedButtonsTabBar(
               tabs: [
                 Tab(text: "  ${context.l10n.playlists}  "),
-                Tab(text: "  ${context.l10n.local_tracks}  "),
+                Tab(text: "  ${context.l10n.local_tab}  "),
                 Tab(
                   child: Badge(
                     isLabelVisible: downloadingCount > 0,

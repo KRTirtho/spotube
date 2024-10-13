@@ -4,14 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/settings/section_card_with_heading.dart';
-import 'package:spotube/components/shared/adaptive/adaptive_list_tile.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
+import 'package:spotube/components/adaptive/adaptive_list_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsAboutSection extends HookConsumerWidget {
-  const SettingsAboutSection({Key? key}) : super(key: key);
+  const SettingsAboutSection({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -21,49 +21,50 @@ class SettingsAboutSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.about,
       children: [
-        AdaptiveListTile(
-          leading: const Icon(
-            SpotubeIcons.heart,
-            color: Colors.pink,
-          ),
-          title: SizedBox(
-            height: 50,
-            width: 200,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: AutoSizeText(
-                context.l10n.u_love_spotube,
-                maxLines: 1,
-                style: const TextStyle(
-                  color: Colors.pink,
-                  fontWeight: FontWeight.bold,
+        if (!Env.hideDonations)
+          AdaptiveListTile(
+            leading: const Icon(
+              SpotubeIcons.heart,
+              color: Colors.pink,
+            ),
+            title: SizedBox(
+              height: 50,
+              width: 200,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: AutoSizeText(
+                  context.l10n.u_love_spotube,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    color: Colors.pink,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          trailing: (context, update) => FilledButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Colors.red[100]),
-              foregroundColor:
-                  const MaterialStatePropertyAll(Colors.pinkAccent),
-              padding: const MaterialStatePropertyAll(EdgeInsets.all(15)),
+            trailing: (context, update) => FilledButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
+                foregroundColor:
+                    const WidgetStatePropertyAll(Colors.pinkAccent),
+                padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
+              ),
+              onPressed: () {
+                launchUrlString(
+                  "https://opencollective.com/spotube",
+                  mode: LaunchMode.externalApplication,
+                );
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(SpotubeIcons.heart),
+                  const SizedBox(width: 5),
+                  Text(context.l10n.please_sponsor),
+                ],
+              ),
             ),
-            onPressed: () {
-              launchUrlString(
-                "https://opencollective.com/spotube",
-                mode: LaunchMode.externalApplication,
-              );
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(SpotubeIcons.heart),
-                const SizedBox(width: 5),
-                Text(context.l10n.please_sponsor),
-              ],
-            ),
           ),
-        ),
         if (Env.enableUpdateChecker)
           SwitchListTile(
             secondary: const Icon(SpotubeIcons.update),

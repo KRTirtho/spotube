@@ -1,49 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/artist/artist_card.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/modules/artist/artist_card.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
-class ArtistPageRelatedArtists extends HookConsumerWidget {
+class ArtistPageRelatedArtists extends ConsumerWidget {
   final String artistId;
   const ArtistPageRelatedArtists({
-    Key? key,
+    super.key,
     required this.artistId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final relatedArtists = useQueries.artist.relatedArtistsOf(
-      ref,
-      artistId,
-    );
+    final relatedArtists = ref.watch(relatedArtistsProvider(artistId));
 
-    if (relatedArtists.isLoading || !relatedArtists.hasData) {
-      return const SliverToBoxAdapter(
-          child: Center(child: CircularProgressIndicator()));
-    } else if (relatedArtists.hasError) {
-      return SliverToBoxAdapter(
-        child: Center(
-          child: Text(relatedArtists.error.toString()),
+    return switch (relatedArtists) {
+      AsyncData(value: final artists) => SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          sliver: SliverGrid.builder(
+            itemCount: artists.length,
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200,
+              mainAxisExtent: 250,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 0.8,
+            ),
+            itemBuilder: (context, index) {
+              final artist = artists.elementAt(index);
+              return ArtistCard(artist);
+            },
+          ),
         ),
-      );
-    }
-
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      sliver: SliverGrid.builder(
-        itemCount: relatedArtists.data!.length,
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          mainAxisExtent: 250,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 0.8,
+      AsyncError(:final error) => SliverToBoxAdapter(
+          child: Center(
+            child: Text(error.toString()),
+          ),
         ),
-        itemBuilder: (context, index) {
-          final artist = relatedArtists.data!.elementAt(index);
-          return ArtistCard(artist);
-        },
-      ),
-    );
+      _ => const SliverToBoxAdapter(
+          child: Center(child: CircularProgressIndicator()),
+        ),
+    };
   }
 }

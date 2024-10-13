@@ -59,6 +59,8 @@ class Assets {
       AssetGenImage('assets/spotube-hero-banner.png');
   static const AssetGenImage spotubeLogoForeground =
       AssetGenImage('assets/spotube-logo-foreground.jpg');
+  static const AssetGenImage spotubeLogoBmp =
+      AssetGenImage('assets/spotube-logo.bmp');
   static const String spotubeLogoIco = 'assets/spotube-logo.ico';
   static const AssetGenImage spotubeLogoPng =
       AssetGenImage('assets/spotube-logo.png');
@@ -88,7 +90,7 @@ class Assets {
       AssetGenImage('assets/user-placeholder.png');
 
   /// List of all assets
-  List<dynamic> get values => [
+  static List<dynamic> get values => [
         albumPlaceholder,
         bengaliPatternsBg,
         branding,
@@ -98,6 +100,7 @@ class Assets {
         placeholder,
         spotubeHeroBanner,
         spotubeLogoForeground,
+        spotubeLogoBmp,
         spotubeLogoIco,
         spotubeLogoPng,
         spotubeLogoSvg,
