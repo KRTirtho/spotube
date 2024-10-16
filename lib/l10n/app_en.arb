@@ -307,6 +307,7 @@
   "youtube_source_description": "Recommended and works best.",
   "piped_source_description": "Feeling free? Same as YouTube but a lot free.",
   "jiosaavn_source_description": "Best for South Asian region.",
+  "invidious_source_description": "Similar to Piped but with higher availability.",
   "highest_quality": "Highest Quality: {quality}",
   "select_audio_source": "Select Audio Source",
   "endless_playback_description": "Automatically append new songs\nto the end of the queue",

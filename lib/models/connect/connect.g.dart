@@ -16,7 +16,7 @@ _$WebSocketLoadEventDataPlaylistImpl
               ? null
               : PlaylistSimple.fromJson(
                   Map<String, dynamic>.from(json['collection'] as Map)),
-          initialIndex: json['initialIndex'] as int?,
+          initialIndex: (json['initialIndex'] as num?)?.toInt(),
           $type: json['runtimeType'] as String?,
         );
 
@@ -39,7 +39,7 @@ _$WebSocketLoadEventDataAlbumImpl _$$WebSocketLoadEventDataAlbumImplFromJson(
           ? null
           : AlbumSimple.fromJson(
               Map<String, dynamic>.from(json['collection'] as Map)),
-      initialIndex: json['initialIndex'] as int?,
+      initialIndex: (json['initialIndex'] as num?)?.toInt(),
       $type: json['runtimeType'] as String?,
     );
 

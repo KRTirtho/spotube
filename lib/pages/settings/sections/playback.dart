@@ -159,7 +159,8 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           duration: const Duration(milliseconds: 300),
           child: preferences.searchMode == SearchMode.youtube &&
                   (preferences.audioSource == AudioSource.piped ||
-                      preferences.audioSource == AudioSource.youtube)
+                      preferences.audioSource == AudioSource.youtube ||
+                      preferences.audioSource == AudioSource.invidious)
               ? SwitchListTile(
                   secondary: const Icon(SpotubeIcons.skip),
                   title: Text(context.l10n.skip_non_music),

@@ -21,8 +21,9 @@ final sourcedTrackProvider =
     },
   );
 
-  final sourcedTrack =
-      await SourcedTrack.fetchFromTrack(track: track, ref: ref);
+  final sourcedTrack = media?.extras?["switch"] == true
+      ? await SourcedTrack.fetchFromTrackAltSource(track: track, ref: ref)
+      : await SourcedTrack.fetchFromTrack(track: track, ref: ref);
 
   return sourcedTrack;
 });

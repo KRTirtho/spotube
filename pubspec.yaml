@@ -58,6 +58,10 @@ dependencies:
   html: ^0.15.1
   image_picker: ^1.1.0
   intl: any
+  invidious:
+    # git:
+    #   url: https://github.com/KRTirtho/invidious_dart.git
+    path: ../invidious
   json_annotation: ^4.8.1
   logger: ^2.0.2
   media_kit: ^1.1.10+1
