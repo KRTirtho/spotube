@@ -52,10 +52,11 @@ class ServerPlaybackRoutes {
         ),
       )
           .catchError((e, stack) async {
-        final sourcedTrack = await ref.read(
-          sourcedTrackProvider(SpotubeMedia(track, extras: {"switch": true}))
-              .future,
-        );
+        final sourcedTrack = await ref
+            .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
+            .switchToAlternativeSources();
+
+        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
 
         return await dio.get(
           sourcedTrack!.url,
