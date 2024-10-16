@@ -78,6 +78,8 @@ class PreferencesTable extends Table {
       text().withDefault(const Constant("")).map(const StringListConverter())();
   TextColumn get pipedInstance =>
       text().withDefault(const Constant("https://pipedapi.kavin.rocks"))();
+  TextColumn get invidiousInstance =>
+      text().withDefault(const Constant("https://inv.nadeko.net"))();
   TextColumn get themeMode =>
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
   TextColumn get audioSource =>
@@ -114,6 +116,7 @@ class PreferencesTable extends Table {
       downloadLocation: "",
       localLibraryLocation: [],
       pipedInstance: "https://pipedapi.kavin.rocks",
+      invidiousInstance: "https://inv.nadeko.net",
       themeMode: ThemeMode.system,
       audioSource: AudioSource.youtube,
       streamMusicCodec: SourceCodecs.weba,

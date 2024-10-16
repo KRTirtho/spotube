@@ -17,7 +17,10 @@ import 'package:spotube/utils/service_utils.dart';
 
 final invidiousProvider = Provider<InvidiousClient>(
   (ref) {
-    return InvidiousClient(server: "https://inv.nadeko.net");
+    final invidiousInstance = ref.watch(
+      userPreferencesProvider.select((s) => s.invidiousInstance),
+    );
+    return InvidiousClient(server: invidiousInstance);
   },
 );
 

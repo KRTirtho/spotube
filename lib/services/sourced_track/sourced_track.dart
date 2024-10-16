@@ -190,11 +190,19 @@ abstract class SourcedTrack extends Track {
       return await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref);
     } catch (e) {
       if (e is DioException || e is ClientException || e is SocketException) {
-        return await JioSaavnSourcedTrack.fetchFromTrack(
-          track: track,
-          ref: ref,
-          weakMatch: preferences.audioSource == AudioSource.jiosaavn,
-        );
+        return switch (preferences.audioSource) {
+          AudioSource.piped ||
+          AudioSource.invidious =>
+            await YoutubeSourcedTrack.fetchFromTrack(
+              track: track,
+              ref: ref,
+            ),
+          _ => await JioSaavnSourcedTrack.fetchFromTrack(
+              track: track,
+              ref: ref,
+              weakMatch: preferences.audioSource == AudioSource.jiosaavn,
+            )
+        };
       }
       rethrow;
     }
