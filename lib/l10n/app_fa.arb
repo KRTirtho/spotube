@@ -160,7 +160,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "مجوز",
   "add_spotify_credentials": "برای شروع اعتبار اسپوتیفای خود را اضافه کنید",
-  "credentials_will_not_be_shared_disclaimer": "نگران نباشید هیچ کدوما از اعتبارات شما جمع اوری نمیشود یا با کسی اشتراک گزاشته نمیشود",
+  "credentials_will_not_be_shared_disclaimer": "نگران نباشید، هیچ یک از اعتبارنامه های شما جمع آوری نمی شود یا با کسی به اشتراک گذاشته نمی شود",
   "know_how_to_login": "نمیدانی چگونه این کار را انجام بدهی؟",
   "follow_step_by_step_guide": "راهنما را گام به گام دنبال کنید",
   "spotify_cookie": "Spotify {name} کوکی",

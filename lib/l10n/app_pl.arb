@@ -158,7 +158,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Licencja",
   "add_spotify_credentials": "Dodaj swoje dane logowania Spotify, aby zacząć",
-  "credentials_will_not_be_shared_disclaimer": "Nie martw się, żadne dane logowania nie są zbierane ani udostępniane nikomu",
+  "credentials_will_not_be_shared_disclaimer": "Nie martw się, żadne Twoje dane uwierzytelniające nie zostaną zebrane ani nikomu udostępnione",
   "know_how_to_login": "Nie wiesz, jak się zalogować?",
   "follow_step_by_step_guide": "Postępuj zgodnie z poradnikiem krok po kroku",
   "spotify_cookie": "Spotify {name} Ciasteczko",

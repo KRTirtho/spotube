@@ -160,7 +160,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Licenza",
   "add_spotify_credentials": "Aggiungi le tue credenziali spotify per iniziare",
-  "credentials_will_not_be_shared_disclaimer": "Non ti preoccupare, le tue credenziali non saranno inviate o condivise con nessuno",
+  "credentials_will_not_be_shared_disclaimer": "Non preoccuparti, nessuna delle tue credenziali verrà raccolta o condivisa con nessuno",
   "know_how_to_login": "Non sai come farlo?",
   "follow_step_by_step_guide": "Segui la guida passo-passo",
   "spotify_cookie": "Cookie Spotify {name}",
