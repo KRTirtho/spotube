@@ -62,11 +62,7 @@ dependencies:
   logger: ^2.0.2
   media_kit: ^1.1.10+1
   media_kit_libs_audio: ^1.0.4
-  metadata_god:
-    git:
-      url: https://github.com/KRTirtho/frb_plugins.git
-      path: packages/metadata_god
-      ref: cargokit
+  metadata_god: ^1.0.0
   mime: ^1.0.2
   package_info_plus: ^6.0.0
   palette_generator: ^0.3.3
@@ -82,11 +78,7 @@ dependencies:
   scroll_to_index: ^3.0.1
   sidebarx: ^0.17.1
   shared_preferences: ^2.2.3
-  smtc_windows:
-    git:
-      url: https://github.com/KRTirtho/frb_plugins.git
-      path: packages/smtc_windows
-      ref: cargokit
+  smtc_windows: ^1.0.0
   stroke_text: ^0.0.2
   system_theme: ^2.1.0
   titlebar_buttons: ^1.0.0
@@ -95,7 +87,7 @@ dependencies:
   version: ^3.0.2
   visibility_detector: ^0.4.0+2
   window_manager: ^0.3.9
-  youtube_explode_dart: ^2.2.3
+  youtube_explode_dart: ^2.3.1
   simple_icons: ^10.1.3
   jiosaavn: ^0.1.0
   draggable_scrollbar:
@@ -105,11 +97,7 @@ dependencies:
   very_good_infinite_list: ^0.7.1
   gap: ^3.0.1
   sliver_tools: ^0.2.12
-  flutter_discord_rpc:
-    git:
-      url: https://github.com/KRTirtho/frb_plugins.git
-      path: packages/flutter_discord_rpc
-      ref: cargokit
+  flutter_discord_rpc: ^1.0.0
   html_unescape: ^2.0.0
   wikipedia_api: ^0.1.0
   skeletonizer: ^1.1.1

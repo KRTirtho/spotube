@@ -731,12 +731,11 @@ packages:
   flutter_discord_rpc:
     dependency: "direct main"
     description:
-      path: "packages/flutter_discord_rpc"
-      ref: cargokit
-      resolved-ref: "331636d8e378e3ac9ad30a4b0d3eed17d5a85fe9"
-      url: "https://github.com/KRTirtho/frb_plugins.git"
-    source: git
-    version: "0.1.0+1"
+      name: flutter_discord_rpc
+      sha256: "9363a803863d56fd89c0a21639c70b126245fcbafaeb0a3d091e7ac06951d03f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   flutter_displaymode:
     dependency: "direct main"
     description:
@@ -895,10 +894,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: fac14d2dd67eeba29a20e5d99fac0d4d9fcd552cdf6bf4f8945f7679c6b07b1d
+      sha256: "0ad5079de35d317650fec59b26cb4d0c116ebc2ce703a29f9367513b8a91c287"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.5.0"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -1319,6 +1318,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  lists:
+    dependency: transitive
+    description:
+      name: lists
+      sha256: "4ca5c19ae4350de036a7e996cdd1ee39c93ac0a2b840f4915459b7d0a7d4ab27"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   local_notifier:
     dependency: "direct main"
     description:
@@ -1450,12 +1457,11 @@ packages:
   metadata_god:
     dependency: "direct main"
     description:
-      path: "packages/metadata_god"
-      ref: cargokit
-      resolved-ref: "331636d8e378e3ac9ad30a4b0d3eed17d5a85fe9"
-      url: "https://github.com/KRTirtho/frb_plugins.git"
-    source: git
-    version: "0.5.3"
+      name: metadata_god
+      sha256: "025d8149059f62f44108ab9d74ebd77aa8f0af98b238f3f25121a4711ee3e5d0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   mime:
     dependency: "direct main"
     description:
@@ -1945,12 +1951,11 @@ packages:
   smtc_windows:
     dependency: "direct main"
     description:
-      path: "packages/smtc_windows"
-      ref: cargokit
-      resolved-ref: "331636d8e378e3ac9ad30a4b0d3eed17d5a85fe9"
-      url: "https://github.com/KRTirtho/frb_plugins.git"
-    source: git
-    version: "0.1.3"
+      name: smtc_windows
+      sha256: "80f7c10867da485ffdf87f842bf27e6763589933c18c11af5dc1cd1e158c3154"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   source_gen:
     dependency: transitive
     description:
@@ -2183,6 +2188,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  unicode:
+    dependency: transitive
+    description:
+      name: unicode
+      sha256: "0f69e46593d65245774d4f17125c6084d2c20b4e473a983f6e21b7d7762218f1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   universal_io:
     dependency: transitive
     description:
@@ -2427,10 +2440,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: "28dca07fefb4b6518beab95f0c1ef81031f921ed0fe87ebcd9c51378546edfee"
+      sha256: "523a01ef948607d3e8fdcdcdcef1ce805c7d26480f609e3b209d1c73520a6c3c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.3"
+    version: "2.3.1"
 sdks:
   dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.24.0"
