@@ -49,6 +49,7 @@ class Assets {
       AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
+  static const AssetGenImage invidious = AssetGenImage('assets/invidious.jpg');
   static const AssetGenImage jiosaavn = AssetGenImage('assets/jiosaavn.png');
   static const AssetGenImage likedTracks =
       AssetGenImage('assets/liked-tracks.jpg');
@@ -95,6 +96,7 @@ class Assets {
         bengaliPatternsBg,
         branding,
         emptyBox,
+        invidious,
         jiosaavn,
         likedTracks,
         placeholder,

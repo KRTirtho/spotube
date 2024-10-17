@@ -20,6 +20,17 @@ class ServerPlaybackRoutes {
 
   /// @get('/stream/<trackId>')
   Future<Response> getStreamTrackId(Request request, String trackId) async {
+    final options = Options(
+      headers: {
+        ...request.headers,
+        "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
+      },
+      responseType: ResponseType.stream,
+      validateStatus: (status) => status! < 400,
+    );
     try {
       final track =
           playlist.tracks.firstWhere((element) => element.id == trackId);
@@ -30,22 +41,33 @@ class ServerPlaybackRoutes {
           : await ref.read(sourcedTrackProvider(SpotubeMedia(track)).future);
 
       ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
-
-      final res = await dio.get(
+      final res = await dio
+          .get(
         sourcedTrack!.url,
-        options: Options(
+        options: options.copyWith(
           headers: {
-            ...request.headers,
-            "User-Agent":
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            ...options.headers!,
             "host": Uri.parse(sourcedTrack.url).host,
-            "Cache-Control": "max-age=0",
-            "Connection": "keep-alive",
           },
-          responseType: ResponseType.stream,
-          validateStatus: (status) => status! < 500,
         ),
-      );
+      )
+          .catchError((e, stack) async {
+        final sourcedTrack = await ref
+            .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
+            .switchToAlternativeSources();
+
+        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+
+        return await dio.get(
+          sourcedTrack!.url,
+          options: options.copyWith(
+            headers: {
+              ...options.headers!,
+              "host": Uri.parse(sourcedTrack.url).host,
+            },
+          ),
+        );
+      });
 
       final audioStream =
           (res.data?.stream as Stream<Uint8List>?)?.asBroadcastStream();

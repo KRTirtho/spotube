@@ -10,7 +10,8 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/piped_instances_provider.dart';
+import 'package:spotube/provider/audio_player/sources/invidious_instances_provider.dart';
+import 'package:spotube/provider/audio_player/sources/piped_instances_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -137,6 +138,73 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
+          child: preferences.audioSource != AudioSource.invidious
+              ? const SizedBox.shrink()
+              : Consumer(builder: (context, ref, child) {
+                  final instanceList = ref.watch(invidiousInstancesProvider);
+
+                  return instanceList.when(
+                    data: (data) {
+                      return AdaptiveSelectTile<String>(
+                        secondary: const Icon(SpotubeIcons.piped),
+                        title: Text(context.l10n.invidious_instance),
+                        subtitle: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: context.l10n.invidious_description,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              const TextSpan(text: "\n"),
+                              TextSpan(
+                                text: context.l10n.invidious_warning,
+                                style: theme.textTheme.labelMedium,
+                              )
+                            ],
+                          ),
+                        ),
+                        value: preferences.invidiousInstance,
+                        showValueWhenUnfolded: false,
+                        options: data
+                            .sortedBy((e) => e.name)
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e.details.uri,
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "${e.name.trim()}\n",
+                                        style: theme.textTheme.labelLarge,
+                                      ),
+                                      TextSpan(
+                                        text: countryCodeToEmoji(
+                                          e.details.region,
+                                        ),
+                                        style: GoogleFonts.notoColorEmoji(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            preferencesNotifier.setInvidiousInstance(value);
+                          }
+                        },
+                      );
+                    },
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    error: (error, stackTrace) => Text(error.toString()),
+                  );
+                }),
+        ),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
           child: preferences.audioSource != AudioSource.piped
               ? const SizedBox.shrink()
               : AdaptiveSelectTile<SearchMode>(
@@ -159,7 +227,8 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           duration: const Duration(milliseconds: 300),
           child: preferences.searchMode == SearchMode.youtube &&
                   (preferences.audioSource == AudioSource.piped ||
-                      preferences.audioSource == AudioSource.youtube)
+                      preferences.audioSource == AudioSource.youtube ||
+                      preferences.audioSource == AudioSource.invidious)
               ? SwitchListTile(
                   secondary: const Icon(SpotubeIcons.skip),
                   title: Text(context.l10n.skip_non_music),

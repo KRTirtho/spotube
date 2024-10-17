@@ -167,6 +167,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     setData(PreferencesTableCompanion(pipedInstance: Value(instance)));
   }
 
+  void setInvidiousInstance(String instance) {
+    setData(PreferencesTableCompanion(invidiousInstance: Value(instance)));
+  }
+
   void setSearchMode(SearchMode mode) {
     setData(PreferencesTableCompanion(searchMode: Value(mode)));
   }
