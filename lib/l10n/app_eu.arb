@@ -371,7 +371,7 @@
   "count_streams": "{count} stream",
   "owned_by_you": "Zure jabetzakoa",
   "copied_shareurl_to_clipboard": "{shareUrl} arbelera kopiatua",
-  "spotify_hipotetical_calculation": "*Spotify-k stream bakoitzeko duen 0,003 eta 0.005 €\nordainsarian oinarritua da. Kalkulu hipotetiko bat,\nkanta hauek Spotify-n entzun bazenitu,\nberaiek artistari zenbat ordaiduko lioketen jakin dezazun.",
+  "spotify_hipotetical_calculation": "*Spotify-k stream bakoitzeko duen 0,003 eta 0.005 €\nordainsarian oinarritua da. Kalkulu hipotetiko bat da,\nkantak Spotify-n entzungo bazenitu,\nartistari zenbat ordainduko lioketen jakin dezazun.",
   "count_mins": "{minutes} minutu",
   "summary_minutes": "minutu",
   "summary_listened_to_music": "Musika entzuten",
@@ -384,7 +384,7 @@
   "summary_got_your_love": "Jaso dute zure maitasuna",
   "summary_playlists": "zerrenda",
   "summary_were_on_repeat": "Dituzu errepikatze moduan",
-  "total_money": "Guztira {money}",
+  "total_money": "{money} guztira",
   "webview_not_found": "Ez da Webview aurkitu",
   "webview_not_found_description": "Ez dago Webview abiarazte denbora-instalaziorik zure gailuan.\nInstalatuta badago, ziurtatu environment PATH-an dagoela\n\nInstalatu ondoren, berrabiarazi aplikazioa",
   "unsupported_platform": "Plataforma ez onartua"
