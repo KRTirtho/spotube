@@ -22,6 +22,7 @@ class L10n {
   static final all = [
     const Locale('en'),
     const Locale('ar', 'SA'),
+    const Locale('bg', 'BG'),
     const Locale('bn', 'BD'),
     const Locale('ca', 'AD'),
     const Locale('cs', 'CZ'),
