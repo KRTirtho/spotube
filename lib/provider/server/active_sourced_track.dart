@@ -31,7 +31,7 @@ class ActiveSourcedTrackNotifier extends Notifier<SourcedTrack?> {
     final playbackNotifier = ref.read(audioPlayerProvider.notifier);
     final oldActiveIndex = audioPlayer.currentIndex;
 
-    await playbackNotifier.addTracksAtFirst([newTrack]);
+    await playbackNotifier.addTracksAtFirst([newTrack], allowDuplicates: true);
     await Future.delayed(const Duration(milliseconds: 50));
     await playbackNotifier.jumpToTrack(newTrack);
 
