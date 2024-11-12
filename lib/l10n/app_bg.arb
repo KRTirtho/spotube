@@ -12,7 +12,7 @@
   "new_releases": "Нови издания",
   "songs": "Песни",
   "playing_track": "Пусни {track}",
-  "queue_clear_alert": "Това ще изчисти текущата опашка. {track_length} песни ще бъдат премахнати.\nИскате ли да продължите?",
+  "queue_clear_alert": "Това ще изчисти текущата опашка. {track_length} песни ще бъдат премахнати.\n Искате ли да продължите?",
   "load_more": "Заредете повече",
   "playlists": "Плейлисти",
   "artists": "Изпълнители",
@@ -386,6 +386,6 @@
   "summary_were_on_repeat": "Бяха на повторение",
   "total_money": "Обща сума {money}",
   "webview_not_found": "Webview не е намерен",
-  "webview_not_found_description": "Не е инсталиран webview runtime на вашето устройство.\nАко е инсталиран, уверете се, че е в Environment PATH\n\nСлед инсталирането, рестартирайте приложението",
+  "webview_not_found_description": "Не е инсталиран webview runtime на вашето устройство.\n Ако е инсталиран, уверете се, че е в Environment PATH\n\n След инсталирането, рестартирайте приложението",
   "unsupported_platform": "Неподдържана платформа"
 }
