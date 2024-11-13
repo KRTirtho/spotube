@@ -11,7 +11,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 
 final appLinks = AppLinks();
-final linkStream = appLinks.allStringLinkStream.asBroadcastStream();
+final linkStream = appLinks.stringLinkStream.asBroadcastStream();
 
 void useDeepLinking(WidgetRef ref) {
   // single instance no worries

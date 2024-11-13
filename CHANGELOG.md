@@ -2,7 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [3.8.2](https://github.com/krtirtho/spotube/compare/v3.8.0...v3.8.1) (2024-09-30)
+## [3.8.3](https://github.com/krtirtho/spotube/compare/v3.8.2...v3.8.3) (2024-10-09)
+
+## Changes
+
+### Bug Fixes
+
+- update youtube_explode_dart to 2.2.3 to fix no playback (#1980)
+
+### Features
+
+- **macos**: enable same window webview support
+
+## [3.8.2](https://github.com/krtirtho/spotube/compare/v3.8.1...v3.8.2) (2024-09-30)
 
 ## Changes
 
