@@ -123,6 +123,7 @@ class LocalLibraryPage extends HookConsumerWidget {
             actions: [
               if (isCache) ...[
                 IconButton(
+                  iconSize: 16,
                   icon: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -167,6 +168,7 @@ class LocalLibraryPage extends HookConsumerWidget {
                   },
                 ),
                 IconButton(
+                  iconSize: 16,
                   icon: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
