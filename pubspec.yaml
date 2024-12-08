@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.8.3+37
+version: 3.9.0+38
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -145,7 +145,7 @@ dev_dependencies:
   riverpod_lint: ^2.6.3
   process_run: ^0.14.2
   pubspec_parse: ^1.3.0
-  pub_api_client: ^2.7.0
+  pub_api_client: ^3.0.0
   xml: ^6.5.0
   io: ^1.0.4
   drift_dev: ^2.21.0
@@ -162,20 +162,6 @@ flutter:
     - assets/tutorial/
     - assets/logos/
     - LICENSE
-
-flutter_launcher_icons:
-  ios: true
-  android: true
-  image_path: "assets/spotube-logo.png"
-  adaptive_icon_foreground: "assets/spotube-logo-foreground.jpg"
-  adaptive_icon_background: "#242832"
-  windows:
-    generate: true
-    image_path: "assets/spotube-logo.png"
-    icon_size: 48 # min:48, max:256, default: 48
-  macos:
-    generate: true
-    image_path: "assets/spotube-logo.png"
 
 flutter_gen:
   output: lib/collections

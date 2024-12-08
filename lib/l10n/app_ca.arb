@@ -387,5 +387,19 @@
   "total_money": "total {money}",
   "webview_not_found": "No s'ha trobat el Webview",
   "webview_not_found_description": "No hi ha cap temps d'execució de Webview instal·lat al dispositiu.\nSi està instal·lat, assegureu-vos que estigui en el environment PATH\n\nDesprés d'instal·lar-lo, reinicieu l'aplicació",
-  "unsupported_platform": "Plataforma no compatible"
+  "unsupported_platform": "Plataforma no compatible",
+  "invidious_instance": "Instància del servidor Invidious",
+  "invidious_description": "La instància del servidor Invidious per fer coincidir pistes",
+  "invidious_warning": "Algunes instàncies podrien no funcionar bé. Feu-les servir sota la vostra responsabilitat",
+  "invidious_source_description": "Similar a Piped però amb més disponibilitat",
+  "cache_music": "Música en caché",
+  "open": "Obrir",
+  "cache_folder": "Carpeta de caché",
+  "export": "Exportar",
+  "clear_cache": "Netejar caché",
+  "clear_cache_confirmation": "Voleu netejar la memòria cau?",
+  "export_cache_files": "Exportar arxius en caché",
+  "found_n_files": "S'han trobat {count} arxius",
+  "export_cache_confirmation": "Voleu exportar aquests arxius a",
+  "exported_n_out_of_m_files": "S'han exportat {filesExported} de {files} arxius"
 }

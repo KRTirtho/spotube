@@ -387,5 +387,19 @@
   "total_money": "مجموع {money}",
   "webview_not_found": "وب‌ویو پیدا نشد",
   "webview_not_found_description": "هیچ اجرای وب‌ویو روی دستگاه شما نصب نشده است.\nدر صورت نصب، مطمئن شوید که در environment PATH قرار دارد\n\nپس از نصب، برنامه را مجدداً راه‌اندازی کنید",
-  "unsupported_platform": "پلتفرم پشتیبانی نمی‌شود"
+  "unsupported_platform": "پلتفرم پشتیبانی نمی‌شود",
+  "invidious_instance": "نمونه سرور Invidious",
+  "invidious_description": "نمونه سرور Invidious برای تطبیق آهنگ",
+  "invidious_warning": "برخی از نمونه‌ها ممکن است به خوبی کار نکنند. با احتیاط استفاده کنید",
+  "invidious_source_description": "شبیه Piped اما با در دسترس بودن بیشتر",
+  "cache_music": "موسیقی در حافظه موقت",
+  "open": "باز کردن",
+  "cache_folder": "پوشه حافظه موقت",
+  "export": "صادر کردن",
+  "clear_cache": "پاک کردن حافظه موقت",
+  "clear_cache_confirmation": "آیا می‌خواهید حافظه موقت را پاک کنید؟",
+  "export_cache_files": "صادر کردن فایل‌های حافظه موقت",
+  "found_n_files": "{count} فایل یافت شد",
+  "export_cache_confirmation": "آیا می‌خواهید این فایل‌ها را صادر کنید به",
+  "exported_n_out_of_m_files": "{filesExported} از {files} فایل صادر شد"
 }

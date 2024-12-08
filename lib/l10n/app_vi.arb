@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*Được tính toán dựa trên khoản thanh toán của Spotify cho mỗi lượt phát\ntừ $0.003 đến $0.005. Đây là một tính toán giả định để\ncung cấp cho người dùng cái nhìn về số tiền họ sẽ phải trả\ncho các nghệ sĩ nếu họ nghe bài hát của họ trên Spotify.",
   "webview_not_found": "Không tìm thấy Webview",
   "webview_not_found_description": "Không có runtime Webview nào được cài đặt trên thiết bị của bạn.\nNếu đã cài đặt, hãy đảm bảo rằng nó nằm trong environment PATH\n\nSau khi cài đặt, hãy khởi động lại ứng dụng",
-  "unsupported_platform": "Nền tảng không được hỗ trợ"
+  "unsupported_platform": "Nền tảng không được hỗ trợ",
+  "invidious_instance": "Phiên bản máy chủ Invidious",
+  "invidious_description": "Phiên bản máy chủ Invidious để sử dụng để so khớp bản nhạc",
+  "invidious_warning": "Một số có thể sẽ không hoạt động tốt. Vì vậy hãy sử dụng với rủi ro của riêng bạn",
+  "invidious_source_description": "Tương tự như Piped nhưng có tính khả dụng cao hơn.",
+  "cache_music": "Lưu nhạc vào bộ nhớ đệm",
+  "open": "Mở",
+  "cache_folder": "Thư mục bộ nhớ đệm",
+  "export": "Xuất",
+  "clear_cache": "Xóa bộ nhớ đệm",
+  "clear_cache_confirmation": "Bạn có muốn xóa bộ nhớ đệm không?",
+  "export_cache_files": "Xuất các tệp được lưu trong bộ nhớ đệm",
+  "found_n_files": "Tìm thấy {count} tệp",
+  "export_cache_confirmation": "Bạn có muốn xuất các tệp này đến",
+  "exported_n_out_of_m_files": "Đã xuất {filesExported} trên {files} tệp"
 }

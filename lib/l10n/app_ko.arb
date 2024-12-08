@@ -388,5 +388,19 @@
   "spotify_hipotetical_calculation": "*Spotify의 스트림당 지불금 $0.003에서 $0.005까지의\n기준으로 계산되었습니다. 이는 사용자가 Spotify에서\n곡을 들을 때 아티스트에게 얼마를 지불했을지를\n알려주기 위한 가상의 계산입니다.",
   "webview_not_found": "웹뷰를 찾을 수 없음",
   "webview_not_found_description": "기기에 웹뷰 런타임이 설치되지 않았습니다.\n설치되어 있으면 environment PATH에 있는지 확인하십시오\n\n설치 후 앱을 다시 시작하세요",
-  "unsupported_platform": "지원되지 않는 플랫폼"
+  "unsupported_platform": "지원되지 않는 플랫폼",
+  "invidious_instance": "Invidious 서버 인스턴스",
+  "invidious_description": "트랙 매칭에 사용할 Invidious 서버 인스턴스",
+  "invidious_warning": "일부는 제대로 작동하지 않을 수 있습니다. 자신의 책임 하에 사용하세요",
+  "invidious_source_description": "Piped와 비슷하지만 가용성이 높습니다.",
+  "cache_music": "음악 캐시",
+  "open": "열기",
+  "cache_folder": "캐시 폴더",
+  "export": "내보내기",
+  "clear_cache": "캐시 지우기",
+  "clear_cache_confirmation": "캐시를 지우시겠습니까?",
+  "export_cache_files": "캐시된 파일 내보내기",
+  "found_n_files": "{count}개의 파일을 찾았습니다",
+  "export_cache_confirmation": "이 파일들을 내보내시겠습니까",
+  "exported_n_out_of_m_files": "{files}개 중 {filesExported}개 파일을 내보냈습니다"
 }

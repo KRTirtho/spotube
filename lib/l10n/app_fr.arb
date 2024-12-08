@@ -387,5 +387,19 @@
   "total_money": "Total {money}",
   "webview_not_found": "Webview non trouvé",
   "webview_not_found_description": "Aucun environnement d'exécution Webview installé sur votre appareil.\nSi c'est installé, assurez-vous qu'il soit dans le environment PATH\n\nAprès l'installation, redémarrez l'application",
-  "unsupported_platform": "Plateforme non prise en charge"
+  "unsupported_platform": "Plateforme non prise en charge",
+  "invidious_instance": "Instance de serveur Invidious",
+  "invidious_description": "L'instance de serveur Invidious à utiliser pour la correspondance de pistes",
+  "invidious_warning": "Certaines instances pourraient ne pas bien fonctionner. À utiliser à vos risques et périls",
+  "invidious_source_description": "Similaire à Piped mais avec une meilleure disponibilité",
+  "cache_music": "Mettre la musique en cache",
+  "open": "Ouvrir",
+  "cache_folder": "Dossier du cache",
+  "export": "Exporter",
+  "clear_cache": "Effacer le cache",
+  "clear_cache_confirmation": "Voulez-vous effacer le cache ?",
+  "export_cache_files": "Exporter les fichiers en cache",
+  "found_n_files": "{count} fichiers trouvés",
+  "export_cache_confirmation": "Voulez-vous exporter ces fichiers vers",
+  "exported_n_out_of_m_files": "{filesExported} fichiers exportés sur {files}"
 }

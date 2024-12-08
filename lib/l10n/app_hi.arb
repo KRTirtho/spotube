@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*यो Spotify को प्रति स्ट्रीम भुगतानको आधारमा\n$0.003 देखि $0.005 को बीचमा गणना गरिएको हो। यो एक काल्पनिक\nगणना हो जसले प्रयोगकर्तालाई देखाउँछ कि उनीहरूले कति\nअर्टिस्टहरूलाई तिनीहरूका गीतहरू Spotify मा सुनेमा\nभुक्तान गर्नुपर्ने थियो।",
   "webview_not_found": "वेबव्यू नहीं मिला",
   "webview_not_found_description": "आपके डिवाइस पर वेबव्यू रनटाइम इंस्टॉल नहीं है।\nअगर इंस्टॉल है, तो सुनिश्चित करें कि यह environment PATH में है\n\nइंस्टॉल करने के बाद, ऐप को पुनः शुरू करें",
-  "unsupported_platform": "असमर्थित प्लेटफार्म"
+  "unsupported_platform": "असमर्थित प्लेटफार्म",
+  "invidious_instance": "इन्विडियस सर्वर इंस्टेंस",
+  "invidious_description": "ट्रैक मिलान के लिए इन्विडियस सर्वर इंस्टेंस",
+  "invidious_warning": "कुछ इंस्टेंस अच्छी तरह से काम नहीं कर सकते। अपने जोखिम पर उपयोग करें",
+  "invidious_source_description": "पाइप्ड के समान, लेकिन अधिक उपलब्धता के साथ",
+  "cache_music": "संगीत को कैश करें",
+  "open": "खोलें",
+  "cache_folder": "कैश फ़ोल्डर",
+  "export": "निर्यात करें",
+  "clear_cache": "कैश साफ़ करें",
+  "clear_cache_confirmation": "क्या आप कैश साफ़ करना चाहते हैं?",
+  "export_cache_files": "कैश फ़ाइलें निर्यात करें",
+  "found_n_files": "{count} फ़ाइलें मिलीं",
+  "export_cache_confirmation": "क्या आप इन फ़ाइलों को निर्यात करना चाहते हैं",
+  "exported_n_out_of_m_files": "{filesExported} फ़ाइलें निर्यात की गईं {files} में से"
 }

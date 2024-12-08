@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://github.com/krtirtho/spotube/compare/v3.8.3...v3.9.0) (2024-12-08)
+
+## Changes
+
+### Bug Fixes
+
+- UI glitch when loading more user artists and albums
+- selecting an Alternative Track Source removes the current song from the queue #2039
+- **mobile**: ensure audio session is activated when playback is resumed after interruption #2092
+
+### Features
+
+- add invidious audio source and fix auto skipping tracks (#2005)
+- track caching and cached track export support (#2117)
+
+
 ## [3.8.3](https://github.com/krtirtho/spotube/compare/v3.8.2...v3.8.3) (2024-10-09)
 
 ## Changes

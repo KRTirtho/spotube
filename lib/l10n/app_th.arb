@@ -388,5 +388,19 @@
   "spotify_hipotetical_calculation": "*คำนวณตามการจ่ายต่อสตรีมของ Spotify\nซึ่งอยู่ในช่วง $0.003 ถึง $0.005 นี่เป็นการคำนวณสมมุติ\nเพื่อให้ผู้ใช้ทราบว่าพวกเขาจะจ่ายเงินให้ศิลปินเท่าไหร่\nหากพวกเขาฟังเพลงของพวกเขาใน Spotify.",
   "webview_not_found": "ไม่พบ Webview",
   "webview_not_found_description": "ไม่พบ runtime ของ Webview บนอุปกรณ์ของคุณ\nหากติดตั้งแล้วตรวจสอบให้แน่ใจว่าอยู่ใน environment PATH\n\nหลังจากติดตั้งแล้ว ให้รีสตาร์ทแอป",
-  "unsupported_platform": "แพลตฟอร์มไม่รองรับ"
+  "unsupported_platform": "แพลตฟอร์มไม่รองรับ",
+  "invidious_instance": "อินสแตนซ์เซิร์ฟเวอร์ Invidious",
+  "invidious_description": "อินสแตนซ์เซิร์ฟเวอร์ Invidious ที่ใช้สำหรับการจับคู่เพลง",
+  "invidious_warning": "บางอันอาจใช้งานไม่ดี ใช้ด้วยความเสี่ยงของคุณเอง",
+  "invidious_source_description": "คล้ายกับ Piped แต่มีความพร้อมใช้งานสูงกว่า",
+  "cache_music": "แคชเพลง",
+  "open": "เปิด",
+  "cache_folder": "โฟลเดอร์แคช",
+  "export": "ส่งออก",
+  "clear_cache": "ล้างแคช",
+  "clear_cache_confirmation": "คุณต้องการล้างแคชหรือไม่?",
+  "export_cache_files": "ส่งออกไฟล์แคช",
+  "found_n_files": "พบ {count} ไฟล์",
+  "export_cache_confirmation": "คุณต้องการส่งออกไฟล์เหล่านี้ไปยัง",
+  "exported_n_out_of_m_files": "ส่งออก {filesExported} จาก {files} ไฟล์"
 }

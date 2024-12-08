@@ -387,5 +387,19 @@
   "total_money": "Gesamt {money}",
   "webview_not_found": "Webview nicht gefunden",
   "webview_not_found_description": "Es ist keine Webview-Laufzeitumgebung auf Ihrem Gerät installiert.\nFalls installiert, stellen Sie sicher, dass es im environment PATH ist\n\nNach der Installation starten Sie die App neu",
-  "unsupported_platform": "Nicht unterstützte Plattform"
+  "unsupported_platform": "Nicht unterstützte Plattform",
+  "invidious_instance": "Invidious-Serverinstanz",
+  "invidious_description": "Die Invidious-Serverinstanz zur Titelerkennung",
+  "invidious_warning": "Einige Instanzen funktionieren möglicherweise nicht gut. Benutzung auf eigene Gefahr",
+  "invidious_source_description": "Ähnlich wie Piped, aber mit höherer Verfügbarkeit",
+  "cache_music": "Musik zwischenspeichern",
+  "open": "Öffnen",
+  "cache_folder": "Cache-Ordner",
+  "export": "Exportieren",
+  "clear_cache": "Cache leeren",
+  "clear_cache_confirmation": "Möchten Sie den Cache leeren?",
+  "export_cache_files": "Cachedateien exportieren",
+  "found_n_files": "{count} Dateien gefunden",
+  "export_cache_confirmation": "Möchten Sie diese Dateien exportieren nach",
+  "exported_n_out_of_m_files": "{filesExported} von {files} Dateien exportiert"
 }
