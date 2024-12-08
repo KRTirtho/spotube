@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as paths;
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
@@ -72,10 +72,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
     if (kIsMacOS) {
-      return join((await getLibraryDirectory()).path, "Caches");
+      return join((await paths.getLibraryDirectory()).path, "Caches");
     }
 
-    return getDownloadsDirectory().then((dir) {
+    return paths.getDownloadsDirectory().then((dir) {
       return join(dir!.path, "Spotube");
     });
   }
@@ -96,14 +96,28 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     await query.replace(PreferencesTableCompanion.insert());
   }
 
-  static Future<String> getMusicCacheDir() async => join(
-        await getApplicationCacheDirectory().then((value) => value.path),
-        'cached_tracks',
-      );
+  static Future<String> getMusicCacheDir() async {
+    if (kIsAndroid) {
+      final dir =
+          await paths.getExternalCacheDirectories().then((dirs) => dirs!.first);
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+      return join(dir.path, 'Cached Tracks');
+    }
+
+    final dir = await paths.getApplicationCacheDirectory();
+    return join(dir.path, 'cached_tracks');
+  }
 
   Future<void> openCacheFolder() async {
-    final filePath = await getMusicCacheDir();
-    await OpenFile.open(filePath);
+    try {
+      final filePath = await getMusicCacheDir();
+
+      await OpenFile.open(filePath);
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
+    }
   }
 
   void setStreamMusicCodec(SourceCodecs codec) {

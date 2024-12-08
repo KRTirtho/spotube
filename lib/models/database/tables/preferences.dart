@@ -120,7 +120,7 @@ class PreferencesTable extends Table {
       invidiousInstance: "https://inv.nadeko.net",
       themeMode: ThemeMode.system,
       audioSource: AudioSource.youtube,
-      streamMusicCodec: SourceCodecs.weba,
+      streamMusicCodec: SourceCodecs.m4a,
       downloadMusicCodec: SourceCodecs.m4a,
       discordPresence: true,
       endlessPlayback: true,

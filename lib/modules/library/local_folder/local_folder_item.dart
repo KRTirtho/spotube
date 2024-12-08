@@ -11,6 +11,7 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/extensions/string.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/pages/library/local_folder.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
@@ -127,7 +128,9 @@ class LocalFolderItem extends HookConsumerWidget {
                     child: Text(
                       isDownloadFolder
                           ? context.l10n.downloads
-                          : basename(folder),
+                          : isCacheFolder
+                              ? context.l10n.cache_folder.capitalize()
+                              : basename(folder),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
