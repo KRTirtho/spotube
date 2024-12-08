@@ -43,3 +43,6 @@ apk:
 
 gensums:
 				sh -c scripts/gensums.sh
+
+migrate:
+				dart run drift_dev make-migrations

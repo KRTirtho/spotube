@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*यो Spotify को प्रति स्ट्रीम भुगतानको आधारमा\n$0.003 देखि $0.005 को बीचमा गणना गरिएको हो। यो एक काल्पनिक\nगणना हो जसले प्रयोगकर्तालाई देखाउँछ कि उनीहरूले कति\nअर्टिस्टहरूलाई तिनीहरूका गीतहरू Spotify मा सुनेमा\nभुक्तान गर्नुपर्ने थियो।",
   "webview_not_found": "वेबभ्यू फेला परेन",
   "webview_not_found_description": "तपाईंको उपकरणमा कुनै वेबभ्यू रनटाइम स्थापना गरिएको छैन।\nयदि स्थापना गरिएको छ भने, environment PATH मा छ कि छैन भनेर सुनिश्चित गर्नुहोस्\n\nस्थापना पछि, अनुप्रयोग पुनः सुरु गर्नुहोस्",
-  "unsupported_platform": "असमर्थित प्लेटफार्म"
+  "unsupported_platform": "असमर्थित प्लेटफार्म",
+  "invidious_instance": "Invidious सर्भर इन्स्टेन्स",
+  "invidious_description": "ट्र्याक मिलाउनका लागि प्रयोग हुने Invidious सर्भर इन्स्टेन्स",
+  "invidious_warning": "केहीले राम्रोसँग काम नगर्न सक्छ। आफ्नो जोखिममा प्रयोग गर्नुहोस्",
+  "invidious_source_description": "Piped जस्तै तर उच्च उपलब्धतासँग।",
+  "cache_music": "सङ्गीत क्यास गर्नुहोस्",
+  "open": "खोल्नुहोस्",
+  "cache_folder": "क्यास फोल्डर",
+  "export": "निर्यात गर्नुहोस्",
+  "clear_cache": "क्यास खाली गर्नुहोस्",
+  "clear_cache_confirmation": "के तपाई क्यास खाली गर्न चाहनुहुन्छ?",
+  "export_cache_files": "क्यास फाइलहरू निर्यात गर्नुहोस्",
+  "found_n_files": "{count} फाइलहरू फेला परे",
+  "export_cache_confirmation": "यी फाइलहरू निर्यात गर्न चाहनुहुन्छ",
+  "exported_n_out_of_m_files": "{filesExported} मध्ये {files} फाइलहरू निर्यात गरियो"
 }

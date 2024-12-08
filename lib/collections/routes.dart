@@ -128,9 +128,12 @@ final routerProvider = Provider((ref) {
                   pageBuilder: (context, state) {
                     assert(state.extra is String);
                     return SpotubePage(
-                      child: LocalLibraryPage(state.extra as String,
-                          isDownloads:
-                              state.uri.queryParameters["downloads"] != null),
+                      child: LocalLibraryPage(
+                        state.extra as String,
+                        isDownloads:
+                            state.uri.queryParameters["downloads"] != null,
+                        isCache: state.uri.queryParameters["cache"] != null,
+                      ),
                     );
                   },
                 ),

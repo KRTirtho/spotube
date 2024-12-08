@@ -12,7 +12,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   local_notifier
   media_kit_libs_windows_audio
   permission_handler_windows
-  screen_retriever
+  screen_retriever_windows
   sqlite3_flutter_libs
   system_theme
   tray_manager

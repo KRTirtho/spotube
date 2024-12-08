@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*Это рассчитано на основе выплат Spotify за стрим\nот $0.003 до $0.005. Это гипотетический расчет,\nчтобы дать пользователю представление о том, сколько бы он\nзаплатил артистам, если бы слушал их песни на Spotify.",
   "webview_not_found": "Webview не найден",
   "webview_not_found_description": "На вашем устройстве не установлена среда выполнения Webview.\nЕсли он установлен, убедитесь, что он находится в environment PATH\n\nПосле установки перезапустите приложение",
-  "unsupported_platform": "Платформа не поддерживается"
+  "unsupported_platform": "Платформа не поддерживается",
+  "invidious_instance": "Экземпляр сервера Invidious",
+  "invidious_description": "Экземпляр сервера Invidious для сопоставления треков",
+  "invidious_warning": "Некоторые могут работать не очень хорошо. Используйте на свой страх и риск",
+  "invidious_source_description": "Похож на Piped, но с более высокой доступностью.",
+  "cache_music": "Кэшировать музыку",
+  "open": "Открыть",
+  "cache_folder": "Папка кэша",
+  "export": "Экспорт",
+  "clear_cache": "Очистить кэш",
+  "clear_cache_confirmation": "Вы хотите очистить кэш?",
+  "export_cache_files": "Экспортировать кэшированные файлы",
+  "found_n_files": "Найдено {count} файлов",
+  "export_cache_confirmation": "Вы хотите экспортировать эти файлы в",
+  "exported_n_out_of_m_files": "Экспортировано {filesExported} из {files} файлов"
 }

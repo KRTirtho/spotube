@@ -388,5 +388,19 @@
   "spotify_hipotetical_calculation": "*Dit is berekend op basis van Spotify's betaling per stream\nvan $0.003 tot $0.005. Dit is een hypothetische\nberekening om de gebruiker inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun liedjes op Spotify\nzouden luisteren.",
   "webview_not_found": "Webview niet gevonden",
   "webview_not_found_description": "Er is geen Webview-runtime geïnstalleerd op uw apparaat.\nAls het is geïnstalleerd, zorg ervoor dat het in het environment PATH staat\n\nHerstart de app na installatie",
-  "unsupported_platform": "Niet ondersteund platform"
+  "unsupported_platform": "Niet ondersteund platform",
+  "invidious_instance": "Invidious-serverinstantie",
+  "invidious_description": "De Invidious-serverinstantie die gebruikt wordt voor trackmatching",
+  "invidious_warning": "Sommigen werken mogelijk niet goed. Gebruik op eigen risico",
+  "invidious_source_description": "Vergelijkbaar met Piped, maar met een hogere beschikbaarheid.",
+  "cache_music": "Cache muziek",
+  "open": "Open",
+  "cache_folder": "Cachemap",
+  "export": "Exporteren",
+  "clear_cache": "Cache wissen",
+  "clear_cache_confirmation": "Wilt u de cache wissen?",
+  "export_cache_files": "Gecacheerde bestanden exporteren",
+  "found_n_files": "{count} bestanden gevonden",
+  "export_cache_confirmation": "Wilt u deze bestanden exporteren naar",
+  "exported_n_out_of_m_files": "{filesExported} van de {files} bestanden geëxporteerd"
 }

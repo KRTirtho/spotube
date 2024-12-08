@@ -51,6 +51,7 @@ class AndroidBuildCommand extends Command with BuildCommandCommonSteps {
 
     await shell.run(
       """
+      dart run build_runner clean
       dart run build_runner build --delete-conflicting-outputs
       flutter build appbundle --flavor ${CliEnv.channel.name}
       """,

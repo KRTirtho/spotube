@@ -74,45 +74,45 @@ class UserArtists extends HookConsumerWidget {
                     ),
                   ),
                   const SliverGap(10),
-                  Skeletonizer.sliver(
-                    enabled: artistQuery.isLoading,
-                    child: SliverLayoutBuilder(builder: (context, constrains) {
-                      return SliverGrid.builder(
-                        itemCount: filteredArtists.isEmpty
-                            ? 6
-                            : filteredArtists.length + 1,
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200,
-                          mainAxisExtent: constrains.smAndDown ? 225 : 250,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                        ),
-                        itemBuilder: (context, index) {
-                          if (filteredArtists.isNotEmpty &&
-                              index == filteredArtists.length) {
-                            if (artistQuery.asData?.value.hasMore != true) {
-                              return const SizedBox.shrink();
-                            }
-
-                            return Waypoint(
-                              controller: controller,
-                              isGrid: true,
-                              onTouchEdge: artistQueryNotifier.fetchMore,
-                              child: Skeletonizer(
-                                enabled: true,
-                                child: ArtistCard(FakeData.artist),
-                              ),
-                            );
+                  SliverLayoutBuilder(builder: (context, constrains) {
+                    return SliverGrid.builder(
+                      itemCount: filteredArtists.isEmpty
+                          ? 6
+                          : filteredArtists.length + 1,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        mainAxisExtent: constrains.smAndDown ? 225 : 250,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                      ),
+                      itemBuilder: (context, index) {
+                        if (filteredArtists.isNotEmpty &&
+                            index == filteredArtists.length) {
+                          if (artistQuery.asData?.value.hasMore != true) {
+                            return const SizedBox.shrink();
                           }
 
-                          return ArtistCard(
+                          return Waypoint(
+                            controller: controller,
+                            isGrid: true,
+                            onTouchEdge: artistQueryNotifier.fetchMore,
+                            child: Skeletonizer(
+                              enabled: true,
+                              child: ArtistCard(FakeData.artist),
+                            ),
+                          );
+                        }
+
+                        return Skeletonizer(
+                          enabled: artistQuery.isLoading,
+                          child: ArtistCard(
                             filteredArtists.elementAtOrNull(index) ??
                                 FakeData.artist,
-                          );
-                        },
-                      );
-                    }),
-                  ),
+                          ),
+                        );
+                      },
+                    );
+                  }),
                 ],
               ),
             ),

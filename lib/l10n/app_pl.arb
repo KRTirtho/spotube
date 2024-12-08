@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*Obliczone na podstawie płatności Spotify za strumień\nw zakresie od $0.003 do $0.005. Jest to hipotetyczne\nobliczenie mające na celu pokazanie użytkownikowi, ile\nzapłaciliby artystom, gdyby słuchali ich utworów na Spotify.",
   "webview_not_found": "Nie znaleziono Webview",
   "webview_not_found_description": "Na twoim urządzeniu nie zainstalowano środowiska uruchomieniowego Webview.\nJeśli jest zainstalowany, upewnij się, że jest w environment PATH\n\nPo instalacji uruchom ponownie aplikację",
-  "unsupported_platform": "Nieobsługiwana platforma"
+  "unsupported_platform": "Nieobsługiwana platforma",
+  "invidious_instance": "Instancja serwera Invidious",
+  "invidious_description": "Instancja serwera Invidious do dopasowywania utworów",
+  "invidious_warning": "Niektóre z nich mogą nie działać dobrze. Używaj na własne ryzyko",
+  "invidious_source_description": "Podobne do Piped, ale o wyższej dostępności.",
+  "cache_music": "Pamięć podręczna muzyki",
+  "open": "Otwórz",
+  "cache_folder": "Folder pamięci podręcznej",
+  "export": "Eksportuj",
+  "clear_cache": "Wyczyść pamięć podręczną",
+  "clear_cache_confirmation": "Czy chcesz wyczyścić pamięć podręczną?",
+  "export_cache_files": "Eksportuj pliki z pamięci podręcznej",
+  "found_n_files": "Znaleziono {count} plików",
+  "export_cache_confirmation": "Czy chcesz wyeksportować te pliki do",
+  "exported_n_out_of_m_files": "Wyeksportowano {filesExported} z {files} plików"
 }

@@ -12,6 +12,7 @@ import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/source_map.dart';
+import 'package:spotube/services/sourced_track/sources/invidious.dart';
 import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
@@ -85,6 +86,13 @@ abstract class SourcedTrack extends Track {
           sourceInfo: sourceInfo,
           track: track,
         ),
+      AudioSource.invidious => InvidiousSourcedTrack(
+          ref: ref,
+          source: source,
+          siblings: siblings,
+          sourceInfo: sourceInfo,
+          track: track,
+        ),
     };
   }
 
@@ -104,6 +112,49 @@ abstract class SourcedTrack extends Track {
     return "$title - ${artists.join(", ")}";
   }
 
+  static fetchFromTrackAltSource({
+    required Track track,
+    required Ref ref,
+  }) async {
+    final preferences = ref.read(userPreferencesProvider);
+    try {
+      return switch (preferences.audioSource) {
+        AudioSource.piped ||
+        AudioSource.invidious ||
+        AudioSource.jiosaavn =>
+          await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
+        AudioSource.youtube =>
+          await JioSaavnSourcedTrack.fetchFromTrack(track: track, ref: ref),
+      };
+    } on TrackNotFoundError catch (_) {
+      return switch (preferences.audioSource) {
+        AudioSource.piped ||
+        AudioSource.youtube ||
+        AudioSource.invidious =>
+          await JioSaavnSourcedTrack.fetchFromTrack(
+            track: track,
+            ref: ref,
+            weakMatch: true,
+          ),
+        AudioSource.jiosaavn =>
+          await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
+      };
+    } on HttpClientClosedException catch (_) {
+      return await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref);
+    } on VideoUnplayableException catch (_) {
+      return await InvidiousSourcedTrack.fetchFromTrack(track: track, ref: ref);
+    } catch (e) {
+      if (e is DioException || e is ClientException || e is SocketException) {
+        return await JioSaavnSourcedTrack.fetchFromTrack(
+          track: track,
+          ref: ref,
+          weakMatch: preferences.audioSource == AudioSource.jiosaavn,
+        );
+      }
+      rethrow;
+    }
+  }
+
   static Future<SourcedTrack> fetchFromTrack({
     required Track track,
     required Ref ref,
@@ -117,11 +168,14 @@ abstract class SourcedTrack extends Track {
           await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
         AudioSource.jiosaavn =>
           await JioSaavnSourcedTrack.fetchFromTrack(track: track, ref: ref),
+        AudioSource.invidious =>
+          await InvidiousSourcedTrack.fetchFromTrack(track: track, ref: ref),
       };
     } on TrackNotFoundError catch (_) {
       return switch (preferences.audioSource) {
         AudioSource.piped ||
-        AudioSource.youtube =>
+        AudioSource.youtube ||
+        AudioSource.invidious =>
           await JioSaavnSourcedTrack.fetchFromTrack(
             track: track,
             ref: ref,
@@ -136,11 +190,19 @@ abstract class SourcedTrack extends Track {
       return await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref);
     } catch (e) {
       if (e is DioException || e is ClientException || e is SocketException) {
-        return await JioSaavnSourcedTrack.fetchFromTrack(
-          track: track,
-          ref: ref,
-          weakMatch: preferences.audioSource == AudioSource.jiosaavn,
-        );
+        return switch (preferences.audioSource) {
+          AudioSource.piped ||
+          AudioSource.invidious =>
+            await YoutubeSourcedTrack.fetchFromTrack(
+              track: track,
+              ref: ref,
+            ),
+          _ => await JioSaavnSourcedTrack.fetchFromTrack(
+              track: track,
+              ref: ref,
+              weakMatch: preferences.audioSource == AudioSource.jiosaavn,
+            )
+        };
       }
       rethrow;
     }
@@ -159,6 +221,8 @@ abstract class SourcedTrack extends Track {
         YoutubeSourcedTrack.fetchSiblings(track: track, ref: ref),
       AudioSource.jiosaavn =>
         JioSaavnSourcedTrack.fetchSiblings(track: track, ref: ref),
+      AudioSource.invidious =>
+        InvidiousSourcedTrack.fetchSiblings(track: track, ref: ref),
     };
   }
 

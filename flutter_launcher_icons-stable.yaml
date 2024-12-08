@@ -1,0 +1,13 @@
+flutter_launcher_icons:
+  ios: true
+  android: true
+  image_path: "assets/spotube-logo.png"
+  adaptive_icon_foreground: "assets/spotube-logo-foreground.jpg"
+  adaptive_icon_background: "#242832"
+  windows:
+    generate: true
+    image_path: "assets/spotube-logo.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/spotube-logo-macos.png"

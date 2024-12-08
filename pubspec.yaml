@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.8.3+36
+version: 3.9.0+38
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -13,32 +13,42 @@ environment:
   flutter: ">=3.10.0"
 
 dependencies:
+  app_links: ^6.3.2
   args: ^2.5.0
-  async: ^2.9.0
+  async: ^2.11.0
   audio_service: ^0.18.13
-  audio_service_mpris: ^0.1.5
+  audio_service_mpris: ^0.2.0
   audio_session: ^0.1.19
   auto_size_text: ^3.0.0
+  bonsoir: ^5.1.10
   buttons_tabbar: ^1.3.8
   cached_network_image: ^3.3.1
   collection: ^1.18.0
   curved_navigation_bar: ^1.0.3
   desktop_webview_window:
     git:
-      url: https://github.com/KRTirtho/flutter-plugins.git
-      ref: feat/cookies
       path: packages/desktop_webview_window
-  device_info_plus: ^10.1.0
+      ref: feat/cookies
+      url: https://github.com/KRTirtho/flutter-plugins.git
+  device_info_plus: ^11.1.1
   dio: ^5.4.3+1
   disable_battery_optimization: ^1.1.1
+  draggable_scrollbar:
+    git:
+      ref: cfd570035bf393de541d32e9b28808b5d7e602df
+      url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
+  drift: ^2.21.0
   duration: ^3.0.12
-  envied: ^0.5.4+1
+  encrypt: ^5.0.3
+  envied: ^1.0.0
   file_picker: ^8.0.0+1
   file_selector: ^1.0.3
   fluentui_system_icons: ^1.1.234
   flutter:
     sdk: flutter
+  flutter_broadcasts: ^0.4.0
   flutter_cache_manager: ^3.3.0
+  flutter_discord_rpc: ^1.0.0
   flutter_displaymode: ^0.6.0
   flutter_feather_icons: ^2.0.0+1
   flutter_hooks: ^0.20.5
@@ -48,26 +58,33 @@ dependencies:
   flutter_native_splash: ^2.4.0
   flutter_riverpod: ^2.5.1
   flutter_secure_storage: ^9.0.0
+  flutter_sharing_intent: ^1.1.0
   flutter_svg: ^1.1.6
   form_validator: ^2.1.1
+  freezed_annotation: ^2.4.1
   fuzzywuzzy: ^1.1.6
+  gap: ^3.0.1
+  go_router: ^14.2.7
   google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hooks_riverpod: ^2.5.1
   html: ^0.15.1
+  html_unescape: ^2.0.0
+  http: ^1.2.1
   image_picker: ^1.1.0
   intl: any
+  invidious: ^0.1.0
+  jiosaavn: ^0.1.0
   json_annotation: ^4.8.1
+  local_notifier: ^0.1.6
   logger: ^2.0.2
+  lrc: ^1.0.2
   media_kit: ^1.1.10+1
   media_kit_libs_audio: ^1.0.4
-  metadata_god:
-    git:
-      url: https://github.com/KRTirtho/frb_plugins.git
-      path: packages/metadata_god
-      ref: cargokit
+  metadata_god: ^1.0.0
   mime: ^1.0.2
+  open_file: ^3.5.10
   package_info_plus: ^6.0.0
   palette_generator: ^0.3.3
   path: ^1.9.0
@@ -75,71 +92,45 @@ dependencies:
   permission_handler: ^11.3.1
   piped_client: ^0.1.1
   popover: ^0.3.0
+  riverpod: ^2.5.1
   scrobblenaut:
     git:
-      url: https://github.com/KRTirtho/scrobblenaut.git
       ref: dart-3-support
+      url: https://github.com/KRTirtho/scrobblenaut.git
   scroll_to_index: ^3.0.1
-  sidebarx: ^0.17.1
   shared_preferences: ^2.2.3
-  smtc_windows:
-    git:
-      url: https://github.com/KRTirtho/frb_plugins.git
-      path: packages/smtc_windows
-      ref: cargokit
-  stroke_text: ^0.0.2
-  system_theme: ^2.1.0
-  titlebar_buttons: ^1.0.0
-  url_launcher: ^6.2.6
-  uuid: ^4.4.0
-  version: ^3.0.2
-  visibility_detector: ^0.4.0+2
-  window_manager: ^0.3.9
-  youtube_explode_dart: ^2.2.3
-  simple_icons: ^10.1.3
-  jiosaavn: ^0.1.0
-  draggable_scrollbar:
-    git:
-      url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
-      ref: cfd570035bf393de541d32e9b28808b5d7e602df
-  very_good_infinite_list: ^0.7.1
-  gap: ^3.0.1
-  sliver_tools: ^0.2.12
-  flutter_discord_rpc:
-    git:
-      url: https://github.com/KRTirtho/frb_plugins.git
-      path: packages/flutter_discord_rpc
-      ref: cargokit
-  html_unescape: ^2.0.0
-  wikipedia_api: ^0.1.0
-  skeletonizer: ^1.1.1
-  app_links: ^6.3.2
-  win32_registry: ^1.1.5
-  flutter_sharing_intent: ^1.1.0
-  flutter_broadcasts: ^0.4.0
-  freezed_annotation: ^2.4.1
-  spotify: ^0.13.7
-  bonsoir: ^5.1.10
   shelf: ^1.4.1
   shelf_router: ^1.1.4
   shelf_web_socket: ^2.0.0
-  web_socket_channel: ^3.0.1
-  lrc: ^1.0.2
-  timezone: ^0.9.2
-  local_notifier: ^0.1.6
-  tray_manager: ^0.2.2
-  http: ^1.2.1
-  riverpod: ^2.5.1
-  drift: ^2.18.0
-  sqlite3_flutter_libs: ^0.5.23
+  sidebarx: ^0.17.1
+  simple_icons: ^10.1.3
+  skeletonizer: ^1.1.1
+  sliver_tools: ^0.2.12
+  smtc_windows: ^1.0.0
+  spotify: ^0.13.7
   sqlite3: ^2.4.3
-  encrypt: ^5.0.3
-  go_router: ^14.2.7
+  sqlite3_flutter_libs: ^0.5.23
+  stroke_text: ^0.0.2
+  system_theme: ^2.1.0
+  test: ^1.25.7
+  timezone: ^0.10.0
+  titlebar_buttons: ^1.0.0
+  tray_manager: ^0.3.0
+  url_launcher: ^6.2.6
+  uuid: ^4.4.0
+  version: ^3.0.2
+  very_good_infinite_list: ^0.9.0
+  visibility_detector: ^0.4.0+2
+  web_socket_channel: ^3.0.1
+  wikipedia_api: ^0.1.0
+  win32_registry: ^1.1.5
+  window_manager: ^0.4.3
+  youtube_explode_dart: ^2.3.5
 
 dev_dependencies:
-  build_runner: ^2.4.9
+  build_runner: ^2.4.13
   crypto: ^3.0.3
-  envied_generator: ^0.5.4+1
+  envied_generator: ^1.0.0
   flutter_gen_runner: ^5.4.0
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^3.0.1
@@ -150,17 +141,18 @@ dev_dependencies:
   hive_generator: ^2.0.0
   json_serializable: ^6.6.2
   freezed: ^2.5.2
-  custom_lint: ^0.6.4
-  riverpod_lint: ^2.3.10
+  custom_lint: ^0.7.0
+  riverpod_lint: ^2.6.3
   process_run: ^0.14.2
   pubspec_parse: ^1.3.0
-  pub_api_client: ^2.7.0
+  pub_api_client: ^3.0.0
   xml: ^6.5.0
   io: ^1.0.4
-  drift_dev: ^2.18.0
+  drift_dev: ^2.21.0
 
 dependency_overrides:
   web: ^1.1.0
+  meta: 1.16.0
 
 flutter:
   generate: true
@@ -170,20 +162,6 @@ flutter:
     - assets/tutorial/
     - assets/logos/
     - LICENSE
-
-flutter_launcher_icons:
-  ios: true
-  android: true
-  image_path: "assets/spotube-logo.png"
-  adaptive_icon_foreground: "assets/spotube-logo-foreground.jpg"
-  adaptive_icon_background: "#242832"
-  windows:
-    generate: true
-    image_path: "assets/spotube-logo.png"
-    icon_size: 48 # min:48, max:256, default: 48
-  macos:
-    generate: true
-    image_path: "assets/spotube-logo.png"
 
 flutter_gen:
   output: lib/collections

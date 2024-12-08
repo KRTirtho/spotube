@@ -73,41 +73,41 @@ class UserAlbums extends HookConsumerWidget {
                   ),
                 ),
                 const SliverGap(10),
-                Skeletonizer.sliver(
-                  enabled: albumsQuery.isLoading,
-                  child: SliverLayoutBuilder(builder: (context, constrains) {
-                    return SliverGrid.builder(
-                      itemCount: albums.isEmpty ? 6 : albums.length + 1,
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        mainAxisExtent: constrains.smAndDown ? 225 : 250,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (albums.isNotEmpty && index == albums.length) {
-                          if (albumsQuery.asData?.value.hasMore != true) {
-                            return const SizedBox.shrink();
-                          }
-
-                          return Waypoint(
-                            controller: controller,
-                            isGrid: true,
-                            onTouchEdge: albumsQueryNotifier.fetchMore,
-                            child: Skeletonizer(
-                              enabled: true,
-                              child: AlbumCard(FakeData.albumSimple),
-                            ),
-                          );
+                SliverLayoutBuilder(builder: (context, constrains) {
+                  return SliverGrid.builder(
+                    itemCount: albums.isEmpty ? 6 : albums.length + 1,
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 200,
+                      mainAxisExtent: constrains.smAndDown ? 225 : 250,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemBuilder: (context, index) {
+                      if (albums.isNotEmpty && index == albums.length) {
+                        if (albumsQuery.asData?.value.hasMore != true) {
+                          return const SizedBox.shrink();
                         }
 
-                        return AlbumCard(
-                          albums.elementAtOrNull(index) ?? FakeData.albumSimple,
+                        return Waypoint(
+                          controller: controller,
+                          isGrid: true,
+                          onTouchEdge: albumsQueryNotifier.fetchMore,
+                          child: Skeletonizer(
+                            enabled: true,
+                            child: AlbumCard(FakeData.albumSimple),
+                          ),
                         );
-                      },
-                    );
-                  }),
-                ),
+                      }
+
+                      return Skeletonizer(
+                        enabled: albumsQuery.isLoading,
+                        child: AlbumCard(
+                          albums.elementAtOrNull(index) ?? FakeData.albumSimple,
+                        ),
+                      );
+                    },
+                  );
+                }),
               ],
             ),
           ),

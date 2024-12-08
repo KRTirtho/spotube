@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*Bu, Spotify'ın her yayın başına ödemenin\n$0.003 ile $0.005 arasında olduğu varsayımıyla hesaplanmıştır. Bu\nhipotetik bir hesaplamadır, kullanıcıya şarkılarını Spotify'da dinlediklerinde\nsanatçılara ne kadar ödeme yapacaklarını gösterir.",
   "webview_not_found": "Webview bulunamadı",
   "webview_not_found_description": "Cihazınızda herhangi bir Webview çalışma zamanı yüklü değil.\nEğer kuruluysa, ortam YOLUNDA olduğundan emin olun\n\nKurulumdan sonra uygulamayı yeniden başlatın",
-  "unsupported_platform": "Desteklenmeyen platform"
+  "unsupported_platform": "Desteklenmeyen platform",
+  "invidious_instance": "Invidious Sunucu Örneği",
+  "invidious_description": "Parça eşleştirmesi için kullanılacak Invidious sunucu örneği",
+  "invidious_warning": "Bazıları iyi çalışmayabilir. Kendi riskinizde kullanın",
+  "invidious_source_description": "Piped'a benzer, ancak daha yüksek kullanılabilirliğe sahip.",
+  "cache_music": "Müziği önbellekle",
+  "open": "Aç",
+  "cache_folder": "Önbellek klasörü",
+  "export": "Dışa aktar",
+  "clear_cache": "Önbelleği temizle",
+  "clear_cache_confirmation": "Önbelleği temizlemek istiyor musunuz?",
+  "export_cache_files": "Önbelleğe Alınmış Dosyaları Dışa Aktar",
+  "found_n_files": "{count} dosya bulundu",
+  "export_cache_confirmation": "Bu dosyaları dışa aktarmak istiyor musunuz",
+  "exported_n_out_of_m_files": "{filesExported} / {files} dosya dışa aktarıldı"
 }

@@ -387,5 +387,19 @@
   "total_money": "Guztira {money}",
   "webview_not_found": "Ez da Webview aurkitu",
   "webview_not_found_description": "Ez dago Webview abiarazte denbora-instalaziorik zure gailuan.\nInstalatuta badago, ziurtatu environment PATH-an dagoela\n\nInstalatu ondoren, berrabiarazi aplikazioa",
-  "unsupported_platform": "Plataforma ez onartua"
+  "unsupported_platform": "Plataforma ez onartua",
+  "invidious_instance": "Invidious zerbitzari instantzia",
+  "invidious_description": "Invidious zerbitzari instantzia, pistak bat egiteko",
+  "invidious_warning": "Instantzia batzuek ez dute ondo funtzionatuko. Zure erantzukizunpean erabili",
+  "invidious_source_description": "Piped-en antzekoa, baina eskuragarritasun handiagoarekin",
+  "cache_music": "Musika cachean",
+  "open": "Ireki",
+  "cache_folder": "Cache karpeta",
+  "export": "Esportatu",
+  "clear_cache": "Garbitu cachea",
+  "clear_cache_confirmation": "Cachea garbitu nahi al duzu?",
+  "export_cache_files": "Esportatu cache fitxategiak",
+  "found_n_files": "{count} fitxategi aurkitu dira",
+  "export_cache_confirmation": "Fitxategi hauek esportatu nahi al dituzu",
+  "exported_n_out_of_m_files": "{filesExported} fitxategi esportatu dira {files} -tik"
 }

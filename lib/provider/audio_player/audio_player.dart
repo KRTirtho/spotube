@@ -247,7 +247,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
   // Tracks related methods
 
-  Future<void> addTracksAtFirst(Iterable<Track> tracks) async {
+  Future<void> addTracksAtFirst(
+    Iterable<Track> tracks, {
+    bool allowDuplicates = false,
+  }) async {
     if (state.tracks.length == 1) {
       return addTracks(tracks);
     }
@@ -257,7 +260,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     for (int i = 0; i < tracks.length; i++) {
       final track = tracks.elementAt(i);
 
-      if (state.tracks.any((element) => _compareTracks(element, track))) {
+      if (!allowDuplicates &&
+          state.tracks.any((element) => _compareTracks(element, track))) {
         continue;
       }
 

@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*Isso é calculado com base no pagamento por stream do Spotify\nque varia de $0.003 a $0.005. Esta é uma cálculo hipotético\npara dar ao usuário uma visão de quanto teriam pago aos artistas\nse eles ouvissem suas músicas no Spotify.",
   "webview_not_found": "Webview não encontrado",
   "webview_not_found_description": "Nenhum runtime Webview está instalado no seu dispositivo.\nSe estiver instalado, certifique-se de que está no environment PATH\n\nApós a instalação, reinicie o aplicativo",
-  "unsupported_platform": "Plataforma não suportada"
+  "unsupported_platform": "Plataforma não suportada",
+  "invidious_instance": "Instância do Servidor Invidious",
+  "invidious_description": "A instância do servidor Invidious a ser usada para correspondência de faixas",
+  "invidious_warning": "Alguns podem não funcionar bem. Use por sua conta e risco",
+  "invidious_source_description": "Semelhante ao Piped, mas com maior disponibilidade.",
+  "cache_music": "Música em cache",
+  "open": "Abrir",
+  "cache_folder": "Pasta de cache",
+  "export": "Exportar",
+  "clear_cache": "Limpar cache",
+  "clear_cache_confirmation": "Deseja limpar o cache?",
+  "export_cache_files": "Exportar Arquivos em Cache",
+  "found_n_files": "Encontrados {count} arquivos",
+  "export_cache_confirmation": "Deseja exportar estes arquivos para",
+  "exported_n_out_of_m_files": "Exportados {filesExported} de {files} arquivos"
 }
