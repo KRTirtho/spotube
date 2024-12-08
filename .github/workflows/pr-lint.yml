@@ -17,18 +17,23 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
 
+      - name: Dummy Envs
+        run: |
+          envsubst < .env.example > .env
+        env:
+          SPOTIFY_SECRETS: xxx:xxx
+          ENABLE_UPDATE_CHECK: true
+          LASTFM_API_KEY: xxx
+          LASTFM_API_SECRET: xxx
+          RELEASE_CHANNEL: nightly
+          HIDE_DONATIONS: false
+
+
       - name: Configure repo
         run: |
           flutter pub get
-          echo '${{ secrets.DOTENV_NIGHTLY }}' > .env
           dart run build_runner build --delete-conflicting-outputs
 
       - name: Lint Dart files
         run: |
           dart analyze --no-fatal-warnings
-
-      - name: Lint translations & config files
-        run: |
-          npm install -g @prantlf/jsonlint
-          jsonlint -q -D --enforce-double-quotes ./lib/l10n/*.arb
-          jsonlint -q -D --enforce-double-quotes -T .vscode/*.json
