@@ -394,5 +394,12 @@
   "unsupported_platform": "Unsupported platform",
   "cache_music": "Cache music",
   "open": "Open",
-  "cache_folder": "Cache folder"
+  "cache_folder": "Cache folder",
+  "export": "Export",
+  "clear_cache": "Clear cache",
+  "clear_cache_confirmation": "Do you want to clear the cache?",
+  "export_cache_files": "Export Cached Files",
+  "found_n_files": "Found {count} files",
+  "export_cache_confirmation": "Do you want to export these files to",
+  "exported_n_out_of_m_files": "Exported {filesExported} out of {files} files"
 }

@@ -125,4 +125,6 @@ abstract class SpotubeIcons {
   static const folderAdd = FeatherIcons.folderPlus;
   static const folderRemove = FeatherIcons.folderMinus;
   static const cache = FeatherIcons.hardDrive;
+  static const export = Icons.file_open_outlined;
+  static const delete = FeatherIcons.trash2;
 }
